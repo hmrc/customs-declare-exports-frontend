@@ -21,10 +21,10 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
 import views.html.unauthorised
 
-class UnauthorisedControllerSpec extends ControllerSpec {
+class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
 
   trait SetUp {
     val unauthorisedPage = mock[unauthorised]

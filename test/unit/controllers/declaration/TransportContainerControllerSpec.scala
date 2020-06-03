@@ -19,39 +19,40 @@ package unit.controllers.declaration
 import base.Injector
 import controllers.declaration.TransportContainerController
 import controllers.util.Remove
+import forms.common.YesNoAnswer
 import forms.declaration.{ContainerAdd, ContainerFirst, Seal}
 import models.declaration.Container
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration._
 
 class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
 
-  trait SetUp {
-    val transportContainersAddFirstPage = instanceOf[transport_container_add_first]
-    val transportContainersAddPage = instanceOf[transport_container_add]
-    val transportContainersRemovePage = instanceOf[transport_container_remove]
-    val transportContainersSummaryPage = instanceOf[transport_container_summary]
+  val transportContainersAddFirstPage = instanceOf[transport_container_add_first]
+  val transportContainersAddPage = instanceOf[transport_container_add]
+  val transportContainersRemovePage = instanceOf[transport_container_remove]
+  val transportContainersSummaryPage = mock[transport_container_summary]
 
-    val controller = new TransportContainerController(
-      mockAuthAction,
-      mockJourneyAction,
-      navigator,
-      mockErrorHandler,
-      mockExportsCacheService,
-      stubMessagesControllerComponents(),
-      transportContainersAddFirstPage,
-      transportContainersAddPage,
-      transportContainersSummaryPage,
-      transportContainersRemovePage
-    )(ec)
-
-    authorizedUser()
-    setupErrorHandler()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-  }
+  val controller = new TransportContainerController(
+    mockAuthAction,
+    mockJourneyAction,
+    navigator,
+    mockErrorHandler,
+    mockExportsCacheService,
+    stubMessagesControllerComponents(),
+    transportContainersAddFirstPage,
+    transportContainersAddPage,
+    transportContainersSummaryPage,
+    transportContainersRemovePage
+  )(ec)
 
   val containerId = "434335468"
   val sealId = "287345"
@@ -59,16 +60,43 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   val containerData = Container(containerId, Seq(Seal(sealId)))
   val maxContainerData = Seq.fill(Container.maxNumberOfItems)(Container("id", Seq.empty))
 
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
+    authorizedUser()
+    setupErrorHandler()
+    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+
+    when(transportContainersSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(transportContainersSummaryPage)
+    super.afterEach()
+  }
+
+  def theResponseForm: Form[YesNoAnswer] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(transportContainersSummaryPage).apply(any(), captor.capture(), any())(any(), any())
+    captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration(withContainerData(containerData)))
+    await(controller.displayContainerSummary(Mode.Normal)(request))
+    theResponseForm
+  }
+
   "Transport Container controller display add page" should {
 
     "return 200 (OK)" when {
-      "cache is empty" in new SetUp {
+      "cache is empty" in {
         val result = controller.displayAddContainer(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
 
-      "cache contains some data" in new SetUp {
+      "cache contains some data" in {
         withNewCaching(aDeclaration(withContainerData(containerData)))
 
         val result = controller.displayAddContainer(Mode.Normal)(getRequest())
@@ -80,7 +108,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   "Transport Container controller display container summary page" should {
 
     "return 200 (OK)" when {
-      "cache contains some data" in new SetUp {
+      "cache contains some data" in {
         withNewCaching(aDeclaration(withContainerData(containerData)))
 
         val result = controller.displayContainerSummary(Mode.Normal)(getRequest())
@@ -89,7 +117,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     }
 
     "redirect to add container page" when {
-      "cache is empty" in new SetUp {
+      "cache is empty" in {
         val result = controller.displayContainerSummary(Mode.Normal)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
@@ -102,7 +130,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   "Transport Container controller display container remove page" should {
 
     "return 200 (OK)" when {
-      "cache contains some data" in new SetUp {
+      "cache contains some data" in {
         withNewCaching(aDeclaration(withContainerData(containerData)))
 
         val result = controller.displayContainerRemove(Mode.Normal, containerId)(getRequest())
@@ -111,7 +139,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     }
 
     "redirect to container summary page" when {
-      "cache is empty" in new SetUp {
+      "cache is empty" in {
         val result = controller.displayContainerRemove(Mode.Normal, containerId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
@@ -127,7 +155,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
       val requestBody = Seq(ContainerFirst.hasContainerKey -> "Yes", ContainerFirst.containerIdKey -> "value")
 
-      "working on standard declaration with cache empty" in new SetUp {
+      "working on standard declaration with cache empty" in {
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
 
         val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -139,7 +167,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         theCacheModelUpdated.containers mustBe Seq(Container("value", Seq.empty))
       }
 
-      "working on supplementary declaration with cache empty" in new SetUp {
+      "working on supplementary declaration with cache empty" in {
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
         val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -151,7 +179,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         theCacheModelUpdated.containers mustBe Seq(Container("value", Seq.empty))
       }
 
-      "working on simplified declaration with cache empty" in new SetUp {
+      "working on simplified declaration with cache empty" in {
         withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
 
         val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -168,7 +196,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
       val requestBody = Seq(ContainerAdd.containerIdKey -> "C2")
 
-      "working on standard declaration with existing container" in new SetUp {
+      "working on standard declaration with existing container" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withContainerData(Container("C1", Seq.empty))))
 
@@ -181,7 +209,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         theCacheModelUpdated.containers mustBe Seq(Container("C1", Seq.empty), Container("C2", Seq.empty))
       }
 
-      "working on supplementary declaration with existing container" in new SetUp {
+      "working on supplementary declaration with existing container" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withContainerData(Container("C1", Seq.empty))))
 
@@ -194,7 +222,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         theCacheModelUpdated.containers mustBe Seq(Container("C1", Seq.empty), Container("C2", Seq.empty))
       }
 
-      "working on simplified declaration with existing container" in new SetUp {
+      "working on simplified declaration with existing container" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED), withContainerData(Container("C1", Seq.empty))))
 
@@ -213,7 +241,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   "Transport Container submit summary page" should {
 
     "redirect to confirmation page" when {
-      "user clicks on remove container" in new SetUp {
+      "user clicks on remove container" in {
         val removeAction = (Remove.toString, "value")
 
         val result = controller.submitSummaryAction(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
@@ -225,7 +253,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     }
 
     "redirect to add container page" when {
-      "user indicates they want to add another container" in new SetUp {
+      "user indicates they want to add another container" in {
         val body = Seq(("yesNo", "Yes"))
 
         val result = controller.submitSummaryAction(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
@@ -237,7 +265,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     }
 
     "redirect to summary page" when {
-      "user indicates they do not want to add another container" in new SetUp {
+      "user indicates they do not want to add another container" in {
         val body = Seq(("yesNo", "No"))
 
         val result = controller.submitSummaryAction(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
@@ -246,7 +274,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
       }
 
-      "user indicates they do not want to add another container and they are in draft mode" in new SetUp {
+      "user indicates they do not want to add another container and they are in draft mode" in {
         val body = Seq(("yesNo", "No"))
 
         val result = controller.submitSummaryAction(Mode.Draft)(postRequestAsFormUrlEncoded(body: _*))
@@ -261,7 +289,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   "Transport Container submit remove page" should {
 
     "remove container and redirect" when {
-      "user confirms that they want to remove" in new SetUp {
+      "user confirms that they want to remove" in {
         withNewCaching(aDeclaration(withContainerData(containerData)))
         val body = Seq(("yesNo", "Yes"))
 
@@ -276,7 +304,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     }
 
     "not remove container and redirect" when {
-      "user confirms that they do not want to remove" in new SetUp {
+      "user confirms that they do not want to remove" in {
         withNewCaching(aDeclaration(withContainerData(containerData)))
         val body = Seq(("yesNo", "No"))
 
@@ -292,7 +320,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   }
 
   "return 400 (BAD_REQUEST)" when {
-    "user adds container with incorrect item" in new SetUp {
+    "user adds container with incorrect item" in {
 
       val body = Seq(("id", "!@#$"))
 
@@ -301,7 +329,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       status(result) must be(BAD_REQUEST)
     }
 
-    "user adds seal and reached limit of items" in new SetUp {
+    "user adds seal and reached limit of items" in {
       withNewCaching(aDeclaration(withContainerData(maxContainerData)))
 
       val body = Seq(("id", "value"))
@@ -311,7 +339,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       status(result) must be(BAD_REQUEST)
     }
 
-    "user adds seal with duplicated value" in new SetUp {
+    "user adds seal with duplicated value" in {
       withNewCaching(aDeclaration(withContainerData(containerData)))
 
       val body = Seq(("id", containerId))

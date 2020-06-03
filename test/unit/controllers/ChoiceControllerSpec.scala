@@ -29,11 +29,11 @@ import play.api.mvc.{AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
 import utils.FakeRequestCSRFSupport._
 import views.html.choice_page
 
-class ChoiceControllerSpec extends ControllerSpec with OptionValues {
+class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
   import ChoiceControllerSpec._
 
   val choicePage = mock[choice_page]

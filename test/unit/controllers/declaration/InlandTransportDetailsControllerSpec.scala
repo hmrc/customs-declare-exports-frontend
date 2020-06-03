@@ -17,14 +17,17 @@
 package unit.controllers.declaration
 
 import controllers.declaration.InlandTransportDetailsController
+import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.ModeOfTransportCode.Maritime
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
 import org.mockito.Mockito.{verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -54,6 +57,18 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
   override protected def afterEach(): Unit = {
     Mockito.reset(inlandTransportDetails)
     super.afterEach()
+  }
+
+  private def theResponseForm: Form[InlandModeOfTransportCode] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[InlandModeOfTransportCode]])
+    verify(inlandTransportDetails).apply(any(), formCaptor.capture())(any(), any())
+    formCaptor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   "Inland Transport Details Controller on GET request" should {

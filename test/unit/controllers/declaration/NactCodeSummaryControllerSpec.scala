@@ -17,12 +17,15 @@
 package unit.controllers.declaration
 
 import controllers.declaration.NactCodeSummaryController
+import forms.common.YesNoAnswer
 import forms.declaration.{NactCode, NactCodeFirst}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -53,6 +56,18 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
     super.afterEach()
   }
 
+  private def theResponseForm: Form[YesNoAnswer] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(mockPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
+    formCaptor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    val item = anItem(withNactCodes(NactCode("VATE")))
+    withNewCaching(aDeclaration(withItems(item)))
+    await(controller.displayPage(Mode.Normal, item.id)(request))
+    theResponseForm
+  }
   def theNactCodes: List[NactCode] = {
     val captor = ArgumentCaptor.forClass(classOf[List[NactCode]])
     verify(mockPage).apply(any(), any(), any(), captor.capture())(any(), any())

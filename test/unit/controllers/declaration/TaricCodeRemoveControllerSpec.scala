@@ -17,12 +17,15 @@
 package unit.controllers.declaration
 
 import controllers.declaration.TaricCodeRemoveController
+import forms.common.YesNoAnswer
 import forms.declaration.TaricCode
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -51,6 +54,18 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
   override protected def afterEach(): Unit = {
     reset(mockRemovePage)
     super.afterEach()
+  }
+
+  def theResponseForm: Form[YesNoAnswer] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(mockRemovePage).apply(any(), any(), any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal, item.id, "ABCD")(request))
+    theResponseForm
   }
 
   def theTaricCode: String = {

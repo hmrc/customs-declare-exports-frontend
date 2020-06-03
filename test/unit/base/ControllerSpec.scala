@@ -22,7 +22,8 @@ import controllers.util.{Add, AddField, SaveAndContinue}
 import models.ExportsDeclaration
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
-import play.api.data.FormError
+import org.mockito.Mockito.when
+import play.api.data.{Form, FormError}
 import play.api.libs.json.JsValue
 import play.api.mvc._
 import play.api.test.Helpers.contentAsString
@@ -34,6 +35,11 @@ import unit.tools.Stubs
 import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.{ExecutionContext, Future}
+
+trait ControllerWithoutFormSpec extends ControllerSpec {
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] =
+    mockFormForDisplayRequest
+}
 
 trait ControllerSpec
     extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockExportCacheService with MockNavigator with JourneyTypeTestRunner
@@ -80,9 +86,25 @@ trait ControllerSpec
   private val submissionError = "some error"
   protected val submissionFormError = FormError(submissionField, submissionError)
 
-  protected def getRequestWithSubmissionErrors: Request[AnyContentAsEmpty.type] =
+  private def getRequestWithSubmissionErrors: Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "")
       .withFlash((FlashKeys.fieldName, submissionField), (FlashKeys.errorMessage, submissionError))
       .withSession((ExportsSessionKeys.declarationId -> "declaration-id"))
       .withCSRFToken
+
+  protected def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_]
+
+  protected val mockFormForDisplayRequest: Form[_] = {
+    val form = mock[Form[_]]
+    when(form.errors).thenReturn(Seq(submissionFormError))
+    form
+  }
+
+  "Controller" should {
+    "return form with submission errors" in {
+
+      val form = getFormForDisplayRequest(getRequestWithSubmissionErrors)
+      form.errors mustBe Seq(submissionFormError)
+    }
+  }
 }

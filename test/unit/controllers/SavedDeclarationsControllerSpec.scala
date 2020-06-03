@@ -22,10 +22,10 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.ControllerWithoutFormSpec
 import views.html.saved_declarations
 
-class SavedDeclarationsControllerSpec extends ControllerSpec {
+class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
   private val savedDeclarationsPage = mock[saved_declarations]
 

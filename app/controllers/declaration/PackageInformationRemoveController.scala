@@ -41,10 +41,10 @@ class PackageInformationRemoveController @Inject()(
   mcc: MessagesControllerComponents,
   packageTypeRemove: package_information_remove
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(packageTypeRemove(mode, itemId, packageInformation(id, itemId), YesNoAnswer.form()))
+    Ok(packageTypeRemove(mode, itemId, packageInformation(id, itemId), YesNoAnswer.form().withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

@@ -25,6 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -55,6 +56,12 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
+  }
+
   def theResponseForm: Form[TransportLeavingTheBorder] = {
     val captor: ArgumentCaptor[Form[TransportLeavingTheBorder]] = ArgumentCaptor.forClass(classOf[Form[TransportLeavingTheBorder]])
     verify(transportLeavingTheBorder).apply(captor.capture(), any())(any(), any())
@@ -83,15 +90,6 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
           theResponseForm.value mustBe Some(TransportLeavingTheBorder(Some(ModeOfTransportCode.Rail)))
         }
 
-        "with submission errors" in {
-
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
-          status(result) mustBe OK
-
-          theResponseForm.errors mustBe Seq(submissionFormError)
-        }
       }
 
       "return 400 (BAD_REQUEST)" when {

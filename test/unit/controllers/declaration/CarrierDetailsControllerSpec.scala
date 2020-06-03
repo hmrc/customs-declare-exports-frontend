@@ -26,6 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -66,6 +67,12 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
   def verifyPageInvocations(numberOfInvocations: Int) =
     verify(mockCarrierDetailsPage, times(numberOfInvocations)).apply(any(), any())(any(), any())
 
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
+  }
+
   "Carrier Details Controller display page" should {
 
     "return OK (200)" when {
@@ -85,15 +92,6 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           theResponseForm.errors mustBe Seq.empty
         }
 
-        "with submission errors" in {
-
-          withNewCaching(aDeclaration())
-
-          val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
-          status(result) mustBe OK
-
-          theResponseForm.errors mustBe Seq(submissionFormError)
-        }
       }
     }
 

@@ -20,12 +20,14 @@ import controllers.declaration.NotEligibleController
 import models.DeclarationType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
 import views.html.declaration.{not_declarant, not_eligible}
 
-class NotEligibleControllerSpec extends ControllerSpec {
+class NotEligibleControllerSpec extends ControllerWithoutFormSpec {
 
   trait SetUp {
     val notEligiblePage: not_eligible = mock[not_eligible]

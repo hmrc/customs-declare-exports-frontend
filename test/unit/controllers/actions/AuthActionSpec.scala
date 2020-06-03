@@ -21,10 +21,10 @@ import controllers.ChoiceController
 import controllers.actions.NoExternalId
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
 import views.html.choice_page
 
-class AuthActionSpec extends ControllerSpec with Injector {
+class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
 
   val choicePage = instanceOf[choice_page]
 

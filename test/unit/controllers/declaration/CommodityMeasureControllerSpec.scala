@@ -20,9 +20,12 @@ import controllers.declaration._
 import forms.declaration.{CommodityMeasure, PackageInformation}
 import models.declaration.ExportItem
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -30,42 +33,59 @@ import views.html.declaration.commodityMeasure.commodity_measure
 
 class CommodityMeasureControllerSpec extends ControllerSpec {
 
-  trait SetUp {
-    val goodsMeasurePage = mock[commodity_measure]
+  val goodsMeasurePage = mock[commodity_measure]
 
-    val controller = new CommodityMeasureController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      goodsMeasurePage
-    )(ec)
+  val controller = new CommodityMeasureController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    goodsMeasurePage
+  )(ec)
+
+  val item =
+    ExportItem("itemId", packageInformation = Some(List(PackageInformation("id", Some("123"), Some(123), Some("123")))))
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
 
     authorizedUser()
-
-    val item =
-      ExportItem("itemId", packageInformation = Some(List(PackageInformation("id", Some("123"), Some(123), Some("123")))))
-    val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item))
-
-    withNewCaching(cachedData)
     when(goodsMeasurePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    super.afterEach()
+
+    reset(goodsMeasurePage)
+  }
+
+  def theResponseForm: Form[CommodityMeasure] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[CommodityMeasure]])
+    verify(goodsMeasurePage).apply(any(), any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal, "itemId")(request))
+    theResponseForm
   }
 
   "Commodity Measure controller" should {
 
     "return 200 (OK)" when {
 
-      "display page method is invoked and commodity measure cache is empty" in new SetUp {
+      "display page method is invoked and commodity measure cache is empty" in {
 
+        withNewCaching(aDeclaration())
         val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked and commodity measure cache is not empty" in new SetUp {
+      "display page method is invoked and commodity measure cache is not empty" in {
 
-        val commodityItem = item.copy(commodityMeasure = Some(CommodityMeasure(None, Some("123"), Some("123"))))
         val commodityCachedData =
           aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item))
         withNewCaching(commodityCachedData)
@@ -78,7 +98,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
     "return 400 (BAD_REQUEST)" when {
 
-      "form is incorrect" in new SetUp {
+      "form is incorrect" in {
 
         val noPackageCache = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
         withNewCaching(noPackageCache)
@@ -93,7 +113,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
 
-      "information provided by user are correct" in new SetUp {
+      "information provided by user are correct" in {
 
         val noPackageCache = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
         withNewCaching(noPackageCache)

@@ -26,6 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -55,6 +56,12 @@ class CusCodeControllerSpec extends ControllerSpec {
     val captor = ArgumentCaptor.forClass(classOf[Form[CusCode]])
     verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal, itemId)(request))
+    theResponseForm
   }
 
   private def formData(code: String) = JsObject(Map(cusCodeKey -> JsString(code), hasCusCodeKey -> JsString("Yes")))
@@ -89,15 +96,6 @@ class CusCodeControllerSpec extends ControllerSpec {
           theResponseForm.value mustBe Some(cusCode)
         }
 
-        "with submission errors" in {
-
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequestWithSubmissionErrors)
-          status(result) mustBe OK
-
-          theResponseForm.errors mustBe Seq(submissionFormError)
-        }
       }
 
       "return 400 (BAD_REQUEST)" when {

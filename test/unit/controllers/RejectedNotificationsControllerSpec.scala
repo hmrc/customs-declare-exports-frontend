@@ -25,12 +25,12 @@ import org.scalatest.OptionValues
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.model.RejectionReasons
-import unit.base.ControllerSpec
+import unit.base.ControllerWithoutFormSpec
 import views.html.rejected_notification_errors
 
 import scala.concurrent.ExecutionContext.global
 
-class RejectedNotificationsControllerSpec extends ControllerSpec with OptionValues {
+class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   private val mockRejectedNotificationPage = mock[rejected_notification_errors]
   private val mockRejectedReasons = mock[RejectionReasons]

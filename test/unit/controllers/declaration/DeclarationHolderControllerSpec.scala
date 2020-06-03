@@ -21,31 +21,57 @@ import controllers.declaration.DeclarationHolderController
 import controllers.util.Remove
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
-import models.{DeclarationType, Mode}
 import models.declaration.DeclarationHoldersData
+import models.{DeclarationType, Mode}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.declaration_holder
 
 class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
 
-  trait SetUp {
-    val declarationHolderPage = instanceOf[declaration_holder]
+  val declarationHolderPage = mock[declaration_holder]
 
-    val controller = new DeclarationHolderController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockErrorHandler,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      declarationHolderPage
-    )
+  val controller = new DeclarationHolderController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockErrorHandler,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    declarationHolderPage
+  )
 
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
     setupErrorHandler()
     authorizedUser()
     withNewCaching(aDeclaration())
+
+    when(declarationHolderPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(declarationHolderPage)
+    super.afterEach()
+  }
+
+  def theResponseForm: Form[DeclarationHolder] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolder]])
+    verify(declarationHolderPage).apply(any(), formCaptor.capture(), any())(any(), any())
+    formCaptor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   val declarationWithHolder = aDeclaration(withDeclarationHolders(Some("ACP"), Some(Eori("GB123456"))))
@@ -57,14 +83,14 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
     "return 200 (OK)" when {
 
-      "display page method is invoked with empty cache" in new SetUp {
+      "display page method is invoked with empty cache" in {
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked with data in cache" in new SetUp {
+      "display page method is invoked with data in cache" in {
 
         withNewCaching(aDeclaration(withDeclarationHolders()))
 
@@ -76,7 +102,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
     "return 400 (BAD_REQUEST)" when {
 
-      "user provide wrong action" in new SetUp {
+      "user provide wrong action" in {
 
         val wrongAction = Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), ("WrongAction", ""))
 
@@ -88,7 +114,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
     "return 400 (BAD_REQUEST) during adding" when {
 
-      "user put incorrect data" in new SetUp {
+      "user put incorrect data" in {
 
         val incorrectForm = Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), addActionUrlEncoded())
 
@@ -98,7 +124,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         status(result) must be(BAD_REQUEST)
       }
 
-      "user put duplicated item" in new SetUp {
+      "user put duplicated item" in {
 
         withNewCaching(declarationWithHolder)
 
@@ -110,7 +136,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         status(result) must be(BAD_REQUEST)
       }
 
-      "user reach maximum amount of items" in new SetUp {
+      "user reach maximum amount of items" in {
 
         withNewCaching(maxAmountOfItems)
 
@@ -124,7 +150,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
     "return 400 (BAD_REQUEST) during saving" when {
 
-      "user put incorrect data" in new SetUp {
+      "user put incorrect data" in {
 
         val incorrectForm =
           Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), saveAndContinueActionUrlEncoded)
@@ -135,7 +161,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         status(result) must be(BAD_REQUEST)
       }
 
-      "user put duplicated item" in new SetUp {
+      "user put duplicated item" in {
 
         withNewCaching(declarationWithHolder)
 
@@ -148,7 +174,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         status(result) must be(BAD_REQUEST)
       }
 
-      "user reach maximum amount of items" in new SetUp {
+      "user reach maximum amount of items" in {
 
         withNewCaching(maxAmountOfItems)
 
@@ -162,7 +188,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
     "return 303 (SEE_OTHER)" when {
 
-      "user correctly add new item" in new SetUp {
+      "user correctly add new item" in {
 
         val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB65432123456789"), addActionUrlEncoded())
 
@@ -171,7 +197,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         status(result) must be(SEE_OTHER)
       }
 
-      "user save correct data" in new SetUp {
+      "user save correct data" in {
 
         val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB65432123456789"), saveAndContinueActionUrlEncoded)
 
@@ -181,7 +207,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage()
       }
 
-      "user save correct data without new item" in new SetUp {
+      "user save correct data without new item" in {
 
         withNewCaching(declarationWithHolder)
 
@@ -192,7 +218,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage()
       }
 
-      "user remove existing item" in new SetUp {
+      "user remove existing item" in {
 
         withNewCaching(declarationWithHolder)
 
@@ -207,7 +233,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
     "should redirect to Origination Country page" when {
 
-      "user is during Supplementary journey" in new SetUp {
+      "user is during Supplementary journey" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
@@ -219,7 +245,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage()
       }
 
-      "user is during Standard journey" in new SetUp {
+      "user is during Standard journey" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
 
@@ -234,7 +260,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
     "should redirect to Destination Country page" when {
 
-      "user is during Simplified journey" in new SetUp {
+      "user is during Simplified journey" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
 

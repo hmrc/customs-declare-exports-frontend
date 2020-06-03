@@ -17,12 +17,15 @@
 package unit.controllers.declaration
 
 import controllers.declaration.DestinationCountryController
+import forms.declaration.countries.Country
 import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, Call, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -54,6 +57,18 @@ class DestinationCountryControllerSpec extends ControllerSpec {
     reset(destinationCountryPage)
 
     super.afterEach()
+  }
+
+  def theResponseForm: Form[Country] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[Country]])
+    verify(destinationCountryPage).apply(any(), formCaptor.capture())(any(), any())
+    formCaptor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   "Destination Country Controller" should {

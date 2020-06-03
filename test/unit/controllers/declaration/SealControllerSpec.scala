@@ -18,11 +18,15 @@ package unit.controllers.declaration
 
 import controllers.declaration.SealController
 import controllers.util.{Remove, SaveAndContinue, SaveAndReturn}
+import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import models.declaration.Container
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -31,25 +35,27 @@ import views.html.declaration.{seal_add, seal_remove, seal_summary}
 
 class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  trait SetUp {
-    val sealAddPage = mock[seal_add]
-    val sealRemovePage = mock[seal_remove]
-    val sealSummaryPage = mock[seal_summary]
+  val sealAddPage = mock[seal_add]
+  val sealRemovePage = mock[seal_remove]
+  val sealSummaryPage = mock[seal_summary]
 
-    val containerId = "3436532313"
-    val sealId = "623847987324"
+  val containerId = "3436532313"
+  val sealId = "623847987324"
 
-    val controller = new SealController(
-      mockAuthAction,
-      mockJourneyAction,
-      navigator,
-      mockErrorHandler,
-      mockExportsCacheService,
-      stubMessagesControllerComponents(),
-      sealAddPage,
-      sealRemovePage,
-      sealSummaryPage
-    )
+  val controller = new SealController(
+    mockAuthAction,
+    mockJourneyAction,
+    navigator,
+    mockErrorHandler,
+    mockExportsCacheService,
+    stubMessagesControllerComponents(),
+    sealAddPage,
+    sealRemovePage,
+    sealSummaryPage
+  )
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
 
     authorizedUser()
     setupErrorHandler()
@@ -59,17 +65,35 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
     when(sealSummaryPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
+  override protected def afterEach(): Unit = {
+    reset(sealAddPage, sealRemovePage, sealSummaryPage)
+
+    super.afterEach()
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration(withRoutingCountries()))
+    await(controller.displaySealSummary(Mode.Normal, containerId)(request))
+    theResponseSummaryForm
+  }
+
+  def theResponseSummaryForm: Form[YesNoAnswer] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(sealSummaryPage).apply(any(), captor.capture(), any(), any())(any(), any())
+    captor.getValue
+  }
+
   "Seal Controller" should {
 
     "return 200 (OK)" when {
 
-      "display add seal page when cache empty" in new SetUp {
+      "display add seal page when cache empty" in {
 
         val result = controller.displayAddSeal(Mode.Normal, containerId)(getRequest())
         status(result) must be(OK)
       }
 
-      "display add seal page when cache contain some data" in new SetUp {
+      "display add seal page when cache contain some data" in {
 
         withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq.empty))))
 
@@ -77,13 +101,13 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         status(result) must be(OK)
       }
 
-      "display seal summary page when cache empty" in new SetUp {
+      "display seal summary page when cache empty" in {
 
         val result = controller.displaySealSummary(Mode.Normal, containerId)(getRequest())
         status(result) must be(OK)
       }
 
-      "display seal summary page when cache contain some data" in new SetUp {
+      "display seal summary page when cache contain some data" in {
 
         withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq.empty))))
 
@@ -91,13 +115,13 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         status(result) must be(OK)
       }
 
-      "display remove seal page when cache empty" in new SetUp {
+      "display remove seal page when cache empty" in {
 
         val result = controller.displaySealRemove(Mode.Normal, containerId, sealId)(getRequest())
         status(result) must be(OK)
       }
 
-      "display remove seal page when cache contain some data" in new SetUp {
+      "display remove seal page when cache contain some data" in {
 
         withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq(Seal(sealId))))))
 
@@ -109,7 +133,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
     "return 400 (BAD_REQUEST)" when {
 
-      "user adds seal when container not in cache" in new SetUp {
+      "user adds seal when container not in cache" in {
 
         val body = Seq(("id", "value"))
 
@@ -118,7 +142,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         status(result) must be(BAD_REQUEST)
       }
 
-      "user adds seal with incorrect item" in new SetUp {
+      "user adds seal with incorrect item" in {
 
         withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq.empty))))
         val body = Seq(("id", "!@#$"))
@@ -128,7 +152,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         status(result) must be(BAD_REQUEST)
       }
 
-      "user adds seal and reached limit of items" in new SetUp {
+      "user adds seal and reached limit of items" in {
 
         val seals = Seq.fill(9999)(Seal("id"))
         withNewCaching(aDeclaration(withContainerData(Container(containerId, seals))))
@@ -140,7 +164,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         status(result) must be(BAD_REQUEST)
       }
 
-      "user adds seal with duplicated value" in new SetUp {
+      "user adds seal with duplicated value" in {
 
         withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq(Seal("value"))))))
 
@@ -156,7 +180,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
       "add seal with data in the cache" when {
 
-        "user clicks 'save and continue'" in new SetUp {
+        "user clicks 'save and continue'" in {
           withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq.empty))))
           val body = Seq("id" -> "value", (SaveAndContinue.toString, ""))
 
@@ -169,7 +193,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
           theCacheModelUpdated.containers mustBe Seq(Container(containerId, Seq(Seal("value"))))
         }
 
-        "user clicks 'save and return" in new SetUp {
+        "user clicks 'save and return" in {
           withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq.empty))))
           val body = Seq("id" -> "value", (SaveAndReturn.toString, ""))
 
@@ -185,7 +209,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
       "remove seal asks for confirmation" when {
 
-        "user clicks 'remove' when container not in cache" in new SetUp {
+        "user clicks 'remove' when container not in cache" in {
 
           val removeAction = (Remove.toString, "value")
 
@@ -197,7 +221,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
             .displaySealRemove(Mode.Normal, containerId, "value")
         }
 
-        "user clicks 'remove' when container in cache" in new SetUp {
+        "user clicks 'remove' when container in cache" in {
 
           withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq(Seal("value"))))))
           val removeAction = (Remove.toString, "value")
@@ -213,7 +237,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       }
 
       "add another seal question" when {
-        "redirects when user answers 'Yes" in new SetUp {
+        "redirects when user answers 'Yes" in {
 
           val body = Seq(("yesNo", "Yes"))
 
@@ -224,7 +248,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
             .displayAddSeal(Mode.Normal, containerId)
         }
 
-        "redirects when user answers 'No" in new SetUp {
+        "redirects when user answers 'No" in {
 
           val body = Seq(("yesNo", "No"))
 
@@ -237,7 +261,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       }
 
       "remove seal confirmation" when {
-        "user confirms that they want to remove" in new SetUp {
+        "user confirms that they want to remove" in {
 
           withNewCaching(aDeclaration(withContainerData(Seq(Container(containerId, Seq(Seal(sealId))), Container("containerB", Seq(Seal("sealB")))))))
           val body = Seq(("yesNo", "Yes"))
@@ -252,7 +276,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
           theCacheModelUpdated.containers mustBe Seq(Container(containerId, Seq.empty), Container("containerB", Seq(Seal("sealB"))))
         }
 
-        "user confirms that they do not want to remove" in new SetUp {
+        "user confirms that they do not want to remove" in {
 
           withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq(Seal(sealId))))))
           val body = Seq(("yesNo", "No"))

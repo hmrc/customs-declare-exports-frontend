@@ -29,11 +29,11 @@ import org.mockito.Mockito.{verify, when}
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import services.audit.{AuditService, AuditTypes}
-import unit.base.ControllerSpec
+import unit.base.ControllerWithoutFormSpec
 import unit.mock.{ErrorHandlerMocks, ExportsMetricsMocks}
 import views.html.{cancel_declaration, cancellation_confirmation_page}
 
-class CancelDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMocks with ExportsMetricsMocks with Injector {
+class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with ExportsMetricsMocks with Injector {
   import CancelDeclarationControllerSpec._
 
   trait SetUp {

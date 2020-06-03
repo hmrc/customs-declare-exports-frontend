@@ -26,6 +26,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -63,6 +64,12 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
     super.afterEach()
   }
 
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
+  }
+
   def verifyPage(numberOfTimes: Int) = verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   "Representative Entity controller" must {
@@ -94,15 +101,6 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
           theResponseForm.value.flatMap(_.details.eori) mustBe Some(Eori(eori))
         }
 
-        "with submission errors" in {
-
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
-          status(result) mustBe OK
-
-          theResponseForm.errors mustBe Seq(submissionFormError)
-        }
       }
 
       "return 400 (BAD_REQUEST)" when {

@@ -21,8 +21,11 @@ import controllers.util.Remove
 import forms.declaration.AdditionalInformation
 import models.declaration.{AdditionalInformationData, ExportItem}
 import models.{DeclarationType, ExportsDeclaration, Mode}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -53,6 +56,19 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     setupErrorHandler()
     authorizedUser()
     when(additionalInformationPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  def theResponseForm: Form[AdditionalInformation] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[AdditionalInformation]])
+    verify(additionalInformationPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    val item = anItem()
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+    await(controller.displayPage(Mode.Normal, item.id)(request))
+    theResponseForm
   }
 
   val itemCacheData =

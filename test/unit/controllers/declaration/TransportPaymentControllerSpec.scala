@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration._
-import forms.declaration.TransportPayment
+import forms.declaration.{TransportPayment, WarehouseIdentification}
 import models.DeclarationType._
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -25,6 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -60,6 +61,12 @@ class TransportPaymentControllerSpec extends ControllerSpec {
     val captor = ArgumentCaptor.forClass(classOf[Form[TransportPayment]])
     verify(transportPaymentPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   private def formData(paymentMethod: String) = JsObject(Map("paymentMethod" -> JsString(paymentMethod)))

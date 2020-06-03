@@ -21,10 +21,12 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -32,39 +34,56 @@ import views.html.declaration.declarant_details
 
 class DeclarantDetailsControllerSpec extends ControllerSpec {
 
-  trait SetUp {
-    private val declarantDetailsPage = mock[declarant_details]
+  private val declarantDetailsPage = mock[declarant_details]
 
-    val controller = new DeclarantDetailsController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      declarantDetailsPage
-    )(ec)
+  val controller = new DeclarantDetailsController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    declarantDetailsPage
+  )(ec)
 
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(declarantDetailsPage.apply(any[Mode], any[Form[DeclarantEoriConfirmation]])(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    super.afterEach()
+    reset(declarantDetailsPage)
+  }
+
+  def theResponseForm: Form[DeclarantEoriConfirmation] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[DeclarantEoriConfirmation]])
+    verify(declarantDetailsPage).apply(any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   "Declarant Details Controller" should {
 
     "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in new SetUp {
+      "display page method is invoked and cache is empty" in {
 
-        private val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked and cache is not empty" in new SetUp {
+      "display page method is invoked and cache is not empty" in {
 
         withNewCaching(aDeclaration(withDeclarantDetails()))
 
-        private val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -72,21 +91,21 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
     "return 400 (BAD_REQUEST)" when {
 
-      "form contains incorrect values" in new SetUp {
+      "form contains incorrect values" in {
 
-        private val incorrectForm = JsObject(Map(isEoriKey -> JsString("wrong")))
+        val incorrectForm = JsObject(Map(isEoriKey -> JsString("wrong")))
 
-        private val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to is declarant exporter details page" in new SetUp {
+    "return 303 (SEE_OTHER) and redirect to is declarant exporter details page" in {
 
-      private val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
+      val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
 
-      private val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+      val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
       thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantExporterController.displayPage()

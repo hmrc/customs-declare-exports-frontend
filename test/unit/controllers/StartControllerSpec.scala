@@ -18,10 +18,10 @@ package unit.controllers
 
 import controllers.StartController
 import play.api.test.Helpers._
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
 import views.html.start_page
 
-class StartControllerSpec extends ControllerSpec {
+class StartControllerSpec extends ControllerWithoutFormSpec {
 
   val mcc = stubMessagesControllerComponents()
   val startPage = new start_page(mainTemplate, config)

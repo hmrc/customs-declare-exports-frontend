@@ -21,9 +21,11 @@ import forms.declaration.TotalPackageQuantity
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
+import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -51,6 +53,18 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
   override protected def afterEach(): Unit = {
     Mockito.reset(totalPackageQuantity)
     super.afterEach()
+  }
+
+  def theResponseForm: Form[TotalPackageQuantity] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[TotalPackageQuantity]])
+    verify(totalPackageQuantity).apply(any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   "Total Package Quantity Controller" must {
