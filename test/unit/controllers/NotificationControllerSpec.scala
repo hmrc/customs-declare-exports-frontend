@@ -27,13 +27,13 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers._
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
 import views.html.{notifications, submission_notifications}
 
 import scala.concurrent.Future
 import scala.concurrent.Future.successful
 
-class NotificationControllerSpec extends ControllerSpec {
+class NotificationControllerSpec extends ControllerWithoutFormSpec {
 
   private val notification =
     Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty, "payload")

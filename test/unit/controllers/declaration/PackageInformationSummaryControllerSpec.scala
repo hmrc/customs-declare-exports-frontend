@@ -17,6 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.PackageInformationSummaryController
+import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
 import models.DeclarationType._
 import models.Mode
@@ -24,6 +25,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -52,6 +55,19 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
   override protected def afterEach(): Unit = {
     reset(mockPage)
     super.afterEach()
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    val item = anItem(withPackageInformation(packageInformation))
+    withNewCaching(aDeclaration(withItems(item)))
+    await(controller.displayPage(Mode.Normal, item.id)(request))
+    theResponseForm
+  }
+
+  def theResponseForm: Form[YesNoAnswer] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(mockPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    captor.getValue
   }
 
   def thePackageInformationList: Seq[PackageInformation] = {

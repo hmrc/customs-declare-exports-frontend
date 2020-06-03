@@ -20,10 +20,13 @@ import controllers.declaration.ConsignmentReferencesController
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.{DeclarationType, Mode}
+import models.Mode
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -31,21 +34,40 @@ import views.html.declaration.consignment_references
 
 class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
-  trait SetUp {
-    val consignmentReferencesPage = mock[consignment_references]
+  val consignmentReferencesPage = mock[consignment_references]
 
-    val controller = new ConsignmentReferencesController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      consignmentReferencesPage
-    )(ec)
+  val controller = new ConsignmentReferencesController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    consignmentReferencesPage
+  )(ec)
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
 
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(consignmentReferencesPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    super.afterEach()
+
+    reset(consignmentReferencesPage)
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
+  }
+
+  def theResponseForm: Form[ConsignmentReferences] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[ConsignmentReferences]])
+    verify(consignmentReferencesPage).apply(any(), captor.capture())(any(), any())
+    captor.getValue
   }
 
   "Consignment References controller" should {
@@ -53,7 +75,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
 
-        "display page method is invoked and cache is empty" in new SetUp {
+        "display page method is invoked and cache is empty" in {
 
           withNewCaching(request.cacheModel)
 
@@ -62,7 +84,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
           status(result) must be(OK)
         }
 
-        "display page method is invoked and cache contains data" in new SetUp {
+        "display page method is invoked and cache contains data" in {
 
           withNewCaching(aDeclaration(withConsignmentReferences()))
 
@@ -72,7 +94,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
         }
       }
 
-      "return 400 (BAD_REQUEST)" in new SetUp {
+      "return 400 (BAD_REQUEST)" in {
 
         withNewCaching(request.cacheModel)
         val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Lrn("")))
@@ -84,7 +106,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      "return 303 (SEE_OTHER) and redirect to declarant details page" in new SetUp {
+      "return 303 (SEE_OTHER) and redirect to declarant details page" in {
 
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
@@ -97,7 +119,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
     }
 
     onClearance { request =>
-      "return 303 (SEE_OTHER) and redirect to Entry into Declarant's Records page" in new SetUp {
+      "return 303 (SEE_OTHER) and redirect to Entry into Declarant's Records page" in {
 
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))

@@ -41,12 +41,13 @@ class EntryIntoDeclarantsRecordsController @Inject()(
   mcc: MessagesControllerComponents,
   entryIntoDeclarantsRecordsPage: entry_into_declarants_records
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.parties.isEntryIntoDeclarantsRecords match {
-      case Some(data) => Ok(entryIntoDeclarantsRecordsPage(mode, form().fill(data)))
-      case _          => Ok(entryIntoDeclarantsRecordsPage(mode, form()))
+      case Some(data) => Ok(entryIntoDeclarantsRecordsPage(mode, frm.fill(data)))
+      case _          => Ok(entryIntoDeclarantsRecordsPage(mode, frm))
     }
   }
 

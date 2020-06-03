@@ -17,12 +17,15 @@
 package unit.controllers.declaration
 
 import controllers.declaration.PackageInformationRemoveController
-import forms.declaration.{PackageInformation, TaricCode}
+import forms.common.YesNoAnswer
+import forms.declaration.PackageInformation
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -51,6 +54,18 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
   override protected def afterEach(): Unit = {
     reset(mockRemovePage)
     super.afterEach()
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal, item.id, "id")(request))
+    theResponseForm
+  }
+
+  def theResponseForm: Form[YesNoAnswer] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(mockRemovePage).apply(any(), any(), any(), captor.capture())(any(), any())
+    captor.getValue
   }
 
   def thePackageInformation: PackageInformation = {

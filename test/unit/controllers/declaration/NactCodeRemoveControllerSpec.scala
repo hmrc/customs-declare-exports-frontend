@@ -17,12 +17,15 @@
 package unit.controllers.declaration
 
 import controllers.declaration.NactCodeRemoveController
+import forms.common.YesNoAnswer
 import forms.declaration.NactCode
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -51,6 +54,18 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
   override protected def afterEach(): Unit = {
     reset(mockRemovePage)
     super.afterEach()
+  }
+
+  private def theResponseForm: Form[YesNoAnswer] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(mockRemovePage).apply(any(), any(), any(), formCaptor.capture())(any(), any())
+    formCaptor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal, item.id, "VATX")(request))
+    theResponseForm
   }
 
   def theNactCode: String = {

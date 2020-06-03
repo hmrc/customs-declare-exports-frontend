@@ -18,14 +18,15 @@ package unit.controllers.declaration
 
 import base.Injector
 import controllers.declaration.ConfirmationController
+import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Flash, Request, Result}
 import play.api.test.Helpers._
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
 import views.html.declaration.{draft_confirmation_page, submission_confirmation_page}
 
 import scala.concurrent.Future
 
-class ConfirmationControllerSpec extends ControllerSpec with Injector {
+class ConfirmationControllerSpec extends ControllerWithoutFormSpec with Injector {
 
   trait SetUp {
     val submissionConfirmationPage = instanceOf[submission_confirmation_page]

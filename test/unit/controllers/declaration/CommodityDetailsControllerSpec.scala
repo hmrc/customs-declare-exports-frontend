@@ -26,7 +26,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, Call, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -66,6 +66,12 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
     captor.getValue
   }
 
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal, itemId)(request))
+    theResponseForm
+  }
+
   "Commodity Details controller" should {
 
     "return 200 (OK)" when {
@@ -96,15 +102,6 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value mustBe Some(details)
       }
 
-      "with submission errors" in {
-
-        withNewCaching(aDeclaration())
-
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequestWithSubmissionErrors)
-        status(result) mustBe OK
-
-        theResponseForm.errors mustBe Seq(submissionFormError)
-      }
     }
 
     "return 400 (BAD_REQUEST)" when {

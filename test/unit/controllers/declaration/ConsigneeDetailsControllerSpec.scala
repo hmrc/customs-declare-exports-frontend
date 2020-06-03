@@ -21,9 +21,12 @@ import forms.common.Address
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import models.DeclarationType._
 import models.Mode
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -53,6 +56,18 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     reset(consigneeDetailsPage)
 
     super.afterEach()
+  }
+
+  def theResponseForm: Form[ConsigneeDetails] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[ConsigneeDetails]])
+    verify(consigneeDetailsPage).apply(any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   "Consignee Details controller" should {

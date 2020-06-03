@@ -29,6 +29,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -54,6 +55,12 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
     val captor = ArgumentCaptor.forClass(classOf[Form[ConsignorEoriNumber]])
     verify(mockConsignorEoriNumberPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   override protected def beforeEach(): Unit = {
@@ -126,15 +133,6 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         theResponseForm.value mustBe None
       }
 
-      "with submission errors" in {
-
-        withNewCaching(request.cacheModel)
-
-        val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
-        status(result) mustBe OK
-
-        theResponseForm.errors mustBe Seq(submissionFormError)
-      }
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>

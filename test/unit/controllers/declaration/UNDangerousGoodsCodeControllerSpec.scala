@@ -27,7 +27,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, Call, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -56,6 +56,11 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
   override protected def afterEach(): Unit = {
     super.afterEach()
     reset(mockPage)
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    await(controller.displayPage(Mode.Normal, itemId)(request))
+    theResponseForm
   }
 
   val itemId = "itemId"
@@ -95,13 +100,6 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
         theResponseForm.value mustBe Some(dangerousGoodsCode)
       }
 
-      "with submission errors" in {
-
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequestWithSubmissionErrors)
-        status(result) mustBe OK
-
-        theResponseForm.errors mustBe Seq(submissionFormError)
-      }
     }
 
     "return 400 (BAD_REQUEST)" when {

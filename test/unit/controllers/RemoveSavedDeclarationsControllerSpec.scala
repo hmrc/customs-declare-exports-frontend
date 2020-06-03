@@ -23,10 +23,10 @@ import org.mockito.Mockito.when
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.ControllerWithoutFormSpec
 import views.html.remove_declaration
 
-class RemoveSavedDeclarationsControllerSpec extends ControllerSpec {
+class RemoveSavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
   trait SetUp {
     val removeDeclarationPage = mock[remove_declaration]

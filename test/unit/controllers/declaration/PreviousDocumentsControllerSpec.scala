@@ -25,6 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -55,6 +56,11 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
   override protected def afterEach(): Unit = {
     reset(mockPreviousDocumentsPage)
     super.afterEach()
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponse._1
   }
 
   def theResponse: (Form[Document], Seq[Document]) = {

@@ -40,10 +40,10 @@ class TaricCodeRemoveController @Inject()(
   mcc: MessagesControllerComponents,
   taricCodeRemove: taric_code_remove
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(taricCodeRemove(mode, itemId, code, YesNoAnswer.form()))
+    Ok(taricCodeRemove(mode, itemId, code, YesNoAnswer.form().withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

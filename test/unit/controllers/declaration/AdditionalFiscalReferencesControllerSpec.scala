@@ -21,9 +21,11 @@ import controllers.util.Remove
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import models.declaration.ExportItem
 import models.{DeclarationType, ExportsDeclaration, Mode}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import play.api.mvc.Result
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -34,30 +36,49 @@ import scala.concurrent.Future
 
 class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemActionMocks with ErrorHandlerMocks {
 
-  trait SetUp {
+  val additionalFiscalReferencesPage = mock[additional_fiscal_references]
 
-    val additionalFiscalReferencesPage = mock[additional_fiscal_references]
+  val controller = new AdditionalFiscalReferencesController(
+    mockItemAction,
+    mockErrorHandler,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    additionalFiscalReferencesPage
+  )(ec)
 
-    val controller = new AdditionalFiscalReferencesController(
-      mockItemAction,
-      mockErrorHandler,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      additionalFiscalReferencesPage
-    )(ec)
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
 
     setupErrorHandler()
     authorizedUser()
-
     when(additionalFiscalReferencesPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    super.afterEach()
+
+    reset(additionalFiscalReferencesPage)
+  }
+
+  def theResponseForm: Form[AdditionalFiscalReference] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[AdditionalFiscalReference]])
+    verify(additionalFiscalReferencesPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    val item = anItem()
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+    await(controller.displayPage(Mode.Normal, item.id)(request))
+    theResponseForm
   }
 
   "Additional fiscal references controller" should {
 
     "return 200 (OK)" when {
 
-      "display page method is invoked with empty cache" in new SetUp {
+      "display page method is invoked with empty cache" in {
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
         val result: Future[Result] = controller.displayPage(Mode.Normal, item.id)(getRequest())
@@ -65,7 +86,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         status(result) must be(OK)
       }
 
-      "display page method is invoked with empty additional fiscal references" in new SetUp {
+      "display page method is invoked with empty additional fiscal references" in {
         val itemCacheData = ExportItem("itemId", additionalFiscalReferencesData = None)
         val cachedData: ExportsDeclaration =
           aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
@@ -76,7 +97,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         status(result) must be(OK)
       }
 
-      "display page method is invoked with data in cache" in new SetUp {
+      "display page method is invoked with data in cache" in {
 
         val itemCacheData =
           ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
@@ -92,7 +113,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
     "return 400 (BAD_REQUEST)" when {
 
-      "user provide wrong action" in new SetUp {
+      "user provide wrong action" in {
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
@@ -107,7 +128,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
     "return 400 (BAD_REQUEST) during adding" when {
 
-      "user put incorrect data" in new SetUp {
+      "user put incorrect data" in {
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
@@ -119,7 +140,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         status(result) must be(BAD_REQUEST)
       }
 
-      "user put duplicated item" in new SetUp {
+      "user put duplicated item" in {
 
         val itemCacheData =
           ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
@@ -135,7 +156,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         status(result) must be(BAD_REQUEST)
       }
 
-      "user reach maximum amount of items" in new SetUp {
+      "user reach maximum amount of items" in {
 
         val itemCacheData = ExportItem(
           "itemId",
@@ -156,7 +177,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
     "return 400 (BAD_REQUEST) during saving" when {
 
-      "user put incorrect data" in new SetUp {
+      "user put incorrect data" in {
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
@@ -169,7 +190,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         status(result) must be(BAD_REQUEST)
       }
 
-      "user put duplicated item" in new SetUp {
+      "user put duplicated item" in {
 
         val itemCacheData =
           ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
@@ -186,7 +207,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         status(result) must be(BAD_REQUEST)
       }
 
-      "user reach maximum amount of items" in new SetUp {
+      "user reach maximum amount of items" in {
 
         val itemCacheData = ExportItem(
           "itemId",
@@ -208,7 +229,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
     "return 303 (SEE_OTHER)" when {
 
-      "user correctly add new item" in new SetUp {
+      "user correctly add new item" in {
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
@@ -220,7 +241,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         status(result) must be(SEE_OTHER)
       }
 
-      "user save correct data" in new SetUp {
+      "user save correct data" in {
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
@@ -234,7 +255,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)
       }
 
-      "user save correct data without new item" in new SetUp {
+      "user save correct data without new item" in {
         val itemCacheData = ExportItem(
           "itemId",
           additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
@@ -252,7 +273,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(Mode.Normal, "itemId")
       }
 
-      "user remove existing item" in new SetUp {
+      "user remove existing item" in {
 
         val itemCacheData =
           ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))

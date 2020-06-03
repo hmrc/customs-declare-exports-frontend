@@ -26,6 +26,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -64,6 +65,11 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
     captor.getValue
   }
 
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    await(controller.displayPage(Mode.Normal, itemId, fastForward = false)(request))
+    theResponseForm
+  }
+
   private def verifyPageAccessed(numberOfTimes: Int) =
     verify(mockFiscalInformationPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
@@ -93,13 +99,6 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value.value.onwardSupplyRelief mustBe yes
       }
 
-      "with submission errors" in {
-
-        val result = controller.displayPage(Mode.Normal, itemId, fastForward = false)(getRequestWithSubmissionErrors)
-        status(result) mustBe OK
-
-        theResponseForm.errors mustBe Seq(submissionFormError)
-      }
     }
 
     "return 400 (BAD_REQUEST)" when {

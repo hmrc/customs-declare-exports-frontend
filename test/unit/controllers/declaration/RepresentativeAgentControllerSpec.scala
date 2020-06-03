@@ -25,6 +25,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -60,6 +61,12 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
     super.afterEach()
   }
 
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
+  }
+
   def verifyPage(numberOfTimes: Int) = verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   "Representative Agent controller" must {
@@ -91,15 +98,6 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
           theResponseForm.value.map(_.representingAgent) mustBe Some("Yes")
         }
 
-        "with submission errors" in {
-
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
-          status(result) mustBe OK
-
-          theResponseForm.errors mustBe Seq(submissionFormError)
-        }
       }
 
       "return 400 (BAD_REQUEST)" when {

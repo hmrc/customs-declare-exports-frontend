@@ -17,12 +17,15 @@
 package unit.controllers.declaration
 
 import controllers.declaration.SupervisingCustomsOfficeController
+import forms.declaration.SupervisingCustomsOffice
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
 import org.mockito.Mockito.{verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -59,6 +62,18 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
   override protected def afterEach(): Unit = {
     Mockito.reset(supervisingCustomsOfficeTemplate)
     super.afterEach()
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
+  }
+
+  def theResponseForm: Form[SupervisingCustomsOffice] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[SupervisingCustomsOffice]])
+    verify(supervisingCustomsOfficeTemplate).apply(any(), captor.capture())(any(), any())
+    captor.getValue
   }
 
   "Supervising Customs Office Controller on GET request" should {

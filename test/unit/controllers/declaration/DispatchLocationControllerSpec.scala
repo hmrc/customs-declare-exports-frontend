@@ -20,9 +20,12 @@ import controllers.declaration.DispatchLocationController
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations._
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -30,39 +33,58 @@ import views.html.declaration.dispatch_location
 
 class DispatchLocationControllerSpec extends ControllerSpec {
 
-  trait SetUp {
-    private val dispatchLocationPage = mock[dispatch_location]
+  private val dispatchLocationPage = mock[dispatch_location]
 
-    val controller = new DispatchLocationController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      dispatchLocationPage
-    )(ec)
+  val controller = new DispatchLocationController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    dispatchLocationPage
+  )(ec)
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(dispatchLocationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
+  override protected def afterEach(): Unit = {
+    reset(dispatchLocationPage)
+
+    super.afterEach()
+  }
+
+  def theResponseForm: Form[DispatchLocation] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[DispatchLocation]])
+    verify(dispatchLocationPage).apply(any(), formCaptor.capture())(any(), any())
+    formCaptor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
+  }
+
   "Dispatch Location controller" should {
 
     "return OK (200)" when {
 
-      "display page method is invoked and cache is empty" in new SetUp {
+      "display page method is invoked and cache is empty" in {
 
-        private val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked and cache contains data" in new SetUp {
+      "display page method is invoked and cache contains data" in {
 
         withNewCaching(aDeclaration(withDispatchLocation(OutsideEU)))
 
-        private val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -70,11 +92,11 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
     "return 400 (BAD_REQUEST)" when {
 
-      "form is incorrect" in new SetUp {
+      "form is incorrect" in {
 
-        private val incorrectForm = Json.toJson(DispatchLocation("incorrect"))
+        val incorrectForm = Json.toJson(DispatchLocation("incorrect"))
 
-        private val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -82,11 +104,11 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER) and redirect to Additional Declaration Type page" when {
 
-      "form is correct" in new SetUp {
+      "form is correct" in {
 
-        private val correctForm = Json.toJson(DispatchLocation(OutsideEU))
+        val correctForm = Json.toJson(DispatchLocation(OutsideEU))
 
-        private val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage()
@@ -95,11 +117,11 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER) and redirect to Not Eligible page" when {
 
-      "form is correct" in new SetUp {
+      "form is correct" in {
 
-        private val correctForm = Json.toJson(DispatchLocation(SpecialFiscalTerritory))
+        val correctForm = Json.toJson(DispatchLocation(SpecialFiscalTerritory))
 
-        private val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.NotEligibleController.displayNotEligible()

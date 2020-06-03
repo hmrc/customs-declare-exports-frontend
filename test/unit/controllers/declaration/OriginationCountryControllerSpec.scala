@@ -17,11 +17,16 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OriginationCountryController
+import forms.declaration.countries.Country
+import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
 import models.DeclarationType._
 import models.Mode
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -53,6 +58,18 @@ class OriginationCountryControllerSpec extends ControllerSpec {
     reset(originationCountryPage)
 
     super.afterEach()
+  }
+
+  def theResponseForm: Form[Country] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[Country]])
+    verify(originationCountryPage).apply(any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   "Origination Country Controller" should {

@@ -21,10 +21,10 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
 import views.html.session_timed_out
 
-class SessionTimeoutControllerSpec extends ControllerSpec {
+class SessionTimeoutControllerSpec extends ControllerWithoutFormSpec {
 
   val mcc = stubMessagesControllerComponents()
   val startPage = mock[session_timed_out]

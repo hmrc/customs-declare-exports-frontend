@@ -21,13 +21,14 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.{EntryIntoDeclarantsRecords, PersonPresentingGoodsDetails}
 import models.DeclarationType._
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -56,6 +57,12 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
   override def afterEach(): Unit = {
     reset(page)
     super.afterEach()
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
+    await(controller.displayPage(Mode.Normal)(request))
+    theFormPassedToView
   }
 
   private def theFormPassedToView: Form[YesNoAnswer] = {

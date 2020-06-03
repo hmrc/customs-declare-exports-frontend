@@ -22,10 +22,12 @@ import forms.declaration.TransportCodes.WagonNumber
 import forms.declaration.{DepartureTransport, TransportCodes}
 import models.DeclarationType._
 import models.Mode
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}
-import play.api.mvc.Result
+import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -52,6 +54,23 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     setupErrorHandler()
     authorizedUser()
     when(borderTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(borderTransportPage)
+    super.afterEach()
+  }
+
+  def theResponseForm: Form[DepartureTransport] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[DepartureTransport]])
+    verify(borderTransportPage).apply(any(), formCaptor.capture())(any(), any())
+    formCaptor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   private def nextPage(decType: DeclarationType) = decType match {

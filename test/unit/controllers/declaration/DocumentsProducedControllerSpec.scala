@@ -21,8 +21,11 @@ import controllers.util.Remove
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.declaration.DocumentsProducedData
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{reset, times, verify, when}
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -55,6 +58,17 @@ class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMo
   override protected def afterEach(): Unit = {
     super.afterEach()
     reset(mockDocumentProducedPage)
+  }
+
+  def theResponseForm: Form[DocumentsProduced] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[DocumentsProduced]])
+    verify(mockDocumentProducedPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
+    formCaptor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    await(controller.displayPage(Mode.Normal, itemId)(request))
+    theResponseForm
   }
 
   val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)

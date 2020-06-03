@@ -26,6 +26,7 @@ import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -48,6 +49,12 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
   override protected def afterEach(): Unit = {
     Mockito.reset(mockTotalNumberOfItemsPage)
     super.afterEach()
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm(mockTotalNumberOfItemsPage)
   }
 
   val mockTotalNumberOfItemsPage: total_number_of_items = mock[total_number_of_items]
@@ -85,16 +92,6 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any(), any())(any(), any())
 
         theResponseForm(mockTotalNumberOfItemsPage).value mustNot be(empty)
-      }
-
-      "with submission errors" in {
-
-        withNewCaching(request.cacheModel)
-
-        val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
-        status(result) mustBe OK
-
-        theResponseForm(mockTotalNumberOfItemsPage).errors mustBe Seq(submissionFormError)
       }
 
       "return 400 (BAD_REQUEST) when form is incorrect" in {

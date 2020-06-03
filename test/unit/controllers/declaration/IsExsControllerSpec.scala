@@ -22,10 +22,13 @@ import forms.common.{Address, Eori}
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.{EntityDetails, IsExs, UNDangerousGoodsCode}
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures
+import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -49,6 +52,18 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
     reset(isExsPage)
 
     super.afterEach()
+  }
+
+  private def theResponseForm: Form[IsExs] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[IsExs]])
+    verify(isExsPage).apply(any(), any(), formCaptor.capture())(any(), any())
+    formCaptor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   "IsExsController on displayPage" should {

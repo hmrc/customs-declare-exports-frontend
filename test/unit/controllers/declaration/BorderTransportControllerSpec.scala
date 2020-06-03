@@ -17,12 +17,16 @@
 package unit.controllers.declaration
 
 import controllers.declaration.BorderTransportController
+import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.IMOShipIDNumber
 import models.DeclarationType._
 import models.Mode
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
+import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -40,6 +44,18 @@ class BorderTransportControllerSpec extends ControllerSpec {
     stubMessagesControllerComponents(),
     borderTransportPage
   )(ec)
+
+  def theResponseForm: Form[BorderTransport] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[BorderTransport]])
+    verify(borderTransportPage).apply(any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
+  }
 
   override def beforeEach(): Unit = {
     super.beforeEach()

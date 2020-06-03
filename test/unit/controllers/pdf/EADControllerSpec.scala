@@ -29,12 +29,12 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import services.ead.{BarcodeService, EADService}
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
 import views.xml.pdf.pdfTemplate
 
 import scala.concurrent.Future
 
-class EADControllerSpec extends ControllerSpec with Injector {
+class EADControllerSpec extends ControllerWithoutFormSpec with Injector {
 
   val mcc = stubMessagesControllerComponents()
   val barcodeService = instanceOf[BarcodeService]

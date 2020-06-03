@@ -17,12 +17,15 @@
 package unit.controllers.declaration
 
 import controllers.declaration.TaricCodeSummaryController
+import forms.common.YesNoAnswer
 import forms.declaration.TaricCode
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -42,6 +45,19 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
       mockPage
     )(ec)
 
+  def theResponseForm: Form[YesNoAnswer] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(mockPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    val taricCode = TaricCode("1234")
+    val item = anItem(withTaricCodes(taricCode))
+    withNewCaching(aDeclaration(withItems(item)))
+    await(controller.displayPage(Mode.Normal, item.id)(request))
+    theResponseForm
+  }
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()

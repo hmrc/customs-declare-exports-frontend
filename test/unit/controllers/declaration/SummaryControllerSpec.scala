@@ -19,25 +19,25 @@ package unit.controllers.declaration
 import config.AppConfig
 import controllers.declaration.SummaryController
 import forms.declaration.LegalDeclaration
-import models.requests.{ExportsSessionKeys, JourneyRequest}
+import models.requests.ExportsSessionKeys
 import models.responses.FlashKeys
 import models.{ExportsDeclaration, Mode}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
-import play.api.mvc.AnyContent
+import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.summary._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
+class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
 
   private val normalSummaryPage = mock[normal_summary_page]
   private val draftSummaryPage = mock[draft_summary_page]

@@ -40,12 +40,12 @@ class NactCodeRemoveController @Inject()(
   mcc: MessagesControllerComponents,
   nactCodeRemove: nact_code_remove
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
   def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    Ok(nactCodeRemove(mode, itemId, code, YesNoAnswer.form()))
+    Ok(nactCodeRemove(mode, itemId, code, YesNoAnswer.form().withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async {

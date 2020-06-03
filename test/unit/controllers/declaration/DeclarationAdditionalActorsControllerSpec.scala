@@ -21,32 +21,58 @@ import controllers.declaration.DeclarationAdditionalActorsController
 import controllers.util.Remove
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
-import models.{DeclarationType, Mode}
 import models.declaration.DeclarationAdditionalActorsData
+import models.{DeclarationType, Mode}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.declaration_additional_actors
 
 class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
 
-  trait SetUp {
-    val declarationAdditionalActorsPage = instanceOf[declaration_additional_actors]
+  val declarationAdditionalActorsPage = mock[declaration_additional_actors]
 
-    val controller = new DeclarationAdditionalActorsController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockErrorHandler,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      declarationAdditionalActorsPage
-    )(ec)
+  val controller = new DeclarationAdditionalActorsController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockErrorHandler,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    declarationAdditionalActorsPage
+  )(ec)
 
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
     setupErrorHandler()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+
+    when(declarationAdditionalActorsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(declarationAdditionalActorsPage)
+    super.afterEach()
+  }
+
+  def theResponseForm: Form[DeclarationAdditionalActors] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[DeclarationAdditionalActors]])
+    verify(declarationAdditionalActorsPage).apply(any(), formCaptor.capture(), any())(any(), any())
+    formCaptor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   val eori = "GB12345678912345"
@@ -62,14 +88,14 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
     "return 200 (OK)" when {
 
-      "display page method is invoked with empty cache" in new SetUp {
+      "display page method is invoked with empty cache" in {
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked with data in cache" in new SetUp {
+      "display page method is invoked with data in cache" in {
 
         withNewCaching(declarationWithActor)
 
@@ -81,7 +107,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
     "return 400 (BAD_REQUEST)" when {
 
-      "user provide wrong action" in new SetUp {
+      "user provide wrong action" in {
 
         val wrongAction = Seq(("eori", "GB123456"), ("partyType", "CS"), ("WrongAction", ""))
 
@@ -93,7 +119,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
     "return 400 (BAD_REQUEST) during adding" when {
 
-      "user put incorrect data" in new SetUp {
+      "user put incorrect data" in {
 
         val longerEori = TestHelper.createRandomAlphanumericString(18)
         val wrongAction = Seq(("eori", longerEori), ("partyType", "CS"), addActionUrlEncoded())
@@ -103,7 +129,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         status(result) must be(BAD_REQUEST)
       }
 
-      "user put duplicated item" in new SetUp {
+      "user put duplicated item" in {
 
         withNewCaching(declarationWithActor)
 
@@ -114,7 +140,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         status(result) must be(BAD_REQUEST)
       }
 
-      "user reach maximum amount of items" in new SetUp {
+      "user reach maximum amount of items" in {
 
         withNewCaching(maxAmountOfItems)
 
@@ -128,7 +154,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
     "return 400 (BAD_REQUEST) during saving" when {
 
-      "user put incorrect data" in new SetUp {
+      "user put incorrect data" in {
 
         val longerEori = TestHelper.createRandomAlphanumericString(18)
         val wrongAction = Seq(("eori", longerEori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
@@ -138,7 +164,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         status(result) must be(BAD_REQUEST)
       }
 
-      "user put duplicated item" in new SetUp {
+      "user put duplicated item" in {
 
         withNewCaching(declarationWithActor)
 
@@ -149,7 +175,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         status(result) must be(BAD_REQUEST)
       }
 
-      "user reach maximum amount of items" in new SetUp {
+      "user reach maximum amount of items" in {
 
         withNewCaching(maxAmountOfItems)
 
@@ -163,7 +189,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
     "return 303 (SEE_OTHER)" when {
 
-      "user correctly add new consolidator" in new SetUp {
+      "user correctly add new consolidator" in {
 
         val correctForm = Seq(("eoriCS", eori), ("partyType", "CS"), addActionUrlEncoded())
 
@@ -172,7 +198,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         status(result) must be(SEE_OTHER)
       }
 
-      "user correctly add new manufacturer" in new SetUp {
+      "user correctly add new manufacturer" in {
 
         val correctForm = Seq(("eoriMF", eori), ("partyType", "MF"), addActionUrlEncoded())
 
@@ -181,7 +207,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         status(result) must be(SEE_OTHER)
       }
 
-      "user correctly add new freight forwarder" in new SetUp {
+      "user correctly add new freight forwarder" in {
 
         val correctForm = Seq(("eoriFW", eori), ("partyType", "FW"), addActionUrlEncoded())
 
@@ -190,7 +216,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         status(result) must be(SEE_OTHER)
       }
 
-      "user correctly add new warehouse keeper" in new SetUp {
+      "user correctly add new warehouse keeper" in {
 
         val correctForm = Seq(("eoriWH", eori), ("partyType", "WH"), addActionUrlEncoded())
 
@@ -199,7 +225,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         status(result) must be(SEE_OTHER)
       }
 
-      "user save correct consolidator" in new SetUp {
+      "user save correct consolidator" in {
 
         val correctForm = Seq(("eoriCS", eori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
@@ -209,7 +235,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
       }
 
-      "user save correct manufacturer" in new SetUp {
+      "user save correct manufacturer" in {
 
         val correctForm = Seq(("eoriMF", eori), ("partyType", "MF"), saveAndContinueActionUrlEncoded)
 
@@ -219,7 +245,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
       }
 
-      "user save correct freight forwarder" in new SetUp {
+      "user save correct freight forwarder" in {
 
         val correctForm = Seq(("eoriFW", eori), ("partyType", "FW"), saveAndContinueActionUrlEncoded)
 
@@ -229,7 +255,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
       }
 
-      "user save correct warehouse keeper" in new SetUp {
+      "user save correct warehouse keeper" in {
 
         val correctForm = Seq(("eoriWH", eori), ("partyType", "WH"), saveAndContinueActionUrlEncoded)
 
@@ -239,7 +265,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
       }
 
-      "user remove existing item" in new SetUp {
+      "user remove existing item" in {
 
         withNewCaching(declarationWithActor)
 

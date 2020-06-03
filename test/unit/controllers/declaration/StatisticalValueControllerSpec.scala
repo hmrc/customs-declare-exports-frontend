@@ -26,6 +26,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.cache.ExportItemIdGeneratorService
@@ -67,6 +68,12 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
     captor.getValue
   }
 
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal, itemId)(request))
+    theResponseForm
+  }
+
   def validateCache(itemType: StatisticalValue) = {
     val cacheItemType = theCacheModelUpdated.items.head.statisticalValue.getOrElse(StatisticalValue(""))
     cacheItemType mustBe itemType
@@ -95,16 +102,6 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
           status(result) mustBe OK
           theResponseForm.value mustBe empty
-        }
-
-        "with submission errors" in {
-
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequestWithSubmissionErrors)
-          status(result) mustBe OK
-
-          theResponseForm.errors mustBe Seq(submissionFormError)
         }
 
       }

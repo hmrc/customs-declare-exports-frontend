@@ -18,13 +18,14 @@ package unit.controllers.declaration
 
 import base.TestHelper
 import controllers.declaration.TaricCodeAddController
-import forms.declaration.{TaricCode, TaricCodeFirst}
+import forms.declaration.{TaricCode, TaricCodeFirst, WarehouseIdentification}
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -56,6 +57,12 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
   override protected def afterEach(): Unit = {
     reset(mockAddFirstPage, mockAddPage)
     super.afterEach()
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal, item.id)(request))
+    theTaricCodeFirst
   }
 
   def theTaricCode: Form[TaricCode] = {

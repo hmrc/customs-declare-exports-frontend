@@ -24,6 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -56,6 +57,12 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
     reset(mockRoutingQuestionPage, mockCountryOfRoutingPage)
 
     super.afterEach()
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayRoutingQuestion(Mode.Normal, false)(request))
+    theRoutingQuestionForm
   }
 
   def theRoutingQuestionForm: Form[Boolean] = {

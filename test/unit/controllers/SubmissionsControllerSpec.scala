@@ -34,13 +34,13 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
 import views.html.{declaration_information, submissions}
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class SubmissionsControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach {
 
   private val notification =
     Notification("conversationID", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty, "payload")

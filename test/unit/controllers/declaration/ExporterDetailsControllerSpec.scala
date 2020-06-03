@@ -26,6 +26,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -50,6 +51,12 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
     val captor = ArgumentCaptor.forClass(classOf[Form[ExporterDetails]])
     verify(exporter_details).apply(any(), captor.capture())(any(), any())
     captor.getValue
+  }
+
+  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration())
+    await(controller.displayPage(Mode.Normal)(request))
+    theResponseForm
   }
 
   override protected def beforeEach(): Unit = {
@@ -84,15 +91,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           details.eori mustBe defined
           details.address mustBe defined
         }
-        "with submission errors" in {
 
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
-          status(result) mustBe OK
-
-          theResponseForm.errors mustBe Seq(submissionFormError)
-        }
       }
       "return 400 bad request" when {
         "form contains errors" in {
