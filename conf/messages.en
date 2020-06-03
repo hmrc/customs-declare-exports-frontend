@@ -1439,6 +1439,11 @@ field.declaration.locations.warehouseIdentification.identificationType = Warehou
 field.declaration.locations.warehouseIdentification.supervisingCustomsOffice = Customs supervising office
 field.declaration.consignmentReferences.ucr = Unique Consignment Reference (UCR)
 
+timeoutDialog.signout.text= Sign out
+userSignedOut.title = We have saved your answers and signed you out
+userSignedOut.information = To continue the declaration later, save this link:
+userSignedOut.startPageLink = {0}/customs-declare-exports/start
+
 pdf.template.title = Export accompanying document (EAD)
 pdf.template.mrn = MRN
 pdf.template.eori = Declarant EORI number
