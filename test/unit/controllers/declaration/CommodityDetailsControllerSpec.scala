@@ -94,6 +94,16 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
         theResponseForm.value mustBe Some(details)
       }
+
+      "with submission errors" in {
+
+        withNewCaching(aDeclaration())
+
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequestWithSubmissionErrors)
+        status(result) mustBe OK
+
+        theResponseForm.errors mustBe Seq(submissionFormError)
+      }
     }
 
     "return 400 (BAD_REQUEST)" when {

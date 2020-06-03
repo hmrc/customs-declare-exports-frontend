@@ -90,6 +90,16 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
 
           theResponseForm.value.map(_.representingAgent) mustBe Some("Yes")
         }
+
+        "with submission errors" in {
+
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
+          status(result) mustBe OK
+
+          theResponseForm.errors mustBe Seq(submissionFormError)
+        }
       }
 
       "return 400 (BAD_REQUEST)" when {

@@ -82,6 +82,17 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           verifyPageInvocations(1)
 
           theResponseForm.value mustBe Some(CarrierDetails(EntityDetails(eori, None)))
+          theResponseForm.errors mustBe Seq.empty
+        }
+
+        "with submission errors" in {
+
+          withNewCaching(aDeclaration())
+
+          val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
+          status(result) mustBe OK
+
+          theResponseForm.errors mustBe Seq(submissionFormError)
         }
       }
     }

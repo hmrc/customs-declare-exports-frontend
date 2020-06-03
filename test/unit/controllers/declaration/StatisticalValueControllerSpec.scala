@@ -97,6 +97,16 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
           theResponseForm.value mustBe empty
         }
 
+        "with submission errors" in {
+
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequestWithSubmissionErrors)
+          status(result) mustBe OK
+
+          theResponseForm.errors mustBe Seq(submissionFormError)
+        }
+
       }
 
     }

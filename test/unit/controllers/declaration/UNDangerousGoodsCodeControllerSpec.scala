@@ -94,6 +94,14 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
         theResponseForm.value mustBe Some(dangerousGoodsCode)
       }
+
+      "with submission errors" in {
+
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequestWithSubmissionErrors)
+        status(result) mustBe OK
+
+        theResponseForm.errors mustBe Seq(submissionFormError)
+      }
     }
 
     "return 400 (BAD_REQUEST)" when {

@@ -256,6 +256,12 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
   def getRequest(): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, "declarationId")).withCSRFToken
 
+  def getRequest(data: (String, String)*): Request[AnyContentAsEmpty.type] =
+    FakeRequest("GET", "")
+      .withFlash(data: _*)
+      .withSession((ExportsSessionKeys.declarationId, "declarationId"))
+      .withCSRFToken
+
   def getRequest(declarationId: Option[String]): Request[AnyContentAsEmpty.type] =
     declarationId match {
       case Some(decId) => FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, decId)).withCSRFToken

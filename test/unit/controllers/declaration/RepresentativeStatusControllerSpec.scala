@@ -94,6 +94,16 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
           theResponseForm.value.flatMap(_.statusCode) mustBe Some(statusCode)
         }
+
+        "with submission errors" in {
+
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
+          status(result) mustBe OK
+
+          theResponseForm.errors mustBe Seq(submissionFormError)
+        }
       }
 
       "return 400 (BAD_REQUEST)" when {

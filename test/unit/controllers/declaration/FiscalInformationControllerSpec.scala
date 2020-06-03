@@ -92,6 +92,14 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
         theResponseForm.value.value.onwardSupplyRelief mustBe yes
       }
+
+      "with submission errors" in {
+
+        val result = controller.displayPage(Mode.Normal, itemId, fastForward = false)(getRequestWithSubmissionErrors)
+        status(result) mustBe OK
+
+        theResponseForm.errors mustBe Seq(submissionFormError)
+      }
     }
 
     "return 400 (BAD_REQUEST)" when {
