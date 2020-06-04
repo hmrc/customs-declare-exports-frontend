@@ -45,7 +45,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
     super.beforeEach()
 
     authorizedUser()
-    when(isExsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(isExsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -56,7 +56,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
   private def theResponseForm: Form[IsExs] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[IsExs]])
-    verify(isExsPage).apply(any(), any(), formCaptor.capture())(any(), any())
+    verify(isExsPage).apply(any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 

@@ -35,11 +35,11 @@
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, navigationPage: DeclarationPage, form: Form[IsExs])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[IsExs])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.exs.title"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationPage, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(IsExs, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.IsExsController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

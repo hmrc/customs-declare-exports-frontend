@@ -112,7 +112,6 @@ object Navigator {
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
-    case IsExs                        => controllers.declaration.routes.ExporterDetailsController.displayPage
     case EntryIntoDeclarantsRecords   => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case DeclarantDetails             => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
     case PersonPresentingGoodsDetails => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
@@ -307,6 +306,7 @@ object Navigator {
     case CarrierDetails      => carrierDetailsClearancePreviousPage
     case ConsigneeDetails    => consigneeDetailsClearancePreviousPage
     case RepresentativeAgent => representativeAgentClearancePreviousPage
+    case IsExs               => isExsClearancePreviousPage
   }
 
   val clearanceCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -382,6 +382,10 @@ object Navigator {
     } else {
       controllers.declaration.routes.IsExsController.displayPage(mode)
     }
+
+  private def isExsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isDeclarantExporter) exporterDetailsClearancePreviousPage(cacheModel, mode)
+    else controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {
