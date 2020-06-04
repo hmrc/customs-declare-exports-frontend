@@ -120,7 +120,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
 
         val view: Document = page(declaration, Seq(reason))(request, messages)
 
-        val changeLink = view.getElementsByClass("govuk-link").first()
+        val changeLink = view.getElementsByClass("govuk-link").get(0)
 
         changeLink must haveHref(
           controllers.routes.SubmissionsController.amendErrors(declaration.id, reason.url.get, urlPattern, "page-error-message").url

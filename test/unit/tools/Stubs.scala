@@ -25,6 +25,7 @@ import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test.NoMaterializer
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.hmrcfrontend.views.html.components.{HmrcBanner, HmrcHeader}
 import uk.gov.hmrc.govukfrontend.views.html.components
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _, _}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
@@ -125,7 +126,7 @@ trait Stubs {
   )
 
   val govukHeader = new GovukHeader()
-  val sHeader = new siteHeader(govukHeader)
+  val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner()))
   val pBanner = new phaseBanner(new GovukPhaseBanner(new govukTag()))
   val gdsMainTemplate = new gdsMainTemplate(
     govukHeader = govukHeader,
