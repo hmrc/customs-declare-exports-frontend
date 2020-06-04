@@ -52,8 +52,8 @@ class PreviousDocumentsController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.previousDocuments match {
-      case Some(data) => Ok(previousDocumentsPage(mode, navigationForm(request.declarationType), frm, data.documents))
-      case _          => Ok(previousDocumentsPage(mode, navigationForm(request.declarationType), frm, Seq.empty))
+      case Some(data) => Ok(previousDocumentsPage(mode, frm, data.documents))
+      case _          => Ok(previousDocumentsPage(mode, frm, Seq.empty))
     }
   }
 
@@ -68,8 +68,7 @@ class PreviousDocumentsController @Inject()(
     actionTypeOpt match {
       case SaveAndContinue | SaveAndReturn =>
         saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
-          formWithErrors =>
-            Future.successful(BadRequest(previousDocumentsPage(mode, navigationForm(request.declarationType), formWithErrors, cache.documents))),
+          formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
           updatedCache =>
             updateCache(PreviousDocumentsData(updatedCache))
               .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayPage))
@@ -77,8 +76,7 @@ class PreviousDocumentsController @Inject()(
 
       case Add =>
         add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
-          formWithErrors =>
-            Future.successful(BadRequest(previousDocumentsPage(mode, navigationForm(request.declarationType), formWithErrors, cache.documents))),
+          formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
           updatedCache =>
             updateCache(PreviousDocumentsData(updatedCache))
               .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage))
@@ -90,19 +88,9 @@ class PreviousDocumentsController @Inject()(
         updateCache(PreviousDocumentsData(updatedDocuments))
           .map(_ => navigator.continueTo(mode, routes.PreviousDocumentsController.displayPage))
 
-      case _ => Future.successful(BadRequest(previousDocumentsPage(mode, navigationForm(request.declarationType), boundForm, cache.documents)))
+      case _ => Future.successful(BadRequest(previousDocumentsPage(mode, boundForm, cache.documents)))
     }
   }
-
-  // TODO - get rid of this method in favour of Navigator backlink
-  private def navigationForm(declarationType: DeclarationType)(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
-    declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD => Document
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
-        if (request.cacheModel.locations.officeOfExit.flatMap(_.isUkOfficeOfExit).getOrElse(no) == yes)
-          OfficeOfExitOutsideUK
-        else Document
-    }
 
   private def updateCache(formData: PreviousDocumentsData)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(previousDocuments = Some(formData)))

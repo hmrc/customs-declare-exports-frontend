@@ -19,14 +19,13 @@ package views.declaration
 import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.DeclarationPage
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{ExporterDetails, IsExs}
+import forms.declaration.{DeclarantIsExporter, IsExs}
 import helpers.views.declaration.CommonMessages
 import models.Mode
+import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
@@ -37,8 +36,8 @@ import views.html.declaration.is_exs
 class IsExsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   private val page = instanceOf[is_exs]
-  private def createView(form: Form[IsExs] = IsExs.form, navigationPage: DeclarationPage = IsExs)(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, navigationPage, form)(request, stubMessages())
+  private def createView()(implicit request: JourneyRequest[_]): Document =
+    page(Mode.Normal, IsExs.form)(request, stubMessages())
 
   "Is Exs View" should {
 
@@ -78,7 +77,10 @@ class IsExsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessage
 
         "declarant is not an exporter" in {
 
-          val view = createView(navigationPage = IsExs)
+          val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))
+          val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+          val view = createView()(requestWithCachedParties)
           val backButton = view.getElementById("back-link")
 
           backButton.text() mustBe messages(backCaption)
@@ -90,7 +92,10 @@ class IsExsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessage
 
         "declarant is an exporter" in {
 
-          val view = createView(navigationPage = ExporterDetails)
+          val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
+          val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+          val view = createView()(requestWithCachedParties)
           val backButton = view.getElementById("back-link")
 
           backButton.text() mustBe messages(backCaption)

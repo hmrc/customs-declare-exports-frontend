@@ -112,14 +112,12 @@ object Navigator {
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
-    case IsExs                        => controllers.declaration.routes.ExporterDetailsController.displayPage
     case EntryIntoDeclarantsRecords   => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case DeclarantDetails             => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
     case PersonPresentingGoodsDetails => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
     case TransportPayment             => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst               => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                 => controllers.declaration.routes.TransportContainerController.displayContainerSummary
-    case Document                     => controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage
     case DestinationCountryPage       => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage          => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage            => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
@@ -182,7 +180,6 @@ object Navigator {
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
-    case Document                    => controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage
     case OfficeOfExitOutsideUK       => controllers.declaration.routes.OfficeOfExitController.displayPage
     case DestinationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
@@ -216,7 +213,6 @@ object Navigator {
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
-    case Document                    => controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage
     case OfficeOfExitOutsideUK       => controllers.declaration.routes.OfficeOfExitController.displayPage
     case DestinationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
@@ -255,7 +251,6 @@ object Navigator {
     case OfficeOfExitInsideUK                 => controllers.declaration.routes.LocationController.displayPage
     case OfficeOfExitOutsideUK                => controllers.declaration.routes.OfficeOfExitController.displayPage
     case AdditionalDeclarationTypeStandardDec => controllers.declaration.routes.DispatchLocationController.displayPage
-    case TotalNumberOfItems                   => controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage
     case NatureOfTransaction                  => controllers.declaration.routes.TotalPackageQuantityController.displayPage
     case ProcedureCodes                       => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DepartureTransport                   => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
@@ -272,7 +267,9 @@ object Navigator {
     case StatisticalValue          => controllers.declaration.routes.NactCodeSummaryController.displayPage
   }
 
-  val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
+  val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case TotalNumberOfItems => totalNumberOfItemsPreviousPage
+  }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
     case DocumentsProduced => documentsProducedPreviousPage
@@ -292,12 +289,14 @@ object Navigator {
 
   val simplifiedCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case CarrierDetails => carrierDetailsPreviousPage
+    case Document       => previousDocumentsPreviousPage
   }
 
   val simplifiedCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
 
   val occasionalCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case CarrierDetails => carrierDetailsPreviousPage
+    case Document       => previousDocumentsPreviousPage
   }
 
   val occasionalCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -307,6 +306,8 @@ object Navigator {
     case CarrierDetails      => carrierDetailsClearancePreviousPage
     case ConsigneeDetails    => consigneeDetailsClearancePreviousPage
     case RepresentativeAgent => representativeAgentClearancePreviousPage
+    case IsExs               => isExsClearancePreviousPage
+    case Document            => previousDocumentsPreviousPage
   }
 
   val clearanceCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -340,6 +341,11 @@ object Navigator {
       controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
     else
       controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
+
+  private def previousDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.locations.isOfficeOfExitInUk)
+      controllers.declaration.routes.OfficeOfExitController.displayPage(mode)
+    else controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage(mode)
 
   private def exporterDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords)
@@ -382,6 +388,18 @@ object Navigator {
     } else {
       controllers.declaration.routes.IsExsController.displayPage(mode)
     }
+
+  private def isExsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isDeclarantExporter)
+      exporterDetailsClearancePreviousPage(cacheModel, mode)
+    else
+      controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
+
+  private def totalNumberOfItemsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.locations.isOfficeOfExitInUk)
+      controllers.declaration.routes.OfficeOfExitController.displayPage(mode)
+    else
+      controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage(mode)
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {

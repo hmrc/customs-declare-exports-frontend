@@ -49,8 +49,8 @@ class IsExsController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(allowedJourney)) { implicit request =>
     val frm = IsExs.form.withSubmissionErrors()
     request.cacheModel.parties.isExs match {
-      case Some(data) => Ok(isExsPage(mode, navigationPage, frm.fill(data)))
-      case _          => Ok(isExsPage(mode, navigationPage, frm))
+      case Some(data) => Ok(isExsPage(mode, frm.fill(data)))
+      case _          => Ok(isExsPage(mode, frm))
     }
   }
 
@@ -58,14 +58,10 @@ class IsExsController @Inject()(
     IsExs.form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(isExsPage(mode, navigationPage, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(isExsPage(mode, formWithErrors))),
         answer => updateCache(answer).map(_ => navigator.continueTo(mode, nextPage(answer)))
       )
   }
-
-  // TODO - switch to use Navigator for back-link
-  private def navigationPage(implicit request: JourneyRequest[_]): DeclarationPage =
-    if (request.cacheModel.isDeclarantExporter) ExporterDetails else IsExs
 
   private def updateCache(answer: IsExs)(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>

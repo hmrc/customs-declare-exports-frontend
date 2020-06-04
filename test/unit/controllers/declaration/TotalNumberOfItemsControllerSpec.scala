@@ -36,13 +36,13 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
   def theResponseForm(mockTotalNumberOfItemsPage: total_number_of_items): Form[TotalNumberOfItems] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[TotalNumberOfItems]])
-    verify(mockTotalNumberOfItemsPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockTotalNumberOfItemsPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockTotalNumberOfItemsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockTotalNumberOfItemsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     authorizedUser()
   }
 
@@ -70,6 +70,8 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
   val totalNumberOfItems = TotalNumberOfItems(None, None)
 
+  def verifyPage(numberOfTimes: Int = 1) = verify(mockTotalNumberOfItemsPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+
   "Total Number of Items controller" should {
 
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
@@ -78,7 +80,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verifyPage()
 
         theResponseForm(mockTotalNumberOfItemsPage).value mustBe empty
       }
@@ -89,7 +91,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verifyPage()
 
         theResponseForm(mockTotalNumberOfItemsPage).value mustNot be(empty)
       }
@@ -100,7 +102,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verifyPage()
       }
 
       "return 303 (SEE_OTHER) when information provided by user are correct" in {
@@ -110,7 +112,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
-        verify(mockTotalNumberOfItemsPage, times(0)).apply(any(), any(), any())(any(), any())
+        verifyPage(0)
       }
 
     }

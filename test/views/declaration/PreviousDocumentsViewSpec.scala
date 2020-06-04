@@ -16,10 +16,10 @@
 
 package views.declaration
 import base.Injector
-import forms.DeclarationPage
 import forms.declaration.Document
-import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
-import models.DeclarationType.DeclarationType
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
+import models.declaration.Locations
+import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.{Document => JsonDocument}
 import play.api.data.Form
@@ -41,10 +41,9 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
     form: Form[Document] = form,
     documents: Seq[Document] = Seq.empty,
     messages: Messages = stubMessages(),
-    navigationForm: DeclarationPage = Document,
-    declarationType: DeclarationType = DeclarationType.STANDARD
+    request: JourneyRequest[_] = journeyRequest(DeclarationType.STANDARD)
   ): JsonDocument =
-    page(mode, navigationForm, form, documents)(journeyRequest(declarationType), messages)
+    page(mode, form, documents)(request, messages)
 
   "Previous Documents View on empty page" should {
     val view = createView()
@@ -110,7 +109,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { request =>
         "has a valid back button" in {
 
-          val backButton = view.getElementById("back-link")
+          val backButton = createView(request = request).getElementById("back-link")
 
           backButton.text() must be("site.back")
           backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
@@ -120,7 +119,10 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       onJourney(DeclarationType.CLEARANCE, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { request =>
         "with Office Of Exit outside UK" in {
 
-          val backButton = createView(declarationType = DeclarationType.SIMPLIFIED, navigationForm = Document).getElementById("back-link")
+          val officeOfExitOutsideUK = Locations(officeOfExit = Some(OfficeOfExit(Some("id"), Some(AllowedUKOfficeOfExitAnswers.no))))
+          val requestWithOfficeOfExitOutsideUK = journeyRequest(request.cacheModel.copy(locations = officeOfExitOutsideUK))
+
+          val backButton = createView(request = requestWithOfficeOfExitOutsideUK).getElementById("back-link")
 
           backButton.text() must be("site.back")
           backButton.getElementById("back-link") must haveHref(
@@ -132,8 +134,10 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       onJourney(DeclarationType.CLEARANCE, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { request =>
         " with Office Of Exit Inside UK" in {
 
-          val backButton =
-            createView(declarationType = DeclarationType.SIMPLIFIED, navigationForm = OfficeOfExitOutsideUK).getElementById("back-link")
+          val officeOfExitInsideUK = Locations(officeOfExit = Some(OfficeOfExit(Some("id"), Some(AllowedUKOfficeOfExitAnswers.yes))))
+          val requestWithOfficeOfExitInsideUK = journeyRequest(request.cacheModel.copy(locations = officeOfExitInsideUK))
+
+          val backButton = createView(request = requestWithOfficeOfExitInsideUK).getElementById("back-link")
 
           backButton.text() must be("site.back")
           backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
