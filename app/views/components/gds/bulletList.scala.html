@@ -14,8 +14,19 @@
  * limitations under the License.
  *@
 
-@this()
+@import views.html.components.gds._
 
-@(message: String, classes: String = "govuk-body", id: Option[String] = None)
+@this(paragraphBody: paragraphBody)
 
-<p class="@classes" @id.map{id => id="@id" }>@Html(message)</p>
+@(title: String, elements: Seq[String])(implicit messages: Messages)
+
+<nav>
+    @paragraphBody(messages(title), "govuk-body")
+    <ul class="govuk-list govuk-list--bullet">
+        @elements.map { element =>
+            <li class="dashed-list-item">
+                @Html(element)
+            </li>
+        }
+    </ul>
+</nav>

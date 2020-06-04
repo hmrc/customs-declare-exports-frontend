@@ -40,5 +40,6 @@ class ExternalServicesConfig @Inject()(val configuration: Configuration) {
   lazy val eoriService = loadUrl("eoriService")
   lazy val cdsRegister = loadUrl("cdsRegister")
   lazy val cdsCheckStatus = loadUrl("cdsCheckStatus")
-
+  lazy val organisationsUrl = loadUrl("organisationsLink")
+  lazy val importExports = loadUrl("importExports")
 }
