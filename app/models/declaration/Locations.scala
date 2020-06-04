@@ -17,7 +17,7 @@
 package models.declaration
 
 import forms.declaration.countries.Country
-import forms.declaration.officeOfExit.OfficeOfExit
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.declaration.{InlandModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
 import models.ExportsDeclaration
 import play.api.libs.json.Json
@@ -32,7 +32,10 @@ case class Locations(
   supervisingCustomsOffice: Option[SupervisingCustomsOffice] = None,
   warehouseIdentification: Option[WarehouseIdentification] = None,
   inlandModeOfTransportCode: Option[InlandModeOfTransportCode] = None
-)
+) {
+
+  def isOfficeOfExitInUk: Boolean = officeOfExit.flatMap(_.isUkOfficeOfExit).contains(AllowedUKOfficeOfExitAnswers.yes)
+}
 
 object Locations {
   val id = "Locations"

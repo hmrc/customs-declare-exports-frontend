@@ -46,7 +46,7 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, navigationForm: DeclarationPage, form: Form[Document], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[Document], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.previousDocumentsSummaryText", components.details_content_link())) }
 
@@ -163,7 +163,7 @@
 
 @govukLayout(
     title = Title("declaration.previousDocuments.title", "supplementary.consignmentReferences.heading"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(Document, mode)))
 ) {
 
     @formHelper(action = PreviousDocumentsController.savePreviousDocuments(mode), 'autoComplete -> "off") {
