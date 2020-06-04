@@ -14,8 +14,21 @@
  * limitations under the License.
  *@
 
-@this()
+@import views.html.components.gds._
 
-@(text: String, textHidden: Option[String] = None, call: Call, target: String = "_self", id: Option[String] = None, classes: String = "govuk-link govuk-link--no-visited-state")
+@this(paragraphBody: paragraphBody)
 
-<a class="@classes" href="@call" target=@target @id.map{id => id="@id" }>@{text}@if(textHidden.isDefined){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}</a>
+@(title: String, elements: Seq[(String, String)])(implicit messages: Messages)
+
+<nav class="govuk-!-margin-bottom-8">
+    @paragraphBody(messages(title), "dashed-list-title")
+    <ul class="dashed-list">
+        @elements.map { case (element, href) =>
+            <li class="dashed-list-item">
+                <a class="govuk-link govuk-link--no-visited-state" href="@href">
+                    @Html(element)
+                </a>
+            </li>
+        }
+    </ul>
+</nav>

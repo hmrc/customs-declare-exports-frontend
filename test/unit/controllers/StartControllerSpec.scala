@@ -17,16 +17,31 @@
 package unit.controllers
 
 import controllers.StartController
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
-import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
+import play.twirl.api.HtmlFormat
+import unit.base.ControllerWithoutFormSpec
 import views.html.start_page
 
 class StartControllerSpec extends ControllerWithoutFormSpec {
 
   val mcc = stubMessagesControllerComponents()
-  val startPage = new start_page(mainTemplate, config)
+  val startPage = mock[start_page]
 
   val controller = new StartController(mcc, startPage)(ec)
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(startPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(startPage)
+
+    super.afterEach()
+  }
 
   "Start Controller" should {
 
@@ -36,7 +51,7 @@ class StartControllerSpec extends ControllerWithoutFormSpec {
 
         val result = controller.displayStartPage()(getRequest())
 
-        status(result) must be(OK)
+        status(result) mustBe OK
       }
     }
   }

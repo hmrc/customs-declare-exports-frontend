@@ -16,6 +16,6 @@
 
 @this()
 
-@(message: String)
+@(message: String, classes: String = "govuk-body", id: Option[String] = None)
 
-<p class="govuk-body">@message</p>
+<p class="@classes" @id.map{id => id="@id" }>@Html(message)</p>

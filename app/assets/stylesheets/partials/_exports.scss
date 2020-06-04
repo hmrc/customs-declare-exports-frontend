@@ -32,6 +32,14 @@ a.button--gray, button.button--gray, .button--gray:visited {
   margin-bottom: 3rem;
 }
 
+.mb-5 {
+  margin-bottom: 5rem;
+}
+
+.mt-0 {
+  margin-top: 0;
+}
+
 .mt-2 {
   margin-top: 2rem;
 }
@@ -130,4 +138,12 @@ button:focus {
 
 .govuk-details div {
  font-size : 19px;
+}
+
+.blue-line {
+  height: 1px;
+  color: $blue;
+  background-color: $blue;
+  border: none;
+  margin-bottom: 5px;
 }

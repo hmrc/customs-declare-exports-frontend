@@ -14,91 +14,167 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
+@import config.ExternalServicesConfig
 @import controllers.routes._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
 @import views.Title
 
-@this(main_template: views.html.main_template, appConfig: AppConfig)
+@this(
+    govukLayout: gdsMainTemplate,
+    pageTitle: pageTitle,
+    sectionHeader: sectionHeader,
+    paragraphBody: paragraphBody,
+    link: link,
+    dashList: dashList,
+    bulletList: bulletList,
+    govukInsetText: GovukInsetText,
+    govukButton: GovukButton,
+    externalServicesConfig: ExternalServicesConfig
+)
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = Title("startPage.title")
+@linkText = @{link(
+    id = Some("hmrc_link"),
+    text = messages("startPage.hmrcUrl"),
+    call = Call("GET", externalServicesConfig.organisationsUrl),
+    target = "_blank",
+    classes = "govuk-link govuk-link--no-visited-state bold"
+)}
+
+@commodityCodeLink = @{
+    link(
+        text = messages("startPage.informationYouNeed.listItem.3.link"),
+        call = Call("GET", externalServicesConfig.commodityCodesUrl)
+    )
+}
+
+@licencesLink = @{
+    link(
+        text = messages("startPage.informationYouNeed.listItem.4.link"),
+        call = Call("GET", externalServicesConfig.relevantLicensesUrl)
+    )
+}
+
+@serviceAvailabilityLink = @{
+    link(
+        text = messages("startPage.problemsWithServiceNotice.link"),
+        call = Call("GET", externalServicesConfig.serviceAvailabilityUrl)
+    )
+}
+
+@movementsLink = @{
+    link(
+        text = messages("startPage.afterDeclaringGoods.link"),
+        call = Call("GET", externalServicesConfig.customsMovementsFrontendUrl)
+    )
+}
+
+@govukLayout(
+    title = Title("startPage.title"),
+    useCustomContentWidth = true
 ) {
 
-  <div class="grid-row">
-    <div class="column-full">
-    @components.heading(
-      sectionHeader = messages("startPage.title.sectionHeader"),
-      title = messages("startPage.title")
-    )
+    <div class="govuk-!-width-two-thirds">
+        @sectionHeader(messages("startPage.title.sectionHeader"))
+        @pageTitle(text = messages("startPage.title"))
+        @paragraphBody(message = messages("startPage.description"), classes = "govuk-body-l", id = Some("description"))
     </div>
-    <div class="column-full">
-      <p id="description" class="lede">@messages("startPage.description")</p>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <div class="govuk-!-width-two-thirds">
+        <div class="govuk-!-margin-bottom-8">@messages("startPage.from") @linkText</div>
+
+        <div id="contents">
+            @dashList(
+                title = "startPage.contents.header",
+                elements = Seq(
+                    (messages("startPage.beforeYouStart.header"), "#before-you-start"),
+                    (messages("startPage.informationYouNeed.header"), "#information-you-need"),
+                    (messages("startPage.makeDeclaration.header"), "#make-declaration"),
+                    (messages("startPage.afterDeclaringGoods.header"), "#after-declaring-goods")
+                )
+            )
+        </div>
+
+        @bulletList(
+            title = "startPage.useThisServiceTo.header",
+            elements = Seq(
+                messages("startPage.useThisServiceTo.listItem.1"),
+                messages("startPage.useThisServiceTo.listItem.2"),
+                messages("startPage.useThisServiceTo.listItem.3"),
+                messages("startPage.useThisServiceTo.listItem.4")
+            )
+        )
+
+        <div>
+            <h2 id="before-you-start" class="govuk-heading-m">@messages("startPage.beforeYouStart.header")</h2>
+            @paragraphBody(message = messages("startPage.beforeYouStart.line.1"), id = Some("before-you-start-element-1"))
+            @paragraphBody(message = messages("startPage.beforeYouStart.line.2"), id = Some("before-you-start-element-2"), classes = "govuk-body")
+        </div>
+
+        <div class="govuk-!-margin-bottom-9">
+            @govukInsetText(InsetText(
+                content = HtmlContent(messages("startPage.information"))
+            ))
+        </div>
+
+        <div class="govuk-!-margin-bottom-9">
+            <h2 id="information-you-need" class="govuk-heading-m">@messages("startPage.informationYouNeed.header")</h2>
+            @bulletList(
+                title = "startPage.informationYouNeed.line.1",
+                elements = Seq(
+                    messages("startPage.informationYouNeed.listItem.1"),
+                    messages("startPage.informationYouNeed.listItem.2"),
+                    messages("startPage.informationYouNeed.listItem.3", commodityCodeLink),
+                    messages("startPage.informationYouNeed.listItem.4", licencesLink),
+                    messages("startPage.informationYouNeed.listItem.5"),
+                    messages("startPage.informationYouNeed.listItem.6")
+                )
+            )
+        </div>
+
+        <h2 id="make-declaration" class="govuk-heading-m">@messages("startPage.makeDeclaration.header")</h2>
+        @govukInsetText(InsetText(
+            content = HtmlContent(messages("startPage.problemsWithServiceNotice", serviceAvailabilityLink))
+        ))
+
+        @govukButton(
+            Button(
+                href = Some(ChoiceController.displayPage().url),
+                isStartButton = true,
+                content = Text(messages("startPage.buttonName"))
+            )
+        )
+
+        <h2 id="after-declaring-goods" class="govuk-heading-m">@messages("startPage.afterDeclaringGoods.header")</h2>
+        @paragraphBody(message = messages("startPage.afterDeclaringGoods", movementsLink), id = Some("after-declaring-goods-element"))
+
+        <div class="govuk-!-margin-top-9" id="back-to-top">
+            <a class="govuk-link" href="#contents">
+                <svg class="app-c-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                    <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                </svg>
+                @messages("startPage.contents.header")
+            </a>
+        </div>
+
+
+
+        <div class="mt-2">
+            <hr class="govuk-section-break govuk-section-break--visible blue-line">
+            <nav role="navigation">
+                @paragraphBody(messages("startPage.exploreTheTopic"), classes = "govuk.heading-m mt-0", id = Some("explore-the-topic"))
+                <ul class="govuk-list">
+                    <li>
+                        <a class="govuk-link govuk-!-font-size-16" href="@{externalServicesConfig.importExports}">
+                            @messages("startPage.importExport")
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
-  </div>
-
-  <div class="grid-row">
-    <div class="column-full">
-
-      <p id="contents">@messages("startPage.contents.header")</p>
-      <ul id="contents-list" class="dashed-list">
-        <li class="dashed-list-item"><a href="#before-you-start">@messages("startPage.beforeYouStart.header")</a></li>
-        <li class="dashed-list-item"><a href="#information-you-need">@messages("startPage.informationYouNeed.header")</a></li>
-        <li class="dashed-list-item"><a href="#make-declaration">@messages("startPage.makeDeclaration.header")</a></li>
-        <li class="dashed-list-item"><a href="#after-declaring-goods">@messages("startPage.afterDeclaringGoods.header")</a></li>
-      </ul>
-
-      <p id="use-this-service-to">@messages("startPage.useThisServiceTo.header")</p>
-      <ul id="use-this-service-to-list" class="list list-bullet">
-        <li>@messages("startPage.useThisServiceTo.listItem.1")</li>
-        <li>@messages("startPage.useThisServiceTo.listItem.2")</li>
-        <li>@messages("startPage.useThisServiceTo.listItem.3")</li>
-        <li>@messages("startPage.useThisServiceTo.listItem.4")</li>
-      </ul>
-
-      <h2 id="before-you-start" class="heading-medium">@messages("startPage.beforeYouStart.header")</h2>
-      <p id="before-you-start-element-1">@messages("startPage.beforeYouStart.line.1")</p>
-      <p id="before-you-start-element-2">@messages("startPage.beforeYouStart.line.2")</p>
-
-      <h2 id="information-you-need" class="heading-medium">@messages("startPage.informationYouNeed.header")</h2>
-      <p id="information-you-need-element-1">@messages("startPage.informationYouNeed.line.1")</p>
-      <ul id="information-you-need-list" class="list list-bullet">
-        <li>@messages("startPage.informationYouNeed.listItem.1")</li>
-        <li>@messages("startPage.informationYouNeed.listItem.2")</li>
-        <li>@messages("startPage.informationYouNeed.listItem.3.1") <a href=@{appConfig.commodityCodesUrl}>@messages("startPage.informationYouNeed.listItem.3.link")</a> @messages("startPage.informationYouNeed.listItem.3.2")</li>
-        <li>@messages("startPage.informationYouNeed.listItem.4") <a href=@{appConfig.relevantLicensesUrl}>@messages("startPage.informationYouNeed.listItem.4.link")</a></li>
-        <li>@messages("startPage.informationYouNeed.listItem.5")</li>
-        <li>@messages("startPage.informationYouNeed.listItem.6")</li>
-      </ul>
-
-      <h2 id="make-declaration" class="heading-medium">@messages("startPage.makeDeclaration.header")</h2>
-
-      <div class="panel panel-border-wide">
-        <p id="problems-with-service-notice">
-          @messages("startPage.problemsWithServiceNotice") <a href=@{appConfig.serviceAvailabilityUrl}>@messages("startPage.problemsWithServiceNotice.link")</a>
-        </p>
-      </div>
-
-      <a id="button-start" class="button button-start" href=@{ChoiceController.displayPage()} role="button">
-        @messages("startPage.buttonName")
-      </a>
-
-      <h2 id="after-declaring-goods" class="heading-medium">@messages("startPage.afterDeclaringGoods.header")</h2>
-      <p id="after-declaring-goods-element-1">@messages("startPage.afterDeclaringGoods.line.1") <a href=@{appConfig.customsMovementsFrontendUrl}>@messages("startPage.afterDeclaringGoods.line.1.link")</a></p>
-
-      <div class="mt-5">
-        <p id="back-to-top">
-          <a href="#contents">
-            <svg class="app-c-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-              <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-            </svg>
-            @messages("startPage.contents.header")
-          </a>
-        </p>
-      </div>
-
-    </div>
-  </div>
-
 }

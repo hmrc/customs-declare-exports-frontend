@@ -223,8 +223,11 @@ declaration.type.sealsSummaryText = Go to data element 7/18 Seal Number in the {
 declaration.type.error = Choose a valid option
 
 startPage.title.sectionHeader = Guidance
-startPage.title = Declare goods you’re exporting using the CDS Exports Service
-startPage.description = If you’re a UK business sending goods outside the EU you can use the CDS Exports Service to make a full declaration.
+startPage.title = Declare goods you’re exporting using the Customs Declaration Service
+startPage.description = If you’re a UK business sending goods outside the EU you can use the Customs Declaration Service to make a declaration
+startPage.hmrcUrl = HM Revenue & Customs
+startPage.from = From: 
+startPage.information = All times recorded in this service will be in UK local time
 startPage.contents.header = Contents
 startPage.useThisServiceTo.header = Use this service to:
 startPage.useThisServiceTo.listItem.1 = start a new declaration
@@ -238,20 +241,21 @@ startPage.informationYouNeed.header = Information you need
 startPage.informationYouNeed.line.1 = You will need:
 startPage.informationYouNeed.listItem.1 = the EORI numbers or addresses for the exporter, carrier, consignee, and any representatives or other parties involved
 startPage.informationYouNeed.listItem.2 = a Union Customs Code procedure code
-startPage.informationYouNeed.listItem.3.1 = the right
+startPage.informationYouNeed.listItem.3 = the right {0} for the goods
 startPage.informationYouNeed.listItem.3.link = commodity codes
-startPage.informationYouNeed.listItem.3.2 = for the goods
-startPage.informationYouNeed.listItem.4 = any
+startPage.informationYouNeed.listItem.4 = any {0}
 startPage.informationYouNeed.listItem.4.link = relevant licences
 startPage.informationYouNeed.listItem.5 = details of where the goods will be sent and the transport used
 startPage.informationYouNeed.listItem.6 = a description of the item, including the value, weight, size and type of packaging
 startPage.makeDeclaration.header = Make a declaration
-startPage.problemsWithServiceNotice = Online services may be slow during busy times. Check if there are any
-startPage.problemsWithServiceNotice.link = problems with this service.
+startPage.problemsWithServiceNotice = Online services may be slow during busy times. Check if there are any {0}.
+startPage.problemsWithServiceNotice.link = problems with this service
 startPage.buttonName = Start now
 startPage.afterDeclaringGoods.header = Arriving and departing goods
-startPage.afterDeclaringGoods.line.1 = If you’re a loader, you’ll need to use our service to
-startPage.afterDeclaringGoods.line.1.link = tell HMRC when goods you’re exporting arrive at or leave the UK port
+startPage.afterDeclaringGoods = You’ll need to {0}.
+startPage.afterDeclaringGoods.link = tell HMRC when your goods arrive at the UK port and leave the UK
+startPage.exploreTheTopic = Explore the topic
+startPage.importExport = Import, export and customs for businesses
 
 sessionTimout.title = For your security, we signed you out
 sessionTimout.paragraph.saved = We saved your answers.
@@ -261,8 +265,6 @@ timeoutDialog.title = Your session will timeout soon
 timeoutDialog.message = For your security, we will sign you out in
 timeoutDialog.keepAlive.text= Stay signed in
 timeoutDialog.signout.text= Sign out
-
-
 
 choicePage.input.error.empty = Choose a valid option
 choicePage.input.error.incorrectValue = Choose a valid option

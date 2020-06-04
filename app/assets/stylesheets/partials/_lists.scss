@@ -1,15 +1,25 @@
-
 .dashed-list {
   list-style: none;
   padding-left: 0;
+  margin-top: 0;
+
+  .dashed-list-item {
+    margin-left: 15px;
+    padding-top: 7.5px;
+
+    &::before {
+      content: "—";
+      margin-left: -15px;
+    }
+    .govuk-link {
+      text-decoration: none;
+      margin-left: 5px;
+    }
+  }
 }
 
-.dashed-list .dashed-list-item {
-  margin-left: 15px;
-}
-
-/* Prevent nested li's from getting messed up */
-.dashed-list .dashed-list-item::before {
-  content: "- ";
-  margin-left: -15px;
+.dashed-list-title {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 0;
 }

@@ -25,7 +25,6 @@ class ExternalServicesConfig @Inject()(val configuration: Configuration) {
   private def loadUrl(key: String): String =
     configuration.getOptional[String](s"urls.$key").getOrElse(throw new Exception(s"Missing configuration key: urls.$key"))
 
-  lazy val customsDeclarationsGoodsTakenOutOfEuUrl = loadUrl("customsDeclarationsGoodsTakenOutOfEu")
   lazy val commodityCodesUrl = loadUrl("commodityCodes")
   lazy val nactCodesUrl = loadUrl("nactCodes")
   lazy val relevantLicensesUrl = loadUrl("relevantLicenses")
@@ -40,5 +39,6 @@ class ExternalServicesConfig @Inject()(val configuration: Configuration) {
   lazy val eoriService = loadUrl("eoriService")
   lazy val cdsRegister = loadUrl("cdsRegister")
   lazy val cdsCheckStatus = loadUrl("cdsCheckStatus")
-
+  lazy val organisationsUrl = loadUrl("organisationsLink")
+  lazy val importExports = loadUrl("importExports")
 }
