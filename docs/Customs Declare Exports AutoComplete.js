@@ -137,7 +137,7 @@ function startPage(){
             alert("Select journey type");
             return;
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
 }
 
