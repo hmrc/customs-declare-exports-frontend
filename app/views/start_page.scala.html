@@ -39,15 +39,9 @@
     id = Some("hmrc_link"),
     text = messages("startPage.hmrcUrl"),
     call = Call("GET", externalServicesConfig.organisationsUrl),
-    target = "_blank"
+    target = "_blank",
+    classes = "govuk-link govuk-link--no-visited-state bold"
 )}
-
-@nationalExportsServiceLink = @{
-    link(
-        text = messages("startPage.information.link"),
-        call = Call("GET", externalServicesConfig.customsDeclarationsGoodsTakenOutOfEuUrl)
-    )
-}
 
 @commodityCodeLink = @{
     link(
@@ -93,15 +87,17 @@
     <div class="govuk-!-width-two-thirds">
         <div class="govuk-!-margin-bottom-8">@messages("startPage.from") @linkText</div>
 
-        @dashList(
-            title = "startPage.contents.header",
-            elements = Seq(
-                (messages("startPage.beforeYouStart.header"), "#before-you-start"),
-                (messages("startPage.informationYouNeed.header"), "#information-you-need"),
-                (messages("startPage.makeDeclaration.header"), "#make-declaration"),
-                (messages("startPage.afterDeclaringGoods.header"), "#after-declaring-goods")
+        <div id="contents">
+            @dashList(
+                title = "startPage.contents.header",
+                elements = Seq(
+                    (messages("startPage.beforeYouStart.header"), "#before-you-start"),
+                    (messages("startPage.informationYouNeed.header"), "#information-you-need"),
+                    (messages("startPage.makeDeclaration.header"), "#make-declaration"),
+                    (messages("startPage.afterDeclaringGoods.header"), "#after-declaring-goods")
+                )
             )
-        )
+        </div>
 
         @bulletList(
             title = "startPage.useThisServiceTo.header",
@@ -113,26 +109,32 @@
             )
         )
 
-        @govukInsetText(InsetText(
-            content = HtmlContent(messages("startPage.information", nationalExportsServiceLink))
-        ))
+        <div>
+            <h2 id="before-you-start" class="govuk-heading-m">@messages("startPage.beforeYouStart.header")</h2>
+            @paragraphBody(message = messages("startPage.beforeYouStart.line.1"), id = Some("before-you-start-element-1"))
+            @paragraphBody(message = messages("startPage.beforeYouStart.line.2"), id = Some("before-you-start-element-2"), classes = "govuk-body")
+        </div>
 
-        <h2 id="before-you-start" class="govuk-heading-m">@messages("startPage.beforeYouStart.header")</h2>
-        @paragraphBody(message = messages("startPage.beforeYouStart.line.1"), id = Some("before-you-start-element-1"))
-        @paragraphBody(message = messages("startPage.beforeYouStart.line.2"), id = Some("before-you-start-element-2"))
+        <div class="govuk-!-margin-bottom-9">
+            @govukInsetText(InsetText(
+                content = HtmlContent(messages("startPage.information"))
+            ))
+        </div>
 
-        <h2 id="information-you-need" class="govuk-heading-m">@messages("startPage.informationYouNeed.header")</h2>
-        @bulletList(
-            title = "startPage.informationYouNeed.line.1",
-            elements = Seq(
-                messages("startPage.informationYouNeed.listItem.1"),
-                messages("startPage.informationYouNeed.listItem.2"),
-                messages("startPage.informationYouNeed.listItem.3", commodityCodeLink),
-                messages("startPage.informationYouNeed.listItem.4", licencesLink),
-                messages("startPage.informationYouNeed.listItem.5"),
-                messages("startPage.informationYouNeed.listItem.6")
+        <div class="govuk-!-margin-bottom-9">
+            <h2 id="information-you-need" class="govuk-heading-m">@messages("startPage.informationYouNeed.header")</h2>
+            @bulletList(
+                title = "startPage.informationYouNeed.line.1",
+                elements = Seq(
+                    messages("startPage.informationYouNeed.listItem.1"),
+                    messages("startPage.informationYouNeed.listItem.2"),
+                    messages("startPage.informationYouNeed.listItem.3", commodityCodeLink),
+                    messages("startPage.informationYouNeed.listItem.4", licencesLink),
+                    messages("startPage.informationYouNeed.listItem.5"),
+                    messages("startPage.informationYouNeed.listItem.6")
+                )
             )
-        )
+        </div>
 
         <h2 id="make-declaration" class="govuk-heading-m">@messages("startPage.makeDeclaration.header")</h2>
         @govukInsetText(InsetText(
@@ -150,7 +152,7 @@
         <h2 id="after-declaring-goods" class="govuk-heading-m">@messages("startPage.afterDeclaringGoods.header")</h2>
         @paragraphBody(message = messages("startPage.afterDeclaringGoods", movementsLink), id = Some("after-declaring-goods-element"))
 
-        <div class="mt-5" id="back-to-top">
+        <div class="govuk-!-margin-top-9" id="back-to-top">
             <a class="govuk-link" href="#contents">
                 <svg class="app-c-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
                     <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>

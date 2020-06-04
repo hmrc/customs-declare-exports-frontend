@@ -1,6 +1,7 @@
 .dashed-list {
   list-style: none;
   padding-left: 0;
+  margin-top: 0;
 
   .dashed-list-item {
     margin-left: 15px;
@@ -20,4 +21,5 @@
 .dashed-list-title {
   font-size: 16px;
   line-height: 1.5;
+  margin-bottom: 0;
 }

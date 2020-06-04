@@ -223,12 +223,11 @@ declaration.type.sealsSummaryText = Go to data element 7/18 Seal Number in the {
 declaration.type.error = Choose a valid option
 
 startPage.title.sectionHeader = Guidance
-startPage.title = Declare goods you’re exporting using the CDS Exports Service
-startPage.description = If you’re a UK business sending goods outside the EU you can use the CDS Exports Service to make a full declaration.
+startPage.title = Declare goods you’re exporting using the Customs Declaration Service
+startPage.description = If you’re a UK business sending goods outside the EU you can use the Customs Declaration Service to make a declaration
 startPage.hmrcUrl = HM Revenue & Customs
 startPage.from = From: 
-startPage.information = You cannot use this service to make simplified frontier or supplementary declarations. You’ll need to {0}.
-startPage.information.link = use the National Export Service
+startPage.information = All times recorded in this service will be in UK local time
 startPage.contents.header = Contents
 startPage.useThisServiceTo.header = Use this service to:
 startPage.useThisServiceTo.listItem.1 = start a new declaration
