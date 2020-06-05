@@ -104,4 +104,10 @@ object MultipleItemsHelper {
 
   private def retrieveData[A](form: Form[A]): Map[String, String] =
     form.data.filter { case (name, _) => name != "csrfToken" }
+
+
+  def appendAll[A](seq: Seq[A], maybeA: Option[A]*): Seq[A] = {
+    def combine(seq: Seq[A], maybeA: Option[A]): Seq[A] = (seq /: maybeA)(_ :+ _)
+    (seq /: maybeA)(combine)
+  }
 }

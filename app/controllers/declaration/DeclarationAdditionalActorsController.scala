@@ -135,8 +135,8 @@ class DeclarationAdditionalActorsController @Inject()(
   ): Future[Result] =
     if (actor.isDefined) {
       updateCache(DeclarationAdditionalActorsData(actors).addActor(actor))
-        .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
-    } else updateCache(DeclarationAdditionalActorsData(actors)).map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
+        .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+    } else updateCache(DeclarationAdditionalActorsData(actors)).map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
 
   private def removeItem(
     mode: Mode,

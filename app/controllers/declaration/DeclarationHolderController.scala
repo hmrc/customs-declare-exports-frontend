@@ -179,7 +179,7 @@ class DeclarationHolderController @Inject()(
   }
 
   private def retrieveHolder(values: Seq[String]): DeclarationHolder =
-    DeclarationHolder.buildFromString(values.headOption.getOrElse(""))
+    DeclarationHolder.buildId(values.headOption.getOrElse(""))
 
   private def navigateToNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     request.declarationType match {
