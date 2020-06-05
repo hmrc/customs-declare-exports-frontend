@@ -40,7 +40,7 @@ class ConsignorEoriNumberSpec extends FormSpec {
 
       "the answer is 'Yes' and EORI is provided" in {
 
-        val correctModel = ConsignorEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes)
+        val correctModel = ConsignorEoriNumber(Some(Eori("GB1234567890123")), YesNoAnswers.yes)
 
         val result = form.fillAndValidate(correctModel)
 
