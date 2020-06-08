@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.52
+// @version      1.53
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -137,7 +137,7 @@ function startPage(){
             alert("Select journey type");
             return;
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
 }
 
