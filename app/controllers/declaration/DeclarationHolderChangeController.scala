@@ -71,7 +71,7 @@ class DeclarationHolderChangeController @Inject()(
         _ => {
           val updatedHolders: Seq[DeclarationHolder] = cachedHolders.map(holder => if (holder == existingHolder) newHolder else holder)
           updateExportsCache(updatedHolders)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderSummaryController.displayPage))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage))
         }
       )
   }

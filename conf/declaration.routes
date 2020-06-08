@@ -109,19 +109,20 @@ POST        /other-parties-involved              controllers.declaration.Declara
 
 # Declaration holder of authorisation
 
-GET         /holder-of-authorisation             controllers.declaration.DeclarationHolderController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /holder-of-authorisation             controllers.declaration.DeclarationHolderController.submitHoldersOfAuthorisation(mode: models.Mode ?= models.Mode.Normal)
-
 GET         /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-POST        /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.submitHolderOfAuthorisation(mode: models.Mode ?= models.Mode.Normal)
-GET         /authorisations-required             controllers.declaration.DeclarationHolderSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-POST        /authorisations-required             controllers.declaration.DeclarationHolderSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /authorisations-required             controllers.declaration.DeclarationHolderController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /authorisations-required             controllers.declaration.DeclarationHolderController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 GET         /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
+
 POST        /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.submitChangeHolderOfAuthorisation(mode: models.Mode ?= models.Mode.Normal, id: String)
 
 GET         /authorisations-required/:id/remove  controllers.declaration.DeclarationHolderRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
+
 POST        /authorisations-required/:id/remove  controllers.declaration.DeclarationHolderRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, id: String)
 
 # Destination countries

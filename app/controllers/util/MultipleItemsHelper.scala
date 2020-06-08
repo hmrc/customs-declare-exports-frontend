@@ -17,9 +17,6 @@
 package controllers.util
 
 import play.api.data.{Form, FormError}
-import uk.gov.hmrc.http.InternalServerException
-
-import scala.util.Try
 
 /**
   * Object to help dealing with multiple items page.
@@ -105,9 +102,8 @@ object MultipleItemsHelper {
   private def retrieveData[A](form: Form[A]): Map[String, String] =
     form.data.filter { case (name, _) => name != "csrfToken" }
 
-
-  def appendAll[A](seq: Seq[A], maybeA: Option[A]*): Seq[A] = {
-    def combine(seq: Seq[A], maybeA: Option[A]): Seq[A] = (seq /: maybeA)(_ :+ _)
-    (seq /: maybeA)(combine)
+  def appendAll[A](sequence: Seq[A], maybeA: Option[A]*): Seq[A] = {
+    def append(sequence: Seq[A], maybeItem: Option[A]): Seq[A] = maybeItem.foldLeft(sequence)((seq, item) => seq :+ item)
+    maybeA.foldLeft(sequence)((sequence, maybeItem) => append(sequence, maybeItem))
   }
 }

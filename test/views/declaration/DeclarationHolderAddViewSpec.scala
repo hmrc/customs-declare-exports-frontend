@@ -29,15 +29,15 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.declaration_holder
+import views.html.declaration.declaration_holder_add
 import views.tags.ViewTest
 import DeclarationType._
 
 @ViewTest
-class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
-  private val declarationHolderPage = instanceOf[declaration_holder]
+  private val declarationHolderPage = instanceOf[declaration_holder_add]
   private def createView(form: Form[DeclarationHolder] = form)(implicit request: JourneyRequest[_]): Document =
     declarationHolderPage(Mode.Normal, form, Seq())(request, messages)
 
@@ -51,7 +51,6 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
       messages must haveTranslationFor("declaration.declarationHolder.title.hint")
       messages must haveTranslationFor("declaration.declarationHolder.eori")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode")
-      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.remove.hint")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.hint")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.invalid")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.empty")
@@ -203,18 +202,6 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
         view.getElementById("eori").attr("value") mustBe "test1"
       }
 
-      "display one row with data in table" in {
-
-        val view =
-          declarationHolderPage(Mode.Normal, form, Seq(DeclarationHolder(Some("1234"), Some(Eori("1234")))))(request, messages)
-
-        view.getElementById("holder_0").text() mustBe "1234-1234"
-
-        val removeButton = view.getElementById("holder_action_0").getElementsByClass("govuk-button")
-
-        removeButton.text() mustBe "site.removedeclaration.declarationHolder.authorisationCode.remove.hint"
-        removeButton.attr("value") mustBe "1234-1234"
-      }
     }
   }
 }

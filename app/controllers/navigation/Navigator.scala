@@ -85,7 +85,7 @@ object Navigator {
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case Document                    => controllers.declaration.routes.NatureOfTransactionController.displayPage
-    case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderSummaryController.displayPage
+    case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
     case DestinationCountryPage      => controllers.declaration.routes.OriginationCountryController.displayPage
     case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
@@ -118,7 +118,7 @@ object Navigator {
     case TransportPayment             => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst               => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                 => controllers.declaration.routes.TransportContainerController.displayContainerSummary
-    case DestinationCountryPage       => controllers.declaration.routes.DeclarationHolderSummaryController.displayPage
+    case DestinationCountryPage       => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage          => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage            => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage            => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
@@ -147,7 +147,7 @@ object Navigator {
     case ContainerFirst              => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case Document                    => controllers.declaration.routes.NatureOfTransactionController.displayPage
-    case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderSummaryController.displayPage
+    case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
     case DestinationCountryPage      => controllers.declaration.routes.OriginationCountryController.displayPage
     case GoodsLocationForm           => controllers.declaration.routes.DestinationCountryController.displayPage
     case OfficeOfExitInsideUK        => controllers.declaration.routes.LocationController.displayPage
@@ -181,7 +181,7 @@ object Navigator {
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case OfficeOfExitOutsideUK       => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case DestinationCountryPage      => controllers.declaration.routes.DeclarationHolderSummaryController.displayPage
+    case DestinationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case RepresentativeAgent         => controllers.declaration.routes.ExporterDetailsController.displayPage
@@ -214,7 +214,7 @@ object Navigator {
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case OfficeOfExitOutsideUK       => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case DestinationCountryPage      => controllers.declaration.routes.DeclarationHolderSummaryController.displayPage
+    case DestinationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case RepresentativeAgent         => controllers.declaration.routes.ExporterDetailsController.displayPage

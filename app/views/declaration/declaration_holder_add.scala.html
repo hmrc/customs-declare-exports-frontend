@@ -45,7 +45,7 @@
 
 @backLink = @{
     if(holders.nonEmpty)
-        DeclarationHolderSummaryController.displayPage(mode)
+        DeclarationHolderController.displayPage(mode)
     else
         Navigator.backLink(DeclarationHolder, mode)
 }
@@ -55,7 +55,7 @@
     backButton = Some(BackButton(messages("site.back"), backLink))
 ) {
 
-    @formHelper(action = DeclarationHolderAddController.submitHolderOfAuthorisation(mode), 'autoComplete -> "off") {
+    @formHelper(action = DeclarationHolderAddController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.summary.parties.header"))

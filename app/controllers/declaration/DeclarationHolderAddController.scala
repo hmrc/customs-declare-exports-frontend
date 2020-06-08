@@ -49,7 +49,7 @@ class DeclarationHolderAddController @Inject()(
     Ok(declarationHolderPage(mode, form(holders.isEmpty).withSubmissionErrors(), holders))
   }
 
-  def submitHolderOfAuthorisation(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val holders = cachedHolders
     val boundForm = form(holders.isEmpty).bindFromRequest()
     boundForm.fold(
@@ -87,7 +87,7 @@ class DeclarationHolderAddController @Inject()(
         formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(updatedCache)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderSummaryController.displayPage))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage))
       )
 
   private def continue(mode: Mode, cachedData: Seq[DeclarationHolder])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
@@ -95,9 +95,9 @@ class DeclarationHolderAddController @Inject()(
       .map(
         _ =>
           if (cachedData.isEmpty)
-            navigator.continueTo(mode, DeclarationHolderSummaryController.nextPage)
+            navigator.continueTo(mode, DeclarationHolderController.nextPage)
           else
-            navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderSummaryController.displayPage)
+            navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage)
       )
 
   private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

@@ -16,19 +16,13 @@
 
 @import controllers.declaration.routes._
 @import forms.declaration.DeclarationHolder
-@import uk.gov.hmrc.play.views.html._
 @import services.HolderOfAuthorisationCode
 @import services.view.AutoCompleteItem
-@import views.components.fields.LabelledValue
 @import models.requests.JourneyRequest
-@import models.Mode._
 @import controllers.navigation.Navigator
-@import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import views.html.components.gds._
-@import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -81,7 +75,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolder, mode)))
 ) {
 
-    @formHelper(action = DeclarationHolderController.submitHoldersOfAuthorisation(mode), 'autoComplete -> "off") {
+    @formHelper(action = DeclarationHolderAddController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.summary.parties.header"))

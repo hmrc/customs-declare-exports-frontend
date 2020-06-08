@@ -139,7 +139,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolder, mode)))
 ) {
 
-    @formHelper(action = DeclarationHolderSummaryController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = DeclarationHolderController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.summary.parties.header"))

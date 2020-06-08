@@ -19,9 +19,8 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{YesNoAnswers, form}
-import forms.declaration.{DeclarationHolder, PackageInformation}
-import handlers.ErrorHandler
+import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import forms.declaration.DeclarationHolder
 import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
@@ -38,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationHolderRemoveController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -56,28 +54,24 @@ class DeclarationHolderRemoveController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) =>
-          Future.successful(BadRequest(holderRemovePage(mode, holderToRemove, formWithErrors))),
+        (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(holderRemovePage(mode, holderToRemove, formWithErrors))),
         formData => {
           formData.answer match {
             case YesNoAnswers.yes =>
               updateExportsCache(holderToRemove)
-                .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+                .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(Mode.Normal, routes.DeclarationHolderSummaryController.displayPage))
+              Future.successful(navigator.continueTo(Mode.Normal, routes.DeclarationHolderController.displayPage))
           }
         }
       )
   }
 
-  private def updateExportsCache(itemToRemove: DeclarationHolder)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
-
-    ???
-//    val updatedHolders = request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty).filterNot(_ == itemToRemove)
-//    val updatedParties = request.cacheModel.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(updatedHolders))
-////    updateExportsDeclarationSyncDirect(model => model.)
-//    ???
+  private def updateExportsCache(
+    itemToRemove: DeclarationHolder
+  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
+    val updatedHolders = request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty).filterNot(_ == itemToRemove)
+    val updatedParties = request.cacheModel.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(updatedHolders)))
+    updateExportsDeclarationSyncDirect(model => model.copy(parties = updatedParties))
   }
 }

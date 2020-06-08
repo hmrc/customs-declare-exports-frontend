@@ -532,7 +532,7 @@ declaration.declarationHolders.table.eori = EORI number
 declaration.declarationHolders.table.update.hint = authorisation {0}.
 declaration.declarationHolders.add.another = Do you need to add another authorisation?
 declaration.declarationHolders.add.hint = Add an authorised party
-declaration.declarationHolder.remove.title = you sure you want to remove this authorisation?
+declaration.declarationHolder.remove.title = Are you sure you want to remove this authorisation?
 
 declaration.originationCountry.title = Which country are the goods being dispatched from?
 declaration.originationCountry.heading = Locations
