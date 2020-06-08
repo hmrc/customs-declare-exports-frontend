@@ -757,7 +757,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FieldValidator containsUniques" should {
+  "FieldValidator areAllElementsUnique" should {
 
     "return false" when {
       "input contains 2 identical values" in {
@@ -875,6 +875,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
         isTrue(false) must be(false)
       }
     }
+
     "return true" when {
       "true" in {
         isTrue(true) must be(true)
@@ -893,11 +894,104 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
         startsWith(Set('A', 'B', 'C'))("") must be(false)
       }
     }
+
     "return true" when {
       "input starts with allowed character" in {
         startsWith(Set('A', 'B', 'C'))("A Test") must be(true)
         startsWith(Set('A', 'B', 'C'))("B Test") must be(true)
         startsWith(Set('A', 'B', 'C'))("C Test") must be(true)
+      }
+    }
+  }
+
+  "FieldValidator isValidEori" should {
+
+    "return false" when {
+
+      "provided with Eori" which {
+
+        "starts with a digit" in {
+
+          val inputEori = "7GB1234567890123"
+
+          isValidEori(inputEori) mustBe false
+        }
+
+        "contains just a single letter" in {
+
+          val inputEori = "G1234567890123"
+
+          isValidEori(inputEori) mustBe false
+        }
+
+        "contains 3 leading letters" in {
+
+          val inputEori = "GBW1234567890123"
+
+          isValidEori(inputEori) mustBe false
+        }
+
+        "contains 3rd letter between digits" in {
+
+          val inputEori = "GB12345678W90123"
+
+          isValidEori(inputEori) mustBe false
+        }
+
+        "contains less than 10 digits" in {
+
+          val inputEori = "GB123456789"
+
+          isValidEori(inputEori) mustBe false
+        }
+
+        "contains more than 15 digits" in {
+
+          val inputEori = "GB1234567890123456"
+
+          isValidEori(inputEori) mustBe false
+        }
+
+        "contains special character instead of letter" in {
+
+          val inputEori = "G%1234567890123"
+
+          isValidEori(inputEori) mustBe false
+        }
+
+        "contains special character instead of digit" in {
+
+          val inputEori = "GB1234567890#123"
+
+          isValidEori(inputEori) mustBe false
+        }
+      }
+    }
+
+    "return true" when {
+
+      "provided with correct Eori" which {
+
+        "contains 10 digits" in {
+
+          val inputEori = "GB1234567890"
+
+          isValidEori(inputEori) mustBe true
+        }
+
+        "contains 15 digits" in {
+
+          val inputEori = "GB123456789012345"
+
+          isValidEori(inputEori) mustBe true
+        }
+      }
+
+      "provided with lower case letters" in {
+
+        val inputEori = "gb1234567890123"
+
+        isValidEori(inputEori) mustBe true
       }
     }
   }

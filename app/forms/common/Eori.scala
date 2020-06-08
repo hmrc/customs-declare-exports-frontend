@@ -18,7 +18,7 @@ package forms.common
 
 import play.api.data.Forms.text
 import play.api.data.Mapping
-import play.api.libs.json.{Format, JsResult, JsString, JsValue, Reads}
+import play.api.libs.json._
 import utils.validators.forms.FieldValidator._
 
 case class Eori(value: String) {
@@ -39,6 +39,6 @@ object Eori {
   def mapping(errorPrefix: String): Mapping[Eori] =
     text()
       .verifying(s"${errorPrefix}.eori.empty", nonEmpty)
-      .verifying(s"${errorPrefix}.eori.error.format", isEmpty or (isValidEORIPattern and noLongerThan(17) and noShorterThan(3)))
+      .verifying(s"${errorPrefix}.eori.error.format", isEmpty or isValidEori)
       .transform(build, unapply(_).getOrElse(""))
 }

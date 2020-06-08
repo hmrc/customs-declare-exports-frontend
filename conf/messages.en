@@ -418,7 +418,7 @@ supplementary.eori = EORI number
 supplementary.eori.info = Enter the EORI number or business details
 supplementary.eori.hint = The number starts with a country code, for example FR for France, and is then followed by up to 15 digits
 
-supplementary.eori.error.format = EORI number must start with 2 letters followed by up to 15 characters or digits
+supplementary.eori.error.format = Enter an EORI number, for example GB123456789000
 supplementary.eori.empty = Enter a valid EORI
 
 declaration.address.fullName = Full name
