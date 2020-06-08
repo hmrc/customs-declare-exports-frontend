@@ -16,6 +16,7 @@
 
 @import controllers.declaration.routes._
 @import forms.declaration.DeclarationHolder
+@import forms.declaration.DeclarationSummaryHolder
 @import forms.common.YesNoAnswer.YesNoAnswers
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
@@ -136,7 +137,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolder, mode)))
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationSummaryHolder, mode)))
 ) {
 
     @formHelper(action = DeclarationHolderController.submitForm(mode), 'autoComplete -> "off") {

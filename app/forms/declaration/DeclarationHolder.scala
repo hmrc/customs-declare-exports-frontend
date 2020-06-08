@@ -59,3 +59,5 @@ object DeclarationHolder extends DeclarationPage {
     else DeclarationHolder(Some(value.split('-')(0)), Some(Eori(value.split('-')(1))))
   }
 }
+
+object DeclarationSummaryHolder extends DeclarationPage

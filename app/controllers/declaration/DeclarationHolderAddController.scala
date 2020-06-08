@@ -46,7 +46,7 @@ class DeclarationHolderAddController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val holders = cachedHolders
-    Ok(declarationHolderPage(mode, form(holders.isEmpty).withSubmissionErrors(), holders))
+    Ok(declarationHolderPage(mode, form(holders.isEmpty).withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -54,7 +54,7 @@ class DeclarationHolderAddController @Inject()(
     val boundForm = form(holders.isEmpty).bindFromRequest()
     boundForm.fold(
       formWithErrors => {
-        Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, holders)))
+        Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors)))
       },
       holder =>
         if (holder.isComplete)
@@ -62,7 +62,7 @@ class DeclarationHolderAddController @Inject()(
         else if (holder.isEmpty)
           continue(mode, holders)
         else
-          Future.successful(BadRequest(declarationHolderPage(mode, appendMissingFieldErrors(boundForm), holders)))
+          Future.successful(BadRequest(declarationHolderPage(mode, appendMissingFieldErrors(boundForm))))
     )
   }
 
@@ -84,7 +84,7 @@ class DeclarationHolderAddController @Inject()(
     MultipleItemsHelper
       .add(boundForm, cachedData, DeclarationHoldersData.limitOfHolders)
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, cachedData))),
+        formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors))),
         updatedCache =>
           updateExportsCache(updatedCache)
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage))

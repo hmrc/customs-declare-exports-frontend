@@ -22,8 +22,9 @@ import controllers.util.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.CommonMessages
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
 import models.requests.JourneyRequest
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -31,7 +32,6 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declaration_holder_add
 import views.tags.ViewTest
-import DeclarationType._
 
 @ViewTest
 class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
@@ -39,7 +39,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
   private val declarationHolderPage = instanceOf[declaration_holder_add]
   private def createView(form: Form[DeclarationHolder] = form)(implicit request: JourneyRequest[_]): Document =
-    declarationHolderPage(Mode.Normal, form, Seq())(request, messages)
+    declarationHolderPage(Mode.Normal, form)(request, messages)
 
   "Declaration holder" should {
 
