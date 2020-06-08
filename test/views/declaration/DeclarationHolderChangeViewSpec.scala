@@ -35,10 +35,13 @@ import views.tags.ViewTest
 @ViewTest
 class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
+  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")))
+  val id = "ACE-GB42354735346235"
+
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
   private val declarationHolderPage = instanceOf[declaration_holder_change]
   private def createView(form: Form[DeclarationHolder] = form)(implicit request: JourneyRequest[_]): Document =
-    declarationHolderPage(Mode.Normal, form)(request, messages)
+    declarationHolderPage(Mode.Normal, id, form)(request, messages)
 
   "Declaration holder" should {
 
@@ -60,55 +63,38 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
 
   "Declaration Holder View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
+      val view = createView(DeclarationHolder.form().fill(declarationHolder))
+
       "display page title" in {
 
-        createView().getElementById("title").text() mustBe messages("declaration.declarationHolder.title")
+        view.getElementById("title").text() mustBe messages("declaration.declarationHolder.title")
       }
 
       "display section header" in {
 
-        createView().getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
+        view.getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
       }
 
       "display 'Back' button that links to 'Summary' page" in {
 
-        val document = createView()
-        val backButton = document.getElementById("back-link")
+        val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.DeclarationHolderController.displayPage().url
       }
 
-      "display data in Authorisation Code input" in {
-
-        val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), None)))
-
-        view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
-        view.getElementById("eori").attr("value") mustBe empty
-      }
-
-      "display data in EORI input" in {
-
-        val view = createView(DeclarationHolder.form().fill(DeclarationHolder(None, Some(Eori("test")))))
-
-        view.getElementById("authorisationTypeCode").attr("value") mustBe empty
-        view.getElementById("eori").attr("value") mustBe "test"
-      }
-
       "display data in both inputs" in {
 
-        val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), Some(Eori("test1")))))
-
-        view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
-        view.getElementById("eori").attr("value") mustBe "test1"
+        view.getElementById("authorisationTypeCode").attr("value") mustBe declarationHolder.authorisationTypeCode.get
+        view.getElementById("eori").attr("value") mustBe declarationHolder.eori.map((_.value)).get
       }
 
       "display 'Save and continue' button on page" in {
 
-        val saveAndContinueButton = createView().getElementById("submit")
+        val saveAndContinueButton = view.getElementById("submit")
         saveAndContinueButton.text() mustBe messages(saveAndContinueCaption)
 
-        val saveAndReturnButton = createView().getElementById("submit_and_return")
+        val saveAndReturnButton = view.getElementById("submit_and_return")
         saveAndReturnButton.text() mustBe messages(saveAndReturnCaption)
         saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
       }

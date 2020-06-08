@@ -46,13 +46,13 @@ class DeclarationHolderChangeController @Inject()(
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val holder = DeclarationHolder.buildId(id)
-    Ok(declarationHolderChangePage(mode, form().fill(holder).withSubmissionErrors()))
+    Ok(declarationHolderChangePage(mode, id, form().fill(holder).withSubmissionErrors()))
   }
 
   def submitChangeHolderOfAuthorisation(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
     boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, formWithErrors))),
+      formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, id, formWithErrors))),
       holder => changeHolder(mode, DeclarationHolder.buildId(id), holder, boundForm)
     )
   }
@@ -67,7 +67,7 @@ class DeclarationHolderChangeController @Inject()(
     MultipleItemsHelper
       .add(boundForm, holdersWithoutExisting, DeclarationHoldersData.limitOfHolders)
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, existingHolder.id, formWithErrors))),
         _ => {
           val updatedHolders: Seq[DeclarationHolder] = cachedHolders.map(holder => if (holder == existingHolder) newHolder else holder)
           updateExportsCache(updatedHolders)

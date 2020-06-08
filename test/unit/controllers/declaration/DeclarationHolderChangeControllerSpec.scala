@@ -49,7 +49,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -65,11 +65,11 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
 
   def theDeclarationHolder: Form[DeclarationHolder] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolder]])
-    verify(mockAddPage).apply(any(), captor.capture())(any(), any())
+    verify(mockAddPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
-  private def verifyAddPageInvoked(numberOfTimes: Int = 1) = verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+  private def verifyAddPageInvoked(numberOfTimes: Int = 1) = verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")))
   val id1 = "ACE-GB42354735346235"

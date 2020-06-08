@@ -38,7 +38,7 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, id: String, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.holderOfAuthorisationSummaryText", components.details_content_link())) }
 
@@ -47,7 +47,7 @@
     backButton = Some(BackButton(messages("site.back"), DeclarationHolderController.displayPage(mode)))
 ) {
 
-    @formHelper(action = DeclarationHolderChangeController.submitChangeHolderOfAuthorisation(mode, form.value.map(_.toString).getOrElse("")), 'autoComplete -> "off") {
+    @formHelper(action = DeclarationHolderChangeController.submitChangeHolderOfAuthorisation(mode, id), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.summary.parties.header"))
