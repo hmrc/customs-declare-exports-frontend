@@ -151,8 +151,12 @@ object FieldValidator {
   private val emailPattern = Pattern.compile("""^\S+@\S+$""")
   val isValidEmail: String => Boolean = (name: String) => emailPattern.matcher(name).matches()
 
-  private val eoriPattern = Pattern.compile("^[a-zA-Z]{2}[\\da-zA-Z]+$")
-  val isValidEORIPattern: String => Boolean = (name: String) => eoriPattern.matcher(name).matches()
+  private val eoriDigitsAmountMin = 10
+  private val eoriDigitsAmountMax = 15
+  val isValidEori: String => Boolean = (eori: String) => {
+    val (countryCode, number) = eori.splitAt(2)
+    countryCode.forall(_.isLetter) && number.forall(_.isDigit) && isInRange(eoriDigitsAmountMin, eoriDigitsAmountMax)(number.length)
+  }
 
   private val officeOfExitPattern = Pattern.compile("^[a-zA-Z]{2}[0-9]{6}$")
   val isValidOfficeOfExit: String => Boolean = (name: String) => officeOfExitPattern.matcher(name).matches()
