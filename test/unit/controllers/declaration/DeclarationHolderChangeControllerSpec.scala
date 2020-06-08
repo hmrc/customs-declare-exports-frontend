@@ -71,9 +71,9 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
 
   private def verifyAddPageInvoked(numberOfTimes: Int = 1) = verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
-  val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB423547353465")))
-  val id1 = "ACE-GB423547353465"
-  val declarationHolder2: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("FR654356453")))
+  val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")))
+  val id1 = "ACE-GB42354735346235"
+  val declarationHolder2: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("FR65435642343253")))
 
   "DeclarationHolder Change Controller" must {
 

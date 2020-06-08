@@ -76,8 +76,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
 
   private def verifyPageInvoked(numberOfTimes: Int = 1) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB565233784324")))
-  val id = "ACE-GB565233784324"
+  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")))
+  val id = "ACE-GB56523343784324"
 
   "DeclarationHolder Summary Controller" should {
 

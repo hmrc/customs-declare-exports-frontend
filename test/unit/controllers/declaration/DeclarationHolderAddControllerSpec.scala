@@ -71,7 +71,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
 
   private def verifyAddPageInvoked(numberOfTimes: Int = 1) = verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456789")))
+  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456789012")))
 
   "DeclarationHolder Add Controller" must {
 

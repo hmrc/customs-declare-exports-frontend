@@ -78,8 +78,8 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
   private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
     verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")))
-  val id = "ACE-GB123456543"
+  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543443")))
+  val id = "ACE-GB123456543443"
 
   "DeclarationHolder Remove Controller" must {
 
