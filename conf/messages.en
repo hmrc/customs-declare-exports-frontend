@@ -340,8 +340,6 @@ declaration.entryIntoDeclarantRecords.answer.no = No
 declaration.entryIntoDeclarantRecords.error = Select yes if this is an entry into the declarant’s records
 
 declaration.personPresentingGoodsDetails.title = What is the EORI number of the person presenting the goods to customs?
-declaration.personPresentingGoodsDetails.eori.empty = Enter an EORI in the correct format. For example, GB123456789000
-declaration.personPresentingGoodsDetails.eori.error.format = Enter an EORI in the correct format. For example, GB123456789000
 declaration.personPresentingGoodsDetails.help-item = Go to data element 3/41 Presenter Identification Number in the {0}
 
 supplementary.consignor.title = Who is the exporter?
@@ -365,8 +363,6 @@ declaration.declarant.hint = By selecting yes you are confirming that this EORI 
 declaration.declarant.error = Select yes if this EORI number is correct
 declaration.declarant.change.eori = No, I need to change my EORI
 declaration.declarant-details.help.bodyText = Go to data element 3/18 Declarant Identification Number in the {0}.
-declaration.declarant.eori.empty = Enter your EORI number
-declaration.declarant.eori.error.format = Enter a valid EORI number, for example GB123456789000
 
 declaration.declarant.exporter.title = Are you the exporter?
 declaration.declarant.exporter.answer.yes = Yes
@@ -399,8 +395,6 @@ declaration.representative.agent.title = Are you representing another agent?
 declaration.representative.agent.hint = This applies if you are completing this declaration on behalf of another agent
 declaration.representative.agent.error = Select yes if you are representing another agent
 declaration.representative.entity.title = What is the first representative’s EORI number?
-declaration.representative.entity.eori.empty = Enter the representative’s EORI number
-declaration.representative.entity.eori.error.format = Enter an EORI number, for example GB123456789000
 declaration.representative-entity.help-item = Go to data element 3/20 Representative Identification Number in the {0}
 declaration.representative.status.title = What type of representation will be used?
 declaration.representative-status.help-item = Go to data element 3/21 Representative Status Code in the {0}
@@ -409,17 +403,6 @@ declaration.representative.representationType.direct = Direct representative
 declaration.representative.representationType.direct.hint = The representative is accepting legal responsibility for the exporter
 declaration.representative.representationType.indirect = Indirect representative
 declaration.representative.representationType.indirect.hint = The representative is sharing legal responsibility with the exporter
-
-supplementary.representative-details.help-item1 = What type of representation was agreed, go to data element 3/21 Representative Status Code
-supplementary.representative-details.help-item2 = Representative’s EORI number, go to data element 3/20 Representative Identification Number
-supplementary.representative-details.representative-details-page.error = Enter a valid representative status if you have an EORI
-
-supplementary.eori = EORI number
-supplementary.eori.info = Enter the EORI number or business details
-supplementary.eori.hint = The number starts with a country code, for example FR for France, and is then followed by up to 15 digits
-
-supplementary.eori.error.format = Enter an EORI number, for example GB123456789000
-supplementary.eori.empty = Enter a valid EORI
 
 declaration.address.fullName = Full name
 declaration.address.fullName.error = Enter a name, up to 35 characters
@@ -437,23 +420,6 @@ declaration.address.country = Country
 declaration.address.country.error = Enter a valid country
 declaration.address.country.empty = Enter a valid country
 
-supplementary.address.fullName = Full name
-supplementary.address.fullName.error = Enter a name, up to 35 characters
-supplementary.address.fullName.empty = Enter a name, up to 35 characters
-supplementary.address.addressLine = Address line 1
-supplementary.address.addressLine.error = Enter an address line 1, up to 35 characters
-supplementary.address.addressLine.empty = Enter an address line 1, up to 35 characters
-supplementary.address.townOrCity = Town or city
-supplementary.address.townOrCity.error = Enter a town or city, up to 35 characters
-supplementary.address.townOrCity.empty = Enter a town or city, up to 35 characters
-supplementary.address.postCode = Postcode
-supplementary.address.postCode.error = Enter a postcode in the correct format or type 'unknown' if there is no postcode
-supplementary.address.postCode.empty = Enter a postcode in the correct format or type 'unknown' if there is no postcode
-supplementary.address.country = Country
-supplementary.address.country.error = Enter a valid country
-supplementary.address.country.empty = Enter a valid country
-
-supplementary.namedEntityDetails.error = Enter an EORI or full address details
 declaration.namedEntityDetails.error = Enter an EORI or full address details
 declaration.additionalActors.title = Is anyone else involved in exporting these goods?
 declaration.additionalActors.title.hint = Include any additional parties involved in the supply chain that have not been provided yet
@@ -462,8 +428,8 @@ declaration.additionalActors.partyType = Party type
 declaration.additionalActors.maximumAmount.error = Maximum amount of parties added
 declaration.additionalActors.duplicated.error = Party's details already added
 declaration.additionalActors.add.hint = Add party
-declaration.eori.empty = Enter a valid EORI number. For example, GB123456789098.
-declaration.eori.error.format = Enter a valid EORI number. For example, GB123456789098.
+declaration.eori.empty = Enter an EORI in the correct format. For example, GB123456789000.
+declaration.eori.error.format = Enter an EORI in the correct format. For example, GB123456789000.
 declaration.partyType = Party type
 declaration.partyType.eori = EORI number
 declaration.partyType.CS = Consolidator
@@ -522,7 +488,6 @@ declaration.declarationHolder.authorisationCode.hint = A code up to 4 characters
 declaration.declarationHolder.authorisationCode.invalid = Enter a valid authorisation code
 declaration.declarationHolder.authorisationCode.empty = Enter an authorisation code
 declaration.declarationHolder.incomplete = Authorisation is incomplete 
-declaration.declarationHolder.eori.empty = Enter an EORI number
 declaration.declarationHolders.maximumAmount.error = Maximum amount of holders added
 declaration.declarationHolders.duplicated = Holder's details already added
 declaration.declarationHolders.table.heading = You have added 1 authorisation

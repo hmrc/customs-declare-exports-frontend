@@ -71,7 +71,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
     val view = createViewWithAddressError(address)
     fields.filterNot(_ == fieldName).foreach { key =>
       view must containErrorElementWithTagAndHref("a", s"#details_address_$key")
-      view must containErrorElementWithMessage(s"supplementary.address.$key.$errorKey")
+      view must containErrorElementWithMessage(s"declaration.address.$key.$errorKey")
     }
   }
 
@@ -79,7 +79,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     val view = createViewWithAddressError(address)
     view must containErrorElementWithTagAndHref("a", s"#details_address_$fieldName")
-    view must containErrorElementWithMessage(s"supplementary.address.$fieldName.$errorKey")
+    view must containErrorElementWithMessage(s"declaration.address.$fieldName.$errorKey")
   }
 
   "Consignee Details View on empty page" should {
@@ -88,21 +88,21 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.consignee.title")
       messages must haveTranslationFor("declaration.summary.parties.header")
-      messages must haveTranslationFor("supplementary.address.fullName")
-      messages must haveTranslationFor("supplementary.address.fullName.empty")
-      messages must haveTranslationFor("supplementary.address.fullName.error")
-      messages must haveTranslationFor("supplementary.address.addressLine")
-      messages must haveTranslationFor("supplementary.address.addressLine.empty")
-      messages must haveTranslationFor("supplementary.address.addressLine.error")
-      messages must haveTranslationFor("supplementary.address.townOrCity")
-      messages must haveTranslationFor("supplementary.address.townOrCity.empty")
-      messages must haveTranslationFor("supplementary.address.townOrCity.error")
-      messages must haveTranslationFor("supplementary.address.postCode")
-      messages must haveTranslationFor("supplementary.address.postCode.empty")
-      messages must haveTranslationFor("supplementary.address.postCode.error")
-      messages must haveTranslationFor("supplementary.address.country")
-      messages must haveTranslationFor("supplementary.address.country.empty")
-      messages must haveTranslationFor("supplementary.address.country.error")
+      messages must haveTranslationFor("declaration.address.fullName")
+      messages must haveTranslationFor("declaration.address.fullName.empty")
+      messages must haveTranslationFor("declaration.address.fullName.error")
+      messages must haveTranslationFor("declaration.address.addressLine")
+      messages must haveTranslationFor("declaration.address.addressLine.empty")
+      messages must haveTranslationFor("declaration.address.addressLine.error")
+      messages must haveTranslationFor("declaration.address.townOrCity")
+      messages must haveTranslationFor("declaration.address.townOrCity.empty")
+      messages must haveTranslationFor("declaration.address.townOrCity.error")
+      messages must haveTranslationFor("declaration.address.postCode")
+      messages must haveTranslationFor("declaration.address.postCode.empty")
+      messages must haveTranslationFor("declaration.address.postCode.error")
+      messages must haveTranslationFor("declaration.address.country")
+      messages must haveTranslationFor("declaration.address.country.empty")
+      messages must haveTranslationFor("declaration.address.country.error")
       messages must haveTranslationFor("site.save_and_continue")
       messages must haveTranslationFor("declaration.type.consignmentTariffText")
       messages must haveTranslationFor("declaration.consignee-details.help-item")
@@ -125,7 +125,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementsByAttributeValue("for", "details_address_fullName").first().text() mustBe messages("supplementary.address.fullName")
+        view.getElementsByAttributeValue("for", "details_address_fullName").first().text() mustBe messages("declaration.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
       }
 
@@ -133,7 +133,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementsByAttributeValue("for", "details_address_addressLine").first().text() mustBe messages("supplementary.address.addressLine")
+        view.getElementsByAttributeValue("for", "details_address_addressLine").first().text() mustBe messages("declaration.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
@@ -141,7 +141,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementsByAttributeValue("for", "details_address_townOrCity").first().text() mustBe messages("supplementary.address.townOrCity")
+        view.getElementsByAttributeValue("for", "details_address_townOrCity").first().text() mustBe messages("declaration.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
       }
 
@@ -149,7 +149,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementsByAttributeValue("for", "details_address_postCode").first().text() mustBe messages("supplementary.address.postCode")
+        view.getElementsByAttributeValue("for", "details_address_postCode").first().text() mustBe messages("declaration.address.postCode")
         view.getElementById("details_address_postCode").attr("value") mustBe empty
       }
 
@@ -157,7 +157,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementsByAttributeValue("for", "details_address_country").first().text() mustBe messages("supplementary.address.country")
+        view.getElementsByAttributeValue("for", "details_address_country").first().text() mustBe messages("declaration.address.country")
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 

@@ -49,7 +49,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         form.errors mustNot be(empty)
         val eoriError = form.errors.find(_.key == "eori")
         eoriError must be(defined)
-        eoriError.get.message must equal("supplementary.eori.error.format")
+        eoriError.get.message must equal("declaration.eori.error.format")
       }
 
       "Address is empty & EORI contains special characters" in {
@@ -61,7 +61,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         form.errors mustNot be(empty)
         val eoriError = form.errors.find(_.key == "eori")
         eoriError must be(defined)
-        eoriError.get.message must equal("supplementary.eori.error.format")
+        eoriError.get.message must equal("declaration.eori.error.format")
       }
 
       "Address is correct but EORI is wrong" in {
@@ -75,7 +75,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         form.errors mustNot be(empty)
         val eoriError = form.errors.find(_.key == "eori")
         eoriError must be(defined)
-        eoriError.get.message must equal("supplementary.eori.error.format")
+        eoriError.get.message must equal("declaration.eori.error.format")
       }
     }
 
@@ -158,7 +158,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         val eoriError = form.errors.find(_.key == "eori")
         eoriError must be(defined)
         eoriError.get.messages.size must equal(1)
-        eoriError.get.message must equal("supplementary.eori.error.format")
+        eoriError.get.message must equal("declaration.eori.error.format")
 
         val addressErrors = form.errors.filter(_.key.contains("address."))
         addressErrors.size must equal(5)

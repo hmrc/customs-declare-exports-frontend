@@ -41,21 +41,21 @@ object Address {
 
   val mapping = Forms.mapping(
     "fullName" -> text()
-      .verifying("supplementary.address.fullName.empty", nonEmpty)
-      .verifying("supplementary.address.fullName.error", isEmpty or (isValidName and noLongerThan(70))),
+      .verifying("declaration.address.fullName.empty", nonEmpty)
+      .verifying("declaration.address.fullName.error", isEmpty or (isValidName and noLongerThan(70))),
     "addressLine" -> text()
-      .verifying("supplementary.address.addressLine.empty", nonEmpty)
-      .verifying("supplementary.address.addressLine.error", validateAddressField(70)),
+      .verifying("declaration.address.addressLine.empty", nonEmpty)
+      .verifying("declaration.address.addressLine.error", validateAddressField(70)),
     "townOrCity" -> text()
-      .verifying("supplementary.address.townOrCity.empty", nonEmpty)
-      .verifying("supplementary.address.townOrCity.error", validateAddressField(35)),
+      .verifying("declaration.address.townOrCity.empty", nonEmpty)
+      .verifying("declaration.address.townOrCity.error", validateAddressField(35)),
     "postCode" -> text()
-      .verifying("supplementary.address.postCode.empty", nonEmpty)
-      .verifying("supplementary.address.postCode.error", validateAddressField(9)),
+      .verifying("declaration.address.postCode.empty", nonEmpty)
+      .verifying("declaration.address.postCode.error", validateAddressField(9)),
     "country" -> text()
-      .verifying("supplementary.address.country.empty", nonEmpty)
+      .verifying("declaration.address.country.empty", nonEmpty)
       .verifying(
-        "supplementary.address.country.error",
+        "declaration.address.country.error",
         input => input.isEmpty || allCountries.exists(_.countryName == input) || allCountries.exists(_.countryCode == input)
       )
   )(Address.apply)(Address.unapply)

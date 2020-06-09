@@ -56,7 +56,7 @@ class PersonPresentingGoodsDetailsSpec extends UnitSpec {
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
-          form.errors.head.message mustBe "declaration.personPresentingGoodsDetails.eori.empty"
+          form.errors.head.message mustBe "declaration.eori.empty"
         }
 
         "provided with incorrect EORI" in {
@@ -67,7 +67,7 @@ class PersonPresentingGoodsDetailsSpec extends UnitSpec {
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
-          form.errors.head.message mustBe "declaration.personPresentingGoodsDetails.eori.error.format"
+          form.errors.head.message mustBe "declaration.eori.error.format"
         }
       }
     }
