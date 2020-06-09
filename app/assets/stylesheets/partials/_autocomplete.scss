@@ -7,33 +7,3 @@ body {
 table {
   font-size: 1em;
 }
-
-.ui-draggable, .ui-droppable {
-  background-position: top;
-}
-
-$custom-combobox-input-border-width: 2px;
-
-.custom-combobox-input {
-  border: $custom-combobox-input-border-width solid #000000;
-  border-right: none;
-}
-
-.custom-combobox {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-
-.custom-combobox-toggle {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  margin-left: -1px;
-  padding: 0;
-  right: -1 * $custom-combobox-input-border-width;
-
-  @media screen and (min-width: $media-query-breakpoint) {
-    right: calc(50% - #{$custom-combobox-input-border-width});
-  }
-}
