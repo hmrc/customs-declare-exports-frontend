@@ -18,175 +18,65 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.MultipleItemsHelper.remove
-import controllers.util._
-import forms.declaration.DeclarationHolder
-import handlers.ErrorHandler
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
-import models.declaration.DeclarationHoldersData
-import models.declaration.DeclarationHoldersData.limitOfHolders
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.Mode
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.declaration_holder
+import views.html.declaration.declaration_holder_summary
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class DeclarationHolderController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  declarationHolderPage: declaration_holder
+  declarationHolderPage: declaration_holder_summary
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  import forms.declaration.DeclarationHolder.form
+  import DeclarationHolderController._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = YesNoAnswer.form().withSubmissionErrors()
     request.cacheModel.parties.declarationHoldersData match {
-      case Some(data) => Ok(declarationHolderPage(mode, frm, data.holders))
-      case _          => Ok(declarationHolderPage(mode, frm, Seq()))
+      case Some(data) if data.holders.nonEmpty => Ok(declarationHolderPage(mode, frm, data.holders))
+      case _                                   => navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
     }
   }
 
-  def submitHoldersOfAuthorisation(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form().bindFromRequest()
-    val actionTypeOpt = FormAction.bindFromRequest()
-
-    val cache = request.cacheModel.parties.declarationHoldersData.getOrElse(DeclarationHoldersData(Seq()))
-
-    actionTypeOpt match {
-      case Add if !boundForm.hasErrors => addHolder(mode, boundForm.get, cache)
-      case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
-        saveAndContinue(mode, boundForm.get, cache)
-      case Remove(values) => removeHolder(mode, retrieveHolder(values), boundForm, cache)
-      case _              => Future.successful(BadRequest(declarationHolderPage(mode, boundForm, cache.holders)))
-    }
-  }
-
-  private def addHolder(mode: Mode, userInput: DeclarationHolder, cachedData: DeclarationHoldersData)(
-    implicit request: JourneyRequest[AnyContent],
-    hc: HeaderCarrier
-  ): Future[Result] =
-    (userInput, cachedData.holders) match {
-      case (_, holders) if holders.length >= limitOfHolders =>
-        handleErrorPage(mode, Seq(("", "declaration.declarationHolders.maximumAmount.error")), userInput, cachedData.holders)
-
-      case (holder, holders) if holders.contains(holder) =>
-        handleErrorPage(mode, Seq(("", "declaration.declarationHolders.duplicated")), userInput, cachedData.holders)
-
-      case (holder, holders) if holder.authorisationTypeCode.isDefined && holder.eori.isDefined =>
-        val updatedCache = DeclarationHoldersData(holders :+ holder)
-        updateCache(updatedCache)
-          .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage(_)))
-
-      case (DeclarationHolder(authCode, eori), _) =>
-        val authCodeError =
-          authCode.fold(Seq(("authorisationTypeCode", "declaration.declarationHolder.authorisationCode.empty")))(_ => Seq[(String, String)]())
-        val eoriError = eori.fold(Seq(("eori", "declaration.eori.empty")))(_ => Seq[(String, String)]())
-
-        handleErrorPage(mode, authCodeError ++ eoriError, userInput, cachedData.holders)
-    }
-
-  //scalastyle:off method.length
-  private def handleErrorPage(mode: Mode, fieldWithError: Seq[(String, String)], userInput: DeclarationHolder, holders: Seq[DeclarationHolder])(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] = {
-    val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
-
-    val formWithError = form().fill(userInput).copy(errors = updatedErrors)
-
-    Future.successful(BadRequest(declarationHolderPage(mode, formWithError, holders)))
-  }
-
-  private def updateCache(formData: DeclarationHoldersData)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
-      val updatedParties = model.parties.copy(declarationHoldersData = Some(formData))
-      model.copy(parties = updatedParties)
-    })
-
-  private def saveAndContinue(mode: Mode, userInput: DeclarationHolder, cachedData: DeclarationHoldersData)(
-    implicit request: JourneyRequest[AnyContent],
-    hc: HeaderCarrier
-  ): Future[Result] =
-    (userInput, cachedData.holders) match {
-      case (DeclarationHolder(None, None), _) =>
-        if (cachedData.holders.isEmpty)
-          updateCache(cachedData)
-            .map(_ => navigateToNextPage(mode))
-        else
-          Future.successful(navigateToNextPage(mode))
-
-      case (holder, Seq()) =>
-        holder match {
-          case DeclarationHolder(Some(typeCode), Some(eori)) =>
-            val updatedCache = DeclarationHoldersData(Seq(DeclarationHolder(Some(typeCode), Some(eori))))
-            updateCache(updatedCache)
-              .map(_ => navigateToNextPage(mode))
-
-          case DeclarationHolder(maybeTypeCode, maybeEori) =>
-            val typeCodeError = maybeTypeCode.fold(Seq(("authorisationTypeCode", "declaration.declarationHolder.authorisationCode.empty")))(
-              _ => Seq[(String, String)]()
-            )
-
-            val eoriError = maybeEori.fold(Seq(("eori", "declaration.eori.empty")))(_ => Seq[(String, String)]())
-
-            handleErrorPage(mode, typeCodeError ++ eoriError, userInput, Seq())
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val holders = request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+    YesNoAnswer
+      .form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[YesNoAnswer]) => BadRequest(declarationHolderPage(mode, formWithErrors, holders)),
+        validYesNo =>
+          validYesNo.answer match {
+            case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderAddController.displayPage)
+            case YesNoAnswers.no  => navigator.continueTo(mode, nextPage)
         }
-
-      case (holder, holders) =>
-        holder match {
-          case _ if holders.length >= limitOfHolders =>
-            handleErrorPage(mode, Seq(("", "declaration.declarationHolders.maximumAmount.error")), userInput, holders)
-
-          case _ if holders.contains(holder) =>
-            handleErrorPage(mode, Seq(("", "declaration.declarationHolders.duplicated")), userInput, holders)
-
-          case _ if holder.authorisationTypeCode.isDefined == holder.eori.isDefined =>
-            val updatedHolders = if (holder.authorisationTypeCode.isDefined) holders :+ holder else holders
-            val updatedCache = DeclarationHoldersData(updatedHolders)
-            updateCache(updatedCache)
-              .map(_ => navigateToNextPage(mode))
-
-          case DeclarationHolder(maybeTypeCode, maybeEori) =>
-            val typeCodeError = maybeTypeCode.fold(Seq(("authorisationTypeCode", "declaration.declarationHolder.authorisationCode.empty")))(
-              _ => Seq[(String, String)]()
-            )
-
-            val eoriError = maybeEori.fold(Seq(("eori", "declaration.eori.empty")))(_ => Seq[(String, String)]())
-
-            handleErrorPage(mode, typeCodeError ++ eoriError, userInput, holders)
-        }
-    }
-  //scalastyle:on method.length
-
-  private def removeHolder(mode: Mode, holderToRemove: DeclarationHolder, userInput: Form[DeclarationHolder], cachedData: DeclarationHoldersData)(
-    implicit request: JourneyRequest[AnyContent],
-    hc: HeaderCarrier
-  ): Future[Result] = {
-    val updatedCache = cachedData.copy(holders = remove(cachedData.holders, (_: DeclarationHolder) == holderToRemove))
-    updateCache(updatedCache)
-      .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
+      )
   }
+}
 
-  private def retrieveHolder(values: Seq[String]): DeclarationHolder =
-    DeclarationHolder.buildFromString(values.headOption.getOrElse(""))
+object DeclarationHolderController {
 
-  private def navigateToNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
+  def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {
-      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
-        navigator.continueTo(mode, controllers.declaration.routes.OriginationCountryController.displayPage)
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
-        navigator.continueTo(mode, controllers.declaration.routes.DestinationCountryController.displayPage)
+      case SUPPLEMENTARY | STANDARD =>
+        controllers.declaration.routes.OriginationCountryController.displayPage
+      case SIMPLIFIED | OCCASIONAL | CLEARANCE =>
+        controllers.declaration.routes.DestinationCountryController.displayPage
     }
 
 }

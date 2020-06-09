@@ -20,7 +20,6 @@ import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.Forms.{mapping, text}
 import play.api.data.{Form, FormError}
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
-import uk.gov.hmrc.http.InternalServerException
 
 class MultipleItemsHelperSpec extends WordSpec with MustMatchers {
   import MultipleItemsHelperSpec._
@@ -107,6 +106,20 @@ class MultipleItemsHelperSpec extends WordSpec with MustMatchers {
       val cachedData = Seq(TestForm("ABC"))
 
       MultipleItemsHelper.saveAndContinue(testForm, cachedData, true, limit) must be(Right(cachedData))
+    }
+  }
+
+  "MultipleItemsHelper on appendAll" should {
+    "append item when defined" in {
+      val expectedOutput = Seq(1, 2, 3, 4)
+
+      MultipleItemsHelper.appendAll(Seq(1, 2), Some(3), Some(4)) must be(expectedOutput)
+    }
+
+    "not append item when not defined" in {
+      val expectedOutput = Seq("A", "B", "C", "D")
+
+      MultipleItemsHelper.appendAll(Seq("A", "B", "C"), None, Some("D")) must be(expectedOutput)
     }
   }
 }

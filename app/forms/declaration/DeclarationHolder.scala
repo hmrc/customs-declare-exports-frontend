@@ -25,24 +25,33 @@ import services.HolderOfAuthorisationCode
 import utils.validators.forms.FieldValidator._
 
 case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[Eori]) {
-  override def toString: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"
+  override def toString: String = id
+
+  def id: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"
+  def isEmpty: Boolean = authorisationTypeCode.isEmpty && eori.isEmpty
+  def isComplete: Boolean = authorisationTypeCode.isDefined && eori.isDefined
 }
 
 object DeclarationHolder extends DeclarationPage {
   implicit val format = Json.format[DeclarationHolder]
 
-  val mapping = Forms.mapping(
-    "authorisationTypeCode" -> optional(
-      text()
-        .verifying("declaration.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.value)))
-    ),
-    "eori" -> optional(Eori.mapping("declaration"))
+  private def eoriMapping = optional(Eori.mapping("declaration"))
+
+  private def codeMapping =
+    optional(text().verifying("declaration.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.value))))
+
+  val optionalMapping =
+    Forms.mapping("authorisationTypeCode" -> codeMapping, "eori" -> eoriMapping)(DeclarationHolder.apply)(DeclarationHolder.unapply)
+
+  val requiredMapping = Forms.mapping(
+    "authorisationTypeCode" -> codeMapping.verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined),
+    "eori" -> eoriMapping.verifying("declaration.declarationHolder.eori.empty", _.isDefined)
   )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
-  def form(): Form[DeclarationHolder] = Form(mapping)
+  def form(optional: Boolean = false): Form[DeclarationHolder] = if (optional) Form(optionalMapping) else Form(requiredMapping)
 
   // Method for parse format typeCode-eori
-  def buildFromString(value: String): DeclarationHolder = {
+  def buildId(value: String): DeclarationHolder = {
     val dividedString: Array[String] = value.split('-')
 
     if (dividedString.length == 0) DeclarationHolder(None, None)
@@ -50,3 +59,5 @@ object DeclarationHolder extends DeclarationPage {
     else DeclarationHolder(Some(value.split('-')(0)), Some(Eori(value.split('-')(1))))
   }
 }
+
+object DeclarationSummaryHolder extends DeclarationPage

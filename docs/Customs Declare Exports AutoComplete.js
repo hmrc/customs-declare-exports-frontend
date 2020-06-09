@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.53
+// @version      1.54
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -374,38 +374,18 @@ function additionalActors(){
 }
 
 function holderOfAuthorisation(){
-    if (currentPageIs("/customs-declare-exports/declaration/holder-of-authorisation")) {
+    if (currentPageIs("/customs-declare-exports/declaration/add-authorisation-required")) {
         switch(getDeclaration())
         {
             case 'C':
-                if (!document.getElementById("removable_elements__row0")) {
-                    selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "IPO");
-                    document.getElementById('eori').value = 'GB717572504502801';
-                    document.getElementById('add').click();
-                } else if (!document.getElementById("removable_elements__row1")) {
-                    selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "SDE");
-                    document.getElementById('eori').value = 'GB717572504502801';
-                    document.getElementById('add').click();
-                } else if (!document.getElementById("removable_elements__row2")) {
-                    selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "CSE");
-                    document.getElementById('eori').value = 'GB717572504502801';
-                    document.getElementById('add').click();
-                } else {
-                    document.getElementById('submit').click();
-                }
+                selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "IPO");
+                document.getElementById('eori').value = 'GB717572504502801';
+                document.getElementById('submit').click();
                 break;
             case 'Z':
-                if (!document.getElementById("removable_elements__row0")) {
-                    selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "EIR");
-                    document.getElementById('eori').value = 'GB717572504502802';
-                    document.getElementById('add').click();
-                } else if (!document.getElementById("removable_elements__row1")) {
-                    selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "MOU");
-                    document.getElementById('eori').value = 'GB717572504502801';
-                    document.getElementById('add').click();
-                } else {
-                    document.getElementById('submit').click();
-                }
+                selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "EIR");
+                document.getElementById('eori').value = 'GB717572504502802';
+                document.getElementById('submit').click();
                 break;
             case 'F':
             case 'Y':
@@ -438,6 +418,10 @@ function holderOfAuthorisation(){
                 document.getElementById('submit').click();
                 break;
         }
+    }
+    if (currentPageIs("/customs-declare-exports/declaration/authorisations-required")) {
+        document.getElementById('code_no').checked = 'checked';
+        document.getElementById('submit').click();
     }
 }
 

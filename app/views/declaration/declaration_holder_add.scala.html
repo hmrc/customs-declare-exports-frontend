@@ -39,36 +39,9 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.holderOfAuthorisationSummaryText", components.details_content_link())) }
-
-@holdersTable = {
-    @if(holders.nonEmpty) {
-        @govukTable(Table(
-            rows = holders.map(_.toString).zipWithIndex.map { case (holder, index) =>
-                Seq(
-                    TableRow(
-                        content = Text(holder),
-                        attributes = Map("id" -> s"holder_$index")
-                    ),
-                    TableRow(
-                        content = HtmlContent(removeButton(
-                            value = Some(holder)
-                            , hiddenLabel = Some(messages("declaration.declarationHolder.authorisationCode.remove.hint", holder)))),
-                        attributes = Map("id" -> s"holder_action_$index")
-                    )
-                )
-            },
-            head = Some(List(
-                HeadCell(
-                    content = Text(messages("declaration.declarationHolder.authorisationCode")),
-                    colspan = Some(2)
-                )
-            ))
-        ))
-    }
-}
 
 @govukLayout(
     title = Title("declaration.declarationHolder.title", "declaration.summary.parties.header"),
@@ -84,7 +57,6 @@
 
         <p class="govuk-body">@messages("declaration.declarationHolder.title.hint")</p>
 
-        @holdersTable
 
         @components.fields.field_accessible_autocomplete(
             field = form("authorisationTypeCode"),
@@ -103,7 +75,6 @@
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
-        @addButton(label = messages("site.add"))
         @saveButtons()
     }
 }

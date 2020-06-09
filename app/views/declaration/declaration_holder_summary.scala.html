@@ -1,0 +1,161 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import forms.declaration.DeclarationHolder
+@import forms.declaration.DeclarationSummaryHolder
+@import forms.common.YesNoAnswer.YesNoAnswers
+@import models.requests.JourneyRequest
+@import controllers.navigation.Navigator
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
+
+@this(
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukButton: GovukButton,
+        govukTable : GovukTable,
+        govukRadios: GovukRadios,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        tariffDetails: tariffDetails,
+        link: link,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
+
+@(mode: Mode, form: Form[_], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
+
+@title = @{
+    if(holders.size == 1)
+        Title("declaration.declarationHolders.table.heading", "declaration.summary.parties.header")
+    else
+        Title("declaration.declarationHolders.table.multiple.heading", "declaration.summary.parties.header", holders.size.toString)
+}
+
+@header = @{
+    if(holders.size == 1)
+        Text(messages("declaration.declarationHolders.table.heading"))
+    else
+        Text(messages("declaration.declarationHolders.table.multiple.heading", holders.size))
+}
+
+@holdersTable = {
+    @if(holders.nonEmpty) {
+        @govukTable(Table(
+            rows = holders.zipWithIndex.map { case (holder, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(holder.authorisationTypeCode.getOrElse("")),
+                        attributes = Map("id" -> s"holder_type_$index")
+                    ),
+                    TableRow(
+                        content = Text(holder.eori.map(_.value).getOrElse("")),
+                        attributes = Map("id" -> s"holder_eori_$index")
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(
+                            messages("site.change"),
+                            Some(messages("declaration.declarationHolders.table.update.hint", holder.toString)),
+                            DeclarationHolderChangeController.displayPage(mode, holder.id))),
+                        classes = "govuk-table__cell--numeric",
+                        attributes = Map("id" -> s"holder-table-row$index-change_button")
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            Some(messages("declaration.declarationHolders.table.update.hint", holder.toString)),
+                            DeclarationHolderRemoveController.displayPage(mode, holder.id))),
+                        classes = "govuk-table__cell--numeric",
+                        attributes = Map("id" -> s"holder-table-row$index-remove_button")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.declarationHolders.table.type"))
+                ),
+                HeadCell(
+                    content = Text(messages("declaration.declarationHolders.table.eori")),
+                    colspan = Some(3)
+                )
+            ))
+        ))
+    }
+}
+
+@radioLegendContent = {
+    <h2 class="govuk-fieldset__heading">
+    @messages("declaration.declarationHolders.add.another")
+    </h2>
+}
+@anotherHolderQuestion = {
+    @govukRadios(Radios(
+        name = "yesNo",
+        fieldset = Some(Fieldset(
+            legend = Some(Legend(
+                content = HtmlContent(radioLegendContent),
+                classes = "govuk-fieldset__legend--m"
+            ))
+        )),
+        items = Seq(
+            RadioItem(
+                id = Some("code_yes"),
+                value = Some(YesNoAnswers.yes),
+                content = Text(messages("site.yes")),
+                checked = form("yesNo").value.contains(YesNoAnswers.yes)
+            ),
+            RadioItem(
+                id = Some("code_no"),
+                value = Some(YesNoAnswers.no),
+                content = Text(messages("site.no")),
+                checked = form("yesNo").value.contains(YesNoAnswers.no)
+            )
+        ),
+        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    ))
+}
+
+@govukLayout(
+    title = title,
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationSummaryHolder, mode)))
+) {
+
+    @formHelper(action = DeclarationHolderController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.summary.parties.header"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = header,
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                holdersTable,
+                anotherHolderQuestion,
+                saveButtons()
+            ))
+        ))
+    }
+}

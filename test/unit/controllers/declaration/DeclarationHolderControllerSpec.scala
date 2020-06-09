@@ -16,261 +16,147 @@
 
 package unit.controllers.declaration
 
-import base.Injector
 import controllers.declaration.DeclarationHolderController
-import controllers.util.Remove
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
-import models.declaration.DeclarationHoldersData
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import unit.mock.ErrorHandlerMocks
-import views.html.declaration.declaration_holder
+import views.html.declaration.declaration_holder_summary
 
-class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
+class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
 
-  val declarationHolderPage = mock[declaration_holder]
+  val mockPage = mock[declaration_holder_summary]
 
   val controller = new DeclarationHolderController(
     mockAuthAction,
     mockJourneyAction,
-    mockErrorHandler,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    declarationHolderPage
-  )
+    mockPage
+  )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    setupErrorHandler()
     authorizedUser()
-    withNewCaching(aDeclaration())
-
-    when(declarationHolderPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(declarationHolderPage)
+    reset(mockPage)
     super.afterEach()
   }
 
-  def theResponseForm: Form[DeclarationHolder] = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolder]])
-    verify(declarationHolderPage).apply(any(), formCaptor.capture(), any())(any(), any())
-    formCaptor.getValue
-  }
-
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration())
+    withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
     await(controller.displayPage(Mode.Normal)(request))
     theResponseForm
   }
 
-  val declarationWithHolder = aDeclaration(withDeclarationHolders(Some("ACP"), Some(Eori("GB123456"))))
-  val maxAmountOfItems = aDeclaration(
-    withDeclarationHolders(Seq.fill(DeclarationHoldersData.limitOfHolders)(DeclarationHolder(Some("ACP"), Some(Eori("GB123456")))): _*)
-  )
+  def theResponseForm: Form[DeclarationHolder] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolder]])
+    verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
+    captor.getValue
+  }
 
-  "Declaration Additional Actors controller" should {
+  def theHoldersList: Seq[DeclarationHolder] = {
+    val captor = ArgumentCaptor.forClass(classOf[Seq[DeclarationHolder]])
+    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
+    captor.getValue
+  }
 
-    "return 200 (OK)" when {
+  private def verifyPageInvoked(numberOfTimes: Int = 1) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-      "display page method is invoked with empty cache" in {
+  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")))
+  val id = "ACE-GB56523343784324"
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+  "DeclarationHolder Summary Controller" should {
 
-        status(result) must be(OK)
+    onEveryDeclarationJourney() { request =>
+      "return 200 (OK)" that {
+        "display page method is invoked and cache contains data" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          verifyPageInvoked()
+
+          theHoldersList must be(Seq(declarationHolder))
+        }
       }
 
-      "display page method is invoked with data in cache" in {
+      "return 400 (BAD_REQUEST)" when {
 
-        withNewCaching(aDeclaration(withDeclarationHolders()))
+        "user submits invalid answer" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val requestBody = Seq("yesNo" -> "invalid")
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
-        status(result) must be(OK)
-      }
-    }
+          status(result) mustBe BAD_REQUEST
+          verifyPageInvoked()
+        }
 
-    "return 400 (BAD_REQUEST)" when {
-
-      "user provide wrong action" in {
-
-        val wrongAction = Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), ("WrongAction", ""))
-
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 400 (BAD_REQUEST) during adding" when {
-
-      "user put incorrect data" in {
-
-        val incorrectForm = Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), addActionUrlEncoded())
-
-        val result =
-          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) must be(BAD_REQUEST)
       }
 
-      "user put duplicated item" in {
+      "return 303 (SEE_OTHER)" when {
 
-        withNewCaching(declarationWithHolder)
+        "there are no holders in the cache" in {
+          withNewCaching(request.cacheModel)
 
-        val duplicatedForm = Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), addActionUrlEncoded())
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        val result =
-          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+        }
 
-        status(result) must be(BAD_REQUEST)
-      }
+        "user submits valid Yes answer" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-      "user reach maximum amount of items" in {
+          val requestBody = Seq("yesNo" -> "Yes")
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
-        withNewCaching(maxAmountOfItems)
-
-        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), addActionUrlEncoded())
-
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) must be(BAD_REQUEST)
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+        }
       }
     }
 
-    "return 400 (BAD_REQUEST) during saving" when {
+    "re-direct to next question" when {
+      onJourney(STANDARD, SUPPLEMENTARY) { request =>
+        "user submits valid No answer" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-      "user put incorrect data" in {
+          val requestBody = Seq("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
-        val incorrectForm =
-          Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), saveAndContinueActionUrlEncoded)
-
-        val result =
-          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) must be(BAD_REQUEST)
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage(Mode.Normal)
+        }
       }
 
-      "user put duplicated item" in {
+      onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
+        "user submits valid No answer" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-        withNewCaching(declarationWithHolder)
+          val requestBody = Seq("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
-        val duplicatedForm =
-          Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), saveAndContinueActionUrlEncoded)
-
-        val result =
-          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user reach maximum amount of items" in {
-
-        withNewCaching(maxAmountOfItems)
-
-        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) must be(BAD_REQUEST)
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountryController.displayPage(Mode.Normal)
+        }
       }
     }
 
-    "return 303 (SEE_OTHER)" when {
-
-      "user correctly add new item" in {
-
-        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB65432123456789"), addActionUrlEncoded())
-
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) must be(SEE_OTHER)
-      }
-
-      "user save correct data" in {
-
-        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB65432123456789"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage()
-      }
-
-      "user save correct data without new item" in {
-
-        withNewCaching(declarationWithHolder)
-
-        val result =
-          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage()
-      }
-
-      "user remove existing item" in {
-
-        withNewCaching(declarationWithHolder)
-
-        val removeAction = (Remove.toString, "ACT-GB123456")
-
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
-      }
-    }
-
-    "should redirect to Origination Country page" when {
-
-      "user is during Supplementary journey" in {
-
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-
-        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB65432112345655"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage()
-      }
-
-      "user is during Standard journey" in {
-
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-
-        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB6543211234567"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage()
-      }
-    }
-
-    "should redirect to Destination Country page" when {
-
-      "user is during Simplified journey" in {
-
-        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
-
-        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB6543211234567"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountryController.displayPage()
-      }
-    }
   }
 }
