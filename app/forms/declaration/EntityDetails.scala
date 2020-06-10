@@ -31,10 +31,10 @@ object EntityDetails {
   implicit val format = Json.format[EntityDetails]
 
   val optionalMapping = Forms
-    .mapping("eori" -> optional(Eori.mapping("supplementary")), "address" -> optional(Address.mapping))(EntityDetails.apply)(EntityDetails.unapply)
+    .mapping("eori" -> optional(Eori.mapping), "address" -> optional(Address.mapping))(EntityDetails.apply)(EntityDetails.unapply)
 
   val defaultMapping = optionalMapping
-    .verifying("supplementary.namedEntityDetails.error", validateNamedEntityDetails(_))
+    .verifying("declaration.namedEntityDetails.error", validateNamedEntityDetails(_))
 
   val eitherEoriOrAddressMapping = defaultMapping
     .verifying(

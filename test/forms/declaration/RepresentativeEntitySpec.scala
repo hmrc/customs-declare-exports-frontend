@@ -32,7 +32,7 @@ class RepresentativeEntitySpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.representative.entity.eori.empty")
+        form.errors.head.message must equal("declaration.eori.empty")
       }
 
       "provided with invalid eori" in {
@@ -40,7 +40,7 @@ class RepresentativeEntitySpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.representative.entity.eori.error.format")
+        form.errors.head.message must equal("declaration.eori.error.format")
       }
     }
 

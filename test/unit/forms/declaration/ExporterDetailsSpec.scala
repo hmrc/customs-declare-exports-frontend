@@ -32,22 +32,22 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
     s"Exporter Details form for ${request.declarationType}" should {
       val outcomeFromIncorrectForm = ExporterDetails.form(request.declarationType).bind(incorrectExporterDetailsJSON)
       "validate eori and address" in {
-        outcomeFromIncorrectForm.error("details.eori") must haveMessage("supplementary.eori.error.format")
+        outcomeFromIncorrectForm.error("details.eori") must haveMessage("declaration.eori.error.format")
       }
       "validate address fullname" in {
-        outcomeFromIncorrectForm.error("details.address.fullName") must haveMessage("supplementary.address.fullName.error")
+        outcomeFromIncorrectForm.error("details.address.fullName") must haveMessage("declaration.address.fullName.error")
       }
       "validate address addresline" in {
-        outcomeFromIncorrectForm.error("details.address.addressLine") must haveMessage("supplementary.address.addressLine.error")
+        outcomeFromIncorrectForm.error("details.address.addressLine") must haveMessage("declaration.address.addressLine.error")
       }
       "validate town or city" in {
-        outcomeFromIncorrectForm.error("details.address.townOrCity") must haveMessage("supplementary.address.townOrCity.error")
+        outcomeFromIncorrectForm.error("details.address.townOrCity") must haveMessage("declaration.address.townOrCity.error")
       }
       "validate post code" in {
-        outcomeFromIncorrectForm.error("details.address.postCode") must haveMessage("supplementary.address.postCode.error")
+        outcomeFromIncorrectForm.error("details.address.postCode") must haveMessage("declaration.address.postCode.error")
       }
       "validate country" in {
-        outcomeFromIncorrectForm.error("details.address.country") must haveMessage("supplementary.address.country.error")
+        outcomeFromIncorrectForm.error("details.address.country") must haveMessage("declaration.address.country.error")
       }
 
       "bind correctly to EORI only request" in {
@@ -73,7 +73,7 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
           val cachedModel: ExportsDeclaration = aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.yes))
 
           ExporterDetails.form(request.declarationType, Some(cachedModel)).bind(emptyExporterDetailsJSON).error("details") must haveMessage(
-            "supplementary.namedEntityDetails.error"
+            "declaration.namedEntityDetails.error"
           )
         }
       }
@@ -94,7 +94,7 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
       "validate is eori and address is non empty" in {
 
         ExporterDetails.form(request.declarationType).bind(emptyExporterDetailsJSON).error("details") must haveMessage(
-          "supplementary.namedEntityDetails.error"
+          "declaration.namedEntityDetails.error"
         )
       }
     }

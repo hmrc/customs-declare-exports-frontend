@@ -35,7 +35,7 @@ case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option
 object DeclarationHolder extends DeclarationPage {
   implicit val format = Json.format[DeclarationHolder]
 
-  private def eoriMapping = optional(Eori.mapping("declaration"))
+  private def eoriMapping = optional(Eori.mapping)
 
   private def codeMapping =
     optional(text().verifying("declaration.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.value))))

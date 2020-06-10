@@ -55,7 +55,7 @@ object DeclarationAdditionalActors extends DeclarationPage {
   )(form2Model)(model2Form)
 
   private def eoriMappingFor(partyType: String): Mapping[Option[Eori]] =
-    mandatoryIfEqual("partyType", partyType, Eori.mapping("declaration"))
+    mandatoryIfEqual("partyType", partyType, Eori.mapping)
 
   private def form2Model: (Option[Eori], Option[Eori], Option[Eori], Option[Eori], Option[String]) => DeclarationAdditionalActors = {
     case (eoriCS, eoriMF, eoriFW, eoriWH, partyType) =>

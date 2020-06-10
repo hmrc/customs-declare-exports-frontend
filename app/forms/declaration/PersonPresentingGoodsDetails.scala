@@ -28,9 +28,7 @@ object PersonPresentingGoodsDetails extends DeclarationPage {
 
   val fieldName = "eori"
 
-  private val mapping = Forms.mapping(fieldName -> Eori.mapping("declaration.personPresentingGoodsDetails"))(PersonPresentingGoodsDetails.apply)(
-    PersonPresentingGoodsDetails.unapply
-  )
+  private val mapping = Forms.mapping(fieldName -> Eori.mapping)(PersonPresentingGoodsDetails.apply)(PersonPresentingGoodsDetails.unapply)
 
   def form() = Form(mapping)
 }

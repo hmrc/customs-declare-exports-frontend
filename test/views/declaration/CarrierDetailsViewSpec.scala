@@ -74,31 +74,31 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
       "display empty input with label for Full name" in {
 
-        view.getElementsByAttributeValue("for", "details_address_fullName").text() mustBe messages("supplementary.address.fullName")
+        view.getElementsByAttributeValue("for", "details_address_fullName").text() mustBe messages("declaration.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
       }
 
       "display empty input with label for Address" in {
 
-        view.getElementsByAttributeValue("for", "details_address_addressLine").text() mustBe messages("supplementary.address.addressLine")
+        view.getElementsByAttributeValue("for", "details_address_addressLine").text() mustBe messages("declaration.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
       "display empty input with label for Town or City" in {
 
-        view.getElementsByAttributeValue("for", "details_address_townOrCity").text() mustBe messages("supplementary.address.townOrCity")
+        view.getElementsByAttributeValue("for", "details_address_townOrCity").text() mustBe messages("declaration.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
       }
 
       "display empty input with label for Postcode" in {
 
-        view.getElementsByAttributeValue("for", "details_address_postCode").text() mustBe messages("supplementary.address.postCode")
+        view.getElementsByAttributeValue("for", "details_address_postCode").text() mustBe messages("declaration.address.postCode")
         view.getElementById("details_address_postCode").attr("value") mustBe empty
       }
 
       "display empty input with label for Country" in {
 
-        view.getElementsByAttributeValue("for", "details_address_country").text() mustBe "supplementary.address.country"
+        view.getElementsByAttributeValue("for", "details_address_country").text() mustBe "declaration.address.country"
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
@@ -204,7 +204,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details")
-        view.getElementsByClass("govuk-list govuk-error-summary__list").text() must include(messages("supplementary.namedEntityDetails.error"))
+        view.getElementsByClass("govuk-list govuk-error-summary__list").text() must include(messages("declaration.namedEntityDetails.error"))
       }
 
       "display error when EORI is provided, but is incorrect" in {
@@ -217,7 +217,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_eori")
-        view.getElementById("details_eori-error") must containMessage("supplementary.eori.error.format")
+        view.getElementById("details_eori-error") must containMessage("declaration.eori.error.format")
       }
 
       "display error for empty Full name" in {
@@ -230,7 +230,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
-        view.getElementById("details_address_fullName-error") must containMessage("supplementary.address.fullName.empty")
+        view.getElementById("details_address_fullName-error") must containMessage("declaration.address.fullName.empty")
       }
 
       "display error for incorrect Full name" in {
@@ -247,7 +247,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
-        view.getElementById("details_address_fullName-error") must containMessage("supplementary.address.fullName.error")
+        view.getElementById("details_address_fullName-error") must containMessage("declaration.address.fullName.error")
       }
 
       "display error for empty Address" in {
@@ -260,7 +260,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.empty")
+        view.getElementById("details_address_addressLine-error") must containMessage("declaration.address.addressLine.empty")
       }
 
       "display error for incorrect Address" in {
@@ -277,7 +277,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.error")
+        view.getElementById("details_address_addressLine-error") must containMessage("declaration.address.addressLine.error")
       }
 
       "display error for empty Town or city" in {
@@ -290,7 +290,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.empty")
+        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.empty")
       }
 
       "display error for incorrect Town or city" in {
@@ -307,7 +307,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.error")
+        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.error")
       }
 
       "display error for empty Postcode" in {
@@ -320,7 +320,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.empty")
+        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.empty")
       }
 
       "display error for incorrect Postcode" in {
@@ -337,7 +337,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.error")
+        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.error")
       }
 
       "display error for empty Country" in {
@@ -350,7 +350,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_country")
-        view.getElementById("error-message-details.address.country-input") must containMessage("supplementary.address.country.empty")
+        view.getElementById("error-message-details.address.country-input") must containMessage("declaration.address.country.empty")
       }
 
       "display error for incorrect Country" in {
@@ -363,7 +363,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_country")
-        view.getElementById("error-message-details.address.country-input") must containMessage("supplementary.address.country.error")
+        view.getElementById("error-message-details.address.country-input") must containMessage("declaration.address.country.error")
       }
 
       "display errors when everything except Full name is empty" in {
@@ -376,13 +376,13 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.empty")
+        view.getElementById("details_address_addressLine-error") must containMessage("declaration.address.addressLine.empty")
         view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.empty")
+        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.empty")
         view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.empty")
+        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.empty")
         view must containErrorElementWithTagAndHref("a", "#details_address_country")
-        view.getElementById("error-message-details.address.country-input") must containMessage("supplementary.address.country.empty")
+        view.getElementById("error-message-details.address.country-input") must containMessage("declaration.address.country.empty")
       }
 
       "display errors when everything except Country is empty" in {
@@ -395,13 +395,13 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
-        view.getElementById("details_address_fullName-error") must containMessage("supplementary.address.fullName.empty")
+        view.getElementById("details_address_fullName-error") must containMessage("declaration.address.fullName.empty")
         view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.empty")
+        view.getElementById("details_address_addressLine-error") must containMessage("declaration.address.addressLine.empty")
         view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.empty")
+        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.empty")
         view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.empty")
+        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.empty")
       }
 
       "display errors when everything except Full name is incorrect" in {
@@ -428,13 +428,13 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         )
 
         view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.error")
+        view.getElementById("details_address_addressLine-error") must containMessage("declaration.address.addressLine.error")
         view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.error")
+        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.error")
         view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.error")
+        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.error")
         view must containErrorElementWithTagAndHref("a", "#details_address_country")
-        view.getElementById("error-message-details.address.country-input") must containMessage("supplementary.address.country.error")
+        view.getElementById("error-message-details.address.country-input") must containMessage("declaration.address.country.error")
       }
 
       "display errors when everything except Country is incorrect" in {
@@ -462,13 +462,13 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
-        view.getElementById("details_address_fullName-error") must containMessage("supplementary.address.fullName.error")
+        view.getElementById("details_address_fullName-error") must containMessage("declaration.address.fullName.error")
         view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.error")
+        view.getElementById("details_address_addressLine-error") must containMessage("declaration.address.addressLine.error")
         view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.error")
+        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.error")
         view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.error")
+        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.error")
       }
     }
   }

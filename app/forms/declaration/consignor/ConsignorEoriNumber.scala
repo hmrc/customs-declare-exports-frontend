@@ -18,8 +18,8 @@ package forms.declaration.consignor
 
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
-import forms.common.{Eori, YesNoAnswer}
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.{Eori, YesNoAnswer}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -35,7 +35,7 @@ object ConsignorEoriNumber extends DeclarationPage {
   val formId = "ConsignorEoriDetails"
 
   val mapping: Mapping[ConsignorEoriNumber] = Forms.mapping(
-    eori -> mandatoryIfEqual(hasEori, YesNoAnswers.yes, Eori.mapping("declaration")),
+    eori -> mandatoryIfEqual(hasEori, YesNoAnswers.yes, Eori.mapping),
     hasEori -> requiredRadio("declaration.consignorEori.hasEori.empty", YesNoAnswer.allowedValues)
   )(ConsignorEoriNumber.apply)(ConsignorEoriNumber.unapply)
 
