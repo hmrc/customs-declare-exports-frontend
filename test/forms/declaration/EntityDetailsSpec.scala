@@ -35,7 +35,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         val wholeFormErrorName = ""
         val wholeFormError = form.errors.find(_.key == wholeFormErrorName)
         wholeFormError must be(defined)
-        wholeFormError.get.message must equal("supplementary.namedEntityDetails.error")
+        wholeFormError.get.message must equal("declaration.namedEntityDetails.error")
       }
     }
 
@@ -91,7 +91,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         val addressError = form.errors.find(_.key.contains("address."))
         addressError must be(defined)
         addressError.get.messages.size must equal(1)
-        addressError.get.message must equal("supplementary.address.fullName.error")
+        addressError.get.message must equal("declaration.address.fullName.error")
       }
 
       "EORI is empty & Address has errors in all fields" in {
@@ -109,11 +109,11 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         form.errors mustNot be(empty)
         val addressErrors = form.errors.filter(_.key.contains("address."))
         addressErrors.size must equal(5)
-        addressErrors.map(_.message) must contain("supplementary.address.fullName.error")
-        addressErrors.map(_.message) must contain("supplementary.address.addressLine.empty")
-        addressErrors.map(_.message) must contain("supplementary.address.townOrCity.error")
-        addressErrors.map(_.message) must contain("supplementary.address.postCode.error")
-        addressErrors.map(_.message) must contain("supplementary.address.country.error")
+        addressErrors.map(_.message) must contain("declaration.address.fullName.error")
+        addressErrors.map(_.message) must contain("declaration.address.addressLine.empty")
+        addressErrors.map(_.message) must contain("declaration.address.townOrCity.error")
+        addressErrors.map(_.message) must contain("declaration.address.postCode.error")
+        addressErrors.map(_.message) must contain("declaration.address.country.error")
       }
 
       "EORI is correct but Address has errors" in {
@@ -132,11 +132,11 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         form.errors mustNot be(empty)
         val addressErrors = form.errors.filter(_.key.contains("address."))
         addressErrors.size must equal(5)
-        addressErrors.map(_.message) must contain("supplementary.address.fullName.error")
-        addressErrors.map(_.message) must contain("supplementary.address.addressLine.empty")
-        addressErrors.map(_.message) must contain("supplementary.address.townOrCity.error")
-        addressErrors.map(_.message) must contain("supplementary.address.postCode.error")
-        addressErrors.map(_.message) must contain("supplementary.address.country.error")
+        addressErrors.map(_.message) must contain("declaration.address.fullName.error")
+        addressErrors.map(_.message) must contain("declaration.address.addressLine.empty")
+        addressErrors.map(_.message) must contain("declaration.address.townOrCity.error")
+        addressErrors.map(_.message) must contain("declaration.address.postCode.error")
+        addressErrors.map(_.message) must contain("declaration.address.country.error")
       }
     }
 
@@ -162,11 +162,11 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
         val addressErrors = form.errors.filter(_.key.contains("address."))
         addressErrors.size must equal(5)
-        addressErrors.map(_.message) must contain("supplementary.address.fullName.error")
-        addressErrors.map(_.message) must contain("supplementary.address.addressLine.empty")
-        addressErrors.map(_.message) must contain("supplementary.address.townOrCity.error")
-        addressErrors.map(_.message) must contain("supplementary.address.postCode.error")
-        addressErrors.map(_.message) must contain("supplementary.address.country.error")
+        addressErrors.map(_.message) must contain("declaration.address.fullName.error")
+        addressErrors.map(_.message) must contain("declaration.address.addressLine.empty")
+        addressErrors.map(_.message) must contain("declaration.address.townOrCity.error")
+        addressErrors.map(_.message) must contain("declaration.address.postCode.error")
+        addressErrors.map(_.message) must contain("declaration.address.country.error")
       }
     }
 

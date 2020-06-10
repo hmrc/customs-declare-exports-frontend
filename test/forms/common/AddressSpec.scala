@@ -34,7 +34,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val fullNameError = form.errors.find(_.key == "fullName")
         fullNameError must be(defined)
-        fullNameError.get.message must equal("supplementary.address.fullName.empty")
+        fullNameError.get.message must equal("declaration.address.fullName.empty")
       }
 
       "provided with input longer than 70 characters" in {
@@ -44,7 +44,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val fullNameError = form.errors.find(_.key == "fullName")
         fullNameError must be(defined)
-        fullNameError.get.message must equal("supplementary.address.fullName.error")
+        fullNameError.get.message must equal("declaration.address.fullName.error")
       }
 
       "provided with input containing special characters" in {
@@ -53,7 +53,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val fullNameError = form.errors.find(_.key == "fullName")
         fullNameError must be(defined)
-        fullNameError.get.message must equal("supplementary.address.fullName.error")
+        fullNameError.get.message must equal("declaration.address.fullName.error")
       }
     }
 
@@ -64,7 +64,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val addressLineError = form.errors.find(_.key == "addressLine")
         addressLineError must be(defined)
-        addressLineError.get.message must equal("supplementary.address.addressLine.empty")
+        addressLineError.get.message must equal("declaration.address.addressLine.empty")
       }
 
       "provided with input longer than 70 characters" in {
@@ -73,7 +73,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val addressLineError = form.errors.find(_.key == "addressLine")
         addressLineError must be(defined)
-        addressLineError.get.message must equal("supplementary.address.addressLine.error")
+        addressLineError.get.message must equal("declaration.address.addressLine.error")
       }
 
       "provided with input containing special characters" in {
@@ -82,7 +82,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val addressLineError = form.errors.find(_.key == "addressLine")
         addressLineError must be(defined)
-        addressLineError.get.message must equal("supplementary.address.addressLine.error")
+        addressLineError.get.message must equal("declaration.address.addressLine.error")
       }
     }
 
@@ -93,7 +93,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val townOrCityError = form.errors.find(_.key == "townOrCity")
         townOrCityError must be(defined)
-        townOrCityError.get.message must equal("supplementary.address.townOrCity.empty")
+        townOrCityError.get.message must equal("declaration.address.townOrCity.empty")
       }
 
       "provided with input longer than 35 characters" in {
@@ -102,7 +102,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val townOrCityError = form.errors.find(_.key == "townOrCity")
         townOrCityError must be(defined)
-        townOrCityError.get.message must equal("supplementary.address.townOrCity.error")
+        townOrCityError.get.message must equal("declaration.address.townOrCity.error")
       }
 
       "provided with input containing special characters" in {
@@ -111,7 +111,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val townOrCityError = form.errors.find(_.key == "townOrCity")
         townOrCityError must be(defined)
-        townOrCityError.get.message must equal("supplementary.address.townOrCity.error")
+        townOrCityError.get.message must equal("declaration.address.townOrCity.error")
       }
     }
 
@@ -122,7 +122,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val postCodeError = form.errors.find(_.key == "postCode")
         postCodeError must be(defined)
-        postCodeError.get.message must equal("supplementary.address.postCode.empty")
+        postCodeError.get.message must equal("declaration.address.postCode.empty")
       }
 
       "provided with input in wrong format" in {
@@ -131,7 +131,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val postCodeError = form.errors.find(_.key == "postCode")
         postCodeError must be(defined)
-        postCodeError.get.message must equal("supplementary.address.postCode.error")
+        postCodeError.get.message must equal("declaration.address.postCode.error")
       }
 
       "provided with input containing special characters" in {
@@ -140,7 +140,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val postCodeError = form.errors.find(_.key == "postCode")
         postCodeError must be(defined)
-        postCodeError.get.message must equal("supplementary.address.postCode.error")
+        postCodeError.get.message must equal("declaration.address.postCode.error")
       }
     }
 
@@ -151,7 +151,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val countryError = form.errors.find(_.key == "country")
         countryError must be(defined)
-        countryError.get.message must equal("supplementary.address.country.empty")
+        countryError.get.message must equal("declaration.address.country.empty")
       }
 
       "provided with non-existing country name" in {
@@ -160,7 +160,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val countryError = form.errors.find(_.key == "country")
         countryError must be(defined)
-        countryError.get.message must equal("supplementary.address.country.error")
+        countryError.get.message must equal("declaration.address.country.error")
       }
 
       "provided with input containing special characters" in {
@@ -169,7 +169,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val countryError = form.errors.find(_.key == "country")
         countryError must be(defined)
-        countryError.get.message must equal("supplementary.address.country.error")
+        countryError.get.message must equal("declaration.address.country.error")
       }
     }
 
