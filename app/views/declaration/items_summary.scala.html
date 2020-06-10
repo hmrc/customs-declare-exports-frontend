@@ -42,13 +42,13 @@
 @(mode: Mode, items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
 @titleMessage = @{
-    if(items.isEmpty) { messages("supplementary.itemsAdd.title") }
-    else { messages("supplementary.itemsAdd.titleWithItems", items.length) }
+    if(items.isEmpty) { messages("declaration.itemsAdd.title") }
+    else { messages("declaration.itemsAdd.titleWithItems", items.length) }
 }
 
 @pageHint = {
     <span class="govuk-hint">
-        @messages("supplementary.itemsAdd.title.hint")
+        @messages("declaration.itemsAdd.title.hint")
     </span>
 }
 
@@ -70,7 +70,7 @@
     <a class="govuk-link" href="@routes.ProcedureCodesController.displayPage(mode, item.id).url">
         @messages("site.change")
         <span class="govuk-visually-hidden">
-            @messages("supplementary.itemsAdd.change.hint", item.sequenceId)
+            @messages("declaration.itemsAdd.change.hint", item.sequenceId)
         </span>
     </a>
 }
@@ -98,10 +98,10 @@
         @govukTable(Table(
             attributes = Map("id" -> "item_table"),
             head = Some(Seq(
-                HeadCell(content = Text(messages("supplementary.itemsSummary.itemNumber"))),
-                HeadCell(content = Text(messages("supplementary.itemsSummary.procedureCode"))),
-                HeadCell(content = Text(messages("supplementary.itemsSummary.commodityCode"))),
-                HeadCell(content = Text(messages("supplementary.itemsSummary.noOfPackages"))),
+                HeadCell(content = Text(messages("declaration.itemsSummary.itemNumber"))),
+                HeadCell(content = Text(messages("declaration.itemsSummary.procedureCode"))),
+                HeadCell(content = Text(messages("declaration.itemsSummary.commodityCode"))),
+                HeadCell(content = Text(messages("declaration.itemsSummary.noOfPackages"))),
                 HeadCell(colspan = Some(2))
             )),
             rows = items.zipWithIndex.map { case (item, index) =>
@@ -129,7 +129,7 @@
                     TableRow(
                         content = HtmlContent(removeButton(
                             href = Some(routes.ItemsSummaryController.removeItem(mode, item.id).url),
-                            hiddenLabel = Some(messages("supplementary.itemsAdd.remove.hint", item.sequenceId))
+                            hiddenLabel = Some(messages("declaration.itemsAdd.remove.hint", item.sequenceId))
                         )),
                         attributes = Map("id" -> s"item_$index--remove")
                     )
