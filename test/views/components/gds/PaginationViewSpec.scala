@@ -23,8 +23,6 @@ import views.html.components.gds.pagination
 
 class PaginationViewSpec extends UnitViewSpec {
 
-//  private val pagination = instanceOf[views.html.components.gds.pagination]
-
   private def paginationComponent(
     declarations: Seq[ExportsDeclaration] = Seq.empty,
     currentPage: Int = 1,
@@ -34,7 +32,8 @@ class PaginationViewSpec extends UnitViewSpec {
     singularName = messages("saved.declarations.pagination.singular"),
     pluralName = messages("saved.declarations.pagination.plural"),
     pager = Paginated(declarations, Page(currentPage, pageSize), elementsTotal),
-    onChange = page => controllers.routes.SavedDeclarationsController.displayDeclarations(page)
+    onChange = page => controllers.routes.SavedDeclarationsController.displayDeclarations(page),
+    neighbourPagesAmount = 1
   )
 
   private val declaration = ExportsTestData.aDeclaration()

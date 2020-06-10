@@ -72,7 +72,8 @@
       singularName = messages("saved.declarations.pagination.singular"),
       pluralName = messages("saved.declarations.pagination.plural"),
       pager = declarations,
-      onChange = page => controllers.routes.SavedDeclarationsController.displayDeclarations(page)
+      onChange = page => controllers.routes.SavedDeclarationsController.displayDeclarations(page),
+      neighbourPagesAmount = 2
     )
 
   </div>

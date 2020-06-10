@@ -21,7 +21,8 @@
   singularName: String = "result",
   pluralName: String = "results",
   pager: Paginated[_],
-  onChange: Int => Call
+  onChange: Int => Call,
+  neighbourPagesAmount: Int
 )(implicit messages: Messages)
 
 @firstElementOnPageIndex = @{(pager.page.index - 1) * pager.page.size + 1}
@@ -65,7 +66,7 @@
             </li>
           }
 
-          @for(paginationItem <- PaginationUtil.paginationElements(pager.page.index, pager.pagesAmount)) {
+          @for(paginationItem <- PaginationUtil.paginationElements(pager.page.index, pager.pagesAmount, neighbourPagesAmount)) {
             @paginationItem match {
               case PageNumber(pageNumber) => {
                 <li class="ceds-pagination__item">
