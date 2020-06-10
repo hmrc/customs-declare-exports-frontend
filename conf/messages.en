@@ -76,6 +76,8 @@ site.accessibility.error = Error:
 site.details.summary_text_this = For more information about this
 site.details.summary_text_these = For more information about these
 
+site.print = Print this page
+
 general.inquiries.help.link = General enquires help
 
 unauthorised.heading = To continue, you need to get access to Customs Declaration Services (CDS)
@@ -1023,6 +1025,8 @@ declaration.summary.accepted-header = Accepted declaration
 declaration.summary.noData.header = No information for supplementary declaration found
 declaration.summary.noData.header.secondary = Please, go back and provide necessary information before proceeding
 declaration.summary.noData.button = Make an export declaration
+declaration.summary.accepted.mrn = MRN
+declaration.summary.accepted.date = Accepted
 declaration.summary.draft.ducr = DUCR
 declaration.summary.draft.createdDate = Date created
 declaration.summary.draft.expireDate = Expiry date

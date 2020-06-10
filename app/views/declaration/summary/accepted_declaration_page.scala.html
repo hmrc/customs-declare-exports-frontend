@@ -26,7 +26,7 @@
 @this(
         govukLayout: gdsMainTemplate,
         pageTitle: pageTitle,
-        errorSummary: errorSummary,
+        acceptedSection: accepted_section,
         draftInfoSection: draft_info_section,
         references_section: references_section,
         countries_section: countries_section,
@@ -35,10 +35,7 @@
         transaction_section: transaction_section,
         items_section: items_section,
         warehouse_section: warehouse_section,
-        transport_section: transport_section,
-        legal_declaration: legal_declaration,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        saveAndContinue: saveAndContinue
+        transport_section: transport_section
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -49,12 +46,21 @@
     }
 }
 
+@printThisPage = {
+    <p class="govuk-body">
+        <a class="govuk-link govuk-link--visually-hidden govuk-!-display-none-print" href="javascript:if(window.print)window.print()">@messages("site.print")</a>
+    </p>
+}
+
 @govukLayout(
     title = Title("declaration.summary.accepted-header"),
     backButton = Some(BackButton(messages("site.back"), backLink))) {
 
-
     @pageTitle(messages("declaration.summary.accepted-header"))
+
+    @acceptedSection(request.cacheModel)
+
+    @printThisPage
 
     @references_section(Mode.Print, request.cacheModel)
 
@@ -72,5 +78,5 @@
 
     @transport_section(Mode.Print, request.cacheModel)
 
-
+    @printThisPage
 }
