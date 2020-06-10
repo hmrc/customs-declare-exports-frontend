@@ -40,7 +40,7 @@
     text = messages("startPage.hmrcUrl"),
     call = Call("GET", externalServicesConfig.organisationsUrl),
     target = "_blank",
-    classes = "govuk-link govuk-link--no-visited-state bold"
+    classes = "govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold"
 )}
 
 @commodityCodeLink = @{
@@ -163,10 +163,10 @@
 
 
 
-        <div class="mt-2">
+        <div class="govuk-!-margin-top-7">
             <hr class="govuk-section-break govuk-section-break--visible blue-line">
             <nav role="navigation">
-                @paragraphBody(messages("startPage.exploreTheTopic"), classes = "govuk.heading-m mt-0", id = Some("explore-the-topic"))
+                @paragraphBody(messages("startPage.exploreTheTopic"), classes = "govuk-!-margin-top-0", id = Some("explore-the-topic"))
                 <ul class="govuk-list">
                     <li>
                         <a class="govuk-link govuk-!-font-size-16" href="@{externalServicesConfig.importExports}">
