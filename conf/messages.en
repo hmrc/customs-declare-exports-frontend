@@ -1258,18 +1258,17 @@ supplementary.continue.mandatory = You must add at least one item
 
 supplementary.startNewDec = Start a new declaration
 
-supplementary.itemsAdd.title = Add declaration item 1
-supplementary.itemsAdd.titleWithItem = You have added 1 item
-supplementary.itemsAdd.titleWithItems = Declaration item {0} added
-supplementary.itemsAdd.title.hint = A declaration can have multiple items. Each item is identified by a commodity code, which explains what type of goods are being added to the declaration, and a Union Customs Code procedure code.
-supplementary.itemsAdd.change.hint = Change item {0}
-supplementary.itemsAdd.remove.hint = Remove item {0}
-supplementary.itemsSummary.itemNumber = Declaration item
-supplementary.itemsSummary.procedureCode = Procedure code
-supplementary.itemsSummary.commodityCode = Commodity code
-supplementary.itemsSummary.noOfPackages = Number of packages
-supplementary.addgoodsitems.addallpages.error = Date of validity cannot be empty
-declaration.itemsSummary.item.incorrect = Item {0} does not contains all mandatory data
+declaration.itemsAdd.title = Add declaration item 1
+declaration.itemsAdd.titleWithItem = You have added 1 item
+declaration.itemsAdd.titleWithItems = Declaration item {0} added
+declaration.itemsAdd.title.hint = A declaration can have multiple items. Each item is identified by a commodity code, which explains what type of goods are being added to the declaration, and a Union Customs Code procedure code.
+declaration.itemsAdd.change.hint = Change item {0}
+declaration.itemsAdd.remove.hint = Remove item {0}
+declaration.itemsSummary.itemNumber = Declaration item
+declaration.itemsSummary.procedureCode = Procedure code
+declaration.itemsSummary.commodityCode = Commodity code
+declaration.itemsSummary.noOfPackages = Number of packages
+declaration.itemsSummary.item.incorrect = Item {0} does not contain all mandatory data
 
 declaration.seal.title = What is the security seal for container {0}?
 declaration.seal.section = Transport details

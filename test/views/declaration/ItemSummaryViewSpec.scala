@@ -43,8 +43,8 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("supplementary.itemsAdd.title")
-      messages must haveTranslationFor("supplementary.itemsAdd.titleWithItems")
+      messages must haveTranslationFor("declaration.itemsAdd.title")
+      messages must haveTranslationFor("declaration.itemsAdd.titleWithItems")
       messages must haveTranslationFor("site.add.item")
       messages must haveTranslationFor("site.add.anotherItem")
       messages must haveTranslationFor("declaration.itemsSummary.item.incorrect")
@@ -59,16 +59,16 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
     "render title" when {
       "no items" in {
-        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "supplementary.itemsAdd.title"
+        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "declaration.itemsAdd.title"
       }
 
       "one item" in {
-        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "supplementary.itemsAdd.title"
+        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "declaration.itemsAdd.title"
       }
 
       "many items" in {
         val view = createView(items = List(ExportItem("id1"), ExportItem("id2")))
-        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "supplementary.itemsAdd.titleWithItems"
+        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "declaration.itemsAdd.titleWithItems"
       }
     }
 
