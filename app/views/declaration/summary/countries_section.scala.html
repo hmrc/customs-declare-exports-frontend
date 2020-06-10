@@ -30,6 +30,11 @@
     locations.originationCountry.isDefined || locations.hasRoutingCountries.isDefined || locations.routingCountries.nonEmpty || locations.destinationCountry.isDefined
 }
 
+@actions(action: Actions) = @{
+    if(mode == Mode.Print) None
+    else Some(action)
+}
+
 @if(sectionRequired(declarationData.locations)) {
 
     @summaryList("declaration-countries-summary", Some(messages("declaration.summary.countries")), Seq(
@@ -43,7 +48,7 @@
                 value = Value(
                     content = Text(originationCountry.code.map(code => Countries.findByCode(code).asString()).getOrElse(""))
                 ),
-                actions = Some(Actions(
+                actions = actions(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.declaration.routes.OriginationCountryController.displayPage(mode).url,
@@ -63,7 +68,7 @@
                 value = Value(
                     content = Text(Countries.findByCodes(declarationData.locations.routingCountries.flatMap(_.code)).map(_.asString()).mkString(", "))
                 ),
-                actions = Some(Actions(
+                actions = actions(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode).url,
@@ -83,7 +88,7 @@
                 value = Value(
                     content = Text(destinationCountry.code.map(code => Countries.findByCode(code).asString()).getOrElse(""))
                 ),
-                actions = Some(Actions(
+                actions = actions(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.declaration.routes.DestinationCountryController.displayPage(mode).url,

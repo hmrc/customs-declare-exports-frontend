@@ -29,6 +29,11 @@
 
 @(mode: Mode, holders: Seq[DeclarationHolder])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
+@actions(action: Actions) = @{
+    if(mode == Mode.Print) None
+    else Some(action)
+}
+
 @holderTypeCode(holder: DeclarationHolder) = @{
     holder.authorisationTypeCode.getOrElse("")
 }
@@ -38,11 +43,14 @@
 }
 
 @change(holder: DeclarationHolder) = {
-    @changeLink(
-        messages("site.change"),
-        Some(messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder))),
-        controllers.declaration.routes.DeclarationHolderController.displayPage(mode)
-    )
+    @{
+        if(mode == Mode.Print) ""
+        else changeLink(
+            messages("site.change"),
+            Some(messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder))),
+            controllers.declaration.routes.DeclarationHolderController.displayPage(mode)
+        )
+    }
 }
 
 @if(holders.isEmpty) {
@@ -55,7 +63,7 @@
             value = Value(
                 content = Text(messages("site.no"))
             ),
-            actions = Some(Actions(
+            actions = actions(Actions(
                 items = Seq(
                     ActionItem(
                         href = controllers.declaration.routes.DeclarationHolderController.displayPage(mode).url,

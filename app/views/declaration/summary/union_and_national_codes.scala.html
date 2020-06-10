@@ -31,12 +31,21 @@
 @(mode: Mode, itemId: String, itemNo: Int,  additionalInformation: Seq[AdditionalInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @change(information: AdditionalInformation) = {
-    @changeLink(
-        messages("site.change"),
-        Some(messages("declaration.summary.items.item.additionalInformation.change", itemNo)),
-        controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
-    )
+    @{
+        if(mode == Mode.Print) ""
+        else changeLink(
+            messages("site.change"),
+            Some(messages("declaration.summary.items.item.additionalInformation.change", itemNo)),
+            controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
+        )
+    }
 }
+
+@actions(action: Actions) = @{
+    if(mode == Mode.Print) None
+    else Some(action)
+}
+
 @if(additionalInformation.nonEmpty){
     @govukTable(Table(
         rows = additionalInformation.map(information =>
@@ -75,7 +84,7 @@
             value = Value(
                 content = Text(messages("site.no"))
             ),
-            actions = Some(Actions(
+            actions = actions(Actions(
                 items = Seq(
                     ActionItem(
                         href = controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(mode, itemId).url,

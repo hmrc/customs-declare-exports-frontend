@@ -30,11 +30,19 @@
 @(mode: Mode, documents: Seq[Document])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @change(document: Document) = {
-    @changeLink(
-        messages("site.change"),
-        Some(messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference)),
-        controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)
-    )
+    @{
+        if(mode == Mode.Print) ""
+        else changeLink(
+            messages("site.change"),
+            Some(messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference)),
+            controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)
+        )
+    }
+}
+
+@actions(action: Actions) = @{
+    if(mode == Mode.Print) None
+    else Some(action)
 }
 
 @if(documents.isEmpty) {
@@ -43,7 +51,7 @@
             classes = "previous-documents-row",
             key = Key(Text(messages("declaration.summary.transaction.previousDocuments"))),
             value = Value(Text(messages("site.no"))),
-            actions = Some(Actions(
+            actions = actions(Actions(
                 items = Seq(
                     ActionItem(
                         href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,

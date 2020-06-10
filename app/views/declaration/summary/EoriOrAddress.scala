@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import forms.common.{Address, Eori}
+import models.Mode
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, HtmlContent, Text}
@@ -33,29 +34,34 @@ object EoriOrAddress {
     addressLabel: String,
     addressChangeLabel: String,
     changeController: Call,
+    mode: Mode,
     isEoriDefault: Boolean = true
   )(implicit messages: Messages): Seq[Option[SummaryListRow]] = {
 
     def emptyRow =
       if (eori.isEmpty && address.isEmpty) {
         if (isEoriDefault) {
-          Some(rowForEori(key, eoriLabel, eoriChangeLabel, changeController, None))
+          Some(rowForEori(key, eoriLabel, eoriChangeLabel, changeController, None, mode))
         } else {
-          Some(forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress, None))
+          Some(forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress, None, mode))
         }
       } else None
 
     Seq(
       emptyRow,
-      eori.map(eori => rowForEori(key, eoriLabel, eoriChangeLabel, changeController, Some(eori))),
-      address.map(address => forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress _, Some(address)))
+      eori.map(eori => rowForEori(key, eoriLabel, eoriChangeLabel, changeController, Some(eori), mode)),
+      address.map(address => forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress _, Some(address), mode))
     )
   }
+
+  private def actionItems(mode: Mode, item: ActionItem) =
+    if (mode == Mode.Print) Seq.empty
+    else Seq(item)
 
   private def extractAddress(address: Address) =
     Seq(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString("<br>")
 
-  private def rowForEori(key: String, eoriLabel: String, eoriChangeLabel: String, changeController: Call, maybeEori: Option[Eori])(
+  private def rowForEori(key: String, eoriLabel: String, eoriChangeLabel: String, changeController: Call, maybeEori: Option[Eori], mode: Mode)(
     implicit messages: Messages
   ) =
     SummaryListRow(
@@ -64,7 +70,8 @@ object EoriOrAddress {
       value = Value(content = maybeEori.map(eori => Text(eori.value)).getOrElse(Empty)),
       actions = Some(
         Actions(
-          items = Seq(
+          items = actionItems(
+            mode,
             ActionItem(href = changeController.url, content = Text(messages("site.change")), visuallyHiddenText = Some(messages(eoriChangeLabel)))
           )
         )
@@ -77,7 +84,8 @@ object EoriOrAddress {
     addressChangeLabel: String,
     changeController: Call,
     extractAddress: Address => String,
-    maybeAddress: Option[Address]
+    maybeAddress: Option[Address],
+    mode: Mode
   )(implicit messages: Messages) =
     SummaryListRow(
       classes = s"$key-address-row",
@@ -85,7 +93,8 @@ object EoriOrAddress {
       value = Value(content = maybeAddress.map(address => HtmlContent(extractAddress(address))).getOrElse(Empty)),
       actions = Some(
         Actions(
-          items = Seq(
+          items = actionItems(
+            mode,
             ActionItem(href = changeController.url, content = Text(messages("site.change")), visuallyHiddenText = Some(messages(addressChangeLabel)))
           )
         )

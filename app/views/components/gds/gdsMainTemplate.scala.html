@@ -76,6 +76,7 @@
         govukBackLink(BackLink(
         content = Text(back.title),
         attributes = Map("id" -> "back-link"),
+        classes = "govuk-!-display-none-print",
         href = back.call.url
     )))
 }

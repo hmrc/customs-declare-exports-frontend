@@ -37,6 +37,11 @@
       transport.meansOfTransportCrossingTheBorderType.isDefined
 }
 
+@actions(action: Actions) = @{
+    if(mode == Mode.Print) None
+    else Some(action)
+}
+
 @messagesForDepartureMeansOfTransport(transport: Transport) = @{
     (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
         case (Some(meansType), Some(meansId)) if meansId.nonEmpty => Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
@@ -63,7 +68,7 @@
                 value = Value(
                     content = Text(messages(s"declaration.summary.transport.departure.transportCode.${borderModeOfTransportCode.getCodeValue}"))
                 ),
-                actions = Some(Actions(
+                actions = actions(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(mode).url,
@@ -83,7 +88,7 @@
                   value = Value(
                       content = HtmlContent(messagesForDepartureMeansOfTransport(declarationData.transport).mkString("<br>"))
                   ),
-                  actions = Some(Actions(
+                  actions = actions(Actions(
                       items = Seq(
                           ActionItem(
                               href = controllers.declaration.routes.DepartureTransportController.displayPage(mode).url,
@@ -105,7 +110,7 @@
                     value = Value(
                         content = HtmlContent(messagesForBorderMeansOfTransport(declarationData.transport).mkString("<br>"))
                     ),
-                    actions = Some(Actions(
+                    actions = actions(Actions(
                         items = Seq(
                             ActionItem(
                                 href = controllers.declaration.routes.BorderTransportController.displayPage(mode).url,
@@ -127,7 +132,7 @@
                     value = Value(
                         content = Text(declarationData.transport.meansOfTransportCrossingTheBorderNationality.getOrElse(""))
                     ),
-                    actions = Some(Actions(
+                    actions = actions(Actions(
                         items = Seq(
                             ActionItem(
                                 href = controllers.declaration.routes.BorderTransportController.displayPage(mode).url,
@@ -148,7 +153,7 @@
                 value = Value(
                     content = Text(transportPayment.paymentMethod.map(code => messages(s"declaration.summary.transport.payment.$code")).getOrElse(""))
                 ),
-                actions = Some(Actions(
+                actions = actions(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.declaration.routes.TransportPaymentController.displayPage(mode).url,

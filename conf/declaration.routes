@@ -407,3 +407,7 @@ GET         /confirmation                        controllers.declaration.Confirm
 GET         /draft-saved                         controllers.declaration.ConfirmationController.displayDraftConfirmation()
 
 GET         /ead/:mrn                            controllers.pdf.EADController.generatePdf(mrn)
+
+# View
+
+GET         /previously-submitted-answers        controllers.declaration.AcceptedDeclarationController.displayPage()

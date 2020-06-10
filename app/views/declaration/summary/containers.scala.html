@@ -31,11 +31,19 @@
 @(mode: Mode, containers: Seq[Container])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @change(container: Container) = {
-    @changeLink(
-        messages("site.change"),
-        Some(messages("declaration.summary.container.change", container.id)),
-        controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)
-    )
+    @{
+        if(mode == Mode.Print) ""
+        else changeLink(
+            messages("site.change"),
+            Some(messages("declaration.summary.container.change", container.id)),
+            controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)
+        )
+    }
+}
+
+@actions(action: Actions) = @{
+    if(mode == Mode.Print) None
+    else Some(action)
 }
 
 @if(containers.nonEmpty){
@@ -74,7 +82,7 @@
                 content = Text(messages("declaration.summary.transport.containers"))
             ),
             value = Value(Text(messages("site.no"))),
-            actions = Some(Actions(
+            actions = actions(Actions(
                 items = Seq(
                     ActionItem(
                         href = controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode).url,

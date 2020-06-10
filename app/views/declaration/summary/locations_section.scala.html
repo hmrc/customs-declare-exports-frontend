@@ -26,6 +26,12 @@
 @hasLocations(locations: Locations) = @{
     locations.goodsLocation.isDefined || locations.officeOfExit.isDefined
 }
+
+@actions(action: Actions) = @{
+    if(mode == Mode.Print) None
+    else Some(action)
+}
+
 @if(hasLocations(declarationData.locations)) {
     @summaryList("declaration-locations-summary", Some(messages("declaration.summary.locations")), Seq(
         declarationData.locations.goodsLocation.map(goodsLocation =>
@@ -37,7 +43,7 @@
                 value = Value(
                     content = Text(goodsLocation.code)
                 ),
-                actions = Some(Actions(
+                actions = actions(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.declaration.routes.LocationController.displayPage(mode).url,
@@ -56,7 +62,7 @@
                 value = Value(
                     content = Text(officeOfExit.officeId.getOrElse(""))
                 ),
-                actions = Some(Actions(
+                actions = actions(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.declaration.routes.OfficeOfExitController.displayPage(mode).url,

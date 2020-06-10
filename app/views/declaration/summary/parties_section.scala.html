@@ -32,6 +32,11 @@
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
+@actionItems(item: ActionItem) = @{
+    if(mode == Mode.Print) Seq.empty
+    else Seq(item)
+}
+
 @eoriOrAddress(key: String, eori: Option[Eori], address: Option[Address], change: Call, isEoriDefault: Boolean = true) = @{
     EoriOrAddress.rows(
         key = key,
@@ -42,6 +47,7 @@
         addressLabel = s"declaration.summary.parties.$key.address",
         addressChangeLabel = s"declaration.summary.parties.$key.address.change",
         changeController = change,
+        mode = mode,
         isEoriDefault = isEoriDefault
     )
 }
@@ -93,7 +99,7 @@
                     content = Text(messages(s"declaration.summary.parties.declarantIsExporter.${isExporter.answer.toLowerCase}"))
                 ),
                 actions = Some(Actions(
-                    items = Seq(
+                    items = actionItems(
                         ActionItem(
                             href = controllers.declaration.routes.DeclarantExporterController.displayPage(mode).url,
                             content = Text(messages("site.change")),
@@ -110,7 +116,7 @@
                 key = Key(content = Text(messages("declaration.summary.parties.eidr"))),
                 value = Value(content = Text(messages(s"declaration.summary.parties.eidr.${isEidr.answer.toLowerCase}"))),
                 actions = Some(Actions(
-                    items = Seq(
+                    items = actionItems(
                         ActionItem(
                             href = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage(mode).url,
                             content = Text(messages("site.change")),
@@ -127,7 +133,7 @@
                 key = Key(content = Text(messages("declaration.summary.parties.personPresentingGoods"))),
                 value = Value(content = Text(personPresentingGoods.eori.value)),
                 actions = Some(Actions(
-                    items = Seq(
+                    items = actionItems(
                         ActionItem(
                             href = controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode).url,
                             content = Text(messages("site.change")),
@@ -155,7 +161,7 @@
                     content = Text(exs.isExs)
                 ),
                 actions = Some(Actions(
-                    items = Seq(
+                    items = actionItems(
                         ActionItem(
                             href = controllers.declaration.routes.IsExsController.displayPage(mode).url,
                             content = Text(messages("site.change")),
@@ -176,7 +182,7 @@
                     content = Text(agent.map(answer => messages(s"declaration.summary.parties.representative.agent.${answer.toLowerCase}")).getOrElse(""))
                 ),
                 actions = Some(Actions(
-                    items = Seq(
+                    items = actionItems(
                         ActionItem(
                             href = controllers.declaration.routes.RepresentativeAgentController.displayPage(mode).url,
                             content = Text(messages("site.change")),
@@ -204,7 +210,7 @@
                     content = Text(statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code")).getOrElse(""))
                 ),
                 actions = Some(Actions(
-                    items = Seq(
+                    items = actionItems(
                         ActionItem(
                             href = controllers.declaration.routes.RepresentativeStatusController.displayPage(mode).url,
                             content = Text(messages("site.change")),
