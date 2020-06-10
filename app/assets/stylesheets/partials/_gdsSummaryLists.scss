@@ -3,6 +3,10 @@
 CSS Classes to support GDS Design System SummaryLists as implemented by the Exports Prototype
 ====================================
 */
+.govuk-routing-countries--actions {
+  width: 40%;
+}
+
 .govuk-summary-list__actions-list-item:last-child {
   margin-left: 10px;
 }
