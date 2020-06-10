@@ -26,7 +26,7 @@ import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.requests.ExportsSessionKeys
-import models.{DeclarationStatus, ExportsDeclaration, Mode}
+import models._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
@@ -34,7 +34,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
+import unit.base.ControllerWithoutFormSpec
 import views.html.{declaration_information, submissions}
 
 import scala.concurrent.Future
@@ -61,7 +61,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     stubMessagesControllerComponents(),
     submissionsPage,
     declarationInformationPage
-  )(ec)
+  )(ec, config)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -69,13 +69,14 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     authorizedUser()
     when(declarationInformationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(submissionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(config.paginationItemsPerPage).thenReturn(Page.DEFAULT_MAX_SIZE)
   }
 
   override protected def afterEach(): Unit =
     reset(declarationInformationPage, mockCustomsDeclareExportsConnector)
 
-  def submissionsPageCaptor: Seq[(Submission, Seq[Notification])] = {
-    val captor = ArgumentCaptor.forClass(classOf[Seq[(Submission, Seq[Notification])]])
+  def submissionsPagesElementsCaptor: SubmissionsPagesElements = {
+    val captor = ArgumentCaptor.forClass(classOf[SubmissionsPagesElements])
     verify(submissionsPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
@@ -100,10 +101,10 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
 
         val result = controller.displayListOfSubmissions()(getRequest())
 
-        val expectedArgument = Seq((submission, Seq(notification)))
+        val expectedOtherSubmissionsPassed = Paginated(Seq((submission, Seq(notification))), Page(), 1)
 
         status(result) mustBe OK
-        submissionsPageCaptor mustBe expectedArgument
+        submissionsPagesElementsCaptor.otherSubmissions mustBe expectedOtherSubmissionsPassed
       }
 
       "display declaration with notification method is invoked" in {

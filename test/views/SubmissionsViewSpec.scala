@@ -16,7 +16,7 @@
 
 package views
 
-import java.time.{LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 
 import base.Injector
 import controllers.routes
@@ -25,6 +25,7 @@ import forms.Choice.AllowedChoiceValues.Submissions
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
+import models.{Page, Paginated, SubmissionsPagesElements}
 import org.jsoup.nodes.Element
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.stubMessages
@@ -40,8 +41,13 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
   private val zone: ZoneId = ZoneId.of("UTC")
   private val page = instanceOf[submissions]
-  private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty, messages: Messages = stubMessages()): Html =
-    page(data)(request, messages)
+  private def createView(
+    rejectedSubmissions: Paginated[(Submission, Seq[Notification])] = Paginated(Seq.empty, Page(), 0),
+    actionSubmissions: Paginated[(Submission, Seq[Notification])] = Paginated(Seq.empty, Page(), 0),
+    otherSubmissions: Paginated[(Submission, Seq[Notification])] = Paginated(Seq.empty, Page(), 0),
+    messages: Messages = stubMessages()
+  ): Html =
+    page(SubmissionsPagesElements(rejectedSubmissions, actionSubmissions, otherSubmissions))(request, messages)
 
   "Submission View" should {
 
@@ -111,7 +117,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       )
 
       "all fields are populated with timestamp before BST" in {
-        val view = tab("other", createView(Seq(submission -> Seq(acceptedNotification))))
+        val view = tab("other", createView(otherSubmissions = Paginated(Seq(submission -> Seq(acceptedNotification)), Page(), 1)))
 
         tableCell(view)(1, 0).text() mustBe "ducr" + "submissions.hidden.text"
         tableCell(view)(1, 1).text() mustBe "lrn"
@@ -133,7 +139,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
           ducr = Some("ducr"),
           actions = Seq(bstActionSubmission, actionCancellation)
         )
-        val view = tab("other", createView(Seq(bstSubmission -> Seq(acceptedNotification))))
+        val view = tab("other", createView(otherSubmissions = Paginated(Seq(bstSubmission -> Seq(acceptedNotification)), Page(), 1)))
 
         tableCell(view)(1, 0).text() mustBe "ducr" + "submissions.hidden.text"
         tableCell(view)(1, 1).text() mustBe "lrn"
@@ -146,7 +152,8 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
       "optional fields are unpopulated" in {
         val submissionWithOptionalFieldsEmpty = submission.copy(ducr = None, mrn = None)
-        val view = tab("other", createView(Seq(submissionWithOptionalFieldsEmpty -> Seq(acceptedNotification))))
+        val view =
+          tab("other", createView(otherSubmissions = Paginated(Seq(submissionWithOptionalFieldsEmpty -> Seq(acceptedNotification)), Page(), 1)))
 
         tableCell(view)(1, 0).text() mustBe "submissions.hidden.text"
         tableCell(view)(1, 1).text() mustBe "lrn"
@@ -158,13 +165,13 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       }
 
       "submission status is 'pending' due to missing notification" in {
-        val view = tab("other", createView(Seq(submission -> Seq.empty)))
+        val view = tab("other", createView(otherSubmissions = Paginated(Seq(submission -> Seq.empty), Page(), 1)))
 
         tableCell(view)(1, 4).text() mustBe "Pending"
       }
 
       "submission has link when contains rejected notification" in {
-        val view = tab("rejected", createView(Seq(submission -> Seq(rejectedNotification))))
+        val view = tab("rejected", createView(rejectedSubmissions = Paginated(Seq(submission -> Seq(rejectedNotification)), Page(), 1)))
 
         tableCell(view)(1, 0).text() must include(submission.ducr.get)
         tableCell(view)(1, 0).toString must include(routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid).url)
@@ -172,7 +179,8 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
       "submission date is unknown due to missing submit action" in {
         val submissionWithMissingSubmitAction = submission.copy(actions = Seq(actionCancellation))
-        val view = tab("other", createView(Seq(submissionWithMissingSubmitAction -> Seq(acceptedNotification))))
+        val view =
+          tab("other", createView(otherSubmissions = Paginated(Seq(submissionWithMissingSubmitAction -> Seq(acceptedNotification)), Page(), 1)))
 
         tableCell(view)(1, 3).text() mustBe empty
       }
@@ -180,11 +188,9 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       "submissions are shown on correct tabs" in {
         val view =
           createView(
-            Seq(
-              submissionWithDucr("ducr_accepted") -> Seq(acceptedNotification),
-              submissionWithDucr("ducr_rejected") -> Seq(rejectedNotification),
-              submissionWithDucr("ducr_action") -> Seq(actionNotification)
-            )
+            rejectedSubmissions = Paginated(Seq(submissionWithDucr("ducr_rejected") -> Seq(rejectedNotification)), Page(), 1),
+            actionSubmissions = Paginated(Seq(submissionWithDucr("ducr_action") -> Seq(actionNotification)), Page(), 1),
+            otherSubmissions = Paginated(Seq(submissionWithDucr("ducr_accepted") -> Seq(acceptedNotification)), Page(), 1)
           )
 
         tableCell(tab("other", view))(1, 0).text() must include("ducr_accepted")
@@ -194,7 +200,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
       "submissions without status are shown on 'other' tab" in {
         val view =
-          createView(Seq(submissionWithDucr("ducr_pending") -> Seq.empty))
+          createView(otherSubmissions = Paginated(Seq(submissionWithDucr("ducr_pending") -> Seq.empty), Page(), 1))
 
         tableCell(tab("other", view))(1, 0).text() must include("ducr_pending")
       }

@@ -16,7 +16,7 @@ GET         /submissions/:id/rejected-notifications        controllers.RejectedN
 
 # Submissions
 
-GET         /submissions                                   controllers.SubmissionsController.displayListOfSubmissions()
+GET         /submissions                                   controllers.SubmissionsController.displayListOfSubmissions(page: models.SubmissionsPages ?= models.SubmissionsPages())
 
 GET         /submissions/:id/information                   controllers.SubmissionsController.displayDeclarationWithNotifications(id: String)
 

@@ -16,15 +16,19 @@
 
 package controllers
 
+import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.AuthAction
 import controllers.util.SubmissionDisplayHelper
+import controllers.util.SubmissionDisplayHelper.filterSubmissions
 import javax.inject.Inject
 import models.Mode.ErrorFix
+import models.declaration.notifications.Notification
+import models.declaration.submissions.{Submission, SubmissionStatus}
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import models.responses.FlashKeys
-import models.{ExportsDeclaration, Mode}
+import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.model.FieldNamePointer
@@ -39,18 +43,19 @@ class SubmissionsController @Inject()(
   mcc: MessagesControllerComponents,
   submissionsPage: submissions,
   declarationInformationPage: declaration_information
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayListOfSubmissions(): Action[AnyContent] = authenticate.async { implicit request =>
-    for {
-      submissions <- customsDeclareExportsConnector.fetchSubmissions()
-      notifications <- customsDeclareExportsConnector.fetchNotifications()
+  def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] =
+    authenticate.async { implicit request =>
+      for {
+        submissions <- customsDeclareExportsConnector.fetchSubmissions()
+        notifications <- customsDeclareExportsConnector.fetchNotifications()
 
-      result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
+        result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
 
-    } yield Ok(submissionsPage(result))
-  }
+      } yield Ok(submissionsPage(SubmissionsPagesElements(result, submissionsPages)))
+    }
 
   def displayDeclarationWithNotifications(id: String): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.findSubmission(id).flatMap {
