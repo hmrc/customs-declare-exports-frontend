@@ -39,7 +39,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
   trait SetUp {
     val mockAuditService = mock[AuditService]
     val cancelDeclarationPage = instanceOf[cancel_declaration]
-    val cancelConfirmationPage = new cancellation_confirmation_page(mainTemplate)
+    val cancelConfirmationPage = instanceOf[cancellation_confirmation_page]
 
     val controller = new CancelDeclarationController(
       mockAuthAction,

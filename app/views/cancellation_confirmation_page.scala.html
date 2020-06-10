@@ -14,21 +14,31 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukPanel : GovukPanel,
+        govukButton: GovukButton,
+        govukInsetText : GovukInsetText,
+        link: link,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-  title = Title("cancellation.confirmationPage.title")
-) {
-  <div>
-      <div class="govuk-box-highlight">
-          <h1 class="heading-xlarge">
-              @messages("cancellation.confirmationPage.message")
-          </h1>
-      </div>
-      @components.button_link("site.backToChoice", "/customs-declare-exports/choice")
-  </div>
+@govukLayout(title = Title("cancellation.confirmationPage.title")) {
+
+    @govukPanel(Panel(
+        title = Text(messages("cancellation.confirmationPage.message"))
+    ))
+
+    <p class="govuk-body">
+        @link(
+            id = Some("decision-link"),
+            text = messages("site.backToChoice"),
+            call = routes.ChoiceController.displayPage())
+    </p>
 }

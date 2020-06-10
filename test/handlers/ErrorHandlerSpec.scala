@@ -18,6 +18,7 @@ package handlers
 
 import java.net.URLEncoder
 
+import base.Injector
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import org.scalatest.OptionValues
@@ -32,11 +33,11 @@ import views.html.error_template
 
 import scala.concurrent.Future
 
-class ErrorHandlerSpec extends UnitSpec with Stubs with OptionValues {
+class ErrorHandlerSpec extends UnitSpec with Stubs with OptionValues with Injector {
 
   SharedMetricRegistries.clear()
 
-  val errorPage = new error_template(govukWrapper)
+  val errorPage = instanceOf[error_template]
 
   val injector = GuiceApplicationBuilder()
     .configure(
@@ -55,11 +56,11 @@ class ErrorHandlerSpec extends UnitSpec with Stubs with OptionValues {
 
     "standardErrorTemplate" in {
 
-      val result = errorHandler.standardErrorTemplate("Page Title", "Heading", "Message")(request).body
+      val result = errorHandler.standardErrorTemplate("title", "heading", "message")(request).body
 
-      result must include("Page Title")
-      result must include("Heading")
-      result must include("Message")
+      result must include("title")
+      result must include("heading")
+      result must include("message")
     }
   }
 
