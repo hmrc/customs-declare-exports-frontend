@@ -29,6 +29,11 @@
 
 @(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
+@actions(action: Actions) = @{
+    if(mode == Mode.Print) None
+    else Some(action)
+}
+
 @actorPartyType(actor: DeclarationAdditionalActors) = @{
     actor.partyType.map(partyType => messages(s"declaration.partyType.$partyType")).getOrElse("")
 }
@@ -38,11 +43,14 @@
 }
 
 @change(actor: DeclarationAdditionalActors) = {
-    @changeLink(
-        messages("site.change"),
-        Some(messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor))),
-        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)
-    )
+    @{
+        if(mode == Mode.Print) ""
+        else changeLink(
+            messages("site.change"),
+            Some(messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor))),
+            controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)
+        )
+    }
 }
 
 @if(additionalActors.isEmpty) {
@@ -55,7 +63,7 @@
             value = Value(
                 content = Text(messages("site.no"))
             ),
-            actions = Some(Actions(
+            actions = actions(Actions(
                 items = Seq(
                     ActionItem(
                         href = controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode).url,

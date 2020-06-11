@@ -45,12 +45,28 @@
     }
 }
 
+
+@renderDeclarationLinks = {
+    <ul class="govuk-list">
+        @if(eadDocumentConfig.isEadEnabled) {
+            @createEADLink
+        }
+        @viewDeclarationLink
+    </ul>
+}
+
 @createEADLink = {
     @submission.mrn.map { mrn =>
-        <div class="govuk-body">
+        <li>
             <a class="govuk-link govuk-link--no-visited-state" href="@controllers.pdf.routes.EADController.generatePdf(mrn)" id="generate-ead">@messages("submissions.generateEAD")</a>
-        </div>
+        </li>
     }
+}
+
+@viewDeclarationLink = {
+    <li>
+        <a class="govuk-link govuk-link--no-visited-state" href="@routes.SubmissionsController.viewDeclaration(submission.uuid)" id="view-declaration">@messages("submissions.viewDeclaration")</a>
+    </li>
 }
 
 @govukLayout(
@@ -94,8 +110,8 @@
             ).filterNot(_.value.content == Empty)
         ))
 
-        @if(eadDocumentConfig.isEadEnabled) {
-            @createEADLink
+        @if(notifications.exists(_.status == SubmissionStatus.ACCEPTED)) {
+            @renderDeclarationLinks
         }
 
         @if(notifications.nonEmpty) {

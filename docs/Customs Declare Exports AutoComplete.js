@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.54
+// @version      1.55
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -44,6 +44,7 @@ function dropDown() {
     selectList.style.position = "absolute"
     selectList.style.top = "100px"
     selectList.id = "mySelect";
+    selectList.className = "govuk-!-display-none-print"
     panel.appendChild(selectList);
 
     // create and append the options
@@ -70,9 +71,9 @@ function createQuickButton() {
     let button = document.createElement('button');
     button.id="quickSubmit";
     if (!!document.getElementById('global-header')) {
-        button.classList.add('button-start');
+        button.classList.add('button-start', 'govuk-!-display-none-print');
     } else {
-        button.classList.add('govuk-button');
+        button.classList.add('govuk-button','govuk-!-display-none-print');
     }
     button.style.position = "absolute"
     button.style.top = "50px"

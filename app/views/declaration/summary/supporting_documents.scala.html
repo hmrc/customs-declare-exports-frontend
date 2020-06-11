@@ -31,11 +31,19 @@
 @(mode: Mode, itemId: String, itemNo: Int, supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @change() = {
-    @changeLink(
-        messages("site.change"),
-        Some(messages("declaration.summary.items.item.supportingDocuments.change", itemNo)),
-        controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
-    )
+    @{
+        if(mode == Mode.Print) ""
+        else changeLink(
+            messages("site.change"),
+            Some(messages("declaration.summary.items.item.supportingDocuments.change", itemNo)),
+            controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
+        )
+    }
+}
+
+@actions(action: Actions) = @{
+    if(mode == Mode.Print) None
+    else Some(action)
 }
 
 @if(supportingDocuments.nonEmpty){
@@ -72,7 +80,7 @@
             key = Key(
                 content = Text(messages("declaration.summary.items.item.supportingDocuments"))
             ),
-            actions = Some(Actions(
+            actions = actions(Actions(
                 items = Seq(
                     ActionItem(
                         href = controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId).url,

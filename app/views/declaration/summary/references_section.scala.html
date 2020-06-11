@@ -22,6 +22,11 @@
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
+@actions(action: Actions) = @{
+  if(mode == Mode.Print) None
+  else Some(action)
+}
+
 @summaryList("declaration-references-summary", Some(messages("declaration.summary.references")), Seq(
         Some(SummaryListRow(
             classes = "declarationType-row",
@@ -31,7 +36,7 @@
             value = Value(
                 content = Text(declarationData.`type`.toString().toLowerCase().capitalize)
             ),
-            actions = Some(Actions(
+            actions = actions(Actions(
                 items = Seq(
                     ActionItem(
                         href = controllers.declaration.routes.DeclarationChoiceController.displayPage(mode).url,
@@ -50,7 +55,7 @@
                 value = Value(
                     content = Text(if(dispatchLocation.isOutsideEU) messages("site.yes") else messages("site.no"))
                 ),
-                actions = Some(Actions(
+                actions = actions(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.declaration.routes.DispatchLocationController.displayPage(mode).url,
@@ -70,7 +75,7 @@
                 value = Value(
                     content = Text(messages(s"declaration.summary.references.additionalType.${decType.toString}"))
                 ),
-                actions = Some(Actions(
+                actions = actions(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode).url,
@@ -90,7 +95,7 @@
                 value = Value(
                     content = Text(refs.ducr.ducr)
                 ),
-                actions = Some(Actions(
+                actions = actions(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.declaration.routes.ConsignmentReferencesController.displayPage(mode).url,
@@ -110,7 +115,7 @@
                 value = Value(
                     content = Text(refs.lrn.value)
                 ),
-                actions = Some(Actions(
+                actions = actions(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.declaration.routes.ConsignmentReferencesController.displayPage(mode).url,

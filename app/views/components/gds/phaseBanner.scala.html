@@ -28,5 +28,6 @@
 
 @govukPhaseBanner(PhaseBanner(
     tag = Some(Tag(content = Text(phase))),
-    content = HtmlContent(feedbackBanner)
+    content = HtmlContent(feedbackBanner),
+    classes ="govuk-!-display-none-print"
 ))

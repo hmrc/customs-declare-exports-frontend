@@ -30,12 +30,20 @@
 
 @(mode: Mode, itemId: String, itemNo: Int, packageInformation: Seq[PackageInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
+@actions(action: Actions) = @{
+    if(mode == Mode.Print) None
+    else Some(action)
+}
+
 @change(information: PackageInformation) = {
-  @changeLink(
-        messages("site.change"),
-        Some(messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)),
-        controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)
-    )
+    @{
+        if(mode == Mode.Print) ""
+        else changeLink(
+            messages("site.change"),
+            Some(messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)),
+            controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)
+        )
+    }
 }
 
 @if(packageInformation.nonEmpty) {
@@ -80,7 +88,7 @@
             key = Key(
                 content = Text(messages("declaration.summary.items.item.packageInformation"))
             ),
-            actions = Some(Actions(
+            actions = actions(Actions(
                 items = Seq(
                     ActionItem(
                         href = controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId).url,

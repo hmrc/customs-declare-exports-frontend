@@ -34,3 +34,15 @@ to these pages. This is to ensure the margin-bottom stays consistent across page
 .govuk-fieldset__legend {
   margin-bottom: 30px;
 }
+
+/*
+====================================
+CSS to support print media.  Hides all links (including sign-out link on the header), removes the footer section
+from the view and the page (url/page number, etc.)
+====================================
+*/
+@media print {
+  @page { margin:0 }
+  .govuk-link { display: none; }
+  footer { display: none; }
+}
