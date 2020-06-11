@@ -99,6 +99,8 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, eadConfigDisabled, sfusConfigDisabled)
 
   private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications)(request, messages)
+  private val viewWithFeaturesNotAccepted =
+    declarationInformationPageWithFeatures(submission, Seq(rejectedNotification, additionalDocumentsNotification))(request, messages)
 
   "Declaration information" should {
 
@@ -157,6 +159,32 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         val view = declarationInformationPageWithoutFeatures(submission, notifications)(request, messages)
 
         view.getElementById("generate-ead") mustBe null
+      }
+
+      "declaration is not accepted" in {
+
+        val view = viewWithFeaturesNotAccepted
+
+        view.getElementById("generate-ead") mustBe null
+      }
+    }
+
+    "contains view declaration link" when {
+
+      "declaration is accepted" in {
+
+        val viewDeclarationLink = viewWithFeatures.getElementById("view-declaration")
+
+        viewDeclarationLink.text() mustBe "submissions.viewDeclaration"
+        viewDeclarationLink must haveHref(controllers.routes.SubmissionsController.viewDeclaration(submission.uuid))
+      }
+    }
+
+    "doesn't contain view declaration link" when {
+
+      "declaration is not accepted" in {
+
+        viewWithFeaturesNotAccepted.getElementById("view-declaration") mustBe null
       }
     }
 

@@ -15,13 +15,12 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes
-@import forms.declaration.LegalDeclaration
 @import models.Mode
 @import models.requests.JourneyRequest
 @import views.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary._
+@import models.declaration.notifications.Notification
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -38,7 +37,7 @@
         transport_section: transport_section
 )
 
-@()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(acceptedNotification: Notification)(implicit request: JourneyRequest[_], messages: Messages)
 
 @backLink = @{request.declarationId match {
     case Some(id) => controllers.routes.SubmissionsController.displayDeclarationWithNotifications(id)
@@ -58,7 +57,7 @@
 
     @pageTitle(messages("declaration.summary.accepted-header"))
 
-    @acceptedSection(request.cacheModel)
+    @acceptedSection(acceptedNotification)
 
     @printThisPage
 

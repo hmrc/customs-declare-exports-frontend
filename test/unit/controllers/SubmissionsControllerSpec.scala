@@ -34,7 +34,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
+import unit.base.ControllerWithoutFormSpec
 import views.html.{declaration_information, submissions}
 
 import scala.concurrent.Future
@@ -133,6 +133,14 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe controllers.routes.SubmissionsController.displayListOfSubmissions().url
+      }
+
+      "viewing a declaration" in {
+        val result = controller.viewDeclaration("some-id")(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe controllers.declaration.routes.AcceptedDeclarationController.displayPage().url
+        session(result).get(ExportsSessionKeys.declarationId) mustBe Some("some-id")
       }
     }
   }

@@ -17,10 +17,12 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
+@import models.declaration.notifications.Notification
+@import views.ViewDates
 
 @this(summaryList: summary_list)
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(acceptedNotification: Notification)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @summaryList("declaration-accepted-summary", None, Seq(
         Some(SummaryListRow(
@@ -29,7 +31,7 @@
                 content = Text(messages("declaration.summary.accepted.mrn"))
             ),
             value = Value(
-                content = Text("SOME-MRN")
+                content = Text(acceptedNotification.mrn)
             )
         )),
         Some(SummaryListRow(
@@ -38,7 +40,7 @@
                 content = Text(messages("declaration.summary.accepted.date"))
             ),
             value = Value(
-                content = Text("SOME-DATE")
+                content = Text(ViewDates.submissionDateTimeFormatter.format(acceptedNotification.dateTimeIssuedInUK))
             )
         ))
     )

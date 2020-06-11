@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import forms.common.{Address, Eori}
+import models.Mode
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, HtmlContent, Text}
 import views.declaration.spec.UnitViewSpec
 
@@ -35,7 +36,7 @@ class EoriOrAddressSpec extends UnitViewSpec {
   val eoriChangeLabel = "eori-change"
   val addressChangeLabel = "address-change"
 
-  def eoriOrAddress(eori: Option[Eori], address: Option[Address], isEoriDefault: Boolean = false) =
+  def eoriOrAddress(eori: Option[Eori], address: Option[Address], isEoriDefault: Boolean = false, mode: Mode = Mode.Normal) =
     EoriOrAddress
       .rows(
         key = "test",
@@ -46,6 +47,7 @@ class EoriOrAddressSpec extends UnitViewSpec {
         addressLabel = addressLabel,
         addressChangeLabel = addressChangeLabel,
         changeController = controllers.declaration.routes.ConsigneeDetailsController.displayPage(),
+        mode = mode,
         isEoriDefault = isEoriDefault
       )
       .flatten
@@ -91,6 +93,18 @@ class EoriOrAddressSpec extends UnitViewSpec {
       rows(0).value.content mustBe Text("GB12345678")
       rows(1).key.content mustBe Text(addressLabel)
       rows(1).value.content mustBe HtmlContent(s"$fullName<br>$street<br>$city<br>$postCode<br>$country")
+    }
+
+    "return action items for default mode" in {
+      val rows = eoriOrAddress(Some(eori), Some(address))
+      rows(0).actions.map(_.items).get mustNot be(Seq.empty)
+      rows(1).actions.map(_.items).get mustNot be(Seq.empty)
+    }
+
+    "return no action items if mode is 'Print'" in {
+      val rows = eoriOrAddress(Some(eori), Some(address), mode = Mode.Print)
+      rows(0).actions.map(_.items).get mustBe Seq.empty
+      rows(1).actions.map(_.items).get mustBe Seq.empty
     }
   }
 }

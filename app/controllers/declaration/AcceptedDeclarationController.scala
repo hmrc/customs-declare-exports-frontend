@@ -17,27 +17,34 @@
 package controllers.declaration
 
 import config.AppConfig
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import javax.inject.Inject
+import models.declaration.submissions.SubmissionStatus
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.summary._
+import views.html.declaration.summary.accepted_declaration_page
 
 import scala.concurrent.ExecutionContext
 
 class AcceptedDeclarationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  override val exportsCacheService: ExportsCacheService,
+  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   view: accepted_declaration_page
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(view())
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsDeclareExportsConnector.findNotifications(request.cacheModel.id).map { notifications =>
+      notifications.find(_.status == SubmissionStatus.ACCEPTED) match {
+        case Some(acceptedNotification) => Ok(view(acceptedNotification))
+        case _                          => Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
+      }
+    }
+
   }
 
 }

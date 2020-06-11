@@ -46,7 +46,7 @@
 }
 
 
-@links = {
+@renderDeclarationLinks = {
     <ul class="govuk-list">
         @if(eadDocumentConfig.isEadEnabled) {
             @createEADLink
@@ -106,20 +106,13 @@
                         content = submission.mrn.map(HtmlContent(_)).getOrElse(Empty)
                     ),
                     classes = "submission__mrn"
-                ),
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("uuid"))
-                    ),
-                    value = Value(
-                        content = HtmlContent(submission.uuid)
-                    ),
-                    classes = "submission__mrn"
                 )
             ).filterNot(_.value.content == Empty)
         ))
 
-        @links
+        @if(notifications.exists(_.status == SubmissionStatus.ACCEPTED)) {
+            @renderDeclarationLinks
+        }
 
         @if(notifications.nonEmpty) {
             <div class="govuk-grid-column" id ="declarationHistory">
