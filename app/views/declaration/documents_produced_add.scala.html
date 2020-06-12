@@ -1,0 +1,189 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import controllers.navigation.{Navigator, ItemId}
+@import models.requests.JourneyRequest
+@import forms.declaration.additionaldocuments.DocumentWriteOff._
+@import forms.declaration.additionaldocuments.DocumentsProduced
+@import forms.declaration.additionaldocuments.DocumentsProduced._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import config.AppConfig
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
+
+@this(govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukInput: GovukInput,
+        addButton: addButton,
+        removeButton: removeButton,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        exportsInputTextArea: exportsInputTextArea,
+        exportsDateInput: exportsDateInput,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        appConfig: AppConfig,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+
+@(mode: Mode, itemId: String, form: Form[DocumentsProduced])(implicit request: JourneyRequest[_], messages: Messages)
+
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.addDocument.hint.traderTariff.link")</a>}
+@fourDigitCodeLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.addDocument.hint.fourDigitCode.link")</a>}
+
+@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
+
+@tariffBody = { @components.tariff_body_partial(messages("declaration.type.documentProcudedListItemOne"), messages("declaration.type.documentProcudedListItemTwo"))(tariffBodyDesc)}
+
+@measurementInput(field: Field, labelKey: String, inputClasses: String) = {
+    @govukInput(Input(
+        id = field.id,
+        name = field.name,
+        value = field.value,
+        label = Label(content = Text(messages(labelKey)), classes = "govuk-label"),
+        classes = s"$inputClasses ${if(field.hasErrors) "govuk-input--error"}"
+    ))
+}
+
+@measurementUnitField = @{form(s"$documentWriteOffKey.$measurementUnitKey")}
+@qualifierField = @{form(s"$documentWriteOffKey.$qualifierKey")}
+@measurementErrors = @{measurementUnitField.errors ++ qualifierField.errors}
+
+@measurementUnitAndQualifierContent = {
+
+    <span class="govuk-hint">
+        @Html(messages("declaration.addDocument.measurementUnit.hint"))
+    </span>
+
+    @measurementErrors.map { error =>
+        <span class="govuk-error-message">
+            <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
+            @messages(error.message, error.args: _*)
+        </span>
+    }
+
+    <div class="govuk-date-input">
+        <div class="govuk-date-input__item">
+        @measurementInput(
+            field = measurementUnitField,
+            labelKey = "declaration.addDocument.measurementUnit",
+            inputClasses = "govuk-input--width-4"
+        )
+        </div>
+        <div class="govuk-date-input__item">
+        @measurementInput(
+            field = qualifierField,
+            labelKey = "declaration.addDocument.qualifier",
+            inputClasses = "govuk-input--width-2"
+        )
+        </div>
+    </div>
+}
+
+@measurementUnitAndQualifier = {
+      <div class="govuk-form-group @if(measurementErrors.nonEmpty){govuk-form-group--error}">
+
+          @govukFieldset(Fieldset(
+              legend = Some(Legend(
+                  content = Text(messages("declaration.addDocument.measurementUnit.header")),
+                  classes = "govuk-fieldset__legend--m"
+              )),
+              attributes = Map("id" -> "measurementUnitAndQualifier"),
+              html = HtmlFormat.fill(immutable.Seq(
+                  measurementUnitAndQualifierContent
+              )
+              )))
+      </div>
+}
+
+@pageHint = {
+    <span class="govuk-hint">
+        @Html(messages("declaration.addDocument.hint", tradeTariffLink, fourDigitCodeLink))
+    </span>
+}
+
+@govukLayout(
+    title = Title("declaration.addDocument.title", "supplementary.summary.yourReferences.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentsProduced, mode, ItemId(itemId))))) {
+
+    @formHelper(action = DocumentsProducedAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("supplementary.summary.yourReferences.header"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.addDocument.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                pageHint,
+                exportsInputText(
+                    field = form(documentTypeCodeKey),
+                    labelKey = "declaration.addDocument.documentTypeCode",
+                    hintKey = Some("declaration.addDocument.documentTypeCode.hint"),
+                    inputClasses = Some("govuk-input--width-4")
+                ),
+                exportsInputText(
+                    field = form(documentIdentifierKey),
+                    labelKey = "declaration.addDocument.documentIdentifier",
+                    hintKey = Some("declaration.addDocument.documentIdentifier.hint"),
+                    inputClasses = Some("govuk-input--width-30")
+                ),
+                exportsInputText(
+                    field = form(documentStatusKey),
+                    labelKey = "declaration.addDocument.documentStatus",
+                    hintKey = Some("declaration.addDocument.documentStatus.hint"),
+                    inputClasses = Some("govuk-input--width-2")
+                ),
+                exportsInputText(
+                    field = form(documentStatusReasonKey),
+                    labelKey = "declaration.addDocument.documentStatusReason",
+                    hintKey = Some("declaration.addDocument.documentStatusReason.hint"),
+                    inputClasses = Some("govuk-input--width-30")
+                ),
+                exportsInputTextArea(
+                    field = form(issuingAuthorityNameKey),
+                    labelKey = "declaration.addDocument.issuingAuthorityName",
+                    hintKey = Some("declaration.addDocument.issuingAuthorityName.hint"),
+                    inputClasses = Some("govuk-input--width-20")
+                ),
+                exportsDateInput(
+                    fieldName = dateOfValidityKey,
+                    form = form,
+                    labelKey = "declaration.addDocument.dateOfValidity",
+                    hintKey = Some("declaration.addDocument.dateOfValidity.hint")
+                ),
+                measurementUnitAndQualifier,
+                exportsInputText(
+                    field = form(s"$documentWriteOffKey.$documentQuantityKey"),
+                    labelKey = "declaration.addDocument.documentQuantity",
+                    hintKey = Some("declaration.addDocument.documentQuantity.hint"),
+                    inputClasses = Some("govuk-input--width-20")
+                ),
+                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                saveButtons()
+            ))
+        ))
+
+    }
+}

@@ -19,7 +19,10 @@ package models.declaration
 import forms.declaration.additionaldocuments.DocumentsProduced
 import play.api.libs.json.Json
 
-case class DocumentsProducedData(documents: Seq[DocumentsProduced])
+case class DocumentsProducedData(documents: Seq[DocumentsProduced]){
+
+  def isEmpty: Boolean = documents.isEmpty
+}
 
 object DocumentsProducedData {
   implicit val format = Json.format[DocumentsProducedData]

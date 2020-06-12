@@ -19,7 +19,6 @@
 @import forms.declaration.PackageInformation
 @import services.PackageTypes
 @import models.requests.JourneyRequest
-@import forms.common.YesNoAnswer.YesNoAnswers
 @import views.{BackButton, Title}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
@@ -39,6 +38,7 @@
     pageTitle: pageTitle,
     exportsInputText: exportsInputText,
     tariffDetails: tariffDetails,
+    addAnotherQuestion: addAnotherQuestion,
     link: link,
     saveButtons: saveButtons,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -90,37 +90,7 @@
     ))
   }
 }
-@radioLegendContent = {
-    <h2 class="govuk-fieldset__heading">
-    @messages("declaration.packageInformation.add.another")
-    </h2>
-}
-@anotherPackageTypeQuestion = {
-    @govukRadios(Radios(
-        name = "yesNo",
-        fieldset = Some(Fieldset(
-            legend = Some(Legend(
-                content = HtmlContent(radioLegendContent),
-                classes = "govuk-fieldset__legend--m"
-            ))
-        )),
-        items = Seq(
-            RadioItem(
-                id = Some("code_yes"),
-                value = Some(YesNoAnswers.yes),
-                content = Text(messages("site.yes")),
-                checked = form("yesNo").value.contains(YesNoAnswers.yes)
-            ),
-            RadioItem(
-                id = Some("code_no"),
-                value = Some(YesNoAnswers.no),
-                content = Text(messages("site.no")),
-                checked = form("yesNo").value.contains(YesNoAnswers.no)
-            )
-        ),
-        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-    ))
-}
+
 @govukLayout(
     title = title,
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(PackageInformation, mode, ItemId(itemId))))
@@ -139,7 +109,7 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 packageInfoTable,
-                anotherPackageTypeQuestion,
+                addAnotherQuestion("declaration.packageInformation.add.another", form),
                 tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
                 saveButtons()
             ))

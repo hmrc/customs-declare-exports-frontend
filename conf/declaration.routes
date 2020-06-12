@@ -340,6 +340,12 @@ GET          /items/:itemId/add-document                        controllers.decl
 
 POST         /items/:itemId/add-document                        controllers.declaration.DocumentsProducedController.saveForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
+GET          /items/:itemId/additional-documentation            controllers.declaration.DocumentsProducedAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST         /items/:itemId/additional-documentation            controllers.declaration.DocumentsProducedAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET          /items/:itemId/additional-documentation-list       controllers.declaration.DocumentsProducedSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST         /items/:itemId/additional-documentation-list       controllers.declaration.DocumentsProducedSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
 # **** END OF ITEM PAGES ****
 
 GET         /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.displayPage(mode: models.Mode ?= models.Mode.Normal)

@@ -97,7 +97,7 @@ class AdditionalInformationController @Inject()(
             .map(
               _ =>
                 navigator
-                  .continueTo(mode, controllers.declaration.routes.DocumentsProducedController.displayPage(_, itemId))
+                  .continueTo(mode, controllers.declaration.routes.DocumentsProducedSummaryController.displayPage(_, itemId))
           )
       )
 
