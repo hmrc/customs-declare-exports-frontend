@@ -18,30 +18,34 @@
 @import controllers.navigation.{Navigator, ItemId}
 @import models.requests.JourneyRequest
 @import forms.declaration.additionaldocuments.DocumentsProduced
+@import forms.declaration.additionaldocuments.DocumentsProducedSummary
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import views.html.components.gds._
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
+@import utils.ListItemId
 
-@this(govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukTable : GovukTable,
-        govukInput: GovukInput,
-        govukRadios: GovukRadios,
-        addButton: addButton,
-        removeButton: removeButton,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        exportsInputTextArea: exportsInputTextArea,
-        exportsDateInput: exportsDateInput,
-        tariffDetails: tariffDetails,
-        saveButtons: saveButtons,
-        link: link,
-        addAnotherQuestion: addAnotherQuestion,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    govukInput: GovukInput,
+    govukRadios: GovukRadios,
+    addButton: addButton,
+    removeButton: removeButton,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    exportsInputTextArea: exportsInputTextArea,
+    exportsDateInput: exportsDateInput,
+    tariffDetails: tariffDetails,
+    saveButtons: saveButtons,
+    link: link,
+    addAnotherQuestion: addAnotherQuestion,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, itemId: String, form: Form[_], documents: Seq[DocumentsProduced])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -89,7 +93,7 @@
                         content = HtmlContent(link(
                             messages("site.remove"),
                             Some(messages("declaration.addDocument.table.update.hint", document.documentIdentifier.getOrElse(""))),
-                            DeclarationHolderRemoveController.displayPage(mode, "TODO"))),
+                            DocumentsProducedRemoveController.displayPage(mode, itemId, ListItemId.id(index, document)))),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"documents-table-row$index-remove_button")
                     )
@@ -116,9 +120,9 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentsProduced, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentsProducedSummary, mode, ItemId(itemId))))) {
 
-    @formHelper(action = DocumentsProducedSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = DocumentsProducedController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

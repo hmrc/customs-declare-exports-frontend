@@ -27,9 +27,9 @@ import scala.util.Try
 
 case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) {
 
-  private val format102 = DateTimeFormatter.ofPattern("yyyyMMdd")
+  private val formatDisplay = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-  def to102Format: String = LocalDate.parse(this.toString).format(format102)
+  def toDisplayFormat: String = LocalDate.parse(this.toString).format(formatDisplay)
 
   override def toString: String = LocalDate.of(year.getOrElse(0), month.getOrElse(0), day.getOrElse(0)).toString
 }

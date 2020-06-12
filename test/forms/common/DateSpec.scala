@@ -248,7 +248,7 @@ class DateSpec extends WordSpec with MustMatchers {
     "return date in yyyyMMdd format" in {
 
       val date = correctDate
-      date.to102Format must equal("20200713")
+      date.toDisplayFormat must equal("13/07/2020")
     }
   }
 

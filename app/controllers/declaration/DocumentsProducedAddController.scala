@@ -75,7 +75,7 @@ class DocumentsProducedAddController @Inject()(
           if (cachedData.isEmpty)
             navigator.continueTo(mode, routes.ItemsSummaryController.displayPage)
           else
-            navigator.continueTo(mode, routes.DocumentsProducedSummaryController.displayPage(_, itemId))
+            navigator.continueTo(mode, routes.DocumentsProducedController.displayPage(_, itemId))
       )
 
   private def saveDocuments(mode: Mode, itemId: String, boundForm: Form[DocumentsProduced], cachedData: Seq[DocumentsProduced])(
@@ -87,7 +87,7 @@ class DocumentsProducedAddController @Inject()(
         formWithErrors => Future.successful(BadRequest(documentProducedPage(mode, itemId, formWithErrors))),
         updatedCache =>
           updateCache(itemId, DocumentsProducedData(updatedCache))
-            .map(_ => navigator.continueTo(mode, routes.DocumentsProducedSummaryController.displayPage(_, itemId)))
+            .map(_ => navigator.continueTo(mode, routes.DocumentsProducedController.displayPage(_, itemId)))
       )
 
   private def updateCache(itemId: String, updatedData: DocumentsProducedData)(

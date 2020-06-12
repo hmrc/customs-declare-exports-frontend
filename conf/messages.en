@@ -683,6 +683,15 @@ declaration.addDocument.table.heading = You have added 1 document or reference
 declaration.addDocument.table.multiple.heading = You have added {0} documents or references
 declaration.addDocument.add.another = Do you need to add another document or reference?
 declaration.addDocument.table.update.hint = document {0}
+declaration.addDocument.remove.title = Are you sure you want to remove this document or reference?
+declaration.addDocument.remove.code = Code to be declared
+declaration.addDocument.remove.reference = Document reference number
+declaration.addDocument.remove.statusCode = Status code
+declaration.addDocument.remove.statusReason = Status reason
+declaration.addDocument.remove.issuingAuthorityName = Issuing authority name
+declaration.addDocument.remove.dateOfValidity = Date of validity
+declaration.addDocument.remove.measurementUnitAndQualifier = Measurement unit and qualifier
+declaration.addDocument.remove.documentQuantity = Quantity of the measurement unit
 
 supplementary.items = Items
 supplementary.valueOfItems = Enter item information

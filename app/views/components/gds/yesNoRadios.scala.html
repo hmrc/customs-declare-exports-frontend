@@ -31,13 +31,13 @@
     fieldset = heading,
     items = Seq(
         RadioItem(
-            id = Some("Yes"),
+            id = Some("code_yes"),
             value = Some(yes),
             content = Text(messages("site.yes")),
             checked = form("yesNo").value.contains(yes)
         ),
         RadioItem(
-            id = Some("No"),
+            id = Some("code_no"),
             value = Some(no),
             content = Text(messages("site.no")),
             checked = form("yesNo").value.contains(no)
