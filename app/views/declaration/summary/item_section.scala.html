@@ -301,14 +301,20 @@
     classes = "govuk-!-margin-bottom-3"
 )
 
-@item.packageInformation.map(packageInformation =>
-    package_information(mode, item.id, item.sequenceId, packageInformation)
-)
+<div class="govuk-section-break">
+    @item.packageInformation.map(packageInformation =>
+        package_information(mode, item.id, item.sequenceId, packageInformation)
+    )
+</div>
 
-@item.additionalInformation.map(additionalInformation =>
-    union_and_national_codes(mode, item.id, item.sequenceId, additionalInformation.items)
-)
+<div class="govuk-section-break">
+    @item.additionalInformation.map(additionalInformation =>
+        union_and_national_codes(mode, item.id, item.sequenceId, additionalInformation.items)
+    )
+</div>
 
-@item.documentsProducedData.map(documentsProducedData =>
-    supporting_documents(mode, item.id, item.sequenceId, documentsProducedData.documents)
-)
+<div class="govuk-section-break">
+    @item.documentsProducedData.map(documentsProducedData =>
+        supporting_documents(mode, item.id, item.sequenceId, documentsProducedData.documents)
+    )
+</div>
