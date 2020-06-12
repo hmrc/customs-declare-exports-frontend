@@ -16,11 +16,10 @@
 
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import forms.common.YesNoAnswer.YesNoAnswers
+@import views.html.components.gds._
 
 @this(
-        govukFieldset: GovukFieldset,
-        govukRadios: GovukRadios
+        yesNoRadios: yesNoRadios
 )
 
 @(questionKey: String, form: Form[_])(implicit request: JourneyRequest[_], messages: Messages)
@@ -31,27 +30,9 @@
     </h2>
 }
 
-@govukRadios(Radios(
-    name = "yesNo",
-    fieldset = Some(Fieldset(
-        legend = Some(Legend(
-            content = HtmlContent(radioLegendContent),
-            classes = "govuk-fieldset__legend--m"
-        ))
-    )),
-    items = Seq(
-        RadioItem(
-            id = Some("code_yes"),
-            value = Some(YesNoAnswers.yes),
-            content = Text(messages("site.yes")),
-            checked = form("yesNo").value.contains(YesNoAnswers.yes)
-        ),
-        RadioItem(
-            id = Some("code_no"),
-            value = Some(YesNoAnswers.no),
-            content = Text(messages("site.no")),
-            checked = form("yesNo").value.contains(YesNoAnswers.no)
-        )
-    ),
-    errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
-))
+@yesNoRadios(form, Some(Fieldset(
+    legend = Some(Legend(
+        content = HtmlContent(radioLegendContent),
+        classes = "govuk-fieldset__legend--m"
+    ))
+)))
