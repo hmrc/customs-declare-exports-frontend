@@ -42,7 +42,8 @@ from the view and the page (url/page number, etc.)
 ====================================
 */
 @media print {
-  @page { margin:0 }
+  @page { margin: 10px }
+  .govuk-section-break { page-break-inside : avoid }
   .govuk-link { display: none; }
   footer { display: none; }
 }
