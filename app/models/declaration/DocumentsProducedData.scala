@@ -22,12 +22,6 @@ import play.api.libs.json.Json
 case class DocumentsProducedData(documents: Seq[DocumentsProduced]) {
 
   def isEmpty: Boolean = documents.isEmpty
-
-  def find(id: String): Option[DocumentsProduced] =
-    id.split("-") match {
-      case Array(index, hashcode) => ???
-      case _                      => None
-    }
 }
 
 object DocumentsProducedData {

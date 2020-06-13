@@ -29,7 +29,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.documents_produced
+import views.html.declaration.documentsProduced.documents_produced
 
 class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 

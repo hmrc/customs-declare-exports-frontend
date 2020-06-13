@@ -30,7 +30,7 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.declaration_holder_summary
+import views.html.declaration.declarationHolder.declaration_holder_summary
 
 class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
 

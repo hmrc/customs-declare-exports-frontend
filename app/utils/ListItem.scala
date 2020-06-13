@@ -16,17 +16,17 @@
 
 package utils
 
-object ListItemId {
+object ListItem {
 
-  def id[A](index: Int, item: A) = s"$index.${item.hashCode()}"
+  def createId[A](index: Int, item: A) = s"$index.${item.hashCode()}"
 
-  def find[A](id: String, items: Seq[A]): Option[A] =
+  def findById[A](id: String, items: Seq[A]): Option[A] =
     try {
       id.split("\\.") match {
-        case Array(index: String, hashcode: String) if (items(index.toInt).hashCode() == hashcode.toInt) => Some(items(index.toInt))
-        case _                                                                                           => None
+        case Array(index: String, hashcode: String) if items(index.toInt).hashCode() == hashcode.toInt => Some(items(index.toInt))
+        case _                                                                                         => None
       }
     } catch {
-      case e: Exception => None
+      case _: Exception => None
     }
 }

@@ -23,7 +23,7 @@ import utils.validators.forms.FieldValidator._
 
 case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: Option[BigDecimal]) {
 
-  def measurementUnitDisplay: String = measurementUnit.map(_.split("#").mkString(" ")).getOrElse("")
+  def measurementUnitDisplay: String = measurementUnit.map(_.replace("#", " ")).getOrElse("")
 }
 
 object DocumentWriteOff {

@@ -30,8 +30,8 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import utils.ListItemId
-import views.html.declaration.documents_produced_remove
+import utils.ListItem
+import views.html.declaration.documentsProduced.documents_produced_remove
 
 class DocumentsProducedRemoveControllerSpec extends ControllerSpec with OptionValues {
 
@@ -80,7 +80,7 @@ class DocumentsProducedRemoveControllerSpec extends ControllerSpec with OptionVa
     verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
 
   val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)
-  val documentId = ListItemId.id(0, documentsProduced)
+  val documentId = ListItem.createId(0, documentsProduced)
   val itemId = "itemId"
   val itemWithDocument = anItem(withItemId(itemId), withDocumentsProduced(documentsProduced))
 

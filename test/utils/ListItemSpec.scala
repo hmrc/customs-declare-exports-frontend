@@ -19,37 +19,37 @@ package utils
 import forms.declaration.DeclarationHolder
 import org.scalatest.{MustMatchers, WordSpec}
 
-class ListItemIdSpec extends WordSpec with MustMatchers {
+class ListItemSpec extends WordSpec with MustMatchers {
 
-  import ListItemId._
+  import ListItem._
   "ListItemId" should {
 
     val item1 = DeclarationHolder(Some("code1"), None)
     val item2 = DeclarationHolder(Some("code2"), None)
     val item3 = DeclarationHolder(Some("code3"), None)
     val items = Seq(item1, item2, item3)
-    val id2 = ListItemId.id(1, item2)
+    val id2 = ListItem.createId(1, item2)
 
     "generate id" in {
       val item = DeclarationHolder(Some("some code"), None)
-      id(2, item) mustBe s"2.${item.hashCode()}"
+      createId(2, item) mustBe s"2.${item.hashCode()}"
     }
 
     "find item by id" in {
-      find(id2, items) mustBe Some(item2)
+      findById(id2, items) mustBe Some(item2)
     }
 
     "not find item by id" when {
 
       "id is invalid" in {
-        find("1.1", items) mustBe None
-        find("1-1", items) mustBe None
-        find("1", items) mustBe None
-        find("A.B", items) mustBe None
+        findById("1.1", items) mustBe None
+        findById("1-1", items) mustBe None
+        findById("1", items) mustBe None
+        findById("A.B", items) mustBe None
       }
 
       "item is not in list" in {
-        find(id2, Seq.empty) mustBe None
+        findById(id2, Seq.empty) mustBe None
       }
     }
   }

@@ -35,19 +35,21 @@ import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.documentsProduced.documents_produced_add
+import views.html.declaration.documentsProduced.documents_produced_change
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedAddViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
+class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
   private val itemId = "a7sc78"
+  private val documentId = "1.2131231"
   private val mode = Mode.Normal
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
-  private val documentsProducedAddPage = instanceOf[documents_produced_add]
+  private val documentsProducedAddPage = instanceOf[documents_produced_change]
+
   private def createView(form: Form[DocumentsProduced] = form)(implicit request: JourneyRequest[_]): Document =
-    documentsProducedAddPage(mode, itemId, form)(request, messages)
+    documentsProducedAddPage(mode, itemId, documentId, form)(request, messages)
 
   "Document Produced" should {
 
@@ -140,12 +142,12 @@ class DocumentsProducedAddViewSpec extends UnitViewSpec with CommonMessages with
         view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") mustBe empty
       }
 
-      "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {
+      "display 'Back' button that links to summary page" in {
 
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messagesKey(backCaption)
-        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
+        backButton must haveHref(routes.DocumentsProducedController.displayPage(mode, itemId))
       }
 
       "display'Save and continue' button on page" in {
@@ -156,21 +158,6 @@ class DocumentsProducedAddViewSpec extends UnitViewSpec with CommonMessages with
         saveAndReturnButton.text() mustBe messagesKey(saveAndReturnCaption)
         saveAndReturnButton must haveAttribute("name", SaveAndReturn.toString)
       }
-    }
-  }
-
-  "Documents Produced View on empty page with cached Additional Information" should {
-    onEveryDeclarationJourney(withItem(anItem(withItemId(itemId), withAdditionalInformation("1234", "Description")))) { implicit request =>
-      val view = createView()
-
-      "display 'Back' button that links to 'Additional Information' page when additional info present" in {
-
-        val backButton = view.getElementById("back-link")
-
-        backButton.text() mustBe messagesKey(backCaption)
-        backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
-      }
-
     }
   }
 

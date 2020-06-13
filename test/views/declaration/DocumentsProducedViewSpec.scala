@@ -31,9 +31,9 @@ import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import unit.tools.Stubs
-import utils.ListItemId
+import utils.ListItem
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.documents_produced
+import views.html.declaration.documentsProduced.documents_produced
 import views.tags.ViewTest
 
 @ViewTest
@@ -170,7 +170,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             removeLink.text() mustBe messages("site.removedeclaration.addDocument.table.update.hint")
             removeLink must haveHref(
               controllers.declaration.routes.DocumentsProducedRemoveController
-                .displayPage(Mode.Normal, itemId, ListItemId.id(0, correctDocumentsProduced))
+                .displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))
             )
           }
         }

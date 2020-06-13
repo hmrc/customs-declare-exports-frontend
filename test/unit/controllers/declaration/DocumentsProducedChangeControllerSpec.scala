@@ -16,8 +16,8 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.DocumentsProducedAddController
-import forms.declaration.additionaldocuments.DocumentsProduced
+import controllers.declaration.DocumentsProducedChangeController
+import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import models.Mode
 import models.declaration.DocumentsProducedData
 import org.mockito.ArgumentCaptor
@@ -30,50 +30,52 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.documentsProduced.documents_produced_add
+import utils.ListItem
+import views.html.declaration.documentsProduced.documents_produced_change
 
-class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class DocumentsProducedChangeControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  val mockDocumentProducedAddPage = mock[documents_produced_add]
+  val mockDocumentProducedChangePage = mock[documents_produced_change]
 
-  val controller = new DocumentsProducedAddController(
+  val controller = new DocumentsProducedChangeController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    mockDocumentProducedAddPage
+    mockDocumentProducedChangePage
   )(ec)
 
   val itemId = "itemId"
+  val existingDocument1 = DocumentsProduced(Some("1000"), None, None, None, None, None, None)
+  val existingDocument2 = DocumentsProduced(Some("2000"), None, None, None, None, None, None)
+  val documentId = ListItem.createId(0, existingDocument1)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-    when(mockDocumentProducedAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withDocumentsProduced(existingDocument1, existingDocument2)))))
+    when(mockDocumentProducedChangePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(mockDocumentProducedAddPage)
+    reset(mockDocumentProducedChangePage)
   }
 
   def theResponseForm: Form[DocumentsProduced] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[DocumentsProduced]])
-    verify(mockDocumentProducedAddPage).apply(any(), any(), formCaptor.capture())(any(), any())
+    verify(mockDocumentProducedChangePage).apply(any(), any(), any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    await(controller.displayPage(Mode.Normal, itemId, documentId)(request))
     theResponseForm
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1) =
-    verify(mockDocumentProducedAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
-
-  val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)
+    verify(mockDocumentProducedChangePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   "Document Produced controller" should {
 
@@ -81,7 +83,7 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
 
       "display page method is invoked" in {
 
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+        val result = controller.displayPage(Mode.Normal, itemId, documentId)(getRequest())
 
         status(result) mustBe OK
         verifyPageInvoked()
@@ -91,7 +93,7 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
     "return 400 (BAD_REQUEST) during adding" when {
 
       def verifyBadRequest(incorrectForm: Seq[(String, String)]) = {
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
@@ -119,63 +121,60 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
 
       "user put duplicated item" in {
 
-        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withDocumentsProduced(documentsProduced)))))
-
-        val duplicatedForm = Seq(("documentTypeCode", "1234"))
-
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val duplicatedForm = Json.toJson(existingDocument2)
+        val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequest(duplicatedForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
       }
 
-      "user reach maximum amount of items" in {
-
-        withNewCaching(
-          aDeclaration(
-            withItems(
-              anItem(
-                withItemId("itemId"),
-                withDocumentsProducedData(DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced)))
-              )
-            )
-          )
-        )
-
-        val correctForm = Seq(("documentTypeCode", "4321"))
-
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verifyPageInvoked()
-      }
     }
 
     "return 303 (SEE_OTHER)" when {
 
-      "user correctly add new item" in {
+      "user correctly changed document" in {
 
-        val correctForm = Json.toJson(documentsProduced)
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+        val correctForm = Seq(("documentTypeCode", "1001"), ("documentWriteOff.documentQuantity", "123"), ("documentWriteOff.measurementUnit", "KGM"))
+        val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)
         verifyPageInvoked(0)
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.documentsProducedData)
-        savedDocuments mustBe Some(DocumentsProducedData(Seq(documentsProduced)))
+        savedDocuments mustBe Some(
+          DocumentsProducedData(
+            Seq(
+              existingDocument1
+                .copy(documentTypeCode = Some("1001"), documentWriteOff = Some(DocumentWriteOff(Some("KGM"), Some(BigDecimal("123"))))),
+              existingDocument2
+            )
+          )
+        )
+      }
+
+      "user does not change document" in {
+
+        val unchangedForm = Json.toJson(existingDocument1)
+        val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequest(unchangedForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)
+        verifyPageInvoked(0)
+
+        val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.documentsProducedData)
+        savedDocuments mustBe Some(DocumentsProducedData(Seq(existingDocument1, existingDocument2)))
       }
 
       "user save empty form without new item" in {
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded())
+        val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequestAsFormUrlEncoded())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)
         verifyPageInvoked(0)
 
-        val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.documentsProducedData)
-        savedDocuments mustBe Some(DocumentsProducedData(Seq.empty))
+        verifyTheCacheIsUnchanged
       }
 
     }

@@ -25,7 +25,7 @@
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
-@import utils.ListItemId
+@import utils.ListItem._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -85,7 +85,7 @@
                         content = HtmlContent(link(
                             messages("site.change"),
                             Some(messages("declaration.addDocument.table.update.hint", document.documentIdentifier.getOrElse(""))),
-                            DeclarationHolderChangeController.displayPage(mode, "TODO"))),
+                            DocumentsProducedChangeController.displayPage(mode, itemId, createId(index, document)))),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"documents-table-row$index-change_button")
                     ),
@@ -93,7 +93,7 @@
                         content = HtmlContent(link(
                             messages("site.remove"),
                             Some(messages("declaration.addDocument.table.update.hint", document.documentIdentifier.getOrElse(""))),
-                            DocumentsProducedRemoveController.displayPage(mode, itemId, ListItemId.id(index, document)))),
+                            DocumentsProducedRemoveController.displayPage(mode, itemId, createId(index, document)))),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"documents-table-row$index-remove_button")
                     )

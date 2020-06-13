@@ -45,7 +45,7 @@ object DeclarationHolder extends DeclarationPage {
 
   val requiredMapping = Forms.mapping(
     "authorisationTypeCode" -> codeMapping.verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined),
-    "eori" -> eoriMapping.verifying("declaration.declarationHolder.eori.empty", _.isDefined)
+    "eori" -> eoriMapping.verifying("declaration.eori.empty", _.isDefined)
   )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
   def form(optional: Boolean = false): Form[DeclarationHolder] = if (optional) Form(optionalMapping) else Form(requiredMapping)
