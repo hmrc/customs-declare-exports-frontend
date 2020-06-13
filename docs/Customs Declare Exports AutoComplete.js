@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.55
+// @version      1.56
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -780,7 +780,11 @@ function additionalInformation(){
 }
 
 function addDocuments(){
-    if (currentPageIs('/customs-declare-exports/declaration/items/.*/add-document')) {
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-documentation-list')) {
+        document.getElementById('code_no').checked = 'checked';
+        document.getElementById('submit').click();
+    }
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-documentation')) {
         switch(getDeclaration())
         {
             case 'C':
