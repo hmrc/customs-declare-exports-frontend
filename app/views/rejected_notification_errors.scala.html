@@ -53,6 +53,8 @@
     )
 
     Some(Actions(items = Seq(action)))
+  } else if(changeErrorLinkConfig.isEnabled) {
+      Some(Actions(items = Seq.empty))
   } else None
 }
 
