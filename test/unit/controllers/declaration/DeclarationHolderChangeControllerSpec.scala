@@ -30,7 +30,7 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.declaration_holder_change
+import views.html.declaration.declarationHolder.declaration_holder_change
 
 class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionValues {
 
@@ -98,7 +98,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
           withNewCaching(request.cacheModel)
 
           val requestBody = Seq("authorisationTypeCode" -> "inva!id", "eori" -> "inva!id")
-          val result = controller.submitChangeHolderOfAuthorisation(Mode.Normal, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(Mode.Normal, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -109,7 +109,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
 
           val requestBody =
             Seq("authorisationTypeCode" -> declarationHolder2.authorisationTypeCode.get, "eori" -> declarationHolder2.eori.map(_.value).get)
-          val result = controller.submitChangeHolderOfAuthorisation(Mode.Normal, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(Mode.Normal, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -121,7 +121,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
 
           val requestBody =
             Seq("authorisationTypeCode" -> declarationHolder1.authorisationTypeCode.get, "eori" -> declarationHolder1.eori.map(_.value).get)
-          val result = controller.submitChangeHolderOfAuthorisation(Mode.Normal, "SOME-EORI")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(Mode.Normal, "SOME-EORI")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
@@ -133,7 +133,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
 
           val requestBody =
             Seq("authorisationTypeCode" -> declarationHolder2.authorisationTypeCode.get, "eori" -> declarationHolder2.eori.map(_.value).get)
-          val result = controller.submitChangeHolderOfAuthorisation(Mode.Normal, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(Mode.Normal, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)

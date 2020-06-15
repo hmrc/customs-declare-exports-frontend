@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.declaration
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
 
-import forms.declaration.additionaldocuments.DocumentsProduced
-import play.api.libs.json.Json
+@this(
+        yesNoRadios: yesNoRadios
+)
 
-case class DocumentsProducedData(documents: Seq[DocumentsProduced]) {
+@(questionKey: String, form: Form[_])(implicit request: JourneyRequest[_], messages: Messages)
 
-  def isEmpty: Boolean = documents.isEmpty
+@radioLegendContent = {
+    <h2 class="govuk-fieldset__heading">
+    @messages(questionKey)
+    </h2>
 }
 
-object DocumentsProducedData {
-  implicit val format = Json.format[DocumentsProducedData]
-
-  val formId = "DocumentsProducedData"
-
-  val maxNumberOfItems = 99
-}
+@yesNoRadios(form, Some(Fieldset(
+    legend = Some(Legend(
+        content = HtmlContent(radioLegendContent),
+        classes = "govuk-fieldset__legend--m"
+    ))
+)))

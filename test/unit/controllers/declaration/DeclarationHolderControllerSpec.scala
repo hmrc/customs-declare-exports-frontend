@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.DeclarationHolderController
-import forms.common.Eori
+import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.DeclarationHolder
 import models.DeclarationType._
 import models.Mode
@@ -30,7 +30,7 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.declaration_holder_summary
+import views.html.declaration.declarationHolder.declaration_holder_summary
 
 class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
 
@@ -62,8 +62,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
     theResponseForm
   }
 
-  def theResponseForm: Form[DeclarationHolder] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolder]])
+  def theResponseForm: Form[YesNoAnswer] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
     verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }

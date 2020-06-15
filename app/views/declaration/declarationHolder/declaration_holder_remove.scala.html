@@ -16,7 +16,6 @@
 
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
-@import forms.common.YesNoAnswer.YesNoAnswers._
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
@@ -30,11 +29,11 @@
         sectionHeader: sectionHeader,
         govukFieldset: GovukFieldset,
         pageTitle: pageTitle,
-        govukRadios: GovukRadios,
         govukButton: GovukButton,
         govukSummaryList : GovukSummaryList,
         errorSummary: errorSummary,
         saveButtons: saveButtons,
+        yesNoRadios: yesNoRadios,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -55,27 +54,6 @@
     ))
 }
 
-@removeRadios = {
-    @govukRadios(Radios(
-        name = "yesNo",
-        items = Seq(
-            RadioItem(
-                id = Some("Yes"),
-                value = Some(yes),
-                content = Text(messages("site.yes")),
-                checked = form("yesNo").value.contains(yes)
-            ),
-            RadioItem(
-                id = Some("No"),
-                value = Some(no),
-                content = Text(messages("site.no")),
-                checked = form("yesNo").value.contains(no)
-            )
-        ),
-        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
-    ))
-}
-
 @govukLayout(
     title = Title("declaration.declarationHolder.remove.title", "declaration.summary.parties.header"),
     backButton = Some(BackButton(messages("site.back"), DeclarationHolderController.displayPage(mode)))) {
@@ -93,7 +71,7 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 holderTable,
-                removeRadios,
+                yesNoRadios(form),
                 saveButtons()
             ))
         ))

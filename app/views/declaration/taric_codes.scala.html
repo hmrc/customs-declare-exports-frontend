@@ -18,13 +18,11 @@
 @import controllers.declaration.routes
 @import forms.declaration.TaricCode
 @import forms.declaration.TaricCodeFirst
-@import forms.declaration.TaricCode._
 @import models.requests.JourneyRequest
 @import controllers.navigation.{Navigator, ItemId}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import forms.common.YesNoAnswer
-@import forms.common.YesNoAnswer.YesNoAnswers
 @import views.html.components.gds._
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
@@ -41,6 +39,7 @@
     sectionHeader: sectionHeader,
     exportsInputText: exportsInputText,
     tariffDetails: tariffDetails,
+    addAnotherQuestion: addAnotherQuestion,
     saveButtons: saveButtons,
     appConfig: AppConfig,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -89,45 +88,12 @@
             },
             head = Some(List(
                 HeadCell(
-                    content = Text(messages("declaration.taricAdditionalCodes.table.header")),
-                    colspan = Some(2)
-                )
+                    content = Text(messages("declaration.taricAdditionalCodes.table.header"))
+                ),
+                HeadCell()
             ))
         ))
     }
-}
-
-@radioLegendContent = {
-    <h2 class="govuk-fieldset__heading">
-    @messages("declaration.taricAdditionalCodes.label")
-    </h2>
-}
-
-@anotherTaricCodeQuestion = {
-    @govukRadios(Radios(
-        name = "yesNo",
-        fieldset = Some(Fieldset(
-            legend = Some(Legend(
-                content = HtmlContent(radioLegendContent),
-                classes = "govuk-fieldset__legend--m"
-            ))
-        )),
-        items = Seq(
-            RadioItem(
-                id = Some("code_yes"),
-                value = Some(YesNoAnswers.yes),
-                content = Text(messages("site.yes")),
-                checked = form("yesNo").value.contains(YesNoAnswers.yes)
-            ),
-            RadioItem(
-                id = Some("code_no"),
-                value = Some(YesNoAnswers.no),
-                content = Text(messages("site.no")),
-                checked = form("yesNo").value.contains(YesNoAnswers.no)
-            )
-        ),
-        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-    ))
 }
 
 @govukLayout(
@@ -148,7 +114,7 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 taricCodesTable,
-                anotherTaricCodeQuestion,
+                addAnotherQuestion("declaration.taricAdditionalCodes.label", form),
                 tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
                 saveButtons()
             ))

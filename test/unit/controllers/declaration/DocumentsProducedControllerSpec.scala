@@ -17,12 +17,11 @@
 package unit.controllers.declaration
 
 import controllers.declaration.DocumentsProducedController
-import controllers.util.Remove
+import forms.common.YesNoAnswer
 import forms.declaration.additionaldocuments.DocumentsProduced
-import models.declaration.DocumentsProducedData
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, refEq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -30,7 +29,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.documents_produced
+import views.html.declaration.documentsProduced.documents_produced
 
 class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
@@ -50,8 +49,7 @@ class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMo
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    setupErrorHandler()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    withNewCaching(aDeclaration())
     when(mockDocumentProducedPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -60,30 +58,27 @@ class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMo
     reset(mockDocumentProducedPage)
   }
 
-  def theResponseForm: Form[DocumentsProduced] = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[DocumentsProduced]])
+  def theResponseForm: Form[YesNoAnswer] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
     verify(mockDocumentProducedPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
     formCaptor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal, itemId)(request))
+    val item = anItem(withDocumentsProduced(documentsProduced))
+    withNewCaching(aDeclaration(withItems(item)))
+    await(controller.displayPage(Mode.Normal, item.id)(request))
     theResponseForm
   }
+
+  private def verifyPageInvoked(numberOfTimes: Int = 1) =
+    verify(mockDocumentProducedPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)
 
   "Document Produced controller" should {
 
     "return 200 (OK)" when {
-
-      "display page method is invoked with empty cache" in {
-
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
-
-        status(result) mustBe OK
-        verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
-      }
 
       "display page method is invoked with data in cache" in {
 
@@ -93,7 +88,7 @@ class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
         status(result) mustBe OK
-        verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
+        verifyPageInvoked()
       }
     }
 
@@ -101,174 +96,44 @@ class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "user provide wrong action" in {
 
-        val wrongAction = ("WrongAction", "")
-
-        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(wrongAction))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
-      }
-    }
-
-    "return 400 (BAD_REQUEST) during adding" when {
-
-      def verifyBadRequest(incorrectForm: Seq[(String, String)]) = {
-        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val requestBody = Seq("yesNo" -> "invalid")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
-      }
-
-      "user put incorrect data" in {
-
-        verifyBadRequest(Seq(("documentTypeCode", "12345"), addActionUrlEncoded()))
-      }
-
-      "user entered measurement unit without quantity" in {
-
-        verifyBadRequest(Seq(("documentWriteOff.measurementUnit", "KGM"), addActionUrlEncoded()))
-      }
-
-      "user entered quantity without measurement unit" in {
-
-        verifyBadRequest(Seq(("documentWriteOff.documentQuantity", "1000"), addActionUrlEncoded()))
-      }
-
-      "user entered qualifier without measurement unit" in {
-
-        verifyBadRequest(Seq(("documentWriteOff.qualifier", "A"), ("documentWriteOff.documentQuantity", "1000"), addActionUrlEncoded()))
-      }
-
-      "user put duplicated item" in {
-
-        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withDocumentsProduced(documentsProduced)))))
-
-        val duplicatedForm = Seq(("documentTypeCode", "1234"), addActionUrlEncoded())
-
-        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
-      }
-
-      "user reach maximum amount of items" in {
-
-        withNewCaching(
-          aDeclaration(
-            withItems(
-              anItem(
-                withItemId("itemId"),
-                withDocumentsProducedData(DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced)))
-              )
-            )
-          )
-        )
-
-        val correctForm = Seq(("documentTypeCode", "4321"), addActionUrlEncoded())
-
-        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
-      }
-    }
-
-    "return 400 (BAD_REQUEST) during saving" when {
-
-      "user put incorrect data" in {
-
-        val incorrectForm = Seq(("documentTypeCode", "12345"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
-      }
-
-      "user put duplicated item" in {
-
-        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withDocumentsProduced(documentsProduced)))))
-
-        val duplicatedForm = Seq(("documentTypeCode", "1234"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
-      }
-
-      "user reach maximum amount of items" in {
-
-        withNewCaching(
-          aDeclaration(
-            withItems(
-              anItem(
-                withItemId("itemId"),
-                withDocumentsProducedData(DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced)))
-              )
-            )
-          )
-        )
-
-        val correctForm = Seq(("documentTypeCode", "4321"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
+        verifyPageInvoked()
       }
     }
 
     "return 303 (SEE_OTHER)" when {
 
-      "user correctly add new item" in {
+      "there are no documents in the cache" in {
 
-        val correctForm =
-          Seq(
-            ("documentTypeCode", "1234"),
-            ("documentWriteOff.measurementUnit", "KGM"),
-            ("documentWriteOff.qualifier", "A"),
-            ("documentWriteOff.documentQuantity", "1000"),
-            addActionUrlEncoded()
-          )
-
-        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) mustBe SEE_OTHER
-        verify(mockDocumentProducedPage, times(0)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
-      }
-
-      "user save correct data" in {
-
-        val correctForm = Seq(("documentTypeCode", "1234"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
-        verify(mockDocumentProducedPage, times(0)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
+        thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedAddController.displayPage(Mode.Normal, itemId)
       }
 
-      "user save empty form without new item" in {
+      "user submits valid Yes answer" in {
+        val item = anItem(withDocumentsProduced(documentsProduced))
+        withNewCaching(aDeclaration(withItems(item)))
 
-        val result =
-          controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
+        val requestBody = Seq("yesNo" -> "Yes")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
-        verify(mockDocumentProducedPage, times(0)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
+        thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedAddController.displayPage(Mode.Normal, itemId)
       }
 
-      "user remove existing item" in {
+      "user submits valid No answer" in {
+        val item = anItem(withDocumentsProduced(documentsProduced))
+        withNewCaching(aDeclaration(withItems(item)))
 
-        withNewCaching(aDeclaration(withItems(anItem(withDocumentsProduced(documentsProduced)))))
+        val requestBody = Seq("yesNo" -> "No")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
-        val removeAction = (Remove.toString, "0")
-
-        val result = await(controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction)))
-
-        result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal)
       }
     }
   }

@@ -27,7 +27,6 @@
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
-@import forms.common.YesNoAnswer.YesNoAnswers
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -39,6 +38,7 @@
     sectionHeader: sectionHeader,
     exportsInputText: exportsInputText,
     tariffDetails: tariffDetails,
+    addAnotherQuestion: addAnotherQuestion,
     saveButtons: saveButtons,
     appConfig: AppConfig,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -86,46 +86,13 @@
             },
             head = Some(List(
                 HeadCell(
-                    content = Text(messages("declaration.nationalAdditionalCode.table.header")),
-                    colspan = Some(2)
-                )
+                    content = Text(messages("declaration.nationalAdditionalCode.table.header"))
+                ),
+                HeadCell()
             ))
         ))
     }
 }
-
-@radioLegendContent = {
-    <h2 class="govuk-fieldset__heading">
-        @messages("declaration.nationalAdditionalCode.label")
-    </h2>
-}
-
-@anotherNactCodeQuestion = {
-    @govukRadios(Radios(
-        name = "yesNo",
-        fieldset = Some(Fieldset(
-            legend = Some(Legend(
-                content = HtmlContent(radioLegendContent),
-                classes = "govuk-fieldset__legend--m"
-            ))
-        )),
-        items = Seq(
-            RadioItem(
-                id = Some("code_yes"),
-                value = Some(YesNoAnswers.yes),
-                content = Text(messages("site.yes")),
-                checked = form("yesNo").value.contains(YesNoAnswers.yes)
-            ),
-            RadioItem(
-                id = Some("code_no"),
-                value = Some(YesNoAnswers.no),
-                content = Text(messages("site.no")),
-                checked = form("yesNo").value.contains(YesNoAnswers.no)
-            )
-        ),
-        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-    ))
-    }
 
 @govukLayout(
     title = title,
@@ -145,7 +112,7 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 nactCodesTable,
-                anotherNactCodeQuestion,
+                addAnotherQuestion("declaration.nationalAdditionalCode.label", form),
                 tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
                 saveButtons()
             ))

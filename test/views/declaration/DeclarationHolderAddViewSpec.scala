@@ -30,7 +30,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.declaration_holder_add
+import views.html.declaration.declarationHolder.declaration_holder_add
 import views.tags.ViewTest
 
 @ViewTest

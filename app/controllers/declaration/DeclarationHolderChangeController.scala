@@ -30,7 +30,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.declaration_holder_change
+import views.html.declaration.declarationHolder.declaration_holder_change
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -49,7 +49,7 @@ class DeclarationHolderChangeController @Inject()(
     Ok(declarationHolderChangePage(mode, id, form().fill(holder).withSubmissionErrors()))
   }
 
-  def submitChangeHolderOfAuthorisation(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, id, formWithErrors))),

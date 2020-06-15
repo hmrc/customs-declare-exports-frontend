@@ -36,6 +36,7 @@
         govukSummaryList : GovukSummaryList,
         errorSummary: errorSummary,
         saveButtons: saveButtons,
+        yesNoRadios: yesNoRadios,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -60,27 +61,6 @@
     ))
 }
 
-@removeRadios = {
-    @govukRadios(Radios(
-        name = "yesNo",
-        items = Seq(
-            RadioItem(
-                id = Some("Yes"),
-                value = Some(yes),
-                content = Text(messages("site.yes")),
-                checked = form("yesNo").value.contains(yes)
-            ),
-            RadioItem(
-                id = Some("No"),
-                value = Some(no),
-                content = Text(messages("site.no")),
-                checked = form("yesNo").value.contains(no)
-            )
-        ),
-        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
-    ))
-}
-
 @govukLayout(
     title = Title("declaration.packageInformation.remove.title", "supplementary.items"),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)))) {
@@ -98,7 +78,7 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 packageInformationTable,
-                removeRadios,
+                yesNoRadios(form),
                 saveButtons()
             ))
         ))

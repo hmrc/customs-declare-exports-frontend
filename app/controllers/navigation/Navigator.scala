@@ -21,7 +21,7 @@ import controllers.util.{Add, FormAction, Remove, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.{DocumentsProduced, DocumentsProducedSummary}
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.officeOfExit.{OfficeOfExitInsideUK, OfficeOfExitOutsideUK}
@@ -273,7 +273,8 @@ object Navigator {
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
-    case DocumentsProduced => documentsProducedPreviousPage
+    case DocumentsProducedSummary => documentsProducedSummaryPreviousPage
+    case DocumentsProduced        => documentsProducedPreviousPage
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
@@ -337,11 +338,16 @@ object Navigator {
     else
       controllers.declaration.routes.CommodityDetailsController.displayPage(mode, itemId)
 
-  private def documentsProducedPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+  private def documentsProducedSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.itemBy(itemId).flatMap(_.additionalInformation).exists(_.items.nonEmpty))
       controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
     else
       controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
+
+  private def documentsProducedPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    if (cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).exists(_.documents.nonEmpty))
+      controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
+    else documentsProducedSummaryPreviousPage(cacheModel, mode, itemId)
 
   private def previousDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.locations.isOfficeOfExitInUk)

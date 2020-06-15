@@ -21,7 +21,10 @@ import play.api.data.{Form, FormError, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: Option[BigDecimal])
+case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: Option[BigDecimal]) {
+
+  def measurementUnitDisplay: String = measurementUnit.map(_.replace("#", " ")).getOrElse("")
+}
 
 object DocumentWriteOff {
 

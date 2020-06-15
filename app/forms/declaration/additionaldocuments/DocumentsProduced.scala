@@ -67,7 +67,7 @@ object DocumentsProduced extends DeclarationPage {
       ),
       documentStatusKey -> optional(text().verifying("declaration.addDocument.documentStatus.error", noLongerThan(2) and isAlphabetic)),
       documentStatusReasonKey -> optional(
-        text().verifying("declaration.addDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumeric)
+        text().verifying("declaration.addDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
       ),
       issuingAuthorityNameKey -> optional(
         text()
@@ -118,3 +118,5 @@ object DocumentsProduced extends DeclarationPage {
   }
 
 }
+
+object DocumentsProducedSummary extends DeclarationPage

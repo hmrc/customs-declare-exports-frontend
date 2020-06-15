@@ -119,7 +119,7 @@ POST        /authorisations-required             controllers.declaration.Declara
 
 GET         /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
 
-POST        /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.submitChangeHolderOfAuthorisation(mode: models.Mode ?= models.Mode.Normal, id: String)
+POST        /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.submitForm(mode: models.Mode ?= models.Mode.Normal, id: String)
 
 GET         /authorisations-required/:id/remove  controllers.declaration.DeclarationHolderRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
 
@@ -334,11 +334,23 @@ GET         /items/:itemId/additional-information              controllers.decla
 
 POST        /items/:itemId/additional-information              controllers.declaration.AdditionalInformationController.saveAdditionalInfo(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-# Add Documents
+# Additional Documents
 
-GET          /items/:itemId/add-document                        controllers.declaration.DocumentsProducedController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-documentation            controllers.declaration.DocumentsProducedAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST         /items/:itemId/add-document                        controllers.declaration.DocumentsProducedController.saveForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-documentation            controllers.declaration.DocumentsProducedAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/additional-documentation/:id/remove    controllers.declaration.DocumentsProducedRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+
+POST        /items/:itemId/additional-documentation/:id/remove    controllers.declaration.DocumentsProducedRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+
+GET         /items/:itemId/additional-documentation/:id/change    controllers.declaration.DocumentsProducedChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+
+POST        /items/:itemId/additional-documentation/:id/change    controllers.declaration.DocumentsProducedChangeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+
+GET         /items/:itemId/additional-documentation-list       controllers.declaration.DocumentsProducedController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/additional-documentation-list       controllers.declaration.DocumentsProducedController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # **** END OF ITEM PAGES ****
 

@@ -28,7 +28,7 @@ import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.declaration_holder_remove
+import views.html.declaration.declarationHolder.declaration_holder_remove
 import views.tags.ViewTest
 
 @ViewTest

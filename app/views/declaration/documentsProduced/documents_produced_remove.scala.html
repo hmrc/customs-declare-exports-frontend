@@ -1,0 +1,104 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import forms.common.YesNoAnswer
+@import forms.declaration.additionaldocuments.DocumentsProduced
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.html.components.gds._
+@import views.{BackButton, Title}
+@import scala.collection.immutable
+
+@this(
+govukLayout: gdsMainTemplate,
+sectionHeader: sectionHeader,
+govukFieldset: GovukFieldset,
+pageTitle: pageTitle,
+govukButton: GovukButton,
+govukSummaryList: GovukSummaryList,
+errorSummary: errorSummary,
+saveButtons: saveButtons,
+yesNoRadios: yesNoRadios,
+formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
+
+@(mode: Mode, itemId: String, documentId: String, document: DocumentsProduced, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
+
+@holderTable = {
+@govukSummaryList(SummaryList(
+    rows = Seq(
+        SummaryListRow(
+            Key(Text(messages("declaration.addDocument.remove.code"))),
+            Value(Text(document.documentTypeCode.getOrElse("")))
+        ),
+        SummaryListRow(
+            Key(Text(messages("declaration.addDocument.remove.reference"))),
+            Value(Text(document.documentIdentifier.getOrElse("")))
+        ),
+        SummaryListRow(
+            Key(Text(messages("declaration.addDocument.remove.statusCode"))),
+            Value(Text(document.documentStatus.getOrElse("")))
+        ),
+        SummaryListRow(
+            Key(Text(messages("declaration.addDocument.remove.statusReason"))),
+            Value(Text(document.documentStatusReason.getOrElse("")))
+        ),
+        SummaryListRow(
+            Key(Text(messages("declaration.addDocument.remove.issuingAuthorityName"))),
+            Value(Text(document.issuingAuthorityName.getOrElse("")))
+        ),
+        SummaryListRow(
+            Key(Text(messages("declaration.addDocument.remove.dateOfValidity"))),
+            Value(Text(document.dateOfValidity.map(_.toDisplayFormat).getOrElse("") ))
+        ),
+        SummaryListRow(
+            Key(Text(messages("declaration.addDocument.remove.measurementUnitAndQualifier"))),
+            Value(Text(document.documentWriteOff.map(_.measurementUnitDisplay).getOrElse("")))
+        ),
+        SummaryListRow(
+            Key(Text(messages("declaration.addDocument.remove.documentQuantity"))),
+            Value(Text(document.documentWriteOff.flatMap(_.documentQuantity).map(_.toString).getOrElse("")))
+        )
+    )
+))
+}
+
+@govukLayout(
+    title = Title("declaration.addDocument.remove.title", "supplementary.summary.yourReferences.header"),
+    backButton = Some(BackButton(messages("site.back"), DocumentsProducedController.displayPage(mode, itemId)))) {
+
+    @formHelper(action = DocumentsProducedRemoveController.submitForm(mode, itemId, documentId), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("supplementary.items"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.declarationHolder.remove.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                holderTable,
+                yesNoRadios(form),
+                saveButtons()
+            ))
+        ))
+    }
+
+}

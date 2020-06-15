@@ -17,7 +17,6 @@
 @import controllers.declaration.routes._
 @import forms.declaration.DeclarationHolder
 @import forms.declaration.DeclarationSummaryHolder
-@import forms.common.YesNoAnswer.YesNoAnswers
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -37,8 +36,8 @@
         sectionHeader: sectionHeader,
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
-        tariffDetails: tariffDetails,
         link: link,
+        addAnotherQuestion: addAnotherQuestion,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
@@ -95,44 +94,12 @@
                     content = Text(messages("declaration.declarationHolders.table.type"))
                 ),
                 HeadCell(
-                    content = Text(messages("declaration.declarationHolders.table.eori")),
-                    colspan = Some(3)
-                )
+                    content = Text(messages("declaration.declarationHolders.table.eori"))
+                ),
+                HeadCell(colspan = Some(2))
             ))
         ))
     }
-}
-
-@radioLegendContent = {
-    <h2 class="govuk-fieldset__heading">
-    @messages("declaration.declarationHolders.add.another")
-    </h2>
-}
-@anotherHolderQuestion = {
-    @govukRadios(Radios(
-        name = "yesNo",
-        fieldset = Some(Fieldset(
-            legend = Some(Legend(
-                content = HtmlContent(radioLegendContent),
-                classes = "govuk-fieldset__legend--m"
-            ))
-        )),
-        items = Seq(
-            RadioItem(
-                id = Some("code_yes"),
-                value = Some(YesNoAnswers.yes),
-                content = Text(messages("site.yes")),
-                checked = form("yesNo").value.contains(YesNoAnswers.yes)
-            ),
-            RadioItem(
-                id = Some("code_no"),
-                value = Some(YesNoAnswers.no),
-                content = Text(messages("site.no")),
-                checked = form("yesNo").value.contains(YesNoAnswers.no)
-            )
-        ),
-        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-    ))
 }
 
 @govukLayout(
@@ -153,7 +120,7 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 holdersTable,
-                anotherHolderQuestion,
+                addAnotherQuestion("declaration.declarationHolders.add.another", form),
                 saveButtons()
             ))
         ))

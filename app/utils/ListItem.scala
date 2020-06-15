@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package models.declaration
+package utils
 
-import forms.declaration.additionaldocuments.DocumentsProduced
-import play.api.libs.json.Json
+object ListItem {
 
-case class DocumentsProducedData(documents: Seq[DocumentsProduced]) {
+  def createId[A](index: Int, item: A) = s"$index.${item.hashCode()}"
 
-  def isEmpty: Boolean = documents.isEmpty
-}
-
-object DocumentsProducedData {
-  implicit val format = Json.format[DocumentsProducedData]
-
-  val formId = "DocumentsProducedData"
-
-  val maxNumberOfItems = 99
+  def findById[A](id: String, items: Seq[A]): Option[A] =
+    try {
+      id.split("\\.") match {
+        case Array(index: String, hashcode: String) if items(index.toInt).hashCode() == hashcode.toInt => Some(items(index.toInt))
+        case _                                                                                         => None
+      }
+    } catch {
+      case _: Exception => None
+    }
 }

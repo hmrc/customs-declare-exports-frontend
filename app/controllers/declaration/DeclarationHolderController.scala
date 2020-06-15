@@ -29,7 +29,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.declaration_holder_summary
+import views.html.declaration.declarationHolder.declaration_holder_summary
 
 import scala.concurrent.ExecutionContext
 
