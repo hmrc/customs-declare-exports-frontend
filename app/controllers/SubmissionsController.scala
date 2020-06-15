@@ -16,15 +16,16 @@
 
 package controllers
 
+import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.AuthAction
 import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
 import models.Mode.ErrorFix
+import models._
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import models.responses.FlashKeys
-import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.model.FieldNamePointer
@@ -39,18 +40,19 @@ class SubmissionsController @Inject()(
   mcc: MessagesControllerComponents,
   submissionsPage: submissions,
   declarationInformationPage: declaration_information
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, paginationConfig: PaginationConfig)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayListOfSubmissions(): Action[AnyContent] = authenticate.async { implicit request =>
-    for {
-      submissions <- customsDeclareExportsConnector.fetchSubmissions()
-      notifications <- customsDeclareExportsConnector.fetchNotifications()
+  def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] =
+    authenticate.async { implicit request =>
+      for {
+        submissions <- customsDeclareExportsConnector.fetchSubmissions()
+        notifications <- customsDeclareExportsConnector.fetchNotifications()
 
-      result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
+        result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
 
-    } yield Ok(submissionsPage(result))
-  }
+      } yield Ok(submissionsPage(SubmissionsPagesElements(result, submissionsPages)))
+    }
 
   def displayDeclarationWithNotifications(id: String): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.findSubmission(id).flatMap {

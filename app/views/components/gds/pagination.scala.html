@@ -16,41 +16,19 @@
 
 @import views.components.gds.PaginationUtil
 @import views.components.gds.PaginationUtil.PaginationItem._
+@import views.html.components.gds.pagination_summary
 
 @(id: String = "pagination",
   singularName: String = "result",
   pluralName: String = "results",
   pager: Paginated[_],
-  onChange: Int => Call
+  onChange: Int => Call,
+  neighbourPagesAmount: Int
 )(implicit messages: Messages)
-
-@firstElementOnPageIndex = @{(pager.page.index - 1) * pager.page.size + 1}
-@lastElementOnPageIndex = @{(pager.page.index - 1) * pager.page.size + pager.currentPageSize}
-@rangePart = {@firstElementOnPageIndex – @lastElementOnPageIndex}
-
-@singularOrPlural = @{
-  if(pager.total == 1){
-    singularName
-  } else {
-    pluralName
-  }
-}
 
 <nav class="ceds-pagination" role="navigation" aria-label="Pagination Navigation">
 
-  <div class="ceds-pagination__summary">
-    @if(pager.nonEmpty) {
-
-      @if(pager.pagesAmount == 1) {
-        <p class="govuk-body">@{messages("saved.declarations.pagination.showing")} @{pager.total} @singularOrPlural</p>
-      } else {
-        <p class="govuk-body">@{messages("saved.declarations.pagination.showing")} @{rangePart} @{messages("saved.declarations.pagination.of")} @{pager.total} @singularOrPlural</p>
-      }
-
-    } else {
-      <p class="govuk-body">@{messages("saved.declarations.pagination.showing.no")} @{pluralName}</p>
-    }
-  </div>
+  @pagination_summary(singularName, pluralName, pager)
 
   @if(pager.pagesAmount > 1) {
     <div id="@id-controls" class="ceds-pagination__controls">
@@ -65,7 +43,7 @@
             </li>
           }
 
-          @for(paginationItem <- PaginationUtil.paginationElements(pager.page.index, pager.pagesAmount)) {
+          @for(paginationItem <- PaginationUtil.paginationElements(pager.page.index, pager.pagesAmount, neighbourPagesAmount)) {
             @paginationItem match {
               case PageNumber(pageNumber) => {
                 <li class="ceds-pagination__item">

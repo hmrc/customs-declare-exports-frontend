@@ -20,10 +20,10 @@ import play.api.libs.json._
 
 import scala.util.Try
 
-case class Paginated[T](currentPageElements: Seq[T], page: Page, total: Long) {
-  def map[A](mapper: T => A): Paginated[A] = Paginated(currentPageElements.map(mapper), page, total)
+case class Paginated[T](currentPageElements: Seq[T], page: Page, elementsTotal: Long) {
+  def map[A](mapper: T => A): Paginated[A] = Paginated(currentPageElements.map(mapper), page, elementsTotal)
   def nonEmpty: Boolean = currentPageElements.nonEmpty
-  def pagesAmount: Int = Math.ceil(total.toDouble / page.size).toInt
+  def pagesAmount: Int = Math.ceil(elementsTotal.toDouble / page.size).toInt
   def currentPageSize: Int = currentPageElements.size
 }
 
@@ -54,7 +54,7 @@ object Paginated {
       Json.obj(
         "currentPageElements" -> JsArray(paged.currentPageElements.map(fmt.writes)),
         "page" -> Json.toJson(paged.page),
-        "total" -> JsNumber(paged.total)
+        "total" -> JsNumber(paged.elementsTotal)
       )
   }
 }

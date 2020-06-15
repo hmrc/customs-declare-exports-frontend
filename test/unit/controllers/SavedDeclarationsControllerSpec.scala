@@ -16,6 +16,7 @@
 
 package unit.controllers
 
+import config.PaginationConfig
 import controllers.SavedDeclarationsController
 import models.requests.ExportsSessionKeys
 import org.mockito.ArgumentMatchers.any
@@ -28,13 +29,14 @@ import views.html.saved_declarations
 class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
   private val savedDeclarationsPage = mock[saved_declarations]
+  private val paginationConfig = mock[PaginationConfig]
 
   private val controller = new SavedDeclarationsController(
     mockAuthAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
     savedDeclarationsPage,
-    config
+    paginationConfig
   )(ec)
 
   override def beforeEach(): Unit = {

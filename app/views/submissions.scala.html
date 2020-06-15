@@ -15,30 +15,34 @@
  *@
 
 @import java.time.ZoneId
-@import views.ViewDates
 
-@import models.declaration.notifications.Notification
-@import models.declaration.submissions.SubmissionStatus
-@import models.declaration.submissions.Submission
-@import models.declaration.submissions.RequestType.SubmissionRequest
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.Submissions
-@import views.Title
-@import views.html.components.gds._
+@import models.declaration.notifications.Notification
+@import models.declaration.submissions.RequestType.SubmissionRequest
+@import models.declaration.submissions.{Submission, SubmissionStatus}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.BackButton
-@import controllers.util.SubmissionDisplayHelper
+@import views.{BackButton, Title, ViewDates}
+@import views.html.components.gds._
 
 @this(
-govukLayout: gdsMainTemplate,
-pageTitle: pageTitle,
-govukTabs : GovukTabs,
-govukTable : GovukTable,
-link: link,
-linkButton: linkButton
+    govukLayout: gdsMainTemplate,
+    pageTitle: pageTitle,
+    govukTabs: GovukTabs,
+    govukTable: GovukTable,
+    link: link,
+    linkButton: linkButton
 )
 
-@(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
+@(submissionsPagesElements: SubmissionsPagesElements)(implicit request: Request[_], messages: Messages)
+
+@submissionsPages = @{
+    SubmissionsPages(
+        submissionsPagesElements.rejectedSubmissions.page.index,
+        submissionsPagesElements.actionSubmissions.page.index,
+        submissionsPagesElements.otherSubmissions.page.index
+    )
+}
 
 @headCell(key: String) = @{
     HeadCell( content = Text(messages(s"submissions.$key.header")) )
@@ -50,13 +54,21 @@ linkButton: linkButton
   )
 }
 
-@tabTable(id: String, title: String, tabSubmissions: Seq[(Submission, Seq[Notification])]) = {
+@tabTable(id: String, title: String, tabSubmissions: Paginated[(Submission, Seq[Notification])], onPageChange: Int => Call) = {
 
     <h2 class="govuk-heading-l">@messages(title)</h2>
 
+    <div class="govuk-grid-row">
+        @pagination_summary(
+            singularName =  messages("saved.declarations.pagination.singular"),
+            pluralName = messages("saved.declarations.pagination.plural"),
+            pager = tabSubmissions
+        )
+    </div>
+
     @govukTable(Table(
         attributes = Map("id" -> s"submissions-tab-$id"),
-        rows = tabSubmissions.zipWithIndex.map{ case((submission, notifications), index) =>
+        rows = tabSubmissions.currentPageElements.zipWithIndex.map{ case((submission, notifications), index) =>
             Seq(
                 TableRow(
                     content = ucrLink(submission),
@@ -92,6 +104,16 @@ linkButton: linkButton
             headCell("status")
         ))
     ))
+
+    <div class="govuk-grid-row">
+        @pagination(
+            singularName = messages("saved.declarations.pagination.singular"),
+            pluralName = messages("saved.declarations.pagination.plural"),
+            pager = tabSubmissions,
+            onChange = onPageChange,
+            neighbourPagesAmount = 2
+        )
+    </div>
 }
 
 @govukLayout(
@@ -114,7 +136,10 @@ linkButton: linkButton
                                 tabTable(
                                     "rejected",
                                     "submissions.tab.rejected.title",
-                                    SubmissionDisplayHelper.filterSubmissions(submissions, _.headOption.map(_.status).exists(SubmissionStatus.rejectedStatuses.contains))
+                                    submissionsPagesElements.rejectedSubmissions,
+                                    page => controllers.routes.SubmissionsController.displayListOfSubmissions(
+                                        submissionsPages.changeRejectedPageNumber(page)
+                                    ).withFragment("rejected-submissions")
                                 )
                             )
                         )
@@ -127,7 +152,10 @@ linkButton: linkButton
                                 tabTable(
                                     "action",
                                     "submissions.tab.action.title",
-                                    SubmissionDisplayHelper.filterSubmissions(submissions, _.headOption.map(_.status).exists(SubmissionStatus.actionRequiredStatuses.contains))
+                                    submissionsPagesElements.actionSubmissions,
+                                    page => controllers.routes.SubmissionsController.displayListOfSubmissions(
+                                        submissionsPages.changeActionPageNumber(page)
+                                    ).withFragment("action-submissions")
                                 )
                             )
                         )
@@ -140,7 +168,10 @@ linkButton: linkButton
                                 tabTable(
                                     "other",
                                     "submissions.tab.other.title",
-                                    SubmissionDisplayHelper.filterSubmissions(submissions, notifications => notifications.isEmpty || notifications.headOption.map(_.status).exists(SubmissionStatus.otherStatuses.contains))
+                                    submissionsPagesElements.otherSubmissions,
+                                    page => controllers.routes.SubmissionsController.displayListOfSubmissions(
+                                        submissionsPages.changeOtherPageNumber(page)
+                                    ).withFragment("other-submissions")
                                 )
                             )
                         )
