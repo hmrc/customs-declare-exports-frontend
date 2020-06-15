@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.AppConfig
+import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
@@ -34,12 +34,12 @@ class SavedDeclarationsController @Inject()(
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   savedDeclarationsPage: saved_declarations,
-  appConfig: AppConfig
+  paginationConfig: PaginationConfig
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayDeclarations(pageNumber: Int = 1): Action[AnyContent] = authenticate.async { implicit request =>
-    customsDeclareExportsConnector.findSavedDeclarations(Page(pageNumber, appConfig.paginationItemsPerPage)).map { page =>
+    customsDeclareExportsConnector.findSavedDeclarations(Page(pageNumber, paginationConfig.itemsPerPage)).map { page =>
       Ok(savedDeclarationsPage(page))
     }
   }

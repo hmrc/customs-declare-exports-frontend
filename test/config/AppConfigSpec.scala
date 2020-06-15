@@ -19,7 +19,6 @@ package config
 import java.util.concurrent.TimeUnit
 
 import com.typesafe.config.{Config, ConfigFactory}
-import features.{Feature, FeatureStatus}
 import forms.Choice
 import models.DeclarationType
 import play.api.Mode.Test
@@ -53,7 +52,6 @@ class AppConfigSpec extends UnitSpec {
         |list-of-available-journeys="CRT,CAN,SUB"
         |list-of-available-declarations="STANDARD,SUPPLEMENTARY"
         |draft.timeToLive=30d
-        |pagination.itemsPerPage=10
         |microservice.services.nrs.host=localhostnrs
         |microservice.services.nrs.port=7654
         |microservice.services.nrs.apikey=cds-exports
@@ -207,10 +205,6 @@ class AppConfigSpec extends UnitSpec {
 
     "have draft lifetime" in {
       validConfigService.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
-    }
-
-    "have pagination items per page" in {
-      validConfigService.paginationItemsPerPage must be(10)
     }
   }
 

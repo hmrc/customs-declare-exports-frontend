@@ -104,8 +104,6 @@ class AppConfig @Inject()(
   lazy val draftTimeToLive: FiniteDuration =
     servicesConfig.getDuration("draft.timeToLive").asInstanceOf[FiniteDuration]
 
-  lazy val paginationItemsPerPage: Int = servicesConfig.getInt("pagination.itemsPerPage")
-
   def availableJourneys(): Seq[String] =
     runModeConfiguration
       .getOptional[String]("list-of-available-journeys")

@@ -16,7 +16,7 @@
 
 package models
 
-import config.AppConfig
+import config.PaginationConfig
 import controllers.util.SubmissionDisplayHelper.filterSubmissions
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
@@ -30,7 +30,7 @@ case class SubmissionsPagesElements(
 object SubmissionsPagesElements {
 
   def apply(submissions: Seq[(Submission, Seq[Notification])], submissionsPages: SubmissionsPages = SubmissionsPages())(
-    implicit appConfig: AppConfig
+    implicit paginationConfig: PaginationConfig
   ): SubmissionsPagesElements = SubmissionsPagesElements(
     rejectedSubmissions = paginateSubmissions(
       filterSubmissions(submissions, _.headOption.map(_.status).exists(SubmissionStatus.rejectedStatuses.contains)),
@@ -50,9 +50,9 @@ object SubmissionsPagesElements {
   )
 
   private def paginateSubmissions(submissions: Seq[(Submission, Seq[Notification])], pageNumber: Int)(
-    implicit appConfig: AppConfig
+    implicit paginationConfig: PaginationConfig
   ): Paginated[(Submission, Seq[Notification])] = {
-    val currentPage = Page(pageNumber, appConfig.paginationItemsPerPage)
+    val currentPage = Page(pageNumber, paginationConfig.itemsPerPage)
     val currentPageElements =
       submissions.slice((currentPage.index - 1) * currentPage.size, (currentPage.index - 1) * currentPage.size + currentPage.size)
     Paginated(currentPageElements, currentPage, submissions.size)

@@ -16,7 +16,7 @@
 
 package models
 
-import config.AppConfig
+import config.PaginationConfig
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -26,13 +26,13 @@ import unit.base.UnitSpec
 
 class SubmissionsPagesElementsSpec extends UnitSpec with BeforeAndAfterEach {
 
-  implicit private val appConfig: AppConfig = mock[AppConfig]
+  implicit private val paginationConfig: PaginationConfig = mock[PaginationConfig]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    reset(appConfig)
-    when(appConfig.paginationItemsPerPage).thenReturn(Page.DEFAULT_MAX_SIZE)
+    reset(paginationConfig)
+    when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_SIZE)
   }
 
   "SubmissionsPagesElements on apply" should {
@@ -43,7 +43,7 @@ class SubmissionsPagesElementsSpec extends UnitSpec with BeforeAndAfterEach {
 
       SubmissionsPagesElements(input)
 
-      verify(appConfig, times(3)).paginationItemsPerPage
+      verify(paginationConfig, times(3)).itemsPerPage
     }
 
     "build default SubmissionsPagesElements" when {

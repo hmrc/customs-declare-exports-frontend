@@ -20,13 +20,14 @@ import java.time.{Instant, LocalDate, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
 import akka.util.Timeout
+import config.PaginationConfig
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.SubmissionsController
+import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.requests.ExportsSessionKeys
-import models._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
@@ -52,8 +53,9 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     ducr = None,
     actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = ZonedDateTime.now(ZoneOffset.UTC)))
   )
-  val submissionsPage = mock[submissions]
-  val declarationInformationPage = mock[declaration_information]
+  private val submissionsPage = mock[submissions]
+  private val declarationInformationPage = mock[declaration_information]
+  private val paginationConfig = mock[PaginationConfig]
 
   val controller = new SubmissionsController(
     mockAuthAction,
@@ -61,7 +63,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     stubMessagesControllerComponents(),
     submissionsPage,
     declarationInformationPage
-  )(ec, config)
+  )(ec, paginationConfig)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -69,11 +71,11 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     authorizedUser()
     when(declarationInformationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(submissionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(config.paginationItemsPerPage).thenReturn(Page.DEFAULT_MAX_SIZE)
+    when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_SIZE)
   }
 
   override protected def afterEach(): Unit =
-    reset(declarationInformationPage, mockCustomsDeclareExportsConnector)
+    reset(declarationInformationPage, mockCustomsDeclareExportsConnector, submissionsPage, paginationConfig)
 
   def submissionsPagesElementsCaptor: SubmissionsPagesElements = {
     val captor = ArgumentCaptor.forClass(classOf[SubmissionsPagesElements])
