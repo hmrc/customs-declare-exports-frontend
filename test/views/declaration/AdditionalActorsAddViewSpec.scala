@@ -18,7 +18,7 @@ package views.declaration
 
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
-import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
+import controllers.util.{SaveAndContinue, SaveAndReturn}
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import helpers.views.declaration.CommonMessages
@@ -30,18 +30,18 @@ import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.declaration_additional_actors
+import views.html.declaration.additionalActors.additional_actors_add
 import views.tags.ViewTest
 import DeclarationType._
 
 @ViewTest
-class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessages with ExportsTestData with Stubs with Injector {
+class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with ExportsTestData with Stubs with Injector {
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
-  private val declarationAdditionalActorsPage = instanceOf[declaration_additional_actors]
+  private val declarationAdditionalActorsPage = instanceOf[additional_actors_add]
 
   private def createView(form: Form[DeclarationAdditionalActors], request: JourneyRequest[_]): Document =
-    declarationAdditionalActorsPage(Mode.Normal, form, Seq())(request, messages)
+    declarationAdditionalActorsPage(Mode.Normal, form)(request, messages)
 
   "Declaration Additional Actors" should {
 
@@ -98,11 +98,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
 
       }
 
-      "display both 'Add' and 'Save and continue' button on page" in {
-        val addButton = view.getElementsByAttributeValueMatching("name", Add.toString).first()
-        addButton.text() must include("site.add")
-        addButton.text() must include("declaration.additionalActors.add.hint")
-
+      "display 'Save and continue' button on page" in {
         val saveAndContinueButton = view.getElementsByAttributeValueMatching("name", SaveAndContinue.toString).first()
         saveAndContinueButton.text() mustBe messages(saveAndContinueCaption)
 
@@ -114,7 +110,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
       "display 'Back' button that links to 'Consignee Details' page" in {
 
-        val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(request, messages)
+        val view = declarationAdditionalActorsPage(Mode.Normal, form)(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
@@ -201,24 +197,6 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
         ensureRadioIsChecked(view, "WH")
         ensureRadiosAreUnChecked(view, "CS", "MF", "FW")
       }
-
-      "display one row with data in table" in {
-
-        val view =
-          declarationAdditionalActorsPage(Mode.Normal, form, Seq(DeclarationAdditionalActors(Some(Eori("GB12345")), Some("CS"))))(
-            request,
-            realMessagesApi.preferred(request)
-          )
-
-        view.select("#actor_party_type_0").text() mustBe "Consolidator"
-        view.select("#actor_0").text() mustBe "GB12345"
-
-        val removeButton = view.select("#actor_action_0>button")
-
-        removeButton.text() must include("Remove")
-        removeButton.attr("value") mustBe """{"eori":"GB12345","partyType":"CS"}"""
-      }
-
     }
   }
 }

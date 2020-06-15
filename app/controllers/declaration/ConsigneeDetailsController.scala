@@ -69,7 +69,7 @@ class ConsigneeDetailsController @Inject()(
       case DeclarationType.CLEARANCE =>
         controllers.declaration.routes.DeclarationHolderController.displayPage
       case _ =>
-        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
+        controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
     }
 
   private def updateCache(formData: ConsigneeDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

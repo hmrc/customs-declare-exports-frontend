@@ -40,7 +40,7 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 
-@(mode: Mode, form: Form[DeclarationAdditionalActors], actors: Seq[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
 
 @inputField(partyType: String) = @{Some(exportsInputText(
     field = form(s"eori$partyType"),
@@ -61,43 +61,6 @@
     <span class="govuk-hint">
         @messages("declaration.additionalActors.title.hint")
     </span>
-}
-
-@actorsTable = {
-    @if(actors.nonEmpty) {
-        @govukTable(Table(
-            rows = actors.zipWithIndex.map { case (actor, index) =>
-                (actor,
-                        actor.eori.map(_.value).getOrElse(""),
-                        s"declaration.partyType.${actor.partyType.getOrElse("error")}",
-                        index)
-            }.map { case (actor, eori, partyType, index) =>
-                Seq(
-                    TableRow(
-                        content = Text(messages(partyType)),
-                        attributes = Map("id" -> s"actor_party_type_$index")
-                    ),
-                    TableRow(
-                        content = Text(eori),
-                        attributes = Map("id" -> s"actor_$index")
-                    ),
-                    TableRow(
-                        content = HtmlContent(removeButton(Some(actor.toJson.toString))),
-                        attributes = Map("id" -> s"actor_action_$index")
-                    )
-                )
-            },
-            head = Some(List(
-                HeadCell(
-                    content = Text(messages("declaration.additionalActors.partyType"))
-                ),
-                HeadCell(
-                    content = Text(messages("declaration.partyType.eori"))
-                ),
-                HeadCell()
-            ))
-        ))
-    }
 }
 
 @radios = {
@@ -150,24 +113,11 @@
     ))
 }
 
-@addButton = {
-@govukButton(Button(
-    classes = "govuk-button--secondary",
-    content = HtmlContent(HtmlFormat.fill(
-        immutable.Seq(
-            Html(s"""<span aria-hidden="true">${messages("site.add")}</span>"""),
-            Html(s"""<span class="govuk-visually-hidden">${messages("declaration.additionalActors.add.hint")}</span>""")
-        )
-    )),
-    name = Some("Add"),
-    attributes = Map("id" -> "add")
-))}
-
 @govukLayout(
     title = Title("declaration.additionalActors.title"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationAdditionalActors, mode)))) {
 
-    @formHelper(action = DeclarationAdditionalActorsController.saveForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalActorsAddController.saveForm(mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
@@ -180,10 +130,8 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
               pageHint,
-              actorsTable,
               radios,
               tariffBody,
-              addButton,
               saveButtons()
             ))
         ))

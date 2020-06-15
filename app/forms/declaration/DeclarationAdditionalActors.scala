@@ -27,6 +27,8 @@ case class DeclarationAdditionalActors(eori: Option[Eori], partyType: Option[Str
 
   import DeclarationAdditionalActors._
 
+  def id: String = s"${partyType.getOrElse("")}-${eori.getOrElse("")}"
+
   def isDefined: Boolean = eori.isDefined && partyType.isDefined
 
   def isAllowed: Boolean = partyType.exists(allowedPartyTypes.contains)
@@ -82,3 +84,5 @@ object DeclarationAdditionalActors extends DeclarationPage {
     val WarehouseKeeper = "WH"
   }
 }
+
+object AdditionalActorsSummary extends DeclarationPage

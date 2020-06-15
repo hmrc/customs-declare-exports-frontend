@@ -103,9 +103,17 @@ POST        /carrier-details                     controllers.declaration.Carrier
 
 # Declaration other parties
 
-GET         /other-parties-involved              controllers.declaration.DeclarationAdditionalActorsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /other-parties-involved              controllers.declaration.AdditionalActorsAddController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /other-parties-involved              controllers.declaration.DeclarationAdditionalActorsController.saveForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /other-parties-involved              controllers.declaration.AdditionalActorsAddController.saveForm(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /other-parties-list                  controllers.declaration.AdditionalActorsSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /other-parties-list                  controllers.declaration.AdditionalActorsSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /remove-additional-party/:id         controllers.declaration.AdditionalActorsRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
+
+POST        /remove-additional-party/:id         controllers.declaration.AdditionalActorsRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, id: String)
 
 # Declaration holder of authorisation
 
