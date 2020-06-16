@@ -64,6 +64,9 @@ trait ExportsItemBuilder {
       cache.copy(additionalInformation = Some(AdditionalInformationData(existing ++ Seq(info1) ++ other)))
     }
 
+  def withAdditionalInformationData(informationData: AdditionalInformationData): ItemModifier =
+    cache => cache.copy(additionalInformation = Some(informationData))
+
   def withCommodityDetails(data: CommodityDetails): ItemModifier =
     _.copy(commodityDetails = Some(data))
 

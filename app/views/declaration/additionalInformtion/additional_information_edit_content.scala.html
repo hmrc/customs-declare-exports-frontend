@@ -1,0 +1,74 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.requests.JourneyRequest
+@import forms.declaration.AdditionalInformation
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import config.AppConfig
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
+
+@this(
+        govukFieldset: GovukFieldset,
+        govukInput: GovukInput,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        exportsInputTextArea: exportsInputTextArea,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        appConfig: AppConfig
+)
+
+@(mode: Mode, itemId: String, form: Form[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
+
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.additionalInformationRequired.hint.link")</a>}
+
+@tariffBody = { @Html(messages("declaration.type.additionalActorsSummaryText", components.details_content_link())) }
+
+
+
+
+@errorSummary(form.errors)
+
+@sectionHeader(messages("supplementary.items"))
+
+@govukFieldset(Fieldset(
+    legend = Some(Legend(
+        content = Text(messages("declaration.additionalInformation.title")),
+        classes = gdsPageLegend,
+        isPageHeading = true
+    )),
+    html = HtmlFormat.fill(immutable.Seq(
+        exportsInputText(
+            field = form("code"),
+            labelKey = "declaration.additionalInformation.code",
+            inputClasses = Some("govuk-input--width-4"),
+            hintKey = Some("declaration.additionalInformation.code.hint"),
+            hintKeyLinks = Seq(tradeTariffLink)
+        ),
+        exportsInputTextArea(
+            field = form("description"),
+            labelKey = "declaration.additionalInformation.description",
+            inputClasses = Some("govuk-input--width-20")
+        ),
+        tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+        saveButtons()
+    ))
+))
+

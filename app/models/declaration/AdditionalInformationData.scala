@@ -16,13 +16,20 @@
 
 package models.declaration
 
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformation
 import play.api.libs.json.Json
 
-case class AdditionalInformationData(items: Seq[AdditionalInformation])
+case class AdditionalInformationData(isRequired: Option[YesNoAnswer], items: Seq[AdditionalInformation])
 
 object AdditionalInformationData {
   implicit val format = Json.format[AdditionalInformationData]
+
+  def apply(items: Seq[AdditionalInformation]): AdditionalInformationData =
+    new AdditionalInformationData(Some(if (items.nonEmpty) YesNoAnswer(YesNoAnswers.yes) else YesNoAnswer(YesNoAnswers.no)), items)
+
+  def default: AdditionalInformationData = AdditionalInformationData(None, Seq.empty)
 
   val formId = "AdditionalInformationData"
 

@@ -17,7 +17,9 @@
 @import controllers.declaration.routes._
 @import controllers.navigation.ItemId
 @import controllers.navigation.Navigator
+@import forms.common.YesNoAnswer
 @import forms.declaration.AdditionalInformation
+@import forms.declaration.AdditionalInformationSummary
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
@@ -26,12 +28,11 @@
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
 @import config.AppConfig
+@import utils.ListItem._
 
 @this(govukLayout: gdsMainTemplate,
         govukFieldset: GovukFieldset,
         govukTable : GovukTable,
-        addButton: addButton,
-        removeButton: removeButton,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
@@ -39,13 +40,25 @@
         tariffDetails: tariffDetails,
         saveButtons: saveButtons,
         appConfig: AppConfig,
+        link: link,
+        addAnotherQuestion: addAnotherQuestion,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
-@(mode: Mode, itemId: String, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[YesNoAnswer], items: Seq[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.additionalInformationRequired.hint.link")</a>}
+@title = @{
+    if(items.size == 1)
+        Title("declaration.additionalInformation.table.heading", "supplementary.items")
+    else
+        Title("declaration.additionalInformation.table.multiple.heading", "supplementary.items", items.size.toString)
+}
 
-@tariffBody = { @Html(messages("declaration.type.additionalActorsSummaryText", components.details_content_link())) }
+@header = @{
+    if(items.size == 1)
+        Text(messages("declaration.additionalInformation.table.heading"))
+    else
+        Text(messages("declaration.additionalInformation.table.multiple.heading", items.size))
+}
 
 @additionalInformationTable = {
     @if(items.nonEmpty) {
@@ -62,7 +75,19 @@
                         attributes = Map("id" -> s"additional_information-row$index-info")
                     ),
                     TableRow(
-                        content = HtmlContent(removeButton(value = Some(item.toString), hiddenLabel = Some(messages("declaration.additionalInformation.remove.hint", item.code)))),
+                        content = HtmlContent(link(
+                            messages("site.change"),
+                            Some(messages("declaration.additionalInformation.table.update.hint", item.code)),
+                            AdditionalInformationChangeController.displayPage(mode, itemId, createId(index, item)))),
+                        classes = "govuk-table__cell--numeric",
+                        attributes = Map("id" -> s"additional_information-row$index-change_button")
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            Some(messages("declaration.additionalInformation.table.update.hint", item.code)),
+                            AdditionalInformationRemoveController.displayPage(mode, itemId, createId(index, item)))),
+                        classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"additional_information-row$index-remove_button")
                     )
                 )
@@ -74,44 +99,31 @@
                 HeadCell(
                     content = Text(messages("declaration.additionalInformation.table.headers.description"))
                 ),
-                HeadCell()
+                HeadCell(colspan = Some(2))
             ))
         ))
     }
 }
 
 @govukLayout(
-    title = Title("declaration.additionalInformation.title", "supplementary.summary.yourReferences.header"),
-    backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(mode, (itemId))))) {
+    title = title,
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalInformationSummary, mode, ItemId(itemId))))) {
 
-    @formHelper(action = AdditionalInformationController.saveAdditionalInfo(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalInformationController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.summary.yourReferences.header"))
+        @sectionHeader(messages("supplementary.items"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("declaration.additionalInformation.title")),
+                content = header,
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 additionalInformationTable,
-                exportsInputText(
-                    field = form("code"),
-                    labelKey = "declaration.additionalInformation.code",
-                    inputClasses = Some("govuk-input--width-20"),
-                    hintKey = Some("declaration.additionalInformation.code.hint"),
-                    hintKeyLinks = Seq(tradeTariffLink)
-                ),
-                exportsInputTextArea(
-                    field = form("description"),
-                    labelKey = "declaration.additionalInformation.description",
-                    inputClasses = Some("govuk-input--width-20")
-                ),
-                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-                addButton(hiddenLabel = Some(messages("declaration.additionalInformation.add.hint"))),
+                addAnotherQuestion("declaration.additionalInformation.add.another", form),
                 saveButtons()
             ))
         ))
