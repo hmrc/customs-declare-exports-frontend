@@ -16,187 +16,135 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, AdditionalInformationController}
-import controllers.util.Remove
+import controllers.declaration.AdditionalInformationController
+import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
-import models.declaration.{AdditionalInformationData, ExportItem}
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.Mode
+import models.declaration.AdditionalInformationData
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.additional_information
+import views.html.declaration.additionalInformtion.additional_information
 
 class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  val additionalInformationPage = mock[additional_information]
+  val mockSummaryPage = mock[additional_information]
 
   val controller = new AdditionalInformationController(
     mockAuthAction,
     mockJourneyAction,
-    mockErrorHandler,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    additionalInformationPage
+    mockSummaryPage
   )(ec)
 
-  def journeyFor[A](declaration: ExportsDeclaration)(test: => A): A = {
-    withNewCaching(declaration)
-    test
-  }
+  val itemId = "itemId"
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    setupErrorHandler()
     authorizedUser()
-    when(additionalInformationPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    withNewCaching(aDeclaration())
+    when(mockSummaryPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
-  def theResponseForm: Form[AdditionalInformation] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[AdditionalInformation]])
-    verify(additionalInformationPage).apply(any(), any(), captor.capture(), any())(any(), any())
-    captor.getValue
+  override protected def afterEach(): Unit = {
+    super.afterEach()
+    reset(mockSummaryPage)
+  }
+
+  def theResponseForm: Form[YesNoAnswer] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(mockSummaryPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
+    formCaptor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    val item = anItem()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+    val item = anItem(withAdditionalInformation(additionalInformation))
+    withNewCaching(aDeclaration(withItems(item)))
     await(controller.displayPage(Mode.Normal, item.id)(request))
     theResponseForm
   }
 
-  val itemCacheData =
-    ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
+  private def verifyPageInvoked(numberOfTimes: Int = 1) =
+    verify(mockSummaryPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
-  val itemWith99InformationCacheData =
-    ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
+  private val additionalInformation = AdditionalInformation("54321", "Some description")
 
-  def journeyPageController(declaration: ExportsDeclaration): Unit = {
+  "AdditionalInformation controller" should {
+
     "return 200 (OK)" when {
 
-      "display page method is invoked with empty cache" in journeyFor(declaration) {
-        val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
+      "display page method is invoked with data in cache" in {
 
-        status(result) must be(OK)
-      }
+        val item = anItem(withAdditionalInformation(additionalInformation))
+        withNewCaching(aDeclaration(withItems(item)))
 
-      "display page method is invoked with data in cache" in journeyFor(aDeclarationAfter(declaration, withItem(itemCacheData))) {
-        val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
+        val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
-        status(result) must be(OK)
+        status(result) mustBe OK
+        verifyPageInvoked()
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
 
-      "user provide wrong action" in journeyFor(declaration) {
-        val wrongAction = Seq(("code", "12345"), ("description", "text"), ("WrongAction", ""))
+      "user provide wrong action" in {
 
-        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val requestBody = Seq("yesNo" -> "invalid")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 400 (BAD_REQUEST) during adding" when {
-
-      "user put duplicated item" in journeyFor(aDeclarationAfter(declaration, withItem(itemCacheData))) {
-        val duplicatedForm = Seq(("code", "12345"), ("description", "description"), addActionUrlEncoded())
-
-        val result =
-          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user reach maximum amount of items" in journeyFor(aDeclarationAfter(declaration, withItem(itemWith99InformationCacheData))) {
-        val form = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded())
-
-        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(form: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 400 (BAD_REQUEST) during saving" when {
-
-      "user put incorrect data" in journeyFor(declaration) {
-        val incorrectForm = Seq(("code", "111"), ("description", ""), saveAndContinueActionUrlEncoded)
-
-        val result =
-          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user put duplicated item" in journeyFor(aDeclarationAfter(declaration, withItem(itemCacheData))) {
-        val duplicatedForm = Seq(("code", "12345"), ("description", "description"), saveAndContinueActionUrlEncoded)
-
-        val result =
-          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user reach maximum amount of items" in journeyFor(aDeclarationAfter(declaration, withItem(itemWith99InformationCacheData))) {
-        val form = Seq(("code", "12345"), ("description", "text"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(form: _*))
-
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
+        verifyPageInvoked()
       }
     }
 
     "return 303 (SEE_OTHER)" when {
 
-      "user correctly add new item" in journeyFor(declaration) {
-        val correctForm = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded())
+      "user has not answered 'do you need to add additional information'" in {
 
-        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) must be(SEE_OTHER)
-      }
-
-      "user save correct data" in journeyFor(declaration) {
-        val correctForm = Seq(("code", "12345"), ("description", "text"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId)
       }
 
-      "user save correct data without new item" in journeyFor(aDeclarationAfter(declaration, withItem(itemWith99InformationCacheData))) {
-        val correctForm = saveAndContinueActionUrlEncoded
+      "no additional information items in the cache" in {
+        val item = anItem(withItemId(itemId), withAdditionalInformationData(AdditionalInformationData(Seq.empty)))
+        withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(correctForm))
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationAddController.displayPage(Mode.Normal, itemId)
       }
 
-      "user remove existing item" in journeyFor(declaration) {
-        val removeForm = (Remove.toString, "0")
+      "user submits valid Yes answer" in {
+        val item = anItem(withAdditionalInformation(additionalInformation))
+        withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(removeForm))
+        val requestBody = Seq("yesNo" -> "Yes")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationAddController.displayPage(Mode.Normal, itemId)
       }
-    }
-  }
 
-  "Additional information controller" when {
+      "user submits valid No answer" in {
+        val item = anItem(withAdditionalInformation(additionalInformation))
+        withNewCaching(aDeclaration(withItems(item)))
 
-    for (decType <- DeclarationType.values) {
-      s"we are on $decType journey" should {
-        behave like journeyPageController(aDeclaration(withType(decType)))
+        val requestBody = Seq("yesNo" -> "No")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)
       }
     }
   }

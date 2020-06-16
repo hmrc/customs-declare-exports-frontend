@@ -18,27 +18,23 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.MultipleItemsHelper.remove
-import controllers.util._
-import forms.declaration.AdditionalInformation
-import handlers.ErrorHandler
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
-import models.declaration.AdditionalInformationData
+import models.Mode
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.additional_information
+import views.html.declaration.additionalInformtion.additional_information
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class AdditionalInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -46,71 +42,36 @@ class AdditionalInformationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  val elementLimit = 99
-
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val form = AdditionalInformation.form().withSubmissionErrors()
-    request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation) match {
-      case Some(data) => Ok(additionalInformationPage(mode, itemId, form, data.items))
-      case _          => Ok(additionalInformationPage(mode, itemId, form, Seq()))
+    val frm = YesNoAnswer.form().withSubmissionErrors()
+    cachedAdditionalInformationData(itemId) match {
+      case Some(data) if data.items.nonEmpty =>
+        Ok(additionalInformationPage(mode, itemId, frm, data.items))
+      case Some(_) =>
+        navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationAddController.displayPage(_, itemId))
+      case _ =>
+        navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(_, itemId))
     }
   }
 
-  def saveAdditionalInfo(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = AdditionalInformation.form().bindFromRequest()
-    val actionTypeOpt = FormAction.bindFromRequest()
-
-    val cache = request.cacheModel
-      .itemBy(itemId)
-      .flatMap(_.additionalInformation)
-      .getOrElse(AdditionalInformationData(Seq()))
-
-    actionTypeOpt match {
-      case Add                             => handleAdd(mode, itemId, boundForm, cache.items)
-      case Remove(ids)                     => handleRemove(mode, itemId, ids, boundForm, cache.items)
-      case SaveAndContinue | SaveAndReturn => handleSaveAndContinue(mode, itemId, boundForm, cache.items)
-      case _                               => errorHandler.displayErrorPage()
-    }
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    YesNoAnswer
+      .form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[YesNoAnswer]) =>
+          BadRequest(
+            additionalInformationPage(mode, itemId, formWithErrors, cachedAdditionalInformationData(itemId).map(_.items).getOrElse(Seq.empty))
+        ),
+        validYesNo =>
+          validYesNo.answer match {
+            case YesNoAnswers.yes =>
+              navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationAddController.displayPage(_, itemId))
+            case YesNoAnswers.no => navigator.continueTo(mode, routes.DocumentsProducedController.displayPage(_, itemId))
+        }
+      )
   }
 
-  private def handleAdd(mode: Mode, itemId: String, boundForm: Form[AdditionalInformation], cachedData: Seq[AdditionalInformation])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    MultipleItemsHelper
-      .add(boundForm, cachedData, elementLimit)
-      .fold(
-        formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors, cachedData))),
-        updatedCache =>
-          updateCache(itemId, AdditionalInformationData(updatedCache))
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)))
-      )
-
-  private def handleSaveAndContinue(mode: Mode, itemId: String, boundForm: Form[AdditionalInformation], cachedData: Seq[AdditionalInformation])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    MultipleItemsHelper
-      .saveAndContinue(boundForm, cachedData, isMandatory = false, elementLimit)
-      .fold(
-        formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode: Mode, itemId, formWithErrors, cachedData))),
-        updatedCache =>
-          updateCache(itemId, AdditionalInformationData(updatedCache))
-            .map(
-              _ =>
-                navigator
-                  .continueTo(mode, controllers.declaration.routes.DocumentsProducedController.displayPage(_, itemId))
-          )
-      )
-
-  private def handleRemove(mode: Mode, itemId: String, ids: Seq[String], boundForm: Form[AdditionalInformation], items: Seq[AdditionalInformation])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = {
-    val updatedCache = remove(items, (addItem: AdditionalInformation) => addItem.toString == ids.head)
-    updateCache(itemId, AdditionalInformationData(updatedCache))
-      .map(_ => navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)))
-  }
-
-  private def updateCache(itemId: String, updatedAdditionalInformation: AdditionalInformationData)(
-    implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
+  private def cachedAdditionalInformationData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+    request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation)
 }

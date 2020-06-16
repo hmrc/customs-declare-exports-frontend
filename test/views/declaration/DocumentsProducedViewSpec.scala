@@ -22,7 +22,6 @@ import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.declaration.DocumentsProducedSpec._
 import forms.declaration.additionaldocuments.DocumentsProduced
-import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
@@ -165,9 +164,18 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             row.selectFirst(".document-identifier").text() must equal(correctDocumentsProduced.documentIdentifier.get)
           }
 
+          "have change link" in {
+            val removeLink = row.select(".govuk-link").get(0)
+            removeLink.text() mustBe messages("site.change") + messages("declaration.addDocument.table.update.hint")
+            removeLink must haveHref(
+              controllers.declaration.routes.DocumentsProducedChangeController
+                .displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))
+            )
+          }
+
           "have remove link" in {
             val removeLink = row.select(".govuk-link").get(1)
-            removeLink.text() mustBe messages("site.removedeclaration.addDocument.table.update.hint")
+            removeLink.text() mustBe messages("site.remove") + messages("declaration.addDocument.table.update.hint")
             removeLink must haveHref(
               controllers.declaration.routes.DocumentsProducedRemoveController
                 .displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))

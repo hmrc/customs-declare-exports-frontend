@@ -18,30 +18,33 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
+import controllers.util.{SaveAndContinue, SaveAndReturn}
+import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType.DeclarationType
+import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import utils.ListItem
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.additional_information
+import views.html.declaration.additionalInformtion.additional_information
 import views.tags.ViewTest
 
 @ViewTest
 class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
-  private val form: Form[AdditionalInformation] = AdditionalInformation.form()
-
+  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[additional_information]
 
-  private def createView(declarationType: DeclarationType = DeclarationType.STANDARD, form: Form[AdditionalInformation] = form): Document =
-    page(Mode.Normal, itemId, form, Seq())(journeyRequest(declarationType), messages)
+  private def createView(form: Form[YesNoAnswer] = form, cachedData: Seq[AdditionalInformation] = Seq())(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    page(Mode.Normal, itemId, form, cachedData)(request, messages)
 
   "Additional Information View" should {
 
@@ -49,137 +52,106 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
       val messages = instanceOf[MessagesApi].preferred(request)
 
-      messages must haveTranslationFor("declaration.additionalInformation.title")
+      messages must haveTranslationFor("declaration.additionalInformation.table.heading")
+      messages must haveTranslationFor("declaration.additionalInformation.table.multiple.heading")
       messages must haveTranslationFor("declaration.additionalInformation.code")
       messages must haveTranslationFor("declaration.additionalInformation.item.code")
-      messages must haveTranslationFor("declaration.additionalInformation.code.error")
-      messages must haveTranslationFor("declaration.additionalInformation.code.empty")
       messages must haveTranslationFor("declaration.additionalInformation.description")
       messages must haveTranslationFor("declaration.additionalInformation.item.description")
-      messages must haveTranslationFor("declaration.additionalInformation.description.error")
-      messages must haveTranslationFor("declaration.additionalInformation.description.empty")
+      messages must haveTranslationFor("declaration.additionalInformation.table.update.hint")
     }
   }
 
   "Additional Information View on empty page" should {
 
-    "display page title" in {
+    onEveryDeclarationJourney() { implicit request =>
+      "display page title" in {
 
-      createView().getElementsByTag("h1").text() mustBe messages("declaration.additionalInformation.title")
-    }
-
-    "display section header" in {
-
-      createView().getElementById("section-header").text() must include("supplementary.summary.yourReferences.header")
-    }
-
-    "display empty input with label for Union code" in {
-
-      val view = createView()
-
-      view.getElementsByAttributeValue("for", "code").text() mustBe messages("declaration.additionalInformation.code")
-      view.getElementById("code").attr("value") mustBe empty
-    }
-
-    "display empty input with label for Description" in {
-
-      val view = createView()
-
-      view.getElementsByAttributeValue("for", "description").text() mustBe messages("declaration.additionalInformation.description")
-      view.getElementById("description").attr("value") mustBe empty
-    }
-
-    "display 'Back' button that links to 'Commodity measure' page" when {
-      "on the Standard journey" in {
-
-        val backButton = createView().getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId).url
+        createView().getElementsByTag("h1").text() mustBe messages("declaration.additionalInformation.table.multiple.heading")
       }
 
-      "on the Simplified journey" in {
+      "display section header" in {
 
-        val backButton = createView(declarationType = DeclarationType.SIMPLIFIED).getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId).url
+        createView().getElementById("section-header").text() must include("supplementary.items")
       }
-    }
 
-    "display 'Save and continue' button" in {
-      val view: Document = createView()
-      view must containElement("button").withName(SaveAndContinue.toString)
-    }
+      "display 'Back' button that links to 'Commodity measure' page" when {
+        "on the Standard journey" in {
 
-    "display 'Save and return' button" in {
-      val view: Document = createView()
-      view must containElement("button").withName(SaveAndReturn.toString)
-    }
+          val backButton = createView().getElementById("back-link")
 
-    "display 'Add' button" in {
-      val view: Document = createView()
-      view must containElement("button").withName(Add.toString)
+          backButton.text() mustBe messages(backCaption)
+          backButton.attr("href") mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId).url
+        }
+
+        "on the Simplified journey" in {
+
+          val backButton = createView().getElementById("back-link")
+
+          backButton.text() mustBe messages(backCaption)
+          backButton.attr("href") mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId).url
+        }
+      }
+
+      "display 'Save and continue' button" in {
+        val view: Document = createView()
+        view must containElement("button").withName(SaveAndContinue.toString)
+      }
+
+      "display 'Save and return' button" in {
+        val view: Document = createView()
+        view must containElement("button").withName(SaveAndReturn.toString)
+      }
+
     }
   }
 
   "Additional Information View when filled" should {
 
-    "display data in both inputs" in {
-
-      val view = createView(form = AdditionalInformation.form.fill(AdditionalInformation("12345", "12345")))
-
-      view.getElementById("code").attr("value") mustBe "12345"
-      view.getElementById("description").text() mustBe "12345"
-
-    }
-
-    "display data in code input" in {
-
-      val view = createView(form = AdditionalInformation.form.fill(AdditionalInformation("12345", "")))
-
-      view.getElementById("code").attr("value") mustBe "12345"
-      view.getElementById("description").text() mustBe empty
-    }
-
-    "display data in description input" in {
-
-      val view = createView(form = AdditionalInformation.form.fill(AdditionalInformation("", "12345")))
-
-      view.getElementById("code").attr("value") mustBe empty
-      view.getElementById("description").text() mustBe "12345"
-    }
-
     "display one row with data in table" which {
+      onEveryDeclarationJourney() { implicit request =>
+        val additionalInformation = AdditionalInformation("12345", "12345678")
+        val view = page(Mode.Normal, itemId, form, Seq(additionalInformation))(journeyRequest(DeclarationType.STANDARD), messages)
+        val row = view.selectFirst("#additional_information tbody tr")
 
-      val view = page(Mode.Normal, itemId, form, Seq(AdditionalInformation("12345", "12345678")))(journeyRequest(DeclarationType.STANDARD), messages)
+        "has Code header" in {
+          view.select("#additional_information thead tr th").get(0).text() mustBe "declaration.additionalInformation.table.headers.code"
+        }
 
-      "has Code header" in {
-        view.select("#additional_information thead tr th").get(0).text() mustBe "declaration.additionalInformation.table.headers.code"
+        "has 'Required information' header" in {
+          view
+            .select("#additional_information thead tr th")
+            .get(1)
+            .text() mustBe "declaration.additionalInformation.table.headers.description"
+        }
+
+        "has row with 'Code' in " in {
+          view.select("#additional_information-row0-code").first().text() mustBe "12345"
+        }
+
+        "has row with 'Required information" in {
+          view.select("#additional_information-row0-info").first().text() mustBe "12345678"
+        }
+
+        "have change link" in {
+          val removeLink = row.select(".govuk-link").get(0)
+          removeLink.text() mustBe messages("site.change") + messages("declaration.additionalInformation.table.update.hint")
+          removeLink must haveHref(
+            controllers.declaration.routes.AdditionalInformationChangeController
+              .displayPage(Mode.Normal, itemId, ListItem.createId(0, additionalInformation))
+          )
+        }
+
+        "have remove link" in {
+          val removeLink = row.select(".govuk-link").get(1)
+          removeLink.text() mustBe messages("site.remove") + messages("declaration.additionalInformation.table.update.hint")
+          removeLink must haveHref(
+            controllers.declaration.routes.AdditionalInformationRemoveController
+              .displayPage(Mode.Normal, itemId, ListItem.createId(0, additionalInformation))
+          )
+        }
+
       }
-
-      "has 'Required information' header" in {
-        view
-          .select("#additional_information thead tr th")
-          .get(1)
-          .text() mustBe "declaration.additionalInformation.table.headers.description"
-      }
-
-      "has row with 'Code' in " in {
-        view.select("#additional_information-row0-code").first().text() mustBe "12345"
-      }
-
-      "has row wiht 'Required information" in {
-        view.select("#additional_information-row0-info").first().text() mustBe "12345678"
-      }
-
-      "has 'Remove' button" in {
-
-        val removeButton = view.select("#additional_information-row0-remove_button .govuk-button").first()
-        removeButton.text() mustBe "site.removedeclaration.additionalInformation.remove.hint"
-        removeButton.attr("name") mustBe "Remove"
-      }
-
     }
   }
 }

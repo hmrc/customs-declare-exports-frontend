@@ -23,14 +23,14 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.additional_information_required
+import views.html.declaration.additionalInformtion.additional_information_required
 import views.tags.ViewTest
 
 @ViewTest
@@ -62,9 +62,7 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
       }
 
       "display section header" in {
-        createView(form(request.declarationType)).getElementById("section-header").text() mustBe messages(
-          "supplementary.consignmentReferences.heading"
-        )
+        createView(form(request.declarationType)).getElementById("section-header").text() mustBe messages("supplementary.items")
       }
 
       "display radio button with Yes option" in {
@@ -78,20 +76,38 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
         view.getElementsByAttributeValue("for", "required_No").text() mustBe "site.no"
       }
 
-      "display 'Back' button that links to the 'Commodity Measure' page" in {
-
-        val view = createView(form(request.declarationType))
-        val backButton = view.getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.CommodityMeasureController.displayPage(Mode.Normal, itemId).url
-      }
-
       "display 'Save and continue' button on page" in {
         val saveButton = createView(form(request.declarationType)).getElementById("submit")
         saveButton.text() mustBe messages(saveAndContinueCaption)
       }
 
     }
+
+  }
+
+  "Additional Information Required View back link" should {
+
+    onJourney(DeclarationType.STANDARD, DeclarationType.CLEARANCE, DeclarationType.SUPPLEMENTARY) { implicit request =>
+      "display 'Back' button that links to the 'Commodity Measure' page" in {
+
+        val view = createView(form(request.declarationType))
+        val backButton = view.getElementById("back-link")
+
+        backButton must containText(messages(backCaption))
+        backButton must haveHref(routes.CommodityMeasureController.displayPage(Mode.Normal, itemId))
+      }
+    }
+
+    onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
+      "display 'Back' button that links to the 'Package Information' page" in {
+
+        val view = createView(form(request.declarationType))
+        val backButton = view.getElementById("back-link")
+
+        backButton must containText(messages(backCaption))
+        backButton must haveHref(routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId))
+      }
+    }
+
   }
 }

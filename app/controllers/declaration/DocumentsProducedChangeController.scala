@@ -98,8 +98,8 @@ class DocumentsProducedChangeController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(documentProducedPage(mode, itemId, documentId, formWithErrors))),
         _ => {
-          val updatedHolders: Seq[DocumentsProduced] = existingDocuments.map(doc => if (doc == existingDocument) newDocument else doc)
-          updateCache(itemId, DocumentsProducedData(updatedHolders))
+          val updatedDocuments: Seq[DocumentsProduced] = existingDocuments.map(doc => if (doc == existingDocument) newDocument else doc)
+          updateCache(itemId, DocumentsProducedData(updatedDocuments))
             .map(_ => returnToSummary(mode, itemId))
         }
       )

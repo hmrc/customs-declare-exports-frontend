@@ -38,6 +38,7 @@ object AdditionalInformation extends DeclarationPage {
         .verifying("declaration.additionalInformation.code.error", isEmpty or (isAlphanumeric and hasSpecificLength(5))),
     "description" ->
       text()
+        .verifying("declaration.additionalInformation.description.empty", nonEmpty)
         .verifying(
           "declaration.additionalInformation.description.error",
           isEmpty or (noLongerThan(70) and isAlphanumericWithAllowedSpecialCharacters)
@@ -46,3 +47,6 @@ object AdditionalInformation extends DeclarationPage {
 
   def form(): Form[AdditionalInformation] = Form(mapping)
 }
+
+object AdditionalInformationRequired extends DeclarationPage
+object AdditionalInformationSummary extends DeclarationPage

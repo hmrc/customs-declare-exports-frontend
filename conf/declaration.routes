@@ -254,12 +254,6 @@ GET         /items/:itemId/commodity-details                   controllers.decla
 
 POST        /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-# Additional Information Request
-
-GET          /items/:itemId/additional-information-required     controllers.declaration.AdditionalInformationRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)
-
-POST        /items/:itemId/additional-information-required       controllers.declaration.AdditionalInformationRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
-
 # UN Dangerous Goods Code
 
 GET         /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
@@ -330,9 +324,25 @@ POST         /items/:itemId/commodity-measure                   controllers.decl
 
 # Additional information
 
-GET         /items/:itemId/additional-information              controllers.declaration.AdditionalInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET          /items/:itemId/is-additional-information-required controllers.declaration.AdditionalInformationRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/additional-information              controllers.declaration.AdditionalInformationController.saveAdditionalInfo(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/is-additional-information-required  controllers.declaration.AdditionalInformationRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/additional-information              controllers.declaration.AdditionalInformationAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/additional-information              controllers.declaration.AdditionalInformationAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/additional-information/:id/remove   controllers.declaration.AdditionalInformationRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+
+POST        /items/:itemId/additional-information/:id/remove   controllers.declaration.AdditionalInformationRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+
+GET         /items/:itemId/additional-information/:id/change   controllers.declaration.AdditionalInformationChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+
+POST        /items/:itemId/additional-information/:id/change   controllers.declaration.AdditionalInformationChangeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+
+GET         /items/:itemId/additional-information-list         controllers.declaration.AdditionalInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/additional-information-list         controllers.declaration.AdditionalInformationController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Additional Documents
 
