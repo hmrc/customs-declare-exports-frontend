@@ -33,12 +33,13 @@ import models.Mode.ErrorFix
 import models.declaration.ExportItem
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import play.api.mvc.{AnyContent, Call, Result, Results}
 import services.audit.{AuditService, AuditTypes}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 
-class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
+class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, exportsCacheService: ExportsCacheService) {
 
   def continueTo(mode: Mode, factory: Mode => Call, isErrorFixInProgress: Boolean = false)(
     implicit req: JourneyRequest[AnyContent],
@@ -48,6 +49,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
       case (ErrorFix, formAction) => handleErrorFixMode(factory, formAction, isErrorFixInProgress)
       case (_, SaveAndReturn) =>
         auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
+        exportsCacheService.update(req.cacheModel.copy(status = DeclarationStatus.DRAFT))
         goToDraftConfirmation()
       case _ => Results.Redirect(factory(mode))
     }

@@ -95,7 +95,7 @@ class DeclarationChoiceController @Inject()(
       .create(
         ExportsDeclarationExchange(
           None,
-          DeclarationStatus.DRAFT,
+          DeclarationStatus.IN_PROGRESS,
           createdDateTime = Instant.now,
           updatedDateTime = Instant.now,
           sourceId = None,

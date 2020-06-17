@@ -39,6 +39,12 @@ class SignOutController @Inject()(
       case SignOutReason.SessionTimeout => routes.SignOutController.sessionTimeoutSignedOut()
       case SignOutReason.UserAction     => routes.SignOutController.userSignedOut()
     }
+
+    request.declarationId.foreach(decId =>
+        // TODO - get dec from cache, update status to DRAFT and save
+      println("TODO - get dec from cache, update status to DRAFT and save")
+    )
+
     Redirect(redirectionTarget).withNewSession
   }
 
