@@ -1,0 +1,99 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import controllers.navigation.Navigator
+@import forms.common.YesNoAnswer
+@import forms.declaration.{Document, DocumentChangeOrRemove}
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import services.DocumentType
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.html.components.gds._
+@import views.{BackButton, Title}
+@import scala.collection.immutable
+
+@this(
+    govukLayout: gdsMainTemplate,
+    sectionHeader: sectionHeader,
+    govukFieldset: GovukFieldset,
+    pageTitle: pageTitle,
+    govukButton: GovukButton,
+    govukSummaryList: GovukSummaryList,
+    errorSummary: errorSummary,
+    tariffDetails: tariffDetails,
+    addAnotherQuestion: addAnotherQuestion,
+    saveButtons: saveButtons,
+    yesNoRadios: yesNoRadios,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
+
+@(mode: Mode, documentId: String, document: Document, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+
+@tariffBody = { @Html(messages("declaration.type.previousDocumentsSummaryText", components.details_content_link())) }
+
+@documentTable = {
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                Key(Text(messages("declaration.previousDocuments.documentType.label"))),
+                Value(Text(DocumentType.documentCodesMap(document.documentType).asTextWithBrackets))
+            ),
+            SummaryListRow(
+                Key(Text(messages("declaration.previousDocuments.documentReference.summary.label"))),
+                Value(Text(document.documentReference))
+            ),
+            SummaryListRow(
+                Key(Text(messages(s"declaration.previousDocuments.documentCategory.summary.label"))),
+                Value(Text(messages(s"declaration.previousDocuments.${document.documentCategory}")))
+            )
+        ) ++ document.goodsItemIdentifier.map { identifier =>
+            Seq(SummaryListRow(
+                Key(Text(messages("declaration.previousDocuments.goodsItemIdentifier.summary.label"))),
+                Value(Text(identifier))
+            ))
+        }.getOrElse(Seq.empty)
+    ))
+}
+
+@govukLayout(
+    title = Title("declaration.previousDocuments.title", "declaration.previousDocuments.heading"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentChangeOrRemove, mode)))
+) {
+
+    @formHelper(action = PreviousDocumentsRemoveController.submit(mode, documentId), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.items"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.previousDocuments.remove.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                documentTable,
+                addAnotherQuestion("", form),
+                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                saveButtons()
+            ))
+        ))
+
+    }
+}

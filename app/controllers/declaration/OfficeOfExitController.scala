@@ -67,17 +67,22 @@ class OfficeOfExitController @Inject()(
       )
   }
 
-  private def nextPage(declarationType: DeclarationType, answer: String): Mode => Call =
+  private def nextPage(declarationType: DeclarationType, answer: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     if (answer == AllowedUKOfficeOfExitAnswers.no) {
       controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage
     } else {
       declarationType match {
         case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
           controllers.declaration.routes.TotalNumberOfItemsController.displayPage
+        case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE if (previousDocumentsProvided()) =>
+          controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage
         case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
           controllers.declaration.routes.PreviousDocumentsController.displayPage
       }
     }
+
+  private def previousDocumentsProvided()(implicit request: JourneyRequest[AnyContent]): Boolean =
+    request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty).nonEmpty
 
   private def updateCache(formData: OfficeOfExitInsideUK, officeOfExit: Option[OfficeOfExit])(
     implicit r: JourneyRequest[AnyContent]

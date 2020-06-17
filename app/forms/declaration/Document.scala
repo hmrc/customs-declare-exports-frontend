@@ -34,7 +34,9 @@ object Document extends DeclarationPage {
 
   val formId = "PreviousDocuments"
 
-  val correctDocumentCategories = Set("X", "Y", "Z")
+  import AllowedValues._
+
+  val correctDocumentCategories = Set(SimplifiedDeclaration, RelatedDocument)
 
   val mapping = Forms.mapping(
     "documentCategory" -> text()
@@ -55,7 +57,6 @@ object Document extends DeclarationPage {
   def form(): Form[Document] = Form(mapping)
 
   object AllowedValues {
-    val TemporaryStorage = "X"
     val SimplifiedDeclaration = "Y"
     val RelatedDocument = "Z"
   }
@@ -70,3 +71,7 @@ object PreviousDocumentsData {
 
   val isScreenMandatory = false
 }
+
+object DocumentChangeOrRemove extends DeclarationPage
+
+object DocumentSummary extends DeclarationPage

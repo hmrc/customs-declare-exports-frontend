@@ -214,9 +214,21 @@ POST        /total-package-quantity              controllers.declaration.TotalPa
 
 # Previous documents
 
-GET         /previous-documents                  controllers.declaration.PreviousDocumentsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /add-previous-document               controllers.declaration.PreviousDocumentsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /previous-documents                  controllers.declaration.PreviousDocumentsController.savePreviousDocuments(mode: models.Mode ?= models.Mode.Normal)
+POST        /add-previous-document               controllers.declaration.PreviousDocumentsController.savePreviousDocuments(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /previous-documents-list             controllers.declaration.PreviousDocumentsSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /previous-documents-list             controllers.declaration.PreviousDocumentsSummaryController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /previous-documents/:id/remove       controllers.declaration.PreviousDocumentsRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
+
+POST        /previous-documents/:id/remove       controllers.declaration.PreviousDocumentsRemoveController.submit(mode: models.Mode ?= models.Mode.Normal, id: String)
+
+GET         /previous-documents/:id/change       controllers.declaration.PreviousDocumentsChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
+
+POST        /previous-documents/:id/change       controllers.declaration.PreviousDocumentsChangeController.submit(mode: models.Mode ?= models.Mode.Normal, id: String)
 
 # Transaction type
 

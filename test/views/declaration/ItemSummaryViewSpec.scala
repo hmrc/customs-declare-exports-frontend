@@ -54,7 +54,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
     "render back button" in {
 
-      view.getElementById("back-link") must haveAttribute("href", routes.PreviousDocumentsController.displayPage().url)
+      view.getElementById("back-link") must haveAttribute("href", routes.PreviousDocumentsSummaryController.displayPage().url)
     }
 
     "render title" when {
