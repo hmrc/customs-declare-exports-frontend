@@ -95,7 +95,7 @@ class DeclarationChoiceController @Inject()(
       .create(
         ExportsDeclarationExchange(
           None,
-          DeclarationStatus.CANDIDATE,
+          DeclarationStatus.INITIAL,
           createdDateTime = Instant.now,
           updatedDateTime = Instant.now,
           sourceId = None,
