@@ -31,6 +31,21 @@ class DocumentTypeSpec extends WordSpec with MustMatchers {
         List(DocumentType("Information Sheet INF3", "IF3"), DocumentType("MUCR", "MCR"), DocumentType("Other", "ZZZ"))
       threeTypes must be(expectedResult)
     }
-  }
 
+    "return correct text for asText method" in {
+
+      val documentType = DocumentType("description", "code")
+      val expectedType = "description - code"
+
+      documentType.asText mustBe expectedType
+    }
+
+    "return correct text for asTextWithBrackets method" in {
+
+      val documentType = DocumentType("description", "code")
+      val expectedType = "description (code)"
+
+      documentType.asTextWithBrackets mustBe expectedType
+    }
+  }
 }

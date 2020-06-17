@@ -16,7 +16,7 @@
 
 package views.declaration
 import base.Injector
-import forms.declaration.Document
+import forms.declaration.{Document, PreviousDocumentsData}
 import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import models.declaration.Locations
 import models.requests.JourneyRequest
@@ -26,45 +26,48 @@ import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
-import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.previous_documents
+import views.html.declaration.previousDocuments.previous_documents
 import views.tags.ViewTest
 
 @ViewTest
-class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   private val page = instanceOf[previous_documents]
   private val form: Form[Document] = Document.form()
+
   private def createView(
     mode: Mode = Mode.Normal,
     form: Form[Document] = form,
-    documents: Seq[Document] = Seq.empty,
     messages: Messages = stubMessages(),
     request: JourneyRequest[_] = journeyRequest(DeclarationType.STANDARD)
   ): JsonDocument =
-    page(mode, form, documents)(request, messages)
+    page(mode, form)(request, messages)
 
   "Previous Documents View on empty page" should {
     val view = createView()
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.label")
-      messages must haveTranslationFor("declaration.previousDocuments.documentType.label")
-      messages must haveTranslationFor("declaration.previousDocuments.documentReference.label")
+      messages must haveTranslationFor("declaration.previousDocuments.title")
+      messages must haveTranslationFor("declaration.previousDocuments.hint")
+      messages must haveTranslationFor("declaration.previousDocuments.heading")
+      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.error.empty")
+      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.error.incorrect")
+      messages must haveTranslationFor("declaration.previousDocuments.documentType.error")
+      messages must haveTranslationFor("declaration.previousDocuments.documentType.empty")
+      messages must haveTranslationFor("declaration.previousDocuments.documentReference.hint")
+      messages must haveTranslationFor("declaration.previousDocuments.documentReference.error")
+      messages must haveTranslationFor("declaration.previousDocuments.documentReference.empty")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.label")
-      messages must haveTranslationFor("declaration.previousDocuments.X")
       messages must haveTranslationFor("declaration.previousDocuments.Y")
       messages must haveTranslationFor("declaration.previousDocuments.Z")
-      messages must haveTranslationFor("site.remove")
       messages must haveTranslationFor("supplementary.consignmentReferences.heading")
       messages must haveTranslationFor("declaration.previousDocuments.documentType")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.hint")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.error")
-      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.label")
     }
 
     "display same page title as header" in {
@@ -73,15 +76,12 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
     }
 
     "display section header" in {
-      view.getElementById("section-header").text() must include("supplementary.consignmentReferences.heading")
+      view.getElementById("section-header").text() must include("declaration.previousDocuments.heading")
     }
 
-    "display three radio buttons with description (not selected)" in {
+    "display two radio buttons with description (not selected)" in {
 
       val view = createView(form = Document.form.fill(Document("", "", "", Some(""))))
-
-      view.getElementById("temporary-storage") mustNot beSelected
-      view.getElementsByAttributeValue("for", "temporary-storage").text() mustBe messages("declaration.previousDocuments.X")
 
       view.getElementById("simplified-declaration") mustNot beSelected
       view.getElementsByAttributeValue("for", "simplified-declaration").text() mustBe messages("declaration.previousDocuments.Y")
@@ -145,10 +145,25 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       }
     }
 
-    "display both 'Add' and 'Save and continue' button on page" in {
-      val addButton = view.getElementById("add")
-      addButton.text() must be("site.adddeclaration.previousDocuments.add.hint")
+    onEveryDeclarationJourney() { request =>
+      "display back button to the previous documents summary" when {
 
+        "there are documents in the cache" in {
+
+          val previousDocuments = PreviousDocumentsData(Seq(Document("Y", "MCR", "reference", None)))
+          val requestWithPreviousDocuments = journeyRequest(request.cacheModel.copy(previousDocuments = Some(previousDocuments)))
+
+          val backButton = createView(request = requestWithPreviousDocuments).getElementById("back-link")
+
+          backButton.text() must be("site.back")
+          backButton.getElementById("back-link") must haveHref(
+            controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Mode.Normal)
+          )
+        }
+      }
+    }
+
+    "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
       saveButton.text() must be("site.save_and_continue")
     }
@@ -161,20 +176,10 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
   "Previous Documents View when filled" should {
 
-    "display selected first radio button - Temporary Storage (X)" in {
-
-      val view = createView(form = Document.form.fill(Document("X", "", "", Some(""))))
-
-      view.getElementById("temporary-storage") must beSelected
-      view.getElementById("simplified-declaration") mustNot beSelected
-      view.getElementById("related-document") mustNot beSelected
-    }
-
     "display selected second radio button - Simplified Declaration (Y)" in {
 
       val view = createView(form = Document.form.fill(Document("Y", "", "", Some(""))))
 
-      view.getElementById("temporary-storage") mustNot beSelected
       view.getElementById("simplified-declaration") must beSelected
       view.getElementById("related-document") mustNot beSelected
     }
@@ -183,7 +188,6 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
       val view = createView(form = Document.form.fill(Document("Z", "", "", Some(""))))
 
-      view.getElementById("temporary-storage") mustNot beSelected
       view.getElementById("simplified-declaration") mustNot beSelected
       view.getElementById("related-document") must beSelected
     }
@@ -217,36 +221,14 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
     "display all data entered" in {
 
-      val view = createView(form = Document.form.fill(Document("X", "Test", "Test", Some("Test"))))
+      val view = createView(form = Document.form.fill(Document("Y", "Test", "Test", Some("Test"))))
 
-      view.getElementById("temporary-storage") must beSelected
-      view.getElementById("simplified-declaration") mustNot beSelected
+      view.getElementById("simplified-declaration") must beSelected
       view.getElementById("related-document") mustNot beSelected
 
       view.getElementById("documentType").attr("value") must be("Test")
       view.getElementById("documentReference").attr("value") must be("Test")
       view.getElementById("goodsItemIdentifier").attr("value") must be("Test")
-    }
-
-    "display one row with data in table" in {
-
-      val prevDocuments = Seq(Document("X", "1", "A", Some("1")))
-      val view = createView(Mode.Normal, form, prevDocuments)
-
-      // table header
-      view.select("table>thead>tr>th:nth-child(1)").text() must be("declaration.previousDocuments.documentCategory.label")
-      view.select("table>thead>tr>th:nth-child(2)").text() must be("declaration.previousDocuments.documentType.label")
-      view.select("table>thead>tr>th:nth-child(3)").text() must be("declaration.previousDocuments.documentReference.label")
-      view.select("table>thead>tr>th:nth-child(4)").text() must be("declaration.previousDocuments.goodsItemIdentifier.label")
-      // remove button column
-      view.select("form>table>thead>tr>td").text() must be("")
-
-      // row
-      view.select("table>tbody>tr>td:nth-child(1)").text() must be("declaration.previousDocuments.X")
-      view.select("table>tbody>tr>td:nth-child(2)").text() must be("1")
-      view.select("table>tbody>tr>td:nth-child(3)").text() must be("A")
-      view.select("table>tbody>tr>td:nth-child(4)").text() must be("1")
-      view.select("table>tbody>tr>td:nth-child(5)>button").text() must be("site.removedeclaration.previousDocuments.remove.hint")
     }
   }
 }

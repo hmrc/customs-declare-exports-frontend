@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.NatureOfTransactionController
-import forms.declaration.NatureOfTransaction
+import forms.declaration.{Document, NatureOfTransaction}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -109,9 +109,9 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
       }
     }
 
-    "return 303 (SEE_OTHER)" when {
+    "return 303 (SEE_OTHER) adn redirect to Previous Documents page" when {
 
-      "information provided by user are correct" in {
+      "user provided correct information and doesn't have any previous documents in cache" in {
 
         val correctForm = Json.toJson(NatureOfTransaction("1"))
 
@@ -119,6 +119,22 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+
+        verify(mockNatureOfTransactionPage, times(0)).apply(any(), any())(any(), any())
+      }
+    }
+
+    "return 303 (SEE_OTHER) and redirect to Previous Documents Summary page" when {
+
+      "user provided correct information and have previous documents in cache" in {
+
+        withNewCaching(aDeclaration(withPreviousDocuments(Document("Y", "MCR", "reference", None))))
+        val correctForm = Json.toJson(NatureOfTransaction("1"))
+
+        val result = controller.saveTransactionType(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
 
         verify(mockNatureOfTransactionPage, times(0)).apply(any(), any())(any(), any())
       }

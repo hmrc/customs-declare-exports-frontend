@@ -19,22 +19,17 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util._
-import forms.DeclarationPage
 import forms.declaration.Document._
 import forms.declaration.PreviousDocumentsData._
-import forms.declaration.officeOfExit.AllowedUKOfficeOfExitAnswers.{no, yes}
-import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
 import forms.declaration.{Document, PreviousDocumentsData}
-import handlers.ErrorHandler
 import javax.inject.Inject
-import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.previous_documents
+import views.html.declaration.previousDocuments.previous_documents
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,7 +37,6 @@ class PreviousDocumentsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   previousDocumentsPage: previous_documents,
   override val exportsCacheService: ExportsCacheService
@@ -50,46 +44,22 @@ class PreviousDocumentsController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
-    request.cacheModel.previousDocuments match {
-      case Some(data) => Ok(previousDocumentsPage(mode, frm, data.documents))
-      case _          => Ok(previousDocumentsPage(mode, frm, Seq.empty))
-    }
+    Ok(previousDocumentsPage(mode, form()))
   }
 
   def savePreviousDocuments(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     import MultipleItemsHelper._
 
     val boundForm = form().bindFromRequest()
-    val actionTypeOpt = FormAction.bindFromRequest()
 
     val cache = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty))
 
-    actionTypeOpt match {
-      case SaveAndContinue | SaveAndReturn =>
-        saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
-          formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
-          updatedCache =>
-            updateCache(PreviousDocumentsData(updatedCache))
-              .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayPage))
-        )
-
-      case Add =>
-        add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
-          formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
-          updatedCache =>
-            updateCache(PreviousDocumentsData(updatedCache))
-              .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage))
-        )
-
-      case Remove(ids) =>
-        val itemToRemove = Document.fromJsonString(ids.head)
-        val updatedDocuments = MultipleItemsHelper.remove(cache.documents, itemToRemove.contains(_: Document))
-        updateCache(PreviousDocumentsData(updatedDocuments))
-          .map(_ => navigator.continueTo(mode, routes.PreviousDocumentsController.displayPage))
-
-      case _ => Future.successful(BadRequest(previousDocumentsPage(mode, boundForm, cache.documents)))
-    }
+    add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
+      formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors))),
+      updatedCache =>
+        updateCache(PreviousDocumentsData(updatedCache))
+          .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage))
+    )
   }
 
   private def updateCache(formData: PreviousDocumentsData)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

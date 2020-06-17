@@ -16,13 +16,11 @@
 
 package forms.declaration
 
-import base.TestHelper
 import forms.declaration.Document.AllowedValues.RelatedDocument
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class DocumentSpec extends WordSpec with MustMatchers {
-  import DocumentSpec._
 
   "Document mapping used for binding data" should {
 
@@ -39,7 +37,7 @@ class DocumentSpec extends WordSpec with MustMatchers {
         )
         val form = Document.form.bind(documentInputData)
 
-        form.hasErrors must be(true)
+        form.hasErrors mustBe true
         form.errors.length must equal(1)
         form.errors.head.message must equal("declaration.previousDocuments.documentCategory.error.incorrect")
       }
@@ -47,6 +45,16 @@ class DocumentSpec extends WordSpec with MustMatchers {
 
     "return form without errors" when {
       "provided with valid input" in {
+
+        val correctPreviousDocumentsJSON: JsValue = JsObject(
+          Map(
+            "documentCategory" -> JsString(RelatedDocument),
+            "documentType" -> JsString("MCR"),
+            "documentReference" -> JsString("DocumentReference"),
+            "goodsItemIdentifier" -> JsString("123")
+          )
+        )
+
         val form = Document.form.bind(correctPreviousDocumentsJSON)
 
         form.errors mustBe empty
@@ -83,60 +91,4 @@ class DocumentSpec extends WordSpec with MustMatchers {
       }
     }
   }
-}
-
-object DocumentSpec {
-  import forms.declaration.Document.AllowedValues.TemporaryStorage
-
-  val correctPreviousDocument =
-    Document(documentCategory = TemporaryStorage, documentType = "ABC", documentReference = "DocumentReference", goodsItemIdentifier = Some("123"))
-  val emptyPreviousDocument =
-    Document(documentCategory = "", documentType = "", documentReference = "", goodsItemIdentifier = None)
-
-  val incorrectPreviousDocuments = Document(
-    documentCategory = "Incorrect category",
-    documentType = "Incorrect type",
-    documentReference = TestHelper.createRandomAlphanumericString(36),
-    goodsItemIdentifier = Some("Incorrect identifier")
-  )
-  val mandatoryPreviousDocuments =
-    Document(documentCategory = TemporaryStorage, documentType = "ABC", documentReference = "DocumentReference", goodsItemIdentifier = None)
-
-  val correctPreviousDocumentsJSON: JsValue = JsObject(
-    Map(
-      "documentCategory" -> JsString(TemporaryStorage),
-      "documentType" -> JsString("MCR"),
-      "documentReference" -> JsString("DocumentReference"),
-      "goodsItemIdentifier" -> JsString("123")
-    )
-  )
-
-  val emptyPreviousDocumentsJSON: JsValue = JsObject(
-    Map(
-      "documentCategory" -> JsString(""),
-      "documentType" -> JsString(""),
-      "documentReference" -> JsString(""),
-      "goodsItemIdentifier" -> JsString("")
-    )
-  )
-  val mandatoryPreviousDocumentsJSON: JsValue = JsObject(
-    Map(
-      "documentCategory" -> JsString(TemporaryStorage),
-      "documentType" -> JsString("ABC"),
-      "documentReference" -> JsString("DocumentReference"),
-      "goodsItemIdentifier" -> JsString("")
-    )
-  )
-  val incorrectPreviousDocumentsJSON: JsValue = JsObject(
-    Map(
-      "documentCategory" -> JsString("Incorrect category"),
-      "documentType" -> JsString("Incorrect type"),
-      "documentReference" -> JsString(TestHelper.createRandomAlphanumericString(36)),
-      "goodsItemIdentifier" -> JsString("Incorrect identifier")
-    )
-  )
-
-  val correctPreviousDocumentsJSONList = JsObject(Map("documents" -> JsArray(Seq(correctPreviousDocumentsJSON))))
-  val emptyPreviousDocumentsJSONList = JsObject(Map("documents" -> JsArray(Seq(emptyPreviousDocumentsJSON))))
-
 }

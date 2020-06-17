@@ -17,6 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OfficeOfExitOutsideUkController
+import forms.declaration.Document
 import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -179,6 +180,19 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+        checkViewInteractions(0)
+      }
+
+      "a UK Office of Exit is being used and user has documents in cache" in {
+
+        withNewCaching(request.cacheModel.updatePreviousDocuments(Seq(Document("Y", "355", "reference", None))))
+
+        val correctForm = Json.toJson(OfficeOfExitOutsideUK("GB123456"))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
         checkViewInteractions(0)
       }
     }
