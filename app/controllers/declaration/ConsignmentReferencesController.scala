@@ -70,7 +70,7 @@ class ConsignmentReferencesController @Inject()(
 
   private def updateCache(formData: ConsignmentReferences)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      model.copy(status = DeclarationStatus.DRAFT, consignmentReferences = Some(formData))
+      model.copy(consignmentReferences = Some(formData))
     })
 
 }
