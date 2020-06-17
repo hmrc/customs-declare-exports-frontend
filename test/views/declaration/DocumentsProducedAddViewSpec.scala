@@ -82,7 +82,7 @@ class DocumentsProducedAddViewSpec extends UnitViewSpec with CommonMessages with
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("supplementary.summary.yourReferences.header")
+        view.getElementById("section-header").text() must include("supplementary.items")
       }
 
       "display empty input with label for Document type code" in {
