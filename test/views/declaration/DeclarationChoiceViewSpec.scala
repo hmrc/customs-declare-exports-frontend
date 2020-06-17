@@ -75,12 +75,12 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       backButton.getElementById("back-link") must haveHref(controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec))))
     }
 
-    "display 'Save and continue' button on page" in {
+    "display 'Continue' button on page" in {
 
       val view = createView()
 
       val saveButton = view.select("#submit")
-      saveButton.text() mustBe messages(saveAndContinueCaption)
+      saveButton.text() mustBe messages(continueCaption)
     }
   }
 

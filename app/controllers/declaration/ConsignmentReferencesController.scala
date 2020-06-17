@@ -21,9 +21,8 @@ import controllers.navigation.Navigator
 import forms.declaration.ConsignmentReferences
 import forms.declaration.ConsignmentReferences.form
 import javax.inject.Inject
-import models.DeclarationStatus.DeclarationStatus
 import models.requests.JourneyRequest
-import models.{DeclarationStatus, DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

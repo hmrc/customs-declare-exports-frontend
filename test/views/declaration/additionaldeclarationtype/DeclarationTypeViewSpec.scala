@@ -115,69 +115,64 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
       }
     }
 
-    "display 'Save and continue' button" when {
+    "display 'Continue' button" when {
 
       "used for Standard Declaration journey" in {
         val view: Document = createView(formStandard, DeclarationType.STANDARD)
-        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
+        view.getElementById("submit").text() mustBe messages(continueCaption)
       }
 
       "used for Supplementary Declaration journey" in {
         val view: Document = createView(formSupplementary, DeclarationType.SUPPLEMENTARY)
-        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
+        view.getElementById("submit").text() mustBe messages(continueCaption)
       }
 
       "used for Simplified Declaration journey" in {
         val view: Document = createView(formSimplified, DeclarationType.SIMPLIFIED)
-        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
+        view.getElementById("submit").text() mustBe messages(continueCaption)
       }
 
       "used for Occasional Declaration journey" in {
         val view: Document = createView(formOccasional, DeclarationType.OCCASIONAL)
-        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
+        view.getElementById("submit").text() mustBe messages(continueCaption)
       }
 
       "used for Clearance Request journey" in {
         val view: Document = createView(formClearance, DeclarationType.CLEARANCE)
-        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
+        view.getElementById("submit").text() mustBe messages(continueCaption)
       }
     }
 
-    "display 'Save and return' button" when {
+    "not display 'Save and return' button" when {
 
       "used for Standard Declaration journey" in {
         val view: Document = createView(formStandard, DeclarationType.STANDARD)
         val button = view.getElementById("submit_and_return")
-        button.text() mustBe messages(saveAndReturnCaption)
-        button must haveAttribute("name", SaveAndReturn.toString)
+        button mustBe null
       }
 
       "used for Supplementary Declaration journey" in {
         val view: Document = createView(formSupplementary, DeclarationType.SUPPLEMENTARY)
         val button = view.getElementById("submit_and_return")
-        button.text() mustBe messages(saveAndReturnCaption)
-        button must haveAttribute("name", SaveAndReturn.toString)
+        button mustBe null
       }
 
       "used for Simplified Declaration journey" in {
         val view: Document = createView(formSimplified, DeclarationType.SIMPLIFIED)
         val button = view.getElementById("submit_and_return")
-        button.text() mustBe messages(saveAndReturnCaption)
-        button must haveAttribute("name", SaveAndReturn.toString)
+        button mustBe null
       }
 
       "used for Occasional Declaration journey" in {
         val view: Document = createView(formOccasional, DeclarationType.OCCASIONAL)
         val button = view.getElementById("submit_and_return")
-        button.text() mustBe messages(saveAndReturnCaption)
-        button must haveAttribute("name", SaveAndReturn.toString)
+        button mustBe null
       }
 
       "used for Clearance Request journey" in {
         val view: Document = createView(formClearance, DeclarationType.CLEARANCE)
         val button = view.getElementById("submit_and_return")
-        button.text() mustBe messages(saveAndReturnCaption)
-        button must haveAttribute("name", SaveAndReturn.toString)
+        button mustBe null
       }
     }
 
