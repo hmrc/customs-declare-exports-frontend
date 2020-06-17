@@ -31,7 +31,7 @@
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
+        saveAndContinue: saveAndContinue,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
@@ -88,7 +88,7 @@
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.type.dispatchLocationSummaryText", components.gds.detailsContentLink())))
 
-        @saveButtons()
+        @saveAndContinue("site.continue")
     }
 
 }
