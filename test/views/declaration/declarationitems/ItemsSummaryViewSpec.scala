@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package views.declaration
+package views.declaration.declarationitems
 
 import base.Injector
 import controllers.declaration.routes
+import forms.common.YesNoAnswer
 import forms.declaration.{CommodityDetails, PackageInformation, StatisticalValue}
 import models.Mode
 import models.declaration.{ExportItem, ProcedureCodesData}
@@ -29,24 +30,25 @@ import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.items_summary
+import views.html.declaration.declarationitems.items_summary
 import views.tags.ViewTest
 
 @ViewTest
-class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[items_summary]
+  private val form = YesNoAnswer.form()
   private def createView(mode: Mode = Mode.Normal, items: List[ExportItem] = List.empty, itemErrors: Seq[FormError] = Seq.empty): Document =
-    page(mode, items, itemErrors)(journeyRequest(), stubMessages())
+    page(mode, form, items, itemErrors)(journeyRequest(), stubMessages())
 
-  "Item Summary Page View" should {
+  "Items Summary Page View" should {
 
     "have proper messages for labels" in {
+
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("declaration.itemsAdd.title")
       messages must haveTranslationFor("declaration.itemsAdd.titleWithItems")
-      messages must haveTranslationFor("site.add.item")
-      messages must haveTranslationFor("site.add.anotherItem")
+      messages must haveTranslationFor("declaration.itemsSummary.addAnotherItem.question")
+      messages must haveTranslationFor("declaration.itemsSummary.addAnotherItem.error.empty")
       messages must haveTranslationFor("declaration.itemsSummary.item.incorrect")
     }
 
@@ -58,15 +60,8 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "render title" when {
-      "no items" in {
-        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "declaration.itemsAdd.title"
-      }
-
-      "one item" in {
-        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "declaration.itemsAdd.title"
-      }
-
       "many items" in {
+
         val view = createView(items = List(ExportItem("id1"), ExportItem("id2")))
         view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "declaration.itemsAdd.titleWithItems"
       }
@@ -74,6 +69,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
     "not render item table" when {
       "no items" in {
+
         view must not(containElementWithID("item_table"))
       }
     }
@@ -81,6 +77,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     "render item table as supplied to view" when {
 
       "some items" in {
+
         val view = createView(
           items = List(
             ExportItem(
@@ -131,6 +128,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       }
 
       "item has two package information elements with one having empty number of packages" in {
+
         val view = createView(
           items = List(
             ExportItem(
@@ -164,17 +162,21 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       }
     }
 
-    "render actions section" when {
-      "no items" in {
-        view.getElementById("add").text() must include("site.add.item")
-        view must not(containElementWithID("submit"))
-        view must containElementWithID("submit_and_return")
-      }
+    "render Yes - No form" in {
 
+      val view = createView(items = List(ExportItem("id")))
+
+      view.getElementsByClass("govuk-fieldset__legend").get(1) must containMessage("declaration.itemsSummary.addAnotherItem.question")
+      view must containElementWithClass("govuk-radios")
+      view must containElementWithID("code_yes")
+      view must containElementWithID("code_no")
+    }
+
+    "render actions section" when {
       "some items" in {
+
         val view = createView(items = List(ExportItem("id")))
 
-        view.getElementById("add").text() must include("site.add.anotherItem")
         view must containElementWithID("submit")
         view must containElementWithID("submit_and_return")
       }

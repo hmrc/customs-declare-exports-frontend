@@ -73,7 +73,7 @@ class DocumentsProducedAddController @Inject()(
       .map(
         _ =>
           if (cachedData.isEmpty)
-            navigator.continueTo(mode, routes.ItemsSummaryController.displayPage)
+            navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
           else
             navigator.continueTo(mode, routes.DocumentsProducedController.displayPage(_, itemId))
       )

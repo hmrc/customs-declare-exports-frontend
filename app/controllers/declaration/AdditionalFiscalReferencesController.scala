@@ -98,7 +98,7 @@ class AdditionalFiscalReferencesController @Inject()(
     updateExportsCache(itemId, updatedCache).map {
       case Some(_) =>
         navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
-      case None => navigator.continueTo(mode, routes.ItemsSummaryController.displayPage(_))
+      case None => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage(_))
     }
   }
 

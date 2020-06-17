@@ -60,7 +60,7 @@ class DocumentsProducedController @Inject()(
         validYesNo =>
           validYesNo.answer match {
             case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.DocumentsProducedAddController.displayPage(_, itemId))
-            case YesNoAnswers.no  => navigator.continueTo(mode, routes.ItemsSummaryController.displayPage)
+            case YesNoAnswers.no  => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
         }
       )
   }
