@@ -51,7 +51,7 @@ class SubmissionsController @Inject()(
 
         result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
 
-      } yield Ok(submissionsPage(SubmissionsPagesElements(result, submissionsPages)))
+      } yield Ok(submissionsPage(SubmissionsPagesElements(result, submissionsPages))).removingFromSession(ExportsSessionKeys.declarationId)
     }
 
   def displayDeclarationWithNotifications(id: String): Action[AnyContent] = authenticate.async { implicit request =>
