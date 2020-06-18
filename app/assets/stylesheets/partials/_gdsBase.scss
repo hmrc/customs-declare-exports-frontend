@@ -46,4 +46,7 @@ from the view and the page (url/page number, etc.)
   .govuk-section-break { page-break-inside : avoid }
   .govuk-link { display: none; }
   footer { display: none; }
+  @-moz-document url-prefix() {
+    .govuk-summary-list__key { width: 40%; }
+  }
 }
