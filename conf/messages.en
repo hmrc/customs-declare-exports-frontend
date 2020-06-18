@@ -198,7 +198,7 @@ declaration.type.consignmentDescListItemOne = UCR, go to data element 2/1 Simpli
 declaration.type.consignmentDescListItemTwo = LRN, go to data element 2/5 LRN (no previous reference)
 declaration.type.consignmentTariff_summary_text = For more information about these
 declaration.type.dispatchLocationSummaryText = Go to data element 1/1 Declaration Type in the {0}
-declaration.type.additionalActorsSummaryText = Go to data element 2/2 Additional Information in the  {0}.
+declaration.type.additionalActorsSummaryText = Go to data element 3/37 Additional Supply Chain Actor(s) Identification Number in the {0}.
 declaration.type.holderOfAuthorisationSummaryText = Go to data element 3/39 Holder of the Authorisation Identification Number in the {0}
 declaration.type.originationCountrySummaryText = Go to data element 5/14 Country of Dispatch/Export Code in the {0}
 declaration.type.destinationCountrySummaryText = Go to data element 5/8 Country of Destination Code in the {0}
@@ -627,7 +627,7 @@ declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail = Postal
 declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations = Fixed transport installations
 declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway = Inland waterway transport
 declaration.warehouse.inlandTransportDetails.transportMode.unknown = Mode unknown, for example own propulsion
-declaration.warehouse.inlandTransportDetails.help.bodyText = Go to data element 7/5 Inland Mode of Transport in the UK Trade Tariff. {0}.
+declaration.warehouse.inlandTransportDetails.help.bodyText = Go to data element 7/5 Inland Mode of Transport in the {0}.
 
 declaration.fiscalInformation.title = Do you want to claim Onward Supply Relief (OSR)?
 declaration.fiscalInformation.onwardSupplyRelief.empty = Select yes or no
@@ -726,7 +726,7 @@ declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations
 declaration.transport.leavingTheBorder.transportMode.inlandWaterway = Inland waterway transport
 declaration.transport.leavingTheBorder.transportMode.unknown = Mode unknown, for example own propulsion
 declaration.transport.leavingTheBorder.transportMode.empty = I don’t know
-declaration.transport.leavingTheBorder.transportMode.help.bodyText = Go to data element 7/4 Mode of Transport at the Border in the UK Trade Tariff {0}.
+declaration.transport.leavingTheBorder.transportMode.help.bodyText = Go to data element 7/4 Mode of Transport at the Border in the {0}.
 
 
 declaration.transportInformation.title = Transport details
@@ -758,7 +758,7 @@ declaration.transportInformation.meansOfTransport.departure.section = Transport 
 declaration.transportInformation.meansOfTransport.departure.error.empty = Select the transport identifier
 declaration.transportInformation.meansOfTransport.departure.error.empty.optional = Select the transport identifier or I don’t know
 declaration.transportInformation.meansOfTransport.departure.error.incorrect = Enter the transport details
-declaration.transportInformation.meansOfTransport.departure.help.bodyText = Go to data element 7/7 Identity of the Means of Transport at Departure in the UK Trade Tariff {0}
+declaration.transportInformation.meansOfTransport.departure.help.bodyText = Go to data element 7/7 Identity of the Means of Transport at Departure in the {0}.
 
 declaration.transportInformation.meansOfTransport.crossingTheBorder.header = What are the details for the transport that left the border?
 declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint = If the transport at the border was loaded onto another mode of transport, we need to know that mode of transport. For example, in the case of a lorry on a sea-going vessel, the active means of transport is the sea-going vessel.
