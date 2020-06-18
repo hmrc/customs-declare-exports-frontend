@@ -48,7 +48,7 @@
         else changeLink(
             messages("site.change"),
             Some(messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor))),
-            controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)
+            controllers.declaration.routes.AdditionalActorsAddController.displayPage(mode)
         )
     }
 }
@@ -66,7 +66,7 @@
             actions = actions(Actions(
                 items = Seq(
                     ActionItem(
-                        href = controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode).url,
+                        href = controllers.declaration.routes.AdditionalActorsAddController.displayPage(mode).url,
                         content = Text(messages("site.change")),
                         visuallyHiddenText = Some(messages("declaration.summary.parties.additional.empty.change"))
                     )

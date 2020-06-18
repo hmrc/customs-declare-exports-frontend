@@ -424,12 +424,20 @@ declaration.address.country.empty = Enter a valid country
 
 declaration.namedEntityDetails.error = Enter an EORI or full address details
 declaration.additionalActors.title = Is anyone else involved in exporting these goods?
-declaration.additionalActors.title.hint = Include any additional parties involved in the supply chain that have not been provided yet
+declaration.additionalActors.title.hint = Include any additional parties not yet provided 
 declaration.additionalActors.eori = EORI number
 declaration.additionalActors.partyType = Party type
 declaration.additionalActors.maximumAmount.error = Maximum amount of parties added
 declaration.additionalActors.duplicated.error = Party’s details already added
-declaration.additionalActors.add.hint = Add party
+declaration.additionalActors.table.heading = You have added 1 additional party
+declaration.additionalActors.table.multiple.heading= You have added {0} additional parties
+declaration.additionalActors.table.party = Party
+declaration.additionalActors.table.eori = EORI number
+declaration.additionalActors.table.remove.hint = party {0} {1}.
+declaration.additionalActors.add.another = Do you need to add another party?
+declaration.additionalActors.remove.title = Are you sure you want to remove this party?
+
+
 declaration.eori.empty = Enter an EORI in the correct format. For example, GB123456789000.
 declaration.eori.error.format = Enter an EORI in the correct format. For example, GB123456789000.
 declaration.partyType = Party type

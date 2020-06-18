@@ -104,7 +104,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         val backButton = document.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DeclarationAdditionalActorsController.displayPage().url
+        backButton.attr("href") mustBe routes.AdditionalActorsSummaryController.displayPage().url
       }
     }
 
