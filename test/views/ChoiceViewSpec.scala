@@ -93,12 +93,11 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
       ensureRadioIsChecked(view, "CRT")
     }
 
-    "display 'Back' button that links to 'Make an export declaration' page" in {
+    "not display 'Back' button" in {
 
       val backButton = createView().getElementById("back-link")
 
-      backButton.text() mustBe messages(backCaption)
-      backButton.getElementById("back-link") must haveHref(controllers.routes.StartController.displayStartPage())
+      backButton mustBe null
     }
 
     "display 'Continue' button on page" in {
