@@ -22,5 +22,5 @@ import utils.EnumJson
 object DeclarationStatus extends Enumeration {
   type DeclarationStatus = Value
   implicit val format: Format[DeclarationStatus.Value] = EnumJson.format(DeclarationStatus)
-  val DRAFT, COMPLETE = Value
+  val INITIAL, DRAFT, COMPLETE = Value
 }

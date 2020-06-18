@@ -29,7 +29,7 @@
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
+        saveAndContinue: saveAndContinue,
         declarationTypeQuestionStandard: declaration_type_question_standard,
         declarationTypeQuestionSupplementary: declaration_type_question_supplementary,
         declarationTypeQuestionSimplified: declaration_type_question_simplified,
@@ -72,7 +72,7 @@
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.type.bodyText", components.gds.detailsContentLink())))
 
-        @saveButtons()
+        @saveAndContinue("site.continue")
     }
 
 }

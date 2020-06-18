@@ -22,6 +22,7 @@ trait CommonMessages {
   val backToSelectionCaption: String = "site.backToSelectionPage"
   val removeCaption: String = "site.remove"
   val addCaption: String = "site.add"
+  val continueCaption: String = "site.continue"
   val saveAndContinueCaption: String = "site.save_and_continue"
   val saveAndReturnCaption: String = "site.save_and_come_back_later"
 }

@@ -125,7 +125,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
         session(result).get(ExportsSessionKeys.declarationId).value mustEqual newDeclaration.id
         val created = theCacheModelCreated
         created.id mustBe None
-        created.status mustBe DeclarationStatus.DRAFT
+        created.status mustBe DeclarationStatus.INITIAL
         created.`type` mustBe DeclarationType.STANDARD
       }
     }

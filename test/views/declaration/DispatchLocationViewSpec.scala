@@ -118,15 +118,14 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
         }
       }
 
-      "display 'Save and continue' button" in {
+      "display 'Continue' button" in {
         val saveButton = createView().getElementById("submit")
-        saveButton.text() mustBe messages(saveAndContinueCaption)
+        saveButton.text() mustBe messages(continueCaption)
       }
 
-      "display 'Save and return' button" in {
+      "not display 'Save and return' button" in {
         val saveButton = createView().getElementById("submit_and_return")
-        saveButton.text() mustBe messages(saveAndReturnCaption)
-        saveButton.attr("name") mustBe SaveAndReturn.toString
+        saveButton mustBe null
       }
     }
   }

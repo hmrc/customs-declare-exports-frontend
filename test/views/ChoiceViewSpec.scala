@@ -101,12 +101,12 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
       backButton.getElementById("back-link") must haveHref(controllers.routes.StartController.displayStartPage())
     }
 
-    "display 'Save and continue' button on page" in {
+    "display 'Continue' button on page" in {
 
       val view = createView()
 
       val saveButton = view.getElementsByClass("govuk-button")
-      saveButton.text() mustBe messages(saveAndContinueCaption)
+      saveButton.text() mustBe messages(continueCaption)
     }
   }
 
