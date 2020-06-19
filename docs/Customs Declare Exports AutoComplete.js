@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.58
+// @version      1.59
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -580,14 +580,16 @@ function previousDocumentsSummary(){
     }
 }
 
+function addFirstItem(){
+    if (currentPageIs('/customs-declare-exports/declaration/add-declaration-item')) {
+        document.getElementById('add').click()
+    }
+}
+
 function exportItems(){
-    if (currentPageIs('/customs-declare-exports/declaration/export-items')) {
-        let nextLink = document.getElementById('submit');
-        if(nextLink) {
-            nextLink.click()
-        } else {
-            document.getElementById('add').click()
-        }
+    if (currentPageIs('/customs-declare-exports/declaration/declaration-items-list')) {
+        document.getElementById('code_no').checked = 'checked';
+        document.getElementById('submit').click();
     }
 }
 
@@ -1033,6 +1035,7 @@ function completeJourney() {
     previousDocuments();
 
     // items
+    addFirstItem();
     exportItems();
     procedureCodes();
     fiscalInformation();
