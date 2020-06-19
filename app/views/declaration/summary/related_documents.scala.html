@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
 @import views.html.components.gds.summary_list
+@import views.components.gds.ActionItemBuilder._
 
 @this(
         govukTable: GovukTable,
@@ -53,7 +54,7 @@
             value = Value(Text(messages("site.no"))),
             actions = actions(Actions(
                 items = Seq(
-                    ActionItem(
+                    actionItem(
                         href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
                         content = Text(messages("site.change")),
                         visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))

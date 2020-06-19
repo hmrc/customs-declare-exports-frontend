@@ -21,6 +21,7 @@
 @import views.html.components.gds.link
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
+@import views.components.gds.ActionItemBuilder._
 
 @this(
         govukTable: GovukTable,
@@ -82,7 +83,7 @@
             ),
             actions = actions(Actions(
                 items = Seq(
-                    ActionItem(
+                    actionItem(
                         href = controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId).url,
                         content = Text(messages("site.change")),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.supportingDocuments.change"))
