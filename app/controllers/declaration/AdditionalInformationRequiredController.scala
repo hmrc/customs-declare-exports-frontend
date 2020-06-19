@@ -80,7 +80,7 @@ class AdditionalInformationRequiredController @Inject()(
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
     yesNoAnswer.answer match {
       case YesNoAnswers.yes =>
-        controllers.declaration.routes.AdditionalInformationAddController.displayPage(_, itemId)
+        controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)
       case YesNoAnswers.no =>
         controllers.declaration.routes.DocumentsProducedController.displayPage(_, itemId)
     }
