@@ -23,6 +23,7 @@
 @import views.html.declaration.summary._
 @import forms.common.Eori
 @import forms.declaration.DeclarantDetails
+@import views.components.gds.ActionItemBuilder._
 
 @this(
     summaryList: summary_list,
@@ -100,7 +101,7 @@
                 ),
                 actions = Some(Actions(
                     items = actionItems(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.DeclarantExporterController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.declarantIsExporter.change"))
@@ -117,7 +118,7 @@
                 value = Value(content = Text(messages(s"declaration.summary.parties.eidr.${isEidr.answer.toLowerCase}"))),
                 actions = Some(Actions(
                     items = actionItems(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.eidr.change"))
@@ -134,7 +135,7 @@
                 value = Value(content = Text(personPresentingGoods.eori.value)),
                 actions = Some(Actions(
                     items = actionItems(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.personPresentingGoods.change"))
@@ -162,7 +163,7 @@
                 ),
                 actions = Some(Actions(
                     items = actionItems(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.IsExsController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.exs.change"))
@@ -183,7 +184,7 @@
                 ),
                 actions = Some(Actions(
                     items = actionItems(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.RepresentativeAgentController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.representative.agent.change"))
@@ -211,7 +212,7 @@
                 ),
                 actions = Some(Actions(
                     items = actionItems(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.RepresentativeStatusController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.representative.type.change"))

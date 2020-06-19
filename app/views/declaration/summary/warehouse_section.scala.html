@@ -20,6 +20,7 @@
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
+@import views.components.gds.ActionItemBuilder._
 
 @this(summaryList: summary_list)
 
@@ -47,7 +48,7 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.warehouse.id.change"))
@@ -67,7 +68,7 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.warehouse.supervisingOffice.change"))
@@ -87,7 +88,7 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.warehouse.inlandModeOfTransport.change"))

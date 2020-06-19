@@ -19,6 +19,7 @@
 @import views.{BackButton, Title}
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.ActionItemBuilder._
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -45,11 +46,10 @@
     val errorMessage = error.pageErrorMessage.getOrElse("")
     val url = routes.SubmissionsController.amendErrors(declaration.id, urlToPageWithError, errorPattern, errorMessage).url
 
-    val action = ActionItem(
+    val action = actionItem(
       href = url,
       content = Text(messages("site.change")),
-      visuallyHiddenText = Some(error.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse("")),
-      classes = ""
+      visuallyHiddenText = Some(error.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse(""))
     )
 
     Some(Actions(items = Seq(action)))

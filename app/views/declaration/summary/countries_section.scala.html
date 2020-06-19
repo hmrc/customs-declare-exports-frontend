@@ -16,11 +16,10 @@
 
 @import models.declaration.Locations
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
 @import services.Countries
-@import models.Mode._
 @import views.html.components.gds.summary_list
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.ActionItemBuilder._
 
 @this(summaryList: summary_list)
 
@@ -50,7 +49,7 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.OriginationCountryController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.countries.countryOfDispatch.change"))
@@ -70,7 +69,7 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.countries.routingCountries.change"))
@@ -90,7 +89,7 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.DestinationCountryController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.countries.countryOfDestination.change"))

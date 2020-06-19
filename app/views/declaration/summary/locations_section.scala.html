@@ -18,6 +18,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
+@import views.components.gds.ActionItemBuilder._
 
 @this(summaryList: summary_list)
 
@@ -45,7 +46,7 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.LocationController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
@@ -64,7 +65,7 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.OfficeOfExitController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.locations.officeOfExit.change"))

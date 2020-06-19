@@ -22,6 +22,7 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import views.components.gds.ActionItemBuilder._
 
 object EoriOrAddress {
 
@@ -72,7 +73,7 @@ object EoriOrAddress {
         Actions(
           items = actionItems(
             mode,
-            ActionItem(href = changeController.url, content = Text(messages("site.change")), visuallyHiddenText = Some(messages(eoriChangeLabel)))
+            actionItem(href = changeController.url, content = Text(messages("site.change")), visuallyHiddenText = Some(messages(eoriChangeLabel)))
           )
         )
       )
@@ -95,7 +96,7 @@ object EoriOrAddress {
         Actions(
           items = actionItems(
             mode,
-            ActionItem(href = changeController.url, content = Text(messages("site.change")), visuallyHiddenText = Some(messages(addressChangeLabel)))
+            actionItem(href = changeController.url, content = Text(messages("site.change")), visuallyHiddenText = Some(messages(addressChangeLabel)))
           )
         )
       )

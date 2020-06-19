@@ -19,6 +19,7 @@
 @import models.requests.JourneyRequest
 @import views.html.components.gds.summary_list
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.ActionItemBuilder._
 
 @this(
         summaryList: summary_list,
@@ -70,7 +71,7 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.departure.transportCode.header.change"))
@@ -90,7 +91,7 @@
                   ),
                   actions = actions(Actions(
                       items = Seq(
-                          ActionItem(
+                          actionItem(
                               href = controllers.declaration.routes.DepartureTransportController.displayPage(mode).url,
                               content = Text(messages("site.change")),
                               visuallyHiddenText = Some(messages("declaration.summary.transport.departure.meansOfTransport.header.change"))
@@ -112,7 +113,7 @@
                     ),
                     actions = actions(Actions(
                         items = Seq(
-                            ActionItem(
+                            actionItem(
                                 href = controllers.declaration.routes.BorderTransportController.displayPage(mode).url,
                                 content = Text(messages("site.change")),
                                 visuallyHiddenText = Some(messages("declaration.summary.transport.border.meansOfTransport.header.change"))
@@ -134,7 +135,7 @@
                     ),
                     actions = actions(Actions(
                         items = Seq(
-                            ActionItem(
+                            actionItem(
                                 href = controllers.declaration.routes.BorderTransportController.displayPage(mode).url,
                                 content = Text(messages("site.change")),
                                 visuallyHiddenText = Some(messages("declaration.summary.transport.activeTransportNationality.change"))
@@ -155,7 +156,7 @@
                 ),
                 actions = actions(Actions(
                     items = Seq(
-                        ActionItem(
+                        actionItem(
                             href = controllers.declaration.routes.TransportPaymentController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.payment.change"))
