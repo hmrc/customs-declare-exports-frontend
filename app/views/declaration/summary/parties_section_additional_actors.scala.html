@@ -49,7 +49,7 @@
         else changeLink(
             messages("site.change"),
             Some(messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor))),
-            controllers.declaration.routes.AdditionalActorsAddController.displayPage(mode)
+            controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(mode)
         )
     }
 }
