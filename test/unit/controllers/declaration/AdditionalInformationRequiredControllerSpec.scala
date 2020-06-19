@@ -46,6 +46,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
   val itemId = "itemId"
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
     await(controller.displayPage(Mode.Normal, itemId)(request))
     theResponseForm
   }
@@ -59,7 +60,6 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
     when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -73,10 +73,10 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
   "AdditionalInformationRequired Controller" should {
 
     onEveryDeclarationJourney() { request =>
-//      withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
-
       "return 200 (OK)" that {
+
         "display page method is invoked and cache is empty" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
           val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
@@ -88,6 +88,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
       "return 400 (BAD_REQUEST)" when {
 
         "user submits invalid answer" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
           val requestBody = Seq("yesNo" -> "invalid")
           val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -101,6 +102,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
       "return 303 (SEE_OTHER)" when {
 
         "user submits valid Yes answer" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 
           val requestBody = Seq("yesNo" -> "Yes")
           val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -110,6 +112,8 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
         }
 
         "user submits valid No answer" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
+
           val requestBody = Seq("yesNo" -> "No")
           val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
