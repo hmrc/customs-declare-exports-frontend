@@ -28,6 +28,7 @@ import play.twirl.api.Html
 
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
+import scala.util.Try
 
 //noinspection ScalaStyle
 trait ViewMatchers {
@@ -328,12 +329,15 @@ trait ViewMatchers {
   }
 
   class ElementsHasSummaryActionMatcher(value: Call) extends Matcher[Elements] {
-    override def apply(left: Elements): MatchResult =
+    override def apply(left: Elements): MatchResult = {
+      val actionElement = Try(left.first().getElementsByClass("govuk-link").first()).toOption.orNull
+
       MatchResult(
-        left != null && left.first().getElementsByClass("govuk-link").first().attr("href") == value.url,
-        s"Elements had summary action {${left.first().getElementsByClass("govuk-link").first().attr("href")}}, expected {$value}",
-        s"Element had summary action {${left.first().getElementsByClass("govuk-link").first().attr("href")}}"
+        left != null && actionElement != null && actionElement.attr("href") == value.url,
+        s"Elements had no summary action {$value}\n${actualContentWas(actionElement)}",
+        s"Element had summary action {$value}"
       )
+    }
   }
 
   class ChildMatcherBuilder(tag: String) {

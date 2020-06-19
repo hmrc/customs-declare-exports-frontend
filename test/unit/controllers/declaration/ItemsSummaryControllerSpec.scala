@@ -150,7 +150,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   "addFirstItem" should {
 
     onEveryDeclarationJourney() { request =>
-
       "call Navigator" in {
 
         withNewCaching(aDeclaration(withType(request.declarationType)))

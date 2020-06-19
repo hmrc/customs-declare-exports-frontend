@@ -25,7 +25,11 @@ import views.html.declaration.summary.supporting_documents
 
 class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
-  val section = instanceOf[supporting_documents]
+  private val section = instanceOf[supporting_documents]
+  private val documents = Seq(
+    DocumentsProduced(Some("typ1"), Some("identifier1"), None, None, None, None, None),
+    DocumentsProduced(Some("typ2"), Some("identifier2"), None, None, None, None, None)
+  )
 
   "Supporting documents view" should {
 
@@ -47,10 +51,6 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
     "display all supporting documents with change buttons" in {
 
-      val documents = Seq(
-        DocumentsProduced(Some("typ1"), Some("identifier1"), None, None, None, None, None),
-        DocumentsProduced(Some("typ2"), Some("identifier2"), None, None, None, None, None)
-      )
       val view = section(Mode.Normal, "itemId", 1, documents)(messages, journeyRequest())
       val table = view.getElementById("supporting-documents-1-table")
 
@@ -72,6 +72,63 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row2ChangeLink must haveHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId"))
       row2ChangeLink.text() mustBe messages("site.change") + messages("declaration.summary.items.item.supportingDocuments.change", 1)
+    }
+
+    "display all supporting documents without change buttons" when {
+
+      "mode is Print" in {
+
+        val view = section(Mode.Print, "itemId", 1, documents)(messages, journeyRequest())
+        val table = view.getElementById("supporting-documents-1-table")
+
+        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
+
+        table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")
+        table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages(
+          "declaration.summary.items.item.supportingDocuments.information"
+        )
+
+        val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+        row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ1"
+        row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier1"
+        val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2)
+        row1ChangeLink.attr("href") mustBe empty
+        row1ChangeLink.text() mustBe empty
+
+        val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+        row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ2"
+        row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier2"
+        val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2)
+        row2ChangeLink.attr("href") mustBe empty
+        row2ChangeLink.text() mustBe empty
+      }
+
+      "actionsEnabled flag is false" in {
+
+        val view = section(Mode.Normal, "itemId", 1, documents, actionsEnabled = false)(messages, journeyRequest())
+        val table = view.getElementById("supporting-documents-1-table")
+
+        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
+
+        table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")
+        table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages(
+          "declaration.summary.items.item.supportingDocuments.information"
+        )
+
+        val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+        row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ1"
+        row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier1"
+        val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2)
+        row1ChangeLink.attr("href") mustBe empty
+        row1ChangeLink.text() mustBe empty
+
+        val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+        row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ2"
+        row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier2"
+        val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2)
+        row2ChangeLink.attr("href") mustBe empty
+        row2ChangeLink.text() mustBe empty
+      }
     }
   }
 }

@@ -29,11 +29,17 @@
         summaryList: summary_list
 )
 
-@(mode: Mode, itemId: String, itemNo: Int, supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(
+  mode: Mode,
+  itemId: String,
+  itemNo: Int,
+  supportingDocuments: Seq[DocumentsProduced],
+  actionsEnabled: Boolean = true
+)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @change() = {
     @{
-        if(mode == Mode.Print) ""
+        if(mode == Mode.Print || !actionsEnabled) ""
         else changeLink(
             messages("site.change"),
             Some(messages("declaration.summary.items.item.supportingDocuments.change", itemNo)),
@@ -43,7 +49,7 @@
 }
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print) None
+    if(mode == Mode.Print || !actionsEnabled) None
     else Some(action)
 }
 
