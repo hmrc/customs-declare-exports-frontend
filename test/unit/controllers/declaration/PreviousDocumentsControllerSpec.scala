@@ -142,7 +142,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(emptyForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayAddItemPage()
 
         verifyPage(0)
       }

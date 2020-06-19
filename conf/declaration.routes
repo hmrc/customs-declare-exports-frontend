@@ -249,7 +249,9 @@ GET         /declaration-items-list              controllers.declaration.ItemsSu
 
 POST        /declaration-items-list              controllers.declaration.ItemsSummaryController.submit(mode: models.Mode ?= models.Mode.Normal)
 
-GET         /remove-declaration-item/:itemId     controllers.declaration.ItemsSummaryController.removeItem(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /remove-declaration-item/:itemId     controllers.declaration.ItemsSummaryController.displayRemoveItemConfirmationPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /remove-declaration-item/:itemId     controllers.declaration.ItemsSummaryController.removeItem(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Procedure codes
 

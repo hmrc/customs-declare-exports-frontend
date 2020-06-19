@@ -26,6 +26,7 @@ import forms.declaration.additionaldocuments.{DocumentsProduced, DocumentsProduc
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.officeOfExit.{OfficeOfExitInsideUK, OfficeOfExitOutsideUK}
+import forms.declaration.removals.RemoveItem
 import forms.{Choice, DeclarationPage}
 import javax.inject.Inject
 import models.DeclarationType._
@@ -259,6 +260,7 @@ object Navigator {
     case ProcedureCodes                       => controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage
     case DepartureTransport                   => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
     case ExportItem                           => controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage
+    case RemoveItem                           => controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage
     case DocumentChangeOrRemove               => controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage
   }
 

@@ -1,0 +1,67 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes
+@import controllers.navigation.Navigator
+@import forms.common.YesNoAnswer
+@import forms.declaration.removals.RemoveItem
+@import models.declaration.ExportItem
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import views.html.declaration.summary.item_section
+@import views.components.gds.Styles._
+@import scala.collection.immutable
+
+@this(
+  govukLayout: gdsMainTemplate,
+  govukFieldset: GovukFieldset,
+  errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
+  itemSection: item_section,
+  yesNoRadios: yesNoRadios,
+  saveButtons: saveButtons,
+  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
+
+@(mode: Mode, form: Form[YesNoAnswer], item: ExportItem)(implicit request: JourneyRequest[_], messages: Messages)
+
+@govukLayout(
+    title = Title(messages("declaration.itemsRemove.title"), "supplementary.items"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RemoveItem, mode)))) {
+
+    @formHelper(action = routes.ItemsSummaryController.removeItem(mode, item.id), 'autoComplete -> "off") {
+
+      @errorSummary(form.errors)
+
+      @sectionHeader(messages("supplementary.items"))
+
+      @govukFieldset(Fieldset(
+        legend = Some(Legend(
+          content = Text(messages("declaration.itemsRemove.title")),
+          classes = gdsPageLegend,
+          isPageHeading = true
+        )),
+        html = HtmlFormat.fill(immutable.Seq(
+          itemSection(mode, item),
+          yesNoRadios(form),
+          saveButtons()
+        ))
+      ))
+    }
+}

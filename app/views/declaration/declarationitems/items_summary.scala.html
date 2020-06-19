@@ -107,7 +107,7 @@
                     ),
                     TableRow(
                         content = HtmlContent(removeButton(
-                            href = Some(routes.ItemsSummaryController.removeItem(mode, item.id).url),
+                            href = Some(routes.ItemsSummaryController.displayRemoveItemConfirmationPage(mode, item.id).url),
                             hiddenLabel = Some(messages("declaration.itemsAdd.remove.hint", item.sequenceId))
                         )),
                         attributes = Map("id" -> s"item_$index--remove")

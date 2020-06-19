@@ -48,7 +48,7 @@ class ItemsAddItemViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
     "display 'Back' button" in {
 
-      view.getElementById("back-link") must haveHref(routes.PreviousDocumentsController.displayPage())
+      view.getElementById("back-link") must haveHref(routes.PreviousDocumentsSummaryController.displayPage())
     }
 
     "display section header" in {

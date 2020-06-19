@@ -59,12 +59,10 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       view.getElementById("back-link") must haveAttribute("href", routes.PreviousDocumentsSummaryController.displayPage().url)
     }
 
-    "render title" when {
-      "many items" in {
+    "render title" in {
 
-        val view = createView(items = List(ExportItem("id1"), ExportItem("id2")))
-        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "declaration.itemsAdd.titleWithItems"
-      }
+      val view = createView(items = List(ExportItem("id1"), ExportItem("id2")))
+      view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "declaration.itemsAdd.titleWithItems"
     }
 
     "not render item table" when {
