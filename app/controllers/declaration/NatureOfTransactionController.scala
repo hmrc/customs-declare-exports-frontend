@@ -45,9 +45,8 @@ class NatureOfTransactionController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.natureOfTransaction match {
-      case Some(data) =>
-        Ok(natureOfTransactionPage(mode, frm.fill(data)))
-      case _ => Ok(natureOfTransactionPage(mode, frm))
+      case Some(data) => Ok(natureOfTransactionPage(mode, frm.fill(data)))
+      case _          => Ok(natureOfTransactionPage(mode, frm))
     }
   }
 
@@ -55,16 +54,10 @@ class NatureOfTransactionController @Inject()(
     form().bindFromRequest
       .fold(
         (formWithErrors: Form[NatureOfTransaction]) => Future.successful(BadRequest(natureOfTransactionPage(mode, formWithErrors))),
-        form => updateCache(form).map(_ => redirect(mode))
+        form => updateCache(form).map(_ => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage))
       )
   }
 
   private def updateCache(formData: NatureOfTransaction)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(natureOfTransaction = Some(formData)))
-
-  private def redirect(mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
-    request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty) match {
-      case Seq() => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage)
-      case _     => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage)
-    }
 }

@@ -69,14 +69,9 @@ class OfficeOfExitOutsideUkController @Inject()(
     declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.TotalNumberOfItemsController.displayPage
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE if (previousDocumentsProvided()) =>
-        controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.PreviousDocumentsController.displayPage
+        controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage
     }
-
-  private def previousDocumentsProvided()(implicit request: JourneyRequest[AnyContent]): Boolean =
-    request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty).nonEmpty
 
   private def updateCache(formData: OfficeOfExitOutsideUK)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData)))))

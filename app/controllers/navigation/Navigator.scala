@@ -330,7 +330,7 @@ object Navigator {
   }
 
   private def previousDocumentsPreviousPageDefault(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty).nonEmpty)
+    if (cacheModel.hasPreviousDocuments)
       controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(mode)
     else controllers.declaration.routes.NatureOfTransactionController.displayPage(mode)
 
@@ -374,7 +374,7 @@ object Navigator {
       controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
 
   private def previousDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty).nonEmpty)
+    if (cacheModel.hasPreviousDocuments)
       controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(mode)
     else if (cacheModel.locations.isOfficeOfExitInUk)
       controllers.declaration.routes.OfficeOfExitController.displayPage(mode)
