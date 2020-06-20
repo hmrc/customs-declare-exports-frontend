@@ -239,23 +239,6 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
-        checkViewInteractions(0)
-        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput, Some(isUKOfficeOfExitInput))))
-      }
-
-      "a UK Office of Exit is being used but user has documents in cache" in {
-
-        withNewCaching(request.cacheModel.updatePreviousDocuments(Seq(Document("Y", "355", "reference", None))))
-
-        val officeOfExitInput = Some("GB123456")
-        val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.yes
-
-        val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
-
-        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
         checkViewInteractions(0)
         theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput, Some(isUKOfficeOfExitInput))))
