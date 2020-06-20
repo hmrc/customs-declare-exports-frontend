@@ -20,7 +20,6 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util._
 import forms.declaration.Document._
-import forms.declaration.PreviousDocumentsData._
 import forms.declaration.{Document, PreviousDocumentsData}
 import javax.inject.Inject
 import models.requests.JourneyRequest
@@ -48,20 +47,26 @@ class PreviousDocumentsController @Inject()(
   }
 
   def savePreviousDocuments(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    import MultipleItemsHelper._
-
-    val boundForm = form().bindFromRequest()
+    val boundForm = if (isFirstPreviousDocument) Document.treatLikeOptional(form().bindFromRequest()) else form().bindFromRequest()
 
     val cache = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty))
 
-    add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
-      formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors))),
-      updatedCache =>
-        updateCache(PreviousDocumentsData(updatedCache))
-          .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage))
-    )
+    if (boundForm.value.isEmpty && boundForm.errors.isEmpty)
+      Future.successful(navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayPage))
+    else
+      MultipleItemsHelper
+        .add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems)
+        .fold(
+          formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors))),
+          updatedCache =>
+            updateCache(PreviousDocumentsData(updatedCache))
+              .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage))
+        )
   }
 
   private def updateCache(formData: PreviousDocumentsData)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(previousDocuments = Some(formData)))
+
+  private def isFirstPreviousDocument()(implicit request: JourneyRequest[AnyContent]): Boolean =
+    request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty)).documents.isEmpty
 }

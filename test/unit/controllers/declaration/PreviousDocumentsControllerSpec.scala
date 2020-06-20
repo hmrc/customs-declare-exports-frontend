@@ -132,6 +132,20 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
         verifyPage(0)
       }
+
+      "user doesn't provide any information and it's first document" in {
+
+        withNewCaching(aDeclaration(withoutPreviousDocuments()))
+
+        val emptyForm = Json.toJson(Document("", "", "", None))
+
+        val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(emptyForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
+
+        verifyPage(0)
+      }
     }
   }
 }
