@@ -17,8 +17,9 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.Mapping.requiredRadio
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, FormError, Forms}
 import play.api.libs.json.{JsValue, Json}
 import services.DocumentType
 import utils.validators.forms.FieldValidator._
@@ -39,7 +40,7 @@ object Document extends DeclarationPage {
   val correctDocumentCategories = Set(SimplifiedDeclaration, RelatedDocument)
 
   val mapping = Forms.mapping(
-    "documentCategory" -> text()
+    "documentCategory" -> requiredRadio("declaration.previousDocuments.documentCategory.error.empty")
       .verifying("declaration.previousDocuments.documentCategory.error.empty", nonEmpty)
       .verifying("declaration.previousDocuments.documentCategory.error.incorrect", isEmpty or isContainedIn(correctDocumentCategories)),
     "documentType" -> text()
@@ -55,6 +56,18 @@ object Document extends DeclarationPage {
   )(Document.apply)(Document.unapply)
 
   def form(): Form[Document] = Form(mapping)
+
+  def treatLikeOptional(document: Form[Document]): Form[Document] = {
+    val errorsToIgnore = Seq(
+      FormError("documentCategory", "declaration.previousDocuments.documentCategory.error.empty"),
+      FormError("documentType", "declaration.previousDocuments.documentType.empty"),
+      FormError("documentReference", "declaration.previousDocuments.documentReference.empty")
+    )
+
+    if (document.errors == errorsToIgnore && document.data.get("goodsItemIdentifier").getOrElse("").isEmpty)
+      document.copy(errors = Seq.empty)
+    else document
+  }
 
   object AllowedValues {
     val SimplifiedDeclaration = "Y"

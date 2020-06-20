@@ -39,9 +39,9 @@ class PreviousDocumentsSummaryController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = YesNoAnswer.form().withSubmissionErrors()
-    request.cacheModel.previousDocuments match {
-      case Some(data) => Ok(previousDocumentsSummary(mode, form, data.documents))
-      case _          => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage)
+    request.cacheModel.previousDocuments.map(_.documents) match {
+      case Some(documents) if documents.nonEmpty => Ok(previousDocumentsSummary(mode, form, documents))
+      case _                                     => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage)
     }
   }
 
