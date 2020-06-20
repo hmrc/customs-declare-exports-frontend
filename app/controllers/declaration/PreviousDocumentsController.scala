@@ -52,8 +52,9 @@ class PreviousDocumentsController @Inject()(
     val cache = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty))
 
     if (boundForm.value.isEmpty && boundForm.errors.isEmpty)
-      Future.successful(navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayPage))
-    else
+      updateCache(PreviousDocumentsData(Seq.empty)).map { _ =>
+        navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayPage)
+      } else
       MultipleItemsHelper
         .add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems)
         .fold(

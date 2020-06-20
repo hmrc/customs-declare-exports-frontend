@@ -36,7 +36,7 @@
         else changeLink(
             messages("site.change"),
             Some(messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference)),
-            controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)
+            controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(mode)
         )
     }
 }
