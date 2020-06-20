@@ -21,6 +21,7 @@
 @import views.html.components.gds.link
 @import views.html.components.gds.summary_list
 @import views.components.gds.ActionItemBuilder._
+@import views.declaration.summary.TableCell
 
 @this(
         govukTable: GovukTable,
@@ -73,9 +74,7 @@
                 TableRow(
                     content = Text(document.documentReference)
                 ),
-                TableRow(
-                    content = HtmlContent(change(document))
-                )
+                TableCell.changeLink(change(document))
             )
         ),
         head = Some(List(
