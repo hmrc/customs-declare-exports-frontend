@@ -476,7 +476,7 @@ submissions.generateEAD = Create an Export Accompanying Document (EAD)
 submissions.viewDeclaration = View submitted declaration
 submissions.tab.rejected.title = Rejected declarations
 submissions.tab.action.title = Declarations with an action
-submissions.tab.other.title = Other declarartions
+submissions.tab.other.title = Other declarations
 submissions.pagination.singular = declaration
 submissions.pagination.plural = declarations
 
