@@ -46,7 +46,7 @@ class PaginationViewSpec extends UnitViewSpec {
 
         val summary = paginationComponent().getElementsByClass("ceds-pagination__summary")
 
-        summary.first() must containMessage("saved.declarations.pagination.showing.no")
+        summary.first() must containMessage("site.pagination.showing.no")
         summary.first() must containMessage("saved.declarations.pagination.plural")
       }
 
@@ -54,7 +54,7 @@ class PaginationViewSpec extends UnitViewSpec {
 
         val summary = paginationComponent(declarations = Seq(declaration), elementsTotal = 1).getElementsByClass("ceds-pagination__summary")
 
-        summary.first() must containMessage("saved.declarations.pagination.showing")
+        summary.first() must containMessage("site.pagination.showing")
         summary.first() must containText("1")
         summary.first() must containMessage("saved.declarations.pagination.singular")
       }
@@ -63,9 +63,9 @@ class PaginationViewSpec extends UnitViewSpec {
 
         val summary = paginationComponent(declarations = Seq.fill(10)(declaration), elementsTotal = 30).getElementsByClass("ceds-pagination__summary")
 
-        summary.first() must containMessage("saved.declarations.pagination.showing")
+        summary.first() must containMessage("site.pagination.showing")
         summary.first() must containText("1 – 10")
-        summary.first() must containMessage("saved.declarations.pagination.of")
+        summary.first() must containMessage("site.pagination.of")
         summary.first() must containText("30")
         summary.first() must containMessage("saved.declarations.pagination.plural")
       }
