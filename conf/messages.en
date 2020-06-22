@@ -1298,7 +1298,8 @@ supplementary.continue.mandatory = You must add at least one item
 supplementary.startNewDec = Start a new declaration
 
 declaration.itemsAdd.title = Add declaration item 1
-declaration.itemsAdd.titleWithItems = You have declared {0} item
+declaration.itemsAdd.titleWithItem = You have declared {0} item
+declaration.itemsAdd.titleWithItems = You have declared {0} items
 declaration.itemsAdd.title.hint = A declaration can have multiple items. Each item is identified by a commodity code, which explains what type of goods are being added to the declaration, and a Union Customs Code procedure code.
 declaration.itemsAdd.change.hint = Change item {0}
 declaration.itemsAdd.remove.hint = Remove item {0}
