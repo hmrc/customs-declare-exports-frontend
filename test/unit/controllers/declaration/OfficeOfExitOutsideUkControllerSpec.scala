@@ -17,6 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OfficeOfExitOutsideUkController
+import forms.declaration.Document
 import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -178,7 +179,7 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
         checkViewInteractions(0)
       }
     }

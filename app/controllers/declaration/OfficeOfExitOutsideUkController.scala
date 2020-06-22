@@ -65,12 +65,12 @@ class OfficeOfExitOutsideUkController @Inject()(
       )
   }
 
-  private def nextPage(declarationType: DeclarationType): Mode => Call =
+  private def nextPage(declarationType: DeclarationType)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.TotalNumberOfItemsController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.PreviousDocumentsController.displayPage
+        controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage
     }
 
   private def updateCache(formData: OfficeOfExitOutsideUK)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

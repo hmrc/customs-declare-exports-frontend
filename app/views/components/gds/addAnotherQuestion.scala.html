@@ -26,13 +26,19 @@
 
 @radioLegendContent = {
     <h2 class="govuk-fieldset__heading">
-    @messages(questionKey)
+      @messages(questionKey)
     </h2>
 }
 
+@legend = @{
+    if(questionKey.nonEmpty) {
+        Some(Legend(
+            content = HtmlContent(radioLegendContent),
+            classes = "govuk-fieldset__legend--m"
+        ))
+    } else None
+}
+
 @yesNoRadios(form, Some(Fieldset(
-    legend = Some(Legend(
-        content = HtmlContent(radioLegendContent),
-        classes = "govuk-fieldset__legend--m"
-    ))
+    legend = legend
 )))

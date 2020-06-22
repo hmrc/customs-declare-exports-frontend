@@ -21,6 +21,8 @@ import utils.JsonFile
 case class DocumentType(description: String, code: String) {
 
   def asText: String = description + " - " + code
+
+  def asTextWithBrackets: String = description + " (" + code + ")"
 }
 
 object DocumentType {

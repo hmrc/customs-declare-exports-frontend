@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.NatureOfTransactionController
-import forms.declaration.NatureOfTransaction
+import forms.declaration.{Document, NatureOfTransaction}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -111,14 +111,15 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
     "return 303 (SEE_OTHER)" when {
 
-      "information provided by user are correct" in {
+      "user provided correct information" in {
 
+        withNewCaching(aDeclaration(withPreviousDocuments(Document("Y", "MCR", "reference", None))))
         val correctForm = Json.toJson(NatureOfTransaction("1"))
 
         val result = controller.saveTransactionType(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
 
         verify(mockNatureOfTransactionPage, times(0)).apply(any(), any())(any(), any())
       }

@@ -108,6 +108,9 @@ case class ExportsDeclaration(
   def updateTransportPayment(payment: TransportPayment) =
     copy(transport = transport.copy(transportPayment = Some(payment)))
 
+  def updatePreviousDocuments(previousDocuments: Seq[Document]) =
+    copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))
+
   def containRoutingCountries(): Boolean = locations.routingCountries.nonEmpty
 
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
@@ -128,6 +131,8 @@ case class ExportsDeclaration(
 
   def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
   def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
+
+  def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).exists(_.nonEmpty)
 }
 
 object ExportsDeclaration {

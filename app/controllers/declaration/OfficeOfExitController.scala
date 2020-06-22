@@ -67,7 +67,7 @@ class OfficeOfExitController @Inject()(
       )
   }
 
-  private def nextPage(declarationType: DeclarationType, answer: String): Mode => Call =
+  private def nextPage(declarationType: DeclarationType, answer: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     if (answer == AllowedUKOfficeOfExitAnswers.no) {
       controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage
     } else {
@@ -75,7 +75,7 @@ class OfficeOfExitController @Inject()(
         case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
           controllers.declaration.routes.TotalNumberOfItemsController.displayPage
         case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
-          controllers.declaration.routes.PreviousDocumentsController.displayPage
+          controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage
       }
     }
 

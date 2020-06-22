@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.PreviousDocumentsController
-import controllers.util.Remove
 import forms.declaration.{Document, PreviousDocumentsData}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -25,14 +24,12 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
-import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
-import unit.mock.ErrorHandlerMocks
-import views.html.declaration.previous_documents
+import play.twirl.api.{Html, HtmlFormat}
+import unit.base.ControllerWithoutFormSpec
+import views.html.declaration.previousDocuments.previous_documents
 
-class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
   val mockPreviousDocumentsPage = mock[previous_documents]
 
@@ -40,7 +37,6 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    mockErrorHandler,
     stubMessagesControllerComponents(),
     mockPreviousDocumentsPage,
     mockExportsCacheService
@@ -48,94 +44,49 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
+
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(mockPreviousDocumentsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPreviousDocumentsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     reset(mockPreviousDocumentsPage)
+
     super.afterEach()
   }
 
-  override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(Mode.Normal)(request))
-    theResponse._1
-  }
-
-  def theResponse: (Form[Document], Seq[Document]) = {
+  def theResponse: Form[Document] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[Document]])
-    val dataCaptor = ArgumentCaptor.forClass(classOf[Seq[Document]])
-    verify(mockPreviousDocumentsPage).apply(any(), formCaptor.capture(), dataCaptor.capture())(any(), any())
-    (formCaptor.getValue, dataCaptor.getValue)
+    verify(mockPreviousDocumentsPage).apply(any(), formCaptor.capture())(any(), any())
+    formCaptor.getValue
   }
 
-  def verifyPage(numberOfTimes: Int = 1) = verify(mockPreviousDocumentsPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+  def verifyPage(numberOfTimes: Int = 1): Html =
+    verify(mockPreviousDocumentsPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   "Previous Documents controller" should {
 
     "return 200 (OK)" when {
 
-      "display page method is invoked with empty cache" in {
+      "display page method " in {
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         verifyPage()
 
-        val (responseForm, responseSeq) = theResponse
-        responseForm.value mustBe empty
-        responseSeq mustBe empty
-      }
-
-      "display page method is invoked with data in cache" in {
-
-        val document = Document("X", "355", "reference", Some("123"))
-        withNewCaching(aDeclaration(withPreviousDocuments(document)))
-
-        val result = controller.displayPage(Mode.Normal)(getRequest())
-
-        status(result) mustBe OK
-        verifyPage()
-
-        val (responseForm, responseSeq) = theResponse
-        responseForm.value mustBe empty
-        responseSeq mustBe Seq(document)
+        theResponse.value mustBe empty
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
 
-      "user provide wrong action" in {
-
-        val wrongAction = Seq(
-          ("documentCategory", "X"),
-          ("documentType", "355"),
-          ("documentReference", "reference"),
-          ("goodsItemIdentifier", ""),
-          ("WrongAction", "")
-        )
-
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verifyPage()
-      }
-    }
-
-    "return 400 (BAD_REQUEST) during adding" when {
-
       "user put incorrect data" in {
 
-        val incorrectForm = Seq(
-          ("documentCategory", "incorrect"),
-          ("documentType", "355"),
-          ("documentReference", "reference"),
-          ("goodsItemIdentifier", ""),
-          addActionUrlEncoded()
-        )
+        val incorrectForm = Json.toJson(Document("incorrect", "355", "reference", None))
 
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
@@ -143,18 +94,12 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "user put duplicated item" in {
 
-        val document = Document("X", "355", "reference", Some("123"))
+        val document = Document("Y", "355", "reference", Some("123"))
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
-        val duplicatedForm = Seq(
-          ("documentCategory", "X"),
-          ("documentType", "355"),
-          ("documentReference", "reference"),
-          ("goodsItemIdentifier", "123"),
-          addActionUrlEncoded()
-        )
+        val duplicatedForm = Json.toJson(Document("Y", "355", "reference", Some("123")))
 
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(duplicatedForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
@@ -162,75 +107,12 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "user reach maximum amount of items" in {
 
-        val document = Document("X", "355", "reference", Some("123"))
+        val document = Document("Y", "355", "reference", Some("123"))
         withNewCaching(aDeclaration(withPreviousDocuments(PreviousDocumentsData(Seq.fill(PreviousDocumentsData.maxAmountOfItems)(document)))))
 
-        val correctForm = Seq(
-          ("documentCategory", "X"),
-          ("documentType", "355"),
-          ("documentReference", "reference"),
-          ("goodsItemIdentifier", ""),
-          addActionUrlEncoded()
-        )
+        val correctForm = Json.toJson(Document("Y", "355", "reference", None))
 
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verifyPage()
-      }
-    }
-
-    "return 400 (BAD_REQUEST) during saving" when {
-
-      "user put incorrect data" in {
-
-        val incorrectForm = Seq(
-          ("documentCategory", "incorrect"),
-          ("documentType", "355"),
-          ("documentReference", "reference"),
-          ("goodsItemIdentifier", ""),
-          saveAndContinueActionUrlEncoded
-        )
-
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verifyPage()
-      }
-
-      "user put duplicated item" in {
-
-        val document = Document("X", "355", "reference", Some("123"))
-        withNewCaching(aDeclaration(withPreviousDocuments(document)))
-
-        val duplicatedForm = Seq(
-          ("documentCategory", "X"),
-          ("documentType", "355"),
-          ("documentReference", "reference"),
-          ("goodsItemIdentifier", "123"),
-          saveAndContinueActionUrlEncoded
-        )
-
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verifyPage()
-      }
-
-      "user reach maximum amount of items" in {
-
-        val document = Document("X", "355", "reference", Some("123"))
-        withNewCaching(aDeclaration(withPreviousDocuments(PreviousDocumentsData(Seq.fill(PreviousDocumentsData.maxAmountOfItems)(document)))))
-
-        val correctForm = Seq(
-          ("documentCategory", "X"),
-          ("documentType", "355"),
-          ("documentReference", "reference"),
-          ("goodsItemIdentifier", ""),
-          saveAndContinueActionUrlEncoded
-        )
-
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(correctForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
@@ -239,66 +121,30 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
 
     "return 303 (SEE_OTHER)" when {
 
-      "user correctly add new item" in {
+      "user put correct data" in {
 
-        val correctForm = Seq(
-          ("documentCategory", "X"),
-          ("documentType", "355"),
-          ("documentReference", "reference"),
-          ("goodsItemIdentifier", ""),
-          addActionUrlEncoded()
-        )
+        val correctForm = Json.toJson(Document("Y", "355", "reference", None))
 
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
 
         verifyPage(0)
       }
 
-      "user save correct data" in {
+      "user doesn't provide any information and it's first document" in {
 
-        val correctForm = Seq(
-          ("documentCategory", "X"),
-          ("documentType", "355"),
-          ("documentReference", "reference"),
-          ("goodsItemIdentifier", ""),
-          saveAndContinueActionUrlEncoded
-        )
+        withNewCaching(aDeclaration(withoutPreviousDocuments()))
 
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val emptyForm = Json.toJson(Document("", "", "", None))
+
+        val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(emptyForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
 
         verifyPage(0)
-      }
-
-      "user save correct data without new item" in {
-
-        val document = Document("X", "355", "reference", Some("123"))
-        withNewCaching(aDeclaration(withPreviousDocuments(document)))
-
-        val result =
-          controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
-        verifyPage(0)
-      }
-
-      "user remove existing item" in {
-
-        val document = Document("X", "355", "reference", Some("123"))
-        withNewCaching(aDeclaration(withPreviousDocuments(document)))
-
-        val removeAction = (Remove.toString, Json.toJson(document).toString)
-
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Normal)
       }
     }
   }

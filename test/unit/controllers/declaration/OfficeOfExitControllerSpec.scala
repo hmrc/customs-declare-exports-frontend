@@ -17,6 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OfficeOfExitController
+import forms.declaration.Document
 import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit, OfficeOfExitInsideUK}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -139,7 +140,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val officeOfExitInput = Some("GB123456");
+        val officeOfExitInput = Some("GB123456")
         val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.yes
 
         val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
@@ -156,7 +157,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val officeOfExitInput = None;
+        val officeOfExitInput = None
         val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
 
         val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
@@ -171,10 +172,10 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
       "the non UK Office of Exit option is selected, but already has Office Of Exit Outside UK in the cache" in {
 
-        val officeOfExitFromCache = "NL000123";
+        val officeOfExitFromCache = "NL000123"
         withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.no)))
 
-        val officeOfExitInput = None;
+        val officeOfExitInput = None
         val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
 
         val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
@@ -189,10 +190,10 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
       "the non UK Office of Exit option is selected, but has Office Of Exit Inside UK in the cache" in {
 
-        val officeOfExitFromCache = "GB000123";
+        val officeOfExitFromCache = "GB000123"
         withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.yes)))
 
-        val officeOfExitInput = None;
+        val officeOfExitInput = None
         val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
 
         val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
@@ -208,10 +209,10 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       "the non UK Office of Exit option is selected, " +
         "the UK Office of Exit is selected by mistake and already has an existing Office Of Exit Inside UK in the cache" in {
 
-        val officeOfExitFromCache = "GB000123";
+        val officeOfExitFromCache = "GB000123"
         withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.yes)))
 
-        val officeOfExitInput = None;
+        val officeOfExitInput = None
         val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
 
         val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
@@ -230,7 +231,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val officeOfExitInput = Some("GB123456");
+        val officeOfExitInput = Some("GB123456")
         val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.yes
 
         val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
@@ -238,7 +239,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
         checkViewInteractions(0)
         theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput, Some(isUKOfficeOfExitInput))))
       }
@@ -247,7 +248,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val officeOfExitInput = None;
+        val officeOfExitInput = None
         val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
 
         val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
@@ -262,10 +263,10 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
       "the non UK Office of Exit option is selected, but already has Office Of Exit Outside UK in the cache" in {
 
-        val officeOfExitFromCache = "NL000123";
+        val officeOfExitFromCache = "NL000123"
         withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.no)))
 
-        val officeOfExitInput = None;
+        val officeOfExitInput = None
         val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
 
         val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
@@ -280,10 +281,10 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
       "the non UK Office of Exit option is selected, but has Office Of Exit Inside UK in the cache" in {
 
-        val officeOfExitFromCache = "GB000123";
+        val officeOfExitFromCache = "GB000123"
         withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.yes)))
 
-        val officeOfExitInput = None;
+        val officeOfExitInput = None
         val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
 
         val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
@@ -299,10 +300,10 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       "the non UK Office of Exit option is selected, " +
         "the UK Office of Exit is selected by mistake and already has an existing Office Of Exit Inside UK in the cache" in {
 
-        val officeOfExitFromCache = "GB000123";
+        val officeOfExitFromCache = "GB000123"
         withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.yes)))
 
-        val officeOfExitInput = "GB000124";
+        val officeOfExitInput = "GB000124"
         val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
 
         val correctForm = Json.toJson(OfficeOfExitInsideUK(Some(officeOfExitInput), isUKOfficeOfExitInput))
