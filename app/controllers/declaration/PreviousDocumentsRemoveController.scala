@@ -62,12 +62,8 @@ class PreviousDocumentsRemoveController @Inject()(
             validAnswer =>
               validAnswer.answer match {
                 case YesNoAnswers.yes =>
-                  removeDocument(document).map { updatedDeclaration =>
-                    if (updatedDeclaration.flatMap(_.previousDocuments).map(_.documents).getOrElse(Seq.empty).nonEmpty) {
-                      returnToSummary(mode)
-                    } else {
-                      navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage)
-                    }
+                  removeDocument(document).map { _ =>
+                    returnToSummary(mode)
                   }
                 case YesNoAnswers.no => Future.successful(returnToSummary(mode))
             }

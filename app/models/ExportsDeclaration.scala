@@ -132,7 +132,7 @@ case class ExportsDeclaration(
   def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
   def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
 
-  def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).getOrElse(Seq.empty).nonEmpty
+  def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).exists(_.nonEmpty)
 }
 
 object ExportsDeclaration {

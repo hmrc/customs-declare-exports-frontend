@@ -146,7 +146,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit(Mode.Normal, documentId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
       }
     }
   }

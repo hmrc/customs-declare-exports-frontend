@@ -158,7 +158,7 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
 
       "display 'Back' link to 'Office of Exit Outside UK' page" when {
 
-        "Office of exit has answer Yes" in {
+        "Office of exit has answer No" in {
 
           val specificRequest = journeyRequest(aDeclaration(withType(request.declarationType), withOfficeOfExit("", "No")))
           val backButton = createView(request = specificRequest).getElementById("back-link")

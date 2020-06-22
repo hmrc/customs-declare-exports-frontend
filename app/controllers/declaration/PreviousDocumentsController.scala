@@ -68,6 +68,5 @@ class PreviousDocumentsController @Inject()(
   private def updateCache(formData: PreviousDocumentsData)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(previousDocuments = Some(formData)))
 
-  private def isFirstPreviousDocument()(implicit request: JourneyRequest[AnyContent]): Boolean =
-    request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty)).documents.isEmpty
+  private def isFirstPreviousDocument()(implicit request: JourneyRequest[AnyContent]): Boolean = !request.cacheModel.hasPreviousDocuments
 }
