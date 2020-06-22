@@ -78,6 +78,11 @@ site.details.summary_text_these = For more information about these
 
 site.print = Print this page
 
+site.pagination.showing = Showing
+site.pagination.showing.no = Showing no
+site.pagination.of = of
+
+
 general.inquiries.help.link = General enquires help
 
 unauthorised.heading = To continue, you need to get access to Customs Declaration Services (CDS)
@@ -472,6 +477,8 @@ submissions.viewDeclaration = View submitted declaration
 submissions.tab.rejected.title = Rejected declarations
 submissions.tab.action.title = Declarations with an action
 submissions.tab.other.title = Other declarartions
+submissions.pagination.singular = declaration
+submissions.pagination.plural = declarations
 
 saved.declarations.title = Your saved declarations
 saved.declarations.ducr = DUCR
@@ -482,9 +489,6 @@ saved.declarations.summary.intro = Review the information you entered so far.
 saved.declarations.summary.paragraph = Click continue declaration to go through your declaration from the beginning. Continue through the declaration until you reach the page where you saved.
 saved.declarations.summary.createdDate = Date created
 saved.declarations.summary.expireDate = Expiry date
-saved.declarations.pagination.showing = Showing
-saved.declarations.pagination.showing.no = Showing no
-saved.declarations.pagination.of = of
 saved.declarations.pagination.singular = saved declaration
 saved.declarations.pagination.plural = saved declarations
 saved.declarations.remove.title = Are you sure you want to remove this declaration?

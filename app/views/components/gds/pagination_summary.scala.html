@@ -36,12 +36,12 @@
   @if(pager.nonEmpty) {
 
     @if(pager.pagesAmount == 1) {
-      <p class="govuk-body">@{messages("saved.declarations.pagination.showing")} @{pager.elementsTotal} @singularOrPlural</p>
+      <p class="govuk-body">@{messages("site.pagination.showing")} @{pager.elementsTotal} @singularOrPlural</p>
     } else {
-      <p class="govuk-body">@{messages("saved.declarations.pagination.showing")} @{rangePart} @{messages("saved.declarations.pagination.of")} @{pager.elementsTotal} @singularOrPlural</p>
+      <p class="govuk-body">@{messages("site.pagination.showing")} @{rangePart} @{messages("site.pagination.of")} @{pager.elementsTotal} @singularOrPlural</p>
     }
 
   } else {
-    <p class="govuk-body">@{messages("saved.declarations.pagination.showing.no")} @{pluralName}</p>
+    <p class="govuk-body">@{messages("site.pagination.showing.no")} @{pluralName}</p>
   }
 </div>
