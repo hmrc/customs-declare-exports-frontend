@@ -63,7 +63,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val submission: Submission = submission()
 
   private val zone: ZoneId = ZoneId.of("Europe/London")
-  private val notification = Notification(
+  private val acceptedNotification = Notification(
     actionId = "action-id",
     mrn = "mrn",
     dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 0, 0, 0), zone),
@@ -81,6 +81,15 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     payload = ""
   )
 
+  private val clearedNotification = Notification(
+    actionId = "actionId",
+    mrn = "mrn",
+    dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 2, 2, 10, 0, 0), zone),
+    status = SubmissionStatus.CLEARED,
+    errors = Seq.empty,
+    payload = ""
+  )
+
   private val additionalDocumentsNotification = Notification(
     actionId = "actionId",
     mrn = "mrn",
@@ -90,7 +99,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     payload = ""
   )
 
-  private val notifications = Seq(notification, rejectedNotification, additionalDocumentsNotification)
+  private val notifications = Seq(acceptedNotification, rejectedNotification, additionalDocumentsNotification)
 
   private val declarationInformationPageWithFeatures =
     new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, eadConfigEnabled, sfusConfigEnabled)
@@ -173,7 +182,16 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       "declaration is accepted" in {
 
-        val viewDeclarationLink = viewWithFeatures.getElementById("view-declaration")
+        val viewDeclarationLink = declarationInformationPageWithFeatures(submission, Seq(acceptedNotification))(request, messages).getElementById("view-declaration")
+
+
+        viewDeclarationLink.text() mustBe "submissions.viewDeclaration"
+        viewDeclarationLink must haveHref(controllers.routes.SubmissionsController.viewDeclaration(submission.uuid))
+      }
+
+      "declaration is cleared" in {
+
+        val viewDeclarationLink = declarationInformationPageWithFeatures(submission, Seq(clearedNotification))(request, messages).getElementById("view-declaration")
 
         viewDeclarationLink.text() mustBe "submissions.viewDeclaration"
         viewDeclarationLink must haveHref(controllers.routes.SubmissionsController.viewDeclaration(submission.uuid))
@@ -211,7 +229,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       }
     }
 
-    "contains rejected notification with correct data and view errors link" in {
+    "contains rejected acceptedNotification with correct data and view errors link" in {
 
       viewWithFeatures.getElementById("notification_status_0").text() mustBe SubmissionStatus.format(SubmissionStatus.REJECTED)
       viewWithFeatures.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00"
@@ -221,14 +239,14 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       )
     }
 
-    "contains accepted notification with correct data" in {
+    "contains accepted acceptedNotification with correct data" in {
 
       viewWithFeatures.getElementById("notification_status_1").text() mustBe SubmissionStatus.format(SubmissionStatus.ACCEPTED)
       viewWithFeatures.getElementById("notification_date_time_1").text() mustBe "1 January 2020 at 00:00"
       viewWithFeatures.getElementById("notification_action_1").text() mustBe empty
     }
 
-    "contains additional documents notification with redirect to SFUS link" in {
+    "contains additional documents acceptedNotification with redirect to SFUS link" in {
 
       viewWithFeatures.getElementById("notification_status_2").text() mustBe SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
       viewWithFeatures.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00"
