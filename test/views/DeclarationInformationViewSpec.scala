@@ -182,8 +182,8 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       "declaration is accepted" in {
 
-        val viewDeclarationLink = declarationInformationPageWithFeatures(submission, Seq(acceptedNotification))(request, messages).getElementById("view-declaration")
-
+        val viewDeclarationLink =
+          declarationInformationPageWithFeatures(submission, Seq(acceptedNotification))(request, messages).getElementById("view-declaration")
 
         viewDeclarationLink.text() mustBe "submissions.viewDeclaration"
         viewDeclarationLink must haveHref(controllers.routes.SubmissionsController.viewDeclaration(submission.uuid))
@@ -191,7 +191,8 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       "declaration is cleared" in {
 
-        val viewDeclarationLink = declarationInformationPageWithFeatures(submission, Seq(clearedNotification))(request, messages).getElementById("view-declaration")
+        val viewDeclarationLink =
+          declarationInformationPageWithFeatures(submission, Seq(clearedNotification))(request, messages).getElementById("view-declaration")
 
         viewDeclarationLink.text() mustBe "submissions.viewDeclaration"
         viewDeclarationLink must haveHref(controllers.routes.SubmissionsController.viewDeclaration(submission.uuid))
