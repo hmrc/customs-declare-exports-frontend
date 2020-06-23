@@ -110,7 +110,7 @@
             ).filterNot(_.value.content == Empty)
         ))
 
-        @if(notifications.exists(_.status == SubmissionStatus.ACCEPTED)) {
+        @if(notifications.headOption.map(_.status).exists(SubmissionStatus.acceptableStatuses.contains)) {
             @renderDeclarationLinks
         }
 
