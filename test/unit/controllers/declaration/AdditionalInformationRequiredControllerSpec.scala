@@ -101,6 +101,17 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
       "return 303 (SEE_OTHER)" when {
 
+        "Additional item(s) exist in cache" in {
+          withNewCaching(
+            aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId), withAdditionalInformation("code", "description"))))
+          )
+
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
+        }
+
         "user submits valid Yes answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
 

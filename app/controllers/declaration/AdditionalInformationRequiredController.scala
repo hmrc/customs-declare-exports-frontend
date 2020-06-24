@@ -44,7 +44,10 @@ class AdditionalInformationRequiredController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(additionalInfoReq(mode, itemId, previousAnswer(itemId).withSubmissionErrors()))
+    cachedItems(itemId) match {
+      case items if items.isEmpty => Ok(additionalInfoReq(mode, itemId, previousAnswer(itemId).withSubmissionErrors()))
+      case _                      => navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId))
+    }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

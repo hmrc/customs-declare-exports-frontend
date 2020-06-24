@@ -64,7 +64,7 @@ class AdditionalInformationRemoveController @Inject()(
               formData.answer match {
                 case YesNoAnswers.yes =>
                   removeAdditionalInformation(itemId, information)
-                    .map(_ => returnToSummary(mode, itemId))
+                    .map(declaration => afterRemove(mode, itemId, declaration))
                 case YesNoAnswers.no =>
                   Future.successful(returnToSummary(mode, itemId))
               }
@@ -74,6 +74,12 @@ class AdditionalInformationRemoveController @Inject()(
     }
 
   }
+
+  private def afterRemove(mode: Mode, itemId: String, declaration: Option[ExportsDeclaration])(implicit request: JourneyRequest[AnyContent]) =
+    declaration.flatMap(_.itemBy(itemId)).flatMap(_.additionalInformation).map(_.items) match {
+      case Some(items) if items.nonEmpty => returnToSummary(mode, itemId)
+      case _                             => navigator.continueTo(mode, routes.AdditionalInformationRequiredController.displayPage(_, itemId))
+    }
 
   private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     navigator.continueTo(mode, routes.AdditionalInformationController.displayPage(_, itemId))
