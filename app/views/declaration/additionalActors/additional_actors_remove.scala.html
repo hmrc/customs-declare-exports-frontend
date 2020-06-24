@@ -45,7 +45,7 @@
         rows = Seq(
           SummaryListRow(
               Key(Text(messages("declaration.additionalActors.table.party"))),
-              Value(Text(actor.partyType.getOrElse("")))
+              Value(Text(messages(s"declaration.partyType.${actor.partyType.getOrElse("")}")))
           ),
           SummaryListRow(
               Key(Text(messages("declaration.additionalActors.table.eori"))),
