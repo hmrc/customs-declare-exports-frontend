@@ -29,17 +29,17 @@ import org.jsoup.nodes.{Document, Element}
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.accepted_declaration_page
+import views.html.declaration.summary.submitted_declaration_page
 
-class AcceptedDeclarationPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   private val realMessages = validatedMessages
 
   private val notification = Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty, "payload")
 
-  val acceptedDeclarationPage = instanceOf[accepted_declaration_page]
+  val declarationPage = instanceOf[submitted_declaration_page]
   def createView(declaration: ExportsDeclaration = aDeclaration()): Document =
-    acceptedDeclarationPage(notification)(journeyRequest(declaration), realMessages)
+    declarationPage(Seq(notification))(journeyRequest(declaration), realMessages)
 
   def links(view: Document) = {
     val allLinks = view.getElementsByClass("govuk-link")
@@ -55,7 +55,7 @@ class AcceptedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expor
 
     "should display correct title" in {
 
-      createView().getElementById("title").text() mustBe realMessages("declaration.summary.accepted-header")
+      createView().getElementById("title").text() mustBe realMessages("declaration.summary.submitted-header")
     }
 
     "should display correct back link" in {

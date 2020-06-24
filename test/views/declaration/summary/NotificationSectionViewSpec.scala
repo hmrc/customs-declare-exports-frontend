@@ -24,15 +24,18 @@ import models.declaration.submissions.SubmissionStatus
 import services.cache.ExportsTestData
 import views.ViewDates
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.accepted_section
+import views.html.declaration.summary.notifications_section
 
-class AcceptedSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
-  private val notification = Notification("actionId", "SOME_MRN", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty, "payload")
+  private val acceptedNotification =
+    Notification("actionId", "SOME_MRN", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty, "payload")
+  private val clearedNotification =
+    Notification("actionId", "SOME_MRN", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.CLEARED, Seq.empty, "payload")
 
-  val section = instanceOf[accepted_section]
+  val section = instanceOf[notifications_section]
 
-  val view = section(notification)(messages, journeyRequest())
+  val view = section(Seq(acceptedNotification, clearedNotification))(messages, journeyRequest())
 
   "Accepted section" should {
 
@@ -46,8 +49,15 @@ class AcceptedSectionViewSpec extends UnitViewSpec with ExportsTestData with Inj
     "have Accepted" in {
 
       val row = view.getElementsByClass("accepted-row")
-      row must haveSummaryKey(messages("declaration.summary.accepted.date"))
-      row must haveSummaryValue(ViewDates.submissionDateTimeFormatter.format(notification.dateTimeIssuedInUK))
+      row must haveSummaryKey(acceptedNotification.displayStatus)
+      row must haveSummaryValue(ViewDates.submissionDateTimeFormatter.format(acceptedNotification.dateTimeIssuedInUK))
+    }
+
+    "have Cleared" in {
+
+      val row = view.getElementsByClass("cleared-row")
+      row must haveSummaryKey(clearedNotification.displayStatus)
+      row must haveSummaryValue(ViewDates.submissionDateTimeFormatter.format(clearedNotification.dateTimeIssuedInUK))
     }
   }
 

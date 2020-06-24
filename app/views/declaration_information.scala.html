@@ -48,7 +48,7 @@
 
 @renderDeclarationLinks = {
     <ul class="govuk-list">
-        @if(eadDocumentConfig.isEadEnabled) {
+        @if(notifications.headOption.map(_.status).exists(SubmissionStatus.acceptableStatuses.contains) && eadDocumentConfig.isEadEnabled) {
             @createEADLink
         }
         @viewDeclarationLink
@@ -73,7 +73,6 @@
     title = Title("submissions.declarationInformation"),
     backButton = Some(BackButton(messages("site.backToDeclarations"), routes.SubmissionsController.displayListOfSubmissions()))
 ) {
-    <div class = "govuk-grid-row">
         <h1 class=@gdsPageHeading>@messages("submissions.declarationInformation")</h1>
 
         <h2 class="govuk-heading-m">@messages("submissions.references")</h2>
@@ -110,9 +109,7 @@
             ).filterNot(_.value.content == Empty)
         ))
 
-        @if(notifications.headOption.map(_.status).exists(SubmissionStatus.acceptableStatuses.contains)) {
-            @renderDeclarationLinks
-        }
+        @renderDeclarationLinks
 
         @if(notifications.nonEmpty) {
             <div class="govuk-grid-column" id ="declarationHistory">
@@ -140,5 +137,4 @@
                 ))
             </div>
         }
-    </div>
 }

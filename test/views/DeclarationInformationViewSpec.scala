@@ -109,7 +109,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
   private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications)(request, messages)
   private val viewWithFeaturesNotAccepted =
-    declarationInformationPageWithFeatures(submission, Seq(rejectedNotification, additionalDocumentsNotification))(request, messages)
+    declarationInformationPageWithFeatures(submission, Seq(rejectedNotification))(request, messages)
 
   "Declaration information" should {
 
@@ -197,13 +197,13 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         viewDeclarationLink.text() mustBe "submissions.viewDeclaration"
         viewDeclarationLink must haveHref(controllers.routes.SubmissionsController.viewDeclaration(submission.uuid))
       }
-    }
-
-    "doesn't contain view declaration link" when {
 
       "declaration is not accepted" in {
 
-        viewWithFeaturesNotAccepted.getElementById("view-declaration") mustBe null
+        val viewDeclarationLink = viewWithFeaturesNotAccepted.getElementById("view-declaration")
+
+        viewDeclarationLink.text() mustBe "submissions.viewDeclaration"
+        viewDeclarationLink must haveHref(controllers.routes.SubmissionsController.viewDeclaration(submission.uuid))
       }
     }
 
