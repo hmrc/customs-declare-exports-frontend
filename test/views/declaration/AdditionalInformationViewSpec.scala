@@ -75,24 +75,6 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
         createView().getElementById("section-header").text() must include("supplementary.items")
       }
 
-      "display 'Back' button that links to 'Commodity measure' page" when {
-        "on the Standard journey" in {
-
-          val backButton = createView().getElementById("back-link")
-
-          backButton.text() mustBe messages(backCaption)
-          backButton.attr("href") mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId).url
-        }
-
-        "on the Simplified journey" in {
-
-          val backButton = createView().getElementById("back-link")
-
-          backButton.text() mustBe messages(backCaption)
-          backButton.attr("href") mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId).url
-        }
-      }
-
       "display 'Save and continue' button" in {
         val view: Document = createView()
         view must containElement("button").withName(SaveAndContinue.toString)
@@ -103,6 +85,26 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
         view must containElement("button").withName(SaveAndReturn.toString)
       }
 
+    }
+
+    onJourney(DeclarationType.STANDARD, DeclarationType.CLEARANCE, DeclarationType.SUPPLEMENTARY) { implicit request =>
+      "display 'Back' button that links to 'Commodity measure' page" in {
+
+        val backButton = createView().getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.CommodityMeasureController.displayPage(Mode.Normal, itemId).url
+      }
+    }
+
+    onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
+      "display 'Back' button that links to 'Package information' page" in {
+
+        val backButton = createView().getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId).url
+      }
     }
   }
 

@@ -18,6 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.AdditionalInformationRemoveController
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformation
 import models.Mode
 import models.declaration.AdditionalInformationData
@@ -59,7 +60,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration(withItems(itemWithAdditionalInformation)))
+    withNewCaching(aDeclaration(withItems(itemWithTwoAdditionalInformation)))
     await(controller.displayPage(Mode.Normal, itemId, additionalInformationId)(request))
     theResponseForm
   }
@@ -83,8 +84,10 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
   private val additionalInformationOther = AdditionalInformation("00401", "Some description")
   private val additionalInformationId = ListItem.createId(0, additionalInformation)
   val itemId = "itemId"
-  val itemWithAdditionalInformation =
+  val itemWithTwoAdditionalInformation =
     anItem(withItemId(itemId), withAdditionalInformation(additionalInformation, additionalInformationOther))
+  val itemWithSingleAdditionalInformation =
+    anItem(withItemId(itemId), withAdditionalInformation(additionalInformation))
 
   "AdditionalInformation Remove Controller" must {
 
@@ -92,7 +95,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
       "return 200 (OK)" that {
         "display page method is invoked" in {
 
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithAdditionalInformation)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalInformation)))
 
           val result = controller.displayPage(Mode.Normal, itemId, additionalInformationId)(getRequest())
 
@@ -106,7 +109,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
 
       "return 400 (BAD_REQUEST)" when {
         "user submits an invalid answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithAdditionalInformation)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalInformation)))
 
           val requestBody = Seq("yesNo" -> "invalid")
           val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -120,7 +123,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
 
         "requested document id invalid" in {
 
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithAdditionalInformation)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalInformation)))
 
           val result = controller.displayPage(Mode.Normal, itemId, "some-id")(getRequest())
 
@@ -128,8 +131,8 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
         }
 
-        "user submits 'Yes' answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithAdditionalInformation)))
+        "user submits 'Yes' answer when multiple additional information exists" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalInformation)))
 
           val requestBody = Seq("yesNo" -> "Yes")
           val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -140,8 +143,22 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
           theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation) mustBe Some(AdditionalInformationData(Seq(additionalInformationOther)))
         }
 
+        "user submits 'Yes' answer when single additional information exists" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithSingleAdditionalInformation)))
+
+          val requestBody = Seq("yesNo" -> "Yes")
+          val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId)
+
+          theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation) mustBe Some(
+            AdditionalInformationData(Some(YesNoAnswer(YesNoAnswers.yes)), Seq.empty)
+          )
+        }
+
         "user submits 'No' answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithAdditionalInformation)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalInformation)))
 
           val requestBody = Seq("yesNo" -> "No")
           val result = controller.submitForm(Mode.Normal, itemId, additionalInformationId)(postRequestAsFormUrlEncoded(requestBody: _*))
