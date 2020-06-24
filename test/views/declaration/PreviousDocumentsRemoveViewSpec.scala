@@ -69,6 +69,13 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
         createView().getElementById("section-header").text() mustBe "declaration.items"
       }
 
+      "display same page title as header" in {
+
+        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+
+        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      }
+
       "display header" in {
 
         val view = createView(request = request)
