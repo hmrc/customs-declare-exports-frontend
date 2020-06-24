@@ -70,7 +70,7 @@ class AdditionalActorsRemoveViewSpec extends UnitViewSpec with ExportsTestData w
         val view = createView()
 
         view.select("dl>div:nth-child(1)>dt").text() mustBe messages("declaration.additionalActors.table.party")
-        view.select("dl>div:nth-child(1)>dd").text() mustBe "MF"
+        view.select("dl>div:nth-child(1)>dd").text() mustBe "declaration.partyType.MF"
         view.select("dl>div:nth-child(2)>dt").text() mustBe messages("declaration.additionalActors.table.eori")
         view.select("dl>div:nth-child(2)>dd").text() mustBe "GB123456789000"
       }
