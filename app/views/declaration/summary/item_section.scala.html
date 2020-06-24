@@ -28,10 +28,10 @@
         supporting_documents: supporting_documents
 )
 
-@(mode: Mode, item: ExportItem)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, item: ExportItem, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print) None
+    if(mode == Mode.Print || !actionsEnabled) None
     else Some(action)
 }
 
@@ -304,18 +304,18 @@
 
 <div class="govuk-section-break">
     @item.packageInformation.map(packageInformation =>
-        package_information(mode, item.id, item.sequenceId, packageInformation)
+        package_information(mode, item.id, item.sequenceId, packageInformation, actionsEnabled)
     )
 </div>
 
 <div class="govuk-section-break">
     @item.additionalInformation.map(additionalInformation =>
-        union_and_national_codes(mode, item.id, item.sequenceId, additionalInformation.items)
+        union_and_national_codes(mode, item.id, item.sequenceId, additionalInformation.items, actionsEnabled)
     )
 </div>
 
 <div class="govuk-section-break">
     @item.documentsProducedData.map(documentsProducedData =>
-        supporting_documents(mode, item.id, item.sequenceId, documentsProducedData.documents)
+        supporting_documents(mode, item.id, item.sequenceId, documentsProducedData.documents, actionsEnabled)
     )
 </div>

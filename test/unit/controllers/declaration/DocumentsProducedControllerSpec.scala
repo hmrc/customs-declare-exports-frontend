@@ -133,7 +133,7 @@ class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
       }
     }
   }

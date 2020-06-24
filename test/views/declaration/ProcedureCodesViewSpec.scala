@@ -79,7 +79,7 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
       val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe "site.back"
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal))
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal))
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {

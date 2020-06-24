@@ -1301,8 +1301,8 @@ supplementary.continue.mandatory = You must add at least one item
 supplementary.startNewDec = Start a new declaration
 
 declaration.itemsAdd.title = Add declaration item 1
-declaration.itemsAdd.titleWithItem = You have added 1 item
-declaration.itemsAdd.titleWithItems = Declaration item {0} added
+declaration.itemsAdd.titleWithItem = You have declared {0} item
+declaration.itemsAdd.titleWithItems = You have declared {0} items
 declaration.itemsAdd.title.hint = A declaration can have multiple items. Each item is identified by a commodity code, which explains what type of goods are being added to the declaration, and a Union Customs Code procedure code.
 declaration.itemsAdd.change.hint = Change item {0}
 declaration.itemsAdd.remove.hint = Remove item {0}
@@ -1310,7 +1310,10 @@ declaration.itemsSummary.itemNumber = Declaration item
 declaration.itemsSummary.procedureCode = Procedure code
 declaration.itemsSummary.commodityCode = Commodity code
 declaration.itemsSummary.noOfPackages = Number of packages
+declaration.itemsSummary.addAnotherItem.question = Do you need to declare another item?
+declaration.itemsSummary.addAnotherItem.error.empty = Select yes if you need to add more items to this declaration
 declaration.itemsSummary.item.incorrect = Item {0} does not contain all mandatory data
+declaration.itemsRemove.title = Are you sure you want to remove this item?
 
 declaration.seal.title = What is the security seal for container {0}?
 declaration.seal.section = Transport details

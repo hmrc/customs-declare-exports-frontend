@@ -241,11 +241,17 @@ POST        /nature-of-transaction               controllers.declaration.NatureO
 
 # Items Summary
 
-GET         /export-items                        controllers.declaration.ItemsSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /add-declaration-item                controllers.declaration.ItemsSummaryController.displayAddItemPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /export-items                        controllers.declaration.ItemsSummaryController.submit(mode: models.Mode ?= models.Mode.Normal)
+POST        /add-declaration-item                controllers.declaration.ItemsSummaryController.addFirstItem(mode: models.Mode ?= models.Mode.Normal)
 
-GET         /export-items/:itemId/remove         controllers.declaration.ItemsSummaryController.removeItem(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /declaration-items-list              controllers.declaration.ItemsSummaryController.displayItemsSummaryPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /declaration-items-list              controllers.declaration.ItemsSummaryController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /remove-declaration-item/:itemId     controllers.declaration.ItemsSummaryController.displayRemoveItemConfirmationPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /remove-declaration-item/:itemId     controllers.declaration.ItemsSummaryController.removeItem(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Procedure codes
 

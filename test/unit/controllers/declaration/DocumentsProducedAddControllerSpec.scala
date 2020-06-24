@@ -171,7 +171,7 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage()
         verifyPageInvoked(0)
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.documentsProducedData)

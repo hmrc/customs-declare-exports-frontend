@@ -16,6 +16,7 @@
 
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
+@import forms.common.YesNoAnswer
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -25,45 +26,28 @@
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
 
-@this(govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukTable : GovukTable,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        tariffDetails: tariffDetails,
-        saveAndContinue: saveAndContinue,
-        addButton: addButton,
-        removeButton: removeButton,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@this(
+  govukLayout: gdsMainTemplate,
+  govukFieldset: GovukFieldset,
+  govukTable : GovukTable,
+  errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
+  addAnotherQuestion: addAnotherQuestion,
+  saveButtons: saveButtons,
+  removeButton: removeButton,
+  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
-@(mode: Mode, items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[YesNoAnswer], items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
 @titleMessage = @{
-    if(items.isEmpty) { messages("declaration.itemsAdd.title") }
-    else { messages("declaration.itemsAdd.titleWithItems", items.length) }
-}
-
-@pageHint = {
-    <span class="govuk-hint">
-        @messages("declaration.itemsAdd.title.hint")
-    </span>
+  if(items.size == 1) { messages("declaration.itemsAdd.titleWithItem", items.length) }
+  else { messages("declaration.itemsAdd.titleWithItems", items.length) }
 }
 
 @addButtonMessage = @{
     if(items.isEmpty) { messages("site.add.item") }
     else { messages("site.add.anotherItem") }
-}
-
-@itemsSaveButtons(items: List[ExportItem]) = {
-    @if(items.nonEmpty) {
-        @saveAndContinue("site.save_and_continue")
-    }
-    <p class="govuk-body">
-        @saveAsDraft("site.save_and_come_back_later")
-    </p>
 }
 
 @changeLink(item: ExportItem) = {
@@ -128,7 +112,7 @@
                     ),
                     TableRow(
                         content = HtmlContent(removeButton(
-                            href = Some(routes.ItemsSummaryController.removeItem(mode, item.id).url),
+                            href = Some(routes.ItemsSummaryController.displayRemoveItemConfirmationPage(mode, item.id).url),
                             hiddenLabel = Some(messages("declaration.itemsAdd.remove.hint", item.sequenceId))
                         )),
                         attributes = Map("id" -> s"item_$index--remove")
@@ -141,27 +125,25 @@
 
 @govukLayout(
     title = Title(titleMessage, "supplementary.items"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExportItem, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExportItem, mode))),
+    useCustomContentWidth = true) {
 
     @formHelper(action = routes.ItemsSummaryController.submit(mode), 'autoComplete -> "off") {
 
-        @errorSummary(itemsErrors)
+        @errorSummary(itemsErrors ++ form.errors)
 
         @sectionHeader(messages("supplementary.items"))
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages(titleMessage)),
+                content = Text(titleMessage),
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                pageHint,
                 itemsTable,
-                addButton(label = addButtonMessage, hiddenLabel = Some(addButtonMessage)),
-                itemsSaveButtons(items)
+                addAnotherQuestion("declaration.itemsSummary.addAnotherItem.question", form),
+                saveButtons()
             ))
         ))
     }
 }
-
-

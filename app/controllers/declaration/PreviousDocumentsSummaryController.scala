@@ -56,7 +56,7 @@ class PreviousDocumentsSummaryController @Inject()(
         validAnswer =>
           validAnswer.answer match {
             case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage)
-            case YesNoAnswers.no  => navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayPage)
+            case YesNoAnswers.no  => navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
         }
       )
   }

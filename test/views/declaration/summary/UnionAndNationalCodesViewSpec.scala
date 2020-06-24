@@ -25,7 +25,9 @@ import views.html.declaration.summary.union_and_national_codes
 
 class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
-  val section = instanceOf[union_and_national_codes]
+  private val section = instanceOf[union_and_national_codes]
+
+  private val data = Seq(AdditionalInformation("12345", "description1"), AdditionalInformation("23456", "description2"))
 
   "Union and national codes" should {
 
@@ -47,7 +49,6 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
 
     "display additional information with change buttons" in {
 
-      val data = Seq(AdditionalInformation("12345", "description1"), AdditionalInformation("23456", "description2"))
       val view = section(Mode.Normal, "itemId", 1, data)(messages, journeyRequest())
       val table = view.getElementById("additional-information-1-table")
 
@@ -71,6 +72,63 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row2ChangeLink must haveHref(controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId"))
       row2ChangeLink.text() mustBe messages("site.change") + messages("declaration.summary.items.item.additionalInformation.change", 1)
+    }
+
+    "display additional information without change buttons" when {
+
+      "mode is Print" in {
+
+        val view = section(Mode.Print, "itemId", 1, data)(messages, journeyRequest())
+        val table = view.getElementById("additional-information-1-table")
+
+        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalInformation")
+
+        table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.additionalInformation.code")
+        table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages(
+          "declaration.summary.items.item.additionalInformation.information"
+        )
+
+        val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+        row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "12345"
+        row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description1"
+        val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2)
+        row1ChangeLink.attr("href") mustBe empty
+        row1ChangeLink.text() mustBe empty
+
+        val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+        row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "23456"
+        row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description2"
+        val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2)
+        row2ChangeLink.attr("href") mustBe empty
+        row2ChangeLink.text() mustBe empty
+      }
+
+      "actionsEnabled flag is false" in {
+
+        val view = section(Mode.Normal, "itemId", 1, data, actionsEnabled = false)(messages, journeyRequest())
+        val table = view.getElementById("additional-information-1-table")
+
+        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalInformation")
+
+        table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.additionalInformation.code")
+        table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages(
+          "declaration.summary.items.item.additionalInformation.information"
+        )
+
+        val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+        row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "12345"
+        row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description1"
+        val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2)
+        row1ChangeLink.attr("href") mustBe empty
+        row1ChangeLink.text() mustBe empty
+
+        val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+        row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "23456"
+        row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description2"
+        val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2)
+        row2ChangeLink.attr("href") mustBe empty
+        row2ChangeLink.text() mustBe empty
+      }
     }
   }
 }

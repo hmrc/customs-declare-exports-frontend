@@ -17,197 +17,422 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ItemsSummaryController
-import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation}
 import models.declaration.ExportItem
-import models.{DeclarationType, Mode}
+import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.ArgumentMatchers.{any, anyString}
+import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalatest.OptionValues
-import play.api.data.Form
-import play.api.mvc.{AnyContentAsEmpty, Request}
+import org.scalatest.concurrent.ScalaFutures
+import play.api.data.{Form, FormError}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.cache.ExportItemIdGeneratorService
-import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
-import views.html.declaration.items_summary
+import unit.base.ControllerWithoutFormSpec
+import views.html.declaration.declarationitems.{items_add_item, items_remove_item, items_summary}
 
-class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues {
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
-  val mockItemsSummaryPage = mock[items_summary]
-  val mockExportIdGeneratorService = mock[ExportItemIdGeneratorService]
+class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues with ScalaFutures {
 
-  val controller = new ItemsSummaryController(
+  private val addItemPage = mock[items_add_item]
+  private val itemsSummaryPage = mock[items_summary]
+  private val removeItemPage = mock[items_remove_item]
+  private val mockExportIdGeneratorService = mock[ExportItemIdGeneratorService]
+
+  private val controller = new ItemsSummaryController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
     mockExportIdGeneratorService,
     stubMessagesControllerComponents(),
-    mockItemsSummaryPage
+    addItemPage,
+    itemsSummaryPage,
+    removeItemPage
   )(ec)
 
-  val itemId = "ItemId12345"
+  private val itemId = "ItemId12345"
+  private val exportItem: ExportItem = anItem(
+    withItemId(itemId),
+    withProcedureCodes(),
+    withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
+    withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
+    withStatisticalValue(),
+    withPackageInformation(),
+    withAdditionalInformation("code", "description"),
+    withCommodityMeasure(CommodityMeasure(None, Some("100"), Some("100")))
+  )
 
-  def theResponseForm: List[ExportItem] = {
+  private def formPassedToItemsSummaryView: Form[YesNoAnswer] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+    verify(itemsSummaryPage).apply(any(), captor.capture(), any(), any())(any(), any())
+    captor.getValue
+  }
+
+  private def itemsPassedToItemsSummaryView: List[ExportItem] = {
     val captor = ArgumentCaptor.forClass(classOf[List[ExportItem]])
-    verify(mockItemsSummaryPage).apply(any(), captor.capture(), any())(any(), any())
+    verify(itemsSummaryPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    captor.getValue
+  }
+
+  private def itemsErrorsPassedToItemsSummaryView: Seq[FormError] = {
+    val captor = ArgumentCaptor.forClass(classOf[Seq[FormError]])
+    verify(itemsSummaryPage).apply(any(), any(), any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  private def itemPassedToRemoveItemView: ExportItem = {
+    val captor = ArgumentCaptor.forClass(classOf[ExportItem])
+    verify(removeItemPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(mockItemsSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(addItemPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(itemsSummaryPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(removeItemPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockExportIdGeneratorService.generateItemId()).thenReturn(itemId)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockItemsSummaryPage)
-    reset(mockExportIdGeneratorService)
+    reset(addItemPage, itemsSummaryPage, removeItemPage, mockExportIdGeneratorService, mockExportsCacheService)
     super.afterEach()
   }
 
-  "Display" should {
+  "displayAddItemPage" should {
 
-    "return 200 (OK)" when {
+    onEveryDeclarationJourney() { request =>
+      "call cache" in {
 
-      "display page method is invoked" in {
+        withNewCaching(aDeclaration(withType(request.declarationType)))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        controller.displayAddItemPage(Mode.Normal)(getRequest()).futureValue
 
-        status(result) mustBe OK
-        verify(mockItemsSummaryPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockExportsCacheService).get(anyString())(any())
+      }
 
-        theResponseForm mustBe empty
+      "return 200 (OK)" when {
+        "there is no item in cache" in {
+
+          withNewCaching(aDeclaration(withType(request.declarationType)))
+
+          val result = controller.displayAddItemPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          verify(addItemPage).apply(any())(any(), any())
+        }
+      }
+
+      "return 303 (SEE_OTHER) and redirect to displayItemsSummaryPage" when {
+        "there are items in cache" in {
+
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+          withNewCaching(cachedData)
+
+          val result = controller.displayAddItemPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+        }
       }
     }
   }
 
-  "Submit" when {
-    "on Supplementary Journey" should {
+  "addFirstItem" should {
 
-      "return 303 (SEE_OTHER) and redirect to Procedure Codes page" when {
-        "use add new item" in {
-          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(Add.toString -> ""))
+    onEveryDeclarationJourney() { request =>
+      "call Navigator" in {
+
+        withNewCaching(aDeclaration(withType(request.declarationType)))
+
+        controller.addFirstItem(Mode.Normal)(postRequest(Json.obj())).futureValue
+
+        verify(navigator).continueTo(any[Mode], any(), any[Boolean])(any(), any())
+      }
+
+      "return 303 (SEE_OTHER) and redirect to Procedure Codes page" in {
+
+        withNewCaching(aDeclaration(withType(request.declarationType)))
+
+        val result = controller.addFirstItem(Mode.Normal)(postRequest(Json.obj()))
+
+        status(result) mustBe SEE_OTHER
+        thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemId)
+      }
+    }
+  }
+
+  "displayItemsSummaryPage" should {
+
+    onEveryDeclarationJourney() { request =>
+      "call cache" in {
+
+        withNewCaching(aDeclaration(withType(request.declarationType)))
+
+        controller.displayItemsSummaryPage(Mode.Normal)(getRequest()).futureValue
+
+        verify(mockExportsCacheService).get(anyString())(any())
+      }
+
+      "return 200 (OK)" when {
+        "there are items in cache" in {
+
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+          withNewCaching(cachedData)
+
+          val result = controller.displayItemsSummaryPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          verify(itemsSummaryPage).apply(any(), any(), any(), any())(any(), any())
+          itemsPassedToItemsSummaryView mustBe Seq(exportItem)
+        }
+      }
+
+      "return 303 (SEE_OTHER) and redirect to displayAddItemPage" when {
+        "there is no item in cache" in {
+
+          withNewCaching(aDeclaration(withType(request.declarationType)))
+
+          val result = controller.displayItemsSummaryPage(Mode.Normal)(getRequest())
 
           status(result) mustBe SEE_OTHER
-          verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
+          thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayAddItemPage(Mode.Normal)
+        }
+      }
+    }
+  }
+
+  "submit" when {
+
+    onEveryDeclarationJourney() { request =>
+      "user wants to add another item" should {
+
+        "call Navigator" in {
+
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+          withNewCaching(cachedData)
+          val answerForm = Json.obj("yesNo" -> YesNoAnswers.yes)
+
+          controller.submit(Mode.Normal)(postRequest(answerForm)).futureValue
+
+          verify(navigator).continueTo(any[Mode], any(), any[Boolean])(any(), any())
+        }
+
+        "return 303 (SEE_OTHER) and redirect to Procedure Codes page" in {
+
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+          withNewCaching(cachedData)
+          val answerForm = Json.obj("yesNo" -> YesNoAnswers.yes)
+
+          val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+
+          status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemId)
         }
       }
 
-      "return 303 (SEE_OTHER) and continue" when {
-        "user save and continues" in {
-          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
+      "user does not want to add another item" should {
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
-            .displayPage(Mode.Normal)
+        "call Navigator" in {
+
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+          withNewCaching(cachedData)
+          val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
+
+          controller.submit(Mode.Normal)(postRequest(answerForm)).futureValue
+
+          verify(navigator).continueTo(any[Mode], any(), any[Boolean])(any(), any())
         }
 
-        "user save and returns" in {
-          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndReturn.toString -> ""))
+        "return 303 (SEE_OTHER) and redirect to Warehouse Identification page" in {
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
-            .displayPage(Mode.Normal)
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+          withNewCaching(cachedData)
+          val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
+
+          val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
         }
       }
 
       "return 400 (BAD_REQUEST)" when {
 
-        "there is not completed item in the cache" in {
+        "there is no answer from user" in {
 
-          val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(anItem(withItemId("id"))))
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
           withNewCaching(cachedData)
 
-          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
+          val result = controller.submit(Mode.Normal)(postRequest(Json.obj()))
 
           status(result) mustBe BAD_REQUEST
-          verify(mockItemsSummaryPage).apply(any(), any(), any())(any(), any())
-        }
-      }
-    }
-
-    "on Simplified Journey" should {
-
-      val simplifiedJourneyItem = withItem(
-        anItem(
-          withItemId("id"),
-          withProcedureCodes(),
-          withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
-          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
-          withStatisticalValue(),
-          withPackageInformation(),
-          withAdditionalInformation("code", "description")
-        )
-      )
-
-      "return 303 (SEE_OTHER) and redirect to Procedure Codes page" when {
-        "use add new item" in {
-          val cachedData = aDeclaration(withType(DeclarationType.SIMPLIFIED), simplifiedJourneyItem)
-          withNewCaching(cachedData)
-          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(Add.toString -> ""))
-
-          status(result) mustBe SEE_OTHER
-          verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
-          thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemId)
-        }
-      }
-
-      "return 303 (SEE_OTHER) and continue" when {
-        "user save and continues" in {
-
-          val cachedData = aDeclaration(withType(DeclarationType.SIMPLIFIED), simplifiedJourneyItem)
-          withNewCaching(cachedData)
-          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
-            .displayPage(Mode.Normal)
+          formPassedToItemsSummaryView.errors mustNot be(empty)
         }
 
-        "user save and returns" in {
+        "there is incomplete item in the cache" in {
 
-          val cachedData = aDeclaration(withType(DeclarationType.SIMPLIFIED), simplifiedJourneyItem)
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(anItem(withItemId("id"))))
           withNewCaching(cachedData)
-          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndReturn.toString -> ""))
+          val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
-            .displayPage(Mode.Normal)
+          val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+
+          status(result) mustBe BAD_REQUEST
+          itemsErrorsPassedToItemsSummaryView mustNot be(empty)
         }
       }
     }
   }
-  "Remove" should {
 
-    "return 303 (SEE_OTHER) and redirect to the same page during removing" when {
+  "displayRemoveItemConfirmationPage" should {
 
-      "there is no item in declaration with requested Id" in {
+    onEveryDeclarationJourney() { request =>
+      "return 200 (OK)" in {
 
-        val result = controller.removeItem(Mode.Normal, itemId)(getRequest())
+        val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+        withNewCaching(cachedData)
 
-        status(result) mustBe SEE_OTHER
-        verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
+        val result = controller.displayRemoveItemConfirmationPage(Mode.Normal, itemId)(getRequest())
+
+        status(result) mustBe OK
+        verify(removeItemPage).apply(any(), any(), any())(any(), any())
+        itemPassedToRemoveItemView mustBe exportItem
       }
 
-      "user successfully remove item" in {
+      "return 303 (SEE_OTHER) and redirect to Items Summary page" when {
+        "provided with itemId not matching any Item in cache" in {
 
-        val cachedItem = ExportItem(itemId)
-        val secondItem = ExportItem("123654")
-        withNewCaching(aDeclaration(withItem(cachedItem), withItem(secondItem)))
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+          withNewCaching(cachedData)
 
-        val result = controller.removeItem(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayRemoveItemConfirmationPage(Mode.Normal, "someItemId")(getRequest())
 
-        status(result) mustBe SEE_OTHER
-        verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
-        verify(mockExportsCacheService, times(1))
-          .update(meq(aDeclaration(withItem(secondItem.copy(sequenceId = secondItem.sequenceId + 1)))))(any())
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+        }
+      }
+    }
+  }
+
+  "removeItem" when {
+
+    val cachedItem = ExportItem(itemId)
+    val secondItem = ExportItem("123654")
+
+    def declarationPassedToUpdateCache: ExportsDeclaration = {
+      val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
+      verify(mockExportsCacheService).update(captor.capture())(any())
+      captor.getValue
+    }
+
+    onEveryDeclarationJourney() { request =>
+      "user wants to remove an Item" when {
+
+        val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.yes)
+
+        "there is no Item in declaration with requested Id" should {
+
+          "not call ExportsCacheService update method" in {
+
+            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+
+            controller.removeItem(Mode.Normal, "someId123")(postRequest(removeItemForm)).futureValue
+
+            verify(mockExportsCacheService, never()).update(any())(any())
+          }
+
+          "return 303 (SEE_OTHER) and redirect to Items Summary page" in {
+
+            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+
+            val result = controller.removeItem(Mode.Normal, "someId123")(postRequest(removeItemForm))
+
+            status(result) mustBe SEE_OTHER
+            thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+          }
+        }
+
+        "there is Item in declaration with requested Id" should {
+
+          "remove the Item from cache" in {
+
+            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+
+            controller.removeItem(Mode.Normal, itemId)(postRequest(removeItemForm)).futureValue
+
+            val items = declarationPassedToUpdateCache.items
+            items.size mustBe 1
+            items must contain(secondItem.copy(sequenceId = secondItem.sequenceId + 1))
+          }
+
+          "return 303 (SEE_OTHER) and redirect to Items Summary page" in {
+
+            withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+
+            val result = controller.removeItem(Mode.Normal, itemId)(postRequest(removeItemForm))
+
+            status(result) mustBe SEE_OTHER
+            thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+          }
+        }
+      }
+
+      "user does not want to remove an Item" should {
+
+        val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.no)
+
+        "not call ExportsCacheService update method" in {
+
+          withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+
+          controller.removeItem(Mode.Normal, itemId)(postRequest(removeItemForm)).futureValue
+
+          verify(mockExportsCacheService, never()).update(any())(any())
+        }
+
+        "redirect to Items Summary page" in {
+
+          withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+
+          val result = controller.removeItem(Mode.Normal, itemId)(postRequest(removeItemForm))
+
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+        }
+      }
+
+      "provided with empty form" should {
+
+        "return 400 (BAD_REQUEST)" in {
+
+          withNewCaching(aDeclaration(withType(request.declarationType), withItem(cachedItem), withItem(secondItem)))
+          val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
+
+          val result = controller.removeItem(Mode.Normal, itemId)(postRequest(incorrectRemoveItemForm))
+
+          status(result) mustBe BAD_REQUEST
+          verify(removeItemPage).apply(any(), any(), any())(any(), any())
+        }
+
+        "throw IllegalStateException if the Item has already been removed" in {
+
+          withNewCaching(aDeclaration(withType(request.declarationType)))
+          val incorrectRemoveItemForm = Json.obj("yesNo" -> "")
+
+          intercept[IllegalStateException] {
+            Await.result(controller.removeItem(Mode.Normal, itemId)(postRequest(incorrectRemoveItemForm)), 5.seconds)
+          }
+        }
       }
     }
   }

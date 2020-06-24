@@ -29,11 +29,17 @@
         summaryList: summary_list
 )
 
-@(mode: Mode, itemId: String, itemNo: Int,  additionalInformation: Seq[AdditionalInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(
+  mode: Mode,
+  itemId: String,
+  itemNo: Int,
+  additionalInformation: Seq[AdditionalInformation],
+  actionsEnabled: Boolean = true
+)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @change(information: AdditionalInformation) = {
     @{
-        if(mode == Mode.Print) ""
+        if(mode == Mode.Print || !actionsEnabled) ""
         else changeLink(
             messages("site.change"),
             Some(messages("declaration.summary.items.item.additionalInformation.change", itemNo)),
@@ -43,23 +49,12 @@
 }
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print) None
+    if(mode == Mode.Print || !actionsEnabled) None
     else Some(action)
 }
 
 @if(additionalInformation.nonEmpty){
     @govukTable(Table(
-        rows = additionalInformation.map(information =>
-            Seq(
-                TableRow(
-                    content = Text(information.code)
-                ),
-                TableRow(
-                    content = Text(information.description)
-                ),
-                TableCell.changeLink(change(information))
-            )
-        ),
         head = Some(List(
             HeadCell(
                 content = Text(messages("declaration.summary.items.item.additionalInformation.code"))
@@ -71,6 +66,17 @@
                 content = Empty
             )
         )),
+        rows = additionalInformation.map(information =>
+            Seq(
+                TableRow(
+                    content = Text(information.code)
+                ),
+                TableRow(
+                    content = Text(information.description)
+                ),
+                TableCell.changeLink(change(information))
+            )
+        ),
         caption = Some(messages("declaration.summary.items.item.additionalInformation")),
         classes = "govuk-table govuk-!-margin-bottom-3",
         attributes = Map("id" -> s"additional-information-$itemNo-table")

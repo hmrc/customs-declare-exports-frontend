@@ -16,19 +16,22 @@
 
 package controllers.declaration
 
+import akka.parboiled2.RuleTrace.AnyOf
+import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.{Add, FormAction, SaveAndContinue, SaveAndReturn}
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
-import models.Mode
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
-import play.api.data.FormError
+import models.{ExportsDeclaration, Mode}
+import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.{ExportItemIdGeneratorService, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.items_summary
+import views.html.declaration.declarationitems.{items_add_item, items_remove_item, items_summary}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,33 +42,55 @@ class ItemsSummaryController @Inject()(
   navigator: Navigator,
   exportItemIdGeneratorService: ExportItemIdGeneratorService,
   mcc: MessagesControllerComponents,
-  itemsSummaryPage: items_summary
+  addItemPage: items_add_item,
+  itemsSummaryPage: items_summary,
+  removeItemPage: items_remove_item
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(itemsSummaryPage(mode, request.cacheModel.items.toList))
+  private def itemSummaryForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsSummary.addAnotherItem.error.empty")
+  private def removeItemForm: Form[YesNoAnswer] = YesNoAnswer.form()
+
+  def displayAddItemPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    if (request.cacheModel.items.isEmpty)
+      Ok(addItemPage(mode))
+    else
+      navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage)
+  }
+
+  def addFirstItem(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    createNewItemInCache()
+      .map(newItem => navigator.continueTo(mode, controllers.declaration.routes.ProcedureCodesController.displayPage(_, newItem.id)))
+  }
+
+  def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    if (request.cacheModel.items.isEmpty)
+      navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
+    else
+      Ok(itemsSummaryPage(mode, itemSummaryForm, request.cacheModel.items.toList))
   }
 
   //TODO Should we add validation for POST without items?
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val action = FormAction.bindFromRequest()
-    val incorrectItems = buildIncorrectItemsErrors(request)
+    val incorrectItems: Seq[FormError] = buildIncorrectItemsErrors(request)
 
-    action match {
-      case Add =>
-        val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
-        exportsCacheService
-          .update(
-            request.cacheModel
-              .copy(items = request.cacheModel.items :+ newItem.copy(sequenceId = request.cacheModel.items.size + 1))
-          )
-          .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ProcedureCodesController.displayPage(_, newItem.id)))
-      case SaveAndContinue if incorrectItems.nonEmpty =>
-        Future.successful(BadRequest(itemsSummaryPage(mode, request.cacheModel.items.toList, incorrectItems)))
-      case SaveAndReturn | SaveAndContinue =>
-        Future.successful(navigator.continueTo(mode, controllers.declaration.routes.WarehouseIdentificationController.displayPage))
-    }
+    itemSummaryForm
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(itemsSummaryPage(mode, formWithErrors, request.cacheModel.items.toList, incorrectItems))),
+        validYesNo =>
+          validYesNo.answer match {
+            case YesNoAnswers.yes =>
+              createNewItemInCache()
+                .map(newItem => navigator.continueTo(mode, controllers.declaration.routes.ProcedureCodesController.displayPage(_, newItem.id)))
+
+            case YesNoAnswers.no if incorrectItems.nonEmpty =>
+              Future.successful(BadRequest(itemsSummaryPage(mode, itemSummaryForm.fill(validYesNo), request.cacheModel.items.toList, incorrectItems)))
+
+            case YesNoAnswers.no =>
+              Future.successful(navigator.continueTo(mode, controllers.declaration.routes.WarehouseIdentificationController.displayPage))
+        }
+      )
   }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =
@@ -74,18 +99,54 @@ class ItemsSummaryController @Inject()(
         FormError("item_" + index, "declaration.itemsSummary.item.incorrect", Seq(item.sequenceId.toString))
     }
 
+  private def createNewItemInCache()(implicit request: JourneyRequest[AnyContent]): Future[ExportItem] = {
+    val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
+    exportsCacheService
+      .update(
+        request.cacheModel
+          .copy(items = request.cacheModel.items :+ newItem.copy(sequenceId = request.cacheModel.items.size + 1))
+      )
+      .map(_ => newItem)
+  }
+
+  def displayRemoveItemConfirmationPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.itemBy(itemId) match {
+      case Some(item) => Ok(removeItemPage(mode, removeItemForm, item))
+      case None       => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
+    }
+  }
+
   def removeItem(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    removeItemForm
+      .bindFromRequest()
+      .fold(
+        formWithErrors =>
+          Future.successful(request.cacheModel.itemBy(itemId) match {
+            case Some(item) => BadRequest(removeItemPage(mode, formWithErrors, item))
+            case None       => throw new IllegalStateException(s"Could not find ExportItem with id = [$itemId] to remove")
+          }),
+        validYesNo =>
+          validYesNo.answer match {
+            case YesNoAnswers.yes =>
+              removeItemFromCache(itemId).map { _ =>
+                navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
+              }
+
+            case YesNoAnswers.no =>
+              Future.successful(navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage))
+        }
+      )
+  }
+
+  private def removeItemFromCache(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     request.cacheModel.itemBy(itemId) match {
       case Some(itemToDelete) =>
         val updatedItems =
-          request.cacheModel.copy(items = request.cacheModel.items.filterNot(_.equals(itemToDelete))).items.zipWithIndex.map {
+          request.cacheModel.items.filterNot(_ == itemToDelete).zipWithIndex.map {
             case (item, index) => item.copy(sequenceId = index + 1)
           }
-        exportsCacheService.update(request.cacheModel.copy(items = updatedItems)).map { _ =>
-          navigator.continueTo(mode, routes.ItemsSummaryController.displayPage)
-        }
-      case _ =>
-        Future.successful(Redirect(routes.ItemsSummaryController.displayPage(mode)))
+        exportsCacheService.update(request.cacheModel.copy(items = updatedItems))
+
+      case None => Future.successful(None)
     }
-  }
 }

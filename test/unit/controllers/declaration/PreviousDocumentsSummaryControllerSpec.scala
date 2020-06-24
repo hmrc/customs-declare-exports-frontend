@@ -135,7 +135,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayAddItemPage()
       }
     }
   }

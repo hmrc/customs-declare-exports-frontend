@@ -29,16 +29,22 @@
         summaryList: summary_list
 )
 
-@(mode: Mode, itemId: String, itemNo: Int, packageInformation: Seq[PackageInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(
+  mode: Mode,
+  itemId: String,
+  itemNo: Int,
+  packageInformation: Seq[PackageInformation],
+  actionsEnabled: Boolean = true
+)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print) None
+    if(mode == Mode.Print || !actionsEnabled) None
     else Some(action)
 }
 
 @change(information: PackageInformation) = {
     @{
-        if(mode == Mode.Print) ""
+        if(mode == Mode.Print || !actionsEnabled) ""
         else changeLink(
             messages("site.change"),
             Some(messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)),
@@ -49,20 +55,6 @@
 
 @if(packageInformation.nonEmpty) {
     @govukTable(Table(
-        rows = packageInformation.map(information =>
-            Seq(
-                TableRow(
-                    content = Text(information.typesOfPackagesText.getOrElse(""))
-                ),
-                TableRow(
-                    content = Text(information.numberOfPackages.map(_.toString).getOrElse(""))
-                ),
-                TableRow(
-                    content = Text(information.shippingMarks.getOrElse(""))
-                ),
-                TableCell.changeLink(change(information))
-            )
-        ),
         head = Some(List(
             HeadCell(
                 content = Text(messages("declaration.summary.items.item.packageInformation.type"))
@@ -77,6 +69,21 @@
                 content = Empty
             )
         )),
+        rows = packageInformation.map(information =>
+            Seq(
+                TableRow(
+                    content = Text(information.typesOfPackagesText.getOrElse(""))
+                ),
+                TableRow(
+                    content = Text(information.numberOfPackages.map(_.toString).getOrElse(""))
+                ),
+                TableRow(
+                    content = Text(information.shippingMarks.getOrElse(""))
+                ),
+                TableCell.changeLink(change(information))
+            )
+        ),
+
         caption = Some(messages("declaration.summary.items.item.packageInformation")),
         classes = "govuk-table govuk-!-margin-bottom-3",
         attributes = Map("id" -> s"package-information-$itemNo-table")

@@ -53,7 +53,7 @@ class PreviousDocumentsController @Inject()(
 
     if (boundForm.value.isEmpty && boundForm.errors.isEmpty)
       updateCache(PreviousDocumentsData(Seq.empty)).map { _ =>
-        navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayPage)
+        navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
       } else
       MultipleItemsHelper
         .add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems)
