@@ -78,7 +78,7 @@ class SubmissionsController @Inject()(
   }
 
   def viewDeclaration(id: String): Action[AnyContent] = authenticate { implicit request =>
-    Redirect(controllers.declaration.routes.AcceptedDeclarationController.displayPage()).addingToSession(ExportsSessionKeys.declarationId -> id)
+    Redirect(controllers.declaration.routes.SubmittedDeclarationController.displayPage()).addingToSession(ExportsSessionKeys.declarationId -> id)
   }
 
   def amendErrors(id: String, redirectUrl: String, pattern: String, messageKey: String): Action[AnyContent] = authenticate.async { implicit request =>

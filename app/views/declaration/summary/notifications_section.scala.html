@@ -20,28 +20,32 @@
 @import models.declaration.notifications.Notification
 @import views.ViewDates
 
-@this(summaryList: summary_list)
+@this(govukSummaryList: GovukSummaryList)
 
-@(acceptedNotification: Notification)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(notifications: Seq[Notification])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@summaryList("declaration-accepted-summary", None, Seq(
-        Some(SummaryListRow(
+@govukSummaryList(SummaryList(
+    rows = Seq(
+        SummaryListRow(
             classes = "mrn-row",
             key = Key(
                 content = Text(messages("declaration.summary.accepted.mrn"))
             ),
             value = Value(
-                content = Text(acceptedNotification.mrn)
-            )
-        )),
-        Some(SummaryListRow(
-            classes = "accepted-row",
-            key = Key(
-                content = Text(messages("declaration.summary.accepted.date"))
-            ),
-            value = Value(
-                content = Text(ViewDates.submissionDateTimeFormatter.format(acceptedNotification.dateTimeIssuedInUK))
+                content = Text(notifications.headOption.map(_.mrn).getOrElse(""))
             )
         ))
-    )
-)
+        ++ notifications.map(notification =>
+            SummaryListRow(
+                classes = s"${notification.displayStatus.toLowerCase}-row",
+                key = Key(
+                    content = Text(notification.displayStatus)
+                ),
+                value = Value(
+                    content = Text(ViewDates.submissionDateTimeFormatter.format(notification.dateTimeIssuedInUK))
+                )
+            )
+        ),
+    classes = "govuk-!-margin-bottom-9",
+    attributes = Map("id" -> "declaration-notifications-summary")
+))

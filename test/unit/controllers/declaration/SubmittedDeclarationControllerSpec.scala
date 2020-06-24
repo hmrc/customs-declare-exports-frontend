@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import java.time.{ZoneOffset, ZonedDateTime}
 
-import controllers.declaration.AcceptedDeclarationController
+import controllers.declaration.SubmittedDeclarationController
 import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus
 import models.declaration.submissions.SubmissionStatus.SubmissionStatus
@@ -29,30 +29,30 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerWithoutFormSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.summary.accepted_declaration_page
+import views.html.declaration.summary.submitted_declaration_page
 
 import scala.concurrent.Future
 
-class AcceptedDeclarationControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
+class SubmittedDeclarationControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
 
-  private val acceptedDeclarationPage = mock[accepted_declaration_page]
+  private val declarationPage = mock[submitted_declaration_page]
 
-  private val controller = new AcceptedDeclarationController(
+  private val controller = new SubmittedDeclarationController(
     mockAuthAction,
     mockJourneyAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
-    acceptedDeclarationPage
+    declarationPage
   )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(acceptedDeclarationPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(declarationPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(acceptedDeclarationPage)
+    reset(declarationPage)
     super.afterEach()
   }
 
@@ -71,25 +71,11 @@ class AcceptedDeclarationControllerSpec extends ControllerWithoutFormSpec with E
         val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(acceptedDeclarationPage, times(1)).apply(any())(any(), any())
+        verify(declarationPage, times(1)).apply(any())(any(), any())
       }
 
     }
 
-    "return 303 (SEE_OTHER)" when {
-
-      "declaration has not been accepted" in {
-        when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
-          .thenReturn(Future.successful(Seq(notification(SubmissionStatus.REJECTED))))
-        withNewCaching(aDeclaration())
-
-        val result = controller.displayPage()(getRequest())
-
-        status(result) must be(SEE_OTHER)
-        verify(acceptedDeclarationPage, times(0)).apply(any())(any(), any())
-      }
-
-    }
   }
 
 }

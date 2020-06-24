@@ -452,4 +452,4 @@ GET         /ead/:mrn                            controllers.pdf.EADController.g
 
 # View
 
-GET         /previously-submitted-answers        controllers.declaration.AcceptedDeclarationController.displayPage()
+GET         /previously-submitted-answers        controllers.declaration.SubmittedDeclarationController.displayPage()
