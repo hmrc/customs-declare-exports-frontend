@@ -103,32 +103,6 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
         row2ChangeLink.text() mustBe empty
       }
 
-      "actionsEnabled flag is false" in {
-
-        val view = section(Mode.Normal, "itemId", 1, documents, actionsEnabled = false)(messages, journeyRequest())
-        val table = view.getElementById("supporting-documents-1-table")
-
-        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
-
-        table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")
-        table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages(
-          "declaration.summary.items.item.supportingDocuments.information"
-        )
-
-        val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
-        row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ1"
-        row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier1"
-        val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2)
-        row1ChangeLink.attr("href") mustBe empty
-        row1ChangeLink.text() mustBe empty
-
-        val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-        row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ2"
-        row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier2"
-        val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2)
-        row2ChangeLink.attr("href") mustBe empty
-        row2ChangeLink.text() mustBe empty
-      }
     }
   }
 }
