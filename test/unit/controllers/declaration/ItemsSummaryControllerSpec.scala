@@ -22,6 +22,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation}
 import models.declaration.ExportItem
+import models.DeclarationType._
 import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -252,18 +253,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           verify(navigator).continueTo(any[Mode], any(), any[Boolean])(any(), any())
         }
-
-        "return 303 (SEE_OTHER) and redirect to Warehouse Identification page" in {
-
-          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
-          withNewCaching(cachedData)
-          val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
-
-          val result = controller.submit(Mode.Normal)(postRequest(answerForm))
-
-          status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
-        }
       }
 
       "return 400 (BAD_REQUEST)" when {
@@ -292,8 +281,40 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
         }
       }
     }
-  }
 
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+
+      "user does not want to add another item" should {
+
+        "return 303 (SEE_OTHER) and redirect to Transport Leaving the Border page" in {
+
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+          withNewCaching(cachedData)
+          val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
+
+          val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(Mode.Normal)
+        }
+      }
+    }
+
+    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
+
+      "return 303 (SEE_OTHER) and redirect to Warehouse Identification page" in {
+
+        val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+        withNewCaching(cachedData)
+        val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
+
+        val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+
+        status(result) mustBe SEE_OTHER
+        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
+      }
+    }
+  }
   "displayRemoveItemConfirmationPage" should {
 
     onEveryDeclarationJourney() { request =>

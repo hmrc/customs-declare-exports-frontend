@@ -115,7 +115,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
           verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
         }
       }

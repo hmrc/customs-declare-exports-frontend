@@ -57,7 +57,7 @@ class TransportLeavingTheBorderController @Inject()(
         errors => Future.successful(BadRequest(transportAtBorder(errors, mode))),
         code =>
           updateExportsDeclarationSyncDirect(_.updateTransportLeavingBorder(code)).map { _ =>
-            navigator.continueTo(mode, controllers.declaration.routes.DepartureTransportController.displayPage)
+            navigator.continueTo(mode, controllers.declaration.routes.WarehouseIdentificationController.displayPage)
         }
       )
   }
