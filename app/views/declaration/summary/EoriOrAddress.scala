@@ -35,36 +35,41 @@ object EoriOrAddress {
     addressLabel: String,
     addressChangeLabel: String,
     changeController: Call,
-    mode: Mode,
-    isEoriDefault: Boolean = true
+    isEoriDefault: Boolean = true,
+    actionsEnabled: Boolean = true
   )(implicit messages: Messages): Seq[Option[SummaryListRow]] = {
 
     def emptyRow =
       if (eori.isEmpty && address.isEmpty) {
         if (isEoriDefault) {
-          Some(rowForEori(key, eoriLabel, eoriChangeLabel, changeController, None, mode))
+          Some(rowForEori(key, eoriLabel, eoriChangeLabel, changeController, None, actionsEnabled))
         } else {
-          Some(forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress, None, mode))
+          Some(forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress, None, actionsEnabled))
         }
       } else None
 
     Seq(
       emptyRow,
-      eori.map(eori => rowForEori(key, eoriLabel, eoriChangeLabel, changeController, Some(eori), mode)),
-      address.map(address => forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress _, Some(address), mode))
+      eori.map(eori => rowForEori(key, eoriLabel, eoriChangeLabel, changeController, Some(eori), actionsEnabled)),
+      address.map(address => forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress _, Some(address), actionsEnabled))
     )
   }
 
-  private def actionItems(mode: Mode, item: ActionItem) =
-    if (mode == Mode.Print) Seq.empty
-    else Seq(item)
+  private def actionItems(actionsEnabled: Boolean, item: ActionItem) =
+    if (actionsEnabled) Seq(item)
+    else Seq.empty
 
   private def extractAddress(address: Address) =
     Seq(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString("<br>")
 
-  private def rowForEori(key: String, eoriLabel: String, eoriChangeLabel: String, changeController: Call, maybeEori: Option[Eori], mode: Mode)(
-    implicit messages: Messages
-  ) =
+  private def rowForEori(
+    key: String,
+    eoriLabel: String,
+    eoriChangeLabel: String,
+    changeController: Call,
+    maybeEori: Option[Eori],
+    actionsEnabled: Boolean
+  )(implicit messages: Messages) =
     SummaryListRow(
       classes = s"$key-eori-row",
       key = Key(content = Text(messages(eoriLabel))),
@@ -72,7 +77,7 @@ object EoriOrAddress {
       actions = Some(
         Actions(
           items = actionItems(
-            mode,
+            actionsEnabled,
             actionItem(href = changeController.url, content = Text(messages("site.change")), visuallyHiddenText = Some(messages(eoriChangeLabel)))
           )
         )
@@ -86,7 +91,7 @@ object EoriOrAddress {
     changeController: Call,
     extractAddress: Address => String,
     maybeAddress: Option[Address],
-    mode: Mode
+    actionsEnabled: Boolean
   )(implicit messages: Messages) =
     SummaryListRow(
       classes = s"$key-address-row",
@@ -95,7 +100,7 @@ object EoriOrAddress {
       actions = Some(
         Actions(
           items = actionItems(
-            mode,
+            actionsEnabled,
             actionItem(href = changeController.url, content = Text(messages("site.change")), visuallyHiddenText = Some(messages(addressChangeLabel)))
           )
         )

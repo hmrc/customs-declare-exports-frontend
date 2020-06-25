@@ -26,7 +26,7 @@
         containers: containers
 )
 
-@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @sectionRequired(transport: Transport) = @{
     transport.transportPayment.isDefined ||
@@ -39,8 +39,8 @@
 }
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print) None
-    else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @messagesForDepartureMeansOfTransport(transport: Transport) = @{
@@ -170,6 +170,6 @@
     )
 
     @declarationData.transport.containers.map(containerSeq =>
-        containers(mode, containerSeq)
+        containers(mode, containerSeq, actionsEnabled)
     )
 }

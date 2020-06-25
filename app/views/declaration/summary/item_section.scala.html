@@ -31,8 +31,8 @@
 @(mode: Mode, item: ExportItem, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print || !actionsEnabled) None
-    else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @summaryList(s"declaration-items-summary-${item.sequenceId}", Some(messages("declaration.summary.items.item.sequenceId", item.sequenceId)), Seq(

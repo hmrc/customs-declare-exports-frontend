@@ -28,11 +28,11 @@
         summaryList: summary_list
 )
 
-@(mode: Mode, holders: Seq[DeclarationHolder])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, holders: Seq[DeclarationHolder], actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print) None
-    else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @holderTypeCode(holder: DeclarationHolder) = @{
@@ -45,12 +45,14 @@
 
 @change(holder: DeclarationHolder) = {
     @{
-        if(mode == Mode.Print) ""
-        else changeLink(
-            messages("site.change"),
-            Some(messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder))),
-            controllers.declaration.routes.DeclarationHolderController.displayPage(mode)
-        )
+        if(actionsEnabled)
+            changeLink(
+                messages("site.change"),
+                Some(messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder))),
+                controllers.declaration.routes.DeclarationHolderController.displayPage(mode)
+            )
+        else
+            ""
     }
 }
 

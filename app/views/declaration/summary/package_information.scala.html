@@ -38,18 +38,20 @@
 )(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print || !actionsEnabled) None
-    else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @change(information: PackageInformation) = {
     @{
-        if(mode == Mode.Print || !actionsEnabled) ""
-        else changeLink(
-            messages("site.change"),
-            Some(messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)),
-            controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)
-        )
+        if(actionsEnabled)
+            changeLink(
+                messages("site.change"),
+                Some(messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)),
+                controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)
+            )
+        else
+            ""
     }
 }
 

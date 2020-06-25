@@ -22,15 +22,15 @@
 
 @this(summaryList: summary_list)
 
-@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @hasLocations(locations: Locations) = @{
     locations.goodsLocation.isDefined || locations.officeOfExit.isDefined
 }
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print) None
-    else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @if(hasLocations(declarationData.locations)) {

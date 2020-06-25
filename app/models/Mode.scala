@@ -66,12 +66,6 @@ object Mode {
     override val next: Mode = Normal
   }
 
-  case object Print extends Mode {
-    override val name: String = "Print"
-
-    override val next: Mode = this
-  }
-
   private val modes = Set[Mode](Normal, Amend, Draft, Change, ChangeAmend, ErrorFix)
 
   def withName(str: String): Option[Mode] =
