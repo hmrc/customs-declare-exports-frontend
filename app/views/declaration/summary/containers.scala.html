@@ -29,22 +29,24 @@
         summaryList: summary_list
 )
 
-@(mode: Mode, containers: Seq[Container])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, containers: Seq[Container], actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @change(container: Container) = {
     @{
-        if(mode == Mode.Print) ""
-        else changeLink(
-            messages("site.change"),
-            Some(messages("declaration.summary.container.change", container.id)),
-            controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)
-        )
+        if(actionsEnabled)
+            changeLink(
+                messages("site.change"),
+                Some(messages("declaration.summary.container.change", container.id)),
+                controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)
+            )
+        else
+            ""
     }
 }
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print) None
-    else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @if(containers.nonEmpty){

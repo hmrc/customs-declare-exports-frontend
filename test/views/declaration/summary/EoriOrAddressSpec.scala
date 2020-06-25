@@ -36,7 +36,7 @@ class EoriOrAddressSpec extends UnitViewSpec {
   val eoriChangeLabel = "eori-change"
   val addressChangeLabel = "address-change"
 
-  def eoriOrAddress(eori: Option[Eori], address: Option[Address], isEoriDefault: Boolean = false, mode: Mode = Mode.Normal) =
+  def eoriOrAddress(eori: Option[Eori], address: Option[Address], isEoriDefault: Boolean = false, actionsEnabled: Boolean = true) =
     EoriOrAddress
       .rows(
         key = "test",
@@ -47,8 +47,8 @@ class EoriOrAddressSpec extends UnitViewSpec {
         addressLabel = addressLabel,
         addressChangeLabel = addressChangeLabel,
         changeController = controllers.declaration.routes.ConsigneeDetailsController.displayPage(),
-        mode = mode,
-        isEoriDefault = isEoriDefault
+        isEoriDefault = isEoriDefault,
+        actionsEnabled = actionsEnabled
       )
       .flatten
 
@@ -102,7 +102,7 @@ class EoriOrAddressSpec extends UnitViewSpec {
     }
 
     "return no action items if mode is 'Print'" in {
-      val rows = eoriOrAddress(Some(eori), Some(address), mode = Mode.Print)
+      val rows = eoriOrAddress(Some(eori), Some(address), actionsEnabled = false)
       rows(0).actions.map(_.items).get mustBe Seq.empty
       rows(1).actions.map(_.items).get mustBe Seq.empty
     }

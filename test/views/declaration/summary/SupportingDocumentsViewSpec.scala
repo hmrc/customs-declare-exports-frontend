@@ -76,9 +76,9 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
     "display all supporting documents without change buttons" when {
 
-      "mode is Print" in {
+      "actionsEnabled is false" in {
 
-        val view = section(Mode.Print, "itemId", 1, documents)(messages, journeyRequest())
+        val view = section(Mode.Normal, "itemId", 1, documents, actionsEnabled = false)(messages, journeyRequest())
         val table = view.getElementById("supporting-documents-1-table")
 
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.supportingDocuments")

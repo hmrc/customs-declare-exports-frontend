@@ -76,9 +76,9 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
 
     "display additional information without change buttons" when {
 
-      "mode is Print" in {
+      "actionsEnabled is false" in {
 
-        val view = section(Mode.Print, "itemId", 1, data)(messages, journeyRequest())
+        val view = section(Mode.Normal, "itemId", 1, data, actionsEnabled = false)(messages, journeyRequest())
         val table = view.getElementById("additional-information-1-table")
 
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalInformation")

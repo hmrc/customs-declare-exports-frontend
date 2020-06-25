@@ -31,11 +31,11 @@
     holdersSection: parties_section_holders
 )
 
-@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @actionItems(item: ActionItem) = @{
-    if(mode == Mode.Print) Seq.empty
-    else Seq(item)
+    if(actionsEnabled) Seq(item)
+    else Seq.empty
 }
 
 @eoriOrAddress(key: String, eori: Option[Eori], address: Option[Address], change: Call, isEoriDefault: Boolean = true) = @{
@@ -48,8 +48,8 @@
         addressLabel = s"declaration.summary.parties.$key.address",
         addressChangeLabel = s"declaration.summary.parties.$key.address.change",
         changeController = change,
-        mode = mode,
-        isEoriDefault = isEoriDefault
+        isEoriDefault = isEoriDefault,
+        actionsEnabled = actionsEnabled
     )
 }
 
@@ -250,10 +250,10 @@
     )
 
     @declarationData.parties.declarationAdditionalActorsData.map(data =>
-        additionalActorsSection(mode, data.actors)
+        additionalActorsSection(mode, data.actors, actionsEnabled)
     )
 
     @declarationData.parties.declarationHoldersData.map(data =>
-        holdersSection(mode, data.holders)
+        holdersSection(mode, data.holders, actionsEnabled)
     )
 }

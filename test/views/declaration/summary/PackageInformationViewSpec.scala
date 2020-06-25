@@ -78,9 +78,9 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
     "display package information section with multiple package information and no change buttons" when {
 
-      "mode is Print" in {
+      "actionsEnabled is false" in {
 
-        val view = packageSection(Mode.Print, "itemId", 1, data)(messages, journeyRequest())
+        val view = packageSection(Mode.Normal, "itemId", 1, data, actionsEnabled = false)(messages, journeyRequest())
         val table = view.getElementById("package-information-1-table")
 
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.packageInformation")

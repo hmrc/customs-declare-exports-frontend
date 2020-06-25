@@ -61,21 +61,21 @@
 
     @printThisPage
 
-    <div class="govuk-section-break">@references_section(Mode.Print, request.cacheModel)</div>
+    <div class="govuk-section-break">@references_section(Mode.Normal, request.cacheModel, false)</div>
 
-    <div class="govuk-section-break">@parties_section(Mode.Print, request.cacheModel)</div>
+    <div class="govuk-section-break">@parties_section(Mode.Normal, request.cacheModel, false)</div>
 
-    <div class="govuk-section-break">@countries_section(Mode.Print, request.cacheModel)</div>
+    <div class="govuk-section-break">@countries_section(Mode.Normal, request.cacheModel, false)</div>
 
-    <div class="govuk-section-break">@locations_section(Mode.Print, request.cacheModel)</div>
+    <div class="govuk-section-break">@locations_section(Mode.Normal, request.cacheModel, false)</div>
 
-    <div class="govuk-section-break">@transaction_section(Mode.Print, request.cacheModel)</div>
+    <div class="govuk-section-break">@transaction_section(Mode.Normal, request.cacheModel, false)</div>
 
-    @items_section(Mode.Print, request.cacheModel)
+    @items_section(Mode.Normal, request.cacheModel, false)
 
-    <div class="govuk-section-break">@warehouse_section(Mode.Print, request.cacheModel)</div>
+    <div class="govuk-section-break">@warehouse_section(Mode.Normal, request.cacheModel, false)</div>
 
-    <div class="govuk-section-break">@transport_section(Mode.Print, request.cacheModel)</div>
+    <div class="govuk-section-break">@transport_section(Mode.Normal, request.cacheModel, false)</div>
 
     @printThisPage
 }
