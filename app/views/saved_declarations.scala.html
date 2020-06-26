@@ -19,7 +19,7 @@
 @import views.{BackButton, Title}
 @import views.html.components.gds.{gdsMainTemplate, link, pageTitle, pagination}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.ViewDates.formatDateTimeFullMonth
+@import views.ViewDates.formatDateAtTime
 @import java.time.ZoneId
 
 @this(
@@ -35,7 +35,7 @@
   declarations.currentPageElements.map { declaration =>
     Seq(
       TableRow(content = HtmlContent(link(text = declaration.ducr.getOrElse(messages("saved.declarations.noDucr")), call = routes.SavedDeclarationsController.continueDeclaration(declaration.id)))),
-      TableRow(content = HtmlContent(formatDateTimeFullMonth(declaration.updatedDateTime.atZone(ZoneId.of("Europe/London"))))),
+      TableRow(content = HtmlContent(formatDateAtTime(declaration.updatedDateTime.atZone(ZoneId.of("Europe/London"))))),
       TableRow(content = HtmlContent(link(text = messages("site.remove"), call = routes.RemoveSavedDeclarationsController.displayPage(declaration.id))))
     )
   }
