@@ -101,7 +101,7 @@
                     checked = form("type").value.contains(DeclarationType.CLEARANCE.toString)
                 )
             ).filter(radioOption => radioOption.value.exists(appConfig.availableDeclarations().contains(_))),
-            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("type").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @saveAndContinue("site.continue")

@@ -56,7 +56,7 @@ class ContainerFirstSpec extends WordSpec with MustMatchers {
       "no answer for yes/no" in {
         val form = ContainerFirst.form.bind(formData("", None))
 
-        form.errors mustBe Seq(FormError(hasContainerKey, "error.yesNo.required"))
+        form.errors mustBe Seq(FormError(hasContainerKey, "declaration.transportInformation.container.answer.empty"))
       }
     }
 

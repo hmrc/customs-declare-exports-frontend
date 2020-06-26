@@ -46,12 +46,12 @@ class DeclarationHolderRemoveController @Inject()(
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val holder = DeclarationHolder.buildId(id)
-    Ok(holderRemovePage(mode, holder, YesNoAnswer.form().withSubmissionErrors()))
+    Ok(holderRemovePage(mode, holder, removeYesNoForm.withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val holderToRemove = DeclarationHolder.buildId(id)
-    form()
+    removeYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(holderRemovePage(mode, holderToRemove, formWithErrors))),
@@ -61,11 +61,13 @@ class DeclarationHolderRemoveController @Inject()(
               updateExportsCache(holderToRemove)
                 .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(Mode.Normal, routes.DeclarationHolderController.displayPage))
+              Future.successful(navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
           }
         }
       )
   }
+
+  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.remove.empty")
 
   private def updateExportsCache(
     itemToRemove: DeclarationHolder

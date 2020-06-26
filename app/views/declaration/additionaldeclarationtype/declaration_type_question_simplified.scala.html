@@ -18,8 +18,9 @@
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
+@import views.html.components.gds._
 
-@this(govukRadios: GovukRadios)
+@this(govukRadios: GovukRadios, headingContent: headingContent)
 
 @(form: Form[AdditionalDeclarationType])(implicit messages: Messages)
 
@@ -27,8 +28,12 @@
     name = "additionalDeclarationType",
     fieldset = Some(Fieldset(
         legend = Some(Legend(
-            content = Text(messages("declaration.declarationType.header.simplified")),
-            isPageHeading = true,
+            content = HtmlContent(
+                headingContent(
+                    messages("declaration.declarationType.header.simplified"),
+                    Some(messages("declaration.declarationType.title"))
+                )
+            ),
             classes = gdsPageLegend
         ))
     )),
@@ -48,5 +53,5 @@
             checked = form("additionalDeclarationType").value.contains(Frontier)
         )
     ),
-    errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    errorMessage = form("additionalDeclarationType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
 ))

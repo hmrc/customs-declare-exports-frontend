@@ -51,8 +51,7 @@ class AdditionalInformationRequiredController @Inject()(
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    YesNoAnswer
-      .form()
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(additionalInfoReq(mode, itemId, formWithErrors))),
@@ -63,10 +62,12 @@ class AdditionalInformationRequiredController @Inject()(
       )
   }
 
+  private def form(): Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformationRequired.error")
+
   private def previousAnswer(itemId: String)(implicit request: JourneyRequest[AnyContent]): Form[YesNoAnswer] =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).flatMap(_.isRequired) match {
-      case Some(answer) => YesNoAnswer.form().fill(answer)
-      case _            => YesNoAnswer.form()
+      case Some(answer) => form().fill(answer)
+      case _            => form()
     }
 
   private def cachedItems(itemId: String)(implicit request: JourneyRequest[AnyContent]) =

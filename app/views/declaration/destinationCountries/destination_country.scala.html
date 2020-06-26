@@ -24,9 +24,7 @@
 @import services.view.AutoCompleteItem
 @import views.Title
 @import views.BackButton
-@import views.components.gds.Styles
-@import scala.collection.immutable
-@import play.twirl.api.HtmlFormat
+@import views.components.gds.Styles._
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -67,19 +65,18 @@
     @formHelper(action = controllers.declaration.routes.DestinationCountryController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.destinationCountry.heading"))
+        @components.fields.field_accessible_autocomplete_with_header(
+            form("countryCode"),
+            "declaration.destinationCountry.title",
+            Some(gdsPageLabel),
+            Some("declaration.destinationCountry.heading"),
+            None,
+            messages("declaration.destinationCountry.empty"),
+            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            isPageHeading = true
+        )
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages("declaration.destinationCountry.title")),
-                classes = Styles.gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(immutable.Seq(
-                autocomplete,
-                tariff,
-                saveButtons()
-            ))
-        ))
+        @tariff
+        @saveButtons()
     }
 }

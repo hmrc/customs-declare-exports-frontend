@@ -46,7 +46,7 @@ class DeclarationHolderController @Inject()(
   import DeclarationHolderController._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = YesNoAnswer.form().withSubmissionErrors()
+    val frm = addAnotherYesNoForm.withSubmissionErrors()
     request.cacheModel.parties.declarationHoldersData match {
       case Some(data) if data.holders.nonEmpty => Ok(declarationHolderPage(mode, frm, data.holders))
       case _                                   => navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
@@ -55,8 +55,7 @@ class DeclarationHolderController @Inject()(
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val holders = request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
-    YesNoAnswer
-      .form()
+    addAnotherYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(declarationHolderPage(mode, formWithErrors, holders)),
@@ -67,6 +66,9 @@ class DeclarationHolderController @Inject()(
         }
       )
   }
+
+  private def addAnotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
+
 }
 
 object DeclarationHolderController {

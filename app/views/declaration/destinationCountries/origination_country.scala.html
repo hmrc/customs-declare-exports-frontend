@@ -24,9 +24,7 @@
 @import services.view.AutoCompleteItem
 @import views.Title
 @import views.BackButton
-@import views.components.gds.Styles
-@import scala.collection.immutable
-@import play.twirl.api.HtmlFormat
+@import views.components.gds.Styles._
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -49,17 +47,6 @@
     }
 }
 
-@autocomplete = {
-    @components.fields.field_accessible_autocomplete(
-        form("countryCode"),
-        "",
-        None,
-        None,
-        messages("declaration.originationCountry.empty"),
-        AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-    )
-}
-
 @govukLayout(
     title = Title("declaration.originationCountry.title", "declaration.originationCountry.heading"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OriginationCountryPage, mode)))){
@@ -67,19 +54,18 @@
     @formHelper(action = controllers.declaration.routes.OriginationCountryController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.originationCountry.heading"))
+        @components.fields.field_accessible_autocomplete_with_header(
+            form("countryCode"),
+            "declaration.originationCountry.title",
+            Some(gdsPageLabel),
+            Some("declaration.originationCountry.heading"),
+            None,
+            messages("declaration.originationCountry.empty"),
+            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            isPageHeading = true
+        )
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages("declaration.originationCountry.title")),
-                classes = Styles.gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(immutable.Seq(
-                autocomplete,
-                tariff,
-                saveButtons()
-            ))
-        ))
+        @tariff
+        @saveButtons()
     }
 }

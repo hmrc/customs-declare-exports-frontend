@@ -28,7 +28,7 @@
         govukButton: GovukButton,
         govukRadios: GovukRadios,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         saveButtons: saveButtons,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -45,14 +45,16 @@
     @formHelper(action = controllers.declaration.routes.NatureOfTransactionController.saveTransactionType(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.natureOfTransaction.header"))
-
         @govukRadios(Radios(
             name = "natureType",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.natureOfTransaction.title")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.natureOfTransaction.title"),
+                            Some(messages("declaration.natureOfTransaction.header"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),
@@ -120,7 +122,7 @@
                     checked = form("natureType").value.contains(Other)
                 )
             ),
-            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("natureType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @tariffDetails(messages("site.details.summary_text_these"), HtmlContent(tariffBody))

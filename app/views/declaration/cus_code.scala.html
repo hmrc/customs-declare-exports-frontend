@@ -35,7 +35,7 @@
         govukRadios: GovukRadios,
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         exportsInputText: exportsInputText,
         body: paragraphBody,
         pageTitle: pageTitle,
@@ -63,14 +63,16 @@
     @formHelper(action = routes.CusCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.items"))
-
         @govukRadios(Radios(
             name = hasCusCodeKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.cusCode.header")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.cusCode.header"),
+                            Some(messages("supplementary.items"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),
@@ -97,7 +99,7 @@
                     checked = form(hasCusCodeKey).value.contains(AllowedCUSCodeAnswers.no)
                 )
             ),
-            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form(hasCusCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

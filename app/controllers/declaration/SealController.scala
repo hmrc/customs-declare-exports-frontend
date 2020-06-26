@@ -70,7 +70,7 @@ class SealController @Inject()(
   }
 
   def displaySealSummary(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(summaryPage(mode, YesNoAnswer.form().withSubmissionErrors(), containerId, seals(containerId)))
+    Ok(summaryPage(mode, addSealYesNoForm(containerId).withSubmissionErrors(), containerId, seals(containerId)))
   }
 
   def submitSummaryAction(mode: Mode, containerId: String): Action[AnyContent] =
@@ -83,7 +83,7 @@ class SealController @Inject()(
 
   def displaySealRemove(mode: Mode, containerId: String, sealId: String): Action[AnyContent] =
     (authenticate andThen journeyType) { implicit request =>
-      Ok(removePage(mode, YesNoAnswer.form(), containerId, sealId))
+      Ok(removePage(mode, removeSealYesNoForm, containerId, sealId))
     }
 
   def submitSealRemove(mode: Mode, containerId: String, sealId: String): Action[AnyContent] =
@@ -91,13 +91,18 @@ class SealController @Inject()(
       removeSealAnswer(mode, containerId, sealId)
     }
 
+  private def addSealYesNoForm(containerId: String)(implicit request: JourneyRequest[AnyContent]): Form[YesNoAnswer] =
+    YesNoAnswer.form(errorKey = if (seals(containerId).isEmpty) "declaration.seal.add.answer.empty" else "declaration.seal.another.answer.empty")
+
+  private def removeSealYesNoForm = YesNoAnswer.form(errorKey = "declaration.seal.remove.answer.empty")
+
   private def sealId(values: Seq[String]): String = values.headOption.getOrElse("")
 
   private def seals(containerId: String)(implicit request: JourneyRequest[AnyContent]) =
     request.cacheModel.containerBy(containerId).map(_.seals).getOrElse(Seq.empty)
 
   private def addSealAnswer(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) =
-    form()
+    addSealYesNoForm(containerId)
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(summaryPage(mode, formWithErrors, containerId, seals(containerId)))),
@@ -112,7 +117,7 @@ class SealController @Inject()(
       )
 
   private def removeSealAnswer(mode: Mode, containerId: String, sealId: String)(implicit request: JourneyRequest[AnyContent]) =
-    form()
+    removeSealYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, formWithErrors, containerId, sealId))),

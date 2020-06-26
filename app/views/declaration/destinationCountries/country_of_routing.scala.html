@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.navigation.Navigator
 @import controllers.declaration.routes
 @import forms.declaration.countries.Countries._
 @import forms.declaration.countries.Country
@@ -25,9 +24,7 @@
 @import services.view.AutoCompleteItem
 @import views.Title
 @import views.BackButton
-@import views.components.gds.Styles
-@import scala.collection.immutable
-@import play.twirl.api.HtmlFormat
+@import views.components.gds.Styles._
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -36,7 +33,7 @@
         govukDetails : GovukDetails,
         govukFieldset: GovukFieldset,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         saveButtons: saveButtons,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -45,20 +42,9 @@
 @(mode: Mode, form: Form[Country], page: CountryPage)(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariff = {
-@components.details(messages("site.details.summary_text_this")) {
-    @Html(messages("declaration.routingQuestion.help.bodyText", components.details_content_link()))
-}
-}
-
-@autocomplete = {
-@components.fields.field_accessible_autocomplete(
-    form("countryCode"),
-    "",
-    None,
-    None,
-    messages("declaration.routingCountry.empty"),
-    AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-)
+    @components.details(messages("site.details.summary_text_this")) {
+        @Html(messages("declaration.routingQuestion.help.bodyText", components.details_content_link()))
+    }
 }
 
 @govukLayout(
@@ -68,19 +54,18 @@
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.routingCountry.heading"))
+        @components.fields.field_accessible_autocomplete_with_header(
+            form("countryCode"),
+            s"declaration.${page.id}.question",
+            Some(gdsPageLabel),
+            Some("declaration.routingCountry.heading"),
+            None,
+            messages("declaration.routingCountry.empty"),
+            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            isPageHeading = true
+        )
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages(s"declaration.${page.id}.question")),
-                classes = Styles.gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(immutable.Seq(
-                autocomplete,
-                tariff,
-                saveButtons()
-            ))
-        ))
+        @tariff
+        @saveButtons()
     }
 }

@@ -29,7 +29,7 @@
 @this(
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
+    headingContent: headingContent,
     govukRadios: GovukRadios,
     exportsInputText: exportsInputText,
     govukDetails : GovukDetails,
@@ -50,14 +50,16 @@
     @formHelper(action = controllers.declaration.routes.AdditionalInformationRequiredController.submitForm(mode, (itemId)), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.items"))
-
         @govukRadios(Radios(
         name = "yesNo",
         fieldset = Some(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("declaration.additionalInformationRequired.title")),
-                isPageHeading = true,
+                content = HtmlContent(
+                    headingContent(
+                        messages("declaration.additionalInformationRequired.title"),
+                        Some(messages("supplementary.items"))
+                    )
+                ),
                 classes = gdsPageLegend
             ))
         )),

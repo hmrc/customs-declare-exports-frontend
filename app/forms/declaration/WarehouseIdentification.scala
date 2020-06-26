@@ -54,7 +54,7 @@ object WarehouseIdentification extends DeclarationPage {
 
   val mapping = Forms
     .mapping(
-      inWarehouseKey -> requiredRadio("error.yesNo.required"),
+      inWarehouseKey -> requiredRadio("declaration.warehouse.identification.answer.error"),
       warehouseIdKey ->
         mandatoryIfEqual(
           inWarehouseKey,

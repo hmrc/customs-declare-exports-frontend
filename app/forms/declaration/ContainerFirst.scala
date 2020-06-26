@@ -55,7 +55,7 @@ object ContainerFirst extends DeclarationPage {
     }
 
   val mapping = Forms.mapping(
-    hasContainerKey -> requiredRadio("error.yesNo.required"),
+    hasContainerKey -> requiredRadio("declaration.transportInformation.container.answer.empty"),
     containerIdKey -> mandatoryIfEqual(
       hasContainerKey,
       yes,

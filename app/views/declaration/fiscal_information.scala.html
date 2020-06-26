@@ -30,7 +30,7 @@
         govukRadios: GovukRadios,
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         body: paragraphBody,
         pageTitle: pageTitle,
         saveButtons: saveButtons,
@@ -59,14 +59,16 @@
     @formHelper(action = FiscalInformationController.saveFiscalInformation(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.fiscalInformation.header"))
-
         @govukRadios(Radios(
             name = "onwardSupplyRelief",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.fiscalInformation.title")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.fiscalInformation.title"),
+                            Some(messages("declaration.fiscalInformation.header"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),
@@ -84,7 +86,7 @@
                     checked = form("onwardSupplyRelief").value.contains(no)
                 )
             ),
-            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("onwardSupplyRelief").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @govukDetails(Details(

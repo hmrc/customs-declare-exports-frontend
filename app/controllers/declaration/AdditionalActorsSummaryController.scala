@@ -48,18 +48,16 @@ class AdditionalActorsSummaryController @Inject()(
     Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val frm = form().withSubmissionErrors()
     request.cacheModel.parties.declarationAdditionalActorsData match {
       case Some(data) if data.actors.nonEmpty =>
-        Ok(additionalActorsPage(mode, frm.fill(DeclarationAdditionalActors(None, Some(NoneOfTheAbove.value))), data.actors))
+        Ok(additionalActorsPage(mode, anotherYesNoForm.withSubmissionErrors(), data.actors))
       case _ => navigator.continueTo(mode, routes.AdditionalActorsAddController.displayPage)
     }
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val actors = request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty)
-    YesNoAnswer
-      .form()
+    anotherYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(additionalActorsPage(mode, formWithErrors, actors)),
@@ -70,4 +68,7 @@ class AdditionalActorsSummaryController @Inject()(
         }
       )
   }
+
+  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalActors.add.another.empty")
+
 }

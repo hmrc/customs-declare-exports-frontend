@@ -44,7 +44,7 @@ class DocumentsProducedController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = anotherYesNoForm.withSubmissionErrors()
     cachedDocuments(itemId) match {
       case documents if documents.nonEmpty => Ok(documentProducedPage(mode, itemId, frm, documents))
       case _                               => navigator.continueTo(mode, controllers.declaration.routes.DocumentsProducedAddController.displayPage(_, itemId))
@@ -52,8 +52,7 @@ class DocumentsProducedController @Inject()(
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    YesNoAnswer
-      .form()
+    anotherYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(documentProducedPage(mode, itemId, formWithErrors, cachedDocuments(itemId))),
@@ -64,6 +63,8 @@ class DocumentsProducedController @Inject()(
         }
       )
   }
+
+  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.addDocument.add.another.empty")
 
   private def cachedDocuments(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents).getOrElse(Seq.empty)

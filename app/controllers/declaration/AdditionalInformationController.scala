@@ -43,7 +43,7 @@ class AdditionalInformationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = YesNoAnswer.form().withSubmissionErrors()
+    val frm = anotherYesNoForm.withSubmissionErrors()
     cachedAdditionalInformationData(itemId) match {
       case Some(data) if data.items.nonEmpty =>
         Ok(additionalInformationPage(mode, itemId, frm, data.items))
@@ -55,8 +55,7 @@ class AdditionalInformationController @Inject()(
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    YesNoAnswer
-      .form()
+    anotherYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) =>
@@ -71,6 +70,8 @@ class AdditionalInformationController @Inject()(
         }
       )
   }
+
+  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformation.add.another.empty")
 
   private def cachedAdditionalInformationData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation)

@@ -50,6 +50,7 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.hasCode")
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.noCode")
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.label")
+        messages must haveTranslationFor("declaration.unDangerousGoodsCode.answer.empty")
       }
 
       val view = createView()

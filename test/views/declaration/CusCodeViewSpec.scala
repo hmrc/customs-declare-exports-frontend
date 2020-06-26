@@ -51,6 +51,7 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
         messages must haveTranslationFor("declaration.cusCode.hasCode")
         messages must haveTranslationFor("declaration.cusCode.noCode")
         messages must haveTranslationFor("declaration.cusCode.label")
+        messages must haveTranslationFor("declaration.cusCode.answer.empty")
       }
 
       val view = createView()

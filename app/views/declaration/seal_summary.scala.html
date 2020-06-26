@@ -28,6 +28,7 @@
 @this(
         govukLayout: gdsMainTemplate,
         sectionHeader: sectionHeader,
+        headingContent: headingContent,
         govukFieldset: GovukFieldset,
         pageTitle: pageTitle,
         changeLink: link,
@@ -76,15 +77,25 @@
 @addSealRadios = {
     @govukRadios(Radios(
     name = "yesNo",
-    fieldset = if(seals.nonEmpty)
+    fieldset = if(seals.isEmpty)
+        Some(Fieldset(
+            legend = Some(Legend(
+                content = HtmlContent(
+                    headingContent(
+                        messages("declaration.seal.add.first", containerId),
+                        Some(messages("declaration.seal.section"))
+                    )
+                ),
+                classes = gdsPageLegend
+            ))
+        ))
+    else
         Some(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.seal.add.another")),
                 classes = "govuk-fieldset__legend--m"
             ))
         ))
-    else
-        None
     ,
     items = Seq(
         RadioItem(
@@ -111,21 +122,25 @@
     @formHelper(action = SealController.submitSummaryAction(mode, containerId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.seal.section"))
-
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(if(seals.nonEmpty) messages("declaration.seal.title", containerId) else messages("declaration.seal.add.first", containerId)),
-                classes = gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(immutable.Seq(
-                sealsTable,
-                addSealRadios,
-                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-                saveButtons()
+        @if(seals.isEmpty){
+            @addSealRadios
+        } else {
+            @sectionHeader(messages("declaration.seal.section"))
+            @govukFieldset(Fieldset(
+                legend = Some(Legend(
+                    content = Text(if(seals.nonEmpty) messages("declaration.seal.title", containerId) else messages("declaration.seal.add.first", containerId)),
+                    classes = gdsPageLegend,
+                    isPageHeading = true
+                )),
+                html = HtmlFormat.fill(immutable.Seq(
+                    sealsTable,
+                    addSealRadios
+                ))
             ))
-        ))
+      }
+
+      @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+      @saveButtons()
     }
 
 }

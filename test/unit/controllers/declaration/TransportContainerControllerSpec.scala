@@ -45,7 +45,6 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    mockErrorHandler,
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     transportContainersAddFirstPage,

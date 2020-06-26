@@ -33,7 +33,7 @@
         govukRadios: GovukRadios,
         govukFieldset: GovukFieldset,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         saveButtons: saveButtons,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -60,14 +60,16 @@
     @formHelper(action = controllers.declaration.routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.summary.locations.header"))
-
         @govukRadios(Radios(
             name = "isUkOfficeOfExit",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.officeOfExit.title")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.officeOfExit.title"),
+                            Some(messages("declaration.summary.locations.header"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),

@@ -90,7 +90,7 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
     "First Routing Country view" should {
       "have page question" in {
 
-        firstRoutingView(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.firstRoutingCountry.question")
+        firstRoutingView(request).getElementsByTag("h1").text() mustBe messages("declaration.firstRoutingCountry.question")
       }
     }
 
@@ -98,7 +98,7 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
 
       "have page question" in {
 
-        nextRoutingView(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.routingCountry.question")
+        nextRoutingView(request).getElementsByTag("h1").text() mustBe messages("declaration.routingCountry.question")
       }
     }
   }

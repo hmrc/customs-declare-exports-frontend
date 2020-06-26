@@ -47,15 +47,14 @@ class PackageInformationSummaryController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.packageInformation) match {
-      case Some(items) if items.nonEmpty => Ok(packageInformationPage(mode, itemId, YesNoAnswer.form().withSubmissionErrors(), items))
+      case Some(items) if items.nonEmpty => Ok(packageInformationPage(mode, itemId, anotherYesNoForm.withSubmissionErrors(), items))
       case _                             => navigator.continueTo(mode, routes.PackageInformationAddController.displayPage(_, itemId))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val items = request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
-    YesNoAnswer
-      .form()
+    anotherYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(packageInformationPage(mode, itemId, formWithErrors, items)),
@@ -67,6 +66,7 @@ class PackageInformationSummaryController @Inject()(
       )
   }
 
+  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.packageInformation.add.empty")
 }
 
 object PackageInformationSummaryController {

@@ -31,7 +31,7 @@
         govukButton: GovukButton,
         govukRadios: GovukRadios,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
         govukInput : GovukInput,
@@ -50,14 +50,16 @@
     @formHelper(action = RepresentativeStatusController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.summary.parties.header"))
-
         @govukRadios(Radios(
             name = "statusCode",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.representative.status.title")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.representative.status.title"),
+                            Some(messages("declaration.summary.parties.header"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),

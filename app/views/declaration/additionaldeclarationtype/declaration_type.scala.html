@@ -28,7 +28,6 @@
         govukRadios: GovukRadios,
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
         saveAndContinue: saveAndContinue,
         declarationTypeQuestionStandard: declaration_type_question_standard,
         declarationTypeQuestionSupplementary: declaration_type_question_supplementary,
@@ -57,8 +56,6 @@
 
  @formHelper(action = controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
-
-        @sectionHeader(messages("declaration.declarationType.title"))
 
         @{
          request.declarationType match {

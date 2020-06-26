@@ -52,7 +52,7 @@ class RoutingCountriesController @Inject()(
       val destinationCountryCode = request.cacheModel.locations.destinationCountry.flatMap(_.code)
       val destinationCountryName = destinationCountryCode.map(findByCode(_)).map(_.asString()).getOrElse("")
 
-      val frm = form().withSubmissionErrors()
+      val frm = formFirst().withSubmissionErrors()
       request.cacheModel.locations.hasRoutingCountries match {
         case Some(answer) => Ok(routingQuestionPage(mode, frm.fill(answer), destinationCountryName))
         case None         => Ok(routingQuestionPage(mode, frm, destinationCountryName))
@@ -64,7 +64,7 @@ class RoutingCountriesController @Inject()(
     val destinationCountry = request.cacheModel.locations.destinationCountry.flatMap(_.code).getOrElse("-")
     val cachedCountries = request.cacheModel.locations.routingCountries
 
-    form(cachedCountries)
+    formFirst(cachedCountries)
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(routingQuestionPage(mode, formWithErrors, destinationCountry))),

@@ -29,7 +29,7 @@
 @this(govukLayout: gdsMainTemplate,
         govukRadios: GovukRadios,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         tariffDetails: tariffDetails,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
@@ -45,14 +45,16 @@
     @formHelper(action = RepresentativeAgentController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.summary.parties.header"))
-
         @govukRadios(Radios(
             name = "representingAgent",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.representative.agent.title")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.representative.agent.title"),
+                            Some(messages("declaration.summary.parties.header"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),
