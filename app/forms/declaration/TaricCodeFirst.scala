@@ -50,7 +50,7 @@ object TaricCodeFirst extends DeclarationPage {
     }
 
   val mapping = Forms.mapping(
-    hasTaricCodeKey -> requiredRadio("error.yesNo.required"),
+    hasTaricCodeKey -> requiredRadio("declaration.taricAdditionalCodes.answer.empty"),
     taricCodeKey -> mandatoryIfEqual(
       hasTaricCodeKey,
       YesNoAnswers.yes,

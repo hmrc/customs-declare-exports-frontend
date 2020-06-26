@@ -57,7 +57,7 @@ object UNDangerousGoodsCode extends DeclarationPage {
 
   val mapping =
     Forms.mapping(
-      hasDangerousGoodsCodeKey -> requiredRadio("error.yesNo.required"),
+      hasDangerousGoodsCodeKey -> requiredRadio("declaration.unDangerousGoodsCode.answer.empty"),
       dangerousGoodsCodeKey -> mandatoryIfEqual(
         hasDangerousGoodsCodeKey,
         yes,

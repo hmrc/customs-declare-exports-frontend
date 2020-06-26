@@ -48,7 +48,7 @@ class AdditionalInformationRemoveController @Inject()(
 
   def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalInformation(itemId, id) match {
-      case Some(information) => Ok(removePage(mode, itemId, id, information, YesNoAnswer.form().withSubmissionErrors()))
+      case Some(information) => Ok(removePage(mode, itemId, id, information, removeYesNoForm.withSubmissionErrors()))
       case _                 => returnToSummary(mode, itemId)
     }
   }
@@ -56,7 +56,7 @@ class AdditionalInformationRemoveController @Inject()(
   def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalInformation(itemId, id) match {
       case Some(information) =>
-        form()
+        removeYesNoForm
           .bindFromRequest()
           .fold(
             (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, itemId, id, information, formWithErrors))),
@@ -74,6 +74,8 @@ class AdditionalInformationRemoveController @Inject()(
     }
 
   }
+
+  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformation.remove.empty")
 
   private def afterRemove(mode: Mode, itemId: String, declaration: Option[ExportsDeclaration])(implicit request: JourneyRequest[AnyContent]) =
     declaration.flatMap(_.itemBy(itemId)).flatMap(_.additionalInformation).map(_.items) match {

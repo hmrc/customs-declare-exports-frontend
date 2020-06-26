@@ -43,11 +43,11 @@ class TaricCodeRemoveController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(taricCodeRemove(mode, itemId, code, YesNoAnswer.form().withSubmissionErrors()))
+    Ok(taricCodeRemove(mode, itemId, code, removeYesNoForm.withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
+    removeYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(taricCodeRemove(mode, itemId, code, formWithErrors))),
@@ -57,11 +57,13 @@ class TaricCodeRemoveController @Inject()(
               updateExportsCache(itemId, code)
                 .map(_ => navigator.continueTo(mode, routes.TaricCodeSummaryController.displayPage(_, itemId)))
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(Mode.Normal, routes.TaricCodeSummaryController.displayPage(_, itemId)))
+              Future.successful(navigator.continueTo(mode, routes.TaricCodeSummaryController.displayPage(_, itemId)))
           }
         }
       )
   }
+
+  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.taricAdditionalCodes.remove.answer.empty")
 
   private def updateExportsCache(itemId: String, taricCodeToRemove: String)(
     implicit request: JourneyRequest[AnyContent]

@@ -48,7 +48,7 @@ class DocumentsProducedRemoveController @Inject()(
 
   def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findDocument(itemId, documentId) match {
-      case Some(document) => Ok(documentRemovePage(mode, itemId, documentId, document, YesNoAnswer.form().withSubmissionErrors()))
+      case Some(document) => Ok(documentRemovePage(mode, itemId, documentId, document, removeYesNoForm.withSubmissionErrors()))
       case _              => returnToSummary(mode, itemId)
     }
   }
@@ -56,7 +56,7 @@ class DocumentsProducedRemoveController @Inject()(
   def submitForm(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findDocument(itemId, documentId) match {
       case Some(document) =>
-        form()
+        removeYesNoForm
           .bindFromRequest()
           .fold(
             (formWithErrors: Form[YesNoAnswer]) =>
@@ -75,6 +75,8 @@ class DocumentsProducedRemoveController @Inject()(
     }
 
   }
+
+  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.addDocument.remove.empty")
 
   private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     navigator.continueTo(mode, routes.DocumentsProducedController.displayPage(_, itemId))

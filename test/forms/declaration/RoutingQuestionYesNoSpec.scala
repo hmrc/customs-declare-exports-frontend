@@ -36,11 +36,31 @@ class RoutingQuestionYesNoSpec extends UnitSpec {
 
     "contains errors after form validation" when {
 
-      "input is empty" in {
+      "input is empty for add" in {
 
         val incorrectForm = Map("answer" -> "")
 
-        val result = RoutingQuestionYesNo.form().bind(incorrectForm)
+        val result = RoutingQuestionYesNo.formAdd().bind(incorrectForm)
+
+        result.errors.length mustBe 1
+        result.errors.head mustBe FormError("answer", "declaration.routingQuestion.add.empty")
+      }
+
+      "input is empty for remove" in {
+
+        val incorrectForm = Map("answer" -> "")
+
+        val result = RoutingQuestionYesNo.formRemove().bind(incorrectForm)
+
+        result.errors.length mustBe 1
+        result.errors.head mustBe FormError("answer", "declaration.routingQuestion.remove.empty")
+      }
+
+      "input is empty for first" in {
+
+        val incorrectForm = Map("answer" -> "")
+
+        val result = RoutingQuestionYesNo.formFirst().bind(incorrectForm)
 
         result.errors.length mustBe 1
         result.errors.head mustBe FormError("answer", "declaration.routingQuestion.empty")
@@ -50,7 +70,7 @@ class RoutingQuestionYesNoSpec extends UnitSpec {
 
         val incorrectForm = Map("answer" -> "incorrect")
 
-        val result = RoutingQuestionYesNo.form().bind(incorrectForm)
+        val result = RoutingQuestionYesNo.formFirst().bind(incorrectForm)
 
         result.errors.length mustBe 1
         result.errors.head mustBe FormError("answer", "declaration.routingQuestion.error")
@@ -61,7 +81,7 @@ class RoutingQuestionYesNoSpec extends UnitSpec {
 
       val correctForm = Map("answer" -> "Yes")
 
-      val result = RoutingQuestionYesNo.form().bind(correctForm)
+      val result = RoutingQuestionYesNo.formRemove().bind(correctForm)
 
       result.errors mustBe empty
     }

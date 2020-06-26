@@ -51,7 +51,7 @@ class RoutingCountriesSummaryController @Inject()(
     val countries = findByCodes(countryCodes)
 
     if (countries.nonEmpty) {
-      Ok(routingCountriesSummaryPage(mode, RoutingQuestionYesNo.form().withSubmissionErrors(), countries))
+      Ok(routingCountriesSummaryPage(mode, RoutingQuestionYesNo.formAdd().withSubmissionErrors(), countries))
     } else {
       navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_))
     }
@@ -62,7 +62,7 @@ class RoutingCountriesSummaryController @Inject()(
     val countries = findByCodes(countryCodes.flatMap(_.code))
 
     RoutingQuestionYesNo
-      .form(countryCodes)
+      .formAdd(countryCodes)
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(routingCountriesSummaryPage(mode, formWithErrors, countries)),
@@ -79,7 +79,7 @@ class RoutingCountriesSummaryController @Inject()(
     val isCountryPresentedInCache = request.cacheModel.locations.routingCountries.flatMap(_.code).contains(countryCode)
     val country = services.Countries.countryCodeMap(countryCode)
 
-    if (isCountryPresentedInCache) Ok(removeRoutingCountryPage(mode, RoutingQuestionYesNo.form(), country))
+    if (isCountryPresentedInCache) Ok(removeRoutingCountryPage(mode, RoutingQuestionYesNo.formRemove(), country))
     else navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
   }
 
@@ -87,7 +87,7 @@ class RoutingCountriesSummaryController @Inject()(
     val country = services.Countries.countryCodeMap(countryCode)
 
     RoutingQuestionYesNo
-      .form()
+      .formRemove()
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(removeRoutingCountryPage(mode, formWithErrors, country))),

@@ -43,15 +43,14 @@ class TaricCodeSummaryController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
-      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodesPage(mode, itemId, YesNoAnswer.form().withSubmissionErrors(), taricCodes))
+      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodesPage(mode, itemId, addYesNoForm.withSubmissionErrors(), taricCodes))
       case _                                       => navigator.continueTo(mode, routes.TaricCodeAddController.displayPage(_, itemId))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val taricCodes = request.cacheModel.itemBy(itemId).flatMap(_.taricCodes).getOrElse(List.empty)
-    YesNoAnswer
-      .form()
+    addYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(taricCodesPage(mode, itemId, formWithErrors, taricCodes)),
@@ -62,5 +61,7 @@ class TaricCodeSummaryController @Inject()(
         }
       )
   }
+
+  private def addYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.taricAdditionalCodes.add.answer.empty")
 
 }
