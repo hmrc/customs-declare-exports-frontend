@@ -16,11 +16,10 @@
 
 package services
 
-import utils.FileReader
+import play.api.libs.json.Json
 
 case class HolderOfAuthorisationCode(value: String)
 
 object HolderOfAuthorisationCode {
-  lazy val all: List[HolderOfAuthorisationCode] =
-    FileReader("code-lists/holder-of-authorisation-codes.csv").tail.map(HolderOfAuthorisationCode(_)).sortBy(_.value)
+  implicit val format = Json.format[HolderOfAuthorisationCode]
 }

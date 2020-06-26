@@ -16,6 +16,7 @@
 
 package controllers.declaration
 
+import connectors.CustomsExportsCodelistsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util._
@@ -28,6 +29,7 @@ import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.HolderOfAuthorisationCode
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_add
@@ -39,31 +41,36 @@ class DeclarationHolderAddController @Inject()(
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
+  customsExportsCodelistsConnector: CustomsExportsCodelistsConnector,
   mcc: MessagesControllerComponents,
   declarationHolderPage: declaration_holder_add
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holders = cachedHolders
-    Ok(declarationHolderPage(mode, form(holders.isEmpty).withSubmissionErrors()))
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsExportsCodelistsConnector.authorisationCodes().map { holderCodes =>
+      val holders = cachedHolders
+      Ok(declarationHolderPage(mode, form(holderCodes, holders.isEmpty).withSubmissionErrors(), holderCodes))
+    }
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val holders = cachedHolders
-    val boundForm = form(holders.isEmpty).bindFromRequest()
-    boundForm.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors)))
-      },
-      holder =>
-        if (holder.isComplete)
-          saveHolder(mode, boundForm, holders)
-        else if (holder.isEmpty)
-          continue(mode, holders)
-        else
-          Future.successful(BadRequest(declarationHolderPage(mode, appendMissingFieldErrors(boundForm))))
-    )
+    customsExportsCodelistsConnector.authorisationCodes().flatMap { holderCodes =>
+      val holders = cachedHolders
+      val boundForm = form(holderCodes, holders.isEmpty).bindFromRequest()
+      boundForm.fold(
+        formWithErrors => {
+          Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, holderCodes)))
+        },
+        holder =>
+          if (holder.isComplete)
+            saveHolder(mode, boundForm, holders, holderCodes)
+          else if (holder.isEmpty)
+            continue(mode, holders)
+          else
+            Future.successful(BadRequest(declarationHolderPage(mode, appendMissingFieldErrors(boundForm), holderCodes)))
+      )
+    }
   }
 
   private def appendMissingFieldErrors(form: Form[DeclarationHolder]) = {
@@ -78,13 +85,13 @@ class DeclarationHolderAddController @Inject()(
   private def cachedHolders(implicit request: JourneyRequest[_]) =
     request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
 
-  private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder], cachedData: Seq[DeclarationHolder])(
+  private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder], cachedData: Seq[DeclarationHolder], holderCodes: List[HolderOfAuthorisationCode])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
       .add(boundForm, cachedData, DeclarationHoldersData.limitOfHolders)
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, holderCodes))),
         updatedCache =>
           updateExportsCache(updatedCache)
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage))
