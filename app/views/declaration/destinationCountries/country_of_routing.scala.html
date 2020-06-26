@@ -24,9 +24,7 @@
 @import services.view.AutoCompleteItem
 @import views.Title
 @import views.BackButton
-@import views.components.gds.Styles
-@import scala.collection.immutable
-@import play.twirl.api.HtmlFormat
+@import views.components.gds.Styles._
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -44,20 +42,9 @@
 @(mode: Mode, form: Form[Country], page: CountryPage)(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariff = {
-@components.details(messages("site.details.summary_text_this")) {
-    @Html(messages("declaration.routingQuestion.help.bodyText", components.details_content_link()))
-}
-}
-
-@autocomplete = {
-@components.fields.field_accessible_autocomplete(
-    form("countryCode"),
-    "",
-    None,
-    None,
-    messages("declaration.routingCountry.empty"),
-    AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-)
+    @components.details(messages("site.details.summary_text_this")) {
+        @Html(messages("declaration.routingQuestion.help.bodyText", components.details_content_link()))
+    }
 }
 
 @govukLayout(
@@ -67,21 +54,18 @@
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = HtmlContent(
-                    headingContent(
-                        messages(s"declaration.${page.id}.question"),
-                        Some(messages("declaration.routingCountry.heading"))
-                    )
-                ),
-                classes = Styles.gdsPageLegend
-            )),
-            html = HtmlFormat.fill(immutable.Seq(
-                autocomplete,
-                tariff,
-                saveButtons()
-            ))
-        ))
+        @components.fields.field_accessible_autocomplete_with_header(
+            form("countryCode"),
+            s"declaration.${page.id}.question",
+            Some(gdsPageLabel),
+            Some("declaration.routingCountry.heading"),
+            None,
+            messages("declaration.routingCountry.empty"),
+            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            isPageHeading = true
+        )
+
+        @tariff
+        @saveButtons()
     }
 }

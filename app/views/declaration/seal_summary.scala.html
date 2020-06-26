@@ -90,7 +90,12 @@
             ))
         ))
     else
-        None
+        Some(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.seal.add.another")),
+                classes = "govuk-fieldset__legend--m"
+            ))
+        ))
     ,
     items = Seq(
         RadioItem(
