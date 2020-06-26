@@ -14,14 +14,12 @@
  * limitations under the License.
  *@
 
-@import controllers.navigation.Navigator
 @import controllers.declaration.routes
 @import forms.declaration.countries.Countries._
 @import forms.declaration.countries.Country
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
 @import models.requests.JourneyRequest
-@import services.Countries
 @import services.view.AutoCompleteItem
 @import views.Title
 @import views.BackButton
@@ -42,7 +40,7 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, form: Form[Country], page: CountryPage)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[Country], page: CountryPage, availableCountries: List[services.model.Country])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariff = {
 @components.details(messages("site.details.summary_text_this")) {
@@ -57,7 +55,7 @@
     None,
     None,
     messages("declaration.routingCountry.empty"),
-    AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+    AutoCompleteItem.fromCountry(availableCountries, _.countryCode)
 )
 }
 

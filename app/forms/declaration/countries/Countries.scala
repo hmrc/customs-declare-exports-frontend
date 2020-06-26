@@ -45,28 +45,28 @@ object Countries {
     override val id = "routingCountry"
   }
 
-  private def mapping(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty): Mapping[String] =
+  private def mapping(page: CountryPage, availableCountries: List[services.model.Country], cachedCountries: Seq[Country] = Seq.empty): Mapping[String] =
     text()
       .verifying(s"declaration.${page.id}.empty", _.trim.nonEmpty)
-      .verifying(s"declaration.${page.id}.error", emptyOrValidCountry)
+      .verifying(s"declaration.${page.id}.error", emptyOrValidCountry(availableCountries))
       .verifying(s"declaration.routingCountries.duplication", !cachedCountries.flatMap(_.code).contains(_))
       .verifying(s"declaration.routingCountries.limit", _ => cachedCountries.length < limit)
 
-  private def mandatoryMapping(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty): Mapping[Country] =
-    Forms.mapping("countryCode" -> mapping(page, cachedCountries))(country => if (country.nonEmpty) Country(Some(country)) else Country(None))(
+  private def mandatoryMapping(page: CountryPage, availableCountries: List[services.model.Country], cachedCountries: Seq[Country] = Seq.empty): Mapping[Country] =
+    Forms.mapping("countryCode" -> mapping(page, availableCountries, cachedCountries))(country => if (country.nonEmpty) Country(Some(country)) else Country(None))(
       country => country.code
     )
 
-  private def optionalForm(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty): Mapping[Country] =
-    Forms.mapping("countryCode" -> optional(mapping(page, cachedCountries)))(Country.apply)(Country.unapply)
+  private def optionalForm(page: CountryPage, availableCountries: List[services.model.Country], cachedCountries: Seq[Country] = Seq.empty): Mapping[Country] =
+    Forms.mapping("countryCode" -> optional(mapping(page, availableCountries, cachedCountries)))(Country.apply)(Country.unapply)
 
-  def form(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty)(implicit request: JourneyRequest[_]): Form[Country] =
+  def form(page: CountryPage, availableCountries: List[services.model.Country], cachedCountries: Seq[Country] = Seq.empty)(implicit request: JourneyRequest[_]): Form[Country] =
     request.declarationType match {
-      case CLEARANCE => Form(optionalForm(page, cachedCountries))
-      case _         => Form(mandatoryMapping(page, cachedCountries))
+      case CLEARANCE => Form(optionalForm(page, availableCountries, cachedCountries))
+      case _         => Form(mandatoryMapping(page, availableCountries, cachedCountries))
     }
 
   val limit = 99
 
-  private def emptyOrValidCountry: String => Boolean = input => input.isEmpty || allCountries.exists(_.countryCode == input)
+  private def emptyOrValidCountry(availableCountries: List[services.model.Country]): String => Boolean = input => input.isEmpty || availableCountries.exists(_.countryCode == input)
 }

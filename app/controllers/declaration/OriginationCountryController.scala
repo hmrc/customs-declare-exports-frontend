@@ -16,6 +16,7 @@
 
 package controllers.declaration
 
+import connectors.CustomsExportsCodelistsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.countries.Countries
@@ -36,6 +37,7 @@ class OriginationCountryController @Inject()(
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
+  customsExportsCodelistsConnector: CustomsExportsCodelistsConnector,
   mcc: MessagesControllerComponents,
   originationCountryPage: origination_country
 )(implicit ec: ExecutionContext)
@@ -43,26 +45,30 @@ class OriginationCountryController @Inject()(
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val form = (request.cacheModel.locations.originationCountry match {
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    customsExportsCodelistsConnector.countries().map { countries =>
+      val form = (request.cacheModel.locations.originationCountry match {
       case Some(originateCountry) =>
-        Countries.form(OriginationCountryPage).fill(originateCountry)
-      case None => Countries.form(OriginationCountryPage)
-    }).withSubmissionErrors()
+        Countries.form(OriginationCountryPage, countries).fill(originateCountry)
+          case None => Countries.form(OriginationCountryPage, countries)
+      }).withSubmissionErrors()
 
-    Ok(originationCountryPage(mode, form))
+      Ok(originationCountryPage(mode, form, countries))
+    }
   }
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    Countries
-      .form(OriginationCountryPage)
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(originationCountryPage(mode, formWithErrors))),
-        validCountry =>
-          updateExportsDeclarationSyncDirect(_.updateOriginationCountry(validCountry)).map { _ =>
-            navigator.continueTo(mode, controllers.declaration.routes.DestinationCountryController.displayPage)
-        }
-      )
+    customsExportsCodelistsConnector.countries().flatMap { countries =>
+      Countries
+        .form(OriginationCountryPage, countries)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(originationCountryPage(mode, formWithErrors, countries))),
+          validCountry =>
+            updateExportsDeclarationSyncDirect(_.updateOriginationCountry(validCountry)).map { _ =>
+              navigator.continueTo(mode, controllers.declaration.routes.DestinationCountryController.displayPage)
+            }
+        )
+    }
   }
 }

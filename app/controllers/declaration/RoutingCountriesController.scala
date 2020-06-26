@@ -16,6 +16,7 @@
 
 package controllers.declaration
 
+import connectors.CustomsExportsCodelistsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingQuestionYesNo._
@@ -39,6 +40,7 @@ class RoutingCountriesController @Inject()(
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
+  customsExportsCodelistsConnector: CustomsExportsCodelistsConnector,
   mcc: MessagesControllerComponents,
   routingQuestionPage: routing_country_question,
   countryOfRoutingPage: country_of_routing
@@ -85,34 +87,38 @@ class RoutingCountriesController @Inject()(
     else
       navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
 
-  def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val routingAnswer = request.cacheModel.locations.hasRoutingCountries
-    val page = if (request.cacheModel.locations.routingCountries.nonEmpty) NextRoutingCountryPage else FirstRoutingCountryPage
+  def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsExportsCodelistsConnector.countries().map { availableCountries =>
+      val routingAnswer = request.cacheModel.locations.hasRoutingCountries
+      val page = if (request.cacheModel.locations.routingCountries.nonEmpty) NextRoutingCountryPage else FirstRoutingCountryPage
 
-    routingAnswer match {
-      case Some(answer) if answer => Ok(countryOfRoutingPage(mode, Countries.form(page), page))
-      case _ =>
-        navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_, fastForward = false))
+      routingAnswer match {
+        case Some(answer) if answer => Ok(countryOfRoutingPage(mode, Countries.form(page, availableCountries), page, availableCountries))
+        case _ =>
+          navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_, fastForward = false))
+      }
     }
   }
 
   def submitRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val hasCountriesAdded = request.cacheModel.locations.routingCountries.nonEmpty
-    val cachedCountries = request.cacheModel.locations.routingCountries
-    val page = if (hasCountriesAdded) NextRoutingCountryPage else FirstRoutingCountryPage
+    customsExportsCodelistsConnector.countries().flatMap { availableCountries =>
+      val hasCountriesAdded = request.cacheModel.locations.routingCountries.nonEmpty
+      val cachedCountries = request.cacheModel.locations.routingCountries
+      val page = if (hasCountriesAdded) NextRoutingCountryPage else FirstRoutingCountryPage
 
-    Countries
-      .form(page, cachedCountries)
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, page))),
-        validCountry => {
-          val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
+      Countries
+        .form(page, availableCountries, cachedCountries)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, page, availableCountries))),
+          validCountry => {
+            val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
 
-          updateExportsDeclarationSyncDirect(_.updateCountriesOfRouting(newRoutingCountries)).map { _ =>
-            navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage, mode.isErrorFix)
+            updateExportsDeclarationSyncDirect(_.updateCountriesOfRouting(newRoutingCountries)).map { _ =>
+              navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage, mode.isErrorFix)
+            }
           }
-        }
-      )
+        )
+    }
   }
 }

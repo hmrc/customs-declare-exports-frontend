@@ -16,6 +16,7 @@
 
 package controllers.declaration
 
+import connectors.CustomsExportsCodelistsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.countries.Countries
@@ -37,32 +38,37 @@ class DestinationCountryController @Inject()(
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
+  customsExportsCodelistsConnector: CustomsExportsCodelistsConnector,
   mcc: MessagesControllerComponents,
   destinationCountryPage: destination_country
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val form = (request.cacheModel.locations.destinationCountry match {
-      case Some(destinationCountry) =>
-        Countries.form(DestinationCountryPage).fill(destinationCountry)
-      case None => Countries.form(DestinationCountryPage)
-    }).withSubmissionErrors()
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsExportsCodelistsConnector.countries().map { availableCountries =>
+      val form = (request.cacheModel.locations.destinationCountry match {
+        case Some(destinationCountry) =>
+          Countries.form(DestinationCountryPage, availableCountries).fill(destinationCountry)
+        case None => Countries.form(DestinationCountryPage, availableCountries)
+      }).withSubmissionErrors()
 
-    Ok(destinationCountryPage(mode, form))
+      Ok(destinationCountryPage(mode, form, availableCountries))
+    }
   }
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    Countries
-      .form(DestinationCountryPage)
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(destinationCountryPage(mode, formWithErrors))),
-        validCountry =>
-          updateExportsDeclarationSyncDirect(_.updateDestinationCountry(validCountry)).map { _ =>
-            redirectToNextPage(mode)
-        }
-      )
+    customsExportsCodelistsConnector.countries().flatMap { availableCountries =>
+      Countries
+        .form(DestinationCountryPage, availableCountries)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(destinationCountryPage(mode, formWithErrors, availableCountries))),
+          validCountry =>
+            updateExportsDeclarationSyncDirect(_.updateDestinationCountry(validCountry)).map { _ =>
+              redirectToNextPage(mode)
+            }
+        )
+    }
   }
 
   private def redirectToNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
