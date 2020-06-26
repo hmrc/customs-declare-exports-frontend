@@ -227,7 +227,7 @@ declaration.type.container.summary.help.text = Go to data element 7/10 Container
 
 declaration.type.sealsSummaryText = Go to data element 7/18 Seal Number in the {0}
 
-declaration.type.error = Choose a valid option
+declaration.type.error = Select a declaration type
 
 startPage.title.sectionHeader = Guidance
 startPage.title = Declare goods you’re exporting using the Customs Declaration Service
@@ -273,15 +273,15 @@ timeoutDialog.message = For your security, we will sign you out in
 timeoutDialog.keepAlive.text= Stay signed in
 timeoutDialog.signout.text= Sign out
 
-choicePage.input.error.empty = Choose a valid option
-choicePage.input.error.incorrectValue = Choose a valid option
+choicePage.input.error.empty = Select what you want to do
+choicePage.input.error.incorrectValue = Select what you want to do
 
 supplementary.dispatchLocation.header = Are the goods being sent outside the EU?
 supplementary.dispatchLocation.header.hint = Hint text if needed here
 supplementary.dispatchLocation.inputText.outsideEU = Yes
 supplementary.dispatchLocation.inputText.specialFiscalTerritory = No. They will be sent to a special fiscal territory of the EU or a country with which the EU has formed a customs union
-supplementary.dispatchLocation.inputText.error.empty = Choose a valid dispatch location
-supplementary.dispatchLocation.inputText.error.incorrect = Choose a valid dispatch location
+supplementary.dispatchLocation.inputText.error.empty = Select yes if the goods are being sent outside the EU
+supplementary.dispatchLocation.inputText.error.incorrect = Select yes if the goods are being sent outside the EU
 supplementary.dispatchLocation.summary.heading=EU countries and special fiscal territories
 supplementary.dispatchLocation.summary.euCountries=EU countries:
 supplementary.dispatchLocation.summary.euSpecialFiscalTerritories=EU Special Fiscal Territories:
@@ -311,8 +311,8 @@ declaration.declarationType.inputText.clearance.preLodged = Pre-lodged declarati
 declaration.declarationType.inputText.clearance.preLodged.hint = This is made before the goods have been sent
 declaration.declarationType.inputText.clearance.frontier = Arrived declaration
 declaration.declarationType.inputText.clearance.frontier.hint = This is made when the goods are declared at the port or at a CSE approved location
-declaration.declarationType.inputText.error.empty = Choose a valid declaration type
-declaration.declarationType.inputText.error.incorrect = Choose a valid declaration type
+declaration.declarationType.inputText.error.empty = Select the type needed for this declaration
+declaration.declarationType.inputText.error.incorrect = Select the type needed for this declaration
 
 notEligible.title = You don’t need to use this service
 notEligible.titleLineTwo = service
@@ -424,8 +424,8 @@ declaration.address.postCode = Postcode
 declaration.address.postCode.error = Enter a postcode in the correct format or type 'unknown' if there is no postcode
 declaration.address.postCode.empty = Enter a postcode in the correct format or type 'unknown' if there is no postcode
 declaration.address.country = Country
-declaration.address.country.error = Enter a valid country
-declaration.address.country.empty = Enter a valid country
+declaration.address.country.error = Select a country from the list
+declaration.address.country.empty = Select a country from the list
 
 declaration.namedEntityDetails.error = Enter an EORI or full address details
 declaration.additionalActors.title = Is anyone else involved in exporting these goods?
@@ -516,8 +516,8 @@ declaration.declarationHolder.remove.title = Are you sure you want to remove thi
 
 declaration.originationCountry.title = Which country are the goods being dispatched from?
 declaration.originationCountry.heading = Locations
-declaration.originationCountry.empty = Select a country of origination
-declaration.originationCountry.error = Select a country of origination
+declaration.originationCountry.empty = Select a country of dispatch
+declaration.originationCountry.error = Select a country of dispatch
 
 declaration.destinationCountry.title = What is the final country the goods are destined for?
 declaration.destinationCountry.heading = Locations
@@ -918,8 +918,8 @@ declaration.statisticalValue.header = What is the total cost of exporting these 
 declaration.statisticalValue.header.hint = This includes the amount paid for them or their value, packing, UK inland and coastal transport, dock dues, loading charges and all other costs, charges and expenses.
 declaration.statisticalValue.units = £
 declaration.statisticalValue.units.hint = Enter amount in GBP
-declaration.statisticalValue.error.empty = Enter a statistical value up 15 digits
-declaration.statisticalValue.error.length = Enter a statistical value up 15 digits
+declaration.statisticalValue.error.empty = Enter the total cost, up to 15 digits
+declaration.statisticalValue.error.length = Enter the total cost, up to 15 digits
 declaration.statisticalValue.error.wrongFormat = Enter a statistical value in the correct format
 declaration.statisticalValue.help.bodyText = Go to data element 8/6 Statistical Value in the {0}
 

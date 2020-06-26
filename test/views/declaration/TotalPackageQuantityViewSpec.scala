@@ -58,7 +58,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         }
 
         "display header" in {
-          view.getElementsByClass("govuk-label").first().text() must be("declaration.totalPackageQuantity.title")
+          view.getElementsByTag("h1").first().text() must be("declaration.totalPackageQuantity.title")
         }
 
         "display empty input with label for Total Package" in {

@@ -31,7 +31,7 @@
         govukRadios: GovukRadios,
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         exportsInputText: exportsInputText,
         body: paragraphBody,
         pageTitle: pageTitle,
@@ -59,14 +59,16 @@
     @formHelper(action = routes.UNDangerousGoodsCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.items"))
-
         @govukRadios(Radios(
             name = hasDangerousGoodsCodeKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.unDangerousGoodsCode.header")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.unDangerousGoodsCode.header"),
+                            Some(messages("supplementary.items"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),
@@ -93,7 +95,7 @@
                     checked = form(hasDangerousGoodsCodeKey).value.contains(AllowedUNDangerousGoodsCodeAnswers.no)
                 )
             ),
-            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form(hasDangerousGoodsCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

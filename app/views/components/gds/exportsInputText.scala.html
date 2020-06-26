@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 
-@this(govukInput: GovukInput)
+@this(govukInput: GovukInput, headingContent: headingContent)
 
 @(
         field: Field,
@@ -29,11 +29,19 @@
         headingClasses: String = gdsPageLabel,
         labelClasses: String = "govuk-label--m",
         defaultInputClasses: String = "govuk-!-width-two-thirds",
-        inputClasses: Option[String] = None
+        inputClasses: Option[String] = None,
+        sectionHeaderKey: Option[String] = None
 )(implicit messages: Messages)
 @buildLabel = @{
     if(isPageHeading) {
-        Label(content = Text(messages(labelKey, labelArg)), isPageHeading = true, classes = headingClasses)
+        Label(
+            content = HtmlContent(
+                headingContent(
+                    messages(labelKey, labelArg),
+                    sectionHeaderKey.map(messages(_))
+                )
+            ),
+            classes = headingClasses)
     } else {
         Label(content = Text(messages(labelKey, labelArg)), classes = labelClasses)
     }

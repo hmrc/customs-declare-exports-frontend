@@ -34,7 +34,7 @@
     govukRadios: GovukRadios,
     govukDetails : GovukDetails,
     errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
+    headingContent: headingContent,
     exportsInputText: exportsInputText,
     body: paragraphBody,
     pageTitle: pageTitle,
@@ -57,14 +57,16 @@
     @formHelper(action = TaricCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.items"))
-
         @govukRadios(Radios(
             name = hasTaricCodeKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.taricAdditionalCodes.addfirst.header")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.taricAdditionalCodes.addfirst.header"),
+                            Some(messages("supplementary.items"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),

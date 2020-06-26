@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.navigation.Navigator
 @import controllers.declaration.routes
 @import forms.declaration.countries.Countries._
 @import forms.declaration.countries.Country
@@ -36,7 +35,7 @@
         govukDetails : GovukDetails,
         govukFieldset: GovukFieldset,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         saveButtons: saveButtons,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -68,13 +67,15 @@
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.routingCountry.heading"))
-
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages(s"declaration.${page.id}.question")),
-                classes = Styles.gdsPageLegend,
-                isPageHeading = true
+                content = HtmlContent(
+                    headingContent(
+                        messages(s"declaration.${page.id}.question"),
+                        Some(messages("declaration.routingCountry.heading"))
+                    )
+                ),
+                classes = Styles.gdsPageLegend
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 autocomplete,
