@@ -16,8 +16,6 @@
 
 package forms.declaration
 
-import java.util.UUID
-
 import forms.DeclarationPage
 import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms}
@@ -71,7 +69,7 @@ object PackageInformation extends DeclarationPage {
       "numberOfPackages" -> optional(
         number()
           .verifying("declaration.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper))
-      ).verifying("error.number", isPresent),
+      ).verifying("declaration.packageInformation.numberOfPackages.error", isPresent),
       "shippingMarks" -> optional(
         text()
           .verifying("declaration.packageInformation.shippingMarks.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
