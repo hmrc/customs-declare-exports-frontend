@@ -97,7 +97,11 @@ class PackageInformationSpec extends UnitViewSpec {
         val errorMessages = result.errors.map(_.message)
 
         errorMessages must be(
-          List("declaration.packageInformation.typesOfPackages.empty", "error.number", "declaration.packageInformation.shippingMarks.empty")
+          List(
+            "declaration.packageInformation.typesOfPackages.empty",
+            "declaration.packageInformation.numberOfPackages.error",
+            "declaration.packageInformation.shippingMarks.empty"
+          )
         )
       }
 
