@@ -283,7 +283,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
-
       "user does not want to add another item" should {
 
         "return 303 (SEE_OTHER) and redirect to Transport Leaving the Border page" in {
@@ -301,7 +300,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     }
 
     onJourney(SIMPLIFIED, OCCASIONAL) { request =>
-
       "return 303 (SEE_OTHER) and redirect to Warehouse Identification page" in {
 
         val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))

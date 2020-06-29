@@ -40,6 +40,12 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
         view.getElementsByTag("h1").text() mustBe "declaration.transport.leavingTheBorder.title"
       }
 
+      "display 'Back' button that links to 'Items Summary' page" in {
+        val backButton = view.getElementById("back-link")
+        backButton.text() mustBe messages("site.back")
+        backButton must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage())
+      }
+
       "display 'Save and continue' button on page" in {
         view.getElementById("submit").text() mustBe messages("site.save_and_continue")
       }
@@ -96,12 +102,6 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
   }
 
   onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-    "display 'Back' button that links to 'Supervising Customs Office' page" in {
-      val backButton = view.getElementById("back-link")
-      backButton.text() mustBe messages("site.back")
-      backButton must haveHref(routes.InlandTransportDetailsController.displayPage())
-    }
-
     "display 'Mode of Transport' section" which {
       "not have 'I don't know' option" in {
         view.getElementsByAttributeValue("for", "Border_Empty") mustBe empty
@@ -110,12 +110,6 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
   }
 
   onJourney(CLEARANCE) { implicit request =>
-    "display 'Back' button that links to 'Supervising Customs Office' page" in {
-      val backButton = view.getElementById("back-link")
-      backButton.text() mustBe messages("site.back")
-      backButton must haveHref(routes.SupervisingCustomsOfficeController.displayPage())
-    }
-
     "display 'Mode of Transport' section" which {
       "have 'I don't know' option" in {
         val section = view.getElementById("transportLeavingTheBorder")
@@ -125,5 +119,4 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
       }
     }
   }
-
 }
