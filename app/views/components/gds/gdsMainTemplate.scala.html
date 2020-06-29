@@ -20,6 +20,8 @@
 @import views.html.components.gds.timeoutDialog
 @import config.TimeoutDialogConfig
 @import models.requests.AuthenticatedRequest
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable.Seq
 
 @this(
         govukHeader: GovukHeader,
@@ -71,14 +73,20 @@
     @if(useTimeoutDialog) {
         @timeoutDialog(request.uri, timeoutDialogConfig.timeout, timeoutDialogConfig.countdown)
     }
+}
 
+@content = {
+  <div class="govuk-back-link-div">
     @backButton.map(back =>
         govukBackLink(BackLink(
         content = Text(back.title),
         attributes = Map("id" -> "back-link"),
         classes = "govuk-!-display-none-print",
         href = back.call.url
-    )))
+        ))
+    )
+  </div>
+  @contentBlock
 }
 
 @footer = @{
@@ -98,7 +106,7 @@
     scriptsBlock = Some(scripts),
     headerBlock = Some(siteHeader()),
     footerItems = footer
-  )(contentBlock)
+  )(content)
 } else {
   @govukLayout(
     pageTitle = Some(title.toString),
@@ -108,7 +116,7 @@
     scriptsBlock = Some(scripts),
     headerBlock = Some(siteHeader()),
     footerItems = footer
-  )(contentBlock)
+  )(content)
 }
 
 <script src='@routes.Assets.versioned("javascripts/preventMultipleFormSubmissions.js")'></script>
