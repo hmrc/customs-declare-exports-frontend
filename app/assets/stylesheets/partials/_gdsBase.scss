@@ -50,3 +50,17 @@ from the view and the page (url/page number, etc.)
     .govuk-summary-list__key { width: 40%; }
   }
 }
+
+/*
+====================================
+CSS to support moving back-link into the main-content block (for keyboard navigation)
+Removes the padding at the top of the standard govuk-main-wrapper and creates a new
+govuk-back-link-div class to add that space below (or instead of) the back-link
+====================================
+*/
+.govuk-main-wrapper {
+  padding-top: 0px;
+}
+.govuk-back-link-div {
+  margin-bottom: 40px;
+}
