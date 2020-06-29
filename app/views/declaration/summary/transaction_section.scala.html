@@ -24,15 +24,15 @@
         related_documents: related_documents
 )
 
-@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @hasTransactionData(declarationData: ExportsDeclaration) = @{
    declarationData.totalNumberOfItems.isDefined || declarationData.natureOfTransaction.isDefined || declarationData.previousDocuments.isDefined
 }
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print) None
-    else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @if(hasTransactionData(declarationData)) {
@@ -118,7 +118,7 @@
     )
 
     @declarationData.previousDocuments.map(previousDocuments =>
-        related_documents(mode, previousDocuments.documents)
+        related_documents(mode, previousDocuments.documents, actionsEnabled)
     )
 }
 

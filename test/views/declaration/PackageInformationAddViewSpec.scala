@@ -118,7 +118,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
         view must containErrorElementWithTagAndHref("a", "#shippingMarks")
 
         view must containErrorElementWithMessage(realMessages("declaration.packageInformation.typesOfPackages.empty"))
-        view must containErrorElementWithMessage(realMessages("error.number"))
+        view must containErrorElementWithMessage(realMessages("declaration.packageInformation.numberOfPackages.error"))
         view must containErrorElementWithMessage(realMessages("declaration.packageInformation.shippingMarks.empty"))
       }
 

@@ -32,7 +32,7 @@ class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
     "validate - no answer" in {
       val incorrectWarehouseDetails = formData("", "")
 
-      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain("error.yesNo.required")
+      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain("declaration.warehouse.identification.answer.error")
     }
 
     "validate - more than 35 characters after type code" in {

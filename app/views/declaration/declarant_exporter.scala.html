@@ -27,7 +27,7 @@
 @this(
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
+    headingContent: headingContent,
     govukRadios: GovukRadios,
     exportsInputText: exportsInputText,
     govukDetails : GovukDetails,
@@ -45,14 +45,16 @@
     @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.consignmentReferences.heading"))
-
         @govukRadios(Radios(
             name = answerKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.declarant.exporter.title", request.eori)),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.declarant.exporter.title"),
+                            Some(messages("supplementary.consignmentReferences.heading"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),

@@ -22,7 +22,6 @@ import controllers.util.{FormAction, Remove}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import forms.declaration.{ContainerAdd, ContainerFirst}
-import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
@@ -41,7 +40,6 @@ class TransportContainerController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
-  errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   addFirstPage: transport_container_add_first,
@@ -76,7 +74,7 @@ class TransportContainerController @Inject()(
 
   def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.containers match {
-      case containers if containers.nonEmpty => Ok(summaryPage(mode, YesNoAnswer.form().withSubmissionErrors(), containers))
+      case containers if containers.nonEmpty => Ok(summaryPage(mode, addAnotherContainerYesNoForm.withSubmissionErrors(), containers))
       case _ =>
         navigator.continueTo(mode, routes.TransportContainerController.displayAddContainer)
     }
@@ -93,7 +91,7 @@ class TransportContainerController @Inject()(
   def displayContainerRemove(mode: Mode, containerId: String): Action[AnyContent] =
     (authenticate andThen journeyType) { implicit request =>
       request.cacheModel.containerBy(containerId) match {
-        case Some(container) => Ok(removePage(mode, YesNoAnswer.form(), container))
+        case Some(container) => Ok(removePage(mode, removeContainerYesNoForm, container))
         case _               => navigator.continueTo(mode, routes.TransportContainerController.displayContainerSummary)
       }
     }
@@ -137,6 +135,10 @@ class TransportContainerController @Inject()(
     }
   }
 
+  private def addAnotherContainerYesNoForm: Form[YesNoAnswer] =
+    YesNoAnswer.form(errorKey = "declaration.transportInformation.container.another.empty")
+  private def removeContainerYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.transportInformation.container.remove.empty")
+
   private def duplication(id: String, cachedData: Seq[Container]): Seq[FormError] =
     if (cachedData.exists(_.id == id)) Seq(FormError("", "supplementary.duplication")) else Seq.empty
 
@@ -144,7 +146,7 @@ class TransportContainerController @Inject()(
     if (cachedData.length >= limit) Seq(FormError("", "supplementary.limit")) else Seq.empty
 
   private def addContainerAnswer(mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
-    form()
+    addAnotherContainerYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers))),
@@ -158,7 +160,7 @@ class TransportContainerController @Inject()(
       )
 
   private def removeContainerAnswer(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) =
-    form()
+    removeContainerYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) =>

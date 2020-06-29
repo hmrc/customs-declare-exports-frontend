@@ -54,7 +54,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
       s"display page question for ${request.declarationType}" in {
 
-        view(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.destinationCountry.title")
+        view(request).getElementsByTag("h1").text() mustBe messages("declaration.destinationCountry.title")
       }
 
       s"display page heading for ${request.declarationType}" in {

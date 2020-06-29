@@ -29,22 +29,24 @@
         summaryList: summary_list
 )
 
-@(mode: Mode, documents: Seq[Document])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, documents: Seq[Document], actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @change(document: Document) = {
     @{
-        if(mode == Mode.Print) ""
-        else changeLink(
+        if(actionsEnabled)
+            changeLink(
             messages("site.change"),
             Some(messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference)),
             controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(mode)
         )
+      else
+        ""
     }
 }
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print) None
-    else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @if(documents.isEmpty) {

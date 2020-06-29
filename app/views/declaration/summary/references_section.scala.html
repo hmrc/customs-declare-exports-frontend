@@ -21,11 +21,11 @@
 
 @this(summaryList: summary_list)
 
-@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @actions(action: Actions) = @{
-  if(mode == Mode.Print) None
-  else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @summaryList("declaration-references-summary", Some(messages("declaration.summary.references")), Seq(

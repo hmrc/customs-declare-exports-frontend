@@ -29,7 +29,7 @@ import views.html.declaration.destinationCountries.routing_country_question
 class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val countryOfDestination = "Poland"
-  val form: Form[Boolean] = RoutingQuestionYesNo.form()
+  val form: Form[Boolean] = RoutingQuestionYesNo.formAdd()
   val routingQuestionPage = instanceOf[routing_country_question]
   val view = routingQuestionPage(Mode.Normal, form, countryOfDestination)(journeyRequest(), messages)
 
@@ -41,7 +41,6 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
       messages must haveTranslationFor("declaration.routingQuestion.title")
       messages must haveTranslationFor("declaration.routingQuestion.heading")
       messages must haveTranslationFor("declaration.routingQuestion.empty")
-      messages must haveTranslationFor("declaration.routingQuestion.error")
       messages must haveTranslationFor("site.details.summary_text_this")
     }
 

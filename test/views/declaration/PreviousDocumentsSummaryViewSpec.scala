@@ -90,9 +90,9 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
 
         val view = createView(request = request)
 
-        view.getElementsByClass("govuk-table__header").get(0).text() mustBe "declaration.previousDocuments.documentType.label"
-        view.getElementsByClass("govuk-table__header").get(1).text() mustBe "declaration.previousDocuments.documentReference.label"
-        view.getElementsByClass("govuk-table__header").get(2).text() mustBe "declaration.previousDocuments.goodsItemIdentifier.label"
+        view.getElementsByClass("govuk-table__header").get(0).text() mustBe "declaration.previousDocuments.documentType.summary.label"
+        view.getElementsByClass("govuk-table__header").get(1).text() mustBe "declaration.previousDocuments.documentReference.summary.label"
+        view.getElementsByClass("govuk-table__header").get(2).text() mustBe "declaration.previousDocuments.goodsItemIdentifier.summary.label"
       }
 
       "display documents in table" in {

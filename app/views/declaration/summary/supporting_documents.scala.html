@@ -39,18 +39,20 @@
 
 @change() = {
     @{
-        if(mode == Mode.Print || !actionsEnabled) ""
-        else changeLink(
-            messages("site.change"),
-            Some(messages("declaration.summary.items.item.supportingDocuments.change", itemNo)),
-            controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
-        )
+        if(actionsEnabled)
+            changeLink(
+                messages("site.change"),
+                Some(messages("declaration.summary.items.item.supportingDocuments.change", itemNo)),
+                controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
+            )
+        else
+            ""
     }
 }
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print || !actionsEnabled) None
-    else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @if(supportingDocuments.nonEmpty){

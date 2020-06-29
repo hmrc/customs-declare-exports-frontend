@@ -76,34 +76,7 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
 
     "display additional information without change buttons" when {
 
-      "mode is Print" in {
-
-        val view = section(Mode.Print, "itemId", 1, data)(messages, journeyRequest())
-        val table = view.getElementById("additional-information-1-table")
-
-        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalInformation")
-
-        table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.additionalInformation.code")
-        table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages(
-          "declaration.summary.items.item.additionalInformation.information"
-        )
-
-        val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
-        row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "12345"
-        row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description1"
-        val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2)
-        row1ChangeLink.attr("href") mustBe empty
-        row1ChangeLink.text() mustBe empty
-
-        val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-        row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "23456"
-        row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description2"
-        val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2)
-        row2ChangeLink.attr("href") mustBe empty
-        row2ChangeLink.text() mustBe empty
-      }
-
-      "actionsEnabled flag is false" in {
+      "actionsEnabled is false" in {
 
         val view = section(Mode.Normal, "itemId", 1, data, actionsEnabled = false)(messages, journeyRequest())
         val table = view.getElementById("additional-information-1-table")
@@ -129,6 +102,7 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
         row2ChangeLink.attr("href") mustBe empty
         row2ChangeLink.text() mustBe empty
       }
+
     }
   }
 }

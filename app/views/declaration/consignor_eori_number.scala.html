@@ -30,7 +30,7 @@
         govukRadios: GovukRadios,
         exportsInputText: exportsInputText,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         saveButtons: saveButtons,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -52,14 +52,16 @@
     @formHelper(action = controllers.declaration.routes.ConsignorEoriNumberController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.summary.parties.header"))
-
         @govukRadios(Radios(
             name = "hasEori",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.consignorEori.title")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.consignorEori.title"),
+                            Some(messages("declaration.summary.parties.header"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),

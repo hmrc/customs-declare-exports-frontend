@@ -32,7 +32,6 @@
     errorSummary: errorSummary,
     pageTitle: pageTitle,
     exportsInputText: exportsInputText,
-    sectionHeader: sectionHeader,
     tariffDetails: tariffDetails,
     saveButtons: saveButtons,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -50,14 +49,13 @@
     @formHelper(action = TotalPackageQuantityController.saveTotalPackageQuantity(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.items"))
-
         @exportsInputText(
             labelKey = "declaration.totalPackageQuantity.title",
             field = form("totalPackage"),
             isPageHeading = true,
             headingClasses = gdsPageLabel,
-            inputClasses = Some("govuk-input--width-10")
+            inputClasses = Some("govuk-input--width-10"),
+            sectionHeaderKey = Some("supplementary.items")
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

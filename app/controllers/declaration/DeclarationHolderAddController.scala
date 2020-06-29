@@ -67,7 +67,7 @@ class DeclarationHolderAddController @Inject()(
   }
 
   private def appendMissingFieldErrors(form: Form[DeclarationHolder]) = {
-    val missingEori = if (form.data("eori").isEmpty) Some(FormError("eori", "declaration.declarationHolder.eori.empty")) else None
+    val missingEori = if (form.data("eori").isEmpty) Some(FormError("eori", "declaration.eori.empty")) else None
     val missingCode =
       if (form.data("authorisationTypeCode").isEmpty)
         Some(FormError("authorisationTypeCode", "declaration.declarationHolder.authorisationCode.empty"))

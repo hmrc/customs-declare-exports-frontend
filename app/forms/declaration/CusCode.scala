@@ -57,7 +57,7 @@ object CusCode extends DeclarationPage {
 
   val mapping =
     Forms.mapping(
-      hasCusCodeKey -> requiredRadio("error.yesNo.required"),
+      hasCusCodeKey -> requiredRadio("declaration.cusCode.answer.empty"),
       cusCodeKey -> mandatoryIfEqual(
         hasCusCodeKey,
         yes,

@@ -44,14 +44,13 @@
 
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.seal.section"))
-
         @exportsInputText(
             field = form("id"),
             labelKey = "declaration.seal.title",
             labelArg = containerId,
             isPageHeading = true,
-            inputClasses = Some("govuk-input--width-20")
+            inputClasses = Some("govuk-input--width-20"),
+            sectionHeaderKey = Some("declaration.seal.section")
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

@@ -35,9 +35,13 @@ object RoutingQuestionYesNo {
 
   val allowedValues: Seq[String] = Seq(yes, no)
 
-  def form(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] = Form(
+  def formFirst(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] = form("declaration.routingQuestion.empty", cachedCountries)
+  def formAdd(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] = form("declaration.routingQuestion.add.empty", cachedCountries)
+  def formRemove(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] = form("declaration.routingQuestion.remove.empty", cachedCountries)
+
+  private def form(errorMessage: String, cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] = Form(
     Forms.mapping(
-      "answer" -> requiredRadio("declaration.routingQuestion.empty")
+      "answer" -> requiredRadio(errorMessage)
         .verifying("declaration.routingQuestion.error", isContainedIn(allowedValues))
         .verifying(s"declaration.routingCountries.limit", answer => answer == no || cachedCountries.length < Countries.limit)
     )(answer => if (answer == yes) true else false)(answer => if (answer) Some(yes) else Some(no))

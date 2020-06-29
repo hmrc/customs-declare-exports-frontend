@@ -32,7 +32,7 @@
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         saveButtons: saveButtons,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -50,14 +50,16 @@
     @formHelper(action = TransportLeavingTheBorderController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.transportInformation.title"))
-
         @govukRadios(Radios(
             name = "transportLeavingTheBorder",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.transport.leavingTheBorder.title")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.transport.leavingTheBorder.title"),
+                            Some(messages("declaration.transportInformation.title"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),

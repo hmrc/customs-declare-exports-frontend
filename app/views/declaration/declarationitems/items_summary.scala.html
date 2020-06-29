@@ -35,6 +35,7 @@
   addAnotherQuestion: addAnotherQuestion,
   saveButtons: saveButtons,
   removeButton: removeButton,
+  link: link,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -48,15 +49,6 @@
 @addButtonMessage = @{
     if(items.isEmpty) { messages("site.add.item") }
     else { messages("site.add.anotherItem") }
-}
-
-@changeLink(item: ExportItem) = {
-    <a class="govuk-link" href="@routes.ProcedureCodesController.displayPage(mode, item.id).url">
-        @messages("site.change")
-        <span class="govuk-visually-hidden">
-            @messages("declaration.itemsAdd.change.hint", item.sequenceId)
-        </span>
-    </a>
 }
 
 @noOfPackagesSection(item: ExportItem) = {
@@ -107,14 +99,19 @@
                         attributes = Map("id" -> s"item_$index--package_count")
                     ),
                     TableRow(
-                        content = HtmlContent(changeLink(item).toString()),
+                        content = HtmlContent(link(
+                            messages("site.change"),
+                            Some(messages("declaration.itemsAdd.change.hint", item.sequenceId)),
+                            routes.ProcedureCodesController.displayPage(mode, item.id))),
+                        classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"item_$index--change")
                     ),
                     TableRow(
-                        content = HtmlContent(removeButton(
-                            href = Some(routes.ItemsSummaryController.displayRemoveItemConfirmationPage(mode, item.id).url),
-                            hiddenLabel = Some(messages("declaration.itemsAdd.remove.hint", item.sequenceId))
-                        )),
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            Some(messages("declaration.itemsAdd.remove.hint", item.sequenceId)),
+                            routes.ItemsSummaryController.displayRemoveItemConfirmationPage(mode, item.id))),
+                        classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"item_$index--remove")
                     )
                 )

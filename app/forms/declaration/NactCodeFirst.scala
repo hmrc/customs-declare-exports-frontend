@@ -49,7 +49,7 @@ object NactCodeFirst extends DeclarationPage {
     }
 
   val mapping = Forms.mapping(
-    hasNactCodeKey -> requiredRadio("error.yesNo.required"),
+    hasNactCodeKey -> requiredRadio("declaration.nationalAdditionalCode.answer.empty"),
     nactCodeKey -> mandatoryIfEqual(
       hasNactCodeKey,
       YesNoAnswers.yes,

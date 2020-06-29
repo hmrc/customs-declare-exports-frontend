@@ -14,9 +14,17 @@
  * limitations under the License.
  *@
 
-@import services.view.AutoCompleteItem
-@import views.html.components.fields.field_accessible_autocomplete_with_header
+@this(sectionHeader: sectionHeader)
 
-@(field: Field, label: String, labelClass: Option[String], hintText: Option[String], emptySelectValue: String, items: List[AutoCompleteItem], args: (Symbol, Any)*)(implicit messages: Messages)
+@(pageHeading: String, sectionHeading: Option[String], classes: String = "govuk-fieldset__heading")
 
-@field_accessible_autocomplete_with_header(field, label, labelClass, None, hintText, emptySelectValue, items, false, args:_*)
+
+@sectionHeading.map(
+ sectionHeader(_)
+)
+
+<h1 class="@classes">
+ @pageHeading
+</h1>
+
+

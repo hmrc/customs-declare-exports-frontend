@@ -19,9 +19,7 @@
 @import models.requests.JourneyRequest
 @import views.Title
 @import views.html.components.gds.gdsMainTemplate
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukDetails
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.Radios
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Legend
@@ -29,10 +27,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Fieldset
 @import views.components.gds.Styles.gdsPageLegend
-@import views.html.components.gds.errorSummary
-@import views.html.components.gds.sectionHeader
-@import views.html.components.gds.saveButtons
-@import views.html.components.gds.tariffDetails
+@import views.html.components.gds._
 @import views.BackButton
 
 @this(
@@ -41,7 +36,7 @@
         govukRadios: GovukRadios,
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         saveButtons: saveButtons,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -59,14 +54,16 @@
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingAnswer(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.routingQuestion.heading"))
-
         @govukRadios(Radios(
             name = "answer",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.routingQuestion.title", countryOfDestination)),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.routingQuestion.title", countryOfDestination),
+                            Some(messages("declaration.routingQuestion.heading"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),

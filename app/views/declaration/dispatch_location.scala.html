@@ -30,7 +30,7 @@
         govukRadios: GovukRadios,
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         saveAndContinue: saveAndContinue,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -53,14 +53,16 @@
     @formHelper(action = controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.summary.locations.header"))
-
         @govukRadios(Radios(
             name = "dispatchLocation",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("supplementary.dispatchLocation.header")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("supplementary.dispatchLocation.header"),
+                            Some(messages("declaration.summary.locations.header"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),
@@ -78,7 +80,7 @@
                     checked = form("dispatchLocation").value.contains(SpecialFiscalTerritory)
                 )
             ),
-            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("dispatchLocation").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
          @govukDetails(Details(

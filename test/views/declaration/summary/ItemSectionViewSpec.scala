@@ -226,9 +226,9 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
       }
     }
 
-    "actions are disabled using Mode.Print" should {
+    "actions are disabled using actionsEnabled = false" should {
 
-      val view = itemSection(Mode.Print, itemWithAnswers)(messages, journeyRequest())
+      val view = itemSection(Mode.Normal, itemWithAnswers, actionsEnabled = false)(messages, journeyRequest())
 
       "have item header" in {
 

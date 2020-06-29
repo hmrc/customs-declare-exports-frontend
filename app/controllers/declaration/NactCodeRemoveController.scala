@@ -45,12 +45,12 @@ class NactCodeRemoveController @Inject()(
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
   def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    Ok(nactCodeRemove(mode, itemId, code, YesNoAnswer.form().withSubmissionErrors()))
+    Ok(nactCodeRemove(mode, itemId, code, removeYesNoForm.withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async {
     implicit request =>
-      form()
+      removeYesNoForm
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(nactCodeRemove(mode, itemId, code, formWithErrors))),
@@ -60,11 +60,13 @@ class NactCodeRemoveController @Inject()(
                 updateExportsCache(itemId, code)
                   .map(_ => navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
               case YesNoAnswers.no =>
-                Future.successful(navigator.continueTo(Mode.Normal, routes.NactCodeSummaryController.displayPage(_, itemId)))
+                Future.successful(navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
             }
           }
         )
   }
+
+  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.nationalAdditionalCode.remove.answer.empty")
 
   private def updateExportsCache(itemId: String, nactCodeToRemove: String)(
     implicit request: JourneyRequest[AnyContent]

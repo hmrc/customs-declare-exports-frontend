@@ -48,15 +48,14 @@ class NactCodeSummaryController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
-      case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodesPage(mode, itemId, YesNoAnswer.form().withSubmissionErrors(), nactCodes))
+      case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodesPage(mode, itemId, anotherYesNoForm.withSubmissionErrors(), nactCodes))
       case _                                     => navigator.continueTo(mode, routes.NactCodeAddController.displayPage(_, itemId))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val nactCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(List.empty)
-    YesNoAnswer
-      .form()
+    anotherYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(nactCodesPage(mode, itemId, formWithErrors, nactCodes)),
@@ -67,6 +66,8 @@ class NactCodeSummaryController @Inject()(
         }
       )
   }
+
+  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.nationalAdditionalCode.add.answer.empty")
 
 }
 

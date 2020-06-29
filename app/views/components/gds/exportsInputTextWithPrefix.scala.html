@@ -14,7 +14,9 @@
  * limitations under the License.
  *@
 
-@this()
+@import views.html.helper.FieldElements
+
+@this(sectionHeader: sectionHeader)
 
 @(
         field: Field,
@@ -25,11 +27,28 @@
         inputClass: String = "govuk-input",
         hintKey: Option[String] = None,
         prefixLabelKey: Option[String] = None,
-        prefixClass: String = "inputBefore"
+        prefixClass: String = "inputBefore",
+        sectionHeaderKey: Option[String] = None
 )(implicit messages: Messages)
 
-<div class="govuk-form-group">
+@inputClasses = @{
+ if(field.hasErrors) s"$inputClass govuk-input--error" else inputClass
+}
+
+@groupClasses = @{
+ if(field.hasErrors) "govuk-form-group govuk-form-group--error" else "govuk-form-group"
+}
+
+@allErrors = @{
+ FieldElements(field.id, field, null, Map.empty, messages).errors
+}
+
+
+<div class="@groupClasses" >
  @if(isPageHeading) {
+  @sectionHeaderKey.map( key =>
+   sectionHeader(messages(key))
+  )
   <h1 class="govuk-label-wrapper">
  }
 
@@ -46,6 +65,9 @@
    @messages(hint)
   </span>
  }
+
+ @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@error</span> }
+
  <span id=@{s"${field.id}-before"} class="@{s"govuk-body $prefixClass"}" aria-label="@prefixLabelKey.map(messages(_)).getOrElse("")">@messages(prefixKey)</span>
- <input class="@inputClass" value="@field.value" id=@field.id name=@field.id type="text" aria-describedby=@{s"${field.id}-hint"}>
+ <input class="@inputClasses" value="@field.value" id=@field.id name=@field.id type="text" aria-describedby=@{s"${field.id}-hint"}>
 </div>

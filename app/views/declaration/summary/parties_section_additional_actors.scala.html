@@ -28,11 +28,11 @@
         summaryList: summary_list
 )
 
-@(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors], actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print) None
-    else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @actorPartyType(actor: DeclarationAdditionalActors) = @{
@@ -45,12 +45,14 @@
 
 @change(actor: DeclarationAdditionalActors) = {
     @{
-        if(mode == Mode.Print) ""
-        else changeLink(
-            messages("site.change"),
-            Some(messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor))),
-            controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(mode)
-        )
+        if(actionsEnabled)
+            changeLink(
+                messages("site.change"),
+                Some(messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor))),
+                controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(mode)
+            )
+        else
+            ""
     }
 }
 

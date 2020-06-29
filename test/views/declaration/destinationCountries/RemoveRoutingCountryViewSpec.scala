@@ -31,7 +31,7 @@ import views.html.declaration.destinationCountries.remove_routing_country
 class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val country = Country("Poland", "PL")
-  val form: Form[Boolean] = RoutingQuestionYesNo.form()
+  val form: Form[Boolean] = RoutingQuestionYesNo.formRemove()
 
   val removeRoutingCountryPage = instanceOf[remove_routing_country]
   val view = removeRoutingCountryPage(Mode.Normal, form, country)(journeyRequest(), messages)

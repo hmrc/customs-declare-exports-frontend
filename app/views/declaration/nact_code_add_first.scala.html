@@ -34,7 +34,7 @@
     govukRadios: GovukRadios,
     govukDetails : GovukDetails,
     errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
+    headingContent: headingContent,
     exportsInputText: exportsInputText,
     body: paragraphBody,
     pageTitle: pageTitle,
@@ -58,14 +58,16 @@
     @formHelper(action = NactCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.items"))
-
         @govukRadios(Radios(
             name = hasNactCodeKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.nationalAdditionalCode.addfirst.header")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.nationalAdditionalCode.addfirst.header"),
+                            Some(messages("supplementary.items"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),

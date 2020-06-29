@@ -47,7 +47,7 @@ class AdditionalActorsRemoveController @Inject()(
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findActor(id) match {
-      case Some(actor) => Ok(removePage(mode, id, actor, YesNoAnswer.form().withSubmissionErrors()))
+      case Some(actor) => Ok(removePage(mode, id, actor, removeYesNoForm.withSubmissionErrors()))
       case _           => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage)
     }
   }
@@ -55,7 +55,7 @@ class AdditionalActorsRemoveController @Inject()(
   def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findActor(id) match {
       case Some(actor) =>
-        form()
+        removeYesNoForm
           .bindFromRequest()
           .fold(
             (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, id, actor, formWithErrors))),
@@ -65,13 +65,15 @@ class AdditionalActorsRemoveController @Inject()(
                   updateExportsCache(actor)
                     .map(_ => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
                 case YesNoAnswers.no =>
-                  Future.successful(navigator.continueTo(Mode.Normal, routes.AdditionalActorsSummaryController.displayPage))
+                  Future.successful(navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
               }
             }
           )
       case _ => Future.successful(navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
     }
   }
+
+  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalActors.remove.empty")
 
   private def findActor(id: String)(implicit request: JourneyRequest[AnyContent]): Option[DeclarationAdditionalActors] =
     ListItem.findById(id, request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty))

@@ -22,6 +22,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
 import models.Mode
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -38,7 +39,7 @@ class PreviousDocumentsSummaryController @Inject()(
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val form = YesNoAnswer.form().withSubmissionErrors()
+    val form = anotherYesNoForm.withSubmissionErrors()
     request.cacheModel.previousDocuments.map(_.documents) match {
       case Some(documents) if documents.nonEmpty => Ok(previousDocumentsSummary(mode, form, documents))
       case _                                     => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage)
@@ -48,8 +49,7 @@ class PreviousDocumentsSummaryController @Inject()(
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val previousDocuments = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty)
 
-    YesNoAnswer
-      .form()
+    anotherYesNoForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(previousDocumentsSummary(mode, formWithErrors, previousDocuments)),
@@ -60,4 +60,6 @@ class PreviousDocumentsSummaryController @Inject()(
         }
       )
   }
+
+  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.previousDocuments.add.another.empty")
 }

@@ -39,18 +39,20 @@
 
 @change(information: AdditionalInformation) = {
     @{
-        if(mode == Mode.Print || !actionsEnabled) ""
-        else changeLink(
-            messages("site.change"),
-            Some(messages("declaration.summary.items.item.additionalInformation.change", itemNo)),
-            controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
-        )
+        if(actionsEnabled)
+            changeLink(
+                messages("site.change"),
+                Some(messages("declaration.summary.items.item.additionalInformation.change", itemNo)),
+                controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
+            )
+        else
+            ""
     }
 }
 
 @actions(action: Actions) = @{
-    if(mode == Mode.Print || !actionsEnabled) None
-    else Some(action)
+    if(actionsEnabled) Some(action)
+    else None
 }
 
 @if(additionalInformation.nonEmpty){

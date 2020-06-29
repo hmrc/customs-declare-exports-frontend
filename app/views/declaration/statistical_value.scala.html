@@ -51,9 +51,6 @@
     @formHelper(action = routes.StatisticalValueController.submitItemType(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.items"))
-
-
         @inputTextUnits(
             field = form("statisticalValue"),
             labelKey = "declaration.statisticalValue.header",
@@ -63,7 +60,8 @@
             inputClass = "currency-prefix govuk-input govuk-input--width-10",
             hintKey = Some("declaration.statisticalValue.header.hint"),
             prefixLabelKey = Some("declaration.statisticalValue.units.hint"),
-            prefixClass = "currency-prefix"
+            prefixClass = "currency-prefix",
+            sectionHeaderKey = Some("supplementary.items")
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

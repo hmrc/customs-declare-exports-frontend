@@ -48,13 +48,13 @@
 
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.transportInformation.containers.section"))
-
         @exportsInputText(
             field = form(containerIdKey),
             labelKey = "declaration.transportInformation.containers.add.title",
             isPageHeading = true,
-            inputClasses = Some("govuk-input--width-20")
+            inputClasses = Some("govuk-input--width-20"),
+            sectionHeaderKey = Some("declaration.transportInformation.containers.section")
+
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

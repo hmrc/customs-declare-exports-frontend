@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.59
+// @version      1.60
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -549,7 +549,7 @@ function natureOfTransaction(){
 }
 
 function previousDocuments(){
-    if (currentPageIs('/customs-declare-exports/declaration/add-previous-documents')) {
+    if (currentPageIs('/customs-declare-exports/declaration/add-previous-document')) {
         switch(getDeclaration()){
             case 'C':
             case 'D':
@@ -561,7 +561,7 @@ function previousDocuments(){
                 break;
             case 'J':
                 selectRadioOptionFromInputs(document.getElementsByName("documentCategory"), 1);
-                selectFromAutoPredict(document.getElementById('documentType-container'), "IF3");
+                selectFromAutoPredict(document.getElementById('documentType'), "IF3");
                 document.getElementById('documentReference').value ='101SHIP2';
                 break;
             default:
@@ -1033,6 +1033,7 @@ function completeJourney() {
     totalNumberOfPackages();
     natureOfTransaction();
     previousDocuments();
+    previousDocumentsSummary();
 
     // items
     addFirstItem();

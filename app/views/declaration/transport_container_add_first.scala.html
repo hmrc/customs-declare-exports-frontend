@@ -31,7 +31,7 @@
         govukRadios: GovukRadios,
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
+        headingContent: headingContent,
         exportsInputText: exportsInputText,
         body: paragraphBody,
         pageTitle: pageTitle,
@@ -53,14 +53,16 @@
     @formHelper(action = TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.transportInformation.containers.section"))
-
         @govukRadios(Radios(
             name = hasContainerKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.transportInformation.containers.first.title")),
-                    isPageHeading = true,
+                    content = HtmlContent(
+                        headingContent(
+                            messages("declaration.transportInformation.containers.first.title"),
+                            Some(messages("declaration.transportInformation.containers.section"))
+                        )
+                    ),
                     classes = gdsPageLegend
                 ))
             )),
