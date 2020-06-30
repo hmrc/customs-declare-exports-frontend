@@ -42,7 +42,7 @@
 @(mode: Mode, form: Form[YesNoAnswer], item: ExportItem)(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title(messages("declaration.itemsRemove.title"), "supplementary.items"),
+    title = Title(messages("declaration.itemsRemove.title", item.sequenceId.toString), "supplementary.items"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RemoveItem, mode)))) {
 
     @formHelper(action = routes.ItemsSummaryController.removeItem(mode, item.id), 'autoComplete -> "off") {
@@ -53,7 +53,7 @@
 
       @govukFieldset(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("declaration.itemsRemove.title")),
+          content = Text(messages("declaration.itemsRemove.title", item.sequenceId.toString)),
           classes = gdsPageLegend,
           isPageHeading = true
         )),
