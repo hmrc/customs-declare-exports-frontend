@@ -53,6 +53,8 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
   private val simplifiedCacheModel = aDeclaration(withType(DeclarationType.SIMPLIFIED))
 
+  private val clearanceCacheModel = aDeclaration(withType(DeclarationType.CLEARANCE))
+
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
@@ -185,7 +187,33 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         status(result) mustBe BAD_REQUEST
       }
     }
+    "we are on clearance declaration journey" should {
 
+      "redirect to Departure Transport" in {
+        withNewCaching(clearanceCacheModel)
+
+        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+
+        result mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage()
+      }
+
+      "update cache after successful bind" in {
+        withNewCaching(clearanceCacheModel)
+
+        await(controller.submit(Mode.Normal)(postRequest(body)))
+
+        theCacheModelUpdated.locations.supervisingCustomsOffice.value.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
+      }
+
+      "return Bad Request if payload is not compatible with model" in {
+        withNewCaching(clearanceCacheModel)
+
+        val body = Json.obj("supervisingCustomsOffice" -> "A")
+        val result = controller.submit(Mode.Normal)(postRequest(body))
+
+        status(result) mustBe BAD_REQUEST
+      }
+    }
   }
-
 }

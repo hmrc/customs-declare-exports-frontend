@@ -70,12 +70,6 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
         view.getElementsByTag("h1").text() mustBe messages("declaration.transportInformation.meansOfTransport.departure.title")
       }
 
-      "display 'Back' button that links to 'Inland Transport Details' page" in {
-        val backButton = view.getElementById("back-link")
-        backButton.text() mustBe messages(backCaption)
-        backButton must haveHref(routes.TransportLeavingTheBorderController.displayPage())
-      }
-
       "display 'Save and continue' button on page" in {
         view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
       }
@@ -170,8 +164,24 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       }
     }
 
+    onJourney(SUPPLEMENTARY, STANDARD) { implicit request =>
+      val view = createView()
+
+      "display 'Back' button that links to 'Inland Transport Details' page" in {
+        val backButton = view.getElementById("back-link")
+        backButton.text() mustBe messages(backCaption)
+        backButton must haveHref(routes.InlandTransportDetailsController.displayPage())
+      }
+    }
+
     onJourney(CLEARANCE) { implicit request =>
       val view = createView()
+
+      "display 'Back' button that links to 'Supervising Customs Office' page" in {
+        val backButton = view.getElementById("back-link")
+        backButton.text() mustBe messages(backCaption)
+        backButton must haveHref(routes.SupervisingCustomsOfficeController.displayPage())
+      }
 
       "display radio section " which {
 

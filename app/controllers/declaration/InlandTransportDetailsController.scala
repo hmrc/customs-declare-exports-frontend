@@ -69,7 +69,7 @@ class InlandTransportDetailsController @Inject()(
   private def nextPage(declarationType: DeclarationType): Mode => Call =
     declarationType match {
       case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
-        controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
+        controllers.declaration.routes.DepartureTransportController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.BorderTransportController.displayPage
     }

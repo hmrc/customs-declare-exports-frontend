@@ -23,12 +23,13 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
+import models.DeclarationType.DeclarationType
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.{ExportItemIdGeneratorService, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.declarationitems.{items_add_item, items_remove_item, items_summary}
@@ -88,10 +89,18 @@ class ItemsSummaryController @Inject()(
               Future.successful(BadRequest(itemsSummaryPage(mode, itemSummaryForm.fill(validYesNo), request.cacheModel.items.toList, incorrectItems)))
 
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, controllers.declaration.routes.WarehouseIdentificationController.displayPage))
+              Future.successful(navigator.continueTo(mode, nextPage(request.declarationType)))
         }
       )
   }
+
+  private def nextPage(declarationType: DeclarationType): Mode => Call =
+    declarationType match {
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
+        controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+        controllers.declaration.routes.WarehouseIdentificationController.displayPage
+    }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =
     request.cacheModel.items.zipWithIndex.filterNot { case (item, _) => item.isCompleted(request.declarationType) }.map {

@@ -19,6 +19,7 @@ package views.declaration
 import base.Injector
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.WarehouseIdentification
+import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -79,6 +80,28 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
         view.getElementsByAttributeValue("for", "code_no").text() mustBe "site.no"
       }
 
+      "display 'Save and continue' button on page" in {
+        view.getElementById("submit").text() mustBe "site.save_and_continue"
+      }
+
+      "display 'Save and return' button on page" in {
+        view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
+      val view = createView()
+
+      "display 'Back' button that links to 'Transport Leaving the Border' page" in {
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() mustBe "site.back"
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
+      }
+    }
+    onJourney(SIMPLIFIED, OCCASIONAL) { implicit request =>
+      val view = createView()
+
       "display 'Back' button that links to 'Items Summary' page" in {
         val backButton = view.getElementById("back-link")
 
@@ -86,14 +109,6 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
         )
-      }
-
-      "display 'Save and continue' button on page" in {
-        view.getElementById("submit").text() mustBe "site.save_and_continue"
-      }
-
-      "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
       }
     }
   }
