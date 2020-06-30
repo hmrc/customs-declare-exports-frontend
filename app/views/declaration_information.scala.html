@@ -24,11 +24,13 @@
 @import views.Title
 @import views.ViewDates
 @import views.components.gds.Styles._
+@import views.html.components.gds.link
 
 @this(
     govukLayout: gdsMainTemplate,
     govukSummaryList: GovukSummaryList,
     govukTable: GovukTable,
+    link: link,
     eadDocumentConfig: EadConfig,
     sfusConfig: SfusConfig
 )
@@ -37,11 +39,11 @@
 
 @errorOrUploadFileLink(declarationID: String, status: SubmissionStatus.Value)= {
     @if(status == SubmissionStatus.REJECTED) {
-        <a href="@routes.RejectedNotificationsController.displayPage(declarationID)">@messages("submissions.viewErrors")</a>
+        @link(text = messages("submissions.viewErrors"), call = routes.RejectedNotificationsController.displayPage(declarationID))
     }
 
     @if(status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED && sfusConfig.isSfusEnabled) {
-        <a href="@sfusConfig.sfusLink" target="_blank">@messages("submissions.sfus")</a>
+        @link(text = messages("submissions.sfus"), call = Call("GET", sfusConfig.sfusLink), target="_blank")
     }
 }
 
