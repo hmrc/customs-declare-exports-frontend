@@ -71,16 +71,10 @@ govuk-back-link-div class to add that space below (or instead of) the back-link
 CSS to support browser font sizes for auto-complete component
 ====================================
 */
-@media all {
-  .autocomplete__hint,
-  .autocomplete__input,
-  .autocomplete__option {
-    font-size: 1.1875rem;
-    line-height: 1.31579;
-  }
-}
-
+.autocomplete__hint,
+.autocomplete__input,
 .autocomplete__option {
   font-size: 1.1875rem;
   line-height: 1.31579;
 }
+
