@@ -18,6 +18,7 @@
 @import forms.declaration.DeclarationHolder
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
+@import services.HolderOfAuthorisationCode
 @import views.{BackButton, Title}
 @import views.html.components.gds._
 
@@ -27,7 +28,7 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarationHolder], authorisationCodes: List[HolderOfAuthorisationCode])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.holderOfAuthorisationSummaryText", components.details_content_link())) }
 
@@ -37,6 +38,6 @@
 ) {
 
     @formHelper(action = DeclarationHolderAddController.submitForm(mode), 'autoComplete -> "off") {
-        @editContent(mode, form)
+        @editContent(mode, form, authorisationCodes)
     }
 }

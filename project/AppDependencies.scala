@@ -23,7 +23,8 @@ object AppDependencies {
     "com.dmanchester"      %% "playfop"                       % "1.0",
     "net.sf.barcode4j"     %  "barcode4j"                     % "2.1",
     "org.webjars.npm"      %  "govuk-frontend"                % "3.4.0",
-    "org.webjars.npm"      %  "accessible-autocomplete"       % "2.0.2"
+    "org.webjars.npm"      %  "accessible-autocomplete"       % "2.0.2",
+    "uk.gov.hmrc"          %%  "simple-reactivemongo"         % "7.22.0-play-26"
   )
 
   val test: Seq[ModuleID] = Seq(

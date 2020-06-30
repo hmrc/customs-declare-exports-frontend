@@ -34,7 +34,8 @@
     removeButton: removeButton,
     saveButtons: saveButtons
 )
-@(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
+
+@(mode: Mode, form: Form[DeclarationHolder], authorisationCodes: List[HolderOfAuthorisationCode])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.holderOfAuthorisationSummaryText", components.details_content_link())) }
 
@@ -54,7 +55,7 @@
         labelClass = Some("govuk-label--m"),
         hintText = Some(messages("declaration.declarationHolder.authorisationCode.hint")),
         emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
-        items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
+        items = AutoCompleteItem.fromHolderOfAuthorisationCode(authorisationCodes)
     )
 
     @exportsInputText(

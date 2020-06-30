@@ -37,18 +37,20 @@ object DeclarationHolder extends DeclarationPage {
 
   private def eoriMapping = optional(Eori.mapping)
 
-  private def codeMapping =
-    optional(text().verifying("declaration.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.value))))
+  private def codeMapping(allowedCodes: List[HolderOfAuthorisationCode]) =
+    optional(text().verifying("declaration.declarationHolder.authorisationCode.invalid", isContainedIn(allowedCodes.map(_.value))))
 
-  val optionalMapping =
-    Forms.mapping("authorisationTypeCode" -> codeMapping, "eori" -> eoriMapping)(DeclarationHolder.apply)(DeclarationHolder.unapply)
+  def optionalMapping(allowedCodes: List[HolderOfAuthorisationCode]) =
+    Forms.mapping("authorisationTypeCode" -> codeMapping(allowedCodes), "eori" -> eoriMapping)(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
-  val requiredMapping = Forms.mapping(
-    "authorisationTypeCode" -> codeMapping.verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined),
-    "eori" -> eoriMapping.verifying("declaration.eori.empty", _.isDefined)
-  )(DeclarationHolder.apply)(DeclarationHolder.unapply)
+  def requiredMapping(allowedCodes: List[HolderOfAuthorisationCode]) =
+    Forms.mapping(
+      "authorisationTypeCode" -> codeMapping(allowedCodes).verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined),
+      "eori" -> eoriMapping.verifying("declaration.eori.empty", _.isDefined)
+    )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
-  def form(optional: Boolean = false): Form[DeclarationHolder] = if (optional) Form(optionalMapping) else Form(requiredMapping)
+  def form(allowedCodes: List[HolderOfAuthorisationCode], optional: Boolean = false): Form[DeclarationHolder] =
+    if (optional) Form(optionalMapping(allowedCodes)) else Form(requiredMapping(allowedCodes))
 
   // Method for parse format typeCode-eori
   def buildId(value: String): DeclarationHolder = {

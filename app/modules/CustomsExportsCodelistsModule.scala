@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package services
+package modules
 
-import play.api.libs.json.Json
+import play.api.inject.SimpleModule
+import play.api.inject._
+import schedulers.CustomsExportsCodelistsTask
 
-case class HolderOfAuthorisationCode(value: String)
+class CustomsExportsCodelistsModule extends SimpleModule(bind[CustomsExportsCodelistsTask].toSelf.eagerly())
 
-object HolderOfAuthorisationCode {
-  implicit val format = Json.format[HolderOfAuthorisationCode]
-}
