@@ -26,7 +26,7 @@ import models.declaration.submissions.{Submission, SubmissionStatus}
 import play.api.Configuration
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukTable}
 import views.declaration.spec.UnitViewSpec
-import views.html.components.gds.gdsMainTemplate
+import views.html.components.gds.{gdsMainTemplate, link}
 import views.html.declaration_information
 
 class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
@@ -34,6 +34,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val gdsMainTemplate = instanceOf[gdsMainTemplate]
   private val govukSummaryList = instanceOf[GovukSummaryList]
   private val govukTable = instanceOf[GovukTable]
+  private val link = instanceOf[link]
 
   private val configWithFeaturesEnabled: Config =
     ConfigFactory.parseString("""
@@ -102,10 +103,10 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val notifications = Seq(acceptedNotification, rejectedNotification, additionalDocumentsNotification)
 
   private val declarationInformationPageWithFeatures =
-    new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, eadConfigEnabled, sfusConfigEnabled)
+    new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, link, eadConfigEnabled, sfusConfigEnabled)
 
   private val declarationInformationPageWithoutFeatures =
-    new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, eadConfigDisabled, sfusConfigDisabled)
+    new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, link, eadConfigDisabled, sfusConfigDisabled)
 
   private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications)(request, messages)
   private val viewWithFeaturesNotAccepted =
