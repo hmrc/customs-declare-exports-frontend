@@ -78,3 +78,11 @@ CSS to support browser font sizes for auto-complete component
   line-height: 1.31579;
 }
 
+/*
+====================================
+CSS to improve behaviour of table cells with large non-breaking content
+====================================
+*/
+.govuk-table__cell_break-all {
+  word-break: break-all;
+}
