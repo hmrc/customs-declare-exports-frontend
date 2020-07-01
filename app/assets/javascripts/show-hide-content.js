@@ -32,7 +32,6 @@
       // Set aria-controls and defaults
       if ($content.length) {
         $control.attr('aria-controls', $content.attr('id'))
-        $control.attr('aria-expanded', 'false')
         $content.attr('aria-hidden', 'true')
       }
     }
@@ -57,13 +56,6 @@
         $content.removeClass('js-hidden')
         $content.attr('aria-hidden', 'false')
       }
-
-      // If the controlling input, update aria-expanded
-      getRelatedControls($control).each(function () {
-        if ($(this).attr('aria-controls') == $content.attr('id')) {
-          $(this).attr('aria-expanded', 'true')
-        }
-      });
     }
 
     function getRelatedControls ($control) {
@@ -81,10 +73,6 @@
     // Hide toggled content for control
     function hideToggledContent ($control, $content) {
       $content = $content || getToggledContent($control)
-      // If the controlling input, update aria-expanded
-      if ($control.attr('aria-controls')) {
-        $control.attr('aria-expanded', 'false')
-      }
       // Hide content (only if we need to)
       if ($content.attr('aria-hidden') == 'false' && !shouldContentBeVisible($control)) {
         $content.addClass('js-hidden')
@@ -119,14 +107,8 @@
       } else { // Hide checkbox content
 
         //update related checkboxes
-        // If the controlling input, update aria-expanded if no other checkboxes pointing to this content are checked
         if(!shouldContentBeVisible($control)){
           hideToggledContent($control, $content)
-          getRelatedControls($control).each(function () {
-            if ($(this).attr('aria-controls') == $content.attr('id')) {
-              $(this).attr('aria-expanded', 'false')
-            }
-          });
         }
       }
     }

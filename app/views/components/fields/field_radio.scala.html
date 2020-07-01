@@ -45,7 +45,7 @@
                     <div class="multiple-choice" data-target="@{target}-hidden">
                         <input id="@{input.id}" type="radio" name="@{field.id}" value="@{input.value}" @if(field.value== Some(input.value)){checked="checked" }
                             @if(trackGa){data-journey-click="customs-decex-frontend:click:@{input.id}"}
-                            @if(input.revealComponent.isDefined){aria-controls="@{input.id}-hidden" aria-expanded="false"}
+                            @if(input.revealComponent.isDefined){aria-controls="@{input.id}-hidden"}
                         />
 
                         <label class="block-label selection-button-radio" for="@{input.id}">
