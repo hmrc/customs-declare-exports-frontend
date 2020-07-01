@@ -45,7 +45,7 @@ object FieldValidator {
   private def noMoreDecimalPlacesThanRegexValue(decimalPlaces: Int): Pattern =
     Pattern.compile(s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$")
 
-  private val allowedSpecialChars = Set(',', '.', '-', '\'', '/', ' ')
+  val allowedSpecialChars = Set(',', '.', '-', '\'', '/', ' ')
 
   private val allowedHyphenChar = Set('-')
 
