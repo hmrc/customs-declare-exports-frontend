@@ -72,14 +72,17 @@
             Seq(
                 TableRow(
                     content = ucrLink(submission),
+                    classes = "govuk-table__cell_break-all",
                     attributes = Map("id" -> s"submission-tab-$id-row$index-ucr")
                 ),
                 TableRow(
                     content = Text(submission.lrn),
+                    classes = "govuk-table__cell_break-all",
                     attributes = Map("id" -> s"submission-tab-$id-row$index-lrn")
                 ),
                 TableRow(
                     content = Text(submission.mrn.getOrElse("")),
+                    classes = "govuk-table__cell_break-all",
                     attributes = Map("id" -> s"submission-tab-$id-row$index-mrn")
                 ),
                 TableRow(
