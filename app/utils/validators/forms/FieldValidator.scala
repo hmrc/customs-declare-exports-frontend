@@ -45,8 +45,8 @@ object FieldValidator {
   private def noMoreDecimalPlacesThanRegexValue(decimalPlaces: Int): Pattern =
     Pattern.compile(s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$")
 
-  val allowedSpecialChars = Set(',', '.', '-', '\'', '/', ' ')
-
+  private val allowedSpecialChars = Set(',', '.', '-', '\'', '/', ' ')
+  private val allowedNewLineChars = Set('\r', '\n')
   private val allowedHyphenChar = Set('-')
 
   def when[T](condition: Boolean)(constraint: T => Boolean): T => Boolean =
@@ -93,6 +93,11 @@ object FieldValidator {
     (input: String) => input.headOption.exists(firstChar => allowedChars.contains(firstChar.toLower) || allowedChars.contains(firstChar.toUpper))
 
   val isAlphanumericWithAllowedSpecialCharacters: String => Boolean = (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedSpecialChars)
+
+  val isAlphanumericWithAllowedSpecialCharactersAndNewLine: String => Boolean = (input: String) =>
+    input
+      .filter(!_.isLetterOrDigit)
+      .forall(allowedSpecialChars ++ allowedNewLineChars)
 
   val isAlphanumericWithAllowedHyphenCharacter: String => Boolean = (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedHyphenChar)
 

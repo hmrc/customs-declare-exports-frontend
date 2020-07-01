@@ -41,7 +41,7 @@ object AdditionalInformation extends DeclarationPage {
         .verifying("declaration.additionalInformation.description.empty", nonEmpty)
         .verifying(
           "declaration.additionalInformation.description.error",
-          isEmpty or (noLongerThan(70) and isAlphanumericWithSpecialCharacters(Set('\r', '\n') ++ allowedSpecialChars))
+          isEmpty or (noLongerThan(70) and isAlphanumericWithAllowedSpecialCharactersAndNewLine)
         )
   )(AdditionalInformation.apply)(AdditionalInformation.unapply)
 
