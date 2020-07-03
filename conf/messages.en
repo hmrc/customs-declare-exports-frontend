@@ -579,7 +579,7 @@ declaration.goodsLocation.help.bodyText = Go to data element 5/23 Location of Go
 declaration.procedureCodes.title = Procedure Codes
 declaration.procedureCodes.procedureCode.header = Enter the first 4 digits of the procedure code
 declaration.procedureCodes.procedureCode.item.header = Procedure code
-declaration.procedureCodes.procedureCode.header.hint = A 4-digit code, made up of the requested procedure and the previous 
+declaration.procedureCodes.procedureCode.header.hint = A 4-digit code, made up of the requested and previous procedures
 declaration.procedureCodes.procedureCode.error.empty = Enter a procedure code in the correct format
 declaration.procedureCodes.procedureCode.error.invalid = Enter a procedure code in the correct format
 declaration.procedureCodes.additionalProcedureCode.table.header = Additional procedure codes
@@ -812,7 +812,8 @@ declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.err
 declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid = Reference cannot contain invalid characters
 
 
-declaration.transportInformation.containers.title = Container information
+declaration.transportInformation.containers.title = You have added 1 container
+declaration.transportInformation.containers.multiple.title = You have added {0} containers
 declaration.transportInformation.containers.section = Transport details
 declaration.transportInformation.containers.add = Do you need to add another container?
 declaration.transportInformation.containers.add.title = What is the container ID?
@@ -1067,9 +1068,9 @@ declaration.commodityMeasure.grossMass.hint = This includes the total weight of 
 declaration.commodityMeasure.grossMass.empty = Enter a gross weight
 declaration.commodityMeasure.grossMass.error = Gross weight can be up to 16 digits with maximum 6 digits after the decimal
 declaration.commodityMeasure.global.addOne = Enter packaging information
-declaration.commodityMeasure.supplementaryUnits = Do you need to add supplementary units?
+declaration.commodityMeasure.supplementaryUnits = Enter the amount of any supplementary units
 declaration.commodityMeasure.supplementaryUnits.item = 6/2 Supplementary units
-declaration.commodityMeasure.supplementaryUnits.hint = Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh
+declaration.commodityMeasure.supplementaryUnits.hint = A supplementary unit is a form of measurement specified by the commodity code, for example ce/el for 85072020. Not all commodity codes have a supplementary unit. If yours does, enter the amount, for example 1000.
 declaration.commodityMeasure.supplementaryUnits.error = A supplementary unit can be up to 16 characters
 declaration.commodityMeasure.units = Kg
 declaration.commodityMeasure.units.hint = Enter weight in kilograms
@@ -1341,6 +1342,8 @@ declaration.itemsRemove.title = Are you sure you want to remove declaration item
 
 declaration.seal.title = What is the security seal for container {0}?
 declaration.seal.section = Transport details
+declaration.seal.summary.title = You have added 1 security seal for container {0}
+declaration.seal.summary.multiple.title = You have added {0} security seals for container {1}
 declaration.seal.summary.heading = Security seals
 declaration.seal.summary.noSeals = No seals
 declaration.seal.add.answer.empty = Select yes if there are any security seals

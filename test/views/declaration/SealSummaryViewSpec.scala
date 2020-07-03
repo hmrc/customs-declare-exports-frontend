@@ -34,18 +34,36 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
 
   val containerId = "212374"
   val sealId = "76434574"
-  val seals = Seq(Seal(sealId))
+  val seal = Seal(sealId)
+  private val realMessages = validatedMessages
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[seal_summary]
 
-  private def createView(form: Form[YesNoAnswer] = form): Document =
-    page(Mode.Normal, form, containerId, seals)
+  private def createView(form: Form[YesNoAnswer] = form, seals: Seq[Seal] = Seq(seal)): Document =
+    page(Mode.Normal, form, containerId, seals)(journeyRequest(), realMessages)
 
   "Seal Summary View" should {
     val view = createView()
 
-    "display page title" in {
-      view.getElementsByTag("h1").text() must be(messages("declaration.seal.title"))
+    "display page title for no seals" in {
+      val noSealsView = createView(seals = Seq.empty)
+      val title = realMessages("declaration.seal.add.first", containerId)
+      noSealsView.getElementsByTag("h1").text() must be(title)
+      noSealsView.title() must include(title)
+    }
+
+    "display page title for one seal" in {
+      val noSealsView = createView(seals = Seq(seal))
+      val title = realMessages("declaration.seal.summary.title", containerId)
+      noSealsView.getElementsByTag("h1").text() must be(title)
+      noSealsView.title() must include(title)
+    }
+
+    "display page title for multiple seals" in {
+      val noSealsView = createView(seals = Seq(seal, seal))
+      val title = realMessages("declaration.seal.summary.multiple.title", 2, containerId)
+      noSealsView.getElementsByTag("h1").text() must be(title)
+      noSealsView.title() must include(title)
     }
 
     "display summary of seals" in {
@@ -55,7 +73,7 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
     "display 'Back' button that links to 'containers summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer.text() must be(messages(backCaption))
+      backLinkContainer.text() must be(realMessages(backCaption))
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
       )
@@ -63,12 +81,12 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() must be(realMessages(saveAndContinueCaption))
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
+      saveAndReturnButton.text() must be(realMessages(saveAndReturnCaption))
     }
   }
 
@@ -80,7 +98,7 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#yesNo")
 
-      view must containErrorElementWithMessage("error.yesNo.required")
+      view must containErrorElementWithMessage(realMessages("error.yesNo.required"))
     }
 
   }
