@@ -73,12 +73,24 @@
                         content = Text(document.goodsItemIdentifier.getOrElse(""))
                     ),
                     TableRow(
-                        content = HtmlContent(link(messages("site.change"), Some(messages("declaration.previousDocuments.change.hint")), routes.PreviousDocumentsChangeController.displayPage(mode, createId(index, document)))),
+                        content = HtmlContent(
+                            link(
+                                messages("site.change"),
+                                Some(messages("declaration.previousDocuments.change.hint", index+1, DocumentType.documentCodesMap(document.documentType).asTextWithBrackets, document.documentReference)),
+                                routes.PreviousDocumentsChangeController.displayPage(mode, createId(index, document))
+                            )
+                        ),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"previous-document-$index-change_button")
                     ),
                     TableRow(
-                        content = HtmlContent(link(messages("site.remove"), Some(messages("declaration.previousDocuments.remove.hint")), routes.PreviousDocumentsRemoveController.displayPage(mode, createId(index, document)))),
+                        content = HtmlContent(
+                            link(
+                                messages("site.remove"),
+                                Some(messages("declaration.previousDocuments.remove.hint", index+1, DocumentType.documentCodesMap(document.documentType).asTextWithBrackets, document.documentReference)),
+                                routes.PreviousDocumentsRemoveController.displayPage(mode, createId(index, document))
+                            )
+                        ),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"previous-document-$index-remove_button")
                     )

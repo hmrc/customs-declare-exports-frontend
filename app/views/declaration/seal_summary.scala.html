@@ -116,7 +116,9 @@
 }
 
 @govukLayout(
-    title = Title(if(seals.nonEmpty) "declaration.seal.title" else "declaration.seal.add.first", "declaration.seal.section", containerId),
+    title = if(seals.isEmpty) Title("declaration.seal.add.first", "declaration.seal.section", containerId)
+            else if(seals.size == 1) Title("declaration.seal.summary.title", "declaration.seal.section", containerId)
+            else Title("declaration.seal.summary.multiple.title", "declaration.seal.section", "", Some(Seq(seals.size.toString, containerId))),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)))) {
 
     @formHelper(action = SealController.submitSummaryAction(mode, containerId), 'autoComplete -> "off") {
@@ -128,7 +130,11 @@
             @sectionHeader(messages("declaration.seal.section"))
             @govukFieldset(Fieldset(
                 legend = Some(Legend(
-                    content = Text(if(seals.nonEmpty) messages("declaration.seal.title", containerId) else messages("declaration.seal.add.first", containerId)),
+                    content = Text(
+                        if(seals.isEmpty) messages("declaration.seal.add.first", containerId)
+                        else if(seals.size == 1) messages("declaration.seal.summary.title", containerId)
+                        else messages("declaration.seal.summary.multiple.title", seals.size, containerId)
+                    ),
                     classes = gdsPageLegend,
                     isPageHeading = true
                 )),
