@@ -18,7 +18,9 @@
 
 @(text: String, textHidden: Option[String] = None, call: Call, target: String = "_self", id: Option[String] = None, classes: String = "govuk-link govuk-link--no-visited-state")
 
+@hasHint = @{textHidden.exists(_.nonEmpty)}
+
 <a class="@classes" href="@call" target=@target @id.map{id => id="@id" }>
- <span @if(textHidden.isDefined){aria-hidden="true"}>@text</span>
- @if(textHidden.isDefined){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}
+ <span @if(hasHint){aria-hidden="true"}>@text</span>
+ @if(hasHint){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}
 </a>
