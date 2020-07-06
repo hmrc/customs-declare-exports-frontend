@@ -76,7 +76,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            Some(messages("declaration.additionalInformation.table.update.hint", item.code)),
+                            Some(messages("declaration.additionalInformation.table.change.hint", item.code)),
                             AdditionalInformationChangeController.displayPage(mode, itemId, createId(index, item)))),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"additional_information-row$index-change_button")
@@ -84,7 +84,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            Some(messages("declaration.additionalInformation.table.update.hint", item.code)),
+                            Some(messages("declaration.additionalInformation.table.remove.hint", item.code)),
                             AdditionalInformationRemoveController.displayPage(mode, itemId, createId(index, item)))),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"additional_information-row$index-remove_button")

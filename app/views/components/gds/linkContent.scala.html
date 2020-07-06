@@ -14,11 +14,12 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+
 @this()
 
-@(text: String, textHidden: Option[String] = None, call: Call, target: String = "_self", id: Option[String] = None, classes: String = "govuk-link govuk-link--no-visited-state")
+@(message: String)
 
-<a class="@classes" href="@call" target=@target @id.map{id => id="@id" }>
- <span @if(textHidden.isDefined){aria-hidden="true"}>@text</span>
- @if(textHidden.isDefined){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}
-</a>
+<span aria-hidden="true">
+  @message
+</span>

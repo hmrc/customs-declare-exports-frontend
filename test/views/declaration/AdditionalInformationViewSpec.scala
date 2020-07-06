@@ -58,7 +58,8 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
       messages must haveTranslationFor("declaration.additionalInformation.item.code")
       messages must haveTranslationFor("declaration.additionalInformation.description")
       messages must haveTranslationFor("declaration.additionalInformation.item.description")
-      messages must haveTranslationFor("declaration.additionalInformation.table.update.hint")
+      messages must haveTranslationFor("declaration.additionalInformation.table.change.hint")
+      messages must haveTranslationFor("declaration.additionalInformation.table.remove.hint")
     }
   }
 
@@ -137,7 +138,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
         "have change link" in {
           val removeLink = row.select(".govuk-link").get(0)
-          removeLink.text() mustBe messages("site.change") + messages("declaration.additionalInformation.table.update.hint")
+          removeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.additionalInformation.table.change.hint")}"
           removeLink must haveHref(
             controllers.declaration.routes.AdditionalInformationChangeController
               .displayPage(Mode.Normal, itemId, ListItem.createId(0, additionalInformation))
@@ -146,7 +147,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
         "have remove link" in {
           val removeLink = row.select(".govuk-link").get(1)
-          removeLink.text() mustBe messages("site.remove") + messages("declaration.additionalInformation.table.update.hint")
+          removeLink.text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalInformation.table.remove.hint")}"
           removeLink must haveHref(
             controllers.declaration.routes.AdditionalInformationRemoveController
               .displayPage(Mode.Normal, itemId, ListItem.createId(0, additionalInformation))

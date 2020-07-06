@@ -17,6 +17,7 @@
 @import models.declaration.Parties
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import forms.common.Address
 @import views.declaration.summary.EoriOrAddress
@@ -27,6 +28,7 @@
 
 @this(
     summaryList: summary_list,
+    linkContent: linkContent,
     additionalActorsSection: parties_section_additional_actors,
     holdersSection: parties_section_holders
 )
@@ -103,7 +105,7 @@
                     items = actionItems(
                         actionItem(
                             href = controllers.declaration.routes.DeclarantExporterController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.declarantIsExporter.change"))
                         )
                     )
@@ -120,7 +122,7 @@
                     items = actionItems(
                         actionItem(
                             href = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.eidr.change"))
                         )
                     )
@@ -137,7 +139,7 @@
                     items = actionItems(
                         actionItem(
                             href = controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.personPresentingGoods.change"))
                         )
                     )
@@ -165,7 +167,7 @@
                     items = actionItems(
                         actionItem(
                             href = controllers.declaration.routes.IsExsController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.exs.change"))
                         )
                     )
@@ -186,7 +188,7 @@
                     items = actionItems(
                         actionItem(
                             href = controllers.declaration.routes.RepresentativeAgentController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.representative.agent.change"))
                         )
                     )
@@ -214,7 +216,7 @@
                     items = actionItems(
                         actionItem(
                             href = controllers.declaration.routes.RepresentativeStatusController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.representative.type.change"))
                         )
                     )

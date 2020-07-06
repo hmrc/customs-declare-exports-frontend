@@ -35,14 +35,26 @@
   declarations.currentPageElements.map { declaration =>
     Seq(
       TableRow(
-          content = HtmlContent(link(text = declaration.ducr.getOrElse(messages("saved.declarations.noDucr")), call = routes.SavedDeclarationsController.continueDeclaration(declaration.id))),
+          content = HtmlContent(
+              link(
+                  text = declaration.ducr.getOrElse(messages("saved.declarations.noDucr")),
+                  textHidden = Some(messages("saved.declarations.continue.hidden", declaration.ducr.getOrElse(messages("saved.declarations.noDucr")))),
+                  call = routes.SavedDeclarationsController.continueDeclaration(declaration.id)
+              )
+          ),
           classes = "govuk-table__cell_break-all"
       ),
       TableRow(
           content = HtmlContent(formatDateAtTime(declaration.updatedDateTime.atZone(ZoneId.of("Europe/London"))))
       ),
       TableRow(
-          content = HtmlContent(link(text = messages("site.remove"), call = routes.RemoveSavedDeclarationsController.displayPage(declaration.id)))
+          content = HtmlContent(
+              link(
+                  text = messages("site.remove"),
+                  textHidden = Some(messages("saved.declarations.remove.hidden", declaration.ducr.getOrElse(messages("saved.declarations.noDucr")))),
+                  call = routes.RemoveSavedDeclarationsController.displayPage(declaration.id)
+              )
+          )
       )
     )
   }

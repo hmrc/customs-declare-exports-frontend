@@ -119,7 +119,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       "all fields are populated with timestamp before BST" in {
         val view = tab("other", createView(otherSubmissions = Paginated(Seq(submission -> Seq(acceptedNotification)), Page(), 1)))
 
-        tableCell(view)(1, 0).text() mustBe "ducr" + "submissions.hidden.text"
+        tableCell(view)(1, 0).text() mustBe "ducr submissions.hidden.text"
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe "mrn"
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00"
@@ -141,7 +141,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         )
         val view = tab("other", createView(otherSubmissions = Paginated(Seq(bstSubmission -> Seq(acceptedNotification)), Page(), 1)))
 
-        tableCell(view)(1, 0).text() mustBe "ducr" + "submissions.hidden.text"
+        tableCell(view)(1, 0).text() mustBe "ducr submissions.hidden.text"
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe "mrn"
         tableCell(view)(1, 3).text() mustBe "1 May 2019 at 13:45"
