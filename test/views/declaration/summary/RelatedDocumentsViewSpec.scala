@@ -63,7 +63,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with In
 
         val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
         row1ChangeLink must haveHref(controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Mode.Change))
-        row1ChangeLink.text() mustBe messages("site.change") + messages("declaration.summary.transaction.previousDocuments.document.change", 0)
+        row1ChangeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.summary.transaction.previousDocuments.document.change", 0)}"
 
         val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
         row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages("Packing List - 271")
@@ -71,7 +71,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with In
 
         val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
         row2ChangeLink must haveHref(controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Mode.Change))
-        row2ChangeLink.text() mustBe messages("site.change") + messages("declaration.summary.transaction.previousDocuments.document.change", 1)
+        row2ChangeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.summary.transaction.previousDocuments.document.change", 1)}"
       }
     }
   }

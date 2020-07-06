@@ -16,10 +16,11 @@
 
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import views.components.gds.ActionItemBuilder._
 
-@this(summaryList: summary_list)
+@this(summaryList: summary_list, linkContent: linkContent)
 
 @(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
@@ -41,7 +42,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.DeclarationChoiceController.displayPage(mode).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.references.type.change"))
                     )
                 )
@@ -60,7 +61,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.DispatchLocationController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.location.change"))
                         )
                     )
@@ -80,7 +81,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.additionalType.change"))
                         )
                     )
@@ -100,7 +101,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.ConsignmentReferencesController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.ducr.change"))
                         )
                     )
@@ -120,7 +121,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.ConsignmentReferencesController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.references.lrn.change"))
                         )
                     )

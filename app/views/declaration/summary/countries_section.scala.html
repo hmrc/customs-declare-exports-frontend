@@ -17,11 +17,12 @@
 @import models.declaration.Locations
 @import models.requests.JourneyRequest
 @import services.Countries
+@import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
 
-@this(summaryList: summary_list)
+@this(summaryList: summary_list, linkContent: linkContent)
 
 @(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
@@ -51,7 +52,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.OriginationCountryController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.countries.countryOfDispatch.change"))
                         )
                     )
@@ -71,7 +72,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.countries.routingCountries.change"))
                         )
                     )
@@ -91,7 +92,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.DestinationCountryController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.countries.countryOfDestination.change"))
                         )
                     )

@@ -16,13 +16,13 @@
 
 @import models.declaration.Locations
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import views.components.gds.ActionItemBuilder._
 
-@this(summaryList: summary_list)
+@this(summaryList: summary_list, linkContent: linkContent)
 
 @(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
@@ -50,7 +50,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.warehouse.id.change"))
                         )
                     )
@@ -70,7 +70,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.warehouse.supervisingOffice.change"))
                         )
                     )
@@ -90,7 +90,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.warehouse.inlandModeOfTransport.change"))
                         )
                     )

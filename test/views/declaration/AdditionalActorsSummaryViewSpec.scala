@@ -18,10 +18,9 @@ package views.declaration
 
 import base.Injector
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.{DeclarationAdditionalActors, DeclarationHolder}
+import forms.declaration.DeclarationAdditionalActors
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
-import models.declaration.DeclarationAdditionalActorsData
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -105,9 +104,9 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
         // check row
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "declaration.partyType.CS"
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB56523343784324"
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").text() mustBe messages("site.remove") + messages(
-          "declaration.additionalActors.table.remove.hint"
-        )
+        view
+          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint")}"
       }
 
       "display two rows with data in table" in {
@@ -121,15 +120,15 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
         // check rows
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "declaration.partyType.CS"
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB56523343784324"
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").text() mustBe messages("site.remove") + messages(
-          "declaration.additionalActors.table.remove.hint"
-        )
+        view
+          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint")}"
 
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe "declaration.partyType.MF"
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "GB56523399999999"
-        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)").text() mustBe messages("site.remove") + messages(
-          "declaration.additionalActors.table.remove.hint"
-        )
+        view
+          .select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)")
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint")}"
       }
     }
   }

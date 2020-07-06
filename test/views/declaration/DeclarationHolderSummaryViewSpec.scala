@@ -47,7 +47,8 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
     val messages = instanceOf[MessagesApi].preferred(journeyRequest())
     messages must haveTranslationFor("declaration.declarationHolders.table.heading")
     messages must haveTranslationFor("declaration.declarationHolders.table.multiple.heading")
-    messages must haveTranslationFor("declaration.declarationHolders.table.update.hint")
+    messages must haveTranslationFor("declaration.declarationHolders.table.change.hint")
+    messages must haveTranslationFor("declaration.declarationHolders.table.remove.hint")
     messages must haveTranslationFor("declaration.declarationHolders.table.type")
     messages must haveTranslationFor("declaration.declarationHolders.table.eori")
     messages must haveTranslationFor("declaration.declarationHolders.add.another")
@@ -112,12 +113,12 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         // check row
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "ACE"
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB123456543"
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").text() mustBe messages("site.change") + messages(
-          "declaration.declarationHolders.table.update.hint"
-        )
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(4)").text() mustBe messages("site.remove") + messages(
-          "declaration.declarationHolders.table.update.hint"
-        )
+        view
+          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
+          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint")}"
+        view
+          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(4)")
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint")}"
       }
 
       "display two rows with data in table" in {
@@ -131,21 +132,21 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         // check rows
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "ACE"
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB123456543"
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").text() mustBe messages("site.change") + messages(
-          "declaration.declarationHolders.table.update.hint"
-        )
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(4)").text() mustBe messages("site.remove") + messages(
-          "declaration.declarationHolders.table.update.hint"
-        )
+        view
+          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
+          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint")}"
+        view
+          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(4)")
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint")}"
 
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe "CVA"
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "GB6543253678"
-        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)").text() mustBe messages("site.change") + messages(
-          "declaration.declarationHolders.table.update.hint"
-        )
-        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(4)").text() mustBe messages("site.remove") + messages(
-          "declaration.declarationHolders.table.update.hint"
-        )
+        view
+          .select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)")
+          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint")}"
+        view
+          .select(".govuk-table__body > tr:nth-child(2) > td:nth-child(4)")
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint")}"
       }
     }
   }

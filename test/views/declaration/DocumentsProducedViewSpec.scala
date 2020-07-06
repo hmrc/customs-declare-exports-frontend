@@ -166,7 +166,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
 
           "have change link" in {
             val removeLink = row.select(".govuk-link").get(0)
-            removeLink.text() mustBe messages("site.change") + messages("declaration.addDocument.table.update.hint")
+            removeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.addDocument.table.change.hint")}"
             removeLink must haveHref(
               controllers.declaration.routes.DocumentsProducedChangeController
                 .displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))
@@ -175,7 +175,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
 
           "have remove link" in {
             val removeLink = row.select(".govuk-link").get(1)
-            removeLink.text() mustBe messages("site.remove") + messages("declaration.addDocument.table.update.hint")
+            removeLink.text() mustBe s"${messages("site.remove")} ${messages("declaration.addDocument.table.remove.hint")}"
             removeLink must haveHref(
               controllers.declaration.routes.DocumentsProducedRemoveController
                 .displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))
