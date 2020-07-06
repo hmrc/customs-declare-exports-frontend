@@ -54,7 +54,7 @@ class EADService @Inject()(
         case _ => throw new IllegalArgumentException(s"No declaration information was found")
       }
       .recoverWith {
-        case throwable: Throwable =>
+        case _: Throwable =>
           logger.error("An error occurred whilst trying to retrieve mrn status")
           throw new IllegalArgumentException(s"No declaration information was found")
       }

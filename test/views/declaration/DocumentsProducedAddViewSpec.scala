@@ -117,7 +117,7 @@ class DocumentsProducedAddViewSpec extends UnitViewSpec with CommonMessages with
 
       "display empty input with label for Date of Validity" in {
         view.getElementById(dateOfValidityKey).getElementsByTag("legend").text() mustBe messagesKey("declaration.addDocument.dateOfValidity")
-        view.getElementById(s"$dateOfValidityKey-hint").text() mustBe messagesKey("declaration.addDocument.dateOfValidity.hint")
+        view.getElementById(s"$dateOfValidityKey-input-hint").text() mustBe messagesKey("declaration.addDocument.dateOfValidity.hint")
       }
 
       "display empty input with label for Measurement Unit" in {
