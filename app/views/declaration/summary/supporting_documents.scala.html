@@ -19,6 +19,7 @@
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
+@import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
 @import views.components.gds.ActionItemBuilder._
@@ -26,6 +27,7 @@
 @this(
         govukTable: GovukTable,
         changeLink: link,
+        linkContent: linkContent,
         summaryList: summary_list
 )
 
@@ -37,12 +39,12 @@
   actionsEnabled: Boolean = true
 )(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@change() = {
+@change(document: DocumentsProduced) = {
     @{
         if(actionsEnabled)
             changeLink(
                 messages("site.change"),
-                Some(messages("declaration.summary.items.item.supportingDocuments.change", itemNo)),
+                Some(messages("declaration.summary.items.item.supportingDocuments.change", document.documentTypeCode.getOrElse(""), document.documentIdentifier.getOrElse(""), itemNo)),
                 controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
             )
         else
@@ -65,7 +67,7 @@
                 TableRow(
                     content = Text(document.documentIdentifier.getOrElse(""))
                 ),
-                TableCell.changeLink(change())
+                TableCell.changeLink(change(document))
             )
         ),
         head = Some(List(
@@ -93,7 +95,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.supportingDocuments.change"))
                     )
                 )

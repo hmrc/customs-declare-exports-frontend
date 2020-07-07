@@ -18,6 +18,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
+@import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
 @import views.components.gds.ActionItemBuilder._
@@ -25,6 +26,7 @@
 @this(
         govukTable: GovukTable,
         changeLink: link,
+        linkContent: linkContent,
         summaryList: summary_list
 )
 
@@ -70,7 +72,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.AdditionalActorsAddController.displayPage(mode).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.parties.additional.empty.change"))
                     )
                 )

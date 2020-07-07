@@ -19,6 +19,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
+@import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
 @import views.components.gds.ActionItemBuilder._
@@ -26,6 +27,7 @@
 @this(
         govukTable: GovukTable,
         changeLink: link,
+        linkContent: linkContent,
         summaryList: summary_list
 )
 
@@ -42,7 +44,7 @@
         if(actionsEnabled)
             changeLink(
                 messages("site.change"),
-                Some(messages("declaration.summary.items.item.additionalInformation.change", itemNo)),
+                Some(messages("declaration.summary.items.item.additionalInformation.change", information.code, itemNo)),
                 controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
             )
         else
@@ -97,8 +99,8 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(mode, itemId).url,
-                        content = Text(messages("site.change")),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalInformation.change"))
+                        content = HtmlContent(linkContent(messages("site.change"))),
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalInformation.changeAll"))
                     )
                 )
             ))

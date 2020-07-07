@@ -16,11 +16,13 @@
 
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import views.components.gds.ActionItemBuilder._
 
 @this(
         summaryList: summary_list,
+        linkContent: linkContent,
         related_documents: related_documents
 )
 
@@ -50,7 +52,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
                         )
                     ))
@@ -69,7 +71,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.exchangeRate.change"))
                         )
                     ))
@@ -88,7 +90,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.TotalPackageQuantityController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.totalNoOfPackages.change"))
                         )
                     ))
@@ -107,7 +109,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.NatureOfTransactionController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.natureOfTransaction.change"))
                         )
                     ))

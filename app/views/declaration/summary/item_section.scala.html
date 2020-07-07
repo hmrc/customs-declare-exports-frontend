@@ -18,11 +18,13 @@
 @import models.requests.JourneyRequest
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import views.components.gds.ActionItemBuilder._
 
 @this(
         summaryList: summary_list,
+        linkContent: linkContent,
         package_information: package_information,
         union_and_national_codes: union_and_national_codes,
         supporting_documents: supporting_documents
@@ -49,7 +51,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.ProcedureCodesController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.procedureCode.change", item.sequenceId))
                     )
                 )
@@ -69,7 +71,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.FiscalInformationController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.onwardSupplyRelief.change", item.sequenceId))
                     )
                 )
@@ -89,7 +91,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.VATdetails.change", item.sequenceId))
                     )
                 )
@@ -109,7 +111,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.CommodityDetailsController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.commodityCode.change", item.sequenceId))
                     )
                 )
@@ -129,7 +131,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.CommodityDetailsController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
                     )
                 )
@@ -149,7 +151,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", item.sequenceId))
                     )
                 )
@@ -169,7 +171,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.CusCodeController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.cusCode.change", item.sequenceId))
                     )
                 )
@@ -189,7 +191,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.TaricCodeSummaryController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
                     )
                 )
@@ -209,7 +211,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.NactCodeSummaryController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.nationalAdditionalCodes.change", item.sequenceId))
                     )
                 )
@@ -229,7 +231,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.StatisticalValueController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.itemValue.change", item.sequenceId))
                     )
                 )
@@ -250,7 +252,7 @@
                     items = Seq(
                         actionItem(
                             href = controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id).url,
-                            content = Text(messages("site.change")),
+                            content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.items.item.supplementaryUnits.change", item.sequenceId))
                         )
                     )
@@ -271,7 +273,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.grossWeight.change", item.sequenceId))
                     )
                 )
@@ -291,7 +293,7 @@
                 items = Seq(
                     actionItem(
                         href = controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id).url,
-                        content = Text(messages("site.change")),
+                        content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.netWeight.change", item.sequenceId))
                     )
                 )

@@ -84,7 +84,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            Some(messages("declaration.addDocument.table.update.hint", document.documentIdentifier.getOrElse(""))),
+                            Some(messages("declaration.addDocument.table.change.hint", document.documentIdentifier.getOrElse(""))),
                             DocumentsProducedChangeController.displayPage(mode, itemId, createId(index, document)))),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"documents-table-row$index-change_button")
@@ -92,7 +92,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            Some(messages("declaration.addDocument.table.update.hint", document.documentIdentifier.getOrElse(""))),
+                            Some(messages("declaration.addDocument.table.remove.hint", document.documentIdentifier.getOrElse(""))),
                             DocumentsProducedRemoveController.displayPage(mode, itemId, createId(index, document)))),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"documents-table-row$index-remove_button")
