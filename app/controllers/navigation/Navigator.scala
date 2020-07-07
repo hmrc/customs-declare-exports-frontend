@@ -95,10 +95,8 @@ object Navigator {
     case AdditionalActorsSummary     => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case DeclarationSummaryHolder    => controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
     case RepresentativeAgent         => controllers.declaration.routes.ExporterDetailsController.displayPage
-    case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case DepartureTransport          => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case WarehouseIdentification     => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
@@ -131,9 +129,7 @@ object Navigator {
     case ConsignorDetails             => controllers.declaration.routes.ConsignorEoriNumberController.displayPage
     case OfficeOfExitInsideUK         => controllers.declaration.routes.LocationController.displayPage
     case OfficeOfExitOutsideUK        => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case SupervisingCustomsOffice     => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case DepartureTransport           => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case WarehouseIdentification      => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
     case TotalPackageQuantity         => controllers.declaration.routes.OfficeOfExitController.displayPage
     case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
@@ -159,10 +155,8 @@ object Navigator {
     case RepresentativeAgent         => controllers.declaration.routes.ExporterDetailsController.displayPage
     case AdditionalActorsSummary     => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case DeclarationSummaryHolder    => controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
-    case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case DepartureTransport          => controllers.declaration.routes.InlandTransportDetailsController.displayPage
-    case WarehouseIdentification     => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
@@ -195,10 +189,8 @@ object Navigator {
     case GoodsLocationForm           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case DeclarationSummaryHolder    => controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
-    case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case DepartureTransport          => controllers.declaration.routes.InlandTransportDetailsController.displayPage
-    case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage
     case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
@@ -230,10 +222,8 @@ object Navigator {
     case AdditionalActorsSummary     => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case DeclarationSummaryHolder    => controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
     case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
-    case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case DepartureTransport          => controllers.declaration.routes.InlandTransportDetailsController.displayPage
-    case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage
     case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
@@ -281,8 +271,10 @@ object Navigator {
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case TotalNumberOfItems => totalNumberOfItemsPreviousPage
-    case DeclarationHolder  => declarationHolderPreviousPage
+    case TotalNumberOfItems       => totalNumberOfItemsPreviousPage
+    case DeclarationHolder        => declarationHolderPreviousPage
+    case SupervisingCustomsOffice => supervisingCustomsOfficePreviousPage
+    case WarehouseIdentification  => warehouseIdentificationPreviousPage
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -454,6 +446,18 @@ object Navigator {
         case CLEARANCE => controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode)
         case _         => controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(mode)
       }
+
+  private def warehouseIdentificationPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    cacheModel.`type` match {
+      case OCCASIONAL | SIMPLIFIED => controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(mode)
+      case _                       => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(mode)
+    }
+
+  private def supervisingCustomsOfficePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.requiresWarehouseId || cacheModel.`type` == CLEARANCE)
+      controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode)
+    else
+      warehouseIdentificationPreviousPage(cacheModel, mode)
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {

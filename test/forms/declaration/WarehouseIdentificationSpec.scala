@@ -18,62 +18,55 @@ package forms.declaration
 
 import base.TestHelper.createRandomAlphanumericString
 import forms.LightFormMatchers
-import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.WarehouseIdentification._
+import forms.declaration.WarehouseIdentification.warehouseIdKey
 import forms.declaration.WarehouseIdentificationSpec._
 import play.api.libs.json.{JsObject, JsString}
 import unit.base.UnitSpec
 
 class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
 
-  import WarehouseIdentification._
+  private def form() = WarehouseIdentification.form(yesNo = false)
 
   "Warehouse Identification Form" should {
     "validate - no answer" in {
-      val incorrectWarehouseDetails = formData("", "")
+      val incorrectWarehouseDetails = formData("")
 
-      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain("declaration.warehouse.identification.answer.error")
+      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain("declaration.warehouse.identification.identificationNumber.error")
     }
 
     "validate - more than 35 characters after type code" in {
-      val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCode + createRandomAlphanumericString(36))
+      val incorrectWarehouseDetails = formData(warehouseTypeCode + createRandomAlphanumericString(36))
 
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
     }
 
     "validate - missing identification number" in {
-      val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCode)
+      val incorrectWarehouseDetails = formData(warehouseTypeCode)
 
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain("declaration.warehouse.identification.identificationNumber.error")
     }
 
     "validate - missing warehouse type" in {
-      val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseId)
+      val incorrectWarehouseDetails = formData(warehouseId)
 
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
     }
 
     "validate - invalid warehouse type" in {
-      val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCodeInvalid + warehouseId)
+      val incorrectWarehouseDetails = formData(warehouseTypeCodeInvalid + warehouseId)
 
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
     }
 
-    "validate correct empty identification" in {
-      val correctWarehouseDetails = formData(YesNoAnswers.no, "")
-
-      form().bind(correctWarehouseDetails) mustBe errorless
-    }
-
     "validate correct ware house type and number" in {
-      val correctWarehouseDetails = formData(YesNoAnswers.yes, "R" + warehouseId)
+      val correctWarehouseDetails = formData("R" + warehouseId)
 
       form().bind(correctWarehouseDetails) mustBe errorless
     }
 
     "validate lowercase ware house type and number" in {
       val id = "r" + warehouseId.toLowerCase
-      val correctWarehouseDetails = formData(YesNoAnswers.yes, id)
+      val correctWarehouseDetails = formData(id)
 
       val boundForm = form().bind(correctWarehouseDetails)
       boundForm mustBe errorless
@@ -81,7 +74,7 @@ class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
     }
 
     "validate max length" in {
-      val correctWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCode + createRandomAlphanumericString(35))
+      val correctWarehouseDetails = formData(warehouseTypeCode + createRandomAlphanumericString(35))
 
       form().bind(correctWarehouseDetails) mustBe errorless
     }
@@ -95,10 +88,8 @@ object WarehouseIdentificationSpec {
 
   val correctWarehouseDetails = WarehouseIdentification(Some(warehouseTypeCode + warehouseId))
 
-  def formData(inWarehouse: String, identifier: String) =
-    JsObject(Map(inWarehouseKey -> JsString(inWarehouse), warehouseIdKey -> JsString(identifier)))
-
-  def warehouseIdentification(id: String) = JsObject(Map("identificationNumber" -> JsString(id)))
+  def formData(identifier: String) =
+    JsObject(Map(warehouseIdKey -> JsString(identifier)))
 
   def identificationNumberError = "declaration.warehouse.identification.identificationNumber.error"
 }

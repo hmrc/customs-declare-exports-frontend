@@ -37,5 +37,9 @@ object ProcedureCodesData {
   // Export Inventory Cleansing Record
   val eicrProcedureCodes = Set("0019")
 
+  // Warehouse identifier required
+  private val warehouseRequiredProcedures = Set("07", "71", "78")
+  def isWarehouseRequiredCode(code: String): Boolean = warehouseRequiredProcedures.exists(code.endsWith)
+
   val limitOfCodes = 99
 }

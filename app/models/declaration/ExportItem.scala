@@ -71,6 +71,8 @@ case class ExportItem(
     procedureCodes.flatMap(_.procedureCode).isDefined &&
     (procedureCodes.flatMap(_.procedureCode).exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code)) || isFiscalInformationCompleted)
   }
+
+  def requiresWarehouseId: Boolean = procedureCodes.flatMap(_.procedureCode).exists(code => ProcedureCodesData.isWarehouseRequiredCode(code))
 }
 
 object ExportItem extends DeclarationPage {

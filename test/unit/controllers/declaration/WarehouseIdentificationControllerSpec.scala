@@ -16,48 +16,58 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.WarehouseIdentificationController
+import controllers.declaration._
 import forms.declaration.WarehouseIdentification
+import models.DeclarationType._
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
-import org.mockito.{ArgumentCaptor, Mockito}
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.warehouse_identification
+import views.html.declaration.{warehouse_identification, warehouse_identification_yesno}
 
-class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAndAfterEach with OptionValues {
+class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
-  val warehouseIdentificationTemplate: warehouse_identification = mock[warehouse_identification]
+  private val pageYesNo = mock[warehouse_identification_yesno]
+  private val pageIdentification = mock[warehouse_identification]
 
   val controller = new WarehouseIdentificationController(
-    authenticate = mockAuthAction,
-    journeyType = mockJourneyAction,
+    mockAuthAction,
+    mockJourneyAction,
     navigator,
-    exportsCacheService = mockExportsCacheService,
-    mcc = stubMessagesControllerComponents(),
-    warehouseIdentificationPage = warehouseIdentificationTemplate
-  )
+    mockExportsCacheService,
+    stubMessagesControllerComponents(),
+    pageYesNo,
+    pageIdentification
+  )(ec)
 
-  val exampleWarehouseIdentificationNumber = "R12341234"
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    authorizedUser()
+    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+    when(pageYesNo.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(pageIdentification.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
 
-  private val standardCacheModel =
-    aDeclaration(withType(DeclarationType.STANDARD))
-
-  private val suplementaryCacheModel =
-    aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
-
-  private val simplifiedCacheModel =
-    aDeclaration(withType(DeclarationType.SIMPLIFIED))
+  override protected def afterEach(): Unit = {
+    super.afterEach()
+    reset(pageYesNo, pageIdentification)
+  }
 
   def theResponseForm: Form[WarehouseIdentification] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[WarehouseIdentification]])
-    verify(warehouseIdentificationTemplate).apply(any(), captor.capture())(any(), any())
+    verify(pageIdentification).apply(any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  def theResponseFormYesNo: Form[WarehouseIdentification] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[WarehouseIdentification]])
+    verify(pageYesNo).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -67,113 +77,113 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
     theResponseForm
   }
 
-  override protected def beforeEach(): Unit = {
-    super.beforeEach()
-    authorizedUser()
-    when(warehouseIdentificationTemplate.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  private val identification = WarehouseIdentification(Some("R12345678GB"))
+
+  "Warehouse Identification Controller" should {
+
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
+      "return 200 (OK)" when {
+
+        "display page method is invoked and cache is empty" in {
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
+
+        "display page method is invoked and cache is not empty" in {
+
+          withNewCaching(aDeclarationAfter(request.cacheModel, withWarehouseIdentification(Some(identification))))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+          theResponseForm.value mustBe Some(identification)
+        }
+      }
+
+      "return 400 (BAD_REQUEST)" when {
+
+        "form contains incorrect values" in {
+
+          withNewCaching(request.cacheModel)
+
+          val incorrectForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "incorrect")
+
+          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) must be(BAD_REQUEST)
+        }
+      }
+
+      "return 303 (SEE_OTHER)" when {
+
+        "form contains valid response" in {
+          withNewCaching(request.cacheModel)
+          val correctForm =
+            Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
+
+          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage()
+        }
+
+      }
+
+    }
+
+    onJourney(CLEARANCE) { request =>
+      "return 200 (OK)" when {
+
+        "display page method is invoked and cache is empty" in {
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
+
+        "display page method is invoked and cache is not empty" in {
+
+          withNewCaching(aDeclarationAfter(request.cacheModel, withWarehouseIdentification(Some(identification))))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+          theResponseFormYesNo.value mustBe Some(identification)
+        }
+      }
+
+      "return 400 (BAD_REQUEST)" when {
+
+        "form contains incorrect values" in {
+
+          withNewCaching(request.cacheModel)
+
+          val incorrectForm = Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> "incorrect")
+
+          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) must be(BAD_REQUEST)
+        }
+      }
+
+      "return 303 (SEE_OTHER)" when {
+
+        "form contains valid response" in {
+
+          withNewCaching(request.cacheModel)
+
+          val correctForm = Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> "R12341234")
+
+          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage()
+        }
+
+      }
+    }
+
   }
-
-  override protected def afterEach(): Unit = {
-    Mockito.reset(warehouseIdentificationTemplate)
-    super.afterEach()
-  }
-
-  "WarehouseIdentificationController on GET request" should {
-    "return 200 OK" in {
-      withNewCaching(suplementaryCacheModel)
-      val response = controller.displayPage(Mode.Normal).apply(getRequest())
-      status(response) must be(OK)
-    }
-
-    "read item from cache and display it" in {
-      withNewCaching(suplementaryCacheModel)
-      val result = controller.displayPage(Mode.Normal).apply(getRequest())
-      await(result)
-      verify(mockExportsCacheService).get(any())(any())
-      verify(warehouseIdentificationTemplate).apply(any(), any())(any(), any())
-    }
-  }
-  "Warehouse Identification Controller on POST" when {
-
-    val body =
-      Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> exampleWarehouseIdentificationNumber)
-
-    "we are on standard declaration journey" should {
-
-      "redirect to Supervising Customs Office page" in {
-        withNewCaching(standardCacheModel)
-        val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()
-      }
-
-      "update cache after successful bind" in {
-        withNewCaching(standardCacheModel)
-        val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
-        await(result)
-
-        theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
-      }
-
-      "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(standardCacheModel)
-        val body = Json.obj("identificationNumber" -> "$$$$$$")
-        val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
-
-        status(result) mustBe BAD_REQUEST
-      }
-    }
-
-    "we are on supplementary declaration journey" should {
-      "redirect to Supervising Customs Office page" in {
-        withNewCaching(suplementaryCacheModel)
-        val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()
-      }
-
-      "update cache after successful bind" in {
-        withNewCaching(suplementaryCacheModel)
-        val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
-        await(result)
-
-        theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
-      }
-
-      "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(suplementaryCacheModel)
-        val body = Json.obj("identificationNumber" -> "$$$$$")
-        val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
-
-        status(result) mustBe BAD_REQUEST
-      }
-    }
-
-    "we are on simplified declaration journey" should {
-      "redirect to Supervising Customs Office page" in {
-        withNewCaching(simplifiedCacheModel)
-        val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()
-      }
-
-      "update cache after successful bind" in {
-        withNewCaching(simplifiedCacheModel)
-        val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
-        await(result)
-
-        theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
-      }
-
-      "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(simplifiedCacheModel)
-        val body = Json.obj("identificationNumber" -> "$$$$$$")
-        val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
-
-        status(result) mustBe BAD_REQUEST
-      }
-    }
-
-  }
-
 }

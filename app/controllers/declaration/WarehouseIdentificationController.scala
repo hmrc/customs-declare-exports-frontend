@@ -21,12 +21,13 @@ import controllers.navigation.Navigator
 import forms.declaration.WarehouseIdentification
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.warehouse_identification
+import views.html.declaration.{warehouse_identification, warehouse_identification_yesno}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,17 +37,16 @@ class WarehouseIdentificationController @Inject()(
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
+  warehouseIdentificationYesNoPage: warehouse_identification_yesno,
   warehouseIdentificationPage: warehouse_identification
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  import forms.declaration.WarehouseIdentification._
-
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.locations.warehouseIdentification match {
-      case Some(data) => Ok(warehouseIdentificationPage(mode, frm.fill(data)))
-      case _          => Ok(warehouseIdentificationPage(mode, frm))
+      case Some(data) => Ok(page(mode, frm.fill(data)))
+      case _          => Ok(page(mode, frm))
     }
   }
 
@@ -54,12 +54,22 @@ class WarehouseIdentificationController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(warehouseIdentificationPage(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(page(mode, formWithErrors))),
         form => {
           updateCache(form)
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage))
         }
       )
+  }
+
+  private def page(mode: Mode, form: Form[WarehouseIdentification])(implicit request: JourneyRequest[AnyContent]) = request.declarationType match {
+    case DeclarationType.CLEARANCE => warehouseIdentificationYesNoPage(mode, form)
+    case _                         => warehouseIdentificationPage(mode, form)
+  }
+
+  private def form()(implicit request: JourneyRequest[AnyContent]) = request.declarationType match {
+    case DeclarationType.CLEARANCE => WarehouseIdentification.form(yesNo = true)
+    case _                         => WarehouseIdentification.form(yesNo = false)
   }
 
   private def updateCache(formData: WarehouseIdentification)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

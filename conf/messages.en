@@ -612,7 +612,8 @@ declaration.officeOfExitOutsideUk.format = Enter the office of exit reference in
 declaration.officeOfExitOutsideUk.help-item1 = Go to data element 5/12 Customs Office of Exit in the {0}
 
 declaration.warehouse.identification.sectionHeader = Locations
-declaration.warehouse.identification.title =  Were the goods in a customs approved warehouse?
+declaration.warehouse.identification.optional.title =  Were the goods in a customs approved warehouse?
+declaration.warehouse.identification.required.title =  What is the customs approved warehouse number?
 declaration.warehouse.identification.label =  Warehouse identification number
 declaration.warehouse.identification.label.hint =  For example, R1234567GB
 declaration.warehouse.identification.answer.error = Select yes if the goods were in a customs approved warehouse

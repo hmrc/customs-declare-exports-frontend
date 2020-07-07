@@ -20,9 +20,10 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.TransportLeavingTheBorder
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.transport_leaving_the_border
@@ -57,8 +58,17 @@ class TransportLeavingTheBorderController @Inject()(
         errors => Future.successful(BadRequest(transportAtBorder(errors, mode))),
         code =>
           updateExportsDeclarationSyncDirect(_.updateTransportLeavingBorder(code)).map { _ =>
-            navigator.continueTo(mode, controllers.declaration.routes.WarehouseIdentificationController.displayPage)
+            nextPage(mode)
         }
       )
   }
+
+  private def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(
+      mode,
+      if (request.isType(DeclarationType.CLEARANCE) || request.cacheModel.requiresWarehouseId)
+        controllers.declaration.routes.WarehouseIdentificationController.displayPage
+      else controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    )
+
 }
