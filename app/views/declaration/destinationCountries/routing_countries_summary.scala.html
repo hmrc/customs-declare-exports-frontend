@@ -133,7 +133,7 @@
             legend = Some(Legend(
                 content = Text(messages("declaration.routingCountries.summary.header", countriesOfRouting.size)),
                 classes = Styles.gdsPageLegend,
-                isPageHeading = true
+                isPageHeading = false
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 routingCountriesTable,
