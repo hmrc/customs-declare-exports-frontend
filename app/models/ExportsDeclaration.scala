@@ -136,7 +136,7 @@ case class ExportsDeclaration(
 
   def requiresWarehouseId: Boolean = items.exists(_.requiresWarehouseId)
 
-  def filter(f: ExportsDeclaration => ExportsDeclaration): ExportsDeclaration = f(this)
+  def transform(function: ExportsDeclaration => ExportsDeclaration): ExportsDeclaration = function(this)
 }
 
 object ExportsDeclaration {

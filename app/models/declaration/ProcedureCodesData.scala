@@ -38,8 +38,8 @@ object ProcedureCodesData {
   val eicrProcedureCodes = Set("0019")
 
   // Warehouse identifier required
-  private val warehouseRequiredProcedures = Set("07", "71", "78")
-  def isWarehouseRequiredCode(code: String): Boolean = warehouseRequiredProcedures.exists(code.endsWith)
+  private val warehouseRequiredProcedureCodes = Set("07", "71", "78")
+  def isWarehouseRequiredCode(code: String): Boolean = warehouseRequiredProcedureCodes.exists(code.endsWith)
 
   val limitOfCodes = 99
 }

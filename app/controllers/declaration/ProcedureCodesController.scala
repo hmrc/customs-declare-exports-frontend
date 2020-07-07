@@ -145,9 +145,9 @@ class ProcedureCodesController @Inject()(
           sourceModel.copy(locations = sourceModel.locations.copy(warehouseIdentification = None))
 
       model
-        .filter(removeFiscalInformationForCode)
-        .filter(removePackageInformationForCode)
-        .filter(removeWarehouseIdentificationForCode)
+        .transform(removeFiscalInformationForCode)
+        .transform(removePackageInformationForCode)
+        .transform(removeWarehouseIdentificationForCode)
     }
 
     def updatedModel(model: ExportsDeclaration): ExportsDeclaration =
