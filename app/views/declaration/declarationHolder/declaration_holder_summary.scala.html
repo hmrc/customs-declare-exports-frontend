@@ -25,21 +25,22 @@
 @import views.html.components.gds._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
+@import services.HolderOfAuthorisationCode
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukButton: GovukButton,
-        govukTable : GovukTable,
-        govukRadios: GovukRadios,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        link: link,
-        addAnotherQuestion: addAnotherQuestion,
-        saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+govukLayout: gdsMainTemplate,
+govukFieldset: GovukFieldset,
+govukButton: GovukButton,
+govukTable : GovukTable,
+govukRadios: GovukRadios,
+errorSummary: errorSummary,
+sectionHeader: sectionHeader,
+pageTitle: pageTitle,
+exportsInputText: exportsInputText,
+link: link,
+addAnotherQuestion: addAnotherQuestion,
+saveButtons: saveButtons,
+formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[_], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
@@ -64,7 +65,7 @@
             rows = holders.zipWithIndex.map { case (holder, index) =>
                 Seq(
                     TableRow(
-                        content = Text(holder.authorisationTypeCode.getOrElse("")),
+                        content = Text(holder.authorisationTypeCode.map(HolderOfAuthorisationCode.findByCode(_).asString).getOrElse("")),
                         attributes = Map("id" -> s"holder_type_$index")
                     ),
                     TableRow(

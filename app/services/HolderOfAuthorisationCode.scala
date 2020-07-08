@@ -20,7 +20,10 @@ import utils.FileReader
 
 import scala.util.matching.Regex
 
-case class HolderOfAuthorisationCode(code: String, description: String)
+case class HolderOfAuthorisationCode(code: String, description: String) {
+
+  def asString = s"${description} (${code})"
+}
 
 object HolderOfAuthorisationCode {
 
@@ -32,11 +35,7 @@ object HolderOfAuthorisationCode {
         HolderOfAuthorisationCode(code, description)
     }.sortBy(_.description)
 
+  lazy private val holderCodeMap: Map[String, HolderOfAuthorisationCode] = all.map(holder => (holder.code, holder)).toMap
+
+  def findByCode(code: String): HolderOfAuthorisationCode = holderCodeMap(code)
 }
-
-
-/*
-TODO
-1. add description to list summary screen
-2. look at CYA screen
- */
