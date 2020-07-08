@@ -18,9 +18,25 @@ package services
 
 import utils.FileReader
 
-case class HolderOfAuthorisationCode(value: String)
+import scala.util.matching.Regex
+
+case class HolderOfAuthorisationCode(code: String, description: String)
 
 object HolderOfAuthorisationCode {
+
+  private val regex: Regex = """^"?(\w+)"?,"?([^"\n]+)"?$""".r
+
   lazy val all: List[HolderOfAuthorisationCode] =
-    FileReader("code-lists/holder-of-authorisation-codes.csv").tail.map(HolderOfAuthorisationCode(_)).sortBy(_.value)
+    FileReader("code-lists/holder-of-authorisation-codes.csv").tail.map {
+      case regex(code: String, description: String) =>
+        HolderOfAuthorisationCode(code, description)
+    }.sortBy(_.description)
+
 }
+
+
+/*
+TODO
+1. add description to list summary screen
+2. look at CYA screen
+ */

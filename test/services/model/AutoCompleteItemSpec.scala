@@ -47,7 +47,9 @@ class AutoCompleteItemSpec extends UnitSpec {
     }
 
     "map from holder of authorisation code" in {
-      AutoCompleteItem.fromHolderOfAuthorisationCode(List(HolderOfAuthorisationCode("code"))) mustBe List(AutoCompleteItem("code", "code"))
+      AutoCompleteItem.fromHolderOfAuthorisationCode(List(HolderOfAuthorisationCode("code", "description"))) mustBe List(
+        AutoCompleteItem("description (code)", "code")
+      )
     }
 
     "map from supervising customs office for Warehouse using Description - CODE" in {
