@@ -35,7 +35,7 @@ object WarehouseIdentification extends DeclarationPage {
   val inWarehouseKey = "inWarehouse"
   val warehouseIdKey = "identificationNumber"
 
-  private def form2Model: (String, Option[String]) => WarehouseIdentification = {
+  private def form2ModelYesNo: (String, Option[String]) => WarehouseIdentification = {
     case (inWarehouse, warehouseId) =>
       inWarehouse match {
         case yes => WarehouseIdentification(warehouseId.map(_.toUpperCase))
@@ -43,16 +43,20 @@ object WarehouseIdentification extends DeclarationPage {
       }
   }
 
-  private def model2Form: WarehouseIdentification => Option[(String, Option[String])] =
+  private def model2FormYesNo: WarehouseIdentification => Option[(String, Option[String])] =
     model =>
       model.identificationNumber match {
         case Some(id) => Some((yes, Some(id)))
         case None     => Some((no, None))
     }
 
+  private def form2Model: (String) => WarehouseIdentification = id => WarehouseIdentification(Some(id.toUpperCase))
+
+  private def model2Form: WarehouseIdentification => Option[String] = model => model.identificationNumber
+
   val validWarehouseTypes = Set('R', 'S', 'T', 'U', 'Y', 'Z')
 
-  val mapping = Forms
+  private val mappingYesNo = Forms
     .mapping(
       inWarehouseKey -> requiredRadio("declaration.warehouse.identification.answer.error"),
       warehouseIdKey ->
@@ -64,7 +68,20 @@ object WarehouseIdentification extends DeclarationPage {
             startsWithIgnoreCase(validWarehouseTypes) and noShorterThan(2) and noLongerThan(36) and isAlphanumeric
           )
         )
+    )(form2ModelYesNo)(model2FormYesNo)
+
+  private val mapping = Forms
+    .mapping(
+      warehouseIdKey ->
+        text()
+          .verifying("declaration.warehouse.identification.identificationNumber.error", nonEmpty)
+          .verifying(
+            "declaration.warehouse.identification.identificationNumber.error",
+            isEmpty or (
+              startsWithIgnoreCase(validWarehouseTypes) and noShorterThan(2) and noLongerThan(36) and isAlphanumeric
+            )
+          )
     )(form2Model)(model2Form)
 
-  def form(): Form[WarehouseIdentification] = Form(mapping)
+  def form(yesNo: Boolean): Form[WarehouseIdentification] = Form(if (yesNo) mappingYesNo else mapping)
 }

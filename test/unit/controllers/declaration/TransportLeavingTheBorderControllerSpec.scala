@@ -105,11 +105,38 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+    onJourney(CLEARANCE) { request =>
       "return 303 (SEE_OTHER)" when {
 
         "form contains valid values" in {
           withNewCaching(request.cacheModel)
+          val correctForm = Json.obj("transportLeavingTheBorder" -> ModeOfTransportCode.Rail.value)
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
+          verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
+        }
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+      "return 303 (SEE_OTHER)" when {
+
+        "form contains valid values" in {
+          withNewCaching(request.cacheModel)
+          val correctForm = Json.obj("transportLeavingTheBorder" -> ModeOfTransportCode.Rail.value)
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
+          verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
+        }
+
+        "form contains valid values and cache contains 'warehouse required' procedure code" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("1078"), Seq("000"))))))
           val correctForm = Json.obj("transportLeavingTheBorder" -> ModeOfTransportCode.Rail.value)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))

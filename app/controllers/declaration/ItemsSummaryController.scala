@@ -16,14 +16,11 @@
 
 package controllers.declaration
 
-import akka.parboiled2.RuleTrace.AnyOf
-import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
-import models.DeclarationType.DeclarationType
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -89,17 +86,19 @@ class ItemsSummaryController @Inject()(
               Future.successful(BadRequest(itemsSummaryPage(mode, itemSummaryForm.fill(validYesNo), request.cacheModel.items.toList, incorrectItems)))
 
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, nextPage(request.declarationType)))
+              Future.successful(navigator.continueTo(mode, nextPage()))
         }
       )
   }
 
-  private def nextPage(declarationType: DeclarationType): Mode => Call =
-    declarationType match {
+  private def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+    request.declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.WarehouseIdentificationController.displayPage
+        if (request.cacheModel.requiresWarehouseId)
+          controllers.declaration.routes.WarehouseIdentificationController.displayPage
+        else controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =

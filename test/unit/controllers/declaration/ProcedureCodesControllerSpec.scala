@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.ProcedureCodesController
 import controllers.util.Remove
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, ProcedureCodes}
+import forms.declaration._
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.{DeclarationType, Mode}
@@ -43,7 +43,6 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    mockErrorHandler,
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     mockProcedureCodesPage
@@ -306,6 +305,32 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
         val updatedItem = theCacheModelUpdated.itemBy(itemId)
         updatedItem.flatMap(_.packageInformation) mustBe Some(Seq(PackageInformationViewSpec.packageInformation))
+      }
+
+      "user save correct data with procedure code indicating warehouse identifier not required" in {
+
+        val warehouseIdentification = WarehouseIdentification(Some("WarehouseId"))
+        withNewCaching(
+          aDeclaration(
+            withType(DeclarationType.SUPPLEMENTARY),
+            withItem(anItem(withItemId(itemId))),
+            withWarehouseIdentification(Some(warehouseIdentification))
+          )
+        )
+
+        val correctForm =
+          Seq(("procedureCode", "1234"), ("additionalProcedureCode", "000"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityDetailsController
+          .displayPage(Mode.Normal, "itemId12345")
+
+        verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
+
+        val updatedLocations = theCacheModelUpdated.locations
+        updatedLocations.warehouseIdentification mustBe None
       }
 
       "user save correct data with '0019' procedure code on clearance journey" in {

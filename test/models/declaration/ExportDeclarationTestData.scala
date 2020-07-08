@@ -82,7 +82,7 @@ object ExportDeclarationTestData {
       routingCountries = Seq(Country(Some("FR"))),
       goodsLocation = Some(GoodsLocationForm("GBAUEMAEMAEMA").toModel),
       officeOfExit = Some(OfficeOfExit(Some("officeId"), Some(AllowedUKOfficeOfExitAnswers.yes))),
-      warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),
+      warehouseIdentification = Some(WarehouseIdentificationYesNoSpec.correctWarehouseDetails),
       supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
       inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)
     )
@@ -145,7 +145,7 @@ object ExportDeclarationTestData {
       routingCountries = Seq(Country(Some("FR"))),
       goodsLocation = Some(GoodsLocationForm("GBAUEMAEMAEMA").toModel),
       officeOfExit = Some(OfficeOfExit(Some("officeId"), Some(AllowedUKOfficeOfExitAnswers.yes))),
-      warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),
+      warehouseIdentification = Some(WarehouseIdentificationYesNoSpec.correctWarehouseDetails),
       supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
       inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)
     ),

@@ -29,13 +29,13 @@ import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.warehouse_identification
+import views.html.declaration.warehouse_identification_yesno
 import views.tags.ViewTest
 
 @ViewTest
-class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = instanceOf[warehouse_identification]
+  private val page = instanceOf[warehouse_identification_yesno]
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form(yesNo = false)
 
   private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form, messages: Messages = stubMessages())(
@@ -50,7 +50,7 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
       "have proper messages for labels" in {
         val messages = instanceOf[MessagesApi].preferred(journeyRequest())
         messages must haveTranslationFor("declaration.warehouse.identification.sectionHeader")
-        messages must haveTranslationFor("declaration.warehouse.identification.required.title")
+        messages must haveTranslationFor("declaration.warehouse.identification.optional.title")
         messages must haveTranslationFor("declaration.warehouse.identification.label")
         messages must haveTranslationFor("declaration.warehouse.identification.label.hint")
         messages must haveTranslationFor("declaration.warehouse.identification.identificationNumber.error")
@@ -68,12 +68,16 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
       }
 
       "have the correct page title" in {
-        view.getElementsByTag("h1").text() mustBe "declaration.warehouse.identification.required.title"
+        view.getElementsByTag("h1").text() mustBe "declaration.warehouse.identification.optional.title"
       }
 
-      "display input field" in {
-        view.getElementById("identificationNumber").attr("value") mustBe empty
-        view.getElementsByAttributeValue("for", "identificationNumber").text() must include("declaration.warehouse.identification.required.title")
+      "display radio button with Yes option" in {
+        view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
+        view.getElementsByAttributeValue("for", "code_yes").text() mustBe "site.yes"
+      }
+      "display radio button with No option" in {
+        view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
+        view.getElementsByAttributeValue("for", "code_no").text() mustBe "site.no"
       }
 
       "display 'Save and continue' button on page" in {

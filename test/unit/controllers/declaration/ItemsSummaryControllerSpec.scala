@@ -21,8 +21,8 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation}
-import models.declaration.ExportItem
 import models.DeclarationType._
+import models.declaration.{ExportItem, ProcedureCodesData}
 import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -300,9 +300,24 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     }
 
     onJourney(SIMPLIFIED, OCCASIONAL) { request =>
-      "return 303 (SEE_OTHER) and redirect to Warehouse Identification page" in {
+      "return 303 (SEE_OTHER)" in {
 
         val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem))
+        withNewCaching(cachedData)
+        val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
+
+        val result = controller.submit(Mode.Normal)(postRequest(answerForm))
+
+        status(result) mustBe SEE_OTHER
+        thePageNavigatedTo mustBe controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
+      }
+
+      "return 303 (SEE_OTHER) and redirect to Warehouse Identification page when procedure code requires warehouse id" in {
+
+        val cachedData = aDeclaration(
+          withType(request.declarationType),
+          withItem(exportItem.copy(procedureCodes = Some(ProcedureCodesData(Some("0007"), Seq("123")))))
+        )
         withNewCaching(cachedData)
         val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
 

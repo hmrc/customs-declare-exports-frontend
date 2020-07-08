@@ -133,6 +133,10 @@ case class ExportsDeclaration(
   def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
 
   def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).exists(_.nonEmpty)
+
+  def requiresWarehouseId: Boolean = items.exists(_.requiresWarehouseId)
+
+  def transform(function: ExportsDeclaration => ExportsDeclaration): ExportsDeclaration = function(this)
 }
 
 object ExportsDeclaration {

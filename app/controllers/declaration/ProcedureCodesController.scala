@@ -22,7 +22,6 @@ import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.ProcedureCodes
 import forms.declaration.ProcedureCodes.form
-import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData._
@@ -42,7 +41,6 @@ class ProcedureCodesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
-  errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   procedureCodesPage: procedure_codes
@@ -129,17 +127,27 @@ class ProcedureCodesController @Inject()(
   ): Future[Option[ExportsDeclaration]] = {
 
     def clearDataForProcedureCode(code: String, itemId: String, model: ExportsDeclaration) = {
-      val step1Model =
+
+      def removeFiscalInformationForCode(sourceModel: ExportsDeclaration) =
         if (!ProcedureCodesData.osrProcedureCodes.contains(code))
-          model.updatedItem(itemId, item => item.copy(fiscalInformation = None, additionalFiscalReferencesData = None))
-        else model
+          sourceModel.updatedItem(itemId, item => item.copy(fiscalInformation = None, additionalFiscalReferencesData = None))
+        else sourceModel
 
-      val step2Model =
+      def removePackageInformationForCode(sourceModel: ExportsDeclaration) =
         if (r.isType(DeclarationType.CLEARANCE) && ProcedureCodesData.eicrProcedureCodes.contains(code))
-          step1Model.updatedItem(itemId, item => item.copy(packageInformation = None))
-        else step1Model
+          sourceModel.updatedItem(itemId, item => item.copy(packageInformation = None))
+        else sourceModel
 
-      step2Model
+      def removeWarehouseIdentificationForCode(sourceModel: ExportsDeclaration) =
+        if (r.isType(DeclarationType.CLEARANCE) || sourceModel.requiresWarehouseId)
+          sourceModel
+        else
+          sourceModel.copy(locations = sourceModel.locations.copy(warehouseIdentification = None))
+
+      model
+        .transform(removeFiscalInformationForCode)
+        .transform(removePackageInformationForCode)
+        .transform(removeWarehouseIdentificationForCode)
     }
 
     def updatedModel(model: ExportsDeclaration): ExportsDeclaration =
