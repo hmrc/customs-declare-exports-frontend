@@ -41,7 +41,6 @@
 @(mode: Mode, itemId: String, form: Form[DocumentsProduced])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.addDocument.hint.traderTariff.link")</a>}
-@fourDigitCodeLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.addDocument.hint.fourDigitCode.link")</a>}
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
 
@@ -110,7 +109,7 @@
 
 @pageHint = {
     <span class="govuk-hint">
-        @Html(messages("declaration.addDocument.hint", tradeTariffLink, fourDigitCodeLink))
+        @Html(messages("declaration.addDocument.hint", tradeTariffLink))
     </span>
 }
 

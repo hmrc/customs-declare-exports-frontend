@@ -665,9 +665,8 @@ declaration.additionalFiscalReferences.add.hint = Add VAT details
 declaration.additionalFiscalReferences.remove.hint = Remove VAT number {0}
 
 declaration.addDocument.title = Do you need to add any documents, certificates, licences or authorisations?
-declaration.addDocument.hint = The boxes that need to be completed will be indicated by the {0} and the {1} you use
+declaration.addDocument.hint = The boxes that need to be completed will be indicated by the {0} and the 4-digit document code you use
 declaration.addDocument.hint.traderTariff.link = UK Trade Tariff
-declaration.addDocument.hint.fourDigitCode.link = 4-digit document code
 declaration.addDocument.documentTypeCode = Code to be declared
 declaration.addDocument.documentTypeCode.hint = This is the 4-character code that identifies the type of document or reference
 declaration.addDocument.documentTypeCode.error = Enter a valid document type code
@@ -924,8 +923,7 @@ declaration.nationalAdditionalCode.remove.header = Are you sure you want to remo
 
 declaration.nationalAdditionalCode.header.singular = You have added 1 national additional code
 declaration.nationalAdditionalCode.header.plural = You have added {0} national additional codes
-declaration.nationalAdditionalCode.header.hint = This is a {0} that should only be completed if a National Additional Code applies to the commodity code being declared for this item. It can be found in the {1} under the ‘Export measures and restrictions’ tab of your commodity code.
-declaration.nationalAdditionalCode.header.nactCode.link = 4-digit code
+declaration.nationalAdditionalCode.header.hint = This is a 4-digit code that should only be completed if a National Additional Code applies to the commodity code being declared for this item. It can be found in the {0} under the ‘Export measures and restrictions’ tab of your commodity code.
 declaration.nationalAdditionalCode.header.tradeTariff.link = UK Trade Tariff
 declaration.nationalAdditionalCode.label = Do you need to add another national additional code?
 declaration.nationalAdditionalCode.answer.empty = Select yes if there is a national additional code

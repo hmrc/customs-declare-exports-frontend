@@ -48,7 +48,6 @@
 
 @tariffBody = { @Html(messages("declaration.nationalAdditionalCode.help.bodyText", components.details_content_link())) }
 
-@nactCodeLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.nactCode.link")</a>}
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.tradeTariff.link")</a>}
 
 @govukLayout(
@@ -71,7 +70,7 @@
                     classes = gdsPageLegend
                 ))
             )),
-            hint = Some(Hint(content = HtmlContent(messages("declaration.nationalAdditionalCode.header.hint", nactCodeLink, tradeTariffLink)))),
+            hint = Some(Hint(content = HtmlContent(messages("declaration.nationalAdditionalCode.header.hint", tradeTariffLink)))),
             items = Seq(
                 RadioItem(
                     id = Some("code_yes"),
