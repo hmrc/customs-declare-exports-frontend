@@ -942,7 +942,7 @@ declaration.nationalAdditionalCode.help.bodyText = Go to data element 6/17 Natio
 declaration.statisticalValue.header = What is the total cost of exporting these goods?
 declaration.statisticalValue.header.hint = This includes the amount paid for them or their value, packing, UK inland and coastal transport, dock dues, loading charges and all other costs, charges and expenses.
 declaration.statisticalValue.units = £
-declaration.statisticalValue.units.hint = Enter amount in GBP
+declaration.statisticalValue.units.hint = Enter amount in GBP.
 declaration.statisticalValue.error.empty = Enter the total cost, up to 15 digits
 declaration.statisticalValue.error.length = Enter the total cost, up to 15 digits
 declaration.statisticalValue.error.wrongFormat = Enter a statistical value in the correct format
@@ -1079,7 +1079,7 @@ declaration.commodityMeasure.supplementaryUnits.item = 6/2 Supplementary units
 declaration.commodityMeasure.supplementaryUnits.hint = A supplementary unit is a form of measurement specified by the commodity code, for example ce/el for 85072020. Not all commodity codes have a supplementary unit. If yours does, enter the amount, for example 1000.
 declaration.commodityMeasure.supplementaryUnits.error = A supplementary unit can be up to 16 characters
 declaration.commodityMeasure.units = Kg
-declaration.commodityMeasure.units.hint = Enter weight in kilograms
+declaration.commodityMeasure.units.hint = Enter weight in kilograms.
 
 
 declaration.summary.locations.header = Locations

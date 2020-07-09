@@ -66,7 +66,9 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       }
 
       "display empty input with label for Statistical Value" in {
-        view.getElementById("statisticalValue-hint").text() mustBe "declaration.statisticalValue.header.hint"
+        view
+          .getElementById("statisticalValue-hint")
+          .text() mustBe s"${messages("declaration.statisticalValue.units.hint")} ${messages("declaration.statisticalValue.header.hint")}"
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
@@ -107,7 +109,9 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       }
 
       "display empty input with label for Statistical Value" in {
-        view.getElementById("statisticalValue-hint").text() mustBe "declaration.statisticalValue.header.hint"
+        view
+          .getElementById("statisticalValue-hint")
+          .text() mustBe s"${messages("declaration.statisticalValue.units.hint")} ${messages("declaration.statisticalValue.header.hint")}"
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
@@ -147,7 +151,9 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
 
         val view = createView()
 
-        view.getElementById("statisticalValue-hint").text() mustBe "declaration.statisticalValue.header.hint"
+        view
+          .getElementById("statisticalValue-hint")
+          .text() mustBe s"${messages("declaration.statisticalValue.units.hint")} ${messages("declaration.statisticalValue.header.hint")}"
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 

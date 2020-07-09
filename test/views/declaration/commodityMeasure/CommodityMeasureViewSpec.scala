@@ -80,7 +80,9 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         val view = createView()
 
         view.getElementsByAttributeValue("for", "netMass").text() mustBe messages("declaration.commodityMeasure.netMass")
-        view.getElementById("netMass-hint").text() mustBe messages("declaration.commodityMeasure.netMass.hint")
+        view
+          .getElementById("netMass-hint")
+          .text() mustBe s"${messages("declaration.commodityMeasure.units.hint")} ${messages("declaration.commodityMeasure.netMass.hint")}"
         view.getElementById("netMass").attr("value") mustBe empty
       }
 
@@ -89,7 +91,9 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         val view = createView()
 
         view.getElementsByAttributeValue("for", "grossMass").text() mustBe messages("declaration.commodityMeasure.grossMass")
-        view.getElementById("grossMass-hint").text() mustBe messages("declaration.commodityMeasure.grossMass.hint")
+        view
+          .getElementById("grossMass-hint")
+          .text() mustBe s"${messages("declaration.commodityMeasure.units.hint")} ${messages("declaration.commodityMeasure.grossMass.hint")}"
         view.getElementById("grossMass").attr("value") mustBe empty
       }
 

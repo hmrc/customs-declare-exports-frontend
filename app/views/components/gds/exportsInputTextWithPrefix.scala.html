@@ -26,7 +26,7 @@
         prefixKey: String,
         inputClass: String = "govuk-input",
         hintKey: Option[String] = None,
-        prefixLabelKey: Option[String] = None,
+        prefixHintKey: Option[String] = None,
         prefixClass: String = "",
         sectionHeaderKey: Option[String] = None
 )(implicit messages: Messages)
@@ -41,6 +41,20 @@
 
 @allErrors = @{
  FieldElements(field.id, field, null, Map.empty, messages).errors
+}
+
+
+@hint(hintText: Option[String], prefixText: Option[String]) = {
+ @if(hintText.isDefined || prefixText.isDefined){
+  <span id=@{s"${field.id}-hint"}>
+   @prefixText.map{ text =>
+    <span class="govuk-visually-hidden">@text</span>
+   }
+   @hintText.map{ text =>
+    <span class="govuk-hint">@text</span>
+   }
+  </span>
+  }
 }
 
 
@@ -60,14 +74,10 @@
  </h1>
  }
 
- @hintKey.map { hint =>
-  <span id=@{s"${field.id}-hint"} class="govuk-hint">
-   @messages(hint)
-  </span>
- }
+ @hint(hintKey.map(messages(_)), prefixHintKey.map(messages(_)))
 
  @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@error</span> }
 
- <span id=@{s"${field.id}-before"} class="@{s"govuk-body $prefixClass"}" aria-label="@prefixLabelKey.map(messages(_)).getOrElse("")">@messages(prefixKey)</span>
- <input class="@inputClasses" value="@field.value" id=@field.id name=@field.id type="text" aria-describedby=@{s"${field.id}-hint"}>
+ <span id=@{s"${field.id}-before"} aria-hidden="true" class="@{s"govuk-body $prefixClass"}">@messages(prefixKey)</span>
+ <input class="@inputClasses" value="@field.value" id="@field.id" name="@field.id" type="text" aria-describedby=@{s"${field.id}-hint"}>
 </div>
