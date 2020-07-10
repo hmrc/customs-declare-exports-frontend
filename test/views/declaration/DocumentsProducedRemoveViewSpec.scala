@@ -28,12 +28,12 @@ import play.api.i18n.MessagesApi
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.documentsProduced.documents_produced_remove
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedRemoveViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class DocumentsProducedRemoveViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val itemId = "a7sc78"
   private val documentId = "1.2131231"
@@ -44,10 +44,9 @@ class DocumentsProducedRemoveViewSpec extends UnitViewSpec with ExportsTestData 
     mode: Mode = Mode.Normal,
     form: Form[YesNoAnswer] = YesNoAnswer.form(),
     documents: DocumentsProduced = correctDocumentsProduced
-  )(implicit request: JourneyRequest[_]): Document = page(mode, itemId, documentId, documents, form)(request, stubMessages())
+  )(implicit request: JourneyRequest[_]): Document = page(mode, itemId, documentId, documents, form)(request, messages)
 
   "have proper messages for labels" in {
-    val messages = instanceOf[MessagesApi].preferred(journeyRequest())
     messages must haveTranslationFor("declaration.addDocument.remove.title")
     messages must haveTranslationFor("declaration.addDocument.remove.code")
     messages must haveTranslationFor("declaration.addDocument.remove.reference")

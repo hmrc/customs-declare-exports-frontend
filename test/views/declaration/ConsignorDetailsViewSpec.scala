@@ -30,12 +30,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.consignor_details
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignorDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class ConsignorDetailsViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
 
   val form: Form[ConsignorDetails] = ConsignorDetails.form()
   val consignorDetailsPage = instanceOf[consignor_details]
@@ -57,7 +57,7 @@ class ConsignorDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
     val view = createViewWithAddressError(address)
     fields.filterNot(_ == fieldName).foreach { key =>
       view must containErrorElementWithTagAndHref("a", s"#details_address_$key")
-      view must containErrorElementWithMessage(s"declaration.address.$key.$errorKey")
+      view must containErrorElementWithMessageKey(s"declaration.address.$key.$errorKey")
     }
   }
 
@@ -65,7 +65,7 @@ class ConsignorDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     val view = createViewWithAddressError(address)
     view must containErrorElementWithTagAndHref("a", s"#details_address_$fieldName")
-    view must containErrorElementWithMessage(s"declaration.address.$fieldName.$errorKey")
+    view must containErrorElementWithMessageKey(s"declaration.address.$fieldName.$errorKey")
   }
 
   def createViewWithAddressError(address: Address)(implicit request: JourneyRequest[_]): Document = {

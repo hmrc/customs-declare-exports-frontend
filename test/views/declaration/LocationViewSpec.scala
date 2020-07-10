@@ -22,17 +22,15 @@ import models.DeclarationType._
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Call
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.goods_location
 import views.tags.ViewTest
 
 @ViewTest
-class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class LocationViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[goods_location]
   private val form: Form[GoodsLocationForm] = GoodsLocationForm.form()
@@ -40,54 +38,50 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
   private def createView(
     mode: Mode = Mode.Normal,
     form: Form[GoodsLocationForm] = form,
-    messages: Messages = stubMessages(),
     declarationType: DeclarationType = DeclarationType.STANDARD
   ): Document = page(mode, form)(journeyRequest(declarationType), messages)
 
   "Location View on empty page" should {
 
     "have proper messages for labels" in {
-
-      val realMessages = instanceOf[MessagesApi].preferred(journeyRequest())
-
-      realMessages must haveTranslationFor("declaration.goodsLocation.title")
-      realMessages must haveTranslationFor("declaration.goodsLocation.hint")
-      realMessages must haveTranslationFor("declaration.goodsLocation.code.empty")
-      realMessages must haveTranslationFor("declaration.goodsLocation.code.error")
-      realMessages must haveTranslationFor("declaration.goodsLocation.help.bodyText")
+      messages must haveTranslationFor("declaration.goodsLocation.title")
+      messages must haveTranslationFor("declaration.goodsLocation.hint")
+      messages must haveTranslationFor("declaration.goodsLocation.code.empty")
+      messages must haveTranslationFor("declaration.goodsLocation.code.error")
+      messages must haveTranslationFor("declaration.goodsLocation.help.bodyText")
     }
 
     val view = createView()
 
     "display same page title as header" in {
 
-      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      val viewWithMessage = createView()
 
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display section header" in {
 
-      view.getElementById("section-header").text() must include("declaration.summary.locations.header")
+      view.getElementById("section-header") must containMessage("declaration.summary.locations.header")
     }
 
     "display header" in {
 
-      view.getElementsByTag("h1").text() mustBe "declaration.goodsLocation.title"
+      view.getElementsByTag("h1") must containMessageForElements("declaration.goodsLocation.title")
     }
 
     "display 'Save and continue' button" in {
 
       val saveButton = view.getElementById("submit")
 
-      saveButton.text() mustBe "site.save_and_continue"
+      saveButton must containMessage("site.save_and_continue")
     }
 
     "display 'Save and return' button" in {
 
       val saveButton = view.getElementById("submit_and_return")
 
-      saveButton.text() mustBe "site.save_and_come_back_later"
+      saveButton must containMessage("site.save_and_come_back_later")
     }
   }
 
@@ -101,7 +95,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code")
 
-      view must containErrorElementWithMessage("declaration.goodsLocation.code.empty")
+      view must containErrorElementWithMessageKey("declaration.goodsLocation.code.empty")
     }
 
     "display error for incorrect country in the Goods Location code" in {
@@ -112,7 +106,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code")
 
-      view must containErrorElementWithMessage("declaration.goodsLocation.code.error")
+      view must containErrorElementWithMessageKey("declaration.goodsLocation.code.error")
     }
 
     "display error for incorrect type of location in the Goods Location code" in {
@@ -123,7 +117,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code")
 
-      view must containErrorElementWithMessage("declaration.goodsLocation.code.error")
+      view must containErrorElementWithMessageKey("declaration.goodsLocation.code.error")
     }
 
     "display error for incorrect qualifier of identification in the Goods Location code" in {
@@ -134,7 +128,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code")
 
-      view must containErrorElementWithMessage("declaration.goodsLocation.code.error")
+      view must containErrorElementWithMessageKey("declaration.goodsLocation.code.error")
     }
 
     "display error for too short code" in {
@@ -145,7 +139,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code")
 
-      view must containErrorElementWithMessage("declaration.goodsLocation.code.error")
+      view must containErrorElementWithMessageKey("declaration.goodsLocation.code.error")
     }
   }
 
@@ -168,7 +162,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
           val backButton = view.getElementById("back-link")
 
-          backButton must containText("site.back")
+          backButton must containMessage("site.back")
           backButton.getElementById("back-link") must haveHref(redirect)
         }
       }

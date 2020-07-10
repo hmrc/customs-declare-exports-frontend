@@ -25,25 +25,24 @@ import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.transport_container_add_first
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
+class TransportContainerAddFirstViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
 
   private val form: Form[ContainerFirst] = ContainerFirst.form()
   private val page = instanceOf[transport_container_add_first]
-  private val realMessages = validatedMessages
 
   private def createView(form: Form[ContainerFirst] = form): Document =
-    page(Mode.Normal, form)(journeyRequest(), realMessages)
+    page(Mode.Normal, form)(journeyRequest(), messages)
 
   "Transport Containers Add First View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(realMessages("declaration.transportInformation.containers.first.title"))
+      view.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.containers.first.title")
     }
 
     "display 'Back' button that links to 'transport payment' page" in {
@@ -54,12 +53,12 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(realMessages(saveAndContinueCaption))
+      saveButton must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(realMessages(saveAndReturnCaption))
+      saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -71,7 +70,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
 
-      view must containErrorElementWithMessage(realMessages("declaration.transportInformation.containerId.error.length"))
+      view must containErrorElementWithMessageKey("declaration.transportInformation.containerId.error.length")
     }
 
   }

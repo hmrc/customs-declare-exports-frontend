@@ -27,22 +27,21 @@ import play.api.i18n.MessagesApi
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.declarationHolder.declaration_holder_remove
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderRemoveViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class DeclarationHolderRemoveViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[declaration_holder_remove]
   val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")))
 
   private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = YesNoAnswer.form(), holder: DeclarationHolder = declarationHolder)(
     implicit request: JourneyRequest[_]
-  ): Document = page(mode, holder, form)(request, stubMessages())
+  ): Document = page(mode, holder, form)(request, messages)
 
   "have proper messages for labels" in {
-    val messages = instanceOf[MessagesApi].preferred(journeyRequest())
     messages must haveTranslationFor("declaration.declarationHolder.remove.title")
     messages must haveTranslationFor("declaration.declarationHolders.table.type")
     messages must haveTranslationFor("declaration.declarationHolders.table.eori")

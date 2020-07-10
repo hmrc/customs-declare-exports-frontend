@@ -22,28 +22,25 @@ import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.office_of_exit_outside_uk
 import views.tags.ViewTest
 
 @ViewTest
-class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page: office_of_exit_outside_uk = instanceOf[office_of_exit_outside_uk]
 
   private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitOutsideUK] = OfficeOfExitOutsideUK.form()): Document =
-    page(mode, form)(journeyRequest(), stubMessages())
+    page(mode, form)(journeyRequest(), messages)
 
   "Office of Exit View" should {
     val view = createView()
     onEveryDeclarationJourney() { implicit request =>
       "have proper messages for labels" in {
-        val messages = instanceOf[MessagesApi].preferred(journeyRequest())
         messages must haveTranslationFor("declaration.officeOfExitOutsideUk.title")
         messages must haveTranslationFor("declaration.summary.locations.header")
         messages must haveTranslationFor("declaration.officeOfExitOutsideUk.hint")
@@ -53,16 +50,16 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
       }
 
       "display page title" in {
-        view.getElementsByClass(Styles.gdsPageLabel).text() mustBe "declaration.officeOfExitOutsideUk.title"
+        view.getElementsByClass(Styles.gdsPageLabel) must containMessageForElements("declaration.officeOfExitOutsideUk.title")
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("declaration.summary.locations.header")
+        view.getElementById("section-header") must containMessage("declaration.summary.locations.header")
       }
 
       "display office of exit outside UK question" in {
-        view.getElementsByClass(Styles.gdsPageLabel).text() mustBe "declaration.officeOfExitOutsideUk.title"
-        view.getElementById("officeId-hint").text() mustBe "declaration.officeOfExitOutsideUk.hint"
+        view.getElementsByClass(Styles.gdsPageLabel) must containMessageForElements("declaration.officeOfExitOutsideUk.title")
+        view.getElementById("officeId-hint") must containMessage("declaration.officeOfExitOutsideUk.hint")
         view.getElementById("officeId").attr("value") mustBe empty
       }
 
@@ -70,18 +67,18 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe "site.back"
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
       }
 
       "display 'Save and continue' button" in {
         val saveButton = view.getElementById("submit")
-        saveButton.text() mustBe "site.save_and_continue"
+        saveButton must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text() mustBe "site.save_and_come_back_later"
+        saveAndReturnButton must containMessage("site.save_and_come_back_later")
       }
 
       "handle invalid input" should {
@@ -94,7 +91,7 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#officeId")
-          view must containErrorElementWithMessage("declaration.officeOfExitOutsideUk.empty")
+          view must containErrorElementWithMessageKey("declaration.officeOfExitOutsideUk.empty")
         }
 
         "display errors when format is incorrect" in {
@@ -106,7 +103,7 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#officeId")
-          view must containErrorElementWithMessage("declaration.officeOfExitOutsideUk.format")
+          view must containErrorElementWithMessageKey("declaration.officeOfExitOutsideUk.format")
         }
 
         "display errors when office of exit contains special characters" in {
@@ -116,7 +113,7 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#officeId")
-          view must containErrorElementWithMessage("declaration.officeOfExitOutsideUk.format")
+          view must containErrorElementWithMessageKey("declaration.officeOfExitOutsideUk.format")
         }
       }
     }

@@ -24,20 +24,19 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.fiscal_information
 import views.tags.ViewTest
 
 @ViewTest
-class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class FiscalInformationViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
   private val page = instanceOf[fiscal_information]
   private def createView(itemId: String = "itemId", form: Form[FiscalInformation] = form)(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form)(request, stubMessages())
+    page(Mode.Normal, itemId, form)(request, messages)
 
   "Fiscal Information View on empty page" should {
 
@@ -66,11 +65,11 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView()
 
       "display page title" in {
-        view.getElementsByTag("h1").text() mustBe "declaration.fiscalInformation.title"
+        view.getElementsByTag("h1") must containMessageForElements("declaration.fiscalInformation.title")
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("declaration.fiscalInformation.header")
+        view.getElementById("section-header")  must containMessage("declaration.fiscalInformation.header")
       }
 
       "display two radio buttons with description (not selected)" in {
@@ -79,19 +78,19 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
         view.getElementById("Yes") must not(beSelected)
 
         val optionOneLabel = view.getElementsByAttributeValue("for", "Yes")
-        optionOneLabel.text() mustBe "site.yes"
+        optionOneLabel must containMessageForElements("site.yes")
 
         view.getElementById("No") must not(beSelected)
 
         val optionTwoLabel = view.getElementsByAttributeValue("for", "No")
-        optionTwoLabel.text() mustBe "site.no"
+        optionTwoLabel must containMessageForElements("site.no")
       }
 
       "display 'Back' button that links to 'Warehouse' page" in {
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe "site.back"
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, "itemId")
         )
@@ -99,12 +98,12 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
 
       "display 'Save and continue' button" in {
         val saveButton = view.getElementById("submit")
-        saveButton.text() mustBe "site.save_and_continue"
+        saveButton must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button" in {
         val saveButton = view.getElementById("submit_and_return")
-        saveButton.text() mustBe "site.save_and_come_back_later"
+        saveButton must containMessage("site.save_and_come_back_later")
         saveButton.attr("name") must be(SaveAndReturn.toString)
       }
     }

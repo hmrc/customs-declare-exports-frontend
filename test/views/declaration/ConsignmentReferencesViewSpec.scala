@@ -28,12 +28,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.consignment_references
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class ConsignmentReferencesViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
 
   private val properDUCR = "7GB000000000000-12345"
   private val incorrectDUCR = "7GB000000000000-1234512345123451234512345"
@@ -46,8 +46,6 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
   "Consignment References" should {
 
     "have correct message keys" in {
-
-      val messages = instanceOf[MessagesApi].preferred(request)
 
       messages must haveTranslationFor("supplementary.consignmentReferences.heading")
       messages must haveTranslationFor("supplementary.consignmentReferences.header")
@@ -126,7 +124,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.empty")
+        view must containErrorElementWithMessageKey("supplementary.consignmentReferences.lrn.error.empty")
       }
 
       "display error when LRN is longer then 22 characters" in {
@@ -140,7 +138,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.length")
+        view must containErrorElementWithMessageKey("supplementary.consignmentReferences.lrn.error.length")
       }
 
       "display error when LRN contains special character" in {
@@ -151,7 +149,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.specialCharacter")
+        view must containErrorElementWithMessageKey("supplementary.consignmentReferences.lrn.error.specialCharacter")
       }
 
       "display error when DUCR is incorrect and LRN empty" in {
@@ -163,8 +161,8 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view must containErrorElementWithMessage("error.ducr")
-        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.empty")
+        view must containErrorElementWithMessageKey("error.ducr")
+        view must containErrorElementWithMessageKey("supplementary.consignmentReferences.lrn.error.empty")
       }
 
       "display error when DUCR is incorrect and LRN is longer then 22 characters" in {
@@ -179,8 +177,8 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view must containErrorElementWithMessage("error.ducr")
-        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.length")
+        view must containErrorElementWithMessageKey("error.ducr")
+        view must containErrorElementWithMessageKey("supplementary.consignmentReferences.lrn.error.length")
       }
 
       "display error when DUCR is incorrect and LRN contains special character" in {
@@ -192,8 +190,8 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view must containErrorElementWithMessage("error.ducr")
-        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.specialCharacter")
+        view must containErrorElementWithMessageKey("error.ducr")
+        view must containErrorElementWithMessageKey("supplementary.consignmentReferences.lrn.error.specialCharacter")
       }
     }
   }

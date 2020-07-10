@@ -44,7 +44,5 @@ class UnitViewSpec2 extends UnitSpec with ViewMatchers with JourneyTypeTestRunne
     view.getElementById("error-summary-heading").text() must be("error.summary.title")
     view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be("error.summary.text")
   }
-
-  def messagesKey(key: String): BeMatcher[String] = new MessagesKeyMatcher(key)
 }
 

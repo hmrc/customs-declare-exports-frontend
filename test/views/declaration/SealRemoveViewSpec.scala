@@ -26,12 +26,12 @@ import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.seal_remove
 import views.tags.ViewTest
 
 @ViewTest
-class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
+class SealRemoveViewSpec extends UnitViewSpec2 with Stubs with MustMatchers with CommonMessages with Injector {
 
   val containerId = "42354542"
   val sealId = "SealToRemove54214"
@@ -47,7 +47,7 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with 
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(messages("declaration.seal.remove.title"))
+      view.getElementsByTag("h1").text() must be(messages("declaration.seal.remove.title", containerId))
     }
 
     "display seal to remove" in {
@@ -81,7 +81,7 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#yesNo")
 
-      view must containErrorElementWithMessage("error.yesNo.required")
+      view must containErrorElementWithMessageKey("error.yesNo.required")
     }
 
   }

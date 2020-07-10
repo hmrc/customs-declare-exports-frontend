@@ -26,16 +26,15 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import utils.ListItem
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.additionalInformtion.additional_information
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
+class AdditionalInformationViewSpec extends UnitViewSpec2 with ExportsTestData with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
@@ -49,8 +48,6 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
   "Additional Information View" should {
 
     "have a proper messages" in {
-
-      val messages = instanceOf[MessagesApi].preferred(request)
 
       messages must haveTranslationFor("declaration.additionalInformation.table.heading")
       messages must haveTranslationFor("declaration.additionalInformation.table.multiple.heading")
@@ -68,12 +65,12 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
-        createView().getElementsByTag("h1").text() mustBe messages("declaration.additionalInformation.table.multiple.heading")
+        createView().getElementsByTag("h1") must containMessageForElements("declaration.additionalInformation.table.multiple.heading", "0")
       }
 
       "display section header" in {
 
-        createView().getElementById("section-header").text() must include("supplementary.items")
+        createView().getElementById("section-header") must containMessage("supplementary.items")
       }
 
       "display 'Save and continue' button" in {
@@ -118,14 +115,13 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
         val row = view.selectFirst("#additional_information tbody tr")
 
         "has Code header" in {
-          view.select("#additional_information thead tr th").get(0).text() mustBe "declaration.additionalInformation.table.headers.code"
+          view.select("#additional_information thead tr th").get(0) must containMessage("declaration.additionalInformation.table.headers.code")
         }
 
         "has 'Required information' header" in {
           view
             .select("#additional_information thead tr th")
-            .get(1)
-            .text() mustBe "declaration.additionalInformation.table.headers.description"
+            .get(1) must containMessage("declaration.additionalInformation.table.headers.description")
         }
 
         "has row with 'Code' in " in {
@@ -138,7 +134,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
         "have change link" in {
           val removeLink = row.select(".govuk-link").get(0)
-          removeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.additionalInformation.table.change.hint")}"
+          removeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.additionalInformation.table.change.hint", "12345")}"
           removeLink must haveHref(
             controllers.declaration.routes.AdditionalInformationChangeController
               .displayPage(Mode.Normal, itemId, ListItem.createId(0, additionalInformation))
@@ -147,7 +143,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
         "have remove link" in {
           val removeLink = row.select(".govuk-link").get(1)
-          removeLink.text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalInformation.table.remove.hint")}"
+          removeLink.text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalInformation.table.remove.hint", "12345")}"
           removeLink must haveHref(
             controllers.declaration.routes.AdditionalInformationRemoveController
               .displayPage(Mode.Normal, itemId, ListItem.createId(0, additionalInformation))

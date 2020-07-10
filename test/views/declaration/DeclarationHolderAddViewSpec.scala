@@ -29,12 +29,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.declarationHolder.declaration_holder_add
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class DeclarationHolderAddViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
   private val declarationHolderPage = instanceOf[declaration_holder_add]
@@ -44,8 +44,6 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
   "Declaration holder" should {
 
     "have correct message keys" in {
-
-      val messages = instanceOf[MessagesApi].preferred(request)
 
       messages must haveTranslationFor("declaration.declarationHolder.title")
       messages must haveTranslationFor("declaration.declarationHolder.title.hint")
@@ -137,7 +135,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#authorisationTypeCode")
 
-        view must containErrorElementWithMessage("declaration.declarationHolder.authorisationCode.invalid")
+        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.invalid")
       }
 
       "display error for incorrect EORI" in {
@@ -151,7 +149,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#eori")
 
-        view must containErrorElementWithMessage("declaration.eori.error.format")
+        view must containErrorElementWithMessageKey("declaration.eori.error.format")
       }
 
       "display error for both incorrect fields" in {
@@ -169,8 +167,8 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         view must containErrorElementWithTagAndHref("a", "#authorisationTypeCode")
         view must containErrorElementWithTagAndHref("a", "#eori")
 
-        view must containErrorElementWithMessage("declaration.declarationHolder.authorisationCode.invalid")
-        view must containErrorElementWithMessage("declaration.eori.error.format")
+        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.invalid")
+        view must containErrorElementWithMessageKey("declaration.eori.error.format")
 
       }
     }

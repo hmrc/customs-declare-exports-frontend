@@ -25,10 +25,10 @@ import helpers.views.declaration.CommonMessages
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.person_presenting_goods_details
 
-class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector with CommonMessages {
+class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec2 with Injector with CommonMessages {
 
   private val page = instanceOf[person_presenting_goods_details]
   private def createView(form: Form[PersonPresentingGoodsDetails] = PersonPresentingGoodsDetails.form()): Document =
@@ -52,7 +52,7 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
 
         val details = createView().getElementsByClass("govuk-details").first()
 
-        details must containMessage("declaration.personPresentingGoodsDetails.help-item")
+        details must containMessage("declaration.personPresentingGoodsDetails.help-item", "")
         details must containMessage("site.details.summary_text_this")
       }
 
@@ -90,16 +90,16 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
 
       "display error summary" in {
 
-        val form = PersonPresentingGoodsDetails.form().withError(FormError("eori", "declaration.personPresentingGoodsDetails.eori.error.format"))
+        val form = PersonPresentingGoodsDetails.form().withError(FormError("eori", "declaration.eori.error.format"))
 
         createView(form) must haveGovukGlobalErrorSummary
       }
 
       "display error next to the text input element" in {
 
-        val form = PersonPresentingGoodsDetails.form().withError(FormError("eori", "declaration.personPresentingGoodsDetails.eori.error.format"))
+        val form = PersonPresentingGoodsDetails.form().withError(FormError("eori", "declaration.eori.error.format"))
 
-        createView(form) must haveGovukFieldError("eori", "declaration.personPresentingGoodsDetails.eori.error.format")
+        createView(form) must haveGovukFieldError("eori", messages("declaration.eori.error.format"))
       }
     }
   }

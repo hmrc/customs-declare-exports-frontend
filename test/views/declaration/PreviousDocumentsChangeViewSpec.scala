@@ -18,34 +18,26 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.Document
-import models.{DeclarationType, Mode}
+import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.Helpers.stubMessages
 import utils.ListItem
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.previousDocuments.previous_documents_change
 
-class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
+class PreviousDocumentsChangeViewSpec extends UnitViewSpec2 with Injector {
 
   private val page = instanceOf[previous_documents_change]
   private val document = Document("Y", "750", "reference", Some("3"))
   private val form = Document.form().fill(document)
 
-  private def createView(
-    mode: Mode = Mode.Normal,
-    documentId: String = ListItem.createId(0, document),
-    form: Form[Document] = form,
-    messages: Messages = stubMessages(),
-    request: JourneyRequest[_] = journeyRequest(DeclarationType.STANDARD)
+  private def createView(mode: Mode = Mode.Normal, documentId: String = ListItem.createId(0, document), form: Form[Document] = form)(
+    implicit request: JourneyRequest[_]
   ) = page(mode, documentId, form)(request, messages)
 
   "Previous Documents Change page" should {
 
     "have all messages defined" in {
-
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.previousDocuments.title")
       messages must haveTranslationFor("declaration.previousDocuments.hint")
       messages must haveTranslationFor("declaration.previousDocuments.heading")
@@ -67,19 +59,19 @@ class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.error")
     }
 
-    onEveryDeclarationJourney() { request =>
+    onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
       "display same page title as header" in {
 
-        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+        val viewWithMessage = createView()
 
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "display section header" in {
 
-        view.getElementById("section-header").text() must include("declaration.previousDocuments.heading")
+        view.getElementById("section-header") must containMessage("declaration.previousDocuments.heading")
       }
 
       "display two radio buttons with description" in {
@@ -87,36 +79,38 @@ class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
         val view = createView()
 
         view.getElementById("simplified-declaration") must beSelected
-        view.getElementsByAttributeValue("for", "simplified-declaration").text() mustBe messages("declaration.previousDocuments.Y")
+        view.getElementsByAttributeValue("for", "simplified-declaration") must containMessageForElements("declaration.previousDocuments.Y")
 
         view.getElementById("related-document") mustNot beSelected
-        view.getElementsByAttributeValue("for", "related-document").text() mustBe messages("declaration.previousDocuments.Z")
+        view.getElementsByAttributeValue("for", "related-document") must containMessageForElements("declaration.previousDocuments.Z")
       }
 
       "display input with label for Previous document code" in {
 
-        view.getElementsByAttributeValue("for", "documentType").text() must be("declaration.previousDocuments.documentType")
+        view.getElementsByAttributeValue("for", "documentType") must containMessageForElements("declaration.previousDocuments.documentType")
         view.getElementById("documentType").attr("value") mustBe "750"
       }
 
       "display input with label for Previous DUCR or MUCR" in {
 
-        view.getElementsByAttributeValue("for", "documentReference").text() must be("declaration.previousDocuments.documentReference")
+        view.getElementsByAttributeValue("for", "documentReference") must containMessageForElements("declaration.previousDocuments.documentReference")
         view.getElementById("documentReference").attr("value") mustBe "reference"
       }
 
       "display input with label for Previous Goods Identifier" in {
 
-        view.getElementsByAttributeValue("for", "goodsItemIdentifier").text() must be("declaration.previousDocuments.goodsItemIdentifier")
+        view.getElementsByAttributeValue("for", "goodsItemIdentifier") must containMessageForElements(
+          "declaration.previousDocuments.goodsItemIdentifier"
+        )
         view.getElementById("goodsItemIdentifier").attr("value") mustBe "3"
       }
 
       "display 'Back' button that links to 'Previous Documents Summary' page" when {
         "has a valid back button" in {
 
-          val backButton = createView(request = request).getElementById("back-link")
+          val backButton = createView().getElementById("back-link")
 
-          backButton.text() must be("site.back")
+          backButton must containMessage("site.back")
           backButton.getElementById("back-link") must haveHref(
             controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Mode.Normal)
           )

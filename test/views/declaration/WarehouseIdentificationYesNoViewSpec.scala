@@ -28,12 +28,12 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.warehouse_identification_yesno
 import views.tags.ViewTest
 
 @ViewTest
-class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class WarehouseIdentificationYesNoViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[warehouse_identification_yesno]
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form(yesNo = false)

@@ -29,16 +29,15 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.representative_details_agent
 import views.tags.ViewTest
 
 @ViewTest
-class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class RepresentativeDetailsAgentViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[representative_details_agent]
   private val form: Form[RepresentativeAgent] = RepresentativeAgent.form()
-  override implicit val messages = validatedMessages(request)
 
   private def createView(mode: Mode = Mode.Normal, form: Form[RepresentativeAgent] = form)(implicit request: JourneyRequest[_]): Document =
     page(mode, form)(request, messages)
@@ -85,7 +84,7 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
       }
     }
 
-    onClearance { request =>
+    onClearance { implicit request =>
       "display 'Back' button that links to 'Consignor Details' page" in {
 
         val cachedParties = Parties(

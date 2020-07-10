@@ -32,7 +32,7 @@
 @yearField = @{form(s"$fieldName.$yearKey")}
 
 @errorMessages = @{
-  val errors = (dateField.errors ++ dayField.errors ++ monthField.errors ++ yearField.errors).map(err => messages(err.messages, err.args:_*)).mkString("<br>")
+  val errors = (dateField.errors ++ dayField.errors ++ monthField.errors ++ yearField.errors).map(err => messages(err.message, err.args:_*)).mkString("<br>")
   if(errors.nonEmpty) Some(ErrorMessage(content = HtmlContent(errors))) else None
 }
 

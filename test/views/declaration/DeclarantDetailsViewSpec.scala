@@ -24,29 +24,26 @@ import forms.declaration.DeclarantEoriConfirmation
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType.{DeclarationType, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.declarant_details
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
+class DeclarantDetailsViewSpec extends UnitViewSpec2 with ExportsTestData with CommonMessages with Stubs with Injector {
 
   private def form(journeyType: DeclarationType): Form[DeclarantEoriConfirmation] = DeclarantEoriConfirmation.form()
   private val declarantDetailsPage = instanceOf[declarant_details]
-  private def createView(form: Form[DeclarantEoriConfirmation]): Document =
-    declarantDetailsPage(Mode.Normal, form)(journeyRequest(), messages)
+  private def createView(form: Form[DeclarantEoriConfirmation])(implicit request: JourneyRequest[_]): Document =
+    declarantDetailsPage(Mode.Normal, form)(request, messages)
 
   "Declarant Details View on empty page" should {
 
     "have correct message keys" in {
-
-      val messages = instanceOf[MessagesApi].preferred(request)
-
       messages must haveTranslationFor("declaration.declarant.title")
       messages must haveTranslationFor("declaration.summary.parties.header")
       messages must haveTranslationFor("declaration.eori.error.format")
@@ -59,59 +56,60 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
-        createView(form(request.declarationType)).getElementsByTag("h1").text() mustBe messages("declaration.declarant.titleQuestion")
+        createView(form(request.declarationType))
+          .getElementsByTag("h1") must containMessageForElements("declaration.declarant.titleQuestion", request.eori)
       }
 
       "display section header" in {
 
-        createView(form(request.declarationType)).getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
+        createView(form(request.declarationType)).getElementById("section-header") must containMessage("declaration.summary.parties.header")
       }
 
       "display radio button with Yes option" in {
 
         val view = createView(form(request.declarationType))
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
-        view.getElementsByAttributeValue("for", "code_yes").text() mustBe "site.yes"
+        view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
       }
       "display radio button with No option" in {
 
         val view = createView(form(request.declarationType))
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
-        view.getElementsByAttributeValue("for", "code_no").text() mustBe "site.no"
+        view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
       "display 'Save and continue' button on page" in {
 
         val saveButton = createView(form(request.declarationType)).getElementById("submit")
-        saveButton.text() mustBe messages(saveAndContinueCaption)
+        saveButton must containMessage(saveAndContinueCaption)
       }
 
       "display 'Save and return' button on page" in {
 
         val saveButton = createView(form(request.declarationType)).getElementById("submit_and_return")
-        saveButton.text() mustBe messages(saveAndReturnCaption)
+        saveButton must containMessage(saveAndReturnCaption)
         saveButton.attr("name") mustBe SaveAndReturn.toString
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display 'Back' button that links to 'Consignment References' page" in {
 
         val view = declarantDetailsPage(Mode.Normal, form(request.declarationType))(request, messages)
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton must containMessage(backCaption)
         backButton.attr("href") mustBe routes.ConsignmentReferencesController.displayPage().url
       }
     }
 
-    onClearance { request =>
+    onClearance { implicit request =>
       "display 'Back' button that links to 'Entry into Declarant's Records' page" in {
 
         val view = declarantDetailsPage(Mode.Normal, form(request.declarationType))(request, messages)
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton must containMessage(backCaption)
         backButton.attr("href") mustBe routes.EntryIntoDeclarantsRecordsController.displayPage().url
       }
     }
@@ -127,7 +125,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#isEori")
 
-        view.getElementsByClass("govuk-error-message").text() contains messages("declaration.declarant.eori.empty")
+        view must containErrorElementWithMessageKey("declaration.declarant.error")
       }
 
       "display error when EORI is provided, but is incorrect" in {
@@ -140,7 +138,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#isEori")
 
-        view.getElementsByClass("govuk-error-message").text() contains messages("declaration.declarant.eori.error.format")
+        view must containErrorElementWithMessageKey("declaration.declarant.error")
       }
     }
 

@@ -52,6 +52,7 @@ trait ViewMatchers {
   def containErrorElementWithTagAndHref(tag: String, href: String): Matcher[Element] = new ContainErrorElementWithClassMatcher(tag, href)
 
   def containErrorElementWithMessage(text: String): Matcher[Element] = new ContainErrorElementWithMessage(text)
+  def containErrorElementWithMessageKey(key: String)(implicit messages: Messages): Matcher[Element] = new ContainErrorElementWithMessage(messages(key))
 
   def containElementWithAttribute(key: String, value: String): Matcher[Element] =
     new ContainElementWithAttribute(key, value)
@@ -62,6 +63,9 @@ trait ViewMatchers {
 
   def containMessage(key: String, args: Any*)(implicit messages: Messages): Matcher[Element] =
     new ElementContainsMessageMatcher(key, args)
+
+  def containMessageForElements(key: String, args: Any*)(implicit messages: Messages): Matcher[Elements] =
+    new ElementsContainsMessageMatcher(key, args)
 
   def beSelected: Matcher[Element] = new ElementSelectedMatcher(true)
 
@@ -221,6 +225,17 @@ trait ViewMatchers {
         left != null && left.text().contains(message),
         s"Element did not contain message {$message}\n${actualContentWas(left)}",
         s"Element contained message {$message}"
+      )
+    }
+  }
+
+  class ElementsContainsMessageMatcher(key: String, args: Seq[Any])(implicit messages: Messages) extends Matcher[Elements] {
+    override def apply(left: Elements): MatchResult = {
+      val message = messages(key, args: _*)
+      MatchResult(
+        left != null && left.text().contains(message),
+        s"Elements did not contain message {$message}\n${actualContentWas(left)}",
+        s"Elements contained message {$message}"
       )
     }
   }

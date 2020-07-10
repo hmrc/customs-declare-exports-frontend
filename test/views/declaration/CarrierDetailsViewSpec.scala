@@ -21,8 +21,8 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
-import forms.declaration.consignor.ConsignorDetails
 import forms.declaration._
+import forms.declaration.consignor.ConsignorDetails
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
 import models.Mode
@@ -30,26 +30,24 @@ import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.carrier_details
 import views.tags.ViewTest
 
 @ViewTest
-class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class CarrierDetailsViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
 
   val form: Form[CarrierDetails] = CarrierDetails.form(STANDARD)
   private val carrierDetailsPage = instanceOf[carrier_details]
 
-  private def createView(form: Form[CarrierDetails] = form)(implicit journeyRequest: JourneyRequest[_]): Document =
-    carrierDetailsPage(Mode.Normal, form)
+  private def createView(form: Form[CarrierDetails] = form)(implicit request: JourneyRequest[_]): Document =
+    carrierDetailsPage(Mode.Normal, form)(request, messages)
 
   "Carrier Details" should {
 
     "have correct messages" in {
 
-      val messages = instanceOf[MessagesApi].preferred(request)
       messages must haveTranslationFor("declaration.carrier.title")
       messages must haveTranslationFor("declaration.carrier.title.hint")
       messages must haveTranslationFor("declaration.carrier.eori.info")
@@ -63,42 +61,42 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
       val view = createView()
       "display page title" in {
 
-        view.getElementById("title").text() mustBe messages("declaration.carrier.title")
+        view.getElementById("title") must containMessage("declaration.carrier.title")
       }
 
       "display empty input with label for EORI" in {
 
-        view.getElementsByAttributeValue("for", "details_eori").text() mustBe messages("declaration.carrier.eori.info")
+        view.getElementsByAttributeValue("for", "details_eori") must containMessageForElements("declaration.carrier.eori.info")
         view.getElementById("details_eori").attr("value") mustBe empty
       }
 
       "display empty input with label for Full name" in {
 
-        view.getElementsByAttributeValue("for", "details_address_fullName").text() mustBe messages("declaration.address.fullName")
+        view.getElementsByAttributeValue("for", "details_address_fullName") must containMessageForElements("declaration.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
       }
 
       "display empty input with label for Address" in {
 
-        view.getElementsByAttributeValue("for", "details_address_addressLine").text() mustBe messages("declaration.address.addressLine")
+        view.getElementsByAttributeValue("for", "details_address_addressLine") must containMessageForElements("declaration.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
       "display empty input with label for Town or City" in {
 
-        view.getElementsByAttributeValue("for", "details_address_townOrCity").text() mustBe messages("declaration.address.townOrCity")
+        view.getElementsByAttributeValue("for", "details_address_townOrCity") must containMessageForElements("declaration.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
       }
 
       "display empty input with label for Postcode" in {
 
-        view.getElementsByAttributeValue("for", "details_address_postCode").text() mustBe messages("declaration.address.postCode")
+        view.getElementsByAttributeValue("for", "details_address_postCode") must containMessageForElements("declaration.address.postCode")
         view.getElementById("details_address_postCode").attr("value") mustBe empty
       }
 
       "display empty input with label for Country" in {
 
-        view.getElementsByAttributeValue("for", "details_address_country").text() mustBe "declaration.address.country"
+        view.getElementsByAttributeValue("for", "details_address_country") must containMessageForElements("declaration.address.country")
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
@@ -107,12 +105,12 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
       }
 
       "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return").text() mustBe messages(saveAndReturnCaption)
+        view.getElementById("submit_and_return") must containMessage(saveAndReturnCaption)
         view.getElementById("submit_and_return").attr("name") mustBe SaveAndReturn.toString
       }
     }
 
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display 'Back' button that links to 'Representative Status' page" in {
 
         val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))
@@ -120,7 +118,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton must containMessage(backCaption)
         backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
       }
 
@@ -131,12 +129,12 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton must containMessage(backCaption)
         backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
       }
     }
 
-    onClearance { request =>
+    onClearance { implicit request =>
       "display 'Back' button that links to 'Consignor Eori Number' page" in {
 
         val cachedParties = Parties(
@@ -195,7 +193,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details")
 
-        view.getElementsByClass("govuk-list govuk-error-summary__list").text() must include(messages("declaration.carrier.error.addressAndEori"))
+        view.getElementsByClass("govuk-list govuk-error-summary__list") must containMessageForElements("declaration.carrier.error.addressAndEori")
       }
 
       "display error when both EORI and business details are empty" in {
@@ -204,7 +202,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details")
-        view.getElementsByClass("govuk-list govuk-error-summary__list").text() must include(messages("declaration.namedEntityDetails.error"))
+        view.getElementsByClass("govuk-list govuk-error-summary__list") must containMessageForElements("declaration.namedEntityDetails.error")
       }
 
       "display error when EORI is provided, but is incorrect" in {

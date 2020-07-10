@@ -27,39 +27,38 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.taric_codes
 import views.tags.ViewTest
 
 @ViewTest
-class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class TaricCodesViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with CommonMessages with Injector {
 
   private val page = instanceOf[taric_codes]
   private val itemId = "item1"
-  private val realMessages = validatedMessages
-  private def createView(form: Form[YesNoAnswer], codes: List[TaricCode], request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form, codes)(request, realMessages)
+  private def createView(form: Form[YesNoAnswer], codes: List[TaricCode])(implicit request: JourneyRequest[_]): Document =
+    page(Mode.Normal, itemId, form, codes)(request, messages)
 
   "Taric Code View on empty page" must {
-    onEveryDeclarationJourney() { request =>
-      val view = createView(YesNoAnswer.form(), List.empty, request)
+    onEveryDeclarationJourney() { implicit request =>
+      val view = createView(YesNoAnswer.form(), List.empty)
 
       "display page title" in {
-        view.getElementsByTag("h1").text() mustBe realMessages("declaration.taricAdditionalCodes.header.plural", "0")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.header.plural", "0")
       }
 
       "display radio button with Yes option" in {
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
-        view.getElementsByAttributeValue("for", "code_yes").text() mustBe realMessages("site.yes")
+        view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
       }
       "display radio button with No option" in {
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
-        view.getElementsByAttributeValue("for", "code_no").text() mustBe realMessages("site.no")
+        view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
       "display 'Save and continue' button on page" in {
         val saveButton = view.select("#submit")
-        saveButton.text() mustBe realMessages(saveAndContinueCaption)
+        saveButton must containMessageForElements(saveAndContinueCaption)
       }
 
       "display 'Back' button that links to 'CUS Code' page" in {
@@ -72,12 +71,12 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wi
   "Taric Code View on populated page" when {
     val codes = List(TaricCode("ABCD"), TaricCode("4321"))
 
-    onEveryDeclarationJourney() { request =>
-      val view = createView(YesNoAnswer.form(), codes, request)
+    onEveryDeclarationJourney() { implicit request =>
+      val view = createView(YesNoAnswer.form(), codes)
 
       "display page title" in {
 
-        view.getElementsByTag("h1").text() mustBe realMessages("declaration.taricAdditionalCodes.header.plural", "2")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.header.plural", "2")
       }
 
       "display existing NACT codes table" in {
@@ -85,8 +84,8 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wi
           case (code, index) => {
             view.getElementById(s"taricCode-table-row$index-label").text mustBe code.taricCode
             var removeButton = view.getElementById(s"taricCode-table-row$index-remove_button")
-            removeButton.text must include(realMessages(removeCaption))
-            removeButton.text must include(realMessages("declaration.taricAdditionalCodes.remove.hint", code.taricCode))
+            removeButton.text must include(messages(removeCaption))
+            removeButton.text must include(messages("declaration.taricAdditionalCodes.remove.hint", code.taricCode))
           }
         }
       }
@@ -96,12 +95,12 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wi
   "Taric Code View with single code" when {
     val codes = List(TaricCode("ABCD"))
 
-    onEveryDeclarationJourney() { request =>
-      val view = createView(YesNoAnswer.form(), codes, request)
+    onEveryDeclarationJourney() { implicit request =>
+      val view = createView(YesNoAnswer.form(), codes)
 
       "display page title" in {
 
-        view.getElementsByTag("h1").text() mustBe realMessages("declaration.taricAdditionalCodes.header.singular")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.header.singular")
       }
     }
   }

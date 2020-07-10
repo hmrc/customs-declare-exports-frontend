@@ -25,43 +25,42 @@ import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.seal_summary
 import views.tags.ViewTest
 
 @ViewTest
-class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
+class SealSummaryViewSpec extends UnitViewSpec2 with Stubs with MustMatchers with CommonMessages with Injector {
 
   val containerId = "212374"
   val sealId = "76434574"
   val seal = Seal(sealId)
-  private val realMessages = validatedMessages
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[seal_summary]
 
   private def createView(form: Form[YesNoAnswer] = form, seals: Seq[Seal] = Seq(seal)): Document =
-    page(Mode.Normal, form, containerId, seals)(journeyRequest(), realMessages)
+    page(Mode.Normal, form, containerId, seals)(journeyRequest(), messages)
 
   "Seal Summary View" should {
     val view = createView()
 
     "display page title for no seals" in {
       val noSealsView = createView(seals = Seq.empty)
-      val title = realMessages("declaration.seal.add.first", containerId)
+      val title = messages("declaration.seal.add.first", containerId)
       noSealsView.getElementsByTag("h1").text() must be(title)
       noSealsView.title() must include(title)
     }
 
     "display page title for one seal" in {
       val noSealsView = createView(seals = Seq(seal))
-      val title = realMessages("declaration.seal.summary.title", containerId)
+      val title = messages("declaration.seal.summary.title", containerId)
       noSealsView.getElementsByTag("h1").text() must be(title)
       noSealsView.title() must include(title)
     }
 
     "display page title for multiple seals" in {
       val noSealsView = createView(seals = Seq(seal, seal))
-      val title = realMessages("declaration.seal.summary.multiple.title", 2, containerId)
+      val title = messages("declaration.seal.summary.multiple.title", 2, containerId)
       noSealsView.getElementsByTag("h1").text() must be(title)
       noSealsView.title() must include(title)
     }
@@ -73,7 +72,7 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
     "display 'Back' button that links to 'containers summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer.text() must be(realMessages(backCaption))
+      backLinkContainer must containMessage(backCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
       )
@@ -81,12 +80,12 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(realMessages(saveAndContinueCaption))
+      saveButton must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(realMessages(saveAndReturnCaption))
+      saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -98,7 +97,7 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#yesNo")
 
-      view must containErrorElementWithMessage(realMessages("error.yesNo.required"))
+      view must containErrorElementWithMessageKey("error.yesNo.required")
     }
 
   }

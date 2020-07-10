@@ -17,35 +17,28 @@
 package views.declaration
 
 import base.Injector
-import controllers.util.SaveAndReturn
 import forms.declaration.DispatchLocation
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.dispatch_location
 import views.tags.ViewTest
 
 @ViewTest
-class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class DispatchLocationViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private val dispatchLocationPage = instanceOf[dispatch_location]
-  private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal, messages: Messages = messages)(
-    implicit request: JourneyRequest[_]
-  ): Document =
+  private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
     dispatchLocationPage(mode, form)(request, messages)
 
   "Dispatch Location" should {
 
     "have correct message keys" in {
-
-      val messages = instanceOf[MessagesApi].preferred(request)
-
       messages must haveTranslationFor("supplementary.dispatchLocation.header")
       messages must haveTranslationFor("supplementary.dispatchLocation.header.hint")
       messages must haveTranslationFor("supplementary.dispatchLocation.inputText.outsideEU")
@@ -59,7 +52,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     onEveryDeclarationJourney() { implicit request =>
       "display same page title as header" in {
-        val viewWithMessage = createView(messages = validatedMessages(request))
+        val viewWithMessage = createView()
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
@@ -140,7 +133,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#dispatchLocation")
 
-        view must containErrorElementWithMessage("supplementary.dispatchLocation.inputText.error.empty")
+        view must containErrorElementWithMessageKey("supplementary.dispatchLocation.inputText.error.empty")
       }
 
       "display error if incorrect dispatch is selected" in {
@@ -150,7 +143,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#dispatchLocation")
 
-        view must containErrorElementWithMessage("supplementary.dispatchLocation.inputText.error.incorrect")
+        view must containErrorElementWithMessageKey("supplementary.dispatchLocation.inputText.error.incorrect")
       }
     }
   }

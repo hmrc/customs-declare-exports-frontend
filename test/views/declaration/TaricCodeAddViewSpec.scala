@@ -25,26 +25,25 @@ import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.taric_code_add
 import views.tags.ViewTest
 
 @ViewTest
-class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
+class TaricCodeAddViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
 
   private val itemId = "item1"
   private val form: Form[TaricCode] = TaricCode.form()
   private val page = instanceOf[taric_code_add]
-  private val realMessages = validatedMessages
 
   private def createView(form: Form[TaricCode] = form): Document =
-    page(Mode.Normal, itemId, form)(journeyRequest(), realMessages)
+    page(Mode.Normal, itemId, form)(journeyRequest(), messages)
 
   "Taric Code Add View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(realMessages("declaration.taricAdditionalCodes.addnext.header"))
+      view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.addnext.header")
     }
 
     "display 'Back' button that links to 'Taric code summary' page" in {
@@ -57,12 +56,12 @@ class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(realMessages(saveAndContinueCaption))
+      saveButton must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(realMessages(saveAndReturnCaption))
+      saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -74,7 +73,7 @@ class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
 
-      view must containErrorElementWithMessage(realMessages("declaration.taricAdditionalCodes.error.empty"))
+      view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.empty")
     }
 
     "display error if incorrect tric code is entered" in {
@@ -83,7 +82,7 @@ class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
 
-      view must containErrorElementWithMessage(realMessages("declaration.taricAdditionalCodes.error.invalid"))
+      view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.invalid")
     }
 
   }

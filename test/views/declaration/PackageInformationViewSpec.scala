@@ -24,17 +24,15 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.api.mvc.Call
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.package_information
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class PackageInformationViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[package_information]
   private val packageInformation = PackageInformation("ID", Some("1A"), Some(10), Some("packs"))
@@ -43,10 +41,9 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
     mode: Mode = Mode.Normal,
     form: Form[YesNoAnswer] = YesNoAnswer.form(),
     packages: Seq[PackageInformation] = Seq(packageInformation)
-  )(implicit request: JourneyRequest[_]): Document = page(mode, "itemId", form, packages)(request, stubMessages())
+  )(implicit request: JourneyRequest[_]): Document = page(mode, "itemId", form, packages)(request, messages)
 
   "have proper messages for labels" in {
-    val messages = instanceOf[MessagesApi].preferred(journeyRequest())
     messages must haveTranslationFor("declaration.packageInformation.title")
     messages must haveTranslationFor("supplementary.items")
     messages must haveTranslationFor("declaration.packageInformation.typesOfPackages")
@@ -107,15 +104,15 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("supplementary.items")
+        view.getElementById("section-header") must containMessage("supplementary.items")
       }
 
       "display'Save and continue' button on page" in {
-        view.getElementById("submit").text() mustBe "site.save_and_continue"
+        view.getElementById("submit") must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
+        view.getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
       }
     }
   }
@@ -128,9 +125,9 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
         val view = createView(packages = Seq(PackageInformation("ID", Some("PA"), Some(100), Some("Shipping Mark"))))
 
         // check table header
-        view.select("table>thead>tr>th:nth-child(1)").text() mustBe "declaration.packageInformation.table.heading.typesOfPackages"
-        view.select("table>thead>tr>th:nth-child(2)").text() mustBe "declaration.packageInformation.table.heading.numberOfPackages"
-        view.select("table>thead>tr>th:nth-child(3)").text() mustBe "declaration.packageInformation.table.heading.shippingMarks"
+        view.select("table>thead>tr>th:nth-child(1)") must containMessageForElements("declaration.packageInformation.table.heading.typesOfPackages")
+        view.select("table>thead>tr>th:nth-child(2)") must containMessageForElements("declaration.packageInformation.table.heading.numberOfPackages")
+        view.select("table>thead>tr>th:nth-child(3)") must containMessageForElements("declaration.packageInformation.table.heading.shippingMarks")
         // remove button column
         view.select("form>table>thead>tr>td").text() must be("")
 
@@ -150,9 +147,9 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
         )
 
         // check table header
-        view.select("table>thead>tr>th:nth-child(1)").text() mustBe "declaration.packageInformation.table.heading.typesOfPackages"
-        view.select("table>thead>tr>th:nth-child(2)").text() mustBe "declaration.packageInformation.table.heading.numberOfPackages"
-        view.select("table>thead>tr>th:nth-child(3)").text() mustBe "declaration.packageInformation.table.heading.shippingMarks"
+        view.select("table>thead>tr>th:nth-child(1)") must containMessageForElements("declaration.packageInformation.table.heading.typesOfPackages")
+        view.select("table>thead>tr>th:nth-child(2)") must containMessageForElements("declaration.packageInformation.table.heading.numberOfPackages")
+        view.select("table>thead>tr>th:nth-child(3)") must containMessageForElements("declaration.packageInformation.table.heading.shippingMarks")
         // remove button column
         view.select("form>table>thead>tr>td").text() must be("")
 

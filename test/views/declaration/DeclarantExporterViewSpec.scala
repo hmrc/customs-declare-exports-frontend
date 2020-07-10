@@ -23,28 +23,25 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantIsExporter
 import helpers.views.declaration.CommonMessages
 import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.declarant_exporter
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
+class DeclarantExporterViewSpec extends UnitViewSpec2 with ExportsTestData with CommonMessages with Stubs with Injector {
 
   private val declarantExporterPage = instanceOf[declarant_exporter]
-  private def createView(form: Form[DeclarantIsExporter] = DeclarantIsExporter.form()): Document =
-    declarantExporterPage(Mode.Normal, form)(journeyRequest(), messages)
+  private def createView(form: Form[DeclarantIsExporter] = DeclarantIsExporter.form())(implicit request: JourneyRequest[_]): Document =
+    declarantExporterPage(Mode.Normal, form)(request, messages)
 
   "Declarant Exporter View on empty page" should {
 
     "have correct message keys" in {
-
-      val messages = instanceOf[MessagesApi].preferred(request)
-
       messages must haveTranslationFor("declaration.declarant.exporter.title")
       messages must haveTranslationFor("declaration.summary.parties.header")
       messages must haveTranslationFor("declaration.declarant.exporter.answer.yes")
@@ -59,41 +56,41 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
-        createView().getElementsByTag("h1").text() mustBe messages("declaration.declarant.exporter.title")
+        createView().getElementsByTag("h1") must containMessageForElements("declaration.declarant.exporter.title")
       }
 
       "display section header" in {
 
-        createView().getElementById("section-header").text() must include(messages("supplementary.consignmentReferences.heading"))
+        createView().getElementById("section-header") must containMessage("supplementary.consignmentReferences.heading")
       }
 
       "display radio button with Yes option" in {
         val view = createView()
         view.getElementById("answer_yes").attr("value") mustBe YesNoAnswers.yes
-        view.getElementsByAttributeValue("for", "answer_yes").text() mustBe "declaration.declarant.exporter.answer.yes"
+        view.getElementsByAttributeValue("for", "answer_yes")  must containMessageForElements("declaration.declarant.exporter.answer.yes")
       }
       "display radio button with No option" in {
         val view = createView()
         view.getElementById("answer_no").attr("value") mustBe YesNoAnswers.no
-        view.getElementsByAttributeValue("for", "answer_no").text() mustBe "declaration.declarant.exporter.answer.no"
+        view.getElementsByAttributeValue("for", "answer_no") must containMessageForElements("declaration.declarant.exporter.answer.no")
       }
 
       "display 'Back' button that links to 'Declarant Details' page" in {
 
         val backButton = createView().getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton  must containMessage(backCaption)
         backButton must haveHref(routes.DeclarantDetailsController.displayPage().url)
       }
 
       "display 'Save and continue' button on page" in {
         val saveButton = createView().getElementById("submit")
-        saveButton.text() mustBe messages(saveAndContinueCaption)
+        saveButton  must containMessage(saveAndContinueCaption)
       }
 
       "display 'Save and return' button on page" in {
         val saveButton = createView().getElementById("submit_and_return")
-        saveButton.text() mustBe messages(saveAndReturnCaption)
+        saveButton  must containMessage(saveAndReturnCaption)
         saveButton.attr("name") mustBe SaveAndReturn.toString
       }
     }
@@ -109,7 +106,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#answer")
 
-        view.getElementsByClass("govuk-error-message").text() contains messages("declaration.declarant.eori.empty")
+        view must containErrorElementWithMessageKey("declaration.declarant.exporter.error")
       }
 
       "display error when EORI is provided, but is incorrect" in {
@@ -123,7 +120,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#answer")
 
-        view.getElementsByClass("govuk-error-message").text() contains messages("declaration.declarant.eori.error.format")
+        view must containErrorElementWithMessageKey("declaration.declarant.exporter.error")
       }
     }
 

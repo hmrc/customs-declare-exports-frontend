@@ -31,12 +31,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.consignee_details
 import views.tags.ViewTest
 
 @ViewTest
-class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class ConsigneeDetailsViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
 
   val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
   val consigneeDetailsPage = instanceOf[consignee_details]
@@ -71,7 +71,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
     val view = createViewWithAddressError(address)
     fields.filterNot(_ == fieldName).foreach { key =>
       view must containErrorElementWithTagAndHref("a", s"#details_address_$key")
-      view must containErrorElementWithMessage(s"declaration.address.$key.$errorKey")
+      view must containErrorElementWithMessageKey(s"declaration.address.$key.$errorKey")
     }
   }
 
@@ -79,7 +79,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     val view = createViewWithAddressError(address)
     view must containErrorElementWithTagAndHref("a", s"#details_address_$fieldName")
-    view must containErrorElementWithMessage(s"declaration.address.$fieldName.$errorKey")
+    view must containErrorElementWithMessageKey(s"declaration.address.$fieldName.$errorKey")
   }
 
   "Consignee Details View on empty page" should {
@@ -332,7 +332,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
       }
     }
 
-    onSupplementary { request =>
+    onSupplementary { implicit request =>
       "display 'Back' button that links to 'Representative Status' page" in {
 
         val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))

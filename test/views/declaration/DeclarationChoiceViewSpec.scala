@@ -29,29 +29,32 @@ import org.scalatest.Matchers._
 import play.api.Mode.Test
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.mvc.{AnyContent, Request}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.stubMessages
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.components.gds.{errorSummary, saveAndContinue}
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest
+import utils.FakeRequestCSRFSupport._
 
 @ViewTest
-class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class DeclarationChoiceViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationChoice] = DeclarationChoice.form()
   private val choicePage = instanceOf[declaration_choice]
-  private def createView(form: Form[DeclarationChoice] = form, messages: Messages = stubMessages()): Document =
+  private def createView(form: Form[DeclarationChoice] = form): Document =
     choicePage(Mode.Normal, form)(request, messages)
 
   "Declaration Choice View on empty page" should {
 
     "display same page title as header" in {
-      val viewWithMessage = createView(messages = validatedMessages(request))
+      val viewWithMessage = createView()
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
@@ -93,7 +96,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#type")
 
-      view must containErrorElementWithMessage("declaration.type.error")
+      view must containErrorElementWithMessageKey("declaration.type.error")
     }
 
     "display error when choice is incorrect" in {
@@ -103,7 +106,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#type")
 
-      view must containErrorElementWithMessage("declaration.type.error")
+      view must containErrorElementWithMessageKey("declaration.type.error")
     }
   }
 
@@ -152,7 +155,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       val view = page(Mode.Normal, DeclarationChoice.form)(request, messages)
 
       view.getElementsByTag("label").size mustBe 1
-      view.getElementsByAttributeValue("for", "STANDARD").text() mustBe "declaration.type.standard"
+      view.getElementsByAttributeValue("for", "STANDARD") must containMessageForElements("declaration.type.standard")
 
       // CEDS-2290 - "Or" divider should be filtered out if not configured
       view.getElementsByClass("govuk-radios__divider").size() mustBe (0)
@@ -161,11 +164,11 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
 
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 5
-    view.getElementsByAttributeValue("for", "STANDARD").text() mustBe "declaration.type.standard"
-    view.getElementsByAttributeValue("for", "SUPPLEMENTARY").text() mustBe "declaration.type.supplementary"
-    view.getElementsByAttributeValue("for", "SIMPLIFIED").text() mustBe "declaration.type.simplified"
-    view.getElementsByAttributeValue("for", "OCCASIONAL").text() mustBe "declaration.type.occasional"
-    view.getElementsByAttributeValue("for", "CLEARANCE").text() mustBe "declaration.type.clearance"
+    view.getElementsByAttributeValue("for", "STANDARD")  must containMessageForElements("declaration.type.standard")
+    view.getElementsByAttributeValue("for", "SUPPLEMENTARY") must containMessageForElements("declaration.type.supplementary")
+    view.getElementsByAttributeValue("for", "SIMPLIFIED") must containMessageForElements("declaration.type.simplified")
+    view.getElementsByAttributeValue("for", "OCCASIONAL") must containMessageForElements("declaration.type.occasional")
+    view.getElementsByAttributeValue("for", "CLEARANCE") must containMessageForElements("declaration.type.clearance")
   }
 
   private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {

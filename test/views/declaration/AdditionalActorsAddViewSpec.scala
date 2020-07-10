@@ -23,8 +23,8 @@ import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
+import models.Mode
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -68,12 +68,12 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec2 with CommonMessages with
 
       "display page title" in {
 
-        view.getElementsByClass("govuk-fieldset__heading").first().text() mustBe messages("declaration.additionalActors.title")
+        view.getElementsByClass("govuk-fieldset__heading").first() must containMessage("declaration.additionalActors.title")
       }
 
       "display section header" in {
 
-        view.getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
+        view.getElementById("section-header") must containMessage("declaration.summary.parties.header")
       }
 
       "display five radio buttons with description (not selected)" in {
@@ -84,7 +84,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec2 with CommonMessages with
           val option = view.getElementById(key)
           option.attr("checked") mustBe empty
           val optionLabel = view.getElementsByAttributeValueMatching("for", key).first()
-          optionLabel.text() mustBe messages(s"$messagePrefix$key")
+          optionLabel must containMessage(s"$messagePrefix$key")
         }
 
         checkOption("CS")
@@ -97,10 +97,10 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec2 with CommonMessages with
 
       "display 'Save and continue' button on page" in {
         val saveAndContinueButton = view.getElementsByAttributeValueMatching("name", SaveAndContinue.toString).first()
-        saveAndContinueButton.text() mustBe messages(saveAndContinueCaption)
+        saveAndContinueButton must containMessage(saveAndContinueCaption)
 
         val saveAndReturn = view.getElementsByAttributeValueMatching("name", SaveAndReturn.toString).first()
-        saveAndReturn.text() mustBe messages(saveAndReturnCaption)
+        saveAndReturn must containMessage(saveAndReturnCaption)
       }
     }
 
@@ -110,7 +110,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec2 with CommonMessages with
         val view = declarationAdditionalActorsPage(Mode.Normal, form)(request, messages)
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton must containMessage(backCaption)
         backButton.attr("href") mustBe routes.ConsigneeDetailsController.displayPage().url
       }
     }

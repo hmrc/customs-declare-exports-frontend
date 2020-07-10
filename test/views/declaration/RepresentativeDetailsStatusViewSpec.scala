@@ -25,23 +25,21 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.representative_details_status
 import views.tags.ViewTest
 
 @ViewTest
-class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class RepresentativeDetailsStatusViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[representative_details_status]
   private val form: Form[RepresentativeStatus] = RepresentativeStatus.form()
-  override val request = journeyRequest()
-  override implicit val messages = validatedMessages(request)
   private def createView(
     mode: Mode = Mode.Normal,
     navigationForm: DeclarationPage = RepresentativeStatus,
     form: Form[RepresentativeStatus] = form
   ): Document =
-    page(mode, navigationForm, form)(request, messages)
+    page(mode, navigationForm, form)(journeyRequest(), messages)
 
   "Representative Details Status View on empty page" should {
     val view = createView()

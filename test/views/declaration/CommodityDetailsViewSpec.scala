@@ -25,28 +25,28 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.commodity_details
 import views.tags.ViewTest
 import config.AppConfig
+import models.requests.JourneyRequest
 @ViewTest
-class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class CommodityDetailsViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with CommonMessages with Injector {
 
   private val page = instanceOf[commodity_details]
   private val itemId = "item1"
-  private val realMessages = validatedMessages
-  private def createView(declarationType: DeclarationType, form: Form[CommodityDetails]): Document =
-    page(Mode.Normal, itemId, form)(journeyRequest(declarationType), realMessages)
+  private def createView(form: Form[CommodityDetails])(implicit request: JourneyRequest[_]): Document =
+    page(Mode.Normal, itemId, form)(request, messages)
 
   def commodityDetailsView(
     declarationType: DeclarationType,
     form: Form[CommodityDetails],
     commodityDetails: Option[CommodityDetails] = None
   ): Unit = {
-    val view = createView(declarationType, commodityDetails.fold(form)(form.fill))
+    val view = createView(commodityDetails.fold(form)(form.fill))(journeyRequest(declarationType))
 
     "display page title" in {
-      view.getElementById("title").text() mustBe realMessages("declaration.commodityDetails.title")
+      view.getElementById("title").text() mustBe messages("declaration.commodityDetails.title")
     }
 
     "display commodity code input field" in {
@@ -68,7 +68,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.select("#submit")
-      saveButton.text() mustBe realMessages(saveAndContinueCaption)
+      saveButton.text() mustBe messages(saveAndContinueCaption)
     }
   }
 

@@ -27,12 +27,12 @@ import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.package_information_add
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
+class PackageInformationAddViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
 
   import PackageInformationViewSpec._
 
@@ -40,19 +40,18 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
   private def form(implicit request: JourneyRequest[_]): Form[PackageInformation] = PackageInformation.form()
   private val page = instanceOf[package_information_add]
-  private val realMessages = validatedMessages
 
   private def createView(withForm: Option[Form[PackageInformation]] = None, packages: Seq[PackageInformation] = Seq.empty)(
     implicit request: JourneyRequest[_]
   ): Document =
-    page(Mode.Normal, itemId, withForm.getOrElse(form), packages)(request, realMessages)
+    page(Mode.Normal, itemId, withForm.getOrElse(form), packages)(request, messages)
 
   "PackageInformation Add View" should {
     onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
       "display page title" in {
-        view.getElementsByTag("h1").text() must be(realMessages("declaration.packageInformation.title"))
+        view.getElementsByTag("h1")must containMessageForElements("declaration.packageInformation.title")
       }
 
       "display 'Back' button that links to 'PackageInformation summary' page when adding subsequent value" in {
@@ -65,12 +64,12 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
       "display 'Save and continue' button on page" in {
         val saveButton = view.getElementById("submit")
-        saveButton.text() must be(realMessages(saveAndContinueCaption))
+        saveButton must containMessage(saveAndContinueCaption)
       }
 
       "display 'Save and return' button on page" in {
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text() must be(realMessages(saveAndReturnCaption))
+        saveAndReturnButton must containMessage(saveAndReturnCaption)
       }
     }
   }
@@ -117,9 +116,9 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
         view must containErrorElementWithTagAndHref("a", "#numberOfPackages")
         view must containErrorElementWithTagAndHref("a", "#shippingMarks")
 
-        view must containErrorElementWithMessage(realMessages("declaration.packageInformation.typesOfPackages.empty"))
-        view must containErrorElementWithMessage(realMessages("declaration.packageInformation.numberOfPackages.error"))
-        view must containErrorElementWithMessage(realMessages("declaration.packageInformation.shippingMarks.empty"))
+        view must containErrorElementWithMessageKey("declaration.packageInformation.typesOfPackages.empty")
+        view must containErrorElementWithMessageKey("declaration.packageInformation.numberOfPackages.error")
+        view must containErrorElementWithMessageKey("declaration.packageInformation.shippingMarks.empty")
       }
 
       "display error if incorrect PackageInformation is entered" in {
@@ -129,8 +128,8 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
         view must containErrorElementWithTagAndHref("a", "#shippingMarks")
 
-        view must containErrorElementWithMessage(realMessages("declaration.packageInformation.typesOfPackages.error"))
-        view must containErrorElementWithMessage(realMessages("declaration.packageInformation.shippingMarks.characterError"))
+        view must containErrorElementWithMessageKey("declaration.packageInformation.typesOfPackages.error")
+        view must containErrorElementWithMessageKey("declaration.packageInformation.shippingMarks.characterError")
       }
     }
   }

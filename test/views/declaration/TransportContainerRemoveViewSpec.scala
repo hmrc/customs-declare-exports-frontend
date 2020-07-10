@@ -26,28 +26,27 @@ import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.transport_container_remove
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
+class TransportContainerRemoveViewSpec extends UnitViewSpec2 with Stubs with MustMatchers with CommonMessages with Injector {
 
   val containerId = "434732435324"
   val sealId = "934545754"
   val container = Container(containerId, Seq(Seal(sealId)))
-  private val realMessages = validatedMessages
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[transport_container_remove]
 
   private def createView(form: Form[YesNoAnswer] = form, container: Container = container): Document =
-    page(Mode.Normal, form, container)(request, realMessages)
+    page(Mode.Normal, form, container)(request, messages)
 
   "Transport Containers Remove View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(realMessages("declaration.transportInformation.container.remove.title"))
+      view.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.container.remove.title")
     }
 
     "display container and seal to remove" in {
@@ -58,7 +57,7 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
     "display 'Back' button that links to 'container summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer must containText(realMessages(backCaption))
+      backLinkContainer must containMessage(backCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
       )
@@ -66,12 +65,12 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton must containText(realMessages(saveAndContinueCaption))
+      saveButton must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containText(realMessages(saveAndReturnCaption))
+      saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -83,7 +82,7 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#yesNo")
 
-      view must containErrorElementWithMessage(realMessages("error.yesNo.required"))
+      view must containErrorElementWithMessageKey("error.yesNo.required")
     }
 
   }

@@ -23,28 +23,25 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.un_dangerous_goods_code
 import views.tags.ViewTest
 
 @ViewTest
-class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class UNDangerousGoodsCodeViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[un_dangerous_goods_code]
   private val form: Form[UNDangerousGoodsCode] = UNDangerousGoodsCode.form()
   private val itemId = "item1"
 
   private def createView(mode: Mode = Mode.Normal, form: Form[UNDangerousGoodsCode] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, form)(request, stubMessages())
+    page(mode, itemId, form)(request, messages)
 
   "UNDangerousGoodsCode View on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
       "have proper messages for labels" in {
-        val messages = instanceOf[MessagesApi].preferred(journeyRequest())
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.header")
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.header.hint")
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.hasCode")
@@ -55,27 +52,27 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
 
       val view = createView()
       "display page title" in {
-        view.getElementsByTag("h1").text() must be("declaration.unDangerousGoodsCode.header")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.unDangerousGoodsCode.header")
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("supplementary.items")
+        view.getElementById("section-header") must containMessage("supplementary.items")
       }
 
       "display radio button with Yes option" in {
         view.getElementById("code_yes").attr("value") mustBe AllowedUNDangerousGoodsCodeAnswers.yes
-        view.getElementsByAttributeValue("for", "code_yes").text() mustBe "declaration.unDangerousGoodsCode.hasCode"
+        view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("declaration.unDangerousGoodsCode.hasCode")
       }
       "display radio button with No option" in {
         view.getElementById("code_no").attr("value") mustBe AllowedUNDangerousGoodsCodeAnswers.no
-        view.getElementsByAttributeValue("for", "code_no").text() mustBe "declaration.unDangerousGoodsCode.noCode"
+        view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.unDangerousGoodsCode.noCode")
       }
 
       "display 'Back' button that links to 'Commodity Details' page" in {
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() must be("site.back")
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
         )
@@ -83,12 +80,12 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
 
       "display 'Save and continue' button on page" in {
         val saveButton = view.getElementById("submit")
-        saveButton.text() must be("site.save_and_continue")
+        saveButton must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text() must be("site.save_and_come_back_later")
+        saveAndReturnButton must containMessage("site.save_and_come_back_later")
       }
     }
   }
@@ -101,7 +98,7 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#dangerousGoodsCode")
 
-        view must containErrorElementWithMessage("declaration.unDangerousGoodsCode.error.empty")
+        view must containErrorElementWithMessageKey("declaration.unDangerousGoodsCode.error.empty")
       }
 
       "display error when code is incorrect" in {
@@ -110,7 +107,7 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#dangerousGoodsCode")
 
-        view must containErrorElementWithMessage("declaration.unDangerousGoodsCode.error.invalid")
+        view must containErrorElementWithMessageKey("declaration.unDangerousGoodsCode.error.invalid")
       }
     }
   }

@@ -24,12 +24,12 @@ import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.seal_add
 import views.tags.ViewTest
 
 @ViewTest
-class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
+class SealAddViewSpec extends UnitViewSpec2 with Stubs with MustMatchers with CommonMessages with Injector {
 
   val containerId = "867126538"
   private val form: Form[Seal] = Seal.form()
@@ -41,7 +41,7 @@ class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with Com
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(messages("declaration.seal.title"))
+      view.getElementsByTag("h1").text() must be(messages("declaration.seal.title", containerId))
     }
 
     "display 'Back' button that links to 'seals summary' page" in {
@@ -72,7 +72,7 @@ class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with Com
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
 
-      view must containErrorElementWithMessage("error.required")
+      view must containErrorElementWithMessageKey("error.required")
     }
 
     "display error if incorrect seal is entered" in {
@@ -81,7 +81,7 @@ class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with Com
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
 
-      view must containErrorElementWithMessage("declaration.transport.sealId.error.invalid")
+      view must containErrorElementWithMessageKey("declaration.transport.sealId.error.invalid")
     }
 
   }

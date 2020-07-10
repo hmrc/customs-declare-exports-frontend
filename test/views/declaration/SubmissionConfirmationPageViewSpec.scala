@@ -23,20 +23,19 @@ import org.jsoup.nodes.Document
 import play.api.mvc.Flash
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
 import views.html.declaration.submission_confirmation_page
 import views.tags.ViewTest
 
 @ViewTest
-class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class SubmissionConfirmationPageViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[submission_confirmation_page]
-  private val realMessages = validatedMessages
   private val withoutFlash = new Flash(Map.empty)
   private def withFlash(devType: DeclarationType, lrn: String, decId: String) =
     new Flash(Map(FlashKeys.decId -> decId, FlashKeys.lrn -> lrn, FlashKeys.decType -> devType.toString))
   private def createView(flash: Flash): Document =
-    page()(journeyRequest(), flash, realMessages)
+    page()(journeyRequest(), flash, messages)
 
   private def getHighlightBox(view: Document) = view.getElementsByClass("govuk-panel govuk-panel--confirmation").first()
 

@@ -24,29 +24,24 @@ import models.declaration.Locations
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.total_number_of_items
 import views.tags.ViewTest
 
 @ViewTest
-class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class TotalNumberOfItemsViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[total_number_of_items]
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[TotalNumberOfItems] = form, messages: Messages = stubMessages())(
-    implicit request: JourneyRequest[_]
-  ): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[TotalNumberOfItems] = form)(implicit request: JourneyRequest[_]): Document =
     page(mode, form)(request, messages)
 
   "Total Number Of Items View on empty page" should {
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.invoice.details.title")
       messages must haveTranslationFor("declaration.invoice.details.header")
       messages must haveTranslationFor("declaration.totalAmountInvoiced")
@@ -62,27 +57,27 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       val view = createView()
 
       "display same page title as header" in {
-        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+        val viewWithMessage = createView()
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("declaration.invoice.details.header")
+        view.getElementById("section-header") must containMessage("declaration.invoice.details.header")
       }
 
       "display header" in {
-        view.getElementById("title").text() must be("declaration.invoice.details.title")
+        view.getElementById("title") must containMessage("declaration.invoice.details.title")
       }
 
       "display empty input with label for Total Amount Invoiced" in {
-        view.getElementsByAttributeValue("for", "totalAmountInvoiced").text() mustBe messages("declaration.totalAmountInvoiced")
-        view.getElementById("totalAmountInvoiced-hint").text() must be("declaration.totalAmountInvoiced.hint")
+        view.getElementsByAttributeValue("for", "totalAmountInvoiced") must containMessageForElements("declaration.totalAmountInvoiced")
+        view.getElementById("totalAmountInvoiced-hint") must containMessage("declaration.totalAmountInvoiced.hint")
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
       }
 
       "display empty input with label for Exchange Rate" in {
-        view.getElementsByAttributeValue("for", "exchangeRate").text() mustBe messages("declaration.exchangeRate")
-        view.getElementById("exchangeRate-hint").text() must be("declaration.exchangeRate.hint")
+        view.getElementsByAttributeValue("for", "exchangeRate") must containMessageForElements("declaration.exchangeRate")
+        view.getElementById("exchangeRate-hint") must containMessage("declaration.exchangeRate.hint")
         view.getElementById("exchangeRate").attr("value") mustBe empty
       }
 
@@ -93,7 +88,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
 
         val backButton = createView()(requestWithOfficeOfExitOutsideUK).getElementById("back-link")
 
-        backButton.text() must be("site.back")
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage(Mode.Normal))
       }
 
@@ -104,18 +99,18 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
 
         val backButton = createView()(requestWithOfficeOfExitInsideUK).getElementById("back-link")
 
-        backButton.text() must be("site.back")
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
       }
 
       "display 'Save and continue' button on page" in {
         val saveButton = view.getElementById("submit")
-        saveButton.text() must be("site.save_and_continue")
+        saveButton must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text() must be("site.save_and_come_back_later")
+        saveAndReturnButton must containMessage("site.save_and_come_back_later")
       }
 
     }
@@ -132,8 +127,8 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoiced")
         view must containErrorElementWithTagAndHref("a", "#exchangeRate")
 
-        view must containErrorElementWithMessage("declaration.totalAmountInvoiced.error")
-        view must containErrorElementWithMessage("declaration.exchangeRate.error")
+        view must containErrorElementWithMessageKey("declaration.totalAmountInvoiced.error")
+        view must containErrorElementWithMessageKey("declaration.exchangeRate.error")
       }
 
       "display error when Total Amount Invoiced is incorrect" in {
@@ -144,7 +139,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoiced")
 
-        view must containErrorElementWithMessage("declaration.totalAmountInvoiced.error")
+        view must containErrorElementWithMessageKey("declaration.totalAmountInvoiced.error")
       }
 
       "display error when Exchange Rate is incorrect" in {
@@ -155,7 +150,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#exchangeRate")
 
-        view must containErrorElementWithMessage("declaration.exchangeRate.error")
+        view must containErrorElementWithMessageKey("declaration.exchangeRate.error")
       }
     }
 

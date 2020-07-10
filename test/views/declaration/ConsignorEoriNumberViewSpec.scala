@@ -17,34 +17,33 @@
 package views.declaration
 
 import base.Injector
-import forms.DeclarationPage
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.ExporterDetails
 import forms.declaration.consignor.ConsignorEoriNumber
+import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.consignor_eori_number
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class ConsignorEoriNumberViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page: consignor_eori_number = instanceOf[consignor_eori_number]
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[ConsignorEoriNumber] = ConsignorEoriNumber.form()): Document =
-    page(mode, form)(journeyRequest(DeclarationType.CLEARANCE), stubMessages())
+  private def createView(mode: Mode = Mode.Normal, form: Form[ConsignorEoriNumber] = ConsignorEoriNumber.form())(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    page(mode, form)(request, messages)
 
   "Consignor Eori Number View" should {
-    val view = createView()
     onJourney(DeclarationType.CLEARANCE) { implicit request =>
+      val view = createView()
       "display answer input" in {
         val consignorEoriNumber = ConsignorEoriNumber.form().fill(ConsignorEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes))
         val view = createView(form = consignorEoriNumber)
@@ -56,7 +55,6 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
       }
 
       "have proper messages for labels" in {
-        val messages = instanceOf[MessagesApi].preferred(journeyRequest(DeclarationType.CLEARANCE))
         messages must haveTranslationFor("declaration.consignorEori.title")
         messages must haveTranslationFor("declaration.summary.parties.header")
         messages must haveTranslationFor("declaration.consignorEori.eori.label")
@@ -65,15 +63,15 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
       }
 
       "display page title" in {
-        view.getElementsByClass("govuk-fieldset__heading").text() mustBe "declaration.consignorEori.title"
+        view.getElementsByClass("govuk-fieldset__heading") must containMessageForElements("declaration.consignorEori.title")
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("declaration.summary.parties.header")
+        view.getElementById("section-header") must containMessage("declaration.summary.parties.header")
       }
 
       "display eori question" in {
-        view.getElementsByClass("govuk-label--m").text() mustBe "declaration.consignorEori.eori.label"
+        view.getElementsByClass("govuk-label--m") must containMessageForElements("declaration.consignorEori.eori.label")
         view.getElementById("eori").attr("value") mustBe empty
       }
 
@@ -81,18 +79,18 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe "site.back"
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage(Mode.Normal))
       }
 
       "display 'Save and continue' button" in {
         val saveButton = view.getElementById("submit")
-        saveButton.text() mustBe "site.save_and_continue"
+        saveButton must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text() mustBe "site.save_and_come_back_later"
+        saveAndReturnButton must containMessage("site.save_and_come_back_later")
       }
 
       "handle invalid input" should {
@@ -103,7 +101,7 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#eori")
-          view must containErrorElementWithMessage("declaration.eori.error.format")
+          view must containErrorElementWithMessageKey("declaration.eori.error.format")
         }
 
         "display errors when eori contains special characters" in {
@@ -113,7 +111,7 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#eori")
-          view must containErrorElementWithMessage("declaration.eori.error.format")
+          view must containErrorElementWithMessageKey("declaration.eori.error.format")
         }
       }
     }
