@@ -16,24 +16,17 @@
 
 package forms
 
-import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
-import play.api.data.validation.Constraints.pattern
 import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator.isValidDucr
 
 case class Ducr(ducr: String)
 
 object Ducr {
   implicit val format = Json.format[Ducr]
 
-  private val ducrFormat = """^[0-9][A-Za-z][A-Za-z][0-9A-Za-z\(\)\-/]{6,32}"""
-
   def form2Data(ducr: String): Ducr = new Ducr(ducr.toUpperCase)
 
   val ducrMapping =
-    mapping("ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr")))(form2Data)(Ducr.unapply)
-
-  val id = "DUCR"
-
-  def form(): Form[Ducr] = Form(ducrMapping)
+    mapping("ducr" -> text().verifying("error.ducr", isValidDucr))(form2Data)(Ducr.unapply)
 }

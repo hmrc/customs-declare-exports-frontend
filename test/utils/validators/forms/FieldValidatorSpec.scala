@@ -995,4 +995,31 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
       }
     }
   }
+
+  "Field validator isValidDucr" should {
+
+    "return true" when {
+
+      "DUCR is valid" in {
+
+        isValidDucr("9GB123456664559-1ABC") mustBe true
+        isValidDucr("0GB123456664559-13215") mustBe true
+        isValidDucr("9GB123456664559-1H7-1") mustBe true
+        isValidDucr("9GB123456664559-1H7-/1") mustBe true
+        isValidDucr("9GB123456664559-1H7-/(1)") mustBe true
+      }
+    }
+
+    "return false" when {
+
+      "DUCR is invalid" in {
+
+        isValidDucr("0GB123456664559") mustBe false
+        isValidDucr("9GB123456664559-") mustBe false
+        isValidDucr("91B123456664559-654A") mustBe false
+        isValidDucr("0GB123456664559-13215654987HDFVKDFV876") mustBe false
+        isValidDucr("91B123456664559-654A$") mustBe false
+      }
+    }
+  }
 }
