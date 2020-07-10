@@ -22,32 +22,29 @@ import controllers.util.{SaveAndContinue, SaveAndReturn}
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import helpers.views.declaration.CommonMessages
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.additionalActors.additional_actors_add
 import views.tags.ViewTest
-import DeclarationType._
 
 @ViewTest
-class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with ExportsTestData with Stubs with Injector {
+class AdditionalActorsAddViewSpec extends UnitViewSpec2 with CommonMessages with ExportsTestData with Stubs with Injector {
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
   private val declarationAdditionalActorsPage = instanceOf[additional_actors_add]
 
-  private def createView(form: Form[DeclarationAdditionalActors], request: JourneyRequest[_]): Document =
-    declarationAdditionalActorsPage(Mode.Normal, form)(request, messages)
+  private def createView(form: Form[DeclarationAdditionalActors])(implicit request: JourneyRequest[_]): Document =
+    declarationAdditionalActorsPage(Mode.Normal, form)
 
   "Declaration Additional Actors" should {
 
     "have correct message keys" in {
-
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
 
       messages must haveTranslationFor("declaration.additionalActors.title")
       messages must haveTranslationFor("declaration.additionalActors.title.hint")
@@ -66,8 +63,8 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
 
   "Declaration Additional Actors View on empty page" should {
 
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
-      val view = createView(form, request)
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>
+      val view = createView(form)
 
       "display page title" in {
 
@@ -81,7 +78,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
 
       "display five radio buttons with description (not selected)" in {
 
-        val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(Eori("")), Some(""))), request)
+        val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(Eori("")), Some(""))))
 
         def checkOption(key: String, messagePrefix: String = "declaration.partyType.") = {
           val option = view.getElementById(key)
@@ -107,7 +104,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
       }
     }
 
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>
       "display 'Back' button that links to 'Consignee Details' page" in {
 
         val view = declarationAdditionalActorsPage(Mode.Normal, form)(request, messages)
@@ -122,19 +119,18 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
 
   "Declaration Additional Actors View with invalid input" must {
 
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>
       def incorrectEori(partyType: String) = {
         val view = createView(
           DeclarationAdditionalActors
             .form()
-            .fillAndValidate(DeclarationAdditionalActors(Some(Eori(TestHelper.createRandomAlphanumericString(18))), Some(partyType))),
-          request
+            .fillAndValidate(DeclarationAdditionalActors(Some(Eori(TestHelper.createRandomAlphanumericString(18))), Some(partyType)))
         )
 
         view must haveGovukGlobalErrorSummary
 
         view must containErrorElementWithTagAndHref("a", s"#eori$partyType")
-        view.getElementsByClass("govuk-error-message").text() contains messages("supplementary.eori.error.format")
+        view.getElementsByClass("govuk-error-message").text() contains messages("declaration.eori.error.format")
       }
 
       "display errors when EORI is provided, but is incorrect" in {
@@ -151,7 +147,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
   "Declaration Additional Actors View when filled" must {
 
     def createViewAndFill(request: JourneyRequest[_], partyType: String) =
-      createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(Eori("GB1234")), Some(partyType))), request)
+      createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(Eori("GB1234")), Some(partyType))))(request)
 
     def ensureRadioIsChecked(view: Document, partyType: String): Unit =
       view.getElementById(partyType).getElementsByAttribute("checked").size() mustBe 1

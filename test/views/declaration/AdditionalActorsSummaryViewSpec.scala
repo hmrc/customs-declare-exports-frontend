@@ -24,16 +24,14 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.additionalActors.additional_actors_summary
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class AdditionalActorsSummaryViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   val additionalActor1 = DeclarationAdditionalActors(Some(Eori("GB56523343784324")), Some("CS"))
   val additionalActor2 = DeclarationAdditionalActors(Some(Eori("GB56523399999999")), Some("MF"))
@@ -43,10 +41,9 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
     mode: Mode = Mode.Normal,
     form: Form[YesNoAnswer] = YesNoAnswer.form(),
     actors: Seq[DeclarationAdditionalActors] = Seq.empty
-  )(implicit request: JourneyRequest[_]): Document = page(mode, form, actors)(request, stubMessages())
+  )(implicit request: JourneyRequest[_]): Document = page(mode, form, actors)
 
   "have proper messages for labels" in {
-    val messages = instanceOf[MessagesApi].preferred(journeyRequest())
     messages must haveTranslationFor("declaration.additionalActors.table.heading")
     messages must haveTranslationFor("declaration.additionalActors.table.multiple.heading")
     messages must haveTranslationFor("declaration.additionalActors.table.party")
@@ -69,7 +66,7 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
       val view = createView()
 
       "display page title" in {
-        view.getElementsByTag("h1").text() mustBe messages("declaration.additionalActors.table.multiple.heading")
+        view.getElementsByTag("h1").text() mustBe messages("declaration.additionalActors.table.multiple.heading", "0")
       }
 
       "display page title for multiple items" in {
@@ -77,15 +74,15 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("declaration.summary.parties.header")
+        view.getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
       }
 
       "display'Save and continue' button on page" in {
-        view.getElementById("submit").text() mustBe "site.save_and_continue"
+        view.getElementById("submit").text() mustBe messages("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
+        view.getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
       }
     }
   }
@@ -102,11 +99,12 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
         view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("declaration.additionalActors.table.eori")
 
         // check row
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "declaration.partyType.CS"
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe messages("declaration.partyType.CS")
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB56523343784324"
         view
           .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint")}"
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint", messages(s"declaration.partyType.${additionalActor1.partyType.get}"), additionalActor1.eori.get.value)}"
+
       }
 
       "display two rows with data in table" in {
@@ -118,17 +116,17 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
         view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("declaration.additionalActors.table.eori")
 
         // check rows
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "declaration.partyType.CS"
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe messages("declaration.partyType.CS")
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB56523343784324"
         view
           .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint")}"
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint", messages(s"declaration.partyType.${additionalActor1.partyType.get}"), additionalActor1.eori.get.value)}"
 
-        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe "declaration.partyType.MF"
+        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe messages("declaration.partyType.MF")
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "GB56523399999999"
         view
           .select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint")}"
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint", messages(s"declaration.partyType.${additionalActor2.partyType.get}"), additionalActor2.eori.get.value)}"
       }
     }
   }

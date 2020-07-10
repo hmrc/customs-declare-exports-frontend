@@ -23,17 +23,15 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import utils.ListItem
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.additionalActors.additional_actors_remove
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalActorsRemoveViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class AdditionalActorsRemoveViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   val additionalActor = DeclarationAdditionalActors(Some(Eori("GB123456789000")), Some("MF"))
   private val page = instanceOf[additional_actors_remove]
@@ -42,10 +40,9 @@ class AdditionalActorsRemoveViewSpec extends UnitViewSpec with ExportsTestData w
     mode: Mode = Mode.Normal,
     form: Form[YesNoAnswer] = YesNoAnswer.form(),
     actor: DeclarationAdditionalActors = additionalActor
-  )(implicit request: JourneyRequest[_]): Document = page(mode, ListItem.createId(0, additionalActor), actor, form)(request, stubMessages())
+  )(implicit request: JourneyRequest[_]): Document = page(mode, ListItem.createId(0, additionalActor), actor, form)
 
   "have proper messages for labels" in {
-    val messages = instanceOf[MessagesApi].preferred(journeyRequest())
     messages must haveTranslationFor("declaration.additionalActors.remove.title")
     messages must haveTranslationFor("declaration.additionalActors.table.party")
     messages must haveTranslationFor("declaration.additionalActors.table.eori")
@@ -70,7 +67,7 @@ class AdditionalActorsRemoveViewSpec extends UnitViewSpec with ExportsTestData w
         val view = createView()
 
         view.select("dl>div:nth-child(1)>dt").text() mustBe messages("declaration.additionalActors.table.party")
-        view.select("dl>div:nth-child(1)>dd").text() mustBe "declaration.partyType.MF"
+        view.select("dl>div:nth-child(1)>dd").text() mustBe messages("declaration.partyType.MF")
         view.select("dl>div:nth-child(2)>dt").text() mustBe messages("declaration.additionalActors.table.eori")
         view.select("dl>div:nth-child(2)>dd").text() mustBe "GB123456789000"
       }
