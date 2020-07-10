@@ -62,8 +62,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec2 with ExportsTestData with 
     }
 
     onEveryDeclarationJourney() { implicit request =>
-
-    val view = createView()
+      val view = createView()
 
       "display same page title as header" in {
         view.title() must include(view.getElementsByTag("h1").text())
@@ -85,17 +84,19 @@ class PreviousDocumentsViewSpec extends UnitViewSpec2 with ExportsTestData with 
       }
 
       "display empty input with label for Previous document code" in {
-        view.getElementsByAttributeValue("for", "documentType")must containMessageForElements("declaration.previousDocuments.documentType")
+        view.getElementsByAttributeValue("for", "documentType") must containMessageForElements("declaration.previousDocuments.documentType")
         view.getElementById("documentType").attr("value") mustBe empty
       }
 
       "display empty input with label for Previous DUCR or MUCR" in {
-        view.getElementsByAttributeValue("for", "documentReference")must containMessageForElements("declaration.previousDocuments.documentReference")
+        view.getElementsByAttributeValue("for", "documentReference") must containMessageForElements("declaration.previousDocuments.documentReference")
         view.getElementById("documentReference").attr("value") mustBe empty
       }
 
       "display empty input with label for Previous Goods Identifier" in {
-        view.getElementsByAttributeValue("for", "goodsItemIdentifier")must containMessageForElements("declaration.previousDocuments.goodsItemIdentifier")
+        view.getElementsByAttributeValue("for", "goodsItemIdentifier") must containMessageForElements(
+          "declaration.previousDocuments.goodsItemIdentifier"
+        )
         view.getElementById("goodsItemIdentifier").attr("value") mustBe empty
       }
     }
@@ -173,7 +174,6 @@ class PreviousDocumentsViewSpec extends UnitViewSpec2 with ExportsTestData with 
   "Previous Documents View when filled" should {
 
     onEveryDeclarationJourney() { implicit request =>
-
       "display selected second radio button - Simplified Declaration (Y)" in {
 
         val view = createView(form = Document.form.fill(Document("Y", "", "", Some(""))))

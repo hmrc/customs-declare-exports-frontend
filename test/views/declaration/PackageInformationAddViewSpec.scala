@@ -51,7 +51,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec2 with ExportsTestData w
       val view = createView()
 
       "display page title" in {
-        view.getElementsByTag("h1")must containMessageForElements("declaration.packageInformation.title")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.packageInformation.title")
       }
 
       "display 'Back' button that links to 'PackageInformation summary' page when adding subsequent value" in {

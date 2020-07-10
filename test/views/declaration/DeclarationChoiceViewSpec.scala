@@ -164,7 +164,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec2 with CommonMessages with S
 
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 5
-    view.getElementsByAttributeValue("for", "STANDARD")  must containMessageForElements("declaration.type.standard")
+    view.getElementsByAttributeValue("for", "STANDARD") must containMessageForElements("declaration.type.standard")
     view.getElementsByAttributeValue("for", "SUPPLEMENTARY") must containMessageForElements("declaration.type.supplementary")
     view.getElementsByAttributeValue("for", "SIMPLIFIED") must containMessageForElements("declaration.type.simplified")
     view.getElementsByAttributeValue("for", "OCCASIONAL") must containMessageForElements("declaration.type.occasional")

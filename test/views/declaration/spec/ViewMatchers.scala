@@ -52,7 +52,8 @@ trait ViewMatchers {
   def containErrorElementWithTagAndHref(tag: String, href: String): Matcher[Element] = new ContainErrorElementWithClassMatcher(tag, href)
 
   def containErrorElementWithMessage(text: String): Matcher[Element] = new ContainErrorElementWithMessage(text)
-  def containErrorElementWithMessageKey(key: String)(implicit messages: Messages): Matcher[Element] = new ContainErrorElementWithMessage(messages(key))
+  def containErrorElementWithMessageKey(key: String)(implicit messages: Messages): Matcher[Element] =
+    new ContainErrorElementWithMessage(messages(key))
 
   def containElementWithAttribute(key: String, value: String): Matcher[Element] =
     new ContainElementWithAttribute(key, value)

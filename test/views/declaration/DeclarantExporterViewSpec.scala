@@ -67,7 +67,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec2 with ExportsTestData with 
       "display radio button with Yes option" in {
         val view = createView()
         view.getElementById("answer_yes").attr("value") mustBe YesNoAnswers.yes
-        view.getElementsByAttributeValue("for", "answer_yes")  must containMessageForElements("declaration.declarant.exporter.answer.yes")
+        view.getElementsByAttributeValue("for", "answer_yes") must containMessageForElements("declaration.declarant.exporter.answer.yes")
       }
       "display radio button with No option" in {
         val view = createView()
@@ -79,18 +79,18 @@ class DeclarantExporterViewSpec extends UnitViewSpec2 with ExportsTestData with 
 
         val backButton = createView().getElementById("back-link")
 
-        backButton  must containMessage(backCaption)
+        backButton must containMessage(backCaption)
         backButton must haveHref(routes.DeclarantDetailsController.displayPage().url)
       }
 
       "display 'Save and continue' button on page" in {
         val saveButton = createView().getElementById("submit")
-        saveButton  must containMessage(saveAndContinueCaption)
+        saveButton must containMessage(saveAndContinueCaption)
       }
 
       "display 'Save and return' button on page" in {
         val saveButton = createView().getElementById("submit_and_return")
-        saveButton  must containMessage(saveAndReturnCaption)
+        saveButton must containMessage(saveAndReturnCaption)
         saveButton.attr("name") mustBe SaveAndReturn.toString
       }
     }

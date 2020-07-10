@@ -37,7 +37,6 @@ class UnitViewSpec2 extends UnitSpec with ViewMatchers with JourneyTypeTestRunne
 
   protected def messages(key: String, args: Any*)(implicit request: Request[_]): String = messages(request)(key, args: _*)
 
-
   val realMessagesApi = UnitViewSpec.realMessagesApi
 
   def checkErrorsSummary(view: Document): Assertion = {
@@ -45,4 +44,3 @@ class UnitViewSpec2 extends UnitSpec with ViewMatchers with JourneyTypeTestRunne
     view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be("error.summary.text")
   }
 }
-
