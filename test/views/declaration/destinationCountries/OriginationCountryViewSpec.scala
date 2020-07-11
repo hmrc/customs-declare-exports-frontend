@@ -18,8 +18,8 @@ package views.declaration.destinationCountries
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.countries.{Countries, Country}
 import forms.declaration.countries.Countries.OriginationCountryPage
+import forms.declaration.countries.{Countries, Country}
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
@@ -27,23 +27,22 @@ import play.api.data.Form
 import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.destinationCountries.origination_country
 
-class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+class OriginationCountryViewSpec extends UnitViewSpec2 with Stubs with ExportsTestData with Injector {
 
   val originationCountryPage = instanceOf[origination_country]
 
   private def form(request: JourneyRequest[_]): Form[Country] =
     Countries.form(OriginationCountryPage)(request)
-  private def view(request: JourneyRequest[_]): Html =
+  private def view(implicit request: JourneyRequest[_]): Html =
     originationCountryPage(Mode.Normal, form(request))(request, messages)
 
   "Origination country view spec" should {
 
     "have defined translation for used labels" in {
 
-      val messages = realMessagesApi.preferred(request)
       messages must haveTranslationFor("declaration.originationCountry.title")
       messages must haveTranslationFor("declaration.originationCountry.heading")
       messages must haveTranslationFor("declaration.originationCountry.empty")
@@ -51,7 +50,7 @@ class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     }
   }
 
-  onJourney(STANDARD, SUPPLEMENTARY) { request =>
+  onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
     "Origination country view spec" should {
 
       s"display page question for ${request.declarationType}" in {

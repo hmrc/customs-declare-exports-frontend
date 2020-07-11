@@ -25,15 +25,13 @@ import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.remove_declaration
 import views.tags.ViewTest
 
 @ViewTest
-class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class RemoveSavedDeclarationsViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
 
   val title: String = "saved.declarations.remove.title"
   val ducr: String = "saved.declarations.ducr"
@@ -47,17 +45,13 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages w
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 10, 0, 0).toInstant(ZoneOffset.UTC))
   )
 
-  private def createView(
-    dec: ExportsDeclaration,
-    form: Form[RemoveDraftDeclaration] = RemoveDraftDeclaration.form,
-    messages: Messages = stubMessages()
-  ): Document =
+  private def createView(dec: ExportsDeclaration, form: Form[RemoveDraftDeclaration] = RemoveDraftDeclaration.form): Document =
     removeSavedDeclarationsPage(declaration = dec, form)(request, messages)
 
   "Remove Saved Declarations View" should {
 
     "display same page title as header" in {
-      val viewWithMessage = createView(decWithDucr(), messages = realMessagesApi.preferred(request))
+      val viewWithMessage = createView(decWithDucr())
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
@@ -83,7 +77,7 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages w
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#remove")
 
-      view must containErrorElementWithMessage("saved.declarations.remove.option.error.empty")
+      view must containErrorElementWithMessageKey("saved.declarations.remove.option.error.empty")
     }
   }
 

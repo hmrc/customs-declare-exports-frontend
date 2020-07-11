@@ -23,13 +23,12 @@ import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
+import models.Mode
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import unit.tools.Stubs
-import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.declarationHolder.declaration_holder_add
 import views.tags.ViewTest
 

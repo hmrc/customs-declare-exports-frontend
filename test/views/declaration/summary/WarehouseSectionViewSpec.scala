@@ -20,10 +20,10 @@ import base.Injector
 import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.summary.warehouse_section
 
-class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class WarehouseSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
 
   val data = aDeclaration(
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
@@ -44,7 +44,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.warehouse.id"))
       row must haveSummaryValue("12345")
 
-      row must haveSummaryActionsText("site.change declaration.summary.warehouse.id.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.id.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
     }
@@ -54,7 +54,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.warehouse.supervisingOffice"))
       row must haveSummaryValue("23456")
 
-      row must haveSummaryActionsText("site.change declaration.summary.warehouse.supervisingOffice.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.supervisingOffice.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage())
     }
@@ -64,7 +64,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.warehouse.inlandModeOfTransport"))
       row must haveSummaryValue(messages("declaration.summary.warehouse.inlandModeOfTransport.Maritime"))
 
-      row must haveSummaryActionsText("site.change declaration.summary.warehouse.inlandModeOfTransport.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.inlandModeOfTransport.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
     }

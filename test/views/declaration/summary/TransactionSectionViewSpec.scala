@@ -19,10 +19,10 @@ package views.declaration.summary
 import base.Injector
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.summary.transaction_section
 
-class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class TransactionSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
 
   val data = aDeclaration(
     withTotalNumberOfItems(Some("123"), Some("1.23")),
@@ -44,7 +44,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
       row must haveSummaryKey(messages("declaration.summary.transaction.itemAmount"))
       row must haveSummaryValue("123")
 
-      row must haveSummaryActionsText("site.change declaration.summary.transaction.itemAmount.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.itemAmount.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
     }
@@ -56,7 +56,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
       row must haveSummaryKey(messages("declaration.summary.transaction.exchangeRate"))
       row must haveSummaryValue("1.23")
 
-      row must haveSummaryActionsText("site.change declaration.summary.transaction.exchangeRate.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.exchangeRate.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
     }
@@ -68,7 +68,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
       row must haveSummaryKey(messages("declaration.summary.transaction.totalNoOfPackages"))
       row must haveSummaryValue("12")
 
-      row must haveSummaryActionsText("site.change declaration.summary.transaction.totalNoOfPackages.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.totalNoOfPackages.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.TotalPackageQuantityController.displayPage())
     }
@@ -80,7 +80,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
       row must haveSummaryKey(messages("declaration.summary.transaction.natureOfTransaction"))
       row must haveSummaryValue(messages("declaration.summary.transaction.natureOfTransaction.2"))
 
-      row must haveSummaryActionsText("site.change declaration.summary.transaction.natureOfTransaction.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.natureOfTransaction.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.NatureOfTransactionController.displayPage())
     }

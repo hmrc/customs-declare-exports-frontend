@@ -26,12 +26,12 @@ import helpers.views.declaration.CommonMessages
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.cancel_declaration
 import views.tags.ViewTest
 
 @ViewTest
-class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class CancelDeclarationViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
 
   private val form: Form[CancelDeclaration] = CancelDeclaration.form
   private val cancelDeclarationPage = instanceOf[cancel_declaration]
@@ -114,7 +114,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
     "display 'Back' button that links to 'Choice' page with Cancel declaration selected" in {
       val backButton = createView().getElementById("back-link")
 
-      backButton must containText("site.back")
+      backButton must containMessage("site.back")
       backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(CancelDec))))
     }
   }
@@ -128,25 +128,25 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       "functionalReferenceID is empty" in {
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#functionalReferenceId")
-        view must containErrorElementWithMessage("error.required")
+        view must containErrorElementWithMessageKey("error.required")
       }
 
       "mrn is empty" in {
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#mrn")
-        view must containErrorElementWithMessage("error.required")
+        view must containErrorElementWithMessageKey("error.required")
       }
 
       "statementDescription is empty" in {
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#statementDescription")
-        view must containErrorElementWithMessage("error.required")
+        view must containErrorElementWithMessageKey("error.required")
       }
 
       "changeReason is empty" in {
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#changeReason")
-        view must containErrorElementWithMessage("cancellation.changeReason.error.wrongValue")
+        view must containErrorElementWithMessageKey("cancellation.changeReason.error.wrongValue")
       }
     }
 
@@ -168,7 +168,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#functionalReferenceId")
 
-        view must containErrorElementWithMessage("cancellation.functionalReferenceId.error.length")
+        view must containErrorElementWithMessageKey("cancellation.functionalReferenceId.error.length")
       }
 
       "is entered but is in the wrong format" in {
@@ -181,7 +181,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#functionalReferenceId")
 
-        view must containErrorElementWithMessage("cancellation.functionalReferenceId.error.specialCharacter")
+        view must containErrorElementWithMessageKey("cancellation.functionalReferenceId.error.specialCharacter")
       }
     }
 
@@ -199,7 +199,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#mrn")
 
-        view must containErrorElementWithMessage("cancellation.mrn.error.tooLong")
+        view must containErrorElementWithMessageKey("cancellation.mrn.error.tooLong")
       }
 
       "is empty" in {
@@ -217,7 +217,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#mrn")
 
-        view must containErrorElementWithMessage("cancellation.mrn.error.wrongFormat")
+        view must containErrorElementWithMessageKey("cancellation.mrn.error.wrongFormat")
       }
     }
 
@@ -246,7 +246,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#statementDescription")
 
-        view must containErrorElementWithMessage("cancellation.statementDescription.error.invalid")
+        view must containErrorElementWithMessageKey("cancellation.statementDescription.error.invalid")
       }
     }
 
@@ -261,7 +261,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#changeReason")
 
-        view must containErrorElementWithMessage("cancellation.changeReason.error.wrongValue")
+        view must containErrorElementWithMessageKey("cancellation.changeReason.error.wrongValue")
       }
     }
   }

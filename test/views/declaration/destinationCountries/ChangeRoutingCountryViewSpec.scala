@@ -18,19 +18,19 @@ package views.declaration.destinationCountries
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.countries.{Countries, Country}
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
-import models.Mode
+import forms.declaration.countries.{Countries, Country}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.destinationCountries.change_routing_country
 
-class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+class ChangeRoutingCountryViewSpec extends UnitViewSpec2 with Stubs with ExportsTestData with Injector {
 
   private val countryToChange = "GB"
   private val changeRoutingCountryPage = instanceOf[change_routing_country]
@@ -40,12 +40,12 @@ class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
   private def nextRoutingForm(request: JourneyRequest[_]): Form[Country] =
     Countries.form(NextRoutingCountryPage)(request)
 
-  private def firstRoutingView(request: JourneyRequest[_]): Html =
+  private def firstRoutingView(implicit request: JourneyRequest[_]): Html =
     changeRoutingCountryPage(Mode.Normal, firstRoutingForm(request), FirstRoutingCountryPage, countryToChange)(request, messages)
-  private def nextRoutingView(request: JourneyRequest[_]): Html =
+  private def nextRoutingView(implicit request: JourneyRequest[_]): Html =
     changeRoutingCountryPage(Mode.Normal, nextRoutingForm(request), NextRoutingCountryPage, countryToChange)(request, messages)
 
-  onJourney(OCCASIONAL, SIMPLIFIED, STANDARD) { request =>
+  onJourney(OCCASIONAL, SIMPLIFIED, STANDARD) { implicit request =>
     "Change routing country pages" should {
 
       s"have page heading for ${request.declarationType}" in {

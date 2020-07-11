@@ -17,7 +17,6 @@
 package views.declaration
 
 import base.Injector
-import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.WarehouseIdentification
 import models.DeclarationType._
 import models.Mode
@@ -28,7 +27,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.warehouse_identification
 import views.tags.ViewTest
 

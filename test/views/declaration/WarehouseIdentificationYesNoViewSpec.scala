@@ -28,7 +28,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.warehouse_identification_yesno
 import views.tags.ViewTest
 

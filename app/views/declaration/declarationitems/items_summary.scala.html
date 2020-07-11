@@ -41,9 +41,9 @@
 
 @(mode: Mode, form: Form[YesNoAnswer], items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
-@titleMessage = @{
-  if(items.size == 1) { messages("declaration.itemsAdd.titleWithItem", items.length) }
-  else { messages("declaration.itemsAdd.titleWithItems", items.length) }
+@titleMessageKey = @{
+  if(items.size == 1) "declaration.itemsAdd.titleWithItem"
+  else "declaration.itemsAdd.titleWithItems"
 }
 
 @addButtonMessage = @{
@@ -121,7 +121,7 @@
 }
 
 @govukLayout(
-    title = Title(titleMessage, "supplementary.items"),
+    title = Title(titleMessageKey, "supplementary.items", items.length.toString),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExportItem, mode))),
     useCustomContentWidth = true) {
 
@@ -132,7 +132,7 @@
         @sectionHeader(messages("supplementary.items"))
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(titleMessage),
+                content = Text(messages(titleMessageKey, items.length)),
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),

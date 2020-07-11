@@ -16,11 +16,9 @@
 
 package views.declaration.summary
 
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 
-class SummaryMessagesSpec extends UnitViewSpec {
-
-  override val messages = realMessagesApi.preferred(request)
+class SummaryMessagesSpec extends UnitViewSpec2 {
 
   "Summary page" should {
 

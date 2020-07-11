@@ -26,12 +26,12 @@ import models.declaration.submissions.SubmissionStatus.SubmissionStatus
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import org.jsoup.nodes.Document
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.submission_notifications
 import views.tags.ViewTest
 
 @ViewTest
-class NotificationsViewSpec extends UnitViewSpec with Stubs {
+class NotificationsViewSpec extends UnitViewSpec2 with Stubs {
 
   private val page = new submission_notifications(mainTemplate)
   private val actions = Action(UUID.randomUUID().toString, SubmissionRequest)

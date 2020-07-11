@@ -24,7 +24,7 @@ import models.responses.FlashKeys
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import unit.tools.Stubs
-import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.draft_confirmation_page
 import views.tags.ViewTest
 

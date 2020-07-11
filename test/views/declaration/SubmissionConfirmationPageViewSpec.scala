@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document
 import play.api.mvc.Flash
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.submission_confirmation_page
 import views.tags.ViewTest
 

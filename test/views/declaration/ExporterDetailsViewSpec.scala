@@ -29,10 +29,8 @@ import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
 import unit.tools.Stubs
-import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.exporter_details
 import views.tags.ViewTest
 

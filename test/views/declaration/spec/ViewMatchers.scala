@@ -91,6 +91,8 @@ trait ViewMatchers {
   def haveSummaryKey(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__key", value)
   def haveSummaryValue(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__value", value)
   def haveSummaryActionsText(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__actions", value)
+  def haveSummaryActionsTexts(label: String, hint: String, hintArgs: String*)(implicit messages: Messages) =
+    haveSummaryActionsText(s"${messages(label)} ${messages(hint, hintArgs: _*)}")
   def haveSummaryActionsHref(value: Call) = new ElementsHasSummaryActionMatcher(value)
 
   def haveChildCount(count: Int): Matcher[Element] = new ElementHasChildCountMatcher(count)

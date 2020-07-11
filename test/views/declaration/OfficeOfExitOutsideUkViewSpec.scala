@@ -87,7 +87,7 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec2 with ExportsTestData w
           val data = OfficeOfExitOutsideUK("")
           val view = createView(form = OfficeOfExitOutsideUK.form().fillAndValidate(data))
 
-          view.getElementById("error-summary-title").text() must be("error.summary.title")
+          view.getElementById("error-summary-title") must containMessage("error.summary.title")
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#officeId")
@@ -99,7 +99,7 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec2 with ExportsTestData w
           val form = OfficeOfExitOutsideUK.form().fillAndValidate(data)
           val view = createView(form = form)
 
-          view.getElementById("error-summary-title").text() must be("error.summary.title")
+          view.getElementById("error-summary-title") must containMessage("error.summary.title")
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#officeId")

@@ -25,10 +25,10 @@ import services.cache.ExportsTestData
 import services.model.Country
 import unit.tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.destinationCountries.remove_routing_country
 
-class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+class RemoveRoutingCountryViewSpec extends UnitViewSpec2 with Stubs with ExportsTestData with Injector {
 
   val country = Country("Poland", "PL")
   val form: Form[Boolean] = RoutingQuestionYesNo.formRemove()
@@ -40,7 +40,6 @@ class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "have defined translation for used labels" in {
 
-      val messages = realMessagesApi.preferred(request)
       messages must haveTranslationFor("declaration.routingCountries.remove.title")
       messages must haveTranslationFor("declaration.routingCountries.remove.heading")
       messages must haveTranslationFor("declaration.routingCountries.remove.question")

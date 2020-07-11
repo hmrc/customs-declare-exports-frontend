@@ -17,18 +17,18 @@
 package views.pdf
 
 import org.scalatest.MustMatchers
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 
-class DeclarationTypeSpec extends UnitViewSpec with MustMatchers {
+class DeclarationTypeSpec extends UnitViewSpec2 with MustMatchers {
 
-  val messagesValidated = validatedMessages(request)
+  val messagesValidated = messages(request)
 
   private def messageKey(decType: String) = s"pdf.template.declarationType.$decType"
 
   "DeclarationType" should {
 
     "translate all declaration types" in {
-      DeclarationType.values.map(_.toString).foreach(decType => DeclarationType.translate(decType) mustBe messageKey(decType))
+      DeclarationType.values.map(_.toString).foreach(decType => DeclarationType.translate(decType) mustBe messages(messageKey(decType)))
     }
 
     "have message for all declaration types" in {

@@ -17,21 +17,22 @@
 package views
 
 import org.scalatest.MustMatchers
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 
-class TitleSpec extends UnitViewSpec with MustMatchers {
+class TitleSpec extends UnitViewSpec2 with MustMatchers {
 
-  override val messages = realMessagesApi.preferred(request)
   val serviceName = messages("service.name")
 
   "Title" should {
 
     "format title without section" in {
-      Title("some.title").toString(messages) must equal(s"some.title - $serviceName - GOV.UK")
+      Title("index.title").toString(messages) must equal(s"${messages("index.title")} - $serviceName - GOV.UK")
     }
 
     "format title with section" in {
-      Title("some.title", "some.section").toString(messages) must equal(s"some.title - some.section - $serviceName - GOV.UK")
+      Title("index.title", "index.heading").toString(messages) must equal(
+        s"${messages("index.title")} - ${messages("index.heading")} - $serviceName - GOV.UK"
+      )
     }
 
   }

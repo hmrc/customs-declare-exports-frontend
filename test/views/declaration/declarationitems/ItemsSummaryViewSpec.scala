@@ -24,28 +24,25 @@ import models.Mode
 import models.declaration.{ExportItem, ProcedureCodesData}
 import org.jsoup.nodes.Document
 import play.api.data.FormError
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.declarationitems.items_summary
 import views.tags.ViewTest
 
 @ViewTest
-class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class ItemsSummaryViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[items_summary]
   private val form = YesNoAnswer.form()
   private def createView(mode: Mode = Mode.Normal, items: List[ExportItem] = List.empty, itemErrors: Seq[FormError] = Seq.empty): Document =
-    page(mode, form, items, itemErrors)(journeyRequest(), stubMessages())
+    page(mode, form, items, itemErrors)(journeyRequest(), messages)
 
   "Items Summary Page View" should {
 
     "have proper messages for labels" in {
 
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.itemsAdd.titleWithItems")
       messages must haveTranslationFor("declaration.itemsSummary.addAnotherItem.question")
       messages must haveTranslationFor("declaration.itemsSummary.addAnotherItem.error.empty")
@@ -62,7 +59,7 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
     "render title" in {
 
       val view = createView(items = List(ExportItem("id1"), ExportItem("id2")))
-      view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "declaration.itemsAdd.titleWithItems"
+      view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.itemsAdd.titleWithItems", "2")
     }
 
     "not render item table" when {

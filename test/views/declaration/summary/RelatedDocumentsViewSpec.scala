@@ -20,10 +20,10 @@ import base.Injector
 import forms.declaration.Document
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.summary.related_documents
 
-class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class RelatedDocumentsViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
   private val section = instanceOf[related_documents]
 
   "Related documents" should {
@@ -38,7 +38,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with In
         row must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
         row must haveSummaryValue(messages("site.no"))
 
-        row must haveSummaryActionsText("site.change declaration.summary.transaction.previousDocuments.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.previousDocuments.change")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Normal))
       }
@@ -58,20 +58,22 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with In
         table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.transaction.previousDocuments.reference")
 
         val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
-        row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages("Proforma Invoice - 325")
-        row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages("123456")
+        row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "Proforma Invoice - 325"
+        row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "123456"
 
         val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
         row1ChangeLink must haveHref(controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Mode.Change))
-        row1ChangeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.summary.transaction.previousDocuments.document.change", 0)}"
+        row1ChangeLink
+          .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.transaction.previousDocuments.document.change", "123456")}"
 
         val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-        row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages("Packing List - 271")
-        row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages("654321")
+        row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "Packing List - 271"
+        row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "654321"
 
         val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
         row2ChangeLink must haveHref(controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Mode.Change))
-        row2ChangeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.summary.transaction.previousDocuments.document.change", 1)}"
+        row2ChangeLink
+          .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.transaction.previousDocuments.document.change", "654321")}"
       }
     }
   }

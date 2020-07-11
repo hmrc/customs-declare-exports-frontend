@@ -20,10 +20,10 @@ import base.Injector
 import forms.declaration.countries.Country
 import models.{ExportsDeclaration, Mode}
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.summary.countries_section
 
-class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class CountriesSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
 
   val section = instanceOf[countries_section]
 
@@ -39,7 +39,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.countries.routingCountries"))
       row must haveSummaryValue("")
 
-      row must haveSummaryActionsText("site.change declaration.summary.countries.routingCountries.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.routingCountries.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.Change))
     }
@@ -74,7 +74,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       val row = view(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(Country(Some("GB")))))).getElementsByClass("countriesOfRouting-row")
 
-      row must haveSummaryActionsText("site.change declaration.summary.countries.routingCountries.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.routingCountries.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.Change))
     }
@@ -109,7 +109,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       val row = view(data).getElementsByClass("countryOfDestination-row")
 
-      row must haveSummaryActionsText("site.change declaration.summary.countries.countryOfDestination.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.countryOfDestination.change")
       row must haveSummaryActionsHref(controllers.declaration.routes.DestinationCountryController.displayPage(Mode.Change))
     }
 
@@ -140,7 +140,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       val row = view(data).getElementsByClass("countryOfDispatch-row")
 
-      row must haveSummaryActionsText("site.change declaration.summary.countries.countryOfDispatch.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.countryOfDispatch.change")
       row must haveSummaryActionsHref(controllers.declaration.routes.OriginationCountryController.displayPage(Mode.Change))
     }
 

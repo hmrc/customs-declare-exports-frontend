@@ -20,7 +20,7 @@ import base.Injector
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.{DeclarantIsExporter, EntityDetails, IsExs, RepresentativeAgent}
+import forms.declaration.{EntityDetails, IsExs, RepresentativeAgent}
 import models.DeclarationType._
 import models.Mode
 import models.declaration.Parties
@@ -29,7 +29,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.representative_details_agent
 import views.tags.ViewTest
 

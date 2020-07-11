@@ -17,16 +17,15 @@
 package views
 
 import base.Injector
-import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.session_timed_out
 import views.tags.ViewTest
 
 @ViewTest
-class SessionTimedOutViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class SessionTimedOutViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[session_timed_out]
   private def createView(): Html =
@@ -35,7 +34,6 @@ class SessionTimedOutViewSpec extends UnitViewSpec with ExportsTestData with Stu
   "SessionTimedOut View" should {
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("sessionTimout.title")
       messages must haveTranslationFor("sessionTimout.paragraph.saved")
       messages must haveTranslationFor("sessionTimout.signin.button")

@@ -20,25 +20,22 @@ import base.Injector
 import controllers.declaration.routes
 import models.Mode
 import org.jsoup.nodes.Document
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.declarationitems.items_add_item
 import views.tags.ViewTest
 
 @ViewTest
-class ItemsAddItemViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class ItemsAddItemViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[items_add_item]
-  private def createView(mode: Mode = Mode.Normal): Document = page(mode)(journeyRequest(), stubMessages())
+  private def createView(mode: Mode = Mode.Normal): Document = page(mode)(journeyRequest(), messages)
 
   "ItemsAddItem View" should {
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("supplementary.items")
       messages must haveTranslationFor("declaration.itemsAdd.title")
       messages must haveTranslationFor("declaration.itemsAdd.title.hint")

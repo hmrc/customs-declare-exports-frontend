@@ -20,10 +20,10 @@ import base.Injector
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.summary.references_section
 
-class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class ReferencesSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
 
   val data = aDeclaration(
     withType(DeclarationType.STANDARD),
@@ -45,7 +45,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
       row must haveSummaryKey(messages("declaration.summary.references.type"))
       row must haveSummaryValue("Standard")
 
-      row must haveSummaryActionsText("site.change declaration.summary.references.type.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.type.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
     }
@@ -56,7 +56,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
       row must haveSummaryKey(messages("declaration.summary.references.location"))
       row must haveSummaryValue(messages("site.yes"))
 
-      row must haveSummaryActionsText("site.change declaration.summary.references.location.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.location.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Change))
     }
@@ -67,7 +67,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
       row must haveSummaryKey(messages("declaration.summary.references.additionalType"))
       row must haveSummaryValue(messages("declaration.summary.references.additionalType.A"))
 
-      row must haveSummaryActionsText("site.change declaration.summary.references.additionalType.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.additionalType.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(Mode.Change))
     }
@@ -78,7 +78,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
       row must haveSummaryKey(messages("declaration.summary.references.ducr"))
       row must haveSummaryValue("DUCR")
 
-      row must haveSummaryActionsText("site.change declaration.summary.references.ducr.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.ducr.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage(Mode.Change))
     }
@@ -89,7 +89,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
       row must haveSummaryKey(messages("declaration.summary.references.lrn"))
       row must haveSummaryValue("LRN")
 
-      row must haveSummaryActionsText("site.change declaration.summary.references.lrn.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage(Mode.Change))
     }

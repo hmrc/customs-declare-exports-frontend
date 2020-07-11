@@ -27,21 +27,20 @@ import play.api.data.Form
 import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.destinationCountries.destination_country
 
-class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+class DestinationCountryViewSpec extends UnitViewSpec2 with Stubs with ExportsTestData with Injector {
 
   private val destinationCountryPage = instanceOf[destination_country]
 
   private def form(request: JourneyRequest[_]): Form[Country] = Countries.form(DestinationCountryPage)(request)
-  private def view(request: JourneyRequest[_]): Html = destinationCountryPage(Mode.Normal, form(request))(request, messages)
+  private def view(implicit request: JourneyRequest[_]): Html = destinationCountryPage(Mode.Normal, form(request))(request, messages)
 
   "Destination country view spec" should {
 
     "have defined translation for used labels" in {
 
-      val messages = realMessagesApi.preferred(request)
       messages must haveTranslationFor("declaration.destinationCountry.title")
       messages must haveTranslationFor("declaration.destinationCountry.heading")
       messages must haveTranslationFor("declaration.destinationCountry.empty")
@@ -49,7 +48,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     }
   }
 
-  onEveryDeclarationJourney() { request =>
+  onEveryDeclarationJourney() { implicit request =>
     "Destination country view spec" should {
 
       s"display page question for ${request.declarationType}" in {
@@ -74,7 +73,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     }
   }
 
-  onJourney(STANDARD, SUPPLEMENTARY) { request =>
+  onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
     "Destination country view spec" should {
 
       s"display back button that links to 'Origination country' page for ${request.declarationType}" in {
@@ -88,7 +87,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     }
   }
 
-  onJourney(SIMPLIFIED, OCCASIONAL) { request =>
+  onJourney(SIMPLIFIED, OCCASIONAL) { implicit request =>
     "Destination country view spec" should {
 
       s"display back button that links to `Declaration holder` page for ${request.declarationType}" in {

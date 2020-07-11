@@ -21,10 +21,10 @@ import forms.declaration.GoodsLocationForm
 import forms.declaration.officeOfExit.AllowedUKOfficeOfExitAnswers
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.summary.locations_section
 
-class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class LocationsSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
 
   val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123", AllowedUKOfficeOfExitAnswers.yes))
 
@@ -40,7 +40,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.locations.goodsLocationCode"))
       row must haveSummaryValue("GBAUEMAEMAEMA")
 
-      row must haveSummaryActionsText("site.change declaration.summary.locations.goodsLocationCode.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.locations.goodsLocationCode.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.LocationController.displayPage(Mode.Change))
     }
@@ -53,7 +53,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
       row must haveSummaryValue("123")
 
-      row must haveSummaryActionsText("site.change declaration.summary.locations.officeOfExit.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.locations.officeOfExit.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Change))
 
@@ -82,7 +82,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
       row must haveSummaryValue("")
 
-      row must haveSummaryActionsText("site.change declaration.summary.locations.officeOfExit.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.locations.officeOfExit.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
     }
@@ -98,7 +98,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
       row must haveSummaryValue("")
 
-      row must haveSummaryActionsText("site.change declaration.summary.locations.officeOfExit.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.locations.officeOfExit.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
     }

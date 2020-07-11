@@ -30,7 +30,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import unit.tools.Stubs
-import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.consignor_details
 import views.tags.ViewTest
 

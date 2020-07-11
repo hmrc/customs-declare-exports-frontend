@@ -28,20 +28,15 @@ import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.Mode.Test
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, Request}
-import play.api.test.FakeRequest
-import play.api.test.Helpers.stubMessages
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import unit.tools.Stubs
-import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
+import views.declaration.spec.UnitViewSpec2
 import views.html.components.gds.{errorSummary, saveAndContinue}
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest
-import utils.FakeRequestCSRFSupport._
 
 @ViewTest
 class DeclarationChoiceViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {

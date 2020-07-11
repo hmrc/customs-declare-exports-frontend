@@ -16,14 +16,11 @@
 
 package views.declaration.spec
 
-import base.Injector
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
-import org.scalatest.matchers.{BeMatcher, MatchResult}
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
-import play.api.test.{FakeRequest, Helpers}
-import services.cache.ExportsTestData
+import play.api.test.FakeRequest
 import unit.base.{JourneyTypeTestRunner, UnitSpec}
 
 class UnitViewSpec2 extends UnitSpec with ViewMatchers with JourneyTypeTestRunner {

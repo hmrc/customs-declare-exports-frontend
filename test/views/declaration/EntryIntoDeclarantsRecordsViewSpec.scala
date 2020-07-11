@@ -23,11 +23,10 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.EntryIntoDeclarantsRecords
 import helpers.views.declaration.CommonMessages
-import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
-import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.entry_into_declarants_records
 
 class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec2 with Injector with CommonMessages {

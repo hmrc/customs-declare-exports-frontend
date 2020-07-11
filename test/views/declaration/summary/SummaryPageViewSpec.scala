@@ -26,21 +26,20 @@ import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.summary._
 
 import scala.concurrent.duration.FiniteDuration
 
-class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+class SummaryPageViewSpec extends UnitViewSpec2 with Stubs with ExportsTestData with Injector {
 
   val appConfig = mock[AppConfig]
-  private val realMessages = validatedMessages
   when(appConfig.draftTimeToLive).thenReturn(FiniteDuration(30, "day"))
   val draftInfoPage = instanceOf[draft_info_section]
 
   val normal_summaryPage = instanceOf[normal_summary_page]
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
-    normal_summaryPage(LegalDeclaration.form())(journeyRequest(declaration), realMessages, minimalAppConfig)
+    normal_summaryPage(LegalDeclaration.form())(journeyRequest(declaration), messages, minimalAppConfig)
 
   "Summary page" should {
 
@@ -48,14 +47,14 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData w
 
     "should display correct title" in {
 
-      document.getElementById("title").text() mustBe realMessages("declaration.summary.normal-header")
+      document.getElementById("title").text() mustBe messages("declaration.summary.normal-header")
     }
 
     "should display correct back link" in {
 
       val backButton = document.getElementById("back-link")
 
-      backButton.text() mustBe realMessages("site.back")
+      backButton.text() mustBe messages("site.back")
       backButton must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Normal))
     }
 

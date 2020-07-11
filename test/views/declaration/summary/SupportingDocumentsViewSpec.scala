@@ -20,10 +20,10 @@ import base.Injector
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.summary.supporting_documents
 
-class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class SupportingDocumentsViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
 
   private val section = instanceOf[supporting_documents]
   private val documents = Seq(
@@ -43,7 +43,7 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
         row must haveSummaryKey(messages("declaration.summary.items.item.supportingDocuments"))
         row must haveSummaryValue("")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.supportingDocuments.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.supportingDocuments.change")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId"))
       }
@@ -64,14 +64,16 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier1"
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row1ChangeLink must haveHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId"))
-      row1ChangeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.supportingDocuments.change", 1)}"
+      row1ChangeLink
+        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.supportingDocuments.change", "typ1", "identifier1", 1)}"
 
       val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
       row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ2"
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier2"
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row2ChangeLink must haveHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId"))
-      row2ChangeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.supportingDocuments.change", 2)}"
+      row2ChangeLink
+        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.supportingDocuments.change", "typ2", "identifier2", 1)}"
     }
 
     "display all supporting documents without change buttons" when {

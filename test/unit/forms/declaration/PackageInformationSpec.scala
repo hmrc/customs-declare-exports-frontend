@@ -18,9 +18,9 @@ package unit.forms.declaration
 
 import base.TestHelper
 import forms.declaration.PackageInformation
-import views.declaration.spec.UnitViewSpec
+import unit.base.{JourneyTypeTestRunner, UnitSpec}
 
-class PackageInformationSpec extends UnitViewSpec {
+class PackageInformationSpec extends UnitSpec with JourneyTypeTestRunner {
 
   private def formAllFieldsMandatory = PackageInformation.form()
 

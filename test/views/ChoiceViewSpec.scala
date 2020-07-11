@@ -25,30 +25,28 @@ import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.Mode.Test
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.choice_page
 import views.html.components.gds.{errorSummary, saveAndContinue}
 import views.tags.ViewTest
 
 @ViewTest
-class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class ChoiceViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
 
   private val form: Form[Choice] = Choice.form()
   private val choicePage = instanceOf[choice_page]
-  private def createView(form: Form[Choice] = form, messages: Messages = stubMessages()): Document =
+  private def createView(form: Form[Choice] = form): Document =
     choicePage(form)(request, messages)
 
   "Choice View on empty page" should {
 
     "display same page title as header" in {
-      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      val viewWithMessage = createView()
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
@@ -118,7 +116,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#value")
 
-      view must containErrorElementWithMessage("choicePage.input.error.empty")
+      view must containErrorElementWithMessageKey("choicePage.input.error.empty")
     }
 
     "display error when choice is incorrect" in {
@@ -128,7 +126,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#value")
 
-      view must containErrorElementWithMessage("choicePage.input.error.incorrectValue")
+      view must containErrorElementWithMessageKey("choicePage.input.error.incorrectValue")
     }
   }
 
@@ -178,15 +176,15 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
   }
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 4
-    view.getElementsByAttributeValue("for", "CRT").text() mustBe "declaration.choice.CRT"
-    view.getElementsByAttributeValue("for", "SUB").text() mustBe "declaration.choice.SUB"
-    view.getElementsByAttributeValue("for", "CAN").text() mustBe "declaration.choice.CAN"
-    view.getElementsByAttributeValue("for", "CON").text() mustBe "declaration.choice.CON"
+    view.getElementsByAttributeValue("for", "CRT") must containMessageForElements("declaration.choice.CRT")
+    view.getElementsByAttributeValue("for", "SUB") must containMessageForElements("declaration.choice.SUB")
+    view.getElementsByAttributeValue("for", "CAN") must containMessageForElements("declaration.choice.CAN")
+    view.getElementsByAttributeValue("for", "CON") must containMessageForElements("declaration.choice.CON")
   }
 
   private def ensureCreateLabelIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 1
-    view.getElementsByAttributeValue("for", "CRT").text() mustBe "declaration.choice.CRT"
+    view.getElementsByAttributeValue("for", "CRT") must containMessageForElements("declaration.choice.CRT")
   }
 
   private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {

@@ -28,18 +28,16 @@ import models.declaration.submissions.SubmissionStatus
 import org.jsoup.nodes.{Document, Element}
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.summary.submitted_declaration_page
 
-class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
-
-  private val realMessages = validatedMessages
+class SubmittedDeclarationPageViewSpec extends UnitViewSpec2 with Stubs with ExportsTestData with Injector {
 
   private val notification = Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty, "payload")
 
   val declarationPage = instanceOf[submitted_declaration_page]
   def createView(declaration: ExportsDeclaration = aDeclaration()): Document =
-    declarationPage(Seq(notification))(journeyRequest(declaration), realMessages)
+    declarationPage(Seq(notification))(journeyRequest(declaration), messages)
 
   def links(view: Document) = {
     val allLinks = view.getElementsByClass("govuk-link")
@@ -55,14 +53,14 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "should display correct title" in {
 
-      createView().getElementById("title").text() mustBe realMessages("declaration.summary.submitted-header")
+      createView().getElementById("title").text() mustBe messages("declaration.summary.submitted-header")
     }
 
     "should display correct back link" in {
 
       val backButton = createView().getElementById("back-link")
 
-      backButton.text() mustBe realMessages("site.back")
+      backButton.text() mustBe messages("site.back")
       backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
     }
 

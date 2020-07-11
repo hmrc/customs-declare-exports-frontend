@@ -18,10 +18,10 @@ package views.components.gds
 
 import base.ExportsTestData
 import models.{ExportsDeclaration, Page, Paginated}
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.UnitViewSpec2
 import views.html.components.gds.pagination
 
-class PaginationViewSpec extends UnitViewSpec {
+class PaginationViewSpec extends UnitViewSpec2 {
 
   private def paginationComponent(
     declarations: Seq[ExportsDeclaration] = Seq.empty,

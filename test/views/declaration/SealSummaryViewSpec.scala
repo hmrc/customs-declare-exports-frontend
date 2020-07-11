@@ -25,7 +25,7 @@ import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.{UnitViewSpec, UnitViewSpec2}
+import views.declaration.spec.UnitViewSpec2
 import views.html.declaration.seal_summary
 import views.tags.ViewTest
 
