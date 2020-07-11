@@ -32,19 +32,17 @@ class UnitViewSpec extends UnitSpec with ViewMatchers with JourneyTypeTestRunner
 
   implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
 
-  implicit val messages: Messages = Helpers.stubMessages()
+  protected implicit def messages(implicit request: Request[_]): Messages =
+    new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(request))
+
+  protected def messages(key: String, args: Any*)(implicit request: Request[_]): String = messages(request)(key, args: _*)
 
   val realMessagesApi = UnitViewSpec.realMessagesApi
-
-  def validatedMessages(implicit request: Request[_]): Messages =
-    new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(request))
 
   def checkErrorsSummary(view: Document): Assertion = {
     view.getElementById("error-summary-heading").text() must be("error.summary.title")
     view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be("error.summary.text")
   }
-
-  def messagesKey(key: String): BeMatcher[String] = new MessagesKeyMatcher(key)
 }
 
 class MessagesKeyMatcher(key: String) extends BeMatcher[String] {

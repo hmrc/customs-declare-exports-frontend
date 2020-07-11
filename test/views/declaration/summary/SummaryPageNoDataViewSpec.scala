@@ -19,10 +19,10 @@ package views.declaration.summary
 import base.Injector
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.summary_page_no_data
 
-class SummaryPageNoDataViewSpec extends UnitViewSpec2 with Stubs with ExportsTestData with Injector {
+class SummaryPageNoDataViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val summaryPageNoData = instanceOf[summary_page_no_data]
   val view = summaryPageNoData()(request, messages)

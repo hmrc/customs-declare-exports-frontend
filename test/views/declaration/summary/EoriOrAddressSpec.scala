@@ -18,9 +18,9 @@ package views.declaration.summary
 
 import forms.common.{Address, Eori}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, HtmlContent, Text}
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 
-class EoriOrAddressSpec extends UnitViewSpec2 {
+class EoriOrAddressSpec extends UnitViewSpec {
 
   val pageId = "pageID"
   val eori = Eori("GB12345678")

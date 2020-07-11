@@ -28,12 +28,12 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declarationHolder.declaration_holder_add
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderAddViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
+class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
   private val declarationHolderPage = instanceOf[declaration_holder_add]

@@ -23,12 +23,12 @@ import config.AppConfig
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.draft_info_section
 
 import scala.concurrent.duration.FiniteDuration
 
-class DraftInfoSectionViewSpec extends UnitViewSpec2 with ExportsTestData with MockitoSugar with Injector {
+class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with MockitoSugar with Injector {
 
   val appConfig = mock[AppConfig]
 

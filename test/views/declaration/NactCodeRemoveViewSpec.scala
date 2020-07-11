@@ -24,12 +24,12 @@ import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.nact_code_remove
 import views.tags.ViewTest
 
 @ViewTest
-class NactCodeRemoveViewSpec extends UnitViewSpec2 with Stubs with MustMatchers with CommonMessages with Injector {
+class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
 
   private val itemId = "item1"
   private val nactCode = "VATR"

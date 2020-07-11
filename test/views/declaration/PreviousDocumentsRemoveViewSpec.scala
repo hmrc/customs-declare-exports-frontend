@@ -23,10 +23,10 @@ import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
 import utils.ListItem
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents_remove
 
-class PreviousDocumentsRemoveViewSpec extends UnitViewSpec2 with Injector {
+class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
 
   private val page = instanceOf[previous_documents_remove]
   private val form = YesNoAnswer.form()

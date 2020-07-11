@@ -30,12 +30,12 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.exporter_details
 import views.tags.ViewTest
 
 @ViewTest
-class ExporterDetailsViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
+class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val exporterDetailsPage = instanceOf[exporter_details]
 

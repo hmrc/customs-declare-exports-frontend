@@ -19,12 +19,12 @@ package views
 import base.Injector
 import play.twirl.api.Html
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.unauthorised
 import views.tags.ViewTest
 
 @ViewTest
-class UnauthorisedViewSpec extends UnitViewSpec2 with Stubs with Injector {
+class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector {
 
   private val unauthorisedPage = instanceOf[unauthorised]
   private def view: Html = unauthorisedPage()(request, messages)

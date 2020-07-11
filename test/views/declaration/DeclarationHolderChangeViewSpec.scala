@@ -27,12 +27,12 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declarationHolder.declaration_holder_change
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderChangeViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
+class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")))
   val id = "ACE-GB42354735346235"

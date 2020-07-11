@@ -23,10 +23,10 @@ import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus
 import services.cache.ExportsTestData
 import views.ViewDates
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.notifications_section
 
-class NotificationSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   private val acceptedNotification =
     Notification("actionId", "SOME_MRN", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty, "payload")

@@ -25,12 +25,12 @@ import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.taric_code_add
 import views.tags.ViewTest
 
 @ViewTest
-class TaricCodeAddViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
+class TaricCodeAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
 
   private val itemId = "item1"
   private val form: Form[TaricCode] = TaricCode.form()

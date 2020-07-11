@@ -21,10 +21,10 @@ import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.parties_section_holders
 
-class PartiesSectionHoldersViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val eori1 = "eori1"
   val eori2 = "eori2"

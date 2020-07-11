@@ -27,12 +27,12 @@ import org.scalatest.Matchers._
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.consignor_eori_number
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignorEoriNumberViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page: consignor_eori_number = instanceOf[consignor_eori_number]
 

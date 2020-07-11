@@ -25,10 +25,10 @@ import helpers.views.declaration.CommonMessages
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.person_presenting_goods_details
 
-class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec2 with Injector with CommonMessages {
+class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector with CommonMessages {
 
   private val page = instanceOf[person_presenting_goods_details]
   private def createView(form: Form[PersonPresentingGoodsDetails] = PersonPresentingGoodsDetails.form()): Document =

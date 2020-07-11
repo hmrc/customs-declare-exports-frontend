@@ -25,12 +25,12 @@ import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.package_information_remove
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationRemoveViewSpec extends UnitViewSpec2 with Stubs with MustMatchers with CommonMessages with Injector {
+class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
 
   import PackageInformationViewSpec._
 

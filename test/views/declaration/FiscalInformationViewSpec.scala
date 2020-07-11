@@ -26,12 +26,12 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.fiscal_information
 import views.tags.ViewTest
 
 @ViewTest
-class FiscalInformationViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
   private val page = instanceOf[fiscal_information]

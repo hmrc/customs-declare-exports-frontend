@@ -20,10 +20,10 @@ import base.Injector
 import forms.declaration.AdditionalInformation
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.union_and_national_codes
 
-class UnionAndNationalCodesViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   private val section = instanceOf[union_and_national_codes]
 

@@ -25,10 +25,10 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.transport_leaving_the_border
 
-class TransportLeavingTheBorderViewSpec extends UnitViewSpec2 with Stubs with Injector {
+class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Injector {
 
   private val page = instanceOf[transport_leaving_the_border]
   private def view(implicit request: JourneyRequest[_]): Document = page(TransportLeavingTheBorder.form(request.declarationType), Mode.Normal)

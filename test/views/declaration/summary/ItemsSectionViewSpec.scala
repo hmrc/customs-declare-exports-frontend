@@ -19,10 +19,10 @@ package views.declaration.summary
 import base.Injector
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.items_section
 
-class ItemsSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   "Items section" should {
 

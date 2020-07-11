@@ -30,12 +30,12 @@ import org.jsoup.nodes.Element
 import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.submissions
 import views.tags.ViewTest
 
 @ViewTest
-class SubmissionsViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val zone: ZoneId = ZoneId.of("UTC")
   private val page = instanceOf[submissions]

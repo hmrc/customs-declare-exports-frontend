@@ -25,10 +25,10 @@ import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import services.model.RejectionReason
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.rejected_notification_errors
 
-class RejectedNotificationErrorsViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[rejected_notification_errors]
 

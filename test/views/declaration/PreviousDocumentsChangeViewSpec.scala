@@ -22,10 +22,10 @@ import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
 import utils.ListItem
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents_change
 
-class PreviousDocumentsChangeViewSpec extends UnitViewSpec2 with Injector {
+class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
 
   private val page = instanceOf[previous_documents_change]
   private val document = Document("Y", "750", "reference", Some("3"))

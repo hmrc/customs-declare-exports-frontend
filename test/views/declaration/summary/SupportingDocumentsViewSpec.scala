@@ -20,10 +20,10 @@ import base.Injector
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.supporting_documents
 
-class SupportingDocumentsViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   private val section = instanceOf[supporting_documents]
   private val documents = Seq(

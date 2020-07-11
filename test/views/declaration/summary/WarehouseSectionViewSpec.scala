@@ -20,10 +20,10 @@ import base.Injector
 import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.warehouse_section
 
-class WarehouseSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),

@@ -20,10 +20,10 @@ import base.Injector
 import forms.declaration.countries.Country
 import models.{ExportsDeclaration, Mode}
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.countries_section
 
-class CountriesSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val section = instanceOf[countries_section]
 

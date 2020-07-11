@@ -24,12 +24,12 @@ import models.responses.FlashKeys
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.draft_confirmation_page
 import views.tags.ViewTest
 
 @ViewTest
-class DraftConfirmationViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
+class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val page = instanceOf[draft_confirmation_page]
   private def createView(flash: (String, String)*): Html = page()(request, Flash(Map(flash: _*)), messages)

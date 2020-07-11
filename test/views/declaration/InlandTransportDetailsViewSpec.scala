@@ -24,12 +24,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.inland_transport_details
 import views.tags.ViewTest
 
 @ViewTest
-class InlandTransportDetailsViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[inland_transport_details]
   private val form: Form[InlandModeOfTransportCode] = InlandModeOfTransportCode.form()

@@ -26,12 +26,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.total_number_of_items
 import views.tags.ViewTest
 
 @ViewTest
-class TotalNumberOfItemsViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[total_number_of_items]
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()

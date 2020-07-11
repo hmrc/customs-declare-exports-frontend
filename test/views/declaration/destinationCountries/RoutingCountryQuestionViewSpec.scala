@@ -23,10 +23,10 @@ import models.Mode
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.routing_country_question
 
-class RoutingCountryQuestionViewSpec extends UnitViewSpec2 with Stubs with ExportsTestData with Injector {
+class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val countryOfDestination = "Poland"
   val form: Form[Boolean] = RoutingQuestionYesNo.formAdd()

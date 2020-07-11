@@ -25,12 +25,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.border_transport
 import views.tags.ViewTest
 
 @ViewTest
-class BorderTransportViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector with CommonMessages {
+class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with CommonMessages {
 
   private val page = instanceOf[border_transport]
   private val form: Form[BorderTransport] = BorderTransport.form()

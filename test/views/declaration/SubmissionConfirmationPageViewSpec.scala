@@ -23,12 +23,12 @@ import org.jsoup.nodes.Document
 import play.api.mvc.Flash
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.submission_confirmation_page
 import views.tags.ViewTest
 
 @ViewTest
-class SubmissionConfirmationPageViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[submission_confirmation_page]
   private val withoutFlash = new Flash(Map.empty)

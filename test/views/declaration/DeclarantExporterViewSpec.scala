@@ -28,12 +28,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declarant_exporter
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarantExporterViewSpec extends UnitViewSpec2 with ExportsTestData with CommonMessages with Stubs with Injector {
+class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   private val declarantExporterPage = instanceOf[declarant_exporter]
   private def createView(form: Form[DeclarantIsExporter] = DeclarantIsExporter.form())(implicit request: JourneyRequest[_]): Document =

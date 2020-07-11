@@ -24,12 +24,12 @@ import models.{DeclarationType, Mode}
 import org.jsoup.nodes.{Document => JsonDocument}
 import play.api.data.Form
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents
 import views.tags.ViewTest
 
 @ViewTest
-class PreviousDocumentsViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   private val page = instanceOf[previous_documents]
   private val form: Form[Document] = Document.form()

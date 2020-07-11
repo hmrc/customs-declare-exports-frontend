@@ -26,12 +26,12 @@ import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary._
 
 import scala.concurrent.duration.FiniteDuration
 
-class SummaryPageViewSpec extends UnitViewSpec2 with Stubs with ExportsTestData with Injector {
+class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val appConfig = mock[AppConfig]
   when(appConfig.draftTimeToLive).thenReturn(FiniteDuration(30, "day"))

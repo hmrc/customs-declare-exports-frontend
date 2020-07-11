@@ -26,12 +26,12 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import utils.ListItem
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additionalActors.additional_actors_remove
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalActorsRemoveViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class AdditionalActorsRemoveViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   val additionalActor = DeclarationAdditionalActors(Some(Eori("GB123456789000")), Some("MF"))
   private val page = instanceOf[additional_actors_remove]

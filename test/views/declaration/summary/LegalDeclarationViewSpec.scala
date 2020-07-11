@@ -18,10 +18,10 @@ package views.declaration.summary
 
 import base.Injector
 import forms.declaration.LegalDeclaration
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.legal_declaration
 
-class LegalDeclarationViewSpec extends UnitViewSpec2 with Injector {
+class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 
   private val emptyForm = LegalDeclaration.form()
   private val component = instanceOf[legal_declaration]

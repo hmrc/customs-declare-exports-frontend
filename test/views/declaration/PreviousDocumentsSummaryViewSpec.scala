@@ -23,10 +23,10 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import play.api.data.Form
 import services.cache.ExportsDeclarationBuilder
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents_summary
 
-class PreviousDocumentsSummaryViewSpec extends UnitViewSpec2 with ExportsDeclarationBuilder with Injector {
+class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarationBuilder with Injector {
 
   private val page = instanceOf[previous_documents_summary]
   private val form = YesNoAnswer.form()

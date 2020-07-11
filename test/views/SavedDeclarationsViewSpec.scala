@@ -26,12 +26,12 @@ import forms.{Choice, Ducr, Lrn}
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
 import play.twirl.api.Html
-import views.declaration.spec.{UnitViewSpec2, ViewMatchers}
+import views.declaration.spec.{UnitViewSpec, ViewMatchers}
 import views.html.saved_declarations
 import views.tags.ViewTest
 
 @ViewTest
-class SavedDeclarationsViewSpec extends UnitViewSpec2 with Injector with ViewMatchers {
+class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatchers {
   val title: String = "saved.declarations.title"
 
   val ducr: String = "saved.declarations.ducr"

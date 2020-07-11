@@ -21,10 +21,10 @@ import forms.declaration._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.item_section
 
-class ItemSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   private val itemWithAnswers = anItem(
     withItemId("itemId"),

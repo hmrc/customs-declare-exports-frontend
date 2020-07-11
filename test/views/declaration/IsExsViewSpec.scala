@@ -28,10 +28,10 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.is_exs
 
-class IsExsViewSpec extends UnitViewSpec2 with ExportsTestData with CommonMessages with Stubs with Injector {
+class IsExsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   private val page = instanceOf[is_exs]
   private def createView()(implicit request: JourneyRequest[_]): Document =

@@ -27,10 +27,10 @@ import play.api.data.Form
 import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.origination_country
 
-class OriginationCountryViewSpec extends UnitViewSpec2 with Stubs with ExportsTestData with Injector {
+class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val originationCountryPage = instanceOf[origination_country]
 

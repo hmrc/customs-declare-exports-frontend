@@ -16,9 +16,9 @@
 
 package views.declaration.summary
 
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 
-class SummaryMessagesSpec extends UnitViewSpec2 {
+class SummaryMessagesSpec extends UnitViewSpec {
 
   "Summary page" should {
 

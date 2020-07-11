@@ -26,12 +26,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.mvc.Call
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.commodityMeasure.commodity_measure
 import views.tags.ViewTest
 
 @ViewTest
-class CommodityMeasureViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
+class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
 

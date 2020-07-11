@@ -34,12 +34,12 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.documentsProduced.documents_produced_change
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedChangeViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector with OptionValues {
+class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
   private val itemId = "a7sc78"
   private val documentId = "1.2131231"

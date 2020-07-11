@@ -23,12 +23,12 @@ import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.supervising_customs_office
 import views.tags.ViewTest
 
 @ViewTest
-class SupervisingCustomsOfficeViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[supervising_customs_office]
   private val form: Form[SupervisingCustomsOffice] = SupervisingCustomsOffice.form()

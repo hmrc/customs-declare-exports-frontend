@@ -21,10 +21,10 @@ import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.parties_section_additional_actors
 
-class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val eori1 = "eori1"
   val partyType1 = "CS"

@@ -26,12 +26,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.cus_code
 import views.tags.ViewTest
 
 @ViewTest
-class CusCodeViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[cus_code]
   private val form: Form[CusCode] = CusCode.form()

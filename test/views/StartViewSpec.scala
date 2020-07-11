@@ -18,12 +18,12 @@ package views
 
 import base.Injector
 import play.twirl.api.Html
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.start_page
 import views.tags.ViewTest
 
 @ViewTest
-class StartViewSpec extends UnitViewSpec2 with Injector {
+class StartViewSpec extends UnitViewSpec with Injector {
 
   private val startPage = instanceOf[start_page]
   private def createView(): Html = startPage()

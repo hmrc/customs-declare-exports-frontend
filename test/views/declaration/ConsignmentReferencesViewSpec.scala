@@ -27,12 +27,12 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.consignment_references
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignmentReferencesViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
+class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val properDUCR = "7GB000000000000-12345"
   private val incorrectDUCR = "7GB000000000000-1234512345123451234512345"

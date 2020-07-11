@@ -27,12 +27,12 @@ import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.package_information_add
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationAddViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
+class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
 
   import PackageInformationViewSpec._
 

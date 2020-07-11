@@ -21,10 +21,10 @@ import forms.declaration.GoodsLocationForm
 import forms.declaration.officeOfExit.AllowedUKOfficeOfExitAnswers
 import models.Mode
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.locations_section
 
-class LocationsSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123", AllowedUKOfficeOfExitAnswers.yes))
 

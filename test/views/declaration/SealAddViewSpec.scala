@@ -24,12 +24,12 @@ import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.seal_add
 import views.tags.ViewTest
 
 @ViewTest
-class SealAddViewSpec extends UnitViewSpec2 with Stubs with MustMatchers with CommonMessages with Injector {
+class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
 
   val containerId = "867126538"
   private val form: Form[Seal] = Seal.form()

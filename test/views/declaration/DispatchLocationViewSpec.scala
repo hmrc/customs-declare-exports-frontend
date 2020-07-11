@@ -24,12 +24,12 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.dispatch_location
 import views.tags.ViewTest
 
 @ViewTest
-class DispatchLocationViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
+class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private val dispatchLocationPage = instanceOf[dispatch_location]

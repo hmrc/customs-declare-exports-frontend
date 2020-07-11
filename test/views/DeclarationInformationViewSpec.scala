@@ -25,11 +25,11 @@ import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
 import play.api.Configuration
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukTable}
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.{gdsMainTemplate, link}
 import views.html.declaration_information
 
-class DeclarationInformationViewSpec extends UnitViewSpec2 with Injector {
+class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
   private val gdsMainTemplate = instanceOf[gdsMainTemplate]
   private val govukSummaryList = instanceOf[GovukSummaryList]

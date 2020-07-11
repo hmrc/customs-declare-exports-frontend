@@ -26,12 +26,12 @@ import models.{DeclarationStatus, ExportsDeclaration}
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.remove_declaration
 import views.tags.ViewTest
 
 @ViewTest
-class RemoveSavedDeclarationsViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
+class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   val title: String = "saved.declarations.remove.title"
   val ducr: String = "saved.declarations.ducr"

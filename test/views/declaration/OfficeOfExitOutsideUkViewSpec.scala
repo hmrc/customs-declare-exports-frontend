@@ -25,12 +25,12 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.office_of_exit_outside_uk
 import views.tags.ViewTest
 
 @ViewTest
-class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page: office_of_exit_outside_uk = instanceOf[office_of_exit_outside_uk]
 

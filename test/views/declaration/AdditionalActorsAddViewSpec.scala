@@ -29,12 +29,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additionalActors.additional_actors_add
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalActorsAddViewSpec extends UnitViewSpec2 with CommonMessages with ExportsTestData with Stubs with Injector {
+class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with ExportsTestData with Stubs with Injector {
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
   private val declarationAdditionalActorsPage = instanceOf[additional_actors_add]

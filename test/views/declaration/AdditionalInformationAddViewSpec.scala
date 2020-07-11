@@ -27,12 +27,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additionalInformtion.additional_information_add
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalInformationAddViewSpec extends UnitViewSpec2 with ExportsTestData with CommonMessages with Stubs with Injector {
+class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
   private val form: Form[AdditionalInformation] = AdditionalInformation.form()

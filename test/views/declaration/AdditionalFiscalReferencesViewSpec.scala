@@ -26,12 +26,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportItemIdGeneratorService
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additional_fiscal_references
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesViewSpec extends UnitViewSpec2 with Stubs with CommonMessages with Injector {
+class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
 
   private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
 

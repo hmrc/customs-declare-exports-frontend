@@ -26,12 +26,12 @@ import helpers.views.declaration.CommonMessages
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.cancel_declaration
 import views.tags.ViewTest
 
 @ViewTest
-class CancelDeclarationViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
+class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[CancelDeclaration] = CancelDeclaration.form
   private val cancelDeclarationPage = instanceOf[cancel_declaration]

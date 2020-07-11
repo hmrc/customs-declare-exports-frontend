@@ -20,10 +20,10 @@ import base.Injector
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.references_section
 
-class ReferencesSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(
     withType(DeclarationType.STANDARD),

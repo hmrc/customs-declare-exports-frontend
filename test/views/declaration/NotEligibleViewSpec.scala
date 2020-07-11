@@ -19,12 +19,12 @@ package views.declaration
 import base.Injector
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.not_eligible
 import views.tags.ViewTest
 
 @ViewTest
-class NotEligibleViewSpec extends UnitViewSpec2 with ExportsTestData with Stubs with Injector {
+class NotEligibleViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
   private val page = instanceOf[not_eligible]
 
   private val view = page()(request, messages)

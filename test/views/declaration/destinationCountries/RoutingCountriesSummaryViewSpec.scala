@@ -25,10 +25,10 @@ import services.cache.ExportsTestData
 import services.model.Country
 import unit.tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.routing_countries_summary
 
-class RoutingCountriesSummaryViewSpec extends UnitViewSpec2 with Stubs with ExportsTestData with Injector {
+class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val countries = Seq(Country("France", "FR"), Country("Poland", "PL"))
   val form: Form[Boolean] = RoutingQuestionYesNo.formAdd()

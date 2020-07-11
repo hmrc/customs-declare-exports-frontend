@@ -28,12 +28,12 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.twirl.api.Html
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.departure_transport
 import views.tags.ViewTest
 
 @ViewTest
-class DepartureTransportViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
+class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val borderTransportPage = instanceOf[departure_transport]
 

@@ -33,13 +33,13 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.{errorSummary, saveAndContinue}
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationChoiceViewSpec extends UnitViewSpec2 with CommonMessages with Stubs with Injector {
+class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationChoice] = DeclarationChoice.form()
   private val choicePage = instanceOf[declaration_choice]

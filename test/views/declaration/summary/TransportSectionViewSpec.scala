@@ -21,10 +21,10 @@ import forms.declaration.{ModeOfTransportCode, TransportCodes, TransportPayment}
 import models.Mode
 import models.declaration.Container
 import services.cache.ExportsTestData
-import views.declaration.spec.UnitViewSpec2
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.transport_section
 
-class TransportSectionViewSpec extends UnitViewSpec2 with ExportsTestData with Injector {
+class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(
     withDepartureTransport(ModeOfTransportCode.Maritime, "10", "identifier"),
