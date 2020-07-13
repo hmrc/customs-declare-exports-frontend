@@ -50,17 +50,6 @@
 }
 }
 
-@autocomplete = {
-@components.fields.field_accessible_autocomplete(
-    form("countryCode"),
-    "",
-    None,
-    None,
-    messages("declaration.routingCountry.empty"),
-    AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-)
-}
-
 @govukLayout(
     title = Title(s"declaration.routingCountry.title", "declaration.routingCountry.heading"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ChangeCountryPage, mode)))){
@@ -68,19 +57,19 @@
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitChangeCountry(mode, countryToChange), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.routingCountry.heading"))
+        @components.fields.field_accessible_autocomplete_with_header(
+            form("countryCode"),
+            s"declaration.${page.id}.question",
+            Some(Styles.gdsPageLabel),
+            Some("declaration.routingCountry.heading"),
+            None,
+            messages("declaration.routingCountry.empty"),
+            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            isPageHeading = true
+        )
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages(s"declaration.${page.id}.question")),
-                classes = Styles.gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(immutable.Seq(
-                autocomplete,
-                tariff,
-                saveButtons()
-            ))
-        ))
+        @tariff
+        @saveButtons()
+
     }
 }
