@@ -31,6 +31,7 @@ import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -45,9 +46,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   }
 
   def deleteDraftDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
-    httpClient
-      .DELETE(s"${appConfig.customsDeclareExports}${appConfig.declarations}/$id")
-      .map(_ => ())
+    httpClient.DELETE[Unit](s"${appConfig.customsDeclareExports}${appConfig.declarations}/$id")
 
   private val createTimer: Timer = metrics.defaultRegistry.timer("declaration.create.timer")
 
