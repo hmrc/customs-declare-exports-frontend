@@ -23,8 +23,6 @@ import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -37,7 +35,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
   private val page: office_of_exit = instanceOf[office_of_exit]
 
   private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitInsideUK] = OfficeOfExitInsideUK.form()): Document =
-    page(mode, form)(journeyRequest(), stubMessages())
+    page(mode, form)(journeyRequest(), messages)
 
   "Office of Exit View" should {
     val view = createView()
@@ -53,7 +51,6 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       }
 
       "have proper messages for labels" in {
-        val messages = instanceOf[MessagesApi].preferred(journeyRequest())
         messages must haveTranslationFor("declaration.officeOfExit.title")
         messages must haveTranslationFor("declaration.summary.locations.header")
         messages must haveTranslationFor("declaration.officeOfExit")
@@ -64,16 +61,16 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       }
 
       "display page title" in {
-        view.getElementsByClass("govuk-fieldset__heading").text() mustBe "declaration.officeOfExit.title"
+        view.getElementsByClass("govuk-fieldset__heading") must containMessageForElements("declaration.officeOfExit.title")
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("declaration.summary.locations.header")
+        view.getElementById("section-header") must containMessage("declaration.summary.locations.header")
       }
 
       "display office of exit question" in {
-        view.getElementById("officeId-label").text() mustBe "declaration.officeOfExit"
-        view.getElementById("isUkOfficeOfExit-hint").text() mustBe "declaration.officeOfExit.hint"
+        view.getElementById("officeId-label") must containMessage("declaration.officeOfExit")
+        view.getElementById("isUkOfficeOfExit-hint") must containMessage("declaration.officeOfExit.hint")
         view.getElementById("officeId").attr("value") mustBe empty
       }
 
@@ -81,18 +78,18 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe "site.back"
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.LocationController.displayPage(Mode.Normal))
       }
 
       "display 'Save and continue' button" in {
         val saveButton = view.getElementById("submit")
-        saveButton.text() mustBe "site.save_and_continue"
+        saveButton must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text() mustBe "site.save_and_come_back_later"
+        saveAndReturnButton must containMessage("site.save_and_come_back_later")
       }
 
       "handle invalid input" should {
@@ -101,11 +98,11 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
           val data = OfficeOfExitInsideUK(None, "")
           val view = createView(form = OfficeOfExitInsideUK.form().fillAndValidate(data))
 
-          view.getElementById("error-summary-title").text() must be("error.summary.title")
+          view.getElementById("error-summary-title") must containMessage("error.summary.title")
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#isUkOfficeOfExit")
-          view must containErrorElementWithMessage("declaration.officeOfExit.isUkOfficeOfExit.empty")
+          view must containErrorElementWithMessageKey("declaration.officeOfExit.isUkOfficeOfExit.empty")
         }
 
         "display errors when all inputs are incorrect" in {
@@ -113,15 +110,14 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
           val form = OfficeOfExitInsideUK.form().fillAndValidate(data)
           val view = createView(form = form)
 
-          view.getElementById("error-summary-title").text() must be("error.summary.title")
+          view.getElementById("error-summary-title") must containMessage("error.summary.title")
 
           view
             .getElementsByClass("govuk-list govuk-error-summary__list")
             .get(0)
             .getElementsByTag("li")
-            .get(0)
-            .text() mustBe "declaration.officeOfExit.length"
-          view.getElementById("error-message-officeId-input").text() mustBe "declaration.officeOfExit.length"
+            .get(0) must containMessage("declaration.officeOfExit.length")
+          view.getElementById("error-message-officeId-input") must containMessage("declaration.officeOfExit.length")
         }
 
         "display errors when office of exit contains special characters" in {
@@ -129,15 +125,14 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
           val form = OfficeOfExitInsideUK.form().fillAndValidate(data)
           val view = createView(form = form)
 
-          view.getElementById("error-summary-title").text() must be("error.summary.title")
+          view.getElementById("error-summary-title") must containMessage("error.summary.title")
 
           view
             .getElementsByClass("govuk-list govuk-error-summary__list")
             .get(0)
             .getElementsByTag("li")
-            .get(0)
-            .text() mustBe "declaration.officeOfExit.specialCharacters"
-          view.getElementById("error-message-officeId-input").text() mustBe "declaration.officeOfExit.specialCharacters"
+            .get(0) must containMessage("declaration.officeOfExit.specialCharacters")
+          view.getElementById("error-message-officeId-input") must containMessage("declaration.officeOfExit.specialCharacters")
         }
       }
     }

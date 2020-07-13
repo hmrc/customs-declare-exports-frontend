@@ -56,7 +56,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
       "have item header" in {
 
-        view.getElementsByClass("govuk-heading-m").text() mustBe messages("declaration.summary.items.item.sequenceId")
+        view.getElementsByClass("govuk-heading-m").text() mustBe messages("declaration.summary.items.item.sequenceId", "1")
       }
 
       "have procedure codes separated by space with change buttons" in {
@@ -65,7 +65,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.procedureCode"))
         row must haveSummaryValue("1234 000 111")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.procedureCode.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.procedureCode.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -76,7 +76,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.onwardSupplyRelief"))
         row must haveSummaryValue("Yes")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.onwardSupplyRelief.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.onwardSupplyRelief.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -87,7 +87,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.VATdetails"))
         row must haveSummaryValue("GB1234")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.VATdetails.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.VATdetails.change", "1")
 
         row must haveSummaryActionsHref(
           controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemWithAnswers.id)
@@ -100,7 +100,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.commodityCode"))
         row must haveSummaryValue("231")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.commodityCode.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.commodityCode.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -111,7 +111,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.goodsDescription"))
         row must haveSummaryValue("description")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.goodsDescription.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.goodsDescription.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -122,7 +122,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.unDangerousGoodsCode"))
         row must haveSummaryValue("345")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.unDangerousGoodsCode.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.unDangerousGoodsCode.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -133,7 +133,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.cusCode"))
         row must haveSummaryValue("321")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.cusCode.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.cusCode.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -144,7 +144,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.taricAdditionalCodes"))
         row must haveSummaryValue("999, 888")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.taricAdditionalCodes.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.taricAdditionalCodes.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -155,7 +155,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.nationalAdditionalCodes"))
         row must haveSummaryValue("111, 222")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.nationalAdditionalCodes.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.nationalAdditionalCodes.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -166,7 +166,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.itemValue"))
         row must haveSummaryValue("123")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.itemValue.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.itemValue.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -177,7 +177,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.supplementaryUnits"))
         row must haveSummaryValue("12")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.supplementaryUnits.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.supplementaryUnits.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -188,7 +188,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.grossWeight"))
         row must haveSummaryValue("666")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.grossWeight.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.grossWeight.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -199,7 +199,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryKey(messages("declaration.summary.items.item.netWeight"))
         row must haveSummaryValue("555")
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.netWeight.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.netWeight.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemWithAnswers.id))
       }
@@ -232,7 +232,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
       "have item header" in {
 
-        view.getElementsByClass("govuk-heading-m").text() mustBe messages("declaration.summary.items.item.sequenceId")
+        view.getElementsByClass("govuk-heading-m").text() mustBe messages("declaration.summary.items.item.sequenceId", "1")
       }
 
       "have procedure codes separated by space with change buttons" in {
@@ -395,7 +395,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
       "have item header" in {
 
-        view.getElementsByClass("govuk-heading-m").text() mustBe messages("declaration.summary.items.item.sequenceId")
+        view.getElementsByClass("govuk-heading-m").text() mustBe messages("declaration.summary.items.item.sequenceId", "1")
       }
 
       "have procedure codes separated by space with change buttons" in {

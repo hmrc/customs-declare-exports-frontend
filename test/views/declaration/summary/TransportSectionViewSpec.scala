@@ -44,7 +44,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.transport.departure.transportCode.header"))
       row must haveSummaryValue(messages("declaration.summary.transport.departure.transportCode.1"))
 
-      row must haveSummaryActionsText("site.change declaration.summary.transport.departure.transportCode.header.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.departure.transportCode.header.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
     }
@@ -56,7 +56,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
       row must haveSummaryValue(s"${messages("declaration.summary.transport.departure.meansOfTransport.10")} identifier")
 
-      row must haveSummaryActionsText("site.change declaration.summary.transport.departure.meansOfTransport.header.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.departure.meansOfTransport.header.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.DepartureTransportController.displayPage())
     }
@@ -95,7 +95,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.transport.border.meansOfTransport.header"))
       row must haveSummaryValue(s"${messages("declaration.summary.transport.border.meansOfTransport.11")} borderId")
 
-      row must haveSummaryActionsText("site.change declaration.summary.transport.border.meansOfTransport.header.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.border.meansOfTransport.header.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.BorderTransportController.displayPage())
     }
@@ -107,7 +107,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.transport.activeTransportNationality"))
       row must haveSummaryValue("United Kingdom")
 
-      row must haveSummaryActionsText("site.change declaration.summary.transport.activeTransportNationality.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.activeTransportNationality.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.BorderTransportController.displayPage())
     }
@@ -119,7 +119,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.transport.payment"))
       row must haveSummaryValue(messages("declaration.summary.transport.payment.A"))
 
-      row must haveSummaryActionsText("site.change declaration.summary.transport.payment.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.payment.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.TransportPaymentController.displayPage())
     }
@@ -131,7 +131,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.transport.containers"))
       row must haveSummaryValue(messages("site.no"))
 
-      row must haveSummaryActionsText("site.change declaration.summary.transport.containers.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.containers.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
     }

@@ -47,7 +47,7 @@ To avoid problems, we need to remove [] from field.
 
     @if(isPageHeading) {<h1 class="govuk-label-wrapper">}
     <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="govuk-label@if(labelClass.nonEmpty){ @labelClass}" >
-        @messages(label)
+        @if(label.nonEmpty) { @messages(label) }
     </label>
     @if(isPageHeading) {</h1>}
 

@@ -22,8 +22,6 @@ import models.Mode
 import models.declaration.ExportItem
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -38,15 +36,13 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
   private def createView(
     mode: Mode = Mode.Normal,
     item: ExportItem = ExportItem(id = "itemId", sequenceId = 1),
-    form: Form[StatisticalValue] = form,
-    messages: Messages = stubMessages()
+    form: Form[StatisticalValue] = form
   ): Document =
     page(mode, item.id, form)(journeyRequest(), messages)
 
   "Item Type View on empty page" when {
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.statisticalValue.header")
       messages must haveTranslationFor("supplementary.items")
       messages must haveTranslationFor("declaration.statisticalValue.header.hint")
@@ -57,12 +53,12 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
     "used for Standard Declaration journey" should {
 
       "display same page title as header" in {
-        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+        val viewWithMessage = createView()
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("supplementary.items")
+        view.getElementById("section-header") must containMessage("supplementary.items")
       }
 
       "display empty input with label for Statistical Value" in {
@@ -76,7 +72,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
 
         val backButton = createView().getElementById("back-link")
 
-        backButton.text() mustBe "site.back"
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId = "itemId")
         )
@@ -85,27 +81,27 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       "display 'Save and continue' button" in {
         val view = createView()
         val saveButton = view.getElementById("submit")
-        saveButton.text() mustBe "site.save_and_continue"
+        saveButton must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button" in {
         val view = createView()
         val saveButton = view.getElementById("submit_and_return")
-        saveButton.text() mustBe "site.save_and_come_back_later"
+        saveButton must containMessage("site.save_and_come_back_later")
       }
     }
 
     "used for Simplified Declaration journey" should {
 
       "display same page title as header" in {
-        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+        val viewWithMessage = createView()
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       val view = createView()
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("supplementary.items")
+        view.getElementById("section-header") must containMessage("supplementary.items")
       }
 
       "display empty input with label for Statistical Value" in {
@@ -119,7 +115,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
 
         val backButton = createView().getElementById("back-link")
 
-        backButton.text() mustBe "site.back"
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId = "itemId")
         )
@@ -128,13 +124,13 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       "display 'Save and continue' button" in {
         val view = createView()
         val saveButton = view.getElementById("submit")
-        saveButton.text() mustBe "site.save_and_continue"
+        saveButton must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button" in {
         val view = createView()
         val saveButton = view.getElementById("submit_and_return")
-        saveButton.text() mustBe "site.save_and_come_back_later"
+        saveButton must containMessage("site.save_and_come_back_later")
       }
     }
 
@@ -143,8 +139,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       "display page title" in {
 
         createView()
-          .getElementsByTag("h1")
-          .text() mustBe "declaration.statisticalValue.header"
+          .getElementsByTag("h1") must containMessageForElements("declaration.statisticalValue.header")
       }
 
       "display empty input with label for Statistical Value" in {
@@ -162,7 +157,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
         val backButton =
           createView().getElementById("back-link")
 
-        backButton.text() mustBe "site.back"
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId = "itemId")
         )
@@ -171,13 +166,13 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       "display 'Save and continue' button" in {
         val view = createView()
         val saveButton = view.getElementById("submit")
-        saveButton.text() mustBe "site.save_and_continue"
+        saveButton must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button" in {
         val view = createView()
         val saveButton = view.getElementById("submit_and_return")
-        saveButton.text() mustBe "site.save_and_come_back_later"
+        saveButton must containMessage("site.save_and_come_back_later")
       }
     }
   }

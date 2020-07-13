@@ -71,7 +71,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
     val view = createViewWithAddressError(address)
     fields.filterNot(_ == fieldName).foreach { key =>
       view must containErrorElementWithTagAndHref("a", s"#details_address_$key")
-      view must containErrorElementWithMessage(s"declaration.address.$key.$errorKey")
+      view must containErrorElementWithMessageKey(s"declaration.address.$key.$errorKey")
     }
   }
 
@@ -79,7 +79,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     val view = createViewWithAddressError(address)
     view must containErrorElementWithTagAndHref("a", s"#details_address_$fieldName")
-    view must containErrorElementWithMessage(s"declaration.address.$fieldName.$errorKey")
+    view must containErrorElementWithMessageKey(s"declaration.address.$fieldName.$errorKey")
   }
 
   "Consignee Details View on empty page" should {
@@ -332,7 +332,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
       }
     }
 
-    onSupplementary { request =>
+    onSupplementary { implicit request =>
       "display 'Back' button that links to 'Representative Status' page" in {
 
         val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))

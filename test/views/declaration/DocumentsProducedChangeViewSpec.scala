@@ -80,65 +80,70 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
       val view = createView()
 
       "display page title" in {
-        view.getElementsByTag("h1").text() mustBe messagesKey("declaration.addDocument.title")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.addDocument.title")
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("supplementary.items")
+        view.getElementById("section-header") must containMessage("supplementary.items")
       }
 
       "display empty input with label for Document type code" in {
-        view.getElementsByAttributeValue("for", documentTypeCodeKey).text() mustBe messagesKey("declaration.addDocument.documentTypeCode")
-        view.getElementById(s"$documentTypeCodeKey-hint").text() mustBe messagesKey("declaration.addDocument.documentTypeCode.hint")
+        view.getElementsByAttributeValue("for", documentTypeCodeKey) must containMessageForElements("declaration.addDocument.documentTypeCode")
+        view.getElementById(s"$documentTypeCodeKey-hint") must containMessage("declaration.addDocument.documentTypeCode.hint")
         view.getElementById(documentTypeCodeKey).attr("value") mustBe empty
       }
 
       "display empty input with label and hint for Document identifier" in {
-        view.getElementsByAttributeValue("for", documentIdentifierKey).text() mustBe messagesKey("declaration.addDocument.documentIdentifier")
-        view.getElementById(s"$documentIdentifierKey-hint").text() mustBe messagesKey("declaration.addDocument.documentIdentifier.hint")
+        view.getElementsByAttributeValue("for", documentIdentifierKey) must containMessageForElements("declaration.addDocument.documentIdentifier")
+        view.getElementById(s"$documentIdentifierKey-hint") must containMessage("declaration.addDocument.documentIdentifier.hint")
         view.getElementById(documentIdentifierKey).attr("value") mustBe empty
       }
 
       "display empty input with label for Document status" in {
-        view.getElementsByAttributeValue("for", documentStatusKey).text() mustBe messagesKey("declaration.addDocument.documentStatus")
-        view.getElementById(s"$documentStatusKey-hint").text() mustBe messagesKey("declaration.addDocument.documentStatus.hint")
+        view.getElementsByAttributeValue("for", documentStatusKey) must containMessageForElements("declaration.addDocument.documentStatus")
+        view.getElementById(s"$documentStatusKey-hint") must containMessage("declaration.addDocument.documentStatus.hint")
         view.getElementById(s"$documentStatusKey").attr("value") mustBe empty
       }
 
       "display empty input with label for Document status reason" in {
-        view.getElementsByAttributeValue("for", documentStatusReasonKey).text() mustBe messagesKey("declaration.addDocument.documentStatusReason")
-        view.getElementById(s"$documentStatusReasonKey-hint").text() mustBe messagesKey("declaration.addDocument.documentStatusReason.hint")
+        view.getElementsByAttributeValue("for", documentStatusReasonKey) must containMessageForElements(
+          "declaration.addDocument.documentStatusReason"
+        )
+        view.getElementById(s"$documentStatusReasonKey-hint") must containMessage("declaration.addDocument.documentStatusReason.hint")
         view.getElementById(documentStatusReasonKey).attr("value") mustBe empty
       }
 
       "display empty input with label for Issuing Authority Name" in {
-        view.getElementsByAttributeValue("for", issuingAuthorityNameKey).text() mustBe messagesKey("declaration.addDocument.issuingAuthorityName")
-        view.getElementById(s"$issuingAuthorityNameKey-hint").text() mustBe messagesKey("declaration.addDocument.issuingAuthorityName.hint")
+        view.getElementsByAttributeValue("for", issuingAuthorityNameKey) must containMessageForElements(
+          "declaration.addDocument.issuingAuthorityName"
+        )
+        view.getElementById(s"$issuingAuthorityNameKey-hint") must containMessage("declaration.addDocument.issuingAuthorityName.hint")
         view.getElementById(issuingAuthorityNameKey).attr("value") mustBe empty
       }
 
       "display empty input with label for Date of Validity" in {
-        view.getElementById(dateOfValidityKey).getElementsByTag("legend").text() mustBe messagesKey("declaration.addDocument.dateOfValidity")
-        view.getElementById(s"$dateOfValidityKey-input-hint").text() mustBe messagesKey("declaration.addDocument.dateOfValidity.hint")
+        view.getElementById(dateOfValidityKey).getElementsByTag("legend") must containMessageForElements("declaration.addDocument.dateOfValidity")
+        view.getElementById(s"$dateOfValidityKey-input-hint") must containMessage("declaration.addDocument.dateOfValidity.hint")
       }
 
       "display empty input with label for Measurement Unit" in {
-        view.getElementById("measurementUnitAndQualifier").getElementsByTag("legend").text() mustBe messagesKey(
+        view.getElementById("measurementUnitAndQualifier").getElementsByTag("legend") must containMessageForElements(
           "declaration.addDocument.measurementUnit.header"
         )
-        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$measurementUnitKey").text() mustBe messagesKey(
+        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$measurementUnitKey") must containMessageForElements(
           "declaration.addDocument.measurementUnit"
         )
         view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") mustBe empty
-        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$qualifierKey").text() mustBe messagesKey(
+        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$qualifierKey") must containMessageForElements(
           "declaration.addDocument.qualifier"
         )
         view.getElementById(s"${documentWriteOffKey}_$qualifierKey").attr("value") mustBe empty
       }
 
       "display empty input with label for Document quantity" in {
-        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$documentQuantityKey").text() mustBe
-          messagesKey("declaration.addDocument.documentQuantity")
+        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$documentQuantityKey") must containMessageForElements(
+          "declaration.addDocument.documentQuantity"
+        )
         view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") mustBe empty
       }
 
@@ -146,16 +151,16 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe messagesKey(backCaption)
+        backButton must containMessage(backCaption)
         backButton must haveHref(routes.DocumentsProducedController.displayPage(mode, itemId))
       }
 
       "display'Save and continue' button on page" in {
         val saveAndContinueButton = view.getElementById("submit")
-        saveAndContinueButton.text() mustBe messagesKey(saveAndContinueCaption)
+        saveAndContinueButton must containMessage(saveAndContinueCaption)
 
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text() mustBe messagesKey(saveAndReturnCaption)
+        saveAndReturnButton must containMessage(saveAndReturnCaption)
         saveAndReturnButton must haveAttribute("name", SaveAndReturn.toString)
       }
     }
@@ -173,7 +178,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
 
-        view must containErrorElementWithMessage("declaration.addDocument.documentTypeCode.error")
+        view must containErrorElementWithMessageKey("declaration.addDocument.documentTypeCode.error")
       }
 
       "display error for Document identifier" in {
@@ -186,7 +191,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentIdentifierKey")
 
-        view must containErrorElementWithMessage("declaration.addDocument.documentIdentifier.error")
+        view must containErrorElementWithMessageKey("declaration.addDocument.documentIdentifier.error")
       }
 
       "display error for Document status" in {
@@ -199,7 +204,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentStatusKey")
 
-        view must containErrorElementWithMessage("declaration.addDocument.documentStatus.error")
+        view must containErrorElementWithMessageKey("declaration.addDocument.documentStatus.error")
       }
 
       "display error for Document status reason" in {
@@ -212,7 +217,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentStatusReasonKey")
 
-        view must containErrorElementWithMessage("declaration.addDocument.documentStatusReason.error")
+        view must containErrorElementWithMessageKey("declaration.addDocument.documentStatusReason.error")
       }
 
       "display error for Issuing Authority Name" in {
@@ -225,7 +230,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$issuingAuthorityNameKey")
 
-        view must containErrorElementWithMessage("declaration.addDocument.issuingAuthorityName.error")
+        view must containErrorElementWithMessageKey("declaration.addDocument.issuingAuthorityName.error.length")
       }
 
       "display error for Date of Validity" when {
@@ -246,7 +251,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$dateOfValidityKey")
 
-          view must containErrorElementWithMessage("dateTime.date.error.outOfRange")
+          view must containErrorElementWithMessageKey("dateTime.date.error.outOfRange")
         }
 
         "provided with non-existing month and day" in {
@@ -259,7 +264,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$dateOfValidityKey")
 
-          view must containErrorElementWithMessage("dateTime.date.error.format")
+          view must containErrorElementWithMessageKey("dateTime.date.error.format")
         }
 
         "provided with partial date" in {
@@ -272,7 +277,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${dateOfValidityKey}_$yearKey")
 
-          view must containErrorElementWithMessage("dateTime.date.year.error.empty")
+          view must containErrorElementWithMessageKey("dateTime.date.year.error.empty")
         }
       }
 
@@ -287,7 +292,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$measurementUnitKey")
 
-          view must containErrorElementWithMessage("declaration.addDocument.measurementUnit.error")
+          view must containErrorElementWithMessageKey("declaration.addDocument.measurementUnit.error")
         }
 
         "unit text contains special characters" in {
@@ -298,7 +303,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$measurementUnitKey")
 
-          view must containErrorElementWithMessage("declaration.addDocument.measurementUnit.error")
+          view must containErrorElementWithMessageKey("declaration.addDocument.measurementUnit.error")
         }
 
       }
@@ -314,7 +319,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-          view must containErrorElementWithMessage("declaration.addDocument.documentQuantity.error")
+          view must containErrorElementWithMessageKey("declaration.addDocument.documentQuantity.error")
         }
 
         "there is scale error" in {
@@ -325,7 +330,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-          view must containErrorElementWithMessage("declaration.addDocument.documentQuantity.error")
+          view must containErrorElementWithMessageKey("declaration.addDocument.documentQuantity.error")
         }
 
         "there is error in quantity" in {
@@ -336,7 +341,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-          view must containErrorElementWithMessage("declaration.addDocument.documentQuantity.error")
+          view must containErrorElementWithMessageKey("declaration.addDocument.documentQuantity.error")
         }
       }
 
@@ -356,14 +361,14 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
         view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$measurementUnitKey")
         view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-        view must containErrorElementWithMessage("declaration.addDocument.documentTypeCode.error")
-        view must containErrorElementWithMessage("declaration.addDocument.documentIdentifier.error")
-        view must containErrorElementWithMessage("declaration.addDocument.documentStatus.error")
-        view must containErrorElementWithMessage("declaration.addDocument.documentStatusReason.error")
-        view must containErrorElementWithMessage("declaration.addDocument.issuingAuthorityName.error")
-        view must containErrorElementWithMessage("dateTime.date.error.format")
-        view must containErrorElementWithMessage("declaration.addDocument.measurementUnit.error")
-        view must containErrorElementWithMessage("declaration.addDocument.documentQuantity.error")
+        view must containErrorElementWithMessageKey("declaration.addDocument.documentTypeCode.error")
+        view must containErrorElementWithMessageKey("declaration.addDocument.documentIdentifier.error")
+        view must containErrorElementWithMessageKey("declaration.addDocument.documentStatus.error")
+        view must containErrorElementWithMessageKey("declaration.addDocument.documentStatusReason.error")
+        view must containErrorElementWithMessageKey("declaration.addDocument.issuingAuthorityName.error.length")
+        view must containErrorElementWithMessageKey("dateTime.date.error.format")
+        view must containErrorElementWithMessageKey("declaration.addDocument.measurementUnit.error")
+        view must containErrorElementWithMessageKey("declaration.addDocument.documentQuantity.error")
       }
     }
   }

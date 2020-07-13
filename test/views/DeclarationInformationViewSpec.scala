@@ -130,17 +130,17 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
     "contains page header" in {
 
-      viewWithFeatures.getElementsByTag("h1").first().text() mustBe "submissions.declarationInformation"
+      viewWithFeatures.getElementsByTag("h1") must containMessageForElements("submissions.declarationInformation")
     }
 
     "contains references table with correct labels" in {
 
-      viewWithFeatures.getElementsByTag("h2").first().text() mustBe "submissions.references"
-      viewWithFeatures.select(".submission__ucr .govuk-summary-list__key").first().text() mustBe "submissions.ucr"
+      viewWithFeatures.getElementsByTag("h2").first() must containMessage("submissions.references")
+      viewWithFeatures.select(".submission__ucr .govuk-summary-list__key").first() must containMessage("submissions.ucr")
       viewWithFeatures.select(".submission__ucr .govuk-summary-list__value").first().text() mustBe submission.ducr.get
-      viewWithFeatures.select(".submission__lrn .govuk-summary-list__key").first().text() mustBe "submissions.lrn"
+      viewWithFeatures.select(".submission__lrn .govuk-summary-list__key").first() must containMessage("submissions.lrn")
       viewWithFeatures.select(".submission__lrn .govuk-summary-list__value").first().text() mustBe submission.lrn
-      viewWithFeatures.select(".submission__mrn .govuk-summary-list__key").first().text() mustBe "submissions.mrn"
+      viewWithFeatures.select(".submission__mrn .govuk-summary-list__key").first() must containMessage("submissions.mrn")
       viewWithFeatures.select(".submission__mrn .govuk-summary-list__value").first().text() mustBe submission.mrn.get
     }
 
@@ -150,7 +150,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
         val generateEADLink = viewWithFeatures.getElementById("generate-ead")
 
-        generateEADLink.text() mustBe "submissions.generateEAD"
+        generateEADLink must containMessage("submissions.generateEAD")
         generateEADLink must haveHref(controllers.pdf.routes.EADController.generatePdf(submission.mrn.get))
       }
     }
@@ -186,7 +186,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         val viewDeclarationLink =
           declarationInformationPageWithFeatures(submission, Seq(acceptedNotification))(request, messages).getElementById("view-declaration")
 
-        viewDeclarationLink.text() mustBe "submissions.viewDeclaration"
+        viewDeclarationLink must containMessage("submissions.viewDeclaration")
         viewDeclarationLink must haveHref(controllers.routes.SubmissionsController.viewDeclaration(submission.uuid))
       }
 
@@ -195,7 +195,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         val viewDeclarationLink =
           declarationInformationPageWithFeatures(submission, Seq(clearedNotification))(request, messages).getElementById("view-declaration")
 
-        viewDeclarationLink.text() mustBe "submissions.viewDeclaration"
+        viewDeclarationLink must containMessage("submissions.viewDeclaration")
         viewDeclarationLink must haveHref(controllers.routes.SubmissionsController.viewDeclaration(submission.uuid))
       }
 
@@ -203,7 +203,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
         val viewDeclarationLink = viewWithFeaturesNotAccepted.getElementById("view-declaration")
 
-        viewDeclarationLink.text() mustBe "submissions.viewDeclaration"
+        viewDeclarationLink must containMessage("submissions.viewDeclaration")
         viewDeclarationLink must haveHref(controllers.routes.SubmissionsController.viewDeclaration(submission.uuid))
       }
     }
@@ -214,7 +214,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
         val sfusLink = viewWithFeatures.getElementById("notification_action_2")
 
-        sfusLink.text() mustBe "submissions.sfus"
+        sfusLink must containMessage("submissions.sfus")
         sfusLink.child(0) must haveHref("http://localhost:6793/cds-file-upload-service/start")
       }
     }
@@ -235,7 +235,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       viewWithFeatures.getElementById("notification_status_0").text() mustBe SubmissionStatus.format(SubmissionStatus.REJECTED)
       viewWithFeatures.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00"
-      viewWithFeatures.getElementById("notification_action_0").text() mustBe "submissions.viewErrors"
+      viewWithFeatures.getElementById("notification_action_0") must containMessage("submissions.viewErrors")
       viewWithFeatures.getElementById("notification_action_0").child(0) must haveHref(
         controllers.routes.RejectedNotificationsController.displayPage(submission.uuid)
       )
@@ -252,7 +252,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       viewWithFeatures.getElementById("notification_status_2").text() mustBe SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
       viewWithFeatures.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00"
-      viewWithFeatures.getElementById("notification_action_2").text() mustBe "submissions.sfus"
+      viewWithFeatures.getElementById("notification_action_2") must containMessage("submissions.sfus")
       viewWithFeatures.getElementById("notification_action_2").child(0) must haveHref("http://localhost:6793/cds-file-upload-service/start")
     }
 
@@ -260,7 +260,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       val backButton = viewWithFeatures.getElementById("back-link")
 
-      backButton.text() mustBe "site.backToDeclarations"
+      backButton must containMessage("site.backToDeclarations")
       backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
     }
   }

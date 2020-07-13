@@ -49,11 +49,11 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
       val view = createView()
 
       "display page title" in {
-        view.getElementsByTag("h1").text() mustBe "declaration.additionalFiscalReferences.title"
+        view.getElementsByTag("h1").text() mustBe messages("declaration.additionalFiscalReferences.title")
       }
 
       "display header" in {
-        view.getElementById("section-header").text() must include("declaration.fiscalInformation.header")
+        view.getElementById("section-header").text() must include(messages("declaration.fiscalInformation.header"))
       }
 
       "display country input" in {
@@ -70,13 +70,13 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe backCaption
+        backButton.text() mustBe messages(backCaption)
         backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId, fastForward = false))
       }
 
       "display 'For more information about this' summary text" in {
         val detailsSummaryText = view.getElementsByClass("govuk-details__summary-text").first().text()
-        detailsSummaryText.text() mustBe "site.details.summary_text_this"
+        detailsSummaryText.text() mustBe messages("site.details.summary_text_this")
       }
 
       "display 'Save and continue' button" in {
@@ -123,7 +123,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#country")
 
-          view must containErrorElementWithMessage("declaration.additionalFiscalReferences.country.empty")
+          view must containErrorElementWithMessage(messages("declaration.additionalFiscalReferences.country.empty"))
         }
 
         "country is incorrect" in {
@@ -132,7 +132,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#country")
 
-          view must containErrorElementWithMessage("declaration.additionalFiscalReferences.country.error")
+          view must containErrorElementWithMessage(messages("declaration.additionalFiscalReferences.country.error"))
         }
 
         "reference is empty" in {
@@ -141,7 +141,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#reference")
 
-          view must containErrorElementWithMessage("declaration.additionalFiscalReferences.reference.empty")
+          view must containErrorElementWithMessage(messages("declaration.additionalFiscalReferences.reference.empty"))
         }
 
         "reference is incorrect" in {
@@ -150,7 +150,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", "#reference")
 
-          view must containErrorElementWithMessage("declaration.additionalFiscalReferences.reference.error")
+          view must containErrorElementWithMessage(messages("declaration.additionalFiscalReferences.reference.error"))
         }
         "both country and reference are empty" in {
           val view = createView(form.bind(emptyCountryAndRef))
@@ -159,8 +159,8 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
           view must containErrorElementWithTagAndHref("a", "#country")
           view must containErrorElementWithTagAndHref("a", "#reference")
 
-          view must containErrorElementWithMessage("declaration.additionalFiscalReferences.country.empty")
-          view must containErrorElementWithMessage("declaration.additionalFiscalReferences.reference.empty")
+          view must containErrorElementWithMessage(messages("declaration.additionalFiscalReferences.country.empty"))
+          view must containErrorElementWithMessage(messages("declaration.additionalFiscalReferences.reference.empty"))
         }
 
         "both country and reference are incorrect" in {
@@ -170,8 +170,8 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
           view must containErrorElementWithTagAndHref("a", "#country")
           view must containErrorElementWithTagAndHref("a", "#reference")
 
-          view must containErrorElementWithMessage("declaration.additionalFiscalReferences.country.error")
-          view must containErrorElementWithMessage("declaration.additionalFiscalReferences.reference.error")
+          view must containErrorElementWithMessage(messages("declaration.additionalFiscalReferences.country.error"))
+          view must containErrorElementWithMessage(messages("declaration.additionalFiscalReferences.reference.error"))
         }
       }
     }

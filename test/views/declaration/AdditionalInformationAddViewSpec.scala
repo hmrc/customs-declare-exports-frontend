@@ -25,7 +25,6 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -47,8 +46,6 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
 
     "have a proper messages" in {
 
-      val messages = instanceOf[MessagesApi].preferred(request)
-
       messages must haveTranslationFor("declaration.additionalInformation.title")
       messages must haveTranslationFor("declaration.additionalInformation.code")
       messages must haveTranslationFor("declaration.additionalInformation.item.code")
@@ -65,19 +62,19 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
-        createView().getElementsByTag("h1").text() mustBe messages("declaration.additionalInformation.title")
+        createView().getElementsByTag("h1") must containMessageForElements("declaration.additionalInformation.title")
       }
 
       "display section header" in {
 
-        createView().getElementById("section-header").text() must include("supplementary.items")
+        createView().getElementById("section-header") must containMessage("supplementary.items")
       }
 
       "display empty input with label for Union code" in {
 
         val view = createView()
 
-        view.getElementsByAttributeValue("for", "code").text() mustBe messages("declaration.additionalInformation.code")
+        view.getElementsByAttributeValue("for", "code") must containMessageForElements("declaration.additionalInformation.code")
         view.getElementById("code").attr("value") mustBe empty
       }
 
@@ -161,7 +158,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#code")
 
-        view must containErrorElementWithMessage("declaration.additionalInformation.code.empty")
+        view must containErrorElementWithMessageKey("declaration.additionalInformation.code.empty")
       }
 
       "display error for invalid code" in {
@@ -171,7 +168,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#code")
 
-        view must containErrorElementWithMessage("declaration.additionalInformation.code.error")
+        view must containErrorElementWithMessageKey("declaration.additionalInformation.code.error")
       }
 
       "display error for missing description" in {
@@ -181,7 +178,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#description")
 
-        view must containErrorElementWithMessage("declaration.additionalInformation.description.empty")
+        view must containErrorElementWithMessageKey("declaration.additionalInformation.description.empty")
       }
 
       "display error for invalid description" in {
@@ -193,7 +190,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#description")
 
-        view must containErrorElementWithMessage("declaration.additionalInformation.description.error")
+        view must containErrorElementWithMessageKey("declaration.additionalInformation.description.error")
       }
     }
   }

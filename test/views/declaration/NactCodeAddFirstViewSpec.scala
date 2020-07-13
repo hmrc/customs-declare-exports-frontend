@@ -35,16 +35,15 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
   private val itemId = "item1"
   private val form: Form[NactCodeFirst] = NactCodeFirst.form()
   private val page = instanceOf[nact_code_add_first]
-  private val realMessages = validatedMessages
 
   private def createView(form: Form[NactCodeFirst] = form): Document =
-    page(Mode.Normal, itemId, form)(journeyRequest(), realMessages)
+    page(Mode.Normal, itemId, form)(journeyRequest(), messages)
 
   "Nact Code Add First View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(realMessages("declaration.nationalAdditionalCode.addfirst.header"))
+      view.getElementsByTag("h1") must containMessageForElements("declaration.nationalAdditionalCode.addfirst.header")
     }
 
     "display 'Back' button that links to 'taric codes' page" in {
@@ -57,12 +56,12 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(realMessages(saveAndContinueCaption))
+      saveButton must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(realMessages(saveAndReturnCaption))
+      saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -74,7 +73,7 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
 
-      view must containErrorElementWithMessage(realMessages("declaration.nationalAdditionalCode.error.invalid"))
+      view must containErrorElementWithMessageKey("declaration.nationalAdditionalCode.error.invalid")
     }
 
     "display errors when empty" in {
@@ -83,7 +82,7 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
 
-      view must containErrorElementWithMessage(realMessages("declaration.nationalAdditionalCode.error.empty"))
+      view must containErrorElementWithMessageKey("declaration.nationalAdditionalCode.error.empty")
     }
 
   }

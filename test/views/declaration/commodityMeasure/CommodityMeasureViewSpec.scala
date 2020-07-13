@@ -24,7 +24,6 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.api.mvc.Call
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -45,8 +44,6 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
   "Commodity Measure" should {
 
     "have correct message keys" in {
-
-      val messages = instanceOf[MessagesApi].preferred(request)
 
       messages must haveTranslationFor("declaration.commodityMeasure.title")
       messages must haveTranslationFor("declaration.commodityMeasure.netMass")
@@ -137,8 +134,8 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must containErrorElementWithTagAndHref("a", "#netMass")
         view must containErrorElementWithTagAndHref("a", "#grossMass")
 
-        view must containErrorElementWithMessage("declaration.commodityMeasure.netMass.empty")
-        view must containErrorElementWithMessage("declaration.commodityMeasure.grossMass.empty")
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.netMass.empty")
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.grossMass.empty")
       }
 
       "display error when supplementary units are incorrect" in {
@@ -148,7 +145,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#supplementaryUnits")
 
-        view must containErrorElementWithMessage("declaration.commodityMeasure.supplementaryUnits.error")
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.supplementaryUnits.error")
       }
       "display error when net mass is empty" in {
 
@@ -158,7 +155,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
 
-        view must containErrorElementWithMessage("declaration.commodityMeasure.netMass.empty")
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.netMass.empty")
       }
 
       "display error when net mass is incorrect" in {
@@ -171,7 +168,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
 
-        view must containErrorElementWithMessage("declaration.commodityMeasure.netMass.error")
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.netMass.error")
       }
 
       "display error when gross mass is empty" in {
@@ -182,7 +179,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#grossMass")
 
-        view must containErrorElementWithMessage("declaration.commodityMeasure.grossMass.empty")
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.grossMass.empty")
       }
 
       "display error when gross mass is incorrect" in {
@@ -194,7 +191,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#grossMass")
 
-        view must containErrorElementWithMessage("declaration.commodityMeasure.grossMass.error")
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.grossMass.error")
       }
     }
   }

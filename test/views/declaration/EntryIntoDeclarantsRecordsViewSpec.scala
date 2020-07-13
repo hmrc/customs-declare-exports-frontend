@@ -112,7 +112,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
 
         val form =
           EntryIntoDeclarantsRecords.form().withError(FormError("is-entry-into-declarant-records", "declaration.entryIntoDeclarantRecords.error"))
-        createView(form) must haveGovukFieldError("is-entry-into-declarant-records", "declaration.entryIntoDeclarantRecords.error")
+        createView(form) must haveGovukFieldError("is-entry-into-declarant-records", messages("declaration.entryIntoDeclarantRecords.error"))
       }
     }
   }

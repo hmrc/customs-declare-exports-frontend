@@ -40,7 +40,6 @@ class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "have defined translation for used labels" in {
 
-      val messages = realMessagesApi.preferred(request)
       messages must haveTranslationFor("declaration.routingCountries.remove.title")
       messages must haveTranslationFor("declaration.routingCountries.remove.heading")
       messages must haveTranslationFor("declaration.routingCountries.remove.question")

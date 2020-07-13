@@ -21,7 +21,6 @@ import forms.declaration.TotalPackageQuantity
 import models.DeclarationType._
 import models.Mode
 import org.jsoup.nodes.Document
-import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -35,7 +34,6 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
 
     "rendered with empty form" should {
       "have proper messages for keys" in {
-        val messages = instanceOf[MessagesApi].preferred(journeyRequest())
         messages must haveTranslationFor("declaration.totalPackageQuantity.title")
         messages must haveTranslationFor("declaration.totalPackageQuantity")
         messages must haveTranslationFor("declaration.totalPackageQuantity.empty")
@@ -44,7 +42,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         messages must haveTranslationFor("site.details.summary_text_this")
       }
 
-      onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+      onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
         val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, messages)
 
         "display same page title as header" in {
@@ -54,11 +52,11 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         }
 
         "display section header" in {
-          view.getElementById("section-header").text() must include("supplementary.items")
+          view.getElementById("section-header") must containMessage("supplementary.items")
         }
 
         "display header" in {
-          view.getElementsByTag("h1").first().text() must be("declaration.totalPackageQuantity.title")
+          view.getElementsByTag("h1").first() must containMessage("declaration.totalPackageQuantity.title")
         }
 
         "display empty input with label for Total Package" in {
@@ -67,22 +65,22 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
 
         "display 'Save and continue' button on page" in {
           val saveButton = view.getElementById("submit")
-          saveButton.text() must be("site.save_and_continue")
+          saveButton must containMessage("site.save_and_continue")
         }
 
         "display Tariff section text" in {
-          val tariffText = view.getElementsByClass("govuk-details__summary-text").first().text()
-          tariffText.text() must be("site.details.summary_text_this")
+          val tariffText = view.getElementsByClass("govuk-details__summary-text").first()
+          tariffText must containMessage("site.details.summary_text_this")
         }
 
         "display 'Save and return' button on page" in {
           val saveAndReturnButton = view.getElementById("submit_and_return")
-          saveAndReturnButton.text() must be("site.save_and_come_back_later")
+          saveAndReturnButton must containMessage("site.save_and_come_back_later")
         }
 
         "rendered with invalid form" should {
           "display error when all entered input is incorrect" in {
-            val form = TotalPackageQuantity.form(request.declarationType).withError("totalPackage", "supplementary.totalPackageQuantity.error")
+            val form = TotalPackageQuantity.form(request.declarationType).withError("totalPackage", "declaration.totalPackageQuantity.error")
             val view: Document = template.apply(Mode.Normal, form)(request, messages)
 
             view must haveGovukGlobalErrorSummary
@@ -100,22 +98,22 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         }
       }
     }
-    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "display back button" in {
         val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, messages)
         val backButton = view.getElementById("back-link")
 
-        backButton.text() must be("site.back")
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(Mode.Normal))
       }
     }
 
-    onClearance { request =>
+    onClearance { implicit request =>
       "display back button" in {
         val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, messages)
         val backButton = view.getElementById("back-link")
 
-        backButton.text() must be("site.back")
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
       }
     }

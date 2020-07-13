@@ -18,10 +18,10 @@ package views.declaration.destinationCountries
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.countries.{Countries, Country}
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
-import models.Mode
+import forms.declaration.countries.{Countries, Country}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.twirl.api.Html
@@ -39,9 +39,9 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
   private def nextRoutingForm(request: JourneyRequest[_]): Form[Country] =
     Countries.form(NextRoutingCountryPage)(request)
 
-  private def firstRoutingView(request: JourneyRequest[_]): Html =
+  private def firstRoutingView(implicit request: JourneyRequest[_]): Html =
     countryOfRoutingPage(Mode.Normal, firstRoutingForm(request), FirstRoutingCountryPage)(request, messages)
-  private def nextRoutingView(request: JourneyRequest[_]): Html =
+  private def nextRoutingView(implicit request: JourneyRequest[_]): Html =
     countryOfRoutingPage(Mode.Normal, nextRoutingForm(request), NextRoutingCountryPage)(request, messages)
 
   "Routing Country view" should {
@@ -60,7 +60,7 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
     }
   }
 
-  onJourney(OCCASIONAL, SIMPLIFIED, STANDARD) { request =>
+  onJourney(OCCASIONAL, SIMPLIFIED, STANDARD) { implicit request =>
     "Routing Country view" should {
 
       s"have page heading for ${request.declarationType}" in {

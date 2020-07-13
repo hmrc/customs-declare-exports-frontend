@@ -39,9 +39,9 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
         val row = view.getElementsByClass("additional-information-1-row")
 
         row must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation"))
-        row must haveSummaryValue("site.no")
+        row must haveSummaryValue(messages("site.no"))
 
-        row must haveSummaryActionsText("site.change declaration.summary.items.item.additionalInformation.changeAll")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalInformation.changeAll")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId"))
       }
@@ -64,14 +64,16 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description1"
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row1ChangeLink must haveHref(controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId"))
-      row1ChangeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.additionalInformation.change", 1)}"
+      row1ChangeLink
+        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.additionalInformation.change", "12345", 1)}"
 
       val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
       row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "23456"
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description2"
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row2ChangeLink must haveHref(controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId"))
-      row2ChangeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.additionalInformation.change", 1)}"
+      row2ChangeLink
+        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.additionalInformation.change", "23456", 1)}"
     }
 
     "display additional information without change buttons" when {

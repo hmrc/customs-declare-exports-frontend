@@ -47,7 +47,7 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with 
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(messages("declaration.seal.remove.title"))
+      view.getElementsByTag("h1").text() must be(messages("declaration.seal.remove.title", containerId))
     }
 
     "display seal to remove" in {
@@ -81,7 +81,7 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#yesNo")
 
-      view must containErrorElementWithMessage("error.yesNo.required")
+      view must containErrorElementWithMessageKey("error.yesNo.required")
     }
 
   }

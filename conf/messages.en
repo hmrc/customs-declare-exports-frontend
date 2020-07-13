@@ -24,44 +24,20 @@ error.number = Enter a valid number
 error.required = Enter a value
 error.summary.title = There is a problem
 error.summary.text = Check the following
-error.consignment = Please answer on the question
 error.ducr = Enter a DUCR in the correct format
-error.ucr = Enter a UCR in the correct format
 error.ducr.empty = Enter a valid DUCR
-error.ducr.format = Enter a DUCR in the correct format
-error.mucr.format = Enter a MUCR in the correct format
-error.removeAction.incorrectFormat = Data format for removal request is incorrect
 error.yesNo.required = Select yes or no
-
-index.title =Export Declarations
-index.heading=Customs Export Declarations
-index.guidance=On this page you can declare exported items, look up earlier exports declarations and check their status
-index.how-to-access=How to access the service
-index.you-must-have=You must have a valid Government Gateway User ID and password and an EORI number. If you don't have an EORI number please request one first
-index.if-company=If you’re a company or partnership you’ll need to sign in with the user ID and password for your organisation.
-index.if-individual=If your registering as an individual, are self employed or a sole trader, then you’ll need to sign in with your own user ID and password.
-index.start-now=Start now
-
-session_expired.title = For your security, this service has been reset
-session_expired.heading = For your security, this service has been reset
-session_expired.guidance = The details you have given have been deleted because you did not continue the service for 1 hour.
 
 site.back = Back
 site.backToSelectionPage = Back to selection page
 site.backToDeclarations = Back to your declarations
 site.backToGovUk = Back to GOV.UK
 site.continue = Continue
-site.delete = Remove
-site.link.delete = Delete
-site.edit = Change
-site.hidden-delete = Delete {0}
-site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.save_and_continue = Save and continue
 site.acceptAndSubmitDeclaration = Accept and submit declaration
 site.save_and_come_back_later = Save and come back later
-site.textarea.char_limit = (Limit is {0} characters)
 site.submit = Submit
 site.backToChoice = Back to choice page
 site.add = Add
@@ -70,7 +46,6 @@ site.remove.hint = Remove {0}
 site.change = Change
 site.add.item = Add item
 site.add.anotherItem = Add another item
-site.add.anotherItem.hint = Add another item
 site.accessibility.error = Error:
 
 site.details.summary_text_this = For more information about this
@@ -106,41 +81,14 @@ dateTime.time.error = Enter time in correct format
 dateTime.time.hour.error = Enter an hour between 1 and 24
 dateTime.time.minute.error = Enter a minute between 1 and 60
 
-address.fullName = Full name
-address.buildingAndStreet = Building and street
-address.city = Town or city
-address.county = County (optional)
-address.postcode = Postcode
-address.country = Country
-address.error.required.fullName = Enter a name
-address.error.required.building = Enter a building name
-address.error.required.street = Enter a street name
-address.error.required.townOrCity = Enter a town or city
-address.error.required.postcode = Enter a postcode
-address.error.required.country = Enter a country
-
-
-simpleDeclaration.title = Simple declaration
-simpleDeclaration.heading = Simple declaration
-isDeclarationForSomeoneElse.no = No - I'm making this declaration for myself
-
 global.error.title = There is a problem - Declare customs exports for customs exports - GOV.UK
 global.error.heading = There is a problem with a service
 global.error.message = Please try again later.
 
-confirmationPage.title = Confirmation page
-
 notifications.title = Notifications
 notifications.dateAndTime = Date and time
-notifications.reference = Reference
 notifications.status = Status
-notifications.additionalInformation = Additional information
 notifications.amend = Amend and resubmit
-
-arrivals.confirmation = Arrival confirmation
-arrivals.title = Arrivals
-arrivals.heading = Arrivals
-arrivals.ducr = DUCR
 
 cancellation.title = Cancel Declaration
 cancellation.functionalReferenceId = Enter the LRN
@@ -157,18 +105,11 @@ cancellation.statementDescription.error.invalid = Enter a description up to 512 
 cancellation.confirmationPage.title = Cancellation confirmation page
 cancellation.confirmationPage.message = Cancellation request has been submitted
 cancellation.changeReason = Cancellation reason
-cancellation.changeReason.error.empty = Enter a reason for cancellation
 cancellation.changeReason.error.wrongValue = Select why you are cancelling this declaration
 cancellation.submitButton = Submit
-cancellation.error.title = There is a problem
-cancellation.error.heading = Only declarations submitted through this service can be cancelled
-cancellation.error.message = Please try again with correct data
-cancellation.exists.error.heading = Request to cancel this declaration has already been submitted
-cancellation.exists.error.message = Request to cancel this declaration has already been submitted
 cancellation.reason.duplication = Duplication
 cancellation.reason.otherReason = Other reason
 cancellation.reason.noLongerRequired = No longer required
-
 
 declaration.choice.description = What do you want to do?
 
@@ -276,6 +217,7 @@ timeoutDialog.signout.text= Sign out
 choicePage.input.error.empty = Select what you want to do
 choicePage.input.error.incorrectValue = Select what you want to do
 
+
 supplementary.dispatchLocation.header = Are the goods being sent outside the EU?
 supplementary.dispatchLocation.header.hint = Hint text if needed here
 supplementary.dispatchLocation.inputText.outsideEU = Yes
@@ -349,11 +291,7 @@ declaration.entryIntoDeclarantRecords.error = Select yes if this is an entry int
 declaration.personPresentingGoodsDetails.title = What is the EORI number of the person presenting the goods to customs?
 declaration.personPresentingGoodsDetails.help-item = Go to data element 3/41 Presenter Identification Number in the {0}
 
-supplementary.consignor.title = Who is the exporter?
-supplementary.consignor.title.hint = Enter the exporter’s EORI number or name and business address.
-supplementary.consignor.eori = Exporter’s EORI number
 declaration.exporter-detail.eori = Exporter’s EORI number
-supplementary.consignor.address.info = Exporter’s name and business address
 declaration.exporter-details.help-item1 = Exporter’s EORI number, go to data element 3/2 Exporter Identification Number
 declaration.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
 declaration.exporter-detail.title = Who is the exporter?
@@ -489,10 +427,7 @@ saved.declarations.dateSaved = Date and time saved
 saved.declarations.continue.hidden = Continue declaration {0}
 saved.declarations.remove.hidden = Remove declaration {0}
 saved.declarations.summary.continue = Continue declaration
-saved.declarations.summary.intro = Review the information you entered so far.
 saved.declarations.summary.paragraph = Click continue declaration to go through your declaration from the beginning. Continue through the declaration until you reach the page where you saved.
-saved.declarations.summary.createdDate = Date created
-saved.declarations.summary.expireDate = Expiry date
 saved.declarations.pagination.singular = saved declaration
 saved.declarations.pagination.plural = saved declarations
 saved.declarations.remove.title = Are you sure you want to remove this declaration?
@@ -506,7 +441,6 @@ declaration.declarationHolder.authorisationCode = Authorisation code
 declaration.declarationHolder.authorisationCode.hint = A code up to 4 characters for the type of authorisation.
 declaration.declarationHolder.authorisationCode.invalid = Enter a valid authorisation code
 declaration.declarationHolder.authorisationCode.empty = Enter an authorisation code
-declaration.declarationHolder.incomplete = Authorisation is incomplete 
 declaration.declarationHolders.maximumAmount.error = Maximum amount of holders added
 declaration.declarationHolders.duplicated = Holder's details already added
 declaration.declarationHolders.table.heading = You have added 1 authorisation
@@ -518,7 +452,6 @@ declaration.declarationHolders.table.change.hint = Change authorisation {0}.
 declaration.declarationHolders.add.another = Do you need to add another authorisation?
 declaration.declarationHolders.add.another.empty = Select yes if you need to add another authorisation
 declaration.declarationHolders.remove.empty = Select yes if you want to remove this authorisation
-declaration.declarationHolders.add.hint = Add an authorised party
 declaration.declarationHolder.remove.title = Are you sure you want to remove this authorisation?
 
 declaration.originationCountry.title = Which country are the goods being dispatched from?
@@ -561,18 +494,6 @@ declaration.routingCountries.remove.countryHeader = Country
 declaration.routingCountries.duplication = Routing country already added
 declaration.routingCountries.limit = Maximum number of routing countries added
 
-declaration.destinationCountries.title = Countries of routing
-declaration.destinationCountries.routing = Which countries will the goods stop at before reaching their destination?
-declaration.destinationCountries.routing.hint = You can leave this answer blank if the goods will not be stopping en-route.
-declaration.destinationCountries.countriesOfRouting.error = Select a country of routing
-declaration.destinationCountries.countriesOfRouting.empty = Select a country of routing
-declaration.destinationCountries.add.hint = Add country of routing
-declaration.destinationCountries.remove.hint = Remove country of routing {0}
-
-declaration.routingCountries.empty = You need to add at least one country
-declaration.destinationCountries.missingCountries = You need to provide at least one country or choose `No` on previous page
-declaration.destinationCountries.duplication = You cannot add duplicated country
-
 declaration.goodsLocation.title = What is the goods location code?
 declaration.goodsLocation.hint = This is an alphanumeric code. For example, GBAUEMAEMAEMA
 declaration.goodsLocation.code.empty = Enter a goods location code in the correct format
@@ -581,14 +502,12 @@ declaration.goodsLocation.help.bodyText = Go to data element 5/23 Location of Go
 
 declaration.procedureCodes.title = Procedure Codes
 declaration.procedureCodes.procedureCode.header = Enter the first 4 digits of the procedure code
-declaration.procedureCodes.procedureCode.item.header = Procedure code
 declaration.procedureCodes.procedureCode.header.hint = A 4-digit code, made up of the requested and previous procedures
 declaration.procedureCodes.procedureCode.error.empty = Enter a procedure code in the correct format
 declaration.procedureCodes.procedureCode.error.invalid = Enter a procedure code in the correct format
 declaration.procedureCodes.additionalProcedureCode.table.header = Additional procedure codes
 declaration.procedureCodes.additionalProcedureCode.header = Enter the next 3 digits of the procedure code
 declaration.procedureCodes.additionalProcedureCode.header.hint = These are 3-digit codes. Up to 99 may be declared.
-declaration.procedureCodes.additionalProcedureCode.item.header = 1/11 Additional procedure codes
 declaration.procedureCodes.additionalProcedureCode.error.invalid = Enter an additional procedure code in the correct format
 declaration.procedureCodes.additionalProcedureCode.mandatory.error = Enter an additional procedure code in the correct format
 declaration.procedureCodes.additionalProcedureCode.maximumAmount.error = Maximum amount of additional procedure codes added
@@ -719,11 +638,6 @@ declaration.addDocument.remove.documentQuantity = Quantity of the measurement un
 
 supplementary.items = Items
 declaration.items = Items
-supplementary.valueOfItems = Enter item information
-supplementary.totalNumberOfItems = 1/9 What were the total number of items?
-supplementary.totalNumberOfItems.hint = Up to a maximum of 999 items
-supplementary.totalNumberOfItems.empty = Enter total number of items
-supplementary.totalNumberOfItems.error = Total number of items must correspond to the number of items actually on the declaration
 declaration.totalPackageQuantity = Total number of packages
 declaration.totalPackageQuantity.empty = Enter the total number of packages
 declaration.totalPackageQuantity.error = Enter the total number of packages
@@ -733,7 +647,6 @@ declaration.totalPackageQuantity.title = What is the total number of packages co
 declaration.totalPackageQuantity.error.required = Enter total number of packages
 
 declaration.transport.leavingTheBorder.title = What mode of transport will the goods leave the EU on?
-declaration.transport.leavingTheBorder.heaer = What mode of transport will the goods leave the EU on?
 declaration.transport.leavingTheBorder.transportMode.sea = Sea transport
 declaration.transport.leavingTheBorder.transportMode.rail = Rail transport
 declaration.transport.leavingTheBorder.transportMode.road = Road transport
@@ -748,8 +661,6 @@ declaration.transport.leavingTheBorder.transportMode.help.bodyText = Go to data 
 
 declaration.transportInformation.title = Transport details
 declaration.transportInformation.active.title = Transport leaving the border
-declaration.transportInformation.borderTransportMode.header = What transport will be used at the border?
-declaration.transportInformation.borderTransportMode.header.hint = The transport that the goods will be loaded on to cross the border.
 declaration.transportInformation.borderTransportMode.error.empty = Select the mode of transport at the border
 declaration.transportInformation.borderTransportMode.error.empty.optional = Select the mode of transport at the border or I don’t know
 declaration.transportInformation.borderTransportMode.error.incorrect = Select the mode of transport at the border
@@ -767,7 +678,6 @@ declaration.transportInformation.transportPayment.paymentMethod.other = Other (e
 declaration.transportInformation.transportPayment.paymentMethod.eFunds = Electronic funds transfer
 declaration.transportInformation.transportPayment.paymentMethod.accHolder = Account holder with carrier
 declaration.transportInformation.transportPayment.paymentMethod.notPrePaid = Not pre-paid
-declaration.transportInformation.transportPayment.paymentMethod.error= Input is not valid
 declaration.transportInformation.transportPayment.paymentMethod.help.bodyText = Go to data element 4/2 Transport charges method of payment in the {0}.
 
 declaration.transportInformation.meansOfTransport.departure.title = What are the details for the transport the goods are physically loaded on for departure?
@@ -781,8 +691,6 @@ declaration.transportInformation.meansOfTransport.crossingTheBorder.header = Wha
 declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint = If the transport at the border was loaded onto another mode of transport, we need to know that mode of transport. For example, in the case of a lorry on a sea-going vessel, the active means of transport is the sea-going vessel.
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty = Select a means of transport
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect = Select a means of transport
-declaration.transportInformation.meansOfTransport.crossingTheBorder.label.name = Name
-declaration.transportInformation.meansOfTransport.crossingTheBorder.label.number = Number
 declaration.transportInformation.meansOfTransport.reference.header = Reference
 declaration.transportInformation.meansOfTransport.reference.hint = This can be up to 27 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
 declaration.transportInformation.meansOfTransport.reference.error.empty = Enter a reference, up to 28 alpha numeric characters
@@ -810,7 +718,6 @@ declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.
 declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
 
 declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.header = Reference
-declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.hint = This can be up to 35 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
 declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty = Enter the transport reference
 declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.length = Reference should be less than 35 alpha numeric characters
 declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid = Reference cannot contain invalid characters
@@ -822,7 +729,6 @@ declaration.transportInformation.containers.section = Transport details
 declaration.transportInformation.containers.add = Do you need to add another container?
 declaration.transportInformation.containers.add.title = What is the container ID?
 declaration.transportInformation.containerId.title = Container ID
-declaration.transportInformation.containers.remove = Remove container
 declaration.transportInformation.containers.remove.hint = Remove container {0}
 declaration.transportInformation.containers.change = Change
 declaration.transportInformation.containers.change.hint = Change seals for container {0}
@@ -849,12 +755,6 @@ declaration.exchangeRate.hint = This is the agreed contract rate of exchange bet
 declaration.total-number-of-items.help-item1 = Agreed fixed rate of exchange, go to data element 4/15 Exchange Rate - Fixed in Advance By Contract
 declaration.total-number-of-items.help-item2 = Total amount invoiced, go to data element 4/11 Total Amount Invoiced
 
-supplementary.goodItemNumber.title = Good item number
-supplementary.goodItemNumber.error = Item number doesn't exist
-supplementary.goodItemNumber.hint = The number assigned to the item in the declaration
-
-declaration.itemType.title = Details of declaration item {0}
-
 declaration.commodityDetails.title = Commodity details
 declaration.commodityDetails.combinedNomenclatureCode.header = What is the commodity code?
 declaration.commodityDetails.combinedNomenclatureCode.header.hint = A commodity code is an eight digit number specifically allocated to goods to classify them when moved outside the EU.  For example, 12345678.
@@ -867,10 +767,6 @@ declaration.commodityDetails.description.error.length = Enter a description up t
 declaration.commodityDetails.how.header = How do I find a commodity code?
 declaration.commodityDetails.how.step1 = Go to the UK {0}.
 declaration.commodityDetails.how.tradeTariff = Trade Tariff
-declaration.commodityDetails.how.step2 = Type your goods into the search bar. It will present you with multiple options. Select the one that most closely resembles your goods.
-declaration.commodityDetails.how.step3 = This will take you to a table with more options. Select 'open all headings' (top left of the table) and browse through the list to find the description that most closely resembles your goods.
-declaration.commodityDetails.how.step4 = Keep selecting options until you have a full eight-digit number in the right-hand column. (Note, at this point it will tell you if the goods require a supplementary unit in the column next to it).
-declaration.commodityDetails.how.step5 = This number is your commodity code. Click on it and click on the exports tab halfway down the page. This will give you specific information such as licences, quota tariff, and CUS codes.
 declaration.commodityDetails.how.summary = It is important to get it right. If you need help confirming your commodity code, you can contact the {0}.
 declaration.commodityDetails.how.classificationTeam = classification team
 
@@ -931,8 +827,6 @@ declaration.nationalAdditionalCode.add.answer.empty = Select yes if you need to 
 declaration.nationalAdditionalCode.remove.answer.empty = Select yes if you want to remove this national additional code
 declaration.nationalAdditionalCode.error.empty = Enter a national additional code
 declaration.nationalAdditionalCode.error.invalid = Enter a valid national additional code
-declaration.nationalAdditionalCode.error.maxAmount = Maximum number of codes added
-declaration.nationalAdditionalCode.error.duplicate = National additional code already added
 declaration.nationalAdditionalCode.table.header = National additional Code
 declaration.nationalAdditionalCode.remove.hint = Remove national additional code {0}
 declaration.nationalAdditionalCode.help.bodyText = Go to data element 6/17 National Additional Code in the {0}
@@ -991,7 +885,6 @@ declaration.additionalInformation.item.code = 2/2 union or national code
 declaration.additionalInformation.code.error = Enter a valid union or national AI code
 declaration.additionalInformation.code.empty = Enter the union or national AI code
 declaration.additionalInformation.description = Enter the required information to support this code
-declaration.additionalInformation.add.hint = Add additional information
 declaration.additionalInformation.item.description = 2/2 information
 declaration.additionalInformation.description.error = Enter a valid description
 declaration.additionalInformation.description.empty = Enter the information required by the code given, or put ''Not applicable''
@@ -1037,7 +930,6 @@ declaration.packageInformation.remove.hint = Remove package type {0} shipping re
 declaration.packageInformation.remove.typesOfPackages = Package type
 declaration.packageInformation.remove.numberOfPackages = Number of packages
 declaration.packageInformation.remove.shippingMarks = Shipping marks
-declaration.packageInformation.add.hint = Add packaging information
 declaration.packageInformation.add.another = Do you need to add another package type?
 declaration.packageInformation.add.empty = Select yes if you need to add another package type
 declaration.packageInformation.remove.empty = Select yes if you want to remove this package type
@@ -1064,7 +956,6 @@ declaration.packageInformation.help-item3 = Shipping marks, go to data element 6
 declaration.commodityMeasure.title = Commodity measurements
 declaration.commodityMeasure.netMass = Net weight in kilograms
 declaration.commodityMeasure.netMass.hint = The total weight of the goods without any packaging.
-declaration.commodityMeasure.mass.prefix = Kg
 declaration.commodityMeasure.netMass.empty= Enter a net weight
 declaration.commodityMeasure.netMass.error = Net weight can be up to 16 digits with maximum 6 digits after the decimal
 declaration.commodityMeasure.grossMass = Gross weight in kilograms
@@ -1148,8 +1039,6 @@ declaration.summary.parties.declarant.address = Declarant’s address
 declaration.summary.parties.declarant.address.change = Change Declarant’s address
 declaration.summary.parties.representative.eori = Representative’s EORI number
 declaration.summary.parties.representative.eori.change = Change Representative’s EORI number
-declaration.summary.parties.representative.address = Representative’s address
-declaration.summary.parties.representative.address.change = Change Representative’s address
 declaration.summary.parties.representative.type = Type of representation
 declaration.summary.parties.representative.type.change = Change type of representation
 declaration.summary.parties.representative.type.1 = Declarant
@@ -1270,8 +1159,6 @@ declaration.summary.warehouse.inlandModeOfTransport.Unknown = Mode unknown, for 
 declaration.summary.transport = Transportation of the goods
 declaration.summary.transport.departure.transportCode.header = Transport at the border
 declaration.summary.transport.departure.transportCode.header.change = Change transport at the border
-declaration.summary.transport.departure.transportCode. =
-# this is hack about incorrectness of model ^^
 declaration.summary.transport.departure.transportCode.1 = Sea transport
 declaration.summary.transport.departure.transportCode.2 = Rail transport
 declaration.summary.transport.departure.transportCode.3 = Road transport
@@ -1284,8 +1171,6 @@ declaration.summary.transport.departure.transportCode.no-code = I don’t know
 
 declaration.summary.transport.departure.meansOfTransport.header = Transport details at the border
 declaration.summary.transport.departure.meansOfTransport.header.change = Change transport details at the border
-declaration.summary.transport.departure.meansOfTransport. =
-# this is hack about incorrectness of model ^^
 declaration.summary.transport.departure.meansOfTransport.option_none = I don’t know
 declaration.summary.transport.departure.meansOfTransport.10 = Ship IMO number
 declaration.summary.transport.departure.meansOfTransport.11 = Ship name
@@ -1412,7 +1297,6 @@ rejected.notification.continue = Continue to check your answers
 
 
 summary.amend.information = You will start at the beginning of the declaration
-summary.amend.back = Back to submissions
 
 field.declaration.functionCode = Declaration type
 field.declaration.consignmentReferences.lrn = LRN
@@ -1495,7 +1379,6 @@ field.declaration.locations.warehouseIdentification.identificationType = Warehou
 field.declaration.locations.warehouseIdentification.supervisingCustomsOffice = Customs supervising office
 field.declaration.consignmentReferences.ucr = Unique Consignment Reference (UCR)
 
-timeoutDialog.signout.text= Sign out
 userSignedOut.title = We have saved your answers and signed you out
 userSignedOut.information = To continue the declaration later, save this link:
 userSignedOut.startPageLink = {0}/customs-declare-exports/start

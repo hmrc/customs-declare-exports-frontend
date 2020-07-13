@@ -46,7 +46,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
       row must haveSummaryKey(messages("declaration.summary.parties.holders"))
       row must haveSummaryValue(messages("site.no"))
 
-      row must haveSummaryActionsText("site.change declaration.summary.parties.holders.empty.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.holders.empty.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal))
     }
@@ -62,18 +62,20 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
       table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.parties.holders.eori")
 
       val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
-      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages(authorisationTypeCode1)
-      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages(eori1)
+      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe authorisationTypeCode1
+      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori1
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row1ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
-      row1ChangeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change")}"
+      row1ChangeLink
+        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode1, eori1)}"
 
       val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages(authorisationTypeCode2)
-      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages(eori2)
+      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe authorisationTypeCode2
+      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori2
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row2ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
-      row2ChangeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change")}"
+      row2ChangeLink
+        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode2, eori2)}"
     }
   }
 }

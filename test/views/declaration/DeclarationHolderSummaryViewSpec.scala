@@ -24,8 +24,6 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -41,10 +39,9 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
 
   private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = YesNoAnswer.form(), holders: Seq[DeclarationHolder] = Seq.empty)(
     implicit request: JourneyRequest[_]
-  ): Document = page(mode, form, holders)(request, stubMessages())
+  ): Document = page(mode, form, holders)(request, messages)
 
   "have proper messages for labels" in {
-    val messages = instanceOf[MessagesApi].preferred(journeyRequest())
     messages must haveTranslationFor("declaration.declarationHolders.table.heading")
     messages must haveTranslationFor("declaration.declarationHolders.table.multiple.heading")
     messages must haveTranslationFor("declaration.declarationHolders.table.change.hint")
@@ -78,7 +75,7 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
       val view = createView()
 
       "display page title" in {
-        view.getElementsByTag("h1").text() mustBe messages("declaration.declarationHolders.table.multiple.heading")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.declarationHolders.table.multiple.heading", "0")
       }
 
       "display page title for multiple items" in {
@@ -86,15 +83,15 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("declaration.summary.parties.header")
+        view.getElementById("section-header") must containMessage("declaration.summary.parties.header")
       }
 
       "display'Save and continue' button on page" in {
-        view.getElementById("submit").text() mustBe "site.save_and_continue"
+        view.getElementById("submit") must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
+        view.getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
       }
     }
   }
@@ -115,10 +112,10 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB123456543"
         view
           .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint")}"
+          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint", "ACE-GB123456543")}"
         view
           .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(4)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint")}"
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint", "ACE-GB123456543")}"
       }
 
       "display two rows with data in table" in {
@@ -134,19 +131,19 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB123456543"
         view
           .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint")}"
+          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint", "ACE-GB123456543")}"
         view
           .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(4)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint")}"
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint", "ACE-GB123456543")}"
 
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe "CVA"
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "GB6543253678"
         view
           .select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint")}"
+          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint", "CVA-GB6543253678")}"
         view
           .select(".govuk-table__body > tr:nth-child(2) > td:nth-child(4)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint")}"
+          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint", "CVA-GB6543253678")}"
       }
     }
   }

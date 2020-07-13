@@ -34,14 +34,12 @@ class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestD
 
   private val page = instanceOf[representative_details_status]
   private val form: Form[RepresentativeStatus] = RepresentativeStatus.form()
-  override val request = journeyRequest()
-  override implicit val messages = validatedMessages(request)
   private def createView(
     mode: Mode = Mode.Normal,
     navigationForm: DeclarationPage = RepresentativeStatus,
     form: Form[RepresentativeStatus] = form
   ): Document =
-    page(mode, navigationForm, form)(request, messages)
+    page(mode, navigationForm, form)(journeyRequest(), messages)
 
   "Representative Details Status View on empty page" should {
     val view = createView()

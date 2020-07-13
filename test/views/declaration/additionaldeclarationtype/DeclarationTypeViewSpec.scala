@@ -18,7 +18,6 @@ package views.declaration.additionaldeclarationtype
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.util.SaveAndReturn
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype._
 import helpers.views.declaration.CommonMessages
@@ -26,8 +25,6 @@ import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -43,7 +40,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
   private val formOccasional: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeOccasionalDec.form()
   private val formClearance: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeClearanceDec.form()
   private val declarationTypePage = instanceOf[declaration_type]
-  private def createView(form: Form[AdditionalDeclarationType], journeyType: DeclarationType, messages: Messages = stubMessages()): Document =
+  private def createView(form: Form[AdditionalDeclarationType], journeyType: DeclarationType): Document =
     declarationTypePage(Mode.Normal, form)(journeyRequest(journeyType), messages)
 
   "Declaration Type View on empty page" should {
@@ -51,27 +48,27 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
     "display page title" when {
 
       "used for Standard Declaration journey" in {
-        val viewWithMessage = createView(formStandard, DeclarationType.STANDARD, realMessagesApi.preferred(request))
+        val viewWithMessage = createView(formStandard, DeclarationType.STANDARD)
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "used for Supplementary Declaration journey" in {
-        val viewWithMessage = createView(formSupplementary, DeclarationType.SUPPLEMENTARY, realMessagesApi.preferred(request))
+        val viewWithMessage = createView(formSupplementary, DeclarationType.SUPPLEMENTARY)
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "used for Simplified Declaration journey" in {
-        val viewWithMessage = createView(formSimplified, DeclarationType.SIMPLIFIED, realMessagesApi.preferred(request))
+        val viewWithMessage = createView(formSimplified, DeclarationType.SIMPLIFIED)
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "used for Occasional Declaration journey" in {
-        val viewWithMessage = createView(formOccasional, DeclarationType.OCCASIONAL, realMessagesApi.preferred(request))
+        val viewWithMessage = createView(formOccasional, DeclarationType.OCCASIONAL)
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "used for Clearance Request journey" in {
-        val viewWithMessage = createView(formClearance, DeclarationType.CLEARANCE, realMessagesApi.preferred(request))
+        val viewWithMessage = createView(formClearance, DeclarationType.CLEARANCE)
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
     }
@@ -177,41 +174,40 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
     }
 
     "display header" when {
-      val validated = validatedMessages(request)
 
       "used for Standard Declaration journey" in {
 
-        val view = createView(formStandard, DeclarationType.STANDARD, messages = validated)
+        val view = createView(formStandard, DeclarationType.STANDARD)
 
-        view.title() must include(validated("declaration.declarationType.header.standard"))
+        view.title() must include(messages("declaration.declarationType.header.standard"))
       }
 
       "used for Supplementary Declaration journey" in {
 
-        val view = createView(formSupplementary, DeclarationType.SUPPLEMENTARY, messages = validated)
+        val view = createView(formSupplementary, DeclarationType.SUPPLEMENTARY)
 
-        view.title() must include(validated("declaration.declarationType.header.supplementary"))
+        view.title() must include(messages("declaration.declarationType.header.supplementary"))
       }
 
       "used for Simplified Declaration journey" in {
 
-        val view = createView(formSimplified, DeclarationType.SIMPLIFIED, messages = validated)
+        val view = createView(formSimplified, DeclarationType.SIMPLIFIED)
 
-        view.title() must include(validated("declaration.declarationType.header.simplified"))
+        view.title() must include(messages("declaration.declarationType.header.simplified"))
       }
 
       "used for Occasional Declaration journey" in {
 
-        val view = createView(formOccasional, DeclarationType.OCCASIONAL, messages = validated)
+        val view = createView(formOccasional, DeclarationType.OCCASIONAL)
 
-        view.title() must include(validated("declaration.declarationType.header.occasional"))
+        view.title() must include(messages("declaration.declarationType.header.occasional"))
       }
 
       "used for Clearance Request journey" in {
 
-        val view = createView(formClearance, DeclarationType.CLEARANCE, messages = validated)
+        val view = createView(formClearance, DeclarationType.CLEARANCE)
 
-        view.title() must include(validated("declaration.declarationType.header.clearance"))
+        view.title() must include(messages("declaration.declarationType.header.clearance"))
       }
     }
 
@@ -296,7 +292,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.empty")
+        view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Supplementary Declaration journey" in {
@@ -306,7 +302,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.empty")
+        view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Simplified Declaration journey" in {
@@ -316,7 +312,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.empty")
+        view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Occasional Declaration journey" in {
@@ -326,7 +322,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.empty")
+        view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Clearance Request journey" in {
@@ -336,7 +332,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.empty")
+        view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.empty")
       }
     }
 
@@ -349,7 +345,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.incorrect")
+        view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Supplementary Declaration journey" in {
@@ -359,7 +355,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.incorrect")
+        view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Simplified Declaration journey" in {
@@ -369,7 +365,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.incorrect")
+        view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Occasional Declaration journey" in {
@@ -379,7 +375,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.incorrect")
+        view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Clearance Request journey" in {
@@ -389,7 +385,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.incorrect")
+        view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.incorrect")
       }
     }
 

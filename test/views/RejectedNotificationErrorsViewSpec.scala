@@ -20,7 +20,8 @@ import base.Injector
 import controllers.routes
 import models.Pointer
 import org.jsoup.nodes.Document
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import services.model.RejectionReason
 import unit.tools.Stubs
@@ -33,14 +34,13 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
 
   private val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"))
 
-  private def view(reasons: Seq[RejectionReason] = Seq.empty): Document = page(declaration, reasons)(request, messages)
+  private def view(reasons: Seq[RejectionReason] = Seq.empty, testMessages: Messages = messages): Document =
+    page(declaration, reasons)(request, testMessages)
   val defaultView: Document = view()
 
   "Rejected notification errors page" should {
 
     "have proper messages for labels" in {
-
-      val messages = instanceOf[MessagesApi].preferred(request)
       messages must haveTranslationFor("rejected.notification.ducr")
       messages must haveTranslationFor("rejected.notification.title")
       messages must haveTranslationFor("rejected.notification.continue")
@@ -53,7 +53,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
 
     "have correct section header" in {
 
-      defaultView.getElementById("section-header").text() mustBe messages("rejected.notification.ducr")
+      defaultView.getElementById("section-header").text() mustBe messages("rejected.notification.ducr", "DUCR")
     }
 
     "have correct back link" in {
@@ -68,11 +68,13 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
       val reason =
         RejectionReason("rejectionCode", "rejectionDescription", None, None, Some(Pointer("declaration.consignmentReferences.lrn")))
 
-      "fully populated and we are using the exports error descriptions" in {
-        val doc: Document = view(Seq(reason))
+      val testMessages = stubMessages()
 
-        doc.getElementsByClass("rejected_notifications-row-0-name").text() mustBe messages("field.declaration.consignmentReferences.lrn")
-        doc.getElementsByClass("rejected_notifications-row-0-description").text() mustBe messages(
+      "fully populated and we are using the exports error descriptions" in {
+        val doc: Document = view(Seq(reason), testMessages)
+
+        doc.getElementsByClass("rejected_notifications-row-0-name").text() mustBe testMessages("field.declaration.consignmentReferences.lrn")
+        doc.getElementsByClass("rejected_notifications-row-0-description").text() mustBe testMessages(
           "rejected.notification.description.format",
           "exportsRejectionDescription",
           "rejectionCode"
@@ -88,9 +90,9 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
           Some(Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id"))
         )
 
-        val doc: Document = view(Seq(reason))
+        val doc: Document = view(Seq(reason), testMessages)
 
-        doc.getElementsByClass("rejected_notifications-row-0-name").text() mustBe messages(
+        doc.getElementsByClass("rejected_notifications-row-0-name").text() mustBe testMessages(
           "field.declaration.goodsShipment.governmentAgencyGoodsItem.$.additionalDocument.$.id",
           "0",
           "1"

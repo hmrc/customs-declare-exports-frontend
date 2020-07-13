@@ -25,8 +25,6 @@ import forms.declaration.ConsignmentReferences
 import forms.{Choice, Ducr, Lrn}
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
-import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import views.declaration.spec.{UnitViewSpec, ViewMatchers}
 import views.html.saved_declarations
@@ -34,12 +32,14 @@ import views.tags.ViewTest
 
 @ViewTest
 class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatchers {
-
   val title: String = "saved.declarations.title"
-  val ducr: String = "saved.declarations.ducr"
-  val dateSaved: String = "saved.declarations.dateSaved"
 
+  val ducr: String = "saved.declarations.ducr"
+  private val noDucrLabel = "No DUCR added"
+
+  val dateSaved: String = "saved.declarations.dateSaved"
   private val savedDeclarationsPage = instanceOf[saved_declarations]
+
   private val decWithoutDucr = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 9, 45, 0).toInstant(ZoneOffset.UTC))
@@ -51,22 +51,14 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 10, 0, 0).toInstant(ZoneOffset.UTC))
   )
 
-  private def createView(
-    declarations: Seq[ExportsDeclaration] = Seq.empty,
-    page: Int = 1,
-    pageSize: Int = 10,
-    total: Int = 0,
-    messages: Messages = stubMessages()
-  ) = {
+  private def createView(declarations: Seq[ExportsDeclaration] = Seq.empty, page: Int = 1, pageSize: Int = 10, total: Int = 0) = {
     val data = Paginated(declarations, Page(page, pageSize), total)
     savedDeclarationsPage(data)(request, messages)
   }
-
   "Saved Declarations View" should {
 
     "display empty declaration list " in {
-      val messages = realMessagesApi.preferred(request)
-      val view = createView(messages = messages)
+      val view = createView()
 
       view.title() must include(view.getElementsByTag("h1").text())
 
@@ -83,9 +75,9 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
 
       numberOfTableRows(view) mustBe 1
 
-      tableCell(view)(1, 0).text() mustBe s"${messages("saved.declarations.noDucr")} ${messages("saved.declarations.continue.hidden")}"
+      tableCell(view)(1, 0).text() mustBe s"${messages("saved.declarations.noDucr")} ${messages("saved.declarations.continue.hidden", noDucrLabel)}"
       tableCell(view)(1, 1).text() mustBe "1 January 2019 at 09:45"
-      tableCell(view)(1, 2).text() mustBe s"${messages("site.remove")} ${messages("saved.declarations.remove.hidden")}"
+      tableCell(view)(1, 2).text() mustBe s"${messages("site.remove")} ${messages("saved.declarations.remove.hidden", noDucrLabel)}"
 
       view.getElementsByClass("ceds-pagination") mustNot be(empty)
     }
@@ -100,9 +92,9 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
 
       numberOfTableRows(view) mustBe 1
 
-      tableCell(view)(1, 0).text() mustBe s"${messages("saved.declarations.noDucr")} ${messages("saved.declarations.continue.hidden")}"
+      tableCell(view)(1, 0).text() mustBe s"${messages("saved.declarations.noDucr")} ${messages("saved.declarations.continue.hidden", noDucrLabel)}"
       tableCell(view)(1, 1).text() mustBe "1 May 2019 at 10:45"
-      tableCell(view)(1, 2).text() mustBe s"${messages("site.remove")} ${messages("saved.declarations.remove.hidden")}"
+      tableCell(view)(1, 2).text() mustBe s"${messages("site.remove")} ${messages("saved.declarations.remove.hidden", noDucrLabel)}"
 
       view.getElementsByClass("ceds-pagination") mustNot be(empty)
     }
@@ -110,7 +102,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
     "display 'Back' button that links to 'Choice' page with 'Continue saved declarations' selected" in {
       val backButton = createView().getElementById("back-link")
 
-      backButton must containText("site.back")
+      backButton must containMessage("site.back")
       backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(ContinueDec))))
     }
 

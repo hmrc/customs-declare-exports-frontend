@@ -52,6 +52,8 @@ trait ViewMatchers {
   def containErrorElementWithTagAndHref(tag: String, href: String): Matcher[Element] = new ContainErrorElementWithClassMatcher(tag, href)
 
   def containErrorElementWithMessage(text: String): Matcher[Element] = new ContainErrorElementWithMessage(text)
+  def containErrorElementWithMessageKey(key: String)(implicit messages: Messages): Matcher[Element] =
+    new ContainErrorElementWithMessage(messages(key))
 
   def containElementWithAttribute(key: String, value: String): Matcher[Element] =
     new ContainElementWithAttribute(key, value)
@@ -62,6 +64,9 @@ trait ViewMatchers {
 
   def containMessage(key: String, args: Any*)(implicit messages: Messages): Matcher[Element] =
     new ElementContainsMessageMatcher(key, args)
+
+  def containMessageForElements(key: String, args: Any*)(implicit messages: Messages): Matcher[Elements] =
+    new ElementsContainsMessageMatcher(key, args)
 
   def beSelected: Matcher[Element] = new ElementSelectedMatcher(true)
 
@@ -86,6 +91,8 @@ trait ViewMatchers {
   def haveSummaryKey(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__key", value)
   def haveSummaryValue(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__value", value)
   def haveSummaryActionsText(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__actions", value)
+  def haveSummaryActionsTexts(label: String, hint: String, hintArgs: String*)(implicit messages: Messages) =
+    haveSummaryActionsText(s"${messages(label)} ${messages(hint, hintArgs: _*)}")
   def haveSummaryActionsHref(value: Call) = new ElementsHasSummaryActionMatcher(value)
 
   def haveChildCount(count: Int): Matcher[Element] = new ElementHasChildCountMatcher(count)
@@ -221,6 +228,17 @@ trait ViewMatchers {
         left != null && left.text().contains(message),
         s"Element did not contain message {$message}\n${actualContentWas(left)}",
         s"Element contained message {$message}"
+      )
+    }
+  }
+
+  class ElementsContainsMessageMatcher(key: String, args: Seq[Any])(implicit messages: Messages) extends Matcher[Elements] {
+    override def apply(left: Elements): MatchResult = {
+      val message = messages(key, args: _*)
+      MatchResult(
+        left != null && left.text().contains(message),
+        s"Elements did not contain message {$message}\n${actualContentWas(left)}",
+        s"Elements contained message {$message}"
       )
     }
   }

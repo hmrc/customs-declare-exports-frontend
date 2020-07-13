@@ -29,8 +29,6 @@ import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.exporter_details
@@ -43,14 +41,14 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
   private def form(journeyType: DeclarationType): Form[ExporterDetails] = ExporterDetails.form(journeyType)
 
-  private def createView(form: Form[ExporterDetails], messages: Messages = stubMessages())(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[ExporterDetails])(implicit request: JourneyRequest[_]): Document =
     exporterDetailsPage(Mode.Normal, form)(request, messages)
 
   "Exporter Details View on empty page" should {
 
     onEveryDeclarationJourney() { implicit request =>
       "display same page title as header" in {
-        val viewWithMessage = createView(form(request.declarationType), messages = realMessagesApi.preferred(request))
+        val viewWithMessage = createView(form(request.declarationType))
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
@@ -128,7 +126,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       }
     }
 
-    onClearance { request =>
+    onClearance { implicit request =>
       "display 'Back' button that links to 'Declarant Is Exporter' page" when {
         "user have answered 'No' on 'Entry into Declarant's Records' page" in {
 

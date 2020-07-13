@@ -21,17 +21,20 @@ import views.declaration.spec.UnitViewSpec
 
 class TitleSpec extends UnitViewSpec with MustMatchers {
 
-  override val messages = realMessagesApi.preferred(request)
   val serviceName = messages("service.name")
 
   "Title" should {
 
     "format title without section" in {
-      Title("some.title").toString(messages) must equal(s"some.title - $serviceName - GOV.UK")
+      Title("declaration.declarationType.title").toString(messages) must equal(
+        s"${messages("declaration.declarationType.title")} - $serviceName - GOV.UK"
+      )
     }
 
     "format title with section" in {
-      Title("some.title", "some.section").toString(messages) must equal(s"some.title - some.section - $serviceName - GOV.UK")
+      Title("declaration.declarationType.title", "declaration.declarationType.header.supplementary").toString(messages) must equal(
+        s"${messages("declaration.declarationType.title")} - ${messages("declaration.declarationType.header.supplementary")} - $serviceName - GOV.UK"
+      )
     }
 
   }

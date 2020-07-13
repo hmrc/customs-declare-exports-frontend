@@ -28,7 +28,6 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.OptionValues
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import unit.tools.Stubs
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
@@ -51,8 +50,6 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
   "Document Produced" should {
 
     "have correct message keys" in {
-
-      val messages = instanceOf[MessagesApi].preferred(request)
       messages must haveTranslationFor("declaration.addDocument.table.heading")
       messages must haveTranslationFor("declaration.addDocument.table.multiple.heading")
       messages must haveTranslationFor("declaration.addDocument.documentTypeCode")
@@ -78,27 +75,27 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView()
 
       "display page title" in {
-        view.getElementsByTag("h1").text() mustBe messagesKey("declaration.addDocument.table.multiple.heading")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.addDocument.table.multiple.heading", "0")
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("supplementary.items")
+        view.getElementById("section-header") must containMessage("supplementary.items")
       }
 
       "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe messagesKey(backCaption)
+        backButton must containMessage(backCaption)
         backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
       }
 
       "display 'Save and continue' button on page" in {
         val saveAndContinueButton = view.getElementById("submit")
-        saveAndContinueButton.text() mustBe messagesKey(saveAndContinueCaption)
+        saveAndContinueButton must containMessage(saveAndContinueCaption)
 
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text() mustBe messagesKey(saveAndReturnCaption)
+        saveAndReturnButton must containMessage(saveAndReturnCaption)
         saveAndReturnButton must haveAttribute("name", SaveAndReturn.toString)
       }
     }
@@ -112,7 +109,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe messagesKey(backCaption)
+        backButton must containMessage(backCaption)
         backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
       }
 
@@ -128,7 +125,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#yesNo")
 
-        view must containErrorElementWithMessage("error.yesNo.required")
+        view must containErrorElementWithMessageKey("error.yesNo.required")
       }
     }
   }
@@ -143,11 +140,11 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
           val header = view.getElementById("documents_produced")
 
           "have header for Document Type" in {
-            header.getElementsByClass("govuk-table__header").get(0).text() mustBe messagesKey("declaration.addDocument.summary.documentTypeCode")
+            header.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.addDocument.summary.documentTypeCode")
           }
 
           "have header for Document Identifier" in {
-            header.getElementsByClass("govuk-table__header").get(1).text() mustBe messagesKey("declaration.addDocument.summary.documentIdentifier")
+            header.getElementsByClass("govuk-table__header").get(1) must containMessage("declaration.addDocument.summary.documentIdentifier")
           }
 
         }
@@ -166,7 +163,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
 
           "have change link" in {
             val removeLink = row.select(".govuk-link").get(0)
-            removeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.addDocument.table.change.hint")}"
+            removeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.addDocument.table.change.hint", "ABCDEF1234567890")}"
             removeLink must haveHref(
               controllers.declaration.routes.DocumentsProducedChangeController
                 .displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))
@@ -175,7 +172,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
 
           "have remove link" in {
             val removeLink = row.select(".govuk-link").get(1)
-            removeLink.text() mustBe s"${messages("site.remove")} ${messages("declaration.addDocument.table.remove.hint")}"
+            removeLink.text() mustBe s"${messages("site.remove")} ${messages("declaration.addDocument.table.remove.hint", "ABCDEF1234567890")}"
             removeLink must haveHref(
               controllers.declaration.routes.DocumentsProducedRemoveController
                 .displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))

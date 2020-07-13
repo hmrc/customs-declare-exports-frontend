@@ -23,7 +23,6 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -35,11 +34,9 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
 
   private val page = instanceOf[border_transport]
   private val form: Form[BorderTransport] = BorderTransport.form()
-  private val realMessages = validatedMessages
 
   def borderView(view: Document): Unit = {
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.transportInformation.active.title")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.crossingTheBorder.header")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header")
@@ -56,15 +53,15 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
     }
 
     "display page title" in {
-      view.getElementsByTag("h1").first() must containText(realMessages("declaration.transportInformation.active.title"))
+      view.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.active.title")
     }
 
     "display 'Save and continue' button on page" in {
-      view.getElementById("submit") must containText(realMessages(saveAndContinueCaption))
+      view.getElementById("submit") must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
-      view.getElementById("submit_and_return") must containText(realMessages(saveAndReturnCaption))
+      view.getElementById("submit_and_return") must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -72,29 +69,29 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
     def hasSectionFor(view: Document, transportType: String) = {
       view
         .getElementsByAttributeValue("for", transportType)
-        .first() must containText(realMessages(s"declaration.transportInformation.meansOfTransport.$transportType"))
+        .first() must containMessage(s"declaration.transportInformation.meansOfTransport.$transportType")
       view
         .getElementsByAttributeValue("for", s"borderTransportReference_$transportType")
-        .first() must containText(realMessages(s"declaration.transportInformation.meansOfTransport.$transportType.label"))
+        .first() must containMessage(s"declaration.transportInformation.meansOfTransport.$transportType.label")
     }
 
     "display 'Means of Transport' section" which {
       "nationality picker" in {
         view
-          .getElementById("borderTransportNationality-label") must containText(
-          realMessages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header")
+          .getElementById("borderTransportNationality-label") must containMessage(
+          "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header"
         )
       }
       "has label" in {
         view
           .getElementById("borderTransportType-fieldSet")
           .getElementsByClass("govuk-fieldset__legend")
-          .first() must containText(realMessages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header"))
+          .first() must containMessage("declaration.transportInformation.meansOfTransport.crossingTheBorder.header")
       }
       "has hint" in {
         view
-          .getElementById("borderTransportType-hint") must containText(
-          realMessages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint")
+          .getElementById("borderTransportType-hint") must containMessage(
+          "declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint"
         )
       }
       "has 'Ship' section" in {
@@ -124,17 +121,17 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
     }
   }
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[BorderTransport] = form, request: JourneyRequest[_] = journeyRequest()): Document =
-    page(mode, form)(request, realMessages)
+  private def createView(mode: Mode = Mode.Normal, form: Form[BorderTransport] = form)(implicit request: JourneyRequest[_]): Document =
+    page(mode, form)
 
   "TransportDetails View" must {
 
-    onStandard { standard =>
-      val view = createView(request = standard)
+    onStandard { implicit request =>
+      val view = createView()
       "display 'Back' button that links to 'Departure' page" in {
         val backButton = view.getElementById("back-link")
 
-        backButton must containText(realMessages(backCaption))
+        backButton must containMessage(backCaption)
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal))
       }
 
@@ -142,13 +139,13 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       behave like havingMeansOfTransport(view)
     }
 
-    onSupplementary { supplementary =>
-      val view = createView(request = supplementary)
+    onSupplementary { implicit request =>
+      val view = createView()
 
       "display 'Back' button that links to 'Departure' page" in {
         val backButton = view.getElementById("back-link")
 
-        backButton must containText(realMessages(backCaption))
+        backButton must containMessage(backCaption)
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal))
       }
 

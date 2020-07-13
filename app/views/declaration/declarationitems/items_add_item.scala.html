@@ -48,7 +48,7 @@
 }
 
 @govukLayout(
-  title = Title(messages("declaration.itemsAdd.title"), "supplementary.items"),
+  title = Title("declaration.itemsAdd.title", "supplementary.items"),
   backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExportItem, mode)))) {
 
   @formHelper(action = routes.ItemsSummaryController.addFirstItem(mode), 'autoComplete -> "off") {
@@ -62,7 +62,7 @@
       )),
       html = HtmlFormat.fill(immutable.Seq(
         pageHint,
-        addButton(label = messages("site.add.item"), hiddenLabel = Some(messages("site.add.item"))),
+        addButton(label = "site.add.item", hiddenLabel = Some(messages("site.add.item"))),
         saveAsDraftButton
       ))
     ))
