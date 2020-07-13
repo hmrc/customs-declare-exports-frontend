@@ -59,6 +59,10 @@
         Text(messages("declaration.additionalInformation.table.multiple.heading", items.size))
 }
 
+@headerEmptyContent(message: String) = {
+    <span class="govuk-visually-hidden">@message</span>
+}
+
 @additionalInformationTable = {
     @if(items.nonEmpty) {
         @govukTable(Table(
@@ -98,7 +102,12 @@
                 HeadCell(
                     content = Text(messages("declaration.additionalInformation.table.headers.description"))
                 ),
-                HeadCell(colspan = Some(2))
+                HeadCell(
+                    content = HtmlContent(headerEmptyContent(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(headerEmptyContent(messages("site.remove.header")))
+                )
             ))
         ))
     }

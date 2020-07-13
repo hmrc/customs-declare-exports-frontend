@@ -59,6 +59,10 @@
         Text(messages("declaration.additionalActors.table.multiple.heading", actors.size))
 }
 
+@headerEmptyContent(message: String) = {
+    <span class="govuk-visually-hidden">@message</span>
+}
+
 @actorsTable = {
 @if(actors.nonEmpty) {
     @govukTable(Table(
@@ -91,7 +95,9 @@
             HeadCell(
                 content = Text(messages("declaration.additionalActors.table.eori"))
             ),
-            HeadCell(colspan = Some(1))
+            HeadCell(
+                content = HtmlContent(headerEmptyContent(messages("site.remove.header")))
+            )
         ))
     ))
 }

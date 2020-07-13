@@ -58,6 +58,10 @@
         Text(messages("declaration.declarationHolders.table.multiple.heading", holders.size))
 }
 
+@headerEmptyContent(message: String) = {
+    <span class="govuk-visually-hidden">@message</span>
+}
+
 @holdersTable = {
     @if(holders.nonEmpty) {
         @govukTable(Table(
@@ -96,7 +100,12 @@
                 HeadCell(
                     content = Text(messages("declaration.declarationHolders.table.eori"))
                 ),
-                HeadCell(colspan = Some(2))
+                HeadCell(
+                content = HtmlContent(headerEmptyContent(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(headerEmptyContent(messages("site.remove.header")))
+                )
             ))
         ))
     }

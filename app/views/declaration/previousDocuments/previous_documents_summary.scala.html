@@ -58,6 +58,10 @@
 
 @tariffBody = { @Html(messages("declaration.type.previousDocumentsSummaryText", components.details_content_link())) }
 
+@headerEmptyContent(message: String) = {
+    <span class="govuk-visually-hidden">@message</span>
+}
+
 @documentsTable = {
     @if(documents.nonEmpty) {
         @govukTable(Table(
@@ -106,7 +110,12 @@
                 HeadCell(
                     content = Text(messages("declaration.previousDocuments.goodsItemIdentifier.summary.label"))
                 ),
-                HeadCell(colspan = Some(2))
+                HeadCell(
+                    content = HtmlContent(headerEmptyContent(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(headerEmptyContent(messages("site.remove.header")))
+                )
             ))
         ))
     }

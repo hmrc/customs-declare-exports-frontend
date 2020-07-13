@@ -49,6 +49,10 @@
     @Html(messages("declaration.type.container.summary.help.text", components.details_content_link()))
 }
 
+@headerEmptyContent(message: String) = {
+    <span class="govuk-visually-hidden">@message</span>
+}
+
 @containersTable = {
     @if(containers.nonEmpty) {
         @govukTable(Table(
@@ -80,7 +84,12 @@
                 HeadCell(
                     content = Text(messages("declaration.seal.summary.heading"))
                 ),
-                HeadCell()
+                HeadCell(
+                    content = HtmlContent(headerEmptyContent(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(headerEmptyContent(messages("site.remove.header")))
+                )
             ))
         ))
 
