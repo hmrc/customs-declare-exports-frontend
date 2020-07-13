@@ -26,12 +26,14 @@ class TitleSpec extends UnitViewSpec with MustMatchers {
   "Title" should {
 
     "format title without section" in {
-      Title("index.title").toString(messages) must equal(s"${messages("index.title")} - $serviceName - GOV.UK")
+      Title("declaration.declarationType.title").toString(messages) must equal(
+        s"${messages("declaration.declarationType.title")} - $serviceName - GOV.UK"
+      )
     }
 
     "format title with section" in {
-      Title("index.title", "index.heading").toString(messages) must equal(
-        s"${messages("index.title")} - ${messages("index.heading")} - $serviceName - GOV.UK"
+      Title("declaration.declarationType.title", "declaration.declarationType.header.supplementary").toString(messages) must equal(
+        s"${messages("declaration.declarationType.title")} - ${messages("declaration.declarationType.header.supplementary")} - $serviceName - GOV.UK"
       )
     }
 

@@ -43,7 +43,7 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
         row must haveSummaryKey(messages("declaration.summary.items.item.supportingDocuments"))
         row must haveSummaryValue("")
 
-        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.supportingDocuments.change")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.supportingDocuments.changeAll")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId"))
       }

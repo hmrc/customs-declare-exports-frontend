@@ -56,7 +56,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         val isExporterRow = view.getElementsByClass("declarantIsExporter-row")
 
         isExporterRow must haveSummaryKey(messages("declaration.summary.parties.declarantIsExporter"))
-        isExporterRow must haveSummaryValue(messages("declaration.summary.parties.declarantIsExporter.no"))
+        isExporterRow must haveSummaryValue(messages("site.no"))
         isExporterRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.declarantIsExporter.change")
         isExporterRow must haveSummaryActionsHref(controllers.declaration.routes.DeclarantExporterController.displayPage(Mode.Change))
       }
@@ -108,7 +108,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         val eoriRow = view.getElementsByClass("representingAnotherAgent-row")
 
         eoriRow must haveSummaryKey(messages("declaration.summary.parties.representative.agent"))
-        eoriRow must haveSummaryValue(messages("declaration.summary.parties.representative.agent.yes"))
+        eoriRow must haveSummaryValue(messages("site.yes"))
         eoriRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.representative.agent.change")
         eoriRow must haveSummaryActionsHref(controllers.declaration.routes.RepresentativeAgentController.displayPage(Mode.Change))
       }
@@ -237,7 +237,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         val isEidrRow = view.getElementsByClass("is-entry-into-declarants-records-row")
 
         isEidrRow must haveSummaryKey(messages("declaration.summary.parties.eidr"))
-        isEidrRow must haveSummaryValue(messages("declaration.summary.parties.eidr.yes"))
+        isEidrRow must haveSummaryValue(messages("site.yes"))
         isEidrRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.eidr.change")
         isEidrRow must haveSummaryActionsHref(controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage(Mode.Change))
       }

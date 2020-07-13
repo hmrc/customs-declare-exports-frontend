@@ -42,7 +42,7 @@
 @tariffBody = { @Html(messages("declaration.totalPackageQuantity.help.bodyText", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("supplementary.valueOfItems", "declaration.totalPackageQuantity.title"),
+    title = Title("declaration.totalPackageQuantity.title", "supplementary.items"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TotalPackageQuantity, mode)))
 ) {
 
