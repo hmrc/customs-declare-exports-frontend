@@ -153,8 +153,15 @@ class ItemsSummaryController @Inject()(
           request.cacheModel.items.filterNot(_ == itemToDelete).zipWithIndex.map {
             case (item, index) => item.copy(sequenceId = index + 1)
           }
-        exportsCacheService.update(request.cacheModel.copy(items = updatedItems))
+        val updatedModel = removeWarehouseIdentification(request.cacheModel.copy(items = updatedItems))
+        exportsCacheService.update(updatedModel)
 
       case None => Future.successful(None)
     }
+
+  private def removeWarehouseIdentification(declaration: ExportsDeclaration) =
+    if (declaration.`type` == DeclarationType.CLEARANCE || declaration.requiresWarehouseId)
+      declaration
+    else
+      declaration.copy(locations = declaration.locations.copy(warehouseIdentification = None))
 }
