@@ -77,8 +77,7 @@
                 HeadCell(content = Text(messages("declaration.itemsSummary.itemNumber"))),
                 HeadCell(content = Text(messages("declaration.itemsSummary.procedureCode"))),
                 HeadCell(content = Text(messages("declaration.itemsSummary.commodityCode"))),
-                HeadCell(content = Text(messages("declaration.itemsSummary.noOfPackages"))),
-                HeadCell(colspan = Some(2))
+                HeadCell(colspan = Some(3), content = Text(messages("declaration.itemsSummary.noOfPackages")))
             )),
             rows = items.zipWithIndex.map { case (item, index) =>
                 Seq(

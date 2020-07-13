@@ -70,8 +70,7 @@
       head = Some(List(
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages"))),
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages"))),
-        HeadCell(content = Text(messages("declaration.packageInformation.table.heading.shippingMarks"))),
-        HeadCell()
+        HeadCell(colspan = Some(2), content = Text(messages("declaration.packageInformation.table.heading.shippingMarks")))
       )),
       rows = packages.zipWithIndex.map { case (item, index) =>
         Seq(
