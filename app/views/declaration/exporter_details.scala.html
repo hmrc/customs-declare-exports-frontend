@@ -66,12 +66,6 @@
     </span>
 }
 
-@exportsName = {
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-        @messages("declaration.exporter-detail.addressHeading")
-    </legend>
-}
-
 @or = {
     <p class="govuk-body">Or</p>
 }
@@ -103,11 +97,10 @@
         @govukFieldset(Fieldset(
             attributes = Map("id" -> "details"),
                 legend = Some(Legend(
-                    content = Text(""),
-                    classes = "govuk-label"
+                    content = Text(messages("declaration.exporter-detail.addressHeading")),
+                    classes = "govuk-fieldset__legend--m"
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                exportsName,
                 groupAddress,
                 tariff,
                 saveButtons()

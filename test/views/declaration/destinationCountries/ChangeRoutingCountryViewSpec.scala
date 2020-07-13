@@ -56,12 +56,12 @@ class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
       s"have page question during changing first routing country for ${request.declarationType}" in {
 
-        firstRoutingView(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.firstRoutingCountry.question")
+        firstRoutingView(request).getElementsByTag("h1") must containMessageForElements("declaration.firstRoutingCountry.question")
       }
 
       s"have page question during changing next routing country for ${request.declarationType}" in {
 
-        nextRoutingView(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.routingCountry.question")
+        nextRoutingView(request).getElementsByTag("h1") must containMessageForElements("declaration.routingCountry.question")
       }
 
       s"display back button that links to 'Countries summary' for first routing country page for ${request.declarationType}" in {
