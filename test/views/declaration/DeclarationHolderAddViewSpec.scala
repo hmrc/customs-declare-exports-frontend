@@ -23,11 +23,10 @@ import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
+import models.Mode
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declarationHolder.declaration_holder_add
@@ -44,8 +43,6 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
   "Declaration holder" should {
 
     "have correct message keys" in {
-
-      val messages = instanceOf[MessagesApi].preferred(request)
 
       messages must haveTranslationFor("declaration.declarationHolder.title")
       messages must haveTranslationFor("declaration.declarationHolder.title.hint")
@@ -137,7 +134,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#authorisationTypeCode")
 
-        view must containErrorElementWithMessage("declaration.declarationHolder.authorisationCode.invalid")
+        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.invalid")
       }
 
       "display error for incorrect EORI" in {
@@ -151,7 +148,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#eori")
 
-        view must containErrorElementWithMessage("declaration.eori.error.format")
+        view must containErrorElementWithMessageKey("declaration.eori.error.format")
       }
 
       "display error for both incorrect fields" in {
@@ -169,8 +166,8 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         view must containErrorElementWithTagAndHref("a", "#authorisationTypeCode")
         view must containErrorElementWithTagAndHref("a", "#eori")
 
-        view must containErrorElementWithMessage("declaration.declarationHolder.authorisationCode.invalid")
-        view must containErrorElementWithMessage("declaration.eori.error.format")
+        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.invalid")
+        view must containErrorElementWithMessageKey("declaration.eori.error.format")
 
       }
     }

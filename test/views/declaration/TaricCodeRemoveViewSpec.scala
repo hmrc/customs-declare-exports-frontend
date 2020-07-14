@@ -33,18 +33,17 @@ class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers 
 
   private val itemId = "item1"
   private val taricCode = "TARI"
-  private val realMessages = validatedMessages
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[taric_code_remove]
 
   private def createView(form: Form[YesNoAnswer] = form, code: String = taricCode): Document =
-    page(Mode.Normal, itemId, code, form)(request, realMessages)
+    page(Mode.Normal, itemId, code, form)(request, messages)
 
   "Taric Code Remove View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(realMessages("declaration.taricAdditionalCodes.remove.header"))
+      view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.remove.header")
     }
 
     "display Taric code to remove" in {
@@ -54,7 +53,7 @@ class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers 
     "display 'Back' button that links to 'taric codes summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer must containText(realMessages(backCaption))
+      backLinkContainer must containMessage(backCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
       )
@@ -62,12 +61,12 @@ class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers 
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton must containText(realMessages(saveAndContinueCaption))
+      saveButton must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containText(realMessages(saveAndReturnCaption))
+      saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -79,7 +78,7 @@ class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#yesNo")
 
-      view must containErrorElementWithMessage(realMessages("error.yesNo.required"))
+      view must containErrorElementWithMessageKey("error.yesNo.required")
     }
 
   }

@@ -34,16 +34,15 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
   private val form: Form[ContainerAdd] = ContainerAdd.form()
   private val page = instanceOf[transport_container_add]
-  private val realMessages = validatedMessages
 
   private def createView(form: Form[ContainerAdd] = form): Document =
-    page(Mode.Normal, form)(journeyRequest(), realMessages)
+    page(Mode.Normal, form)(journeyRequest(), messages)
 
   "Transport Containers Add View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(realMessages("declaration.transportInformation.containers.add.title"))
+      view.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.containers.add.title")
     }
 
     "display 'Back' button that links to 'containers summary' page" in {
@@ -56,12 +55,12 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(realMessages(saveAndContinueCaption))
+      saveButton must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(realMessages(saveAndReturnCaption))
+      saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -73,7 +72,7 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
 
-      view must containErrorElementWithMessage(realMessages("declaration.transportInformation.containerId.empty"))
+      view must containErrorElementWithMessageKey("declaration.transportInformation.containerId.empty")
     }
 
     "display error if incorrect containerId is entered" in {
@@ -82,7 +81,7 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
 
-      view must containErrorElementWithMessage(realMessages("declaration.transportInformation.containerId.error.length"))
+      view must containErrorElementWithMessageKey("declaration.transportInformation.containerId.error.length")
     }
 
   }

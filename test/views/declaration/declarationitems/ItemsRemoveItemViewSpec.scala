@@ -23,10 +23,8 @@ import models.Mode
 import models.declaration.ExportItem
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
-import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import play.api.test.Helpers.stubMessages
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declarationitems.items_remove_item
@@ -38,7 +36,7 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestData with Stu
   private val page = instanceOf[items_remove_item]
   private val form = YesNoAnswer.form()
   private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = form, item: ExportItem): Document =
-    page(mode, form, item)(journeyRequest(), stubMessages())
+    page(mode, form, item)(journeyRequest(), messages)
 
   private val exportItem = anItem()
 
@@ -46,7 +44,6 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestData with Stu
 
     "have proper messages for labels" in {
 
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.itemsRemove.title")
     }
 
@@ -59,7 +56,7 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestData with Stu
 
     "display error section" in {
 
-      val formWithErrors = form.copy(errors = Seq(FormError("errorKey", "errorMessage")))
+      val formWithErrors = form.copy(errors = Seq(FormError("errorKey", "declaration.cusCode.error.empty")))
       val view = createView(form = formWithErrors, item = exportItem)
 
       view must haveGovukGlobalErrorSummary
@@ -73,7 +70,7 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with ExportsTestData with Stu
 
     "display title" in {
 
-      view.getElementsByClass(Styles.gdsPageLegend).first() must containMessage("declaration.itemsRemove.title")
+      view.getElementsByClass(Styles.gdsPageLegend).first() must containMessage("declaration.itemsRemove.title", "0")
     }
 
     "display Item Section table" in {

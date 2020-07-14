@@ -57,7 +57,7 @@ class ConsignorDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
     val view = createViewWithAddressError(address)
     fields.filterNot(_ == fieldName).foreach { key =>
       view must containErrorElementWithTagAndHref("a", s"#details_address_$key")
-      view must containErrorElementWithMessage(s"declaration.address.$key.$errorKey")
+      view must containErrorElementWithMessageKey(s"declaration.address.$key.$errorKey")
     }
   }
 
@@ -65,7 +65,7 @@ class ConsignorDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     val view = createViewWithAddressError(address)
     view must containErrorElementWithTagAndHref("a", s"#details_address_$fieldName")
-    view must containErrorElementWithMessage(s"declaration.address.$fieldName.$errorKey")
+    view must containErrorElementWithMessageKey(s"declaration.address.$fieldName.$errorKey")
   }
 
   def createViewWithAddressError(address: Address)(implicit request: JourneyRequest[_]): Document = {

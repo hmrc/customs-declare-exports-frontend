@@ -37,65 +37,77 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-        view.getElementsByTag("h1").text() mustBe "declaration.transport.leavingTheBorder.title"
+        view.getElementsByTag("h1") must containMessageForElements("declaration.transport.leavingTheBorder.title")
       }
 
       "display 'Back' button that links to 'Items Summary' page" in {
         val backButton = view.getElementById("back-link")
-        backButton.text() mustBe messages("site.back")
+        backButton must containMessage("site.back")
         backButton must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage())
       }
 
       "display 'Save and continue' button on page" in {
-        view.getElementById("submit").text() mustBe messages("site.save_and_continue")
+        view.getElementById("submit") must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
         val saveAndReturn = view.getElementById("submit_and_return")
-        saveAndReturn.text() mustBe messages("site.save_and_come_back_later")
+        saveAndReturn must containMessage("site.save_and_come_back_later")
         saveAndReturn must haveAttribute("name", SaveAndReturn.toString)
       }
 
       "display 'Mode of Transport' section" which {
 
         "have 'Sea' option" in {
-          view.getElementsByAttributeValue("for", "Border_Sea").text() mustBe "declaration.transport.leavingTheBorder.transportMode.sea"
+          view.getElementsByAttributeValue("for", "Border_Sea") must containMessageForElements(
+            "declaration.transport.leavingTheBorder.transportMode.sea"
+          )
         }
 
         "have 'Road' option" in {
-          view.getElementsByAttributeValue("for", "Border_Road").text() mustBe "declaration.transport.leavingTheBorder.transportMode.road"
+          view.getElementsByAttributeValue("for", "Border_Road") must containMessageForElements(
+            "declaration.transport.leavingTheBorder.transportMode.road"
+          )
         }
 
         "have 'Rail' option" in {
-          view.getElementsByAttributeValue("for", "Border_Rail").text() mustBe "declaration.transport.leavingTheBorder.transportMode.rail"
+          view.getElementsByAttributeValue("for", "Border_Rail") must containMessageForElements(
+            "declaration.transport.leavingTheBorder.transportMode.rail"
+          )
         }
 
         "have 'Air' option" in {
-          view.getElementsByAttributeValue("for", "Border_Air").text() mustBe "declaration.transport.leavingTheBorder.transportMode.air"
+          view.getElementsByAttributeValue("for", "Border_Air") must containMessageForElements(
+            "declaration.transport.leavingTheBorder.transportMode.air"
+          )
         }
 
         "have 'Postal or Mail' option" in {
           view
-            .getElementsByAttributeValue("for", "Border_PostalOrMail")
-            .text() mustBe "declaration.transport.leavingTheBorder.transportMode.postalOrMail"
+            .getElementsByAttributeValue("for", "Border_PostalOrMail") must containMessageForElements(
+            "declaration.transport.leavingTheBorder.transportMode.postalOrMail"
+          )
         }
 
         "have 'Fixed transport installations' option" in {
           view
-            .getElementsByAttributeValue("for", "Border_FixedTransportInstallations")
-            .text() mustBe "declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations"
+            .getElementsByAttributeValue("for", "Border_FixedTransportInstallations") must containMessageForElements(
+            "declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations"
+          )
         }
 
         "have 'Inland waterway transport' option" in {
           view
-            .getElementsByAttributeValue("for", "Border_InlandWaterway")
-            .text() mustBe "declaration.transport.leavingTheBorder.transportMode.inlandWaterway"
+            .getElementsByAttributeValue("for", "Border_InlandWaterway") must containMessageForElements(
+            "declaration.transport.leavingTheBorder.transportMode.inlandWaterway"
+          )
         }
 
         "have 'Mode unknown' option" in {
           view
-            .getElementsByAttributeValue("for", "Border_Unknown")
-            .text() mustBe "declaration.transport.leavingTheBorder.transportMode.unknown"
+            .getElementsByAttributeValue("for", "Border_Unknown") must containMessageForElements(
+            "declaration.transport.leavingTheBorder.transportMode.unknown"
+          )
         }
       }
     }
@@ -114,8 +126,9 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
       "have 'I don't know' option" in {
         val section = view.getElementById("transportLeavingTheBorder")
         view
-          .getElementsByAttributeValue("for", "Border_Empty")
-          .text() mustBe "declaration.transport.leavingTheBorder.transportMode.empty"
+          .getElementsByAttributeValue("for", "Border_Empty") must containMessageForElements(
+          "declaration.transport.leavingTheBorder.transportMode.empty"
+        )
       }
     }
   }

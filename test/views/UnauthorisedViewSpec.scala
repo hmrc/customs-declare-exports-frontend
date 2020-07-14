@@ -27,33 +27,32 @@ import views.tags.ViewTest
 class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector {
 
   private val unauthorisedPage = instanceOf[unauthorised]
-  private val realMessages = realMessagesApi.preferred(request)
-  private def view: Html = unauthorisedPage()(request, realMessages)
+  private def view: Html = unauthorisedPage()(request, messages)
 
   "Unauthorised Page view" should {
 
     "display page header" in {
-      view.getElementsByTag("h1").text() mustBe realMessages("unauthorised.heading")
+      view.getElementsByTag("h1") must containMessageForElements("unauthorised.heading")
     }
 
     "display get EORI link" in {
       val link = view.getElementById("get_eori_link")
 
-      link must containText(realMessages("unauthorised.how.paragraph1.link"))
+      link must containMessage("unauthorised.how.paragraph1.link")
       link must haveHref("https://www.gov.uk/eori")
     }
 
     "display access CDS link" in {
       val link = view.getElementById("access_cds_link")
 
-      link must containText(realMessages("unauthorised.how.paragraph2.link"))
+      link must containMessage("unauthorised.how.paragraph2.link")
       link must haveHref("https://www.tax.service.gov.uk/customs/register-for-cds")
     }
 
     "display check CDS status link" in {
       val link = view.getElementById("check_cds_status_link")
 
-      link must containText(realMessages("unauthorised.applied.paragraph1.link"))
+      link must containMessage("unauthorised.applied.paragraph1.link")
       link must haveHref("https://www.tax.service.gov.uk/customs/register-for-cds/match")
     }
   }

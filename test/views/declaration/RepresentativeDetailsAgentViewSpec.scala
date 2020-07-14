@@ -20,7 +20,7 @@ import base.Injector
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.{DeclarantIsExporter, EntityDetails, IsExs, RepresentativeAgent}
+import forms.declaration.{EntityDetails, IsExs, RepresentativeAgent}
 import models.DeclarationType._
 import models.Mode
 import models.declaration.Parties
@@ -38,7 +38,6 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
 
   private val page = instanceOf[representative_details_agent]
   private val form: Form[RepresentativeAgent] = RepresentativeAgent.form()
-  override implicit val messages = validatedMessages(request)
 
   private def createView(mode: Mode = Mode.Normal, form: Form[RepresentativeAgent] = form)(implicit request: JourneyRequest[_]): Document =
     page(mode, form)(request, messages)
@@ -85,7 +84,7 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
       }
     }
 
-    onClearance { request =>
+    onClearance { implicit request =>
       "display 'Back' button that links to 'Consignor Details' page" in {
 
         val cachedParties = Parties(

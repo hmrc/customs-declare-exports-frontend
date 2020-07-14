@@ -24,8 +24,6 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -44,10 +42,9 @@ class DocumentsProducedRemoveViewSpec extends UnitViewSpec with ExportsTestData 
     mode: Mode = Mode.Normal,
     form: Form[YesNoAnswer] = YesNoAnswer.form(),
     documents: DocumentsProduced = correctDocumentsProduced
-  )(implicit request: JourneyRequest[_]): Document = page(mode, itemId, documentId, documents, form)(request, stubMessages())
+  )(implicit request: JourneyRequest[_]): Document = page(mode, itemId, documentId, documents, form)(request, messages)
 
   "have proper messages for labels" in {
-    val messages = instanceOf[MessagesApi].preferred(journeyRequest())
     messages must haveTranslationFor("declaration.addDocument.remove.title")
     messages must haveTranslationFor("declaration.addDocument.remove.code")
     messages must haveTranslationFor("declaration.addDocument.remove.reference")

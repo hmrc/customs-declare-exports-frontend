@@ -32,10 +32,8 @@ class RepresentativeDetailsEntityViewSpec extends UnitViewSpec with ExportsTestD
 
   private val page = instanceOf[representative_details_entity]
   private val form: Form[RepresentativeEntity] = RepresentativeEntity.form()
-  override val request = journeyRequest()
-  override implicit val messages = validatedMessages(request)
   private def createView(mode: Mode = Mode.Normal, form: Form[RepresentativeEntity] = form): Document =
-    page(mode, form)(request, messages)
+    page(mode, form)(journeyRequest(), messages)
 
   "Representative Details Entity View on empty page" should {
     val view = createView()

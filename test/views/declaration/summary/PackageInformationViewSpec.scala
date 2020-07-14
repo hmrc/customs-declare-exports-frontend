@@ -41,7 +41,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       row must haveSummaryKey(messages("declaration.summary.items.item.packageInformation"))
       row must haveSummaryValue("")
 
-      row must haveSummaryActionsText("site.change declaration.summary.items.item.packageInformation.changeAll")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.packageInformation.changeAll", "1")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, "itemId"))
     }
@@ -64,7 +64,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(3).getElementsByTag("a").first()
       row1ChangeLink must haveHref(controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, "itemId"))
       row1ChangeLink
-        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.packageInformation.change", "PB", "first-marks", 1)}"
+        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.packageInformation.change", "Open-ended box and pallet (PB)", "first-marks", 1)}"
 
       val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
       row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "Drum, plastic, non-removable head (QF)"
@@ -73,7 +73,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(3).getElementsByTag("a").first()
       row2ChangeLink must haveHref(controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, "itemId"))
       row2ChangeLink
-        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.packageInformation.change", "QF", "second-marks", 2)}"
+        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.packageInformation.change", "Drum, plastic, non-removable head (QF)", "second-marks", 1)}"
     }
 
     "display package information section with multiple package information and no change buttons" when {

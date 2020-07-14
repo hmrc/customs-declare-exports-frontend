@@ -17,7 +17,6 @@
 package views.declaration
 
 import base.Injector
-import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.WarehouseIdentification
 import models.DeclarationType._
 import models.Mode

@@ -40,7 +40,6 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
 
     "have defined translation for used labels" in {
 
-      val messages = realMessagesApi.preferred(request)
       messages must haveTranslationFor("declaration.routingCountries.summary.title")
       messages must haveTranslationFor("declaration.routingCountries.summary.heading")
       messages must haveTranslationFor("declaration.routingCountries.summary.header")
@@ -55,7 +54,7 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
 
     "display page title for the table" in {
 
-      view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingCountries.summary.header")
+      view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingCountries.summary.header", "2")
     }
 
     "display page question" in {

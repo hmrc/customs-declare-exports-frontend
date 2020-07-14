@@ -19,11 +19,9 @@ package views.declaration
 import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.Document
-import models.{DeclarationType, Mode}
 import models.requests.JourneyRequest
+import models.{DeclarationType, Mode}
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsDeclarationBuilder
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents_summary
@@ -36,20 +34,14 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
   private val document2 = Document("Z", "740", "reference2", None)
   private val documents = Seq(document1, document2)
 
-  private def createView(
-    mode: Mode = Mode.Normal,
-    form: Form[YesNoAnswer] = form,
-    documents: Seq[Document] = documents,
-    messages: Messages = stubMessages(),
-    request: JourneyRequest[_] = journeyRequest(DeclarationType.STANDARD)
+  private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = form, documents: Seq[Document] = documents)(
+    implicit request: JourneyRequest[_]
   ) =
     page(mode, form, documents)(request, messages)
 
   "Previous Documents Summary page" should {
 
     "have all messages defined" in {
-
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.previousDocuments.summary.header.singular")
       messages must haveTranslationFor("declaration.previousDocuments.summary.header.plural")
       messages must haveTranslationFor("declaration.type.previousDocumentsSummaryText")
@@ -66,38 +58,38 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
       messages must haveTranslationFor("declaration.items")
     }
 
-    onEveryDeclarationJourney() { request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display section header" in {
 
-        createView().getElementById("section-header").text() mustBe "declaration.items"
+        createView().getElementById("section-header") must containMessage("declaration.items")
       }
 
       "display singular header" in {
 
-        val view = createView(documents = Seq(document1), request = request)
+        val view = createView(documents = Seq(document1))
 
-        view.getElementsByClass("govuk-fieldset__heading").first().text() mustBe "declaration.previousDocuments.summary.header.singular"
+        view.getElementsByClass("govuk-fieldset__heading").first() must containMessage("declaration.previousDocuments.summary.header.singular")
       }
 
       "display plural header" in {
 
-        val view = createView(request = request)
+        val view = createView()
 
-        view.getElementsByClass("govuk-fieldset__heading").first().text() mustBe "declaration.previousDocuments.summary.header.plural"
+        view.getElementsByClass("govuk-fieldset__heading").first() must containMessage("declaration.previousDocuments.summary.header.plural", "2")
       }
 
       "display table headings" in {
 
-        val view = createView(request = request)
+        val view = createView()
 
-        view.getElementsByClass("govuk-table__header").get(0).text() mustBe "declaration.previousDocuments.documentType.summary.label"
-        view.getElementsByClass("govuk-table__header").get(1).text() mustBe "declaration.previousDocuments.documentReference.summary.label"
-        view.getElementsByClass("govuk-table__header").get(2).text() mustBe "declaration.previousDocuments.goodsItemIdentifier.summary.label"
+        view.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.previousDocuments.documentType.summary.label")
+        view.getElementsByClass("govuk-table__header").get(1) must containMessage("declaration.previousDocuments.documentReference.summary.label")
+        view.getElementsByClass("govuk-table__header").get(2) must containMessage("declaration.previousDocuments.goodsItemIdentifier.summary.label")
       }
 
       "display documents in table" in {
 
-        val view = createView(request = request)
+        val view = createView()
 
         view.getElementsByClass("govuk-table__row").get(1).child(0).text() mustBe "Entry Summary Declaration (ENS) (355)"
         view.getElementsByClass("govuk-table__row").get(1).child(1).text() mustBe "reference1"
@@ -109,49 +101,49 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
 
       "display add another question" in {
 
-        val view = createView(request = request)
+        val view = createView()
 
-        view.getElementsByClass("govuk-fieldset__heading").get(1).text() mustBe "declaration.previousDocuments.addAnotherDocument"
+        view.getElementsByClass("govuk-fieldset__heading").get(1) must containMessage("declaration.previousDocuments.addAnotherDocument")
       }
 
       "display radio buttons" in {
 
-        val view = createView(request = request)
+        val view = createView()
 
-        view.getElementsByAttributeValue("for", "code_yes").text().text() mustBe "site.yes"
-        view.getElementsByAttributeValue("for", "code_no").text() mustBe "site.no"
+        view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
+        view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
       "display 'Save and continue' button on page" in {
 
-        createView().getElementById("submit").text() mustBe "site.save_and_continue"
+        createView().getElementById("submit") must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
 
-        createView().getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
+        createView().getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
       "display 'Back' link to 'Nature of Transaction' page" in {
 
-        val backButton = createView(request = request).getElementById("back-link")
+        val backButton = createView().getElementById("back-link")
 
-        backButton.text() must be("site.back")
+        backButton must containMessage("site.back")
         backButton must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { request =>
+    onJourney(DeclarationType.CLEARANCE, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
       "display 'Back' link to 'Office of Exit' page" when {
 
         "Office of exit has answer Yes" in {
 
           val specificRequest = journeyRequest(aDeclaration(withType(request.declarationType), withOfficeOfExit("officeId", "Yes")))
-          val backButton = createView(request = specificRequest).getElementById("back-link")
+          val backButton = createView()(specificRequest).getElementById("back-link")
 
-          backButton.text() must be("site.back")
+          backButton must containMessage("site.back")
           backButton must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
         }
       }
@@ -161,9 +153,9 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
         "Office of exit has answer No" in {
 
           val specificRequest = journeyRequest(aDeclaration(withType(request.declarationType), withOfficeOfExit("", "No")))
-          val backButton = createView(request = specificRequest).getElementById("back-link")
+          val backButton = createView()(specificRequest).getElementById("back-link")
 
-          backButton.text() must be("site.back")
+          backButton must containMessage("site.back")
           backButton must haveHref(controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage(Mode.Normal))
         }
       }

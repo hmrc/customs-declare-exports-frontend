@@ -37,30 +37,29 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
 
   private val page = instanceOf[nact_codes]
   private val itemId = "item1"
-  private val realMessages = validatedMessages
-  private def createView(form: Form[YesNoAnswer], codes: List[NactCode], request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form, codes)(request, realMessages)
+  private def createView(form: Form[YesNoAnswer], codes: List[NactCode])(implicit request: JourneyRequest[_]): Document =
+    page(Mode.Normal, itemId, form, codes)(request, messages)
 
   "NACT Code View on empty page" must {
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      val view = createView(YesNoAnswer.form(), List.empty, request)
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      val view = createView(YesNoAnswer.form(), List.empty)
 
       "display page title" in {
-        view.getElementsByTag("h1").text() mustBe realMessages("declaration.nationalAdditionalCode.header.plural", "0")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.nationalAdditionalCode.header.plural", "0")
       }
 
       "display radio button with Yes option" in {
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
-        view.getElementsByAttributeValue("for", "code_yes").text() mustBe realMessages("site.yes")
+        view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
       }
       "display radio button with No option" in {
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
-        view.getElementsByAttributeValue("for", "code_no").text() mustBe realMessages("site.no")
+        view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
       "display 'Save and continue' button on page" in {
         val saveButton = view.select("#submit")
-        saveButton.text() mustBe realMessages(saveAndContinueCaption)
+        saveButton must containMessageForElements(saveAndContinueCaption)
       }
 
       "display 'Back' button that links to 'TARIC Code' page" in {
@@ -75,12 +74,12 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
   "NACT Code View on populated page" when {
     val codes = List(NactCode("ABCD"), NactCode("4321"))
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      val view = createView(YesNoAnswer.form(), codes, request)
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      val view = createView(YesNoAnswer.form(), codes)
 
       "display page title" in {
 
-        view.getElementsByTag("h1").text() mustBe realMessages("declaration.nationalAdditionalCode.header.plural", "2")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.nationalAdditionalCode.header.plural", "2")
       }
 
       "display existing NACT codes table" in {
@@ -88,8 +87,8 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
           case (code, index) => {
             view.getElementById(s"nactCode-table-row$index-label").text mustBe code.nactCode
             var removeButton = view.getElementById(s"nactCode-table-row$index-remove_button")
-            removeButton.text must include(realMessages(removeCaption))
-            removeButton.text must include(realMessages("declaration.nationalAdditionalCode.remove.hint", code.nactCode))
+            removeButton must containMessage(removeCaption)
+            removeButton must containMessage("declaration.nationalAdditionalCode.remove.hint", code.nactCode)
           }
         }
       }
@@ -99,12 +98,12 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
   "NACT Code View with single code" when {
     val codes = List(NactCode("ABCD"))
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      val view = createView(YesNoAnswer.form(), codes, request)
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      val view = createView(YesNoAnswer.form(), codes)
 
       "display page title" in {
 
-        view.getElementsByTag("h1").text() mustBe realMessages("declaration.nationalAdditionalCode.header.singular")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.nationalAdditionalCode.header.singular")
       }
     }
   }

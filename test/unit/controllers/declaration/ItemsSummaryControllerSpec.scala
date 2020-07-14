@@ -20,7 +20,7 @@ import controllers.declaration.ItemsSummaryController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation}
+import forms.declaration._
 import models.DeclarationType._
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.{ExportsDeclaration, Mode}
@@ -468,6 +468,70 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           }
         }
       }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+      "warehouse identification answer is updated" when {
+
+        val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.yes)
+
+        val warehouseItem = anItem(withItemId("warehouseItem"), withProcedureCodes(Some("0007"), Seq("000")))
+        val declaration = aDeclaration(
+          withType(request.declarationType),
+          withItem(cachedItem),
+          withItem(warehouseItem),
+          withWarehouseIdentification(Some(WarehouseIdentification(Some("id"))))
+        )
+
+        "user removes item contain 'warehouse procedure code'" should {
+
+          "remove the Item from cache" in {
+
+            withNewCaching(declaration)
+
+            controller.removeItem(Mode.Normal, "warehouseItem")(postRequest(removeItemForm)).futureValue
+
+            val items = declarationPassedToUpdateCache.items
+            items.size mustBe 1
+
+            declarationPassedToUpdateCache.locations.warehouseIdentification mustBe None
+          }
+
+        }
+      }
+
+    }
+
+    onJourney(CLEARANCE) { request =>
+      "warehouse identification answer is retained" when {
+
+        val removeItemForm = Json.obj("yesNo" -> YesNoAnswers.yes)
+
+        val warehouseItem = anItem(withItemId("warehouseItem"), withProcedureCodes(Some("0007"), Seq("000")))
+        val declaration = aDeclaration(
+          withType(request.declarationType),
+          withItem(cachedItem),
+          withItem(warehouseItem),
+          withWarehouseIdentification(Some(WarehouseIdentification(Some("id"))))
+        )
+
+        "user removes item contain 'warehouse procedure code'" should {
+
+          "remove the Item from cache" in {
+
+            withNewCaching(declaration)
+
+            controller.removeItem(Mode.Normal, "warehouseItem")(postRequest(removeItemForm)).futureValue
+
+            val items = declarationPassedToUpdateCache.items
+            items.size mustBe 1
+
+            declarationPassedToUpdateCache.locations.warehouseIdentification mustBe Some(WarehouseIdentification(Some("id")))
+          }
+
+        }
+      }
+
     }
   }
 }

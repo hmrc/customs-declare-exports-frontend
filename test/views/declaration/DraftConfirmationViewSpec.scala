@@ -32,8 +32,7 @@ import views.tags.ViewTest
 class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val page = instanceOf[draft_confirmation_page]
-  private val realMessages = validatedMessages
-  private def createView(flash: (String, String)*): Html = page()(request, Flash(Map(flash: _*)), realMessages)
+  private def createView(flash: (String, String)*): Html = page()(request, Flash(Map(flash: _*)), messages)
 
   "View" should {
     "render expiry date" when {

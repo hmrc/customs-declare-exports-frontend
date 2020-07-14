@@ -52,7 +52,7 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
 
         val details = createView().getElementsByClass("govuk-details").first()
 
-        details must containMessage("declaration.personPresentingGoodsDetails.help-item")
+        details must containMessage("declaration.personPresentingGoodsDetails.help-item", "")
         details must containMessage("site.details.summary_text_this")
       }
 
@@ -90,16 +90,16 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
 
       "display error summary" in {
 
-        val form = PersonPresentingGoodsDetails.form().withError(FormError("eori", "declaration.personPresentingGoodsDetails.eori.error.format"))
+        val form = PersonPresentingGoodsDetails.form().withError(FormError("eori", "declaration.eori.error.format"))
 
         createView(form) must haveGovukGlobalErrorSummary
       }
 
       "display error next to the text input element" in {
 
-        val form = PersonPresentingGoodsDetails.form().withError(FormError("eori", "declaration.personPresentingGoodsDetails.eori.error.format"))
+        val form = PersonPresentingGoodsDetails.form().withError(FormError("eori", "declaration.eori.error.format"))
 
-        createView(form) must haveGovukFieldError("eori", "declaration.personPresentingGoodsDetails.eori.error.format")
+        createView(form) must haveGovukFieldError("eori", messages("declaration.eori.error.format"))
       }
     }
   }

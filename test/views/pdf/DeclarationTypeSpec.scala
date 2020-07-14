@@ -21,14 +21,14 @@ import views.declaration.spec.UnitViewSpec
 
 class DeclarationTypeSpec extends UnitViewSpec with MustMatchers {
 
-  val messagesValidated = validatedMessages(request)
+  val messagesValidated = messages(request)
 
   private def messageKey(decType: String) = s"pdf.template.declarationType.$decType"
 
   "DeclarationType" should {
 
     "translate all declaration types" in {
-      DeclarationType.values.map(_.toString).foreach(decType => DeclarationType.translate(decType) mustBe messageKey(decType))
+      DeclarationType.values.map(_.toString).foreach(decType => DeclarationType.translate(decType) mustBe messages(messageKey(decType)))
     }
 
     "have message for all declaration types" in {

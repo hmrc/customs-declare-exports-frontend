@@ -23,8 +23,6 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -38,12 +36,11 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
   private val form: Form[NatureOfTransaction] = NatureOfTransaction.form()
 
   private def createView(mode: Mode = Mode.Normal, form: Form[NatureOfTransaction] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, stubMessages())
+    page(mode, form)(request, messages)
 
   "Nature Of Transaction View on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
       "have proper messages for labels" in {
-        val messages = instanceOf[MessagesApi].preferred(journeyRequest())
         messages must haveTranslationFor("declaration.natureOfTransaction.title")
         messages must haveTranslationFor("declaration.natureOfTransaction.header")
         messages must haveTranslationFor("declaration.natureOfTransaction.sale")
@@ -61,66 +58,66 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
 
       val view = createView()
       "display page title" in {
-        view.getElementsByTag("h1").text() must be("declaration.natureOfTransaction.title")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.natureOfTransaction.title")
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("declaration.natureOfTransaction.header")
+        view.getElementById("section-header") must containMessage("declaration.natureOfTransaction.header")
       }
 
       "display radio button with Sale option" in {
         view.getElementById("Sale").attr("value") mustBe Sale
-        view.getElementsByAttributeValue("for", "Sale").text() mustBe "declaration.natureOfTransaction.sale"
+        view.getElementsByAttributeValue("for", "Sale") must containMessageForElements("declaration.natureOfTransaction.sale")
       }
       "display radio button with Return option" in {
         view.getElementById("Return").attr("value") mustBe Return
-        view.getElementsByAttributeValue("for", "Return").text() mustBe "declaration.natureOfTransaction.return"
+        view.getElementsByAttributeValue("for", "Return") must containMessageForElements("declaration.natureOfTransaction.return")
       }
       "display radio button with Donation option" in {
         view.getElementById("Donation").attr("value") mustBe Donation
-        view.getElementsByAttributeValue("for", "Donation").text() mustBe "declaration.natureOfTransaction.donation"
+        view.getElementsByAttributeValue("for", "Donation") must containMessageForElements("declaration.natureOfTransaction.donation")
       }
       "display radio button with Processing option" in {
         view.getElementById("Processing").attr("value") mustBe Processing
-        view.getElementsByAttributeValue("for", "Processing").text() mustBe "declaration.natureOfTransaction.processing"
+        view.getElementsByAttributeValue("for", "Processing") must containMessageForElements("declaration.natureOfTransaction.processing")
       }
       "display radio button with Processed option" in {
         view.getElementById("Processed").attr("value") mustBe Processed
-        view.getElementsByAttributeValue("for", "Processed").text() mustBe "declaration.natureOfTransaction.processed"
+        view.getElementsByAttributeValue("for", "Processed") must containMessageForElements("declaration.natureOfTransaction.processed")
       }
       "display radio button with National Purposes option" in {
         view.getElementById("NationalPurposes").attr("value") mustBe NationalPurposes
-        view.getElementsByAttributeValue("for", "NationalPurposes").text() mustBe "declaration.natureOfTransaction.nationalPurposes"
+        view.getElementsByAttributeValue("for", "NationalPurposes") must containMessageForElements("declaration.natureOfTransaction.nationalPurposes")
       }
       "display radio button with Military option" in {
         view.getElementById("Military").attr("value") mustBe Military
-        view.getElementsByAttributeValue("for", "Military").text() mustBe "declaration.natureOfTransaction.military"
+        view.getElementsByAttributeValue("for", "Military") must containMessageForElements("declaration.natureOfTransaction.military")
       }
       "display radio button with Construction option" in {
         view.getElementById("Construction").attr("value") mustBe Construction
-        view.getElementsByAttributeValue("for", "Construction").text() mustBe "declaration.natureOfTransaction.construction"
+        view.getElementsByAttributeValue("for", "Construction") must containMessageForElements("declaration.natureOfTransaction.construction")
       }
       "display radio button with Other option" in {
         view.getElementById("Other").attr("value") mustBe Other
-        view.getElementsByAttributeValue("for", "Other").text() mustBe "declaration.natureOfTransaction.other"
+        view.getElementsByAttributeValue("for", "Other") must containMessageForElements("declaration.natureOfTransaction.other")
       }
 
       "display 'Back' button that links to 'Total Number Of Items' page" in {
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() must be("site.back")
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TotalPackageQuantityController.displayPage(Mode.Normal))
       }
 
       "display 'Save and continue' button on page" in {
         val saveButton = view.getElementById("submit")
-        saveButton.text() must be("site.save_and_continue")
+        saveButton must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text() must be("site.save_and_come_back_later")
+        saveAndReturnButton must containMessage("site.save_and_come_back_later")
       }
     }
   }
@@ -133,7 +130,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#natureType")
 
-        view must containErrorElementWithMessage("declaration.natureOfTransaction.error")
+        view must containErrorElementWithMessageKey("declaration.natureOfTransaction.error")
       }
 
       "display error when nature of transaction is incorrect" in {
@@ -142,7 +139,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#natureType")
 
-        view must containErrorElementWithMessage("declaration.natureOfTransaction.error")
+        view must containErrorElementWithMessageKey("declaration.natureOfTransaction.error")
       }
     }
   }

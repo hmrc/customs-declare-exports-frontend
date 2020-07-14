@@ -26,7 +26,6 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -44,8 +43,6 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
 
     "have correct message keys" in {
 
-      val messages = instanceOf[MessagesApi].preferred(request)
-
       messages must haveTranslationFor("declaration.additionalInformationRequired.title")
       messages must haveTranslationFor("supplementary.consignmentReferences.heading")
       messages must haveTranslationFor("declaration.additionalInformationRequired.error")
@@ -58,27 +55,29 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-        createView(form(request.declarationType)).getElementsByTag("h1").text() mustBe messages("declaration.additionalInformationRequired.title")
+        createView(form(request.declarationType)).getElementsByTag("h1") must containMessageForElements(
+          "declaration.additionalInformationRequired.title"
+        )
       }
 
       "display section header" in {
-        createView(form(request.declarationType)).getElementById("section-header").text() mustBe messages("supplementary.items")
+        createView(form(request.declarationType)).getElementById("section-header") must containMessage("supplementary.items")
       }
 
       "display radio button with Yes option" in {
         val view = createView(form(request.declarationType))
         view.getElementById("required_Yes").attr("value") mustBe YesNoAnswers.yes
-        view.getElementsByAttributeValue("for", "required_Yes").text() mustBe "site.yes"
+        view.getElementsByAttributeValue("for", "required_Yes") must containMessageForElements("site.yes")
       }
       "display radio button with No option" in {
         val view = createView(form(request.declarationType))
         view.getElementById("required_No").attr("value") mustBe YesNoAnswers.no
-        view.getElementsByAttributeValue("for", "required_No").text() mustBe "site.no"
+        view.getElementsByAttributeValue("for", "required_No") must containMessageForElements("site.no")
       }
 
       "display 'Save and continue' button on page" in {
         val saveButton = createView(form(request.declarationType)).getElementById("submit")
-        saveButton.text() mustBe messages(saveAndContinueCaption)
+        saveButton must containMessage(saveAndContinueCaption)
       }
 
     }
@@ -93,7 +92,7 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
         val view = createView(form(request.declarationType))
         val backButton = view.getElementById("back-link")
 
-        backButton must containText(messages(backCaption))
+        backButton must containMessage(backCaption)
         backButton must haveHref(routes.CommodityMeasureController.displayPage(Mode.Normal, itemId))
       }
     }
@@ -104,7 +103,7 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
         val view = createView(form(request.declarationType))
         val backButton = view.getElementById("back-link")
 
-        backButton must containText(messages(backCaption))
+        backButton must containMessage(backCaption)
         backButton must haveHref(routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId))
       }
     }

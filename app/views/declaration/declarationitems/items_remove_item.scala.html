@@ -42,7 +42,7 @@
 @(mode: Mode, form: Form[YesNoAnswer], item: ExportItem)(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title(messages("declaration.itemsRemove.title", item.sequenceId.toString), "supplementary.items"),
+    title = Title("declaration.itemsRemove.title", "supplementary.items", item.sequenceId.toString),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RemoveItem, mode)))) {
 
     @formHelper(action = routes.ItemsSummaryController.removeItem(mode, item.id), 'autoComplete -> "off") {

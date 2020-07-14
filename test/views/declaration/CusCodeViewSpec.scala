@@ -24,8 +24,6 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -40,12 +38,11 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
   private val itemId = "item1"
 
   private def createView(mode: Mode = Mode.Normal, form: Form[CusCode] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, itemId, form)(request, stubMessages())
+    page(mode, itemId, form)(request, messages)
 
   "CusCode View on empty page" should {
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "have proper messages for labels" in {
-        val messages = instanceOf[MessagesApi].preferred(journeyRequest())
         messages must haveTranslationFor("declaration.cusCode.header")
         messages must haveTranslationFor("declaration.cusCode.header.hint")
         messages must haveTranslationFor("declaration.cusCode.hasCode")
@@ -56,27 +53,27 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
 
       val view = createView()
       "display page title" in {
-        view.getElementsByTag("h1").text() must be("declaration.cusCode.header")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.cusCode.header")
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include("supplementary.items")
+        view.getElementById("section-header") must containMessage("supplementary.items")
       }
 
       "display radio button with Yes option" in {
         view.getElementById("code_yes").attr("value") mustBe AllowedCUSCodeAnswers.yes
-        view.getElementsByAttributeValue("for", "code_yes").text() mustBe "declaration.cusCode.hasCode"
+        view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("declaration.cusCode.hasCode")
       }
       "display radio button with No option" in {
         view.getElementById("code_no").attr("value") mustBe AllowedCUSCodeAnswers.no
-        view.getElementsByAttributeValue("for", "code_no").text() mustBe "declaration.cusCode.noCode"
+        view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.cusCode.noCode")
       }
 
       "display 'Back' button that links to 'UN Dangerous Goods ' page" in {
 
         val backButton = view.getElementById("back-link")
 
-        backButton.text() must be("site.back")
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
         )
@@ -84,12 +81,12 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
 
       "display 'Save and continue' button on page" in {
         val saveButton = view.getElementById("submit")
-        saveButton.text() must be("site.save_and_continue")
+        saveButton must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text() must be("site.save_and_come_back_later")
+        saveAndReturnButton must containMessage("site.save_and_come_back_later")
       }
     }
   }
@@ -102,7 +99,7 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#cusCode")
 
-        view must containErrorElementWithMessage("declaration.cusCode.error.empty")
+        view must containErrorElementWithMessageKey("declaration.cusCode.error.empty")
       }
 
       "display error when code is incorrect" in {
@@ -111,8 +108,8 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#cusCode")
 
-        view must containErrorElementWithMessage("declaration.cusCode.error.length")
-        view must containErrorElementWithMessage("declaration.cusCode.error.specialCharacters")
+        view must containErrorElementWithMessageKey("declaration.cusCode.error.length")
+        view must containErrorElementWithMessageKey("declaration.cusCode.error.specialCharacters")
       }
     }
   }

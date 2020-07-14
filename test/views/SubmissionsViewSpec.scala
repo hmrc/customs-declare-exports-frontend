@@ -27,8 +27,6 @@ import models.declaration.submissions.RequestType.{CancellationRequest, Submissi
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.{Page, Paginated, SubmissionsPagesElements}
 import org.jsoup.nodes.Element
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -44,15 +42,13 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
   private def createView(
     rejectedSubmissions: Paginated[(Submission, Seq[Notification])] = Paginated(Seq.empty, Page(), 0),
     actionSubmissions: Paginated[(Submission, Seq[Notification])] = Paginated(Seq.empty, Page(), 0),
-    otherSubmissions: Paginated[(Submission, Seq[Notification])] = Paginated(Seq.empty, Page(), 0),
-    messages: Messages = stubMessages()
+    otherSubmissions: Paginated[(Submission, Seq[Notification])] = Paginated(Seq.empty, Page(), 0)
   ): Html =
     page(SubmissionsPagesElements(rejectedSubmissions, actionSubmissions, otherSubmissions))(request, messages)
 
   "Submission View" should {
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("submissions.title")
       messages must haveTranslationFor("site.backToSelectionPage")
       messages must haveTranslationFor("submissions.ucr.header")
@@ -65,16 +61,16 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     val view = createView()
 
     "display same page title as header" in {
-      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      val viewWithMessage = createView()
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display page messages" in {
-      tableHead(view)(0).text() mustBe "submissions.ucr.header"
-      tableHead(view)(1).text() mustBe "submissions.lrn.header"
-      tableHead(view)(2).text() mustBe "submissions.mrn.header"
-      tableHead(view)(3).text() mustBe "submissions.dateAndTime.header"
-      tableHead(view)(4).text() mustBe "submissions.status.header"
+      tableHead(view)(0) must containMessage("submissions.ucr.header")
+      tableHead(view)(1) must containMessage("submissions.lrn.header")
+      tableHead(view)(2) must containMessage("submissions.mrn.header")
+      tableHead(view)(3) must containMessage("submissions.dateAndTime.header")
+      tableHead(view)(4) must containMessage("submissions.status.header")
     }
 
     "display page submissions" when {
@@ -119,7 +115,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       "all fields are populated with timestamp before BST" in {
         val view = tab("other", createView(otherSubmissions = Paginated(Seq(submission -> Seq(acceptedNotification)), Page(), 1)))
 
-        tableCell(view)(1, 0).text() mustBe "ducr submissions.hidden.text"
+        tableCell(view)(1, 0).text() mustBe s"ducr ${messages("submissions.hidden.text", "ducr")}"
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe "mrn"
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00"
@@ -141,7 +137,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         )
         val view = tab("other", createView(otherSubmissions = Paginated(Seq(bstSubmission -> Seq(acceptedNotification)), Page(), 1)))
 
-        tableCell(view)(1, 0).text() mustBe "ducr submissions.hidden.text"
+        tableCell(view)(1, 0).text() mustBe s"ducr ${messages("submissions.hidden.text", "ducr")}"
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe "mrn"
         tableCell(view)(1, 3).text() mustBe "1 May 2019 at 13:45"
@@ -155,7 +151,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         val view =
           tab("other", createView(otherSubmissions = Paginated(Seq(submissionWithOptionalFieldsEmpty -> Seq(acceptedNotification)), Page(), 1)))
 
-        tableCell(view)(1, 0).text() mustBe "submissions.hidden.text"
+        tableCell(view)(1, 0).text() mustBe messages("submissions.hidden.text", "").trim
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe empty
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00"
@@ -209,13 +205,13 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     "display 'Back' button that links to 'Choice' page with Submissions selected" in {
       val backButton = view.getElementById("back-link")
 
-      backButton must containText("site.back")
+      backButton must containMessage("site.back")
       backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(Submissions))))
     }
 
     "display 'Start a new declaration' link on page" in {
       val startButton = view.getElementsByClass("govuk-button").first()
-      startButton.text() mustBe "supplementary.startNewDec"
+      startButton must containMessage("supplementary.startNewDec")
       startButton.attr("href") mustBe routes.ChoiceController.displayPage().url
     }
   }

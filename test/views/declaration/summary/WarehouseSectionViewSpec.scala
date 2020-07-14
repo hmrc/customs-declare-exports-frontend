@@ -44,7 +44,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.warehouse.id"))
       row must haveSummaryValue("12345")
 
-      row must haveSummaryActionsText("site.change declaration.summary.warehouse.id.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.id.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
     }
@@ -54,7 +54,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.warehouse.supervisingOffice"))
       row must haveSummaryValue("23456")
 
-      row must haveSummaryActionsText("site.change declaration.summary.warehouse.supervisingOffice.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.supervisingOffice.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage())
     }
@@ -64,7 +64,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryKey(messages("declaration.summary.warehouse.inlandModeOfTransport"))
       row must haveSummaryValue(messages("declaration.summary.warehouse.inlandModeOfTransport.Maritime"))
 
-      row must haveSummaryActionsText("site.change declaration.summary.warehouse.inlandModeOfTransport.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.inlandModeOfTransport.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
     }

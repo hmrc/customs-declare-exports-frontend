@@ -22,8 +22,6 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -36,9 +34,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
   private val page = instanceOf[inland_transport_details]
   private val form: Form[InlandModeOfTransportCode] = InlandModeOfTransportCode.form()
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[InlandModeOfTransportCode] = form, messages: Messages = stubMessages())(
-    implicit request: JourneyRequest[_]
-  ): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[InlandModeOfTransportCode] = form)(implicit request: JourneyRequest[_]): Document =
     page(mode, form)(request, messages)
 
   "Inland Transport Details View" should {
@@ -46,7 +42,6 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
       val view = createView()
 
       "have proper messages for labels" in {
-        val messages = realMessagesApi.preferred(journeyRequest())
         messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.sectionHeader")
         messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.title")
         messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.hint")
@@ -54,68 +49,80 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
       }
 
       "display same page title as header" in {
-        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+        val viewWithMessage = createView()
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "display 'Mode of Transport' section" which {
 
         "have 'Sea' option" in {
-          view.getElementsByAttributeValue("for", "Inland_Sea").text() mustBe "declaration.warehouse.inlandTransportDetails.transportMode.sea"
+          view.getElementsByAttributeValue("for", "Inland_Sea") must containMessageForElements(
+            "declaration.warehouse.inlandTransportDetails.transportMode.sea"
+          )
         }
 
         "have 'Road' option" in {
-          view.getElementsByAttributeValue("for", "Inland_Rail").text() mustBe "declaration.warehouse.inlandTransportDetails.transportMode.rail"
+          view.getElementsByAttributeValue("for", "Inland_Rail") must containMessageForElements(
+            "declaration.warehouse.inlandTransportDetails.transportMode.rail"
+          )
         }
 
         "have 'Rail' option" in {
-          view.getElementsByAttributeValue("for", "Inland_Road").text() mustBe "declaration.warehouse.inlandTransportDetails.transportMode.road"
+          view.getElementsByAttributeValue("for", "Inland_Road") must containMessageForElements(
+            "declaration.warehouse.inlandTransportDetails.transportMode.road"
+          )
         }
 
         "have 'Air' option" in {
-          view.getElementsByAttributeValue("for", "Inland_Air").text() mustBe "declaration.warehouse.inlandTransportDetails.transportMode.air"
+          view.getElementsByAttributeValue("for", "Inland_Air") must containMessageForElements(
+            "declaration.warehouse.inlandTransportDetails.transportMode.air"
+          )
         }
 
         "have 'Postal or Mail' option" in {
           view
-            .getElementsByAttributeValue("for", "Inland_PostalOrMail")
-            .text() mustBe "declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail"
+            .getElementsByAttributeValue("for", "Inland_PostalOrMail") must containMessageForElements(
+            "declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail"
+          )
         }
 
         "have 'Fixed transport installations' option" in {
           view
-            .getElementsByAttributeValue("for", "Inland_FixedTransportInstallations")
-            .text() mustBe "declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations"
+            .getElementsByAttributeValue("for", "Inland_FixedTransportInstallations") must containMessageForElements(
+            "declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations"
+          )
         }
 
         "have 'Inland waterway transport' option" in {
           view
-            .getElementsByAttributeValue("for", "Inland_InlandWaterway")
-            .text() mustBe "declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway"
+            .getElementsByAttributeValue("for", "Inland_InlandWaterway") must containMessageForElements(
+            "declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway"
+          )
         }
 
         "have 'Mode unknown' option" in {
           view
-            .getElementsByAttributeValue("for", "Inland_Unknown")
-            .text() mustBe "declaration.warehouse.inlandTransportDetails.transportMode.unknown"
+            .getElementsByAttributeValue("for", "Inland_Unknown") must containMessageForElements(
+            "declaration.warehouse.inlandTransportDetails.transportMode.unknown"
+          )
         }
       }
 
       "display 'Back' button that links to 'Supervising Customs Office' page" in {
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe "site.back"
+        backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
         )
       }
 
       "display 'Save and continue' button on page" in {
-        view.getElementById("submit").text() mustBe "site.save_and_continue"
+        view.getElementById("submit") must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
-        view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
+        view.getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
       }
     }
   }

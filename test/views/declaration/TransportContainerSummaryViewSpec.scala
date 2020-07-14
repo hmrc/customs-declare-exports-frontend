@@ -37,25 +37,24 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
   val containerId = "212374"
   val sealId = "76434574"
   val container = Container(containerId, Seq(Seal(sealId)))
-  private val realMessages = validatedMessages
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[transport_container_summary]
 
   private def createView(form: Form[YesNoAnswer] = form, containers: Seq[Container] = Seq(container)): Document =
-    page(Mode.Normal, form, containers)(journeyRequest(), realMessages)
+    page(Mode.Normal, form, containers)(journeyRequest(), messages)
 
   "Transport Containers Summary View" should {
     val view = createView()
 
     "display page title for one container" in {
-      view.getElementsByTag("h1").text() must be(realMessages("declaration.transportInformation.containers.title"))
-      view.title() must include(realMessages("declaration.transportInformation.containers.title"))
+      view.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.containers.title")
+      view.title() must include(messages("declaration.transportInformation.containers.title"))
     }
 
     "display page title for multiple containers" in {
       val multiContainerView = createView(containers = Seq(container, container))
-      multiContainerView.getElementsByTag("h1").text() must be(realMessages("declaration.transportInformation.containers.multiple.title", 2))
-      multiContainerView.title() must include(realMessages("declaration.transportInformation.containers.multiple.title", 2))
+      multiContainerView.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.containers.multiple.title", 2)
+      multiContainerView.title() must include(messages("declaration.transportInformation.containers.multiple.title", 2))
     }
 
     "display summary of container with seals" in {
@@ -67,24 +66,24 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
       val view = createView(containers = Seq(Container(containerId, Seq.empty)))
 
       view.getElementById("containers-row0-container").text() must be(containerId)
-      view.getElementById("containers-row0-seals").text() must be(realMessages("declaration.seal.summary.noSeals"))
+      view.getElementById("containers-row0-seals") must containMessage("declaration.seal.summary.noSeals")
     }
 
     "display 'Back' button that links to 'transport payment' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer.text() must be(realMessages(backCaption))
+      backLinkContainer must containMessage(backCaption)
       backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(realMessages(saveAndContinueCaption))
+      saveButton must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(realMessages(saveAndReturnCaption))
+      saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -96,7 +95,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#yesNo")
 
-      view must containErrorElementWithMessage(realMessages("error.yesNo.required"))
+      view must containErrorElementWithMessageKey("error.yesNo.required")
     }
 
   }

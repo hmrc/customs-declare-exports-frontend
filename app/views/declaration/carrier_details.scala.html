@@ -15,27 +15,18 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.DeclarationPage
 @import forms.declaration.CarrierDetails
-@import services.model.Country
-@import uk.gov.hmrc.play.views.html._
 @import views.Title
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
-@import services.Countries
 @import scala.collection.immutable
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
-@import services.view.AutoCompleteItem
 @import views.BackButton
 @import play.twirl.api.HtmlFormat
-@import views.components.gds.Styles
 
 @this(
         govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
         govukFieldset: GovukFieldset,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
@@ -63,14 +54,8 @@
     </span>
 }
 
-@exportsName = {
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-        @messages("declaration.carrier.address.info")
-    </legend>
-}
-
 @or = {
-<p class="govuk-body">Or</p>
+    <p class="govuk-body">Or</p>
 }
 
 @groupAddress = {
@@ -81,30 +66,28 @@
     title = Title("declaration.carrier.title", "declaration.summary.parties.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CarrierDetails, mode)))) {
 
-        @formHelper(action = CarrierDetailsController.saveAddress(mode), 'autoComplete -> "off") {
+    @formHelper(action = CarrierDetailsController.saveAddress(mode), 'autoComplete -> "off") {
 
-            @errorSummary(form.errors)
+        @errorSummary(form.errors)
 
-            @sectionHeader(messages("declaration.summary.parties.header"))
+        @sectionHeader(messages("declaration.summary.parties.header"))
 
-            @pageTitle(messages("declaration.carrier.title"))
+        @pageTitle(messages("declaration.carrier.title"))
 
-            @pageHint
+        @pageHint
 
-            @exportsInputText(
-                field = form("details.eori"),
-                labelKey = "declaration.carrier.eori.info"
-            )
+        @exportsInputText(
+            field = form("details.eori"),
+            labelKey = "declaration.carrier.eori.info"
+        )
 
         @or
-
-        @exportsName
 
         @govukFieldset(Fieldset(
             attributes = Map("id" -> "details"),
             legend = Some(Legend(
-                content = Text(messages("")),
-                classes = "govuk-label"
+                content = Text(messages("declaration.carrier.address.info")),
+                classes = "govuk-fieldset__legend--m"
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 groupAddress,

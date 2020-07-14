@@ -35,16 +35,15 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
   private val itemId = "item1"
   private val form: Form[TaricCodeFirst] = TaricCodeFirst.form()
   private val page = instanceOf[taric_code_add_first]
-  private val realMessages = validatedMessages
 
   private def createView(form: Form[TaricCodeFirst] = form): Document =
-    page(Mode.Normal, itemId, form)(journeyRequest(), realMessages)
+    page(Mode.Normal, itemId, form)(journeyRequest(), messages)
 
   "Taric Code Add First View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(realMessages("declaration.taricAdditionalCodes.addfirst.header"))
+      view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.addfirst.header")
     }
 
     "display 'Back' button that links to 'CUS codes' page" in {
@@ -55,12 +54,12 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(realMessages(saveAndContinueCaption))
+      saveButton must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(realMessages(saveAndReturnCaption))
+      saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -72,7 +71,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
 
-      view must containErrorElementWithMessage(realMessages("declaration.taricAdditionalCodes.error.invalid"))
+      view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.invalid")
     }
 
     "display errors when empty" in {
@@ -81,7 +80,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
 
-      view must containErrorElementWithMessage(realMessages("declaration.taricAdditionalCodes.error.empty"))
+      view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.empty")
     }
 
   }

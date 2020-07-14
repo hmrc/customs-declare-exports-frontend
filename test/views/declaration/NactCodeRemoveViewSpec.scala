@@ -33,18 +33,17 @@ class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers w
 
   private val itemId = "item1"
   private val nactCode = "VATR"
-  private val realMessages = validatedMessages
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[nact_code_remove]
 
   private def createView(form: Form[YesNoAnswer] = form, code: String = nactCode): Document =
-    page(Mode.Normal, itemId, code, form)(request, realMessages)
+    page(Mode.Normal, itemId, code, form)(request, messages)
 
   "Nact Code Remove View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(realMessages("declaration.nationalAdditionalCode.remove.header"))
+      view.getElementsByTag("h1") must containMessageForElements("declaration.nationalAdditionalCode.remove.header")
     }
 
     "display Nact code to remove" in {
@@ -54,7 +53,7 @@ class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers w
     "display 'Back' button that links to 'nact codes summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer must containText(realMessages(backCaption))
+      backLinkContainer must containMessage(backCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId)
       )
@@ -62,12 +61,12 @@ class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers w
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton must containText(realMessages(saveAndContinueCaption))
+      saveButton must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containText(realMessages(saveAndReturnCaption))
+      saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -79,7 +78,7 @@ class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers w
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#yesNo")
 
-      view must containErrorElementWithMessage(realMessages("error.yesNo.required"))
+      view must containErrorElementWithMessageKey("error.yesNo.required")
     }
 
   }

@@ -18,10 +18,10 @@ package views.declaration.destinationCountries
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.countries.{Countries, Country}
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
-import models.Mode
+import forms.declaration.countries.{Countries, Country}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.twirl.api.Html
@@ -40,12 +40,12 @@ class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
   private def nextRoutingForm(request: JourneyRequest[_]): Form[Country] =
     Countries.form(NextRoutingCountryPage)(request)
 
-  private def firstRoutingView(request: JourneyRequest[_]): Html =
+  private def firstRoutingView(implicit request: JourneyRequest[_]): Html =
     changeRoutingCountryPage(Mode.Normal, firstRoutingForm(request), FirstRoutingCountryPage, countryToChange)(request, messages)
-  private def nextRoutingView(request: JourneyRequest[_]): Html =
+  private def nextRoutingView(implicit request: JourneyRequest[_]): Html =
     changeRoutingCountryPage(Mode.Normal, nextRoutingForm(request), NextRoutingCountryPage, countryToChange)(request, messages)
 
-  onJourney(OCCASIONAL, SIMPLIFIED, STANDARD) { request =>
+  onJourney(OCCASIONAL, SIMPLIFIED, STANDARD) { implicit request =>
     "Change routing country pages" should {
 
       s"have page heading for ${request.declarationType}" in {
@@ -56,12 +56,12 @@ class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
       s"have page question during changing first routing country for ${request.declarationType}" in {
 
-        firstRoutingView(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.firstRoutingCountry.question")
+        firstRoutingView(request).getElementsByTag("h1") must containMessageForElements("declaration.firstRoutingCountry.question")
       }
 
       s"have page question during changing next routing country for ${request.declarationType}" in {
 
-        nextRoutingView(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.routingCountry.question")
+        nextRoutingView(request).getElementsByTag("h1") must containMessageForElements("declaration.routingCountry.question")
       }
 
       s"display back button that links to 'Countries summary' for first routing country page for ${request.declarationType}" in {

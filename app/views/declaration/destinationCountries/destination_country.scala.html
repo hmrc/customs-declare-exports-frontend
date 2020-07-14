@@ -47,17 +47,6 @@
 }
 }
 
-@autocomplete = {
-@components.fields.field_accessible_autocomplete(
-    form("countryCode"),
-    "",
-    None,
-    None,
-    messages("declaration.destinationCountry.empty"),
-    AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-)
-}
-
 @govukLayout(
     title = Title("declaration.destinationCountry.title", "declaration.destinationCountry.heading"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DestinationCountryPage, mode)))){

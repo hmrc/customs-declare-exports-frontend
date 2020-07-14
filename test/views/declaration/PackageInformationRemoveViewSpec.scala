@@ -35,18 +35,17 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Must
   import PackageInformationViewSpec._
 
   private val itemId = "item1"
-  private val realMessages = validatedMessages
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[package_information_remove]
 
   private def createView(form: Form[YesNoAnswer] = form, packageInfo: PackageInformation = packageInformation): Document =
-    page(Mode.Normal, itemId, packageInfo, form)(request, realMessages)
+    page(Mode.Normal, itemId, packageInfo, form)(request, messages)
 
   "PackageInformation Remove View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(realMessages("declaration.packageInformation.remove.title"))
+      view.getElementsByTag("h1") must containMessageForElements("declaration.packageInformation.remove.title")
     }
 
     "display PackageInformation to remove" in {
@@ -58,7 +57,7 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Must
     "display 'Back' button that links to 'PackageInformation summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer must containText(realMessages(backCaption))
+      backLinkContainer must containMessage(backCaption)
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
       )
@@ -66,12 +65,12 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Must
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton must containText(realMessages(saveAndContinueCaption))
+      saveButton must containMessage(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containText(realMessages(saveAndReturnCaption))
+      saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
   }
 
@@ -83,7 +82,7 @@ class PackageInformationRemoveViewSpec extends UnitViewSpec with Stubs with Must
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#yesNo")
 
-      view must containErrorElementWithMessage(realMessages("error.yesNo.required"))
+      view must containErrorElementWithMessageKey("error.yesNo.required")
     }
 
   }

@@ -37,7 +37,6 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
     "have defined translation for used labels" in {
 
-      val messages = realMessagesApi.preferred(request)
       messages must haveTranslationFor("declaration.routingQuestion.title")
       messages must haveTranslationFor("declaration.routingQuestion.heading")
       messages must haveTranslationFor("declaration.routingQuestion.empty")
@@ -51,7 +50,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
     "have page question" in {
 
-      view.getElementsByClass("govuk-fieldset__heading").text() mustBe messages("declaration.routingQuestion.title")
+      view.getElementsByClass("govuk-fieldset__heading").text() mustBe messages("declaration.routingQuestion.title", countryOfDestination)
     }
 
     "have Yes/No answers" in {
@@ -62,7 +61,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
     "display Tariff section text" in {
       val tariffText = view.getElementsByClass("govuk-details__summary-text").first().text()
-      tariffText.text() must be("site.details.summary_text_this")
+      tariffText.text() mustBe messages("site.details.summary_text_this")
     }
 
     "display back button that links to 'Declaration Holder' page" in {

@@ -31,12 +31,11 @@ import views.tags.ViewTest
 class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[submission_confirmation_page]
-  private val realMessages = validatedMessages
   private val withoutFlash = new Flash(Map.empty)
   private def withFlash(devType: DeclarationType, lrn: String, decId: String) =
     new Flash(Map(FlashKeys.decId -> decId, FlashKeys.lrn -> lrn, FlashKeys.decType -> devType.toString))
   private def createView(flash: Flash): Document =
-    page()(journeyRequest(), flash, realMessages)
+    page()(journeyRequest(), flash, messages)
 
   private def getHighlightBox(view: Document) = view.getElementsByClass("govuk-panel govuk-panel--confirmation").first()
 

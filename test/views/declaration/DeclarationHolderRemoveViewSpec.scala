@@ -23,8 +23,6 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -39,10 +37,9 @@ class DeclarationHolderRemoveViewSpec extends UnitViewSpec with ExportsTestData 
 
   private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = YesNoAnswer.form(), holder: DeclarationHolder = declarationHolder)(
     implicit request: JourneyRequest[_]
-  ): Document = page(mode, holder, form)(request, stubMessages())
+  ): Document = page(mode, holder, form)(request, messages)
 
   "have proper messages for labels" in {
-    val messages = instanceOf[MessagesApi].preferred(journeyRequest())
     messages must haveTranslationFor("declaration.declarationHolder.remove.title")
     messages must haveTranslationFor("declaration.declarationHolders.table.type")
     messages must haveTranslationFor("declaration.declarationHolders.table.eori")

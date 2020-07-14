@@ -17,7 +17,6 @@
 package views.declaration
 
 import base.Injector
-import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -28,12 +27,10 @@ import views.tags.ViewTest
 class NotEligibleViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
   private val page = instanceOf[not_eligible]
 
-  private val validatedMsg = validatedMessages(request)
-  private val view = page()(request, validatedMsg)
+  private val view = page()(request, messages)
 
   "Not Eligible View on empty page" should {
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.natureOfTransaction.title")
       messages must haveTranslationFor("notEligible.title")
       messages must haveTranslationFor("notEligible.titleLineTwo")
@@ -49,11 +46,11 @@ class NotEligibleViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "display header" in {
-      view.select("h1").text() mustBe validatedMsg("notEligible.title")
+      view.select("h1") must containMessageForElements("notEligible.title")
     }
 
     "display help information" in {
-      view.getElementsByClass("govuk-body").get(0).text() mustBe validatedMsg("notEligible.description", validatedMsg("notEligible.descriptionLink"))
+      view.getElementsByClass("govuk-body").get(0).text() mustBe messages("notEligible.description", messages("notEligible.descriptionLink"))
     }
 
     "display read more link" in {
@@ -65,14 +62,14 @@ class NotEligibleViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "display Help and Support with description" in {
-      view.select("h2").first().text() mustBe validatedMsg("notEligible.referenceTitle")
-      view.getElementsByClass("govuk-body").get(1).text() must include(validatedMsg("notEligible.reference.support", "0300 200 3700"))
+      view.select("h2").first() must containMessage("notEligible.referenceTitle")
+      view.getElementsByClass("govuk-body").get(1) must containMessage("notEligible.reference.support", "0300 200 3700")
     }
 
     "display 'Back' button that links to 'Make declaration' page" in {
       val backButton = view.getElementById("back-link")
 
-      backButton.text() mustBe validatedMsg("site.back")
+      backButton must containMessage("site.back")
       backButton must haveHref(controllers.routes.StartController.displayStartPage())
     }
   }

@@ -7,23 +7,23 @@ object AppDependencies {
   val compile: Seq[ModuleID] = Seq(
     ws,
     "uk.gov.hmrc"          %% "play-conditional-form-mapping" % "1.2.0-play-26",
-    "uk.gov.hmrc"          %% "logback-json-logger"           % "4.6.0",
-    "uk.gov.hmrc"          %% "govuk-template"                % "5.54.0-play-26",
+    "uk.gov.hmrc"          %% "logback-json-logger"           % "4.8.0",
+    "uk.gov.hmrc"          %% "govuk-template"                % "5.55.0-play-26",
     "uk.gov.hmrc"          %% "play-health"                   % "3.15.0-play-26",
-    "uk.gov.hmrc"          %% "play-ui"                       % "8.9.0-play-26",
-    "uk.gov.hmrc"          %% "bootstrap-play-26"             % "1.7.0",
-    "uk.gov.hmrc"          %% "play-frontend-govuk"           % "0.43.0-play-26",
-    "uk.gov.hmrc"          %% "play-frontend-hmrc"            % "0.13.0-play-26",
+    "uk.gov.hmrc"          %% "play-ui"                       % "8.11.0-play-26",
+    "uk.gov.hmrc"          %% "bootstrap-play-26"             % "1.13.0",
+    "uk.gov.hmrc"          %% "play-frontend-govuk"           % "0.49.0-play-26",
+    "uk.gov.hmrc"          %% "play-frontend-hmrc"            % "0.16.0-play-26",
     "org.webjars.npm"      %  "hmrc-frontend"                 % "1.5.0",
     "uk.gov.hmrc"          %% "auth-client"                   % "3.0.0-play-26",
     "ai.x"                 %% "play-json-extensions"          % "0.40.2",
-    "uk.gov.hmrc"          %% "play-whitelist-filter"         % "3.3.0-play-26",
+    "uk.gov.hmrc"          %% "play-whitelist-filter"         % "3.4.0-play-26",
     "com.typesafe.play"    %% "play-json-joda"                % "2.6.10",
     "com.github.tototoshi" %% "scala-csv"                     % "1.3.6",
     "com.dmanchester"      %% "playfop"                       % "1.0",
     "net.sf.barcode4j"     %  "barcode4j"                     % "2.1",
-    "org.webjars.npm"      %  "govuk-frontend"                % "3.4.0",
-    "org.webjars.npm"      %  "accessible-autocomplete"       % "2.0.2"
+    "org.webjars.npm"      %  "govuk-frontend"                % "3.7.0",
+    "org.webjars.npm"      %  "accessible-autocomplete"       % "2.0.3"
   )
 
   val test: Seq[ModuleID] = Seq(

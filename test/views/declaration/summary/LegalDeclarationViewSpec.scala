@@ -29,30 +29,29 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 
   "Legal Declaration View" should {
 
-    val messages = realMessagesApi.preferred(request)
-
     "have header and translation for it" in {
 
-      view.getElementsByClass("govuk-fieldset__legend").first().text() mustBe "legal.declaration.heading"
+      view.getElementsByClass("govuk-fieldset__legend").first() must containMessage("legal.declaration.heading")
       messages must haveTranslationFor("legal.declaration.heading")
     }
 
     "have information about declaration" in {
 
-      view.body must include("legal.declaration.info")
+      view.body must include(messages("legal.declaration.info"))
       messages must haveTranslationFor("legal.declaration.info")
     }
 
     "have legal declaration warning" in {
 
-      view.getElementsByClass("govuk-warning-text__text").text() mustBe "legal.declaration.warning.icontext legal.declaration.warning"
+      view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("legal.declaration.warning.icontext")
+      view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("legal.declaration.warning")
       messages must haveTranslationFor("legal.declaration.warning.icontext")
       messages must haveTranslationFor("legal.declaration.warning")
     }
 
     "have full name input" in {
 
-      view.getElementsByAttributeValue("for", "fullName").text() mustBe "legal.declaration.fullName"
+      view.getElementsByAttributeValue("for", "fullName") must containMessageForElements("legal.declaration.fullName")
       messages must haveTranslationFor("legal.declaration.fullName")
       messages must haveTranslationFor("legal.declaration.fullName.empty")
       messages must haveTranslationFor("legal.declaration.fullName.short")
@@ -62,7 +61,7 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 
     "have job role input" in {
 
-      view.getElementsByAttributeValue("for", "jobRole").text() mustBe "legal.declaration.jobRole"
+      view.getElementsByAttributeValue("for", "jobRole") must containMessageForElements("legal.declaration.jobRole")
       messages must haveTranslationFor("legal.declaration.jobRole")
       messages must haveTranslationFor("legal.declaration.jobRole.empty")
       messages must haveTranslationFor("legal.declaration.jobRole.short")
@@ -72,7 +71,7 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 
     "have email input" in {
 
-      view.getElementsByAttributeValue("for", "email").text() mustBe "legal.declaration.email"
+      view.getElementsByAttributeValue("for", "email") must containMessageForElements("legal.declaration.email")
       messages must haveTranslationFor("legal.declaration.email")
       messages must haveTranslationFor("legal.declaration.email.empty")
       messages must haveTranslationFor("legal.declaration.email.long")
@@ -81,7 +80,7 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 
     "have confirmation box" in {
 
-      view.getElementsByAttributeValue("for", "confirmation").text() mustBe "legal.declaration.confirmation"
+      view.getElementsByAttributeValue("for", "confirmation") must containMessageForElements("legal.declaration.confirmation")
       messages must haveTranslationFor("legal.declaration.confirmation")
       messages must haveTranslationFor("legal.declaration.confirmation.missing")
     }

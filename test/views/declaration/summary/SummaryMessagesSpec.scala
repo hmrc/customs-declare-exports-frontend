@@ -20,8 +20,6 @@ import views.declaration.spec.UnitViewSpec
 
 class SummaryMessagesSpec extends UnitViewSpec {
 
-  override val messages = realMessagesApi.preferred(request)
-
   "Summary page" should {
 
     "have defined general messages" in {
@@ -70,7 +68,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.parties.declarant.eori")
       messages must haveTranslationFor("declaration.summary.parties.declarant.address")
       messages must haveTranslationFor("declaration.summary.parties.representative.eori")
-      messages must haveTranslationFor("declaration.summary.parties.representative.address")
       messages must haveTranslationFor("declaration.summary.parties.representative.type")
       messages must haveTranslationFor("declaration.summary.parties.representative.type.1")
       messages must haveTranslationFor("declaration.summary.parties.representative.type.2")
