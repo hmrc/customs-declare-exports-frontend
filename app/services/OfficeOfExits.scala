@@ -16,18 +16,19 @@
 
 package services
 
+import com.github.tototoshi.csv.CSVReader
 import services.model.OfficeOfExit
-import utils.FileReader
 
-import scala.util.matching.Regex
+import scala.io.Source
 
 object OfficeOfExits {
 
-  private val regex: Regex = """^"?([^",]+)"?,(\w+)$""".r
+  lazy val all: List[OfficeOfExit] = {
 
-  lazy val all: List[OfficeOfExit] =
-    FileReader("code-lists/office-of-exits.csv").tail.map {
-      case regex(description: String, code: String) =>
-        OfficeOfExit(code, description)
-    }.sortBy(_.description)
+    val reader = CSVReader.open(Source.fromURL(getClass.getClassLoader.getResource("code-lists/office-of-exits.csv"), "UTF-8"))
+    val codes: List[Map[String, String]] = reader.allWithHeaders()
+
+    codes.map(row => OfficeOfExit(row("Code"), row("Description"))).sortBy(_.description)
+
+  }
 }
