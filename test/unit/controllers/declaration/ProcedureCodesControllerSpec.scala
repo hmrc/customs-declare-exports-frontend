@@ -333,6 +333,32 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         updatedLocations.warehouseIdentification mustBe None
       }
 
+      "user changed procedure code indicating warehouse identifier no longer required" in {
+
+        val warehouseIdentification = WarehouseIdentification(Some("WarehouseId"))
+        withNewCaching(
+          aDeclaration(
+            withType(DeclarationType.SUPPLEMENTARY),
+            withItem(anItem(withItemId(itemId), withProcedureCodes(Some("1007"), Seq("0000")))),
+            withWarehouseIdentification(Some(warehouseIdentification))
+          )
+        )
+
+        val correctForm =
+          Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityDetailsController
+          .displayPage(Mode.Normal, "itemId12345")
+
+        verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
+
+        val updatedLocations = theCacheModelUpdated.locations
+        updatedLocations.warehouseIdentification mustBe None
+      }
+
       "user save correct data with '0019' procedure code on clearance journey" in {
 
         withNewCaching(
