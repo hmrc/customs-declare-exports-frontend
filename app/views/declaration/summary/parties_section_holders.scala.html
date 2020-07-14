@@ -51,7 +51,7 @@
         if(actionsEnabled)
             changeLink(
                 messages("site.change"),
-                Some(messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder))),
+                Some(messages("declaration.summary.parties.holders.change", holder.authorisationTypeCode.getOrElse(""), holderEori(holder))),
                 controllers.declaration.routes.DeclarationHolderController.displayPage(mode)
             )
         else

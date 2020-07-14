@@ -62,7 +62,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
       table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.parties.holders.eori")
 
       val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
-      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe include(authorisationTypeCode1)
+      row1.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode1)
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori1
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row1ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
@@ -70,7 +70,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
         .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode1, eori1)}"
 
       val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe include(authorisationTypeCode2)
+      row2.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode2)
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori2
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row2ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
