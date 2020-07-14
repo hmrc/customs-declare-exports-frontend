@@ -18,6 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import controllers.util.MultipleItemsHelper
 import forms.NoneOfTheAbove
 import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActors.form
@@ -25,6 +26,7 @@ import javax.inject.Inject
 import models.declaration.DeclarationAdditionalActorsData
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
@@ -56,23 +58,34 @@ class AdditionalActorsAddController @Inject()(
 
   def saveForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
-    val cache = request.cacheModel.parties.declarationAdditionalActorsData.getOrElse(DeclarationAdditionalActorsData(Seq()))
+    val cachedActors = request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty)
     boundForm.fold(
       formWithErrors => {
         Future.successful(BadRequest(declarationAdditionalActorsPage(mode, formWithErrors)))
       },
       actor =>
         if (actor.isDefined) {
-          updateCache(DeclarationAdditionalActorsData(cache.actors).addActor(actor))
-            .map(_ => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
-        } else if (cache.actors.nonEmpty) {
-          updateCache(DeclarationAdditionalActorsData(cache.actors))
+          addAdditionalActor(mode, boundForm, cachedActors)
+        } else if (cachedActors.nonEmpty) {
+          updateCache(DeclarationAdditionalActorsData(cachedActors))
             .map(_ => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
         } else
-          updateCache(DeclarationAdditionalActorsData(cache.actors))
+          updateCache(DeclarationAdditionalActorsData(cachedActors))
             .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
     )
   }
+
+  private def addAdditionalActor(mode: Mode, boundForm: Form[DeclarationAdditionalActors], cachedActors: Seq[DeclarationAdditionalActors])(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] =
+    MultipleItemsHelper
+      .add(boundForm, cachedActors, DeclarationAdditionalActorsData.maxNumberOfActors)
+      .fold(
+        formWithErrors => Future.successful(BadRequest(declarationAdditionalActorsPage(mode, formWithErrors))),
+        updatedActors =>
+          updateCache(DeclarationAdditionalActorsData(updatedActors))
+            .map(_ => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
+      )
 
   private def updateCache(formData: DeclarationAdditionalActorsData)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {

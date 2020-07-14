@@ -119,7 +119,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
       "user put incorrect data" in {
 
         val longerEori = TestHelper.createRandomAlphanumericString(18)
-        val wrongAction = Seq(("eori", longerEori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
+        val wrongAction = Seq(("eoriCS", longerEori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
@@ -130,7 +130,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
 
         withNewCaching(declarationWithActor)
 
-        val duplication = Seq(("eori", eori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
+        val duplication = Seq(("eoriCS", eori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(duplication: _*))
 
@@ -141,7 +141,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
 
         withNewCaching(maxAmountOfItems)
 
-        val correctForm = Seq(("eori", "GB123456"), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
+        val correctForm = Seq(("eoriCS", "GB123456"), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
