@@ -52,6 +52,10 @@
     }
 }
 
+@headerEmptyContent(message: String) = {
+    <span class="govuk-visually-hidden">@message</span>
+}
+
 @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)
     else None
@@ -78,7 +82,7 @@
                 content = Text(messages("declaration.summary.items.item.supportingDocuments.information"))
             ),
             HeadCell(
-                content = Empty
+                content = HtmlContent(headerEmptyContent(messages("site.change.header")))
             )
         )),
         caption = Some(messages("declaration.summary.items.item.supportingDocuments")),

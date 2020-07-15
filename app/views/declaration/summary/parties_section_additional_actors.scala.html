@@ -58,6 +58,10 @@
     }
 }
 
+@headerEmptyContent(message: String) = {
+    <span class="govuk-visually-hidden">@message</span>
+}
+
 @if(additionalActors.isEmpty) {
     @summaryList("additionalActors", None, Seq(
         Some(SummaryListRow(
@@ -104,7 +108,7 @@
                 content = Text(messages("declaration.additionalActors.eori"))
             ),
             HeadCell(
-                content = Empty
+                content = HtmlContent(headerEmptyContent(messages("site.change.header")))
             )
         )),
         caption = Some(messages("declaration.summary.parties.additional")),

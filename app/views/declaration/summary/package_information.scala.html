@@ -57,6 +57,10 @@
     }
 }
 
+@headerEmptyContent(message: String) = {
+    <span class="govuk-visually-hidden">@message</span>
+}
+
 @if(packageInformation.nonEmpty) {
     @govukTable(Table(
         head = Some(List(
@@ -70,7 +74,7 @@
                 content = Text(messages("declaration.summary.items.item.packageInformation.markings"))
             ),
             HeadCell(
-                content = Empty
+                content = HtmlContent(headerEmptyContent(messages("site.change.header")))
             )
         )),
         rows = packageInformation.map(information =>
