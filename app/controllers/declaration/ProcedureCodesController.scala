@@ -150,13 +150,15 @@ class ProcedureCodesController @Inject()(
         .transform(removeWarehouseIdentificationForCode)
     }
 
-    def updatedModel(model: ExportsDeclaration): ExportsDeclaration =
+    def updatedModel(model: ExportsDeclaration): ExportsDeclaration = {
+      val updatedModel = model.updatedItem(itemId, item => item.copy(procedureCodes = Some(updatedProcedureCodes)))
       updatedProcedureCodes.procedureCode match {
         case Some(code) =>
-          clearDataForProcedureCode(code, itemId, model).updatedItem(itemId, item => item.copy(procedureCodes = Some(updatedProcedureCodes)))
+          clearDataForProcedureCode(code, itemId, updatedModel)
         case _ =>
-          model.updatedItem(itemId, item => item.copy(procedureCodes = Some(updatedProcedureCodes)))
+          updatedModel
       }
+    }
 
     updateExportsDeclarationSyncDirect(updatedModel(_))
   }
