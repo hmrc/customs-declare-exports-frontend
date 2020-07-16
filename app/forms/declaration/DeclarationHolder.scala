@@ -38,7 +38,7 @@ object DeclarationHolder extends DeclarationPage {
   private def eoriMapping = optional(Eori.mapping)
 
   private def codeMapping =
-    optional(text().verifying("declaration.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.value))))
+    optional(text().verifying("declaration.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.code))))
 
   val optionalMapping =
     Forms.mapping("authorisationTypeCode" -> codeMapping, "eori" -> eoriMapping)(DeclarationHolder.apply)(DeclarationHolder.unapply)

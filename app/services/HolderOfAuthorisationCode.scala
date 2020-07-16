@@ -16,11 +16,26 @@
 
 package services
 
-import utils.FileReader
+import com.github.tototoshi.csv.CSVReader
 
-case class HolderOfAuthorisationCode(value: String)
+import scala.io.Source
+
+case class HolderOfAuthorisationCode(code: String, description: String) {
+
+  def asString = s"${description} (${code})"
+}
 
 object HolderOfAuthorisationCode {
-  lazy val all: List[HolderOfAuthorisationCode] =
-    FileReader("code-lists/holder-of-authorisation-codes.csv").tail.map(HolderOfAuthorisationCode(_)).sortBy(_.value)
+
+  lazy val all: List[HolderOfAuthorisationCode] = {
+
+    val reader = CSVReader.open(Source.fromURL(getClass.getClassLoader.getResource("code-lists/holder-of-authorisation-codes.csv"), "UTF-8"))
+    val codes: List[Map[String, String]] = reader.allWithHeaders()
+
+    codes.map(row => HolderOfAuthorisationCode(row("Code"), row("Description"))).sortBy(_.description)
+  }
+
+  lazy private val holderCodeMap: Map[String, HolderOfAuthorisationCode] = all.map(holder => (holder.code, holder)).toMap
+
+  def findByCode(code: String): HolderOfAuthorisationCode = holderCodeMap(code)
 }

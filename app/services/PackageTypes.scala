@@ -16,20 +16,20 @@
 
 package services
 
+import com.github.tototoshi.csv.CSVReader
 import services.model.PackageType
-import utils.FileReader
 
-import scala.util.matching.Regex
+import scala.io.Source
 
 object PackageTypes {
 
-  private val regex: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
+  lazy val all: List[PackageType] = {
 
-  lazy val all: List[PackageType] =
-    FileReader("code-lists/package-types.csv").tail.map {
-      case regex(code: String, description: String) =>
-        PackageType(code, description)
-    }.sortBy(_.description)
+    val reader = CSVReader.open(Source.fromURL(getClass.getClassLoader.getResource("code-lists/package-types.csv"), "UTF-8"))
+    val codes: List[Map[String, String]] = reader.allWithHeaders()
+
+    codes.map(row => PackageType(row("Code"), row("Description"))).sortBy(_.description)
+  }
 
   val packageTypeCodeMap: Map[String, PackageType] = all.map(packageType => (packageType.code, packageType)).toMap
 

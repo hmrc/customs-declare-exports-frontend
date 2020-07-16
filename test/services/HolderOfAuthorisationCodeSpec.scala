@@ -23,29 +23,27 @@ class HolderOfAuthorisationCodeSpec extends UnitSpec {
   "Holder of Authorisation Code" should {
     "read from file" in {
       val codes = HolderOfAuthorisationCode.all
-      codes must contain(HolderOfAuthorisationCode("ACE")) // First in file
-      codes must contain(HolderOfAuthorisationCode("UKCS")) // Last in file
+      codes must contain(HolderOfAuthorisationCode("ACE", "Authorised consignee for Union transit")) // First in file
+      codes must contain(HolderOfAuthorisationCode("UKCS", "UK Continental shelf")) // Last in file
     }
 
     "exclude header" in {
       val codes = HolderOfAuthorisationCode.all
-      codes mustNot contain(HolderOfAuthorisationCode("Code"))
+      codes mustNot contain(HolderOfAuthorisationCode("Code", "Description"))
     }
 
     "exclude empty lines" in {
       val codes = HolderOfAuthorisationCode.all
-      codes.map(_.value.trim).filter(_.isEmpty) mustBe empty
+      codes.map(_.code.trim).filter(_.isEmpty) mustBe empty
     }
 
-    "sort by value" in {
-      val codes = HolderOfAuthorisationCode.all.filter(code => Set("ACE", "UKCS").contains(code.value))
-      codes mustBe List(HolderOfAuthorisationCode("ACE"), HolderOfAuthorisationCode("UKCS"))
+    "sort by description" in {
+      val codes = HolderOfAuthorisationCode.all.filter(code => Set("CVA", "CW1").contains(code.code))
+      codes mustBe List(
+        HolderOfAuthorisationCode("CW1", "Operation of storage facilities for the customs warehousing of goods in a public customs warehouse type I"),
+        HolderOfAuthorisationCode("CVA", "Simplification of the determination of amounts being part of the customs value of goods")
+      )
     }
 
-    "contain values for No Deal (see CEDS-1773)" in {
-      val codes = HolderOfAuthorisationCode.all
-      codes must contain(HolderOfAuthorisationCode("NIRE"))
-      codes must contain(HolderOfAuthorisationCode("RORO"))
-    }
   }
 }
