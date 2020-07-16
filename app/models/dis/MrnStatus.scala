@@ -16,6 +16,8 @@
 
 package models.dis
 
+import java.time.ZonedDateTime
+
 import play.api.libs.json.{Json, OFormat}
 
 case class MrnStatus(
@@ -24,10 +26,10 @@ case class MrnStatus(
   eori: String,
   declarationType: String,
   ucr: Option[String] = None,
-  receivedDateTime: String,
-  releasedDateTime: Option[String] = None,
-  acceptanceDateTime: Option[String] = None,
-  createdDateTime: String,
+  receivedDateTime: ZonedDateTime,
+  releasedDateTime: Option[ZonedDateTime] = None,
+  acceptanceDateTime: Option[ZonedDateTime] = None,
+  createdDateTime: ZonedDateTime,
   roe: String,
   ics: String,
   irc: Option[String] = None,
