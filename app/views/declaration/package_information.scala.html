@@ -39,6 +39,7 @@
     exportsInputText: exportsInputText,
     tariffDetails: tariffDetails,
     addAnotherQuestion: addAnotherQuestion,
+    spanVisuallyHidden: spanVisuallyHidden,
     link: link,
     saveButtons: saveButtons,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -64,10 +65,6 @@
         Text(messages("declaration.packageInformation.table.multiple.heading", packages.size))
 }
 
-@headerEmptyContent(message: String) = {
-    <span class="govuk-visually-hidden">@message</span>
-}
-
 @packageInfoTable = {
   @if(packages.nonEmpty) {
     @govukTable(Table(
@@ -75,7 +72,7 @@
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages"))),
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages"))),
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.shippingMarks"))),
-        HeadCell(content = HtmlContent(headerEmptyContent(messages("site.remove.header"))))
+        HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
       )),
       rows = packages.zipWithIndex.map { case (item, index) =>
         Seq(

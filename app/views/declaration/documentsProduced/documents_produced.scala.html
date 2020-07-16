@@ -41,6 +41,7 @@
     exportsInputTextArea: exportsInputTextArea,
     exportsDateInput: exportsDateInput,
     tariffDetails: tariffDetails,
+    spanVisuallyHidden: spanVisuallyHidden,
     saveButtons: saveButtons,
     link: link,
     addAnotherQuestion: addAnotherQuestion,
@@ -61,10 +62,6 @@
         Text(messages("declaration.addDocument.table.heading"))
     else
         Text(messages("declaration.addDocument.table.multiple.heading", documents.size))
-}
-
-@headerEmptyContent(message: String) = {
-    <span class="govuk-visually-hidden">@message</span>
 }
 
 @documentsTable = {
@@ -117,10 +114,10 @@
                     classes = "document-identifier"
                 ),
                 HeadCell(
-                    content = HtmlContent(headerEmptyContent(messages("site.change.header")))
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
                 ),
                 HeadCell(
-                    content = HtmlContent(headerEmptyContent(messages("site.remove.header")))
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
                 )
             ))
         ))

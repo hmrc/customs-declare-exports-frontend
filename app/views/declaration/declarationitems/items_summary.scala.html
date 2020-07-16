@@ -33,6 +33,7 @@
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
   addAnotherQuestion: addAnotherQuestion,
+  spanVisuallyHidden: spanVisuallyHidden,
   saveButtons: saveButtons,
   removeButton: removeButton,
   link: link,
@@ -69,10 +70,6 @@
     }
 }
 
-@headerEmptyContent(message: String) = {
-    <span class="govuk-visually-hidden">@message</span>
-}
-
 @itemsTable = {
     @if(items.nonEmpty) {
         @govukTable(Table(
@@ -82,8 +79,8 @@
                 HeadCell(content = Text(messages("declaration.itemsSummary.procedureCode"))),
                 HeadCell(content = Text(messages("declaration.itemsSummary.commodityCode"))),
                 HeadCell(content = Text(messages("declaration.itemsSummary.noOfPackages"))),
-                HeadCell(content = HtmlContent(headerEmptyContent(messages("site.change.header")))),
-                HeadCell(content = HtmlContent(headerEmptyContent(messages("site.remove.header"))))
+                HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))),
+                HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
             )),
             rows = items.zipWithIndex.map { case (item, index) =>
                 Seq(

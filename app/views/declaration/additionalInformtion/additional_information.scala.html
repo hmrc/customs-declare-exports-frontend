@@ -39,6 +39,7 @@
         tariffDetails: tariffDetails,
         saveButtons: saveButtons,
         appConfig: AppConfig,
+        spanVisuallyHidden: spanVisuallyHidden,
         link: link,
         addAnotherQuestion: addAnotherQuestion,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
@@ -57,10 +58,6 @@
         Text(messages("declaration.additionalInformation.table.heading"))
     else
         Text(messages("declaration.additionalInformation.table.multiple.heading", items.size))
-}
-
-@headerEmptyContent(message: String) = {
-    <span class="govuk-visually-hidden">@message</span>
 }
 
 @additionalInformationTable = {
@@ -103,10 +100,10 @@
                     content = Text(messages("declaration.additionalInformation.table.headers.description"))
                 ),
                 HeadCell(
-                    content = HtmlContent(headerEmptyContent(messages("site.change.header")))
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
                 ),
                 HeadCell(
-                    content = HtmlContent(headerEmptyContent(messages("site.remove.header")))
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
                 )
             ))
         ))

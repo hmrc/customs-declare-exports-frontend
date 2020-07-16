@@ -37,6 +37,7 @@
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
         link: link,
+        spanVisuallyHidden: spanVisuallyHidden,
         addAnotherQuestion: addAnotherQuestion,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -56,10 +57,6 @@
         Text(messages("declaration.declarationHolders.table.heading"))
     else
         Text(messages("declaration.declarationHolders.table.multiple.heading", holders.size))
-}
-
-@headerEmptyContent(message: String) = {
-    <span class="govuk-visually-hidden">@message</span>
 }
 
 @holdersTable = {
@@ -101,10 +98,10 @@
                     content = Text(messages("declaration.declarationHolders.table.eori"))
                 ),
                 HeadCell(
-                content = HtmlContent(headerEmptyContent(messages("site.change.header")))
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
                 ),
                 HeadCell(
-                    content = HtmlContent(headerEmptyContent(messages("site.remove.header")))
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
                 )
             ))
         ))

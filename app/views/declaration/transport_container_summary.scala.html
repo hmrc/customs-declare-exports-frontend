@@ -38,6 +38,7 @@
         govukButton: GovukButton,
         govukTable: GovukTable,
         errorSummary: errorSummary,
+        spanVisuallyHidden: spanVisuallyHidden,
         tariffDetails: tariffDetails,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -47,10 +48,6 @@
 
 @tariffBody = {
     @Html(messages("declaration.type.container.summary.help.text", components.details_content_link()))
-}
-
-@headerEmptyContent(message: String) = {
-    <span class="govuk-visually-hidden">@message</span>
 }
 
 @containersTable = {
@@ -85,10 +82,10 @@
                     content = Text(messages("declaration.seal.summary.heading"))
                 ),
                 HeadCell(
-                    content = HtmlContent(headerEmptyContent(messages("site.change.header")))
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
                 ),
                 HeadCell(
-                    content = HtmlContent(headerEmptyContent(messages("site.remove.header")))
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
                 )
             ))
         ))

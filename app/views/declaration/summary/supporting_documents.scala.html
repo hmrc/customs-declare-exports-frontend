@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
 @import views.html.components.gds.linkContent
+@import views.html.components.gds.spanVisuallyHidden
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
 @import views.components.gds.ActionItemBuilder._
@@ -28,6 +29,7 @@
         govukTable: GovukTable,
         changeLink: link,
         linkContent: linkContent,
+        spanVisuallyHidden: spanVisuallyHidden,
         summaryList: summary_list
 )
 
@@ -50,10 +52,6 @@
         else
             ""
     }
-}
-
-@headerEmptyContent(message: String) = {
-    <span class="govuk-visually-hidden">@message</span>
 }
 
 @actions(action: Actions) = @{
@@ -82,7 +80,7 @@
                 content = Text(messages("declaration.summary.items.item.supportingDocuments.information"))
             ),
             HeadCell(
-                content = HtmlContent(headerEmptyContent(messages("site.change.header")))
+                content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
             )
         )),
         caption = Some(messages("declaration.summary.items.item.supportingDocuments")),

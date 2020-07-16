@@ -37,6 +37,7 @@
         govukTable: GovukTable,
         errorSummary: errorSummary,
         tariffDetails: tariffDetails,
+        spanVisuallyHidden: spanVisuallyHidden,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
@@ -45,10 +46,6 @@
 
 @tariffBody = {
     @Html(messages("declaration.type.sealsSummaryText", components.details_content_link()))
-}
-
-@headerEmptyContent(message: String) = {
-<span class="govuk-visually-hidden">@message</span>
 }
 
 @sealsTable = {
@@ -72,7 +69,7 @@
                 attributes = Map("id" -> s"removable_elements-heading")
             ),
             HeadCell(
-                content = HtmlContent(headerEmptyContent(messages("site.remove.header")))
+                content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
             )
         ))
     ))

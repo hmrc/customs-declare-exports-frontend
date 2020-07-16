@@ -37,6 +37,7 @@
         sectionHeader: sectionHeader,
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
+        spanVisuallyHidden: spanVisuallyHidden,
         link: link,
         addAnotherQuestion: addAnotherQuestion,
         saveButtons: saveButtons,
@@ -57,10 +58,6 @@
         Text(messages("declaration.additionalActors.table.heading"))
     else
         Text(messages("declaration.additionalActors.table.multiple.heading", actors.size))
-}
-
-@headerEmptyContent(message: String) = {
-    <span class="govuk-visually-hidden">@message</span>
 }
 
 @actorsTable = {
@@ -96,7 +93,7 @@
                 content = Text(messages("declaration.additionalActors.table.eori"))
             ),
             HeadCell(
-                content = HtmlContent(headerEmptyContent(messages("site.remove.header")))
+                content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
             )
         ))
     ))
