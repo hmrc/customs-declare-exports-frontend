@@ -37,6 +37,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     exportsInputText: exportsInputText,
+    spanVisuallyHidden: spanVisuallyHidden,
     tariffDetails: tariffDetails,
     addAnotherQuestion: addAnotherQuestion,
     saveButtons: saveButtons,
@@ -88,7 +89,9 @@
                 HeadCell(
                     content = Text(messages("declaration.nationalAdditionalCode.table.header"))
                 ),
-                HeadCell()
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
             ))
         ))
     }

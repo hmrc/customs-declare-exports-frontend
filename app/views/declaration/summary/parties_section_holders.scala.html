@@ -20,6 +20,7 @@
 @import services.HolderOfAuthorisationCode
 @import views.html.components.gds.link
 @import views.html.components.gds.linkContent
+@import views.html.components.gds.spanVisuallyHidden
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
 @import views.components.gds.ActionItemBuilder._
@@ -28,6 +29,7 @@
         govukTable: GovukTable,
         changeLink: link,
         linkContent: linkContent,
+        spanVisuallyHidden: spanVisuallyHidden,
         summaryList: summary_list
 )
 
@@ -103,7 +105,7 @@
                 content = Text(messages("declaration.summary.parties.holders.eori"))
             ),
             HeadCell(
-                content = Empty
+                content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
             )
         )),
         caption = Some(messages("declaration.summary.parties.holders")),

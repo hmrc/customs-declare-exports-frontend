@@ -22,12 +22,10 @@ import java.time.temporal.TemporalAccessor
 
 object ViewDates {
 
-  private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
   private val submissionDateTimeFormatter: DateTimeFormatter =
     DateTimeFormatter.ofPattern("d MMMM uuu 'at' h:mma").withZone(ZoneId.of("Europe/London"))
   private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu").withZone(ZoneId.of("Europe/London"))
 
-  def format(temporal: TemporalAccessor): String = formatter.format(temporal)
   def formatDateAtTime(temporal: TemporalAccessor): String =
     submissionDateTimeFormatter
       .format(temporal)

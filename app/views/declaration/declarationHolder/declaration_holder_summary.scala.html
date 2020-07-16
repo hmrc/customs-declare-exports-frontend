@@ -28,19 +28,20 @@
 @import services.HolderOfAuthorisationCode
 
 @this(
-govukLayout: gdsMainTemplate,
-govukFieldset: GovukFieldset,
-govukButton: GovukButton,
-govukTable : GovukTable,
-govukRadios: GovukRadios,
-errorSummary: errorSummary,
-sectionHeader: sectionHeader,
-pageTitle: pageTitle,
-exportsInputText: exportsInputText,
-link: link,
-addAnotherQuestion: addAnotherQuestion,
-saveButtons: saveButtons,
-formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+  govukLayout: gdsMainTemplate,
+  govukFieldset: GovukFieldset,
+  govukButton: GovukButton,
+  govukTable : GovukTable,
+  govukRadios: GovukRadios,
+  errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
+  pageTitle: pageTitle,
+  exportsInputText: exportsInputText,
+  spanVisuallyHidden: spanVisuallyHidden,
+  link: link,
+  addAnotherQuestion: addAnotherQuestion,
+  saveButtons: saveButtons,
+  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[_], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
@@ -97,7 +98,12 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
                 HeadCell(
                     content = Text(messages("declaration.declarationHolders.table.eori"))
                 ),
-                HeadCell(colspan = Some(2))
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
             ))
         ))
     }

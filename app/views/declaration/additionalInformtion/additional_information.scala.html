@@ -39,6 +39,7 @@
         tariffDetails: tariffDetails,
         saveButtons: saveButtons,
         appConfig: AppConfig,
+        spanVisuallyHidden: spanVisuallyHidden,
         link: link,
         addAnotherQuestion: addAnotherQuestion,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
@@ -98,7 +99,12 @@
                 HeadCell(
                     content = Text(messages("declaration.additionalInformation.table.headers.description"))
                 ),
-                HeadCell(colspan = Some(2))
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
             ))
         ))
     }

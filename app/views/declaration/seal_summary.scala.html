@@ -37,6 +37,7 @@
         govukTable: GovukTable,
         errorSummary: errorSummary,
         tariffDetails: tariffDetails,
+        spanVisuallyHidden: spanVisuallyHidden,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
@@ -67,7 +68,9 @@
                 content = Text(messages("declaration.seal.summary.heading")),
                 attributes = Map("id" -> s"removable_elements-heading")
             ),
-            HeadCell()
+            HeadCell(
+                content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+            )
         ))
     ))
 
