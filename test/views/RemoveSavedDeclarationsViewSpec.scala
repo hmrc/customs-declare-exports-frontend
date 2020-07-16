@@ -63,7 +63,7 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages w
       tableHeader(view)(0).text() mustBe messages(ducr)
       tableHeader(view)(1).text() mustBe messages(dateSaved)
       tableCell(view)(0, 0).text() mustBe "DUCR-XXXX-1"
-      tableCell(view)(0, 1).text() mustBe "1 January 2019 at 10:00"
+      tableCell(view)(0, 1).text() mustBe "1 January 2019 at 10:00am"
 
       numberOfTableRows(view) mustBe 1
 

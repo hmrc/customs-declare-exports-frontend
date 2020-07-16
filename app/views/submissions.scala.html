@@ -87,7 +87,7 @@
                 ),
                 TableRow(
                     content = Text(
-                        submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp.withZoneSameInstant(ZoneId.of("Europe/London"))).map(ViewDates.submissionDateTimeFormatter.format(_)).getOrElse("")
+                        submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp.withZoneSameInstant(ZoneId.of("Europe/London"))).map(ViewDates.formatDateAtTime).getOrElse("")
                     ),
                     attributes = Map("id" -> s"submission-tab-$id-row$index-dateAndTime")
                 ),

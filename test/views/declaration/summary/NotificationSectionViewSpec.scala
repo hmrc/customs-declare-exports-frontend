@@ -50,14 +50,14 @@ class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestData with
 
       val row = view.getElementsByClass("accepted-row")
       row must haveSummaryKey(acceptedNotification.displayStatus)
-      row must haveSummaryValue(ViewDates.submissionDateTimeFormatter.format(acceptedNotification.dateTimeIssuedInUK))
+      row must haveSummaryValue(ViewDates.formatDateAtTime(acceptedNotification.dateTimeIssuedInUK))
     }
 
     "have Cleared" in {
 
       val row = view.getElementsByClass("cleared-row")
       row must haveSummaryKey(clearedNotification.displayStatus)
-      row must haveSummaryValue(ViewDates.submissionDateTimeFormatter.format(clearedNotification.dateTimeIssuedInUK))
+      row must haveSummaryValue(ViewDates.formatDateAtTime(clearedNotification.dateTimeIssuedInUK))
     }
   }
 

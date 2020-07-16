@@ -16,18 +16,23 @@
 
 package views
 
-import java.time.{ZoneId, ZoneOffset}
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
 
 object ViewDates {
 
-  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-  val submissionDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu 'at' HH:mm").withZone(ZoneId.of("Europe/London"))
-  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu").withZone(ZoneId.of("Europe/London"))
+  private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+  private val submissionDateTimeFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("d MMMM uuu 'at' h:mma").withZone(ZoneId.of("Europe/London"))
+  private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu").withZone(ZoneId.of("Europe/London"))
 
   def format(temporal: TemporalAccessor): String = formatter.format(temporal)
-  def formatDateAtTime(temporal: TemporalAccessor): String = submissionDateTimeFormatter.format(temporal)
+  def formatDateAtTime(temporal: TemporalAccessor): String =
+    submissionDateTimeFormatter
+      .format(temporal)
+      .replace("AM", "am")
+      .replace("PM", "pm")
   def formatDate(temporal: TemporalAccessor): String = dateFormatter.format(temporal)
 
 }

@@ -123,7 +123,7 @@
                                 attributes = Map("id" -> s"notification_status_$index")
                             ),
                             TableRow(
-                                content = HtmlContent(ViewDates.submissionDateTimeFormatter.format(notification.dateTimeIssuedInUK)),
+                                content = HtmlContent(ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK)),
                                 attributes = Map("id" -> s"notification_date_time_$index")
                             ),
                             TableRow(

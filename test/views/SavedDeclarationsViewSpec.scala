@@ -76,7 +76,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
       numberOfTableRows(view) mustBe 1
 
       tableCell(view)(1, 0).text() mustBe s"${messages("saved.declarations.noDucr")} ${messages("saved.declarations.continue.hidden", noDucrLabel)}"
-      tableCell(view)(1, 1).text() mustBe "1 January 2019 at 09:45"
+      tableCell(view)(1, 1).text() mustBe "1 January 2019 at 9:45am"
       tableCell(view)(1, 2).text() mustBe s"${messages("site.remove")} ${messages("saved.declarations.remove.hidden", noDucrLabel)}"
 
       view.getElementsByClass("ceds-pagination") mustNot be(empty)
@@ -93,7 +93,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
       numberOfTableRows(view) mustBe 1
 
       tableCell(view)(1, 0).text() mustBe s"${messages("saved.declarations.noDucr")} ${messages("saved.declarations.continue.hidden", noDucrLabel)}"
-      tableCell(view)(1, 1).text() mustBe "1 May 2019 at 10:45"
+      tableCell(view)(1, 1).text() mustBe "1 May 2019 at 10:45am"
       tableCell(view)(1, 2).text() mustBe s"${messages("site.remove")} ${messages("saved.declarations.remove.hidden", noDucrLabel)}"
 
       view.getElementsByClass("ceds-pagination") mustNot be(empty)
