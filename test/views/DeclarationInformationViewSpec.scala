@@ -226,7 +226,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         val view = declarationInformationPageWithoutFeatures(submission, notifications)(request, messages)
 
         view.getElementById("notification_status_2").text() mustBe SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
-        view.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00"
+        view.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00am"
         view.getElementById("notification_action_2").text() mustBe ""
       }
     }
@@ -234,7 +234,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     "contains rejected acceptedNotification with correct data and view errors link" in {
 
       viewWithFeatures.getElementById("notification_status_0").text() mustBe SubmissionStatus.format(SubmissionStatus.REJECTED)
-      viewWithFeatures.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00"
+      viewWithFeatures.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00am"
       viewWithFeatures.getElementById("notification_action_0") must containMessage("submissions.viewErrors")
       viewWithFeatures.getElementById("notification_action_0").child(0) must haveHref(
         controllers.routes.RejectedNotificationsController.displayPage(submission.uuid)
@@ -244,14 +244,14 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     "contains accepted acceptedNotification with correct data" in {
 
       viewWithFeatures.getElementById("notification_status_1").text() mustBe SubmissionStatus.format(SubmissionStatus.ACCEPTED)
-      viewWithFeatures.getElementById("notification_date_time_1").text() mustBe "1 January 2020 at 00:00"
+      viewWithFeatures.getElementById("notification_date_time_1").text() mustBe "1 January 2020 at 12:00am"
       viewWithFeatures.getElementById("notification_action_1").text() mustBe empty
     }
 
     "contains additional documents acceptedNotification with redirect to SFUS link" in {
 
       viewWithFeatures.getElementById("notification_status_2").text() mustBe SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
-      viewWithFeatures.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00"
+      viewWithFeatures.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00am"
       viewWithFeatures.getElementById("notification_action_2") must containMessage("submissions.sfus")
       viewWithFeatures.getElementById("notification_action_2").child(0) must haveHref("http://localhost:6793/cds-file-upload-service/start")
     }

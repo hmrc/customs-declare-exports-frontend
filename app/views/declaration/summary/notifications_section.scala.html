@@ -42,7 +42,7 @@
                     content = Text(notification.displayStatus)
                 ),
                 value = Value(
-                    content = Text(ViewDates.submissionDateTimeFormatter.format(notification.dateTimeIssuedInUK))
+                    content = Text(ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK))
                 )
             )
         ),

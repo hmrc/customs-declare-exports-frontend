@@ -1,5 +1,6 @@
 @import models.dis.MrnStatus
 @import views.pdf.DeclarationType
+@import views.ViewDates
 
 @this()
 
@@ -50,15 +51,15 @@
             <!-- DATES INFO START -->
             <fo:block-container absolute-position="absolute" top="65mm" right="0mm" width="50%" height="5mm">
                 <fo:block font-size="13pt" text-align="right" font-weight="bold"> @messages("pdf.template.releasedDateTime"): </fo:block>
-                <fo:block font-size="13pt" text-align="right"> @mrnStatus.releasedDateTime </fo:block>
+                <fo:block font-size="13pt" text-align="right"> @mrnStatus.releasedDateTime.map(ViewDates.formatDateAtTime).getOrElse("") </fo:block>
             </fo:block-container>
             <fo:block-container absolute-position="absolute" top="80mm" right="0mm" width="50%" height="5mm">
                 <fo:block font-size="13pt" text-align="right" font-weight="bold"> @messages("pdf.template.acceptanceDateTime"): </fo:block>
-                <fo:block font-size="13pt" text-align="right"> @mrnStatus.acceptanceDateTime </fo:block>
+                <fo:block font-size="13pt" text-align="right"> @mrnStatus.acceptanceDateTime.map(ViewDates.formatDateAtTime).getOrElse("") </fo:block>
             </fo:block-container>
             <fo:block-container absolute-position="absolute" top="95mm" right="0mm" width="50%" height="5mm">
                 <fo:block font-size="13pt" text-align="right" font-weight="bold"> @messages("pdf.template.receivedDateTime"): </fo:block>
-                <fo:block font-size="13pt" text-align="right"> @mrnStatus.receivedDateTime </fo:block>
+                <fo:block font-size="13pt" text-align="right"> @ViewDates.formatDateAtTime(mrnStatus.receivedDateTime) </fo:block>
             </fo:block-container>
             <!-- DATES INFO END -->
 

@@ -32,6 +32,7 @@ import play.api.test.Helpers._
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.base.UnitSpec
+import views.ViewDates
 import views.xml.pdf.pdfTemplate
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -76,9 +77,9 @@ class EADServiceSpec
           pdfData must include(MrnStatusSpec.completeMrnStatus.ucr.get)
           pdfData must include(MrnStatusSpec.completeMrnStatus.totalPackageQuantity)
           pdfData must include(MrnStatusSpec.completeMrnStatus.goodsItemQuantity)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.releasedDateTime.get)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.acceptanceDateTime.get)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.receivedDateTime)
+          pdfData must include(ViewDates.formatDateAtTime(MrnStatusSpec.completeMrnStatus.releasedDateTime.get))
+          pdfData must include(ViewDates.formatDateAtTime(MrnStatusSpec.completeMrnStatus.acceptanceDateTime.get))
+          pdfData must include(ViewDates.formatDateAtTime(MrnStatusSpec.completeMrnStatus.receivedDateTime))
           pdfData must include(MrnStatusSpec.completeMrnStatus.versionId)
           pdfData must include(MrnStatusSpec.completeMrnStatus.previousDocuments.head.typeCode)
           pdfData must include(MrnStatusSpec.completeMrnStatus.previousDocuments.head.id)

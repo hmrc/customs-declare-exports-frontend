@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package models.dis;
+package models.dis
+
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 
 object MrnStatusSpec {
+  val zoneUTC = ZoneId.of("UTC")
+
   val completeMrnStatus = MrnStatus(
     mrn = "18GB9JLC3CU1LFGVR2",
     versionId = "1",
     eori = "GB123456789012000",
     declarationType = "IMZ",
     ucr = Some("20GBAKZ81EQJ2WXYZ"),
-    receivedDateTime = "02 July 2019 at 11:07am",
-    releasedDateTime = Some("02 July 2019 at 11:07am"),
-    acceptanceDateTime = Some("02 July 2019 at 11:07am"),
-    createdDateTime = "10 March 2020 at 01:13am",
+    receivedDateTime = ZonedDateTime.of(LocalDateTime.of(2019, 7, 2, 11, 7, 57), zoneUTC),
+    releasedDateTime = Some(ZonedDateTime.of(LocalDateTime.of(2019, 7, 2, 11, 7, 57), zoneUTC)),
+    acceptanceDateTime = Some(ZonedDateTime.of(LocalDateTime.of(2019, 7, 2, 11, 7, 57), zoneUTC)),
+    createdDateTime = ZonedDateTime.of(LocalDateTime.of(2020, 3, 10, 1, 13, 57), zoneUTC),
     roe = "6",
     ics = "15",
     irc = Some("000"),

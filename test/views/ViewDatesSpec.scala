@@ -26,7 +26,7 @@ class ViewDatesSpec extends WordSpec with MustMatchers {
     "format date at time correctly" in {
 
       val date = LocalDateTime.of(2019, 8, 20, 13, 55, 15)
-      ViewDates.formatDateAtTime(date) must equal("20 August 2019 at 13:55")
+      ViewDates.formatDateAtTime(date) must equal("20 August 2019 at 1:55pm")
     }
   }
 }

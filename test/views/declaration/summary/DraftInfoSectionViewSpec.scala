@@ -42,8 +42,8 @@ class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with Mo
       val localDateTime = LocalDateTime.of(2019, 11, 28, 14, 48)
       val data = aDeclaration(withConsignmentReferences(ducr = ducr), withCreatedDate(localDateTime), withUpdateDate(localDateTime))
 
-      val expectedCreatedTime = "28 November 2019 at 14:48"
-      val expectedUpdatedTime = "28 December 2019 at 14:48"
+      val expectedCreatedTime = "28 November 2019 at 2:48pm"
+      val expectedUpdatedTime = "28 December 2019 at 2:48pm"
 
       val draftInfoPage = instanceOf[draft_info_section]
       val view = draftInfoPage(data)(messages)
