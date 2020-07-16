@@ -108,7 +108,7 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("declaration.declarationHolders.table.eori")
 
         // check row
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "ACE"
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() must include("ACE")
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB123456543"
         view
           .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
@@ -127,7 +127,7 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("declaration.declarationHolders.table.eori")
 
         // check rows
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "ACE"
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() must include("ACE")
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB123456543"
         view
           .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
@@ -136,7 +136,7 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
           .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(4)")
           .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint", "ACE-GB123456543")}"
 
-        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe "CVA"
+        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() must include("CVA")
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "GB6543253678"
         view
           .select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)")

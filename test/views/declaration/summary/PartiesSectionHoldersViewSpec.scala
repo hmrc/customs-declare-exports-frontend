@@ -28,8 +28,8 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
 
   val eori1 = "eori1"
   val eori2 = "eori2"
-  val authorisationTypeCode1 = "partyType1"
-  val authorisationTypeCode2 = "partyType2"
+  val authorisationTypeCode1 = "ACE"
+  val authorisationTypeCode2 = "AWB"
 
   val holders =
     Seq(DeclarationHolder(Some(authorisationTypeCode1), Some(Eori(eori1))), DeclarationHolder(Some(authorisationTypeCode2), Some(Eori(eori2))))
@@ -62,7 +62,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
       table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.parties.holders.eori")
 
       val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
-      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe authorisationTypeCode1
+      row1.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode1)
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori1
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row1ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
@@ -70,7 +70,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
         .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode1, eori1)}"
 
       val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe authorisationTypeCode2
+      row2.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode2)
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori2
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row2ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())

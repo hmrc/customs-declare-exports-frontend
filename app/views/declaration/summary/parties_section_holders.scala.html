@@ -17,6 +17,7 @@
 @import forms.declaration.DeclarationHolder
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import services.HolderOfAuthorisationCode
 @import views.html.components.gds.link
 @import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
@@ -38,7 +39,7 @@
 }
 
 @holderTypeCode(holder: DeclarationHolder) = @{
-    holder.authorisationTypeCode.getOrElse("")
+    holder.authorisationTypeCode.map(HolderOfAuthorisationCode.findByCode(_).asString).getOrElse("")
 }
 
 @holderEori(holder: DeclarationHolder) = @{
@@ -50,7 +51,7 @@
         if(actionsEnabled)
             changeLink(
                 messages("site.change"),
-                Some(messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder))),
+                Some(messages("declaration.summary.parties.holders.change", holder.authorisationTypeCode.getOrElse(""), holderEori(holder))),
                 controllers.declaration.routes.DeclarationHolderController.displayPage(mode)
             )
         else

@@ -33,7 +33,7 @@ object AutoCompleteItem {
     documents map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
 
   def fromHolderOfAuthorisationCode(codes: List[HolderOfAuthorisationCode]): List[AutoCompleteItem] =
-    codes map (c => AutoCompleteItem(c.value, c.value))
+    codes map (h => AutoCompleteItem(h.asString, h.code))
 
   def fromOfficeOfExit(offices: List[OfficeOfExit]): List[AutoCompleteItem] =
     offices map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
