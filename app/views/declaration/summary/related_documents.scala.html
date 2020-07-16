@@ -48,10 +48,6 @@
     }
 }
 
-@headerEmptyContent(message: String) = {
-    <span class="govuk-visually-hidden">@message</span>
-}
-
 @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)
     else None
