@@ -19,6 +19,7 @@
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
+@import views.html.components.gds.spanVisuallyHidden
 @import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
@@ -28,7 +29,8 @@
         govukTable: GovukTable,
         changeLink: link,
         linkContent: linkContent,
-        summaryList: summary_list
+        summaryList: summary_list,
+        spanVisuallyHidden: spanVisuallyHidden
 )
 
 @(mode: Mode, containers: Seq[Container], actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
@@ -72,7 +74,7 @@
                 content = Text(messages("declaration.summary.container.securitySeals"))
             ),
             HeadCell(
-                content = Empty
+                content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
             )
         )),
         caption = Some(messages("declaration.summary.container")),

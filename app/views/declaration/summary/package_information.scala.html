@@ -19,6 +19,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
+@import views.html.components.gds.spanVisuallyHidden
 @import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
@@ -28,6 +29,7 @@
         govukTable: GovukTable,
         changeLink: link,
         linkContent: linkContent,
+        spanVisuallyHidden: spanVisuallyHidden,
         summaryList: summary_list
 )
 
@@ -70,7 +72,7 @@
                 content = Text(messages("declaration.summary.items.item.packageInformation.markings"))
             ),
             HeadCell(
-                content = Empty
+                content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
             )
         )),
         rows = packageInformation.map(information =>

@@ -41,6 +41,7 @@
     exportsInputTextArea: exportsInputTextArea,
     exportsDateInput: exportsDateInput,
     tariffDetails: tariffDetails,
+    spanVisuallyHidden: spanVisuallyHidden,
     saveButtons: saveButtons,
     link: link,
     addAnotherQuestion: addAnotherQuestion,
@@ -112,7 +113,12 @@
                     content = Text(messages("declaration.addDocument.summary.statusCode")),
                     classes = "document-identifier"
                 ),
-                HeadCell(colspan = Some(2))
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
             ))
         ))
     }

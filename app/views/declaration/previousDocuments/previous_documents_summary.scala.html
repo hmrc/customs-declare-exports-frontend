@@ -41,6 +41,7 @@
         sectionHeader: sectionHeader,
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
+        spanVisuallyHidden: spanVisuallyHidden,
         tariffDetails: tariffDetails,
         addAnotherQuestion: addAnotherQuestion,
         link: link,
@@ -106,7 +107,12 @@
                 HeadCell(
                     content = Text(messages("declaration.previousDocuments.goodsItemIdentifier.summary.label"))
                 ),
-                HeadCell(colspan = Some(2))
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
             ))
         ))
     }

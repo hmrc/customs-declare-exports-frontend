@@ -37,6 +37,7 @@
         sectionHeader: sectionHeader,
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
+        spanVisuallyHidden: spanVisuallyHidden,
         link: link,
         addAnotherQuestion: addAnotherQuestion,
         saveButtons: saveButtons,
@@ -91,7 +92,9 @@
             HeadCell(
                 content = Text(messages("declaration.additionalActors.table.eori"))
             ),
-            HeadCell(colspan = Some(1))
+            HeadCell(
+                content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+            )
         ))
     ))
 }

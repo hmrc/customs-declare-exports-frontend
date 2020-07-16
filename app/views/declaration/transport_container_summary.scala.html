@@ -38,6 +38,7 @@
         govukButton: GovukButton,
         govukTable: GovukTable,
         errorSummary: errorSummary,
+        spanVisuallyHidden: spanVisuallyHidden,
         tariffDetails: tariffDetails,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -80,7 +81,12 @@
                 HeadCell(
                     content = Text(messages("declaration.seal.summary.heading"))
                 ),
-                HeadCell()
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
             ))
         ))
 

@@ -39,6 +39,7 @@
     exportsInputText: exportsInputText,
     tariffDetails: tariffDetails,
     addAnotherQuestion: addAnotherQuestion,
+    spanVisuallyHidden: spanVisuallyHidden,
     link: link,
     saveButtons: saveButtons,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -71,7 +72,7 @@
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages"))),
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages"))),
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.shippingMarks"))),
-        HeadCell()
+        HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
       )),
       rows = packages.zipWithIndex.map { case (item, index) =>
         Seq(
