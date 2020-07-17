@@ -16,35 +16,31 @@
 
 @import controllers.declaration.routes._
 @import forms.declaration.ExporterDetails
-@import services.model.Country
-@import uk.gov.hmrc.play.views.html._
 @import views.Title
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
-@import services.Countries
 @import scala.collection.immutable
 
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
-@import services.view.AutoCompleteItem
 @import views.BackButton
 @import play.twirl.api.HtmlFormat
-@import views.components.gds.Styles
+@import views.ErrorMapper.eoriOrAddressErrors
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukRadios: GovukRadios,
-    govukDetails : GovukDetails,
-    govukFieldset: GovukFieldset,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    saveButtons: saveButtons,
-    group_address: group_address,
-    exportsInputText: exportsInputText,
-    pageTitle: pageTitle,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+govukLayout: gdsMainTemplate,
+govukButton: GovukButton,
+govukRadios: GovukRadios,
+govukDetails : GovukDetails,
+govukFieldset: GovukFieldset,
+errorSummary: errorSummary,
+sectionHeader: sectionHeader,
+saveButtons: saveButtons,
+group_address: group_address,
+exportsInputText: exportsInputText,
+pageTitle: pageTitle,
+formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[ExporterDetails])(implicit request: JourneyRequest[_], messages: Messages)
@@ -79,7 +75,7 @@
 
     @formHelper(action = ExporterDetailsController.saveAddress(mode), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors.map(err => err.copy(key = if(err.key == "details") "details.eori" else err.key)))
+        @errorSummary(eoriOrAddressErrors("details", form.errors))
 
         @sectionHeader(messages("declaration.summary.parties.header"))
 

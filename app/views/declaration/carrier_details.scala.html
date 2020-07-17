@@ -24,17 +24,18 @@
 @import views.html.components.gds._
 @import views.BackButton
 @import play.twirl.api.HtmlFormat
+@import views.ErrorMapper.eoriOrAddressErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        group_address: group_address,
-        exportsInputText: exportsInputText,
-        pageTitle: pageTitle,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+govukLayout: gdsMainTemplate,
+govukFieldset: GovukFieldset,
+errorSummary: errorSummary,
+sectionHeader: sectionHeader,
+saveButtons: saveButtons,
+group_address: group_address,
+exportsInputText: exportsInputText,
+pageTitle: pageTitle,
+formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[CarrierDetails])(implicit request: JourneyRequest[_], messages: Messages)
@@ -68,7 +69,7 @@
 
     @formHelper(action = CarrierDetailsController.saveAddress(mode), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors.map(err => err.copy(key = if(err.key == "details") "details.eori" else err.key)))
+        @errorSummary(eoriOrAddressErrors("details", form.errors))
 
         @sectionHeader(messages("declaration.summary.parties.header"))
 

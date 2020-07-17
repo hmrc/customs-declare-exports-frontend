@@ -18,8 +18,8 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.Choice.AllowedChoiceValues._
 @import config.AppConfig
-@import views.BackButton
 @import views.Title
+@import views.ErrorMapper.radioGroupErrors
 
 
 @this(
@@ -39,7 +39,7 @@
     backButton = None) {
 
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("value", CreateDec, form.errors))
 
         @govukRadios(Radios(
             name = "value",
@@ -52,28 +52,28 @@
             )),
             items = Seq(
                 RadioItem(
-                    id = Some(CreateDec.toString),
-                    value = Some(CreateDec.toString),
+                    id = Some(CreateDec),
+                    value = Some(CreateDec),
                     content = Text(messages(s"declaration.choice.$CreateDec")),
-                    checked = form("value").value.contains(CreateDec.toString)
+                    checked = form("value").value.contains(CreateDec)
                 ),
                 RadioItem(
-                    id = Some(Submissions.toString),
-                    value = Some(Submissions.toString),
+                    id = Some(Submissions),
+                    value = Some(Submissions),
                     content = Text(messages(s"declaration.choice.$Submissions")),
-                    checked = form("value").value.contains(Submissions.toString)
+                    checked = form("value").value.contains(Submissions)
                 ),
                 RadioItem(
-                    id = Some(ContinueDec.toString),
-                    value = Some(ContinueDec.toString),
+                    id = Some(ContinueDec),
+                    value = Some(ContinueDec),
                     content = Text(messages(s"declaration.choice.$ContinueDec")),
-                    checked = form("value").value.contains(ContinueDec.toString)
+                    checked = form("value").value.contains(ContinueDec)
                 ),
                 RadioItem(
-                    id = Some(CancelDec.toString),
-                    value = Some(CancelDec.toString),
+                    id = Some(CancelDec),
+                    value = Some(CancelDec),
                     content = Text(messages(s"declaration.choice.$CancelDec")),
-                    checked = form("value").value.contains(CancelDec.toString)
+                    checked = form("value").value.contains(CancelDec)
                 )
             ).filter(radioOption => appConfig.availableJourneys().contains(radioOption.value.get)),
             errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))

@@ -27,7 +27,6 @@
         govukButton: GovukButton,
         govukRadios: GovukRadios,
         govukDetails : GovukDetails,
-        errorSummary: errorSummary,
         saveAndContinue: saveAndContinue,
         declarationTypeQuestionStandard: declaration_type_question_standard,
         declarationTypeQuestionSupplementary: declaration_type_question_supplementary,
@@ -55,7 +54,6 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalDeclarationTypeStandardDec, mode)))){
 
  @formHelper(action = controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
 
         @{
          request.declarationType match {

@@ -19,10 +19,13 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.html.components.gds._
+@import views.ErrorMapper.radioGroupErrors
 
-@this(govukRadios: GovukRadios, headingContent: headingContent)
+@this(govukRadios: GovukRadios, errorSummary: errorSummary, headingContent: headingContent)
 
 @(form: Form[AdditionalDeclarationType])(implicit messages: Messages)
+
+@errorSummary(radioGroupErrors("additionalDeclarationType", "Simplified", form.errors))
 
 @govukRadios(Radios(
     name = "additionalDeclarationType",
