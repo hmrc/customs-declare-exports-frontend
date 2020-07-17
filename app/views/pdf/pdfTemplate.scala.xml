@@ -96,7 +96,7 @@
             <fo:block-container absolute-position="absolute" bottom="0" left="0mm" width="50%" height="5mm">
                 <fo:block>
                     <fo:inline font-weight="bold">@messages("pdf.template.createdDateTime"):</fo:inline>
-                   @mrnStatus.createdDateTime
+                   @ViewDates.formatDateAtTime(mrnStatus.createdDateTime)
                 </fo:block>
             </fo:block-container>
             <fo:block-container absolute-position="absolute" bottom="0" right="0mm" width="50%" height="5mm">
