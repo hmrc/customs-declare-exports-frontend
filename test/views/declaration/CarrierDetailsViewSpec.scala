@@ -191,7 +191,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         )
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details")
+        view must containErrorElementWithTagAndHref("a", "#details_eori")
 
         view.getElementsByClass("govuk-list govuk-error-summary__list") must containMessageForElements("declaration.carrier.error.addressAndEori")
       }
@@ -201,7 +201,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         val view = createView(CarrierDetails.form(request.declarationType).bind(Map[String, String]()))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details")
+        view must containErrorElementWithTagAndHref("a", "#details_eori")
         view.getElementsByClass("govuk-list govuk-error-summary__list") must containMessageForElements("declaration.namedEntityDetails.error")
       }
 

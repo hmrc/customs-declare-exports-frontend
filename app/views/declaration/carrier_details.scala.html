@@ -68,7 +68,7 @@
 
     @formHelper(action = CarrierDetailsController.saveAddress(mode), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors.map(err => err.copy(key = if(err.key == "details") "details.eori" else err.key)))
 
         @sectionHeader(messages("declaration.summary.parties.header"))
 
