@@ -72,7 +72,7 @@ class IsExsController @Inject()(
       val updatedItems: Seq[ExportItem] = answer.isExs match {
         case YesNoAnswers.yes =>
           // CEDS-2621 - retain any existing UN dangerous goods code on the items if isExs is true.
-          model.items.map(item => item.copy(dangerousGoodsCode = Some(UNDangerousGoodsCode(item.dangerousGoodsCode.flatMap(_.dangerousGoodsCode)))))
+          model.items.map(item => item.copy(dangerousGoodsCode = Some(item.dangerousGoodsCode.getOrElse(UNDangerousGoodsCode(None)))))
         case YesNoAnswers.no => model.items.map(_.copy(dangerousGoodsCode = None))
       }
 
