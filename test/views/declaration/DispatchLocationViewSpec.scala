@@ -40,7 +40,6 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     "have correct message keys" in {
       messages must haveTranslationFor("supplementary.dispatchLocation.header")
-      messages must haveTranslationFor("supplementary.dispatchLocation.header.hint")
       messages must haveTranslationFor("supplementary.dispatchLocation.inputText.outsideEU")
       messages must haveTranslationFor("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
       messages must haveTranslationFor("supplementary.dispatchLocation.inputText.error.empty")
