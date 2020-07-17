@@ -107,17 +107,38 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
     }
 
     "answer is Yes" should {
+      val correctForm = Json.toJson(IsExs(YesNoAnswers.yes))
+
       "return 303 (SEE_OTHER) and redirect to Consignor Eori page" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-
-        val correctForm = Json.toJson(IsExs(YesNoAnswers.yes))
 
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorEoriNumberController
           .displayPage(Mode.Normal)
+      }
+
+      "correctly update UNDangerous goods codes for items" in {
+        withNewCaching(
+          aDeclaration(
+            withType(DeclarationType.CLEARANCE),
+            withItem(anItem(withUNDangerousGoodsCode(UNDangerousGoodsCode(None)))),
+            withItem(anItem(withUNDangerousGoodsCode(UNDangerousGoodsCode(Some("1234"))))),
+            withItem(anItem())
+          )
+        )
+
+        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+
+        theCacheModelUpdated.items.map(_.dangerousGoodsCode) mustBe Seq(
+          Some(UNDangerousGoodsCode(None)),
+          Some(UNDangerousGoodsCode(Some("1234"))),
+          Some(UNDangerousGoodsCode(None))
+        )
       }
     }
 
@@ -156,20 +177,6 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
         modelPassedToCache.parties.carrierDetails mustBe None
         modelPassedToCache.parties.consignorDetails mustBe None
         modelPassedToCache.items.head.dangerousGoodsCode mustBe None
-      }
-    }
-
-    "answer is Yes" should {
-      "add default UN Code answer to existing Items in cache" in {
-
-        withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withItems(anItem())))
-
-        val correctForm = Json.toJson(IsExs(YesNoAnswers.yes))
-
-        controller.submit(Mode.Normal)(postRequest(correctForm)).futureValue
-
-        val modelPassedToCache = theCacheModelUpdated
-        modelPassedToCache.items.map(_.dangerousGoodsCode) mustBe Seq(Some(UNDangerousGoodsCode(None)))
       }
     }
 
