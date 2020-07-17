@@ -51,6 +51,7 @@ class NactCodeAddController @Inject()(
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
       case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(mode, itemId, NactCode.form().withSubmissionErrors()))
+      case Some(_)                             => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form().fill(NactCodeFirst(None)).withSubmissionErrors()))
       case _                                   => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form().withSubmissionErrors()))
     }
   }

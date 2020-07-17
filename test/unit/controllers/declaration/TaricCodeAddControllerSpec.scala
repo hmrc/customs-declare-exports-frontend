@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import base.TestHelper
 import controllers.declaration.TaricCodeAddController
-import forms.declaration.{TaricCode, TaricCodeFirst, WarehouseIdentification}
+import forms.declaration.{TaricCode, TaricCodeFirst}
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -98,6 +98,20 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
           verifyAddPageInvoked(0)
 
           theTaricCodeFirst.value mustBe empty
+        }
+
+        "display page method is invoked and user said no" in {
+
+          val item = anItem(withTaricCodes(List.empty))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+
+          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+
+          status(result) mustBe OK
+          verifyAddPageFirstInvoked()
+          verifyAddPageInvoked(0)
+
+          theTaricCodeFirst.value mustBe Some(TaricCodeFirst(None))
         }
 
         "display page method is invoked and cache contains data" in {
