@@ -100,6 +100,20 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           theNactCodeFirst.value mustBe empty
         }
 
+        "display page method is invoked and user said no" in {
+
+          val item = anItem(withNactCodes(List.empty))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+
+          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+
+          status(result) mustBe OK
+          verifyAddPageFirstInvoked()
+          verifyAddPageInvoked(0)
+
+          theNactCodeFirst.value mustBe Some(NactCodeFirst(None))
+        }
+
         "display page method is invoked and cache contains data" in {
           val nactCode = NactCode("1234")
           val item = anItem(withNactCodes(nactCode))
