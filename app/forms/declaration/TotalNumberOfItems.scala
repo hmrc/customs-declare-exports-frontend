@@ -32,16 +32,22 @@ object TotalNumberOfItems extends DeclarationPage {
   val totalAmountInvoicedPattern = "[0-9]{1,14}|[0-9]{1,14}[.][0-9]{1,2}"
   val exchangeRatePattern = "[0-9]{1,12}|[[0-9]{1,7}[.][0-9]{1,5}]{3,13}"
 
+  // Required to re-order error messages without changing the model
+  def form2Model(exchangeRate: Option[String], totalAmountInvoiced: Option[String]): TotalNumberOfItems =
+    new TotalNumberOfItems(totalAmountInvoiced, exchangeRate)
+
+  def model2Form(arg: TotalNumberOfItems): Option[(Option[String], Option[String])] = Some((arg.exchangeRate, arg.totalAmountInvoiced))
+
   val mapping = Forms.mapping(
-    "totalAmountInvoiced" -> optional(
-      text()
-        .verifying("declaration.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern))
-    ),
     "exchangeRate" -> optional(
       text()
         .verifying("declaration.exchangeRate.error", isEmpty or ofPattern(exchangeRatePattern))
+    ),
+    "totalAmountInvoiced" -> optional(
+      text()
+        .verifying("declaration.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern))
     )
-  )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
+  )(form2Model)(model2Form)
 
   def form(): Form[TotalNumberOfItems] = Form(mapping)
 }
