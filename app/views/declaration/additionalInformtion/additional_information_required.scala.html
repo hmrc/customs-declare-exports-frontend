@@ -25,6 +25,7 @@
 @import views.html.components.gds._
 @import config.AppConfig
 @import forms.declaration.AdditionalInformationRequired
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -48,7 +49,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalInformationRequired, mode, ItemId(itemId))))) {
 
     @formHelper(action = controllers.declaration.routes.AdditionalInformationRequiredController.submitForm(mode, (itemId)), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("yesNo", "required_Yes", form.errors))
 
         @govukRadios(Radios(
         name = "yesNo",

@@ -23,6 +23,7 @@
 @import views.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -57,7 +58,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(FiscalInformation, mode, ItemId(itemId))))) {
 
     @formHelper(action = FiscalInformationController.saveFiscalInformation(mode, itemId), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("onwardSupplyRelief", "Yes", form.errors))
 
         @govukRadios(Radios(
             name = "onwardSupplyRelief",

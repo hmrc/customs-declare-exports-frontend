@@ -36,6 +36,7 @@
 @import play.twirl.api.HtmlFormat
 @import views.BackButton
 @import views.Title
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -126,7 +127,7 @@
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submit(mode), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("answer", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.routingCountries.summary.heading"))
         @govukFieldset(Fieldset(

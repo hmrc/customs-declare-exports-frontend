@@ -104,7 +104,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         val view = createView(DeclarantIsExporter.form().fillAndValidate(DeclarantIsExporter("")))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#answer")
+        view must containErrorElementWithTagAndHref("a", "#answer_yes")
 
         view must containErrorElementWithMessageKey("declaration.declarant.exporter.error")
       }
@@ -118,7 +118,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         )
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#answer")
+        view must containErrorElementWithTagAndHref("a", "#answer_yes")
 
         view must containErrorElementWithMessageKey("declaration.declarant.exporter.error")
       }

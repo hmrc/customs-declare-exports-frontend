@@ -89,7 +89,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView(DeclarationChoice.form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#type")
+      view must containErrorElementWithTagAndHref("a", s"#${DeclarationType.STANDARD.toString}")
 
       view must containErrorElementWithMessageKey("declaration.type.error")
     }
@@ -99,7 +99,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView(DeclarationChoice.form().bind(Map("type" -> "incorrect")))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#type")
+      view must containErrorElementWithTagAndHref("a", s"#${DeclarationType.STANDARD.toString}")
 
       view must containErrorElementWithMessageKey("declaration.type.error")
     }

@@ -21,10 +21,11 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{Document, PreviousDocumentsData}
+import forms.declaration.Document
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -46,7 +47,7 @@ class PreviousDocumentsRemoveController @Inject()(
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findDocument(id) match {
-      case Some(document) => Ok(removePage(mode, id, document, YesNoAnswer.form()))
+      case Some(document) => Ok(removePage(mode, id, document, removeYesNoForm))
       case _              => returnToSummary(mode)
     }
   }
@@ -54,8 +55,7 @@ class PreviousDocumentsRemoveController @Inject()(
   def submit(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findDocument(id) match {
       case Some(document) =>
-        YesNoAnswer
-          .form()
+        removeYesNoForm
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(removePage(mode, id, document, formWithErrors))),
@@ -71,6 +71,8 @@ class PreviousDocumentsRemoveController @Inject()(
       case _ => Future.successful(returnToSummary(mode))
     }
   }
+
+  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.previousDocuments.remove.empty")
 
   private def findDocument(id: String)(implicit request: JourneyRequest[AnyContent]): Option[Document] =
     ListItem.findById(id, request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty))

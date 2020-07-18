@@ -20,6 +20,7 @@ import base.Injector
 import controllers.declaration.routes._
 import forms.DeclarationPage
 import forms.declaration.RepresentativeStatus
+import forms.declaration.RepresentativeStatus.StatusCodes
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -92,7 +93,7 @@ class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestD
       )
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#statusCode")
+      view must containErrorElementWithTagAndHref("a", s"#${StatusCodes.DirectRepresentative}")
 
       view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.empty")
     }

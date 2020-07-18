@@ -123,7 +123,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
         val view = createView(YesNoAnswer.form().fillAndValidate(YesNoAnswer("invalid")))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#yesNo")
+        view must containErrorElementWithTagAndHref("a", "#code_yes")
 
         view must containErrorElementWithMessageKey("error.yesNo.required")
       }

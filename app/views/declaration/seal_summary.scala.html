@@ -24,6 +24,7 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import scala.collection.immutable
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -125,7 +126,7 @@
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)))) {
 
     @formHelper(action = SealController.submitSummaryAction(mode, containerId), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("yesNo", "Yes", form.errors))
 
         @if(seals.isEmpty){
             @addSealRadios

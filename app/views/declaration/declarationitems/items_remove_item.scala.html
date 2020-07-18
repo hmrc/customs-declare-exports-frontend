@@ -27,6 +27,7 @@
 @import views.html.declaration.summary.item_section
 @import views.components.gds.Styles._
 @import scala.collection.immutable
+@import views.ErrorMapper.yesNoErrors
 
 @this(
   govukLayout: gdsMainTemplate,
@@ -47,7 +48,7 @@
 
     @formHelper(action = routes.ItemsSummaryController.removeItem(mode, item.id), 'autoComplete -> "off") {
 
-      @errorSummary(form.errors)
+      @errorSummary(yesNoErrors(form.errors))
 
       @sectionHeader(messages("supplementary.items"))
 

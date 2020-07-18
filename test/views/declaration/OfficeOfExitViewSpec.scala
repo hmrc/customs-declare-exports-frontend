@@ -101,7 +101,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
           view.getElementById("error-summary-title") must containMessage("error.summary.title")
 
           view must haveGovukGlobalErrorSummary
-          view must containErrorElementWithTagAndHref("a", "#isUkOfficeOfExit")
+          view must containErrorElementWithTagAndHref("a", "#Yes")
           view must containErrorElementWithMessageKey("declaration.officeOfExit.isUkOfficeOfExit.empty")
         }
 

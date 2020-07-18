@@ -27,6 +27,7 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import scala.collection.immutable
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -126,7 +127,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ContainerFirst, mode)))) {
 
     @formHelper(action = TransportContainerController.submitSummaryAction(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("yesNo", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.transportInformation.containers.section"))
 

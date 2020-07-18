@@ -21,6 +21,7 @@
 @import views.html.components.gds._
 @import views.components.gds.Styles._
 @import views.{BackButton, Title}
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -94,7 +95,7 @@
     backButton = Some(BackButton(messages("site.back"), routes.SavedDeclarationsController.displayDeclarations()))) {
 
     @formHelper(action = RemoveSavedDeclarationsController.removeDeclaration(declaration.id), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("remove", "Yes", form.errors))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

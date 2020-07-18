@@ -137,7 +137,7 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
           )
 
           view must haveGovukGlobalErrorSummary
-          view must containErrorElementWithTagAndHref("a", "#representingAgent")
+          view must containErrorElementWithTagAndHref("a", "#agent_yes")
 
           view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.empty")
         }

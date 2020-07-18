@@ -30,6 +30,7 @@
 @import views.BackButton
 @import views.components.gds.Styles
 @import views.Title
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -88,7 +89,7 @@
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitRemoveCountry(mode, countryToRemove.countryCode), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("answer", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.routingCountries.remove.heading"))
         @govukFieldset(Fieldset(

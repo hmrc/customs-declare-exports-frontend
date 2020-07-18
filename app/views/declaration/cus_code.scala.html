@@ -16,18 +16,16 @@
 
 @import controllers.declaration.routes
 @import controllers.navigation.{Navigator, ItemId}
-@import controllers.util.SaveAndContinue
 @import forms.declaration.CusCode
 @import forms.declaration.CusCode._
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.play.views.html._
 @import views.Title
 @import config.AppConfig
-@import views.components.inputs.RadioOption
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.{BackButton, Title}
+@import views.BackButton
 @import views.components.gds.Styles._
 @import views.html.components.gds._
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -61,7 +59,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CusCode, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.CusCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors(hasCusCodeKey, "code_yes", form.errors))
 
         @govukRadios(Radios(
             name = hasCusCodeKey,

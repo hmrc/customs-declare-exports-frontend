@@ -114,7 +114,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
       val view = createView(Choice.form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#value")
+      view must containErrorElementWithTagAndHref("a", "#CRT")
 
       view must containErrorElementWithMessageKey("choicePage.input.error.empty")
     }
@@ -124,7 +124,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
       val view = createView(Choice.form().bind(Map("value" -> "incorrect")))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#value")
+      view must containErrorElementWithTagAndHref("a", "#CRT")
 
       view must containErrorElementWithMessageKey("choicePage.input.error.incorrectValue")
     }

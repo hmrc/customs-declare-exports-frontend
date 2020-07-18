@@ -16,7 +16,6 @@
 
 @import controllers.declaration.routes._
 @import forms.DeclarationPage
-@import forms.declaration.RepresentativeEntity
 @import forms.declaration.RepresentativeStatus
 @import forms.declaration.RepresentativeStatus.StatusCodes._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -26,6 +25,7 @@
 @import views.html.components.gds._
 @import views.components.gds.Styles._
 @import views.BackButton
+@import views.ErrorMapper.radioGroupErrors
 
 @this(govukLayout: gdsMainTemplate,
         govukButton: GovukButton,
@@ -48,7 +48,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))) {
 
     @formHelper(action = RepresentativeStatusController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("statusCode", DirectRepresentative, form.errors))
 
         @govukRadios(Radios(
             name = "statusCode",
@@ -65,22 +65,22 @@
             )),
             items = Seq(
                 RadioItem(
-                    id = Some(DirectRepresentative.toString),
-                    value = Some(DirectRepresentative.toString),
+                    id = Some(DirectRepresentative),
+                    value = Some(DirectRepresentative),
                     content = Text(messages("declaration.representative.representationType.direct")),
                     hint = Some(Hint(
                         content = Text(messages("declaration.representative.representationType.direct.hint"))
                     )),
-                    checked = form("statusCode").value.contains(DirectRepresentative.toString)
+                    checked = form("statusCode").value.contains(DirectRepresentative)
                 ),
                 RadioItem(
-                    id = Some(IndirectRepresentative.toString),
-                    value = Some(IndirectRepresentative.toString),
+                    id = Some(IndirectRepresentative),
+                    value = Some(IndirectRepresentative),
                     content = Text(messages("declaration.representative.representationType.indirect")),
                     hint = Some(Hint(
                         content = Text(messages("declaration.representative.representationType.indirect.hint"))
                     )),
-                    checked = form("statusCode").value.contains(IndirectRepresentative.toString)
+                    checked = form("statusCode").value.contains(IndirectRepresentative)
                 )
             ),
             errorMessage = form("statusCode").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))

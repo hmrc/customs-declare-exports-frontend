@@ -27,6 +27,7 @@
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
+@import views.ErrorMapper.yesNoErrors
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -103,7 +104,7 @@
 
     @formHelper(action = routes.NactCodeSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("supplementary.items"))
 

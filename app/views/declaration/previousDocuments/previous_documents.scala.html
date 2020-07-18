@@ -27,6 +27,7 @@
 @import views.html.components.gds._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -114,7 +115,7 @@
 ) {
 
     @formHelper(action = PreviousDocumentsController.savePreviousDocuments(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("documentCategory", "simplified-declaration", form.errors))
 
         @sectionHeader(messages("declaration.previousDocuments.heading"))
 

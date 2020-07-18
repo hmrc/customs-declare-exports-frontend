@@ -432,7 +432,7 @@ saved.declarations.pagination.singular = saved declaration
 saved.declarations.pagination.plural = saved declarations
 saved.declarations.remove.title = Are you sure you want to remove this declaration?
 saved.declarations.remove.submitButton = Continue
-saved.declarations.remove.option.error.empty = Select an option
+saved.declarations.remove.option.error.empty = Select yes if you want to remove this declaration
 
 declaration.declarationHolder.title = What authorisation is required for this export?
 declaration.declarationHolder.title.hint = This will depend on the type of procedure code used for this export. If no authorisation is needed, leave this page blank and continue.
@@ -871,6 +871,7 @@ declaration.previousDocuments.change.hint = Change document {0} type {1} referen
 declaration.previousDocuments.summary.header.singular = You have added 1 document
 declaration.previousDocuments.summary.header.plural = You have added {0} documents
 declaration.previousDocuments.remove.title = Are you sure you want to remove this document?
+declaration.previousDocuments.remove.empty = Select yes if you want to remove this document
 declaration.previousDocuments.addAnotherDocument = Do you need to add another document?
 declaration.previousDocuments.add.another.empty = Select yes to add another document
 

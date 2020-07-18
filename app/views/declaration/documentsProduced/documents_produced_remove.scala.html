@@ -23,6 +23,7 @@
 @import views.html.components.gds._
 @import views.{BackButton, Title}
 @import scala.collection.immutable
+@import views.ErrorMapper.yesNoErrors
 
 @this(
 govukLayout: gdsMainTemplate,
@@ -94,7 +95,7 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
     backButton = Some(BackButton(messages("site.back"), DocumentsProducedController.displayPage(mode, itemId)))) {
 
     @formHelper(action = DocumentsProducedRemoveController.submitForm(mode, itemId, documentId), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("supplementary.items"))
 
