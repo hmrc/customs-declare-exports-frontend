@@ -17,7 +17,7 @@
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.ContinueDec
 @import views.{BackButton, Title}
-@import views.html.components.gds.{gdsMainTemplate, link, pageTitle, pagination}
+@import views.html.components.gds.{gdsMainTemplate, link, pageTitle, pagination, spanVisuallyHidden}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.ViewDates.formatDateAtTime
 @import java.time.ZoneId
@@ -26,6 +26,7 @@
   govukLayout: gdsMainTemplate,
   pageTitle: pageTitle,
   link: link,
+  spanVisuallyHidden: spanVisuallyHidden,
   govukTable: GovukTable
 )
 
@@ -75,7 +76,7 @@
         head = Some(Seq(
           HeadCell(content = Text(messages("saved.declarations.ducr"))),
           HeadCell(content = Text(messages("saved.declarations.dateSaved"))),
-          HeadCell()
+          HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
         )),
         rows = savedDeclarations
       ))
