@@ -16,14 +16,7 @@
 
 package models.declaration
 
-class DocumentCategory(val value: String) {
-  override def equals(obj: Any): Boolean = obj match {
-    case that: DocumentCategory => this.value == that.value
-    case _                      => false
-  }
-
-  override def hashCode(): Int = 31 * (if (value == null) 1 else value.hashCode)
-}
+abstract class DocumentCategory(val value: String)
 
 object DocumentCategory {
   import play.api.libs.json._

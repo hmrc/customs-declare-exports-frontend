@@ -52,7 +52,10 @@ object Document extends DeclarationPage {
     "documentCategory" -> requiredRadio("declaration.previousDocuments.documentCategory.error.empty")
       .verifying("declaration.previousDocuments.documentCategory.error.empty", nonEmpty)
       .verifying("declaration.previousDocuments.documentCategory.error.incorrect", isEmpty or isContainedIn(correctDocumentCategories))
-      .transform[DocumentCategory](value => new DocumentCategory(value), category => category.value),
+      .transform[DocumentCategory]({
+        case SimplifiedDeclaration.value => SimplifiedDeclaration
+        case RelatedDocument.value       => RelatedDocument
+      }, category => category.value),
     "goodsItemIdentifier" -> optional(text().verifying("declaration.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
   )(Document.apply)(Document.unapply)
 
