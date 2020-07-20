@@ -27,15 +27,15 @@
 @import views.ErrorMapper.eoriOrAddressErrors
 
 @this(
-govukLayout: gdsMainTemplate,
-govukFieldset: GovukFieldset,
-errorSummary: errorSummary,
-sectionHeader: sectionHeader,
-saveButtons: saveButtons,
-group_address: group_address,
-exportsInputText: exportsInputText,
-pageTitle: pageTitle,
-formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    group_address: group_address,
+    exportsInputText: exportsInputText,
+    pageTitle: pageTitle,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[CarrierDetails])(implicit request: JourneyRequest[_], messages: Messages)

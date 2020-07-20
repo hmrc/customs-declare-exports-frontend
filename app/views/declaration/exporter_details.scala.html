@@ -29,18 +29,18 @@
 @import views.ErrorMapper.eoriOrAddressErrors
 
 @this(
-govukLayout: gdsMainTemplate,
-govukButton: GovukButton,
-govukRadios: GovukRadios,
-govukDetails : GovukDetails,
-govukFieldset: GovukFieldset,
-errorSummary: errorSummary,
-sectionHeader: sectionHeader,
-saveButtons: saveButtons,
-group_address: group_address,
-exportsInputText: exportsInputText,
-pageTitle: pageTitle,
-formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    govukFieldset: GovukFieldset,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    group_address: group_address,
+    exportsInputText: exportsInputText,
+    pageTitle: pageTitle,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[ExporterDetails])(implicit request: JourneyRequest[_], messages: Messages)
