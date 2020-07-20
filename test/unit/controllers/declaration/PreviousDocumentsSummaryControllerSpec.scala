@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.PreviousDocumentsSummaryController
 import forms.common.YesNoAnswer
 import forms.declaration.Document
+import models.declaration.DocumentCategory.SimplifiedDeclaration
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -57,7 +58,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  private val document = Document("Y", "355", "reference", None)
+  private val document = Document("355", "reference", SimplifiedDeclaration, None)
 
   private def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])

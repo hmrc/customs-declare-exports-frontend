@@ -19,6 +19,7 @@ package views.declaration
 import base.Injector
 import forms.declaration.Document
 import models.Mode
+import models.declaration.DocumentCategory.SimplifiedDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import utils.ListItem
@@ -28,7 +29,7 @@ import views.html.declaration.previousDocuments.previous_documents_change
 class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
 
   private val page = instanceOf[previous_documents_change]
-  private val document = Document("Y", "750", "reference", Some("3"))
+  private val document = Document("750", "reference", SimplifiedDeclaration, Some("3"))
   private val form = Document.form().fill(document)
 
   private def createView(mode: Mode = Mode.Normal, documentId: String = ListItem.createId(0, document), form: Form[Document] = form)(

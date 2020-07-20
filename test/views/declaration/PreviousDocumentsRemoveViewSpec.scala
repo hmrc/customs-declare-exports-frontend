@@ -20,6 +20,7 @@ import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.Document
 import models.Mode
+import models.declaration.DocumentCategory.SimplifiedDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import utils.ListItem
@@ -30,8 +31,8 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
 
   private val page = instanceOf[previous_documents_remove]
   private val form = YesNoAnswer.form()
-  private val documentWithRelatesTo = Document("Y", "355", "reference", Some("3"))
-  private val documentWithoutRelatesTo = Document("Y", "355", "reference", None)
+  private val documentWithRelatesTo = Document("355", "reference", SimplifiedDeclaration, Some("3"))
+  private val documentWithoutRelatesTo = Document("355", "reference", SimplifiedDeclaration, None)
 
   private def createView(
     mode: Mode = Mode.Normal,

@@ -60,7 +60,7 @@
             ),
             SummaryListRow(
                 Key(Text(messages(s"declaration.previousDocuments.documentCategory.summary.label"))),
-                Value(Text(messages(s"declaration.previousDocuments.${document.documentCategory}")))
+                Value(Text(messages(s"declaration.previousDocuments.${document.documentCategory.value}")))
             )
         ) ++ document.goodsItemIdentifier.map { identifier =>
             Seq(SummaryListRow(

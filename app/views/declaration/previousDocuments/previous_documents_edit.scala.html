@@ -1,0 +1,128 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.declaration.Document
+@import models.requests.JourneyRequest
+@import services.DocumentType
+@import services.view.AutoCompleteItem
+@import views.components.gds.Styles._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
+@import models.declaration.DocumentCategory._
+
+@this(
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
+
+@(mode: Mode, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
+
+@tariffBody = { @Html(messages("declaration.type.previousDocumentsSummaryText", components.details_content_link())) }
+
+@pageHint = {
+    <span class="govuk-hint">
+        @messages("declaration.previousDocuments.hint")
+    </span>
+}
+
+@documentCategory = {
+    @govukRadios(Radios(
+        name = "documentCategory",
+        fieldset = Some(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.previousDocuments.reasonQuestion")),
+                isPageHeading = false,
+                classes = "govuk-label--m"
+            ))
+        )),
+        items = Seq(
+            RadioItem(
+                id = Some("simplified-declaration"),
+                value = Some(SimplifiedDeclaration.value),
+                content = Text(messages("declaration.previousDocuments.Y")),
+                checked = form("documentCategory").value.contains(SimplifiedDeclaration.value)
+            ),
+            RadioItem(
+                id = Some("related-document"),
+                value = Some(RelatedDocument.value),
+                content = Text(messages("declaration.previousDocuments.Z")),
+                checked = form("documentCategory").value.contains(RelatedDocument.value)
+            )
+        ),
+        errorMessage = form("documentCategory").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    ))
+}
+
+@documentType = {
+    @components.fields.field_accessible_autocomplete(
+        field = form("documentType"),
+        label = "declaration.previousDocuments.documentType",
+        labelClass = Some("govuk-label--m"),
+        hintText = None,
+        emptySelectValue = messages("declaration.previousDocuments.documentType.empty"),
+        items = AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
+    )
+}
+
+@documentReference = {
+    @exportsInputText(
+        field = form("documentReference"),
+        labelKey = "declaration.previousDocuments.documentReference",
+        hintKey = Some("declaration.previousDocuments.documentReference.hint")
+    )
+}
+
+@goodsItemIdentifier = {
+    @exportsInputText(
+        field = form("goodsItemIdentifier"),
+        labelKey = "declaration.previousDocuments.goodsItemIdentifier",
+        hintKey = Some("declaration.previousDocuments.goodsItemIdentifier.hint"),
+        inputClasses = Some("govuk-input--width-2")
+    )
+}
+
+
+@errorSummary(form.errors)
+
+@sectionHeader(messages("declaration.previousDocuments.heading"))
+
+@govukFieldset(Fieldset(
+    legend = Some(Legend(
+        content = Text(messages("declaration.previousDocuments.title")),
+        classes = gdsPageLegend,
+        isPageHeading = true
+    )),
+    html = HtmlFormat.fill(immutable.Seq(
+        pageHint,
+        documentType,
+        documentReference,
+        documentCategory,
+        goodsItemIdentifier,
+        tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+        saveButtons()
+    ))
+))
