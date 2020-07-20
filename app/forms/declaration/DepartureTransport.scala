@@ -58,7 +58,7 @@ object DepartureTransport extends DeclarationPage {
         .verifying("declaration.transportInformation.meansOfTransport.reference.error.empty", nonEmpty)
         .verifying(
           "declaration.transportInformation.meansOfTransport.reference.error.invalid",
-          isEmpty or (noLongerThan(27) and isAlphanumericWithAllowedSpecialCharacters)
+          isEmpty or (noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
         )
     )
 

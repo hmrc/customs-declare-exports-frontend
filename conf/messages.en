@@ -693,8 +693,8 @@ declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty 
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect = Select a means of transport
 declaration.transportInformation.meansOfTransport.reference.header = Reference
 declaration.transportInformation.meansOfTransport.reference.hint = This can be up to 27 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
-declaration.transportInformation.meansOfTransport.reference.error.empty = Enter a reference up to 27 characters
-declaration.transportInformation.meansOfTransport.reference.error.invalid = Enter a reference up to 27 characters
+declaration.transportInformation.meansOfTransport.reference.error.empty = Enter a reference up to 35 characters
+declaration.transportInformation.meansOfTransport.reference.error.invalid = Enter a reference up to 35 characters
 
 declaration.transportInformation.meansOfTransport.IMOShipIDNumber = Ship IMO number
 declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label = Enter the IMO identification number
