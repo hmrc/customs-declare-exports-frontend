@@ -47,7 +47,7 @@ class ItemsSummaryController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   private def itemSummaryForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsSummary.addAnotherItem.error.empty")
-  private def removeItemForm: Form[YesNoAnswer] = YesNoAnswer.form()
+  private def removeItemForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsRemove.error.empty")
 
   def displayAddItemPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (request.cacheModel.items.isEmpty)

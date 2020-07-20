@@ -693,8 +693,8 @@ declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty 
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect = Select a means of transport
 declaration.transportInformation.meansOfTransport.reference.header = Reference
 declaration.transportInformation.meansOfTransport.reference.hint = This can be up to 27 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
-declaration.transportInformation.meansOfTransport.reference.error.empty = Enter a reference up to 28 characters
-declaration.transportInformation.meansOfTransport.reference.error.invalid = Enter a reference up to 28 characters
+declaration.transportInformation.meansOfTransport.reference.error.empty = Enter a reference up to 27 characters
+declaration.transportInformation.meansOfTransport.reference.error.invalid = Enter a reference up to 27 characters
 
 declaration.transportInformation.meansOfTransport.IMOShipIDNumber = Ship IMO number
 declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label = Enter the IMO identification number
@@ -718,7 +718,7 @@ declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.
 declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
 
 declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.header = Reference
-declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty = Enter a reference up to 28 characters
+declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty = Enter a reference up to 35 characters
 declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.length = Reference should be less than 35 alpha numeric characters
 declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid = Reference cannot contain invalid characters
 
@@ -1231,6 +1231,7 @@ declaration.itemsSummary.addAnotherItem.question = Do you need to declare anothe
 declaration.itemsSummary.addAnotherItem.error.empty = Select yes if you need to add more items to this declaration
 declaration.itemsSummary.item.incorrect = Item {0} does not contain all mandatory data
 declaration.itemsRemove.title = Are you sure you want to remove declaration item {0}?
+declaration.itemsRemove.error.empty = Select yes if you want to remove this item
 
 declaration.seal.title = What is the security seal for container {0}?
 declaration.seal.section = Transport details
