@@ -22,7 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class TotalNumberOfItems(totalAmountInvoiced: Option[String], exchangeRate: Option[String])
+case class TotalNumberOfItems(exchangeRate: Option[String], totalAmountInvoiced: Option[String])
 
 object TotalNumberOfItems extends DeclarationPage {
   implicit val format = Json.format[TotalNumberOfItems]
@@ -31,12 +31,6 @@ object TotalNumberOfItems extends DeclarationPage {
 
   val totalAmountInvoicedPattern = "[0-9]{1,14}|[0-9]{1,14}[.][0-9]{1,2}"
   val exchangeRatePattern = "[0-9]{1,12}|[[0-9]{1,7}[.][0-9]{1,5}]{3,13}"
-
-  // Required to re-order error messages without changing the model
-  def form2Model(exchangeRate: Option[String], totalAmountInvoiced: Option[String]): TotalNumberOfItems =
-    new TotalNumberOfItems(totalAmountInvoiced, exchangeRate)
-
-  def model2Form(arg: TotalNumberOfItems): Option[(Option[String], Option[String])] = Some((arg.exchangeRate, arg.totalAmountInvoiced))
 
   val mapping = Forms.mapping(
     "exchangeRate" -> optional(
@@ -47,7 +41,7 @@ object TotalNumberOfItems extends DeclarationPage {
       text()
         .verifying("declaration.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern))
     )
-  )(form2Model)(model2Form)
+  )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
 
   def form(): Form[TotalNumberOfItems] = Form(mapping)
 }
