@@ -61,6 +61,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData with Injector
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.container")
       table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.container.id")
       table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.container.securitySeals")
+      table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("site.change.header")
 
       val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
       row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe firstContainerID

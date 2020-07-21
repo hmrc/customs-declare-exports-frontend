@@ -65,6 +65,14 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
       noSealsView.title() must include(title)
     }
 
+    "display table with headers" in {
+      view.getElementsByTag("th").get(0).text() mustBe messages("declaration.seal.summary.heading")
+    }
+
+    "have visually hidden headers for Remove links" in {
+      view.getElementsByTag("th").get(1).text() mustBe messages("site.remove.header")
+    }
+
     "display summary of seals" in {
       view.getElementById("removable_elements-row0-label").text() must be(sealId)
     }

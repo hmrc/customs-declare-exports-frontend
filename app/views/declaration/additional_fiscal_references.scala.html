@@ -38,6 +38,7 @@
         sectionHeader: sectionHeader,
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
+        spanVisuallyHidden: spanVisuallyHidden,
         tariffDetails: tariffDetails,
         addButton: addButton,
         saveButtons: saveButtons,
@@ -72,7 +73,9 @@
                 HeadCell(
                     content = Text(messages("declaration.additionalFiscalReferences.numbers.header"))
                 ),
-                HeadCell()
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
             )),
             attributes = Map("id" -> "removable_elements")
         ))

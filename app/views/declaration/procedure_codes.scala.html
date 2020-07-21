@@ -33,6 +33,7 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
+        spanVisuallyHidden: spanVisuallyHidden,
         tariffDetails: tariffDetails,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
@@ -62,7 +63,9 @@
                 HeadCell(
                     content = Text(messages("declaration.procedureCodes.additionalProcedureCode.table.header"))
                 ),
-                HeadCell()
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
             ))
         ))
     }

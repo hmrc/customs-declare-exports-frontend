@@ -57,6 +57,20 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
       multiContainerView.title() must include(messages("declaration.transportInformation.containers.multiple.title", 2))
     }
 
+    "display table with headers" in {
+      val tableHead = view.getElementsByTag("th")
+
+      tableHead.get(0).text() mustBe messages("declaration.transportInformation.containerId.title")
+      tableHead.get(1).text() mustBe messages("declaration.seal.summary.heading")
+    }
+
+    "have visually hidden headers for Change and Remove links" in {
+      val tableHead = view.getElementsByTag("th")
+
+      tableHead.get(2).text() mustBe messages("site.change.header")
+      tableHead.get(3).text() mustBe messages("site.remove.header")
+    }
+
     "display summary of container with seals" in {
       view.getElementById("containers-row0-container").text() must be(containerId)
       view.getElementById("containers-row0-seals").text() must be(sealId)

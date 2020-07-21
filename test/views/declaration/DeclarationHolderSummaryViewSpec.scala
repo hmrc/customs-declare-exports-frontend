@@ -106,6 +106,8 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         // check table header
         view.select("table>thead>tr>th:nth-child(1)").text() mustBe messages("declaration.declarationHolders.table.type")
         view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("declaration.declarationHolders.table.eori")
+        view.select("table>thead>tr>th:nth-child(3)").text() mustBe messages("site.change.header")
+        view.select("table>thead>tr>th:nth-child(4)").text() mustBe messages("site.remove.header")
 
         // check row
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() must include("ACE")
@@ -125,6 +127,8 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         // check table header
         view.select("table>thead>tr>th:nth-child(1)").text() mustBe messages("declaration.declarationHolders.table.type")
         view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("declaration.declarationHolders.table.eori")
+        view.select("table>thead>tr>th:nth-child(3)").text() mustBe messages("site.change.header")
+        view.select("table>thead>tr>th:nth-child(4)").text() mustBe messages("site.remove.header")
 
         // check rows
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() must include("ACE")

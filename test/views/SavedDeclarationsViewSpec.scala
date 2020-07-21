@@ -64,6 +64,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
 
       tableHead(view)(0).text() mustBe messages(ducr)
       tableHead(view)(1).text() mustBe messages(dateSaved)
+      tableHead(view)(2).text() mustBe messages("site.remove.header")
 
       numberOfTableRows(view) mustBe 0
 

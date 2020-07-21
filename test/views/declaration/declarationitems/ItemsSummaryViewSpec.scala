@@ -96,6 +96,15 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
         view must containElementWithID("item_table")
 
+        val tableHead = view.getElementsByTag("th")
+
+        tableHead.get(0).text() mustBe messages("declaration.itemsSummary.itemNumber")
+        tableHead.get(1).text() mustBe messages("declaration.itemsSummary.procedureCode")
+        tableHead.get(2).text() mustBe messages("declaration.itemsSummary.commodityCode")
+        tableHead.get(3).text() mustBe messages("declaration.itemsSummary.noOfPackages")
+        tableHead.get(4).text() mustBe messages("site.change.header")
+        tableHead.get(5).text() mustBe messages("site.remove.header")
+
         val rows = view.getElementsByTag("tr")
         rows must have(size(3))
 
@@ -139,6 +148,15 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
         )
 
         view must containElementWithID("item_table")
+
+        val tableHead = view.getElementsByTag("th")
+
+        tableHead.get(0).text() mustBe messages("declaration.itemsSummary.itemNumber")
+        tableHead.get(1).text() mustBe messages("declaration.itemsSummary.procedureCode")
+        tableHead.get(2).text() mustBe messages("declaration.itemsSummary.commodityCode")
+        tableHead.get(3).text() mustBe messages("declaration.itemsSummary.noOfPackages")
+        tableHead.get(4).text() mustBe messages("site.change.header")
+        tableHead.get(5).text() mustBe messages("site.remove.header")
 
         val rows = view.getElementsByTag("tr")
         rows must have(size(2))

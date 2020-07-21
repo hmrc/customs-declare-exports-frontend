@@ -97,6 +97,7 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
         // check table header
         view.select("table>thead>tr>th:nth-child(1)").text() mustBe messages("declaration.additionalActors.table.party")
         view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("declaration.additionalActors.table.eori")
+        view.select("table>thead>tr>th:nth-child(3)").text() mustBe messages("site.remove.header")
 
         // check row
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe messages("declaration.partyType.CS")
@@ -114,6 +115,7 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
         // check table header
         view.select("table>thead>tr>th:nth-child(1)").text() mustBe messages("declaration.additionalActors.table.party")
         view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("declaration.additionalActors.table.eori")
+        view.select("table>thead>tr>th:nth-child(3)").text() mustBe messages("site.remove.header")
 
         // check rows
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe messages("declaration.partyType.CS")
