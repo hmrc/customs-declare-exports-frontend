@@ -87,6 +87,16 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
         view.getElementsByClass("govuk-table__header").get(2) must containMessage("declaration.previousDocuments.goodsItemIdentifier.summary.label")
       }
 
+      "have visually hidden header for Change links" in {
+        val view = createView()
+        view.getElementsByClass("govuk-table__header").get(3) must containMessage("site.change.header")
+      }
+
+      "have visually hidden header for Remove links" in {
+        val view = createView()
+        view.getElementsByClass("govuk-table__header").get(4) must containMessage("site.remove.header")
+      }
+
       "display documents in table" in {
 
         val view = createView()

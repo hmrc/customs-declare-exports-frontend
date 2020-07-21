@@ -129,7 +129,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
         view.select("table>thead>tr>th:nth-child(2)") must containMessageForElements("declaration.packageInformation.table.heading.numberOfPackages")
         view.select("table>thead>tr>th:nth-child(3)") must containMessageForElements("declaration.packageInformation.table.heading.shippingMarks")
         // remove button column
-        view.select("form>table>thead>tr>td").text() must be("")
+        view.select("table>thead>tr>th:nth-child(4)") must containMessageForElements("site.remove.header")
 
         // check row
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "Packet (PA)"
@@ -151,7 +151,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
         view.select("table>thead>tr>th:nth-child(2)") must containMessageForElements("declaration.packageInformation.table.heading.numberOfPackages")
         view.select("table>thead>tr>th:nth-child(3)") must containMessageForElements("declaration.packageInformation.table.heading.shippingMarks")
         // remove button column
-        view.select("form>table>thead>tr>td").text() must be("")
+        view.select("table>thead>tr>th:nth-child(4)") must containMessageForElements("site.remove.header")
 
         // check rows
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "Packet (PA)"

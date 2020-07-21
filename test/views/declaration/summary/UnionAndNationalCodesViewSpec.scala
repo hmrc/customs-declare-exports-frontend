@@ -58,6 +58,7 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
       table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages(
         "declaration.summary.items.item.additionalInformation.information"
       )
+      table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("site.change.header")
 
       val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
       row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "12345"

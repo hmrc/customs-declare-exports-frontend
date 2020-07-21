@@ -79,6 +79,14 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wi
         view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.header.plural", "2")
       }
 
+      "display table headers" in {
+        view.getElementsByTag("th").get(0).text() mustBe messages("declaration.taricAdditionalCodes.table.header")
+      }
+
+      "have visually hidden header for Remove links" in {
+        view.getElementsByTag("th").get(1).text() mustBe messages("site.remove.header")
+      }
+
       "display existing NACT codes table" in {
         codes.zipWithIndex.foreach {
           case (code, index) => {

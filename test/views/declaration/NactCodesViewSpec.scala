@@ -82,6 +82,14 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
         view.getElementsByTag("h1") must containMessageForElements("declaration.nationalAdditionalCode.header.plural", "2")
       }
 
+      "display table headers" in {
+        view.getElementsByTag("th").get(0).text() mustBe messages("declaration.nationalAdditionalCode.table.header")
+      }
+
+      "have visually hidden header for Remove links" in {
+        view.getElementsByTag("th").get(1).text() mustBe messages("site.remove.header")
+      }
+
       "display existing NACT codes table" in {
         codes.zipWithIndex.foreach {
           case (code, index) => {

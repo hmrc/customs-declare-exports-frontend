@@ -56,6 +56,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with In
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.transaction.previousDocuments")
         table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.transaction.previousDocuments.type")
         table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.transaction.previousDocuments.reference")
+        table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("site.change.header")
 
         val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
         row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "Proforma Invoice - 325"

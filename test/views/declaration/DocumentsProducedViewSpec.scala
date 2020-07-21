@@ -147,6 +147,14 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             header.getElementsByClass("govuk-table__header").get(1) must containMessage("declaration.addDocument.summary.documentIdentifier")
           }
 
+          "have visually hidden header for Change links" in {
+            header.getElementsByClass("govuk-table__header").get(3) must containMessage("site.change.header")
+          }
+
+          "have visually hidden header for Remove links" in {
+            header.getElementsByClass("govuk-table__header").get(4) must containMessage("site.remove.header")
+          }
+
         }
 
         "have data row" that {

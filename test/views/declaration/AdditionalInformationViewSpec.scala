@@ -124,6 +124,18 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
             .get(1) must containMessage("declaration.additionalInformation.table.headers.description")
         }
 
+        "has visually hidden Change Link header" in {
+          view
+            .select("#additional_information thead tr th")
+            .get(2) must containMessage("site.change.header")
+        }
+
+        "has visually hidden Remove Link header" in {
+          view
+            .select("#additional_information thead tr th")
+            .get(3) must containMessage("site.remove.header")
+        }
+
         "has row with 'Code' in " in {
           view.select("#additional_information-row0-code").first().text() mustBe "12345"
         }
