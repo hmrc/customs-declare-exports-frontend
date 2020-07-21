@@ -16,7 +16,6 @@
 
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
-@import forms.common.YesNoAnswer.YesNoAnswers._
 @import models.declaration.Container
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -24,14 +23,14 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import scala.collection.immutable
-@import views.ErrorMapper.radioGroupErrors
+@import views.ErrorMapper.yesNoErrors
 
 @this(
         govukLayout: gdsMainTemplate,
         sectionHeader: sectionHeader,
         govukFieldset: GovukFieldset,
         pageTitle: pageTitle,
-        govukRadios: GovukRadios,
+        yesNoRadios: yesNoRadios,
         govukButton: GovukButton,
         govukTable: GovukTable,
         errorSummary: errorSummary,
@@ -67,33 +66,12 @@
     ))
 }
 
-@removeContainerRadios = {
-    @govukRadios(Radios(
-        name = "yesNo",
-        items = Seq(
-            RadioItem(
-                id = Some("Yes"),
-                value = Some(yes),
-                content = Text(messages("site.yes")),
-                checked = form("yesNo").value.contains(yes)
-            ),
-            RadioItem(
-                id = Some("No"),
-                value = Some(no),
-                content = Text(messages("site.no")),
-                checked = form("yesNo").value.contains(no)
-            )
-        ),
-        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
-    ))
-}
-
 @govukLayout(
     title = Title("declaration.transportInformation.container.remove.title", "declaration.transportInformation.containers.section"),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)))) {
 
     @formHelper(action = TransportContainerController.submitContainerRemove(mode, container.id), 'autoComplete -> "off") {
-        @errorSummary(radioGroupErrors("yesNo", "Yes", form.errors))
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.transportInformation.containers.section"))
 
@@ -105,7 +83,7 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 containersTable,
-                removeContainerRadios,
+                yesNoRadios(form),
                 saveButtons()
             ))
         ))

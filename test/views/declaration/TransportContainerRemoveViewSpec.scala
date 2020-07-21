@@ -80,7 +80,7 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
       val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#Yes")
+      view must containErrorElementWithTagAndHref("a", "#code_yes")
 
       view must containErrorElementWithMessageKey("error.yesNo.required")
     }
