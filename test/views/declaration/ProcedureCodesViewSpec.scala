@@ -119,5 +119,17 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
       view.getElementById("procedureCode").attr("value") mustBe "Test"
       view.getElementById("additionalProcedureCode").attr("value") mustBe "Test"
     }
+
+    "display table headers" in {
+      val view = createView(codes = Seq("1234", "567"))
+
+      view.getElementsByTag("th").get(0).text() mustBe messages("declaration.procedureCodes.additionalProcedureCode.table.header")
+    }
+
+    "have visually hidden header for Remove links" in {
+      val view = createView(codes = Seq("1234", "567"))
+
+      view.getElementsByTag("th").get(1).text() mustBe messages("site.remove.header")
+    }
   }
 }

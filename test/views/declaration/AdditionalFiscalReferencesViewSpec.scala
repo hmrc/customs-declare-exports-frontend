@@ -97,6 +97,14 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
     onEveryDeclarationJourney() { implicit request =>
       val view = createView(references = Seq(AdditionalFiscalReference("FR", "12345")))
 
+      "display table header" in {
+        view.getElementsByTag("th").get(0).text() mustBe messages("declaration.additionalFiscalReferences.numbers.header")
+      }
+
+      "have visually hidden header for Remove links" in {
+        view.getElementsByTag("th").get(1).text() mustBe messages("site.remove.header")
+      }
+
       "display references" in {
         view.text() must include("FR12345")
 
