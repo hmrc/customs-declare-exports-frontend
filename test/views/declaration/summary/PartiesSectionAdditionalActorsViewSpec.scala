@@ -62,7 +62,6 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
       table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.additionalActors.eori")
       table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("site.change.header")
 
-
       val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
       row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages("declaration.partyType.CS")
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori1
