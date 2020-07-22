@@ -24,6 +24,7 @@
 @import scala.collection.immutable
 @import forms.declaration.DeclarationAdditionalActors
 @import utils.ListItem._
+@import views.ErrorMapper.yesNoErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -60,7 +61,7 @@
     backButton = Some(BackButton(messages("site.back"), AdditionalActorsSummaryController.displayPage(mode)))) {
 
     @formHelper(action = AdditionalActorsRemoveController.submitForm(mode, id), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("supplementary.items"))
 

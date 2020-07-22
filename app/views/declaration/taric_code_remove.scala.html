@@ -23,6 +23,7 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import scala.collection.immutable
+@import views.ErrorMapper.yesNoErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -58,7 +59,7 @@
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TaricCodeSummaryController.displayPage(mode, itemId)))) {
 
     @formHelper(action = TaricCodeRemoveController.submitForm(mode, itemId, code), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("supplementary.items"))
 

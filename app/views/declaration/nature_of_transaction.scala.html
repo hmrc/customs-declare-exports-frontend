@@ -22,6 +22,7 @@
 @import views.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -43,7 +44,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NatureOfTransaction, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.NatureOfTransactionController.saveTransactionType(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("natureType", "Sale", form.errors))
 
         @govukRadios(Radios(
             name = "natureType",

@@ -116,7 +116,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
         val view = createView(form = FiscalInformation.form().bind(Map[String, String]()))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#onwardSupplyRelief")
+        view must containErrorElementWithTagAndHref("a", "#Yes")
 
         view must containErrorElementWithMessage(messages("declaration.fiscalInformation.onwardSupplyRelief.empty"))
       }
@@ -126,7 +126,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
         val view = createView(form = FiscalInformation.form().fillAndValidate(FiscalInformation("Incorrect")))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#onwardSupplyRelief")
+        view must containErrorElementWithTagAndHref("a", "#Yes")
 
         view must containErrorElementWithMessage(messages("declaration.fiscalInformation.onwardSupplyRelief.error"))
       }

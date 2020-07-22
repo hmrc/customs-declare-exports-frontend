@@ -16,7 +16,7 @@
 
 package forms.declaration
 
-import forms.declaration.Document.AllowedValues.RelatedDocument
+import models.declaration.DocumentCategory.RelatedDocument
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
@@ -48,7 +48,7 @@ class DocumentSpec extends WordSpec with MustMatchers {
 
         val correctPreviousDocumentsJSON: JsValue = JsObject(
           Map(
-            "documentCategory" -> JsString(RelatedDocument),
+            "documentCategory" -> JsString(RelatedDocument.value),
             "documentType" -> JsString("MCR"),
             "documentReference" -> JsString("DocumentReference"),
             "goodsItemIdentifier" -> JsString("123")
@@ -64,7 +64,7 @@ class DocumentSpec extends WordSpec with MustMatchers {
 
         val correctJson = JsObject(
           Map(
-            "documentCategory" -> JsString(RelatedDocument),
+            "documentCategory" -> JsString(RelatedDocument.value),
             "documentType" -> JsString("MCR"),
             "documentReference" -> JsString("GB/239355053000-PATYR8987"),
             "goodsItemIdentifier" -> JsString("123")
@@ -77,18 +77,23 @@ class DocumentSpec extends WordSpec with MustMatchers {
 
       "provided document reference with :" in {
 
-        val correctJson = JsObject(
-          Map(
-            "documentCategory" -> JsString(RelatedDocument),
-            "documentType" -> JsString("MCR"),
-            "documentReference" -> JsString("A:12345645"),
-            "goodsItemIdentifier" -> JsString("123")
-          )
-        )
+        val correctJson = DocumentSpec.json("MCR", "A:12345645", RelatedDocument.value, "123")
         val form = Document.form.bind(correctJson)
 
         form.errors mustBe empty
       }
     }
   }
+}
+
+object DocumentSpec {
+
+  def json(`type`: String, reference: String, catagory: String, identifier: String) = JsObject(
+    Map(
+      "documentCategory" -> JsString(catagory),
+      "documentType" -> JsString(`type`),
+      "documentReference" -> JsString(reference),
+      "goodsItemIdentifier" -> JsString(identifier)
+    )
+  )
 }

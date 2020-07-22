@@ -26,6 +26,7 @@
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
 @import services.HolderOfAuthorisationCode
+@import views.ErrorMapper.yesNoErrors
 
 @this(
   govukLayout: gdsMainTemplate,
@@ -115,7 +116,7 @@
 ) {
 
     @formHelper(action = DeclarationHolderController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.summary.parties.header"))
 

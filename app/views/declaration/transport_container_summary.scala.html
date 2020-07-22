@@ -17,7 +17,6 @@
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer
-@import forms.common.YesNoAnswer.YesNoAnswers._
 @import forms.declaration.ContainerFirst
 @import models.declaration.Container
 @import models.requests.JourneyRequest
@@ -27,6 +26,7 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import scala.collection.immutable
+@import views.ErrorMapper.yesNoErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -34,7 +34,7 @@
         govukFieldset: GovukFieldset,
         pageTitle: pageTitle,
         changeLink: link,
-        govukRadios: GovukRadios,
+        yesNoRadios: yesNoRadios,
         govukButton: GovukButton,
         govukTable: GovukTable,
         errorSummary: errorSummary,
@@ -94,30 +94,15 @@
 }
 
 @addContainerRadios = {
-    @govukRadios(Radios(
-        name = "yesNo",
-        fieldset = Some(Fieldset(
-                        legend = Some(Legend(
-                            content = Text(messages("declaration.transportInformation.containers.add")),
-                            classes = "govuk-fieldset__legend--m"
-                        ))
-                    )),
-        items = Seq(
-            RadioItem(
-                id = Some("Yes"),
-                value = Some(yes),
-                content = Text(messages("site.yes")),
-                checked = form("yesNo").value.contains(yes)
-            ),
-            RadioItem(
-                id = Some("No"),
-                value = Some(no),
-                content = Text(messages("site.no")),
-                checked = form("yesNo").value.contains(no)
-            )
-        ),
-        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
-    ))
+    @yesNoRadios(
+        form,
+        Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.transportInformation.containers.add")),
+                    classes = "govuk-fieldset__legend--m"
+                ))
+            ))
+    )
 }
 
 @govukLayout(
@@ -126,7 +111,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ContainerFirst, mode)))) {
 
     @formHelper(action = TransportContainerController.submitSummaryAction(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.transportInformation.containers.section"))
 

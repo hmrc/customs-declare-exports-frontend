@@ -16,21 +16,17 @@
 
 @import controllers.declaration.routes._
 @import forms.declaration.ExporterDetails
-@import services.model.Country
-@import uk.gov.hmrc.play.views.html._
 @import views.Title
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
-@import services.Countries
 @import scala.collection.immutable
 
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
-@import services.view.AutoCompleteItem
 @import views.BackButton
 @import play.twirl.api.HtmlFormat
-@import views.components.gds.Styles
+@import views.ErrorMapper.eoriOrAddressErrors
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -79,7 +75,7 @@
 
     @formHelper(action = ExporterDetailsController.saveAddress(mode), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(eoriOrAddressErrors("details", form.errors))
 
         @sectionHeader(messages("declaration.summary.parties.header"))
 

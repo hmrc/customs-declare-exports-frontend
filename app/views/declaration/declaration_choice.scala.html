@@ -23,6 +23,7 @@
 @import views.components.gds.Styles._
 @import views.{BackButton, Title}
 @import views.components.inputs.RadioOption
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -50,7 +51,7 @@
     backButton = Some(BackButton(messages("site.backToSelectionPage"), backCall))){
 
     @formHelper(action = controllers.declaration.routes.DeclarationChoiceController.submitChoice(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("type", DeclarationType.STANDARD.toString, form.errors))
 
         @govukRadios(Radios(
             name = "type",

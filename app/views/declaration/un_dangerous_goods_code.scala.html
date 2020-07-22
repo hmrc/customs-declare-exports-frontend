@@ -24,6 +24,7 @@
 @import views.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -57,7 +58,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(UNDangerousGoodsCode, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.UNDangerousGoodsCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors(hasDangerousGoodsCodeKey, "code_yes", form.errors))
 
         @govukRadios(Radios(
             name = hasDangerousGoodsCodeKey,

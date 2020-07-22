@@ -66,13 +66,13 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
 
       "display radio button with Yes option" in {
         val view = createView(form(request.declarationType))
-        view.getElementById("required_Yes").attr("value") mustBe YesNoAnswers.yes
-        view.getElementsByAttributeValue("for", "required_Yes") must containMessageForElements("site.yes")
+        view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
+        view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
       }
       "display radio button with No option" in {
         val view = createView(form(request.declarationType))
-        view.getElementById("required_No").attr("value") mustBe YesNoAnswers.no
-        view.getElementsByAttributeValue("for", "required_No") must containMessageForElements("site.no")
+        view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
+        view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
       "display 'Save and continue' button on page" in {

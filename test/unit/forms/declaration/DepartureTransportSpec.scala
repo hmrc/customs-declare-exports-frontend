@@ -94,7 +94,7 @@ class DepartureTransportSpec extends FormSpec {
 
       "means of transport on departure id number is too long" in {
 
-        val incorrectForm = Map(transportTypeField -> IMOShipIDNumber, idNumberField -> TestHelper.createRandomAlphanumericString(28))
+        val incorrectForm = Map(transportTypeField -> IMOShipIDNumber, idNumberField -> TestHelper.createRandomAlphanumericString(36))
 
         val result = form.bind(incorrectForm)
 
@@ -122,7 +122,7 @@ class DepartureTransportSpec extends FormSpec {
 
       "means of transport on departure id number is too long with invalid characters" in {
 
-        val incorrectForm = Map(transportTypeField -> IMOShipIDNumber, idNumberField -> (TestHelper.createRandomAlphanumericString(28) + "!@#$"))
+        val incorrectForm = Map(transportTypeField -> IMOShipIDNumber, idNumberField -> (TestHelper.createRandomAlphanumericString(36) + "!@#$"))
 
         val result = form.bind(incorrectForm)
 
@@ -214,7 +214,7 @@ class DepartureTransportSpec extends FormSpec {
 
       "means of transport on departure id number is too long" in {
 
-        val incorrectForm = Map(transportTypeField -> IATAFlightNumber, idNumberField -> TestHelper.createRandomAlphanumericString(28))
+        val incorrectForm = Map(transportTypeField -> IATAFlightNumber, idNumberField -> TestHelper.createRandomAlphanumericString(36))
 
         val result = form.bind(incorrectForm)
 

@@ -26,6 +26,7 @@
 @import views.html.components.gds._
 @import views.{BackButton, Title}
 @import scala.collection.immutable
+@import views.ErrorMapper.yesNoErrors
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -59,7 +60,7 @@
             ),
             SummaryListRow(
                 Key(Text(messages(s"declaration.previousDocuments.documentCategory.summary.label"))),
-                Value(Text(messages(s"declaration.previousDocuments.${document.documentCategory}")))
+                Value(Text(messages(s"declaration.previousDocuments.${document.documentCategory.value}")))
             )
         ) ++ document.goodsItemIdentifier.map { identifier =>
             Seq(SummaryListRow(
@@ -77,7 +78,7 @@
 
     @formHelper(action = PreviousDocumentsRemoveController.submit(mode, documentId), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.items"))
 

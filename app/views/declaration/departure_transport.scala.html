@@ -24,6 +24,7 @@
 @import views.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -56,7 +57,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DepartureTransport, mode)))) {
 
     @formHelper(action = DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("meansOfTransportOnDepartureType", "Departure_IMOShipIDNumber", form.errors))
 
         @govukRadios(Radios(
             name = "meansOfTransportOnDepartureType",

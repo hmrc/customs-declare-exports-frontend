@@ -123,7 +123,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
         val view = createView(form(request.declarationType).fillAndValidate(DeclarantEoriConfirmation("")))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#isEori")
+        view must containErrorElementWithTagAndHref("a", "#code_yes")
 
         view must containErrorElementWithMessageKey("declaration.declarant.error")
       }
@@ -136,7 +136,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
         )
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#isEori")
+        view must containErrorElementWithTagAndHref("a", "#code_yes")
 
         view must containErrorElementWithMessageKey("declaration.declarant.error")
       }

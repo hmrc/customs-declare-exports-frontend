@@ -15,7 +15,6 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.DeclarationPage
 @import forms.declaration.RepresentativeAgent
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.common.YesNoAnswer.YesNoAnswers
@@ -25,6 +24,7 @@
 @import views.html.components.gds._
 @import views.components.gds.Styles._
 @import views.BackButton
+@import views.ErrorMapper.radioGroupErrors
 
 @this(govukLayout: gdsMainTemplate,
         govukRadios: GovukRadios,
@@ -43,7 +43,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RepresentativeAgent, mode)))) {
 
     @formHelper(action = RepresentativeAgentController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("representingAgent", "agent_yes", form.errors))
 
         @govukRadios(Radios(
             name = "representingAgent",

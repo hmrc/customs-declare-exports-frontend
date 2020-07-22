@@ -27,6 +27,7 @@
 @import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
 @import scala.collection.immutable
 @import play.twirl.api.HtmlFormat
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -106,7 +107,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(BorderTransport, mode)))) {
 
     @formHelper(action = BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("borderTransportType", "IMOShipIDNumber", form.errors))
 
         @sectionHeader(messages("declaration.transportInformation.title"))
 

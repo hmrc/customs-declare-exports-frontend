@@ -29,6 +29,7 @@
 @import views.components.gds.Styles.gdsPageLegend
 @import views.html.components.gds._
 @import views.BackButton
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -52,7 +53,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingQuestionPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingAnswer(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("answer", "Yes", form.errors))
 
         @govukRadios(Radios(
             name = "answer",

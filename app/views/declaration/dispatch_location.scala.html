@@ -23,6 +23,7 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.{BackButton, Title}
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -51,7 +52,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DispatchLocation, mode)))){
 
     @formHelper(action = controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("dispatchLocation", "OutsideEU", form.errors))
 
         @govukRadios(Radios(
             name = "dispatchLocation",

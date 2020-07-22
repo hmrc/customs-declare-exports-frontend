@@ -16,20 +16,20 @@
 
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
-@import forms.common.YesNoAnswer.YesNoAnswers._
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import scala.collection.immutable
+@import views.ErrorMapper.yesNoErrors
 
 @this(
         govukLayout: gdsMainTemplate,
         sectionHeader: sectionHeader,
         govukFieldset: GovukFieldset,
         pageTitle: pageTitle,
-        govukRadios: GovukRadios,
+        yesNoRadios: yesNoRadios,
         govukButton: GovukButton,
         govukTable: GovukTable,
         errorSummary: errorSummary,
@@ -58,33 +58,12 @@
     ))
 }
 
-@removeSealRadios = {
-        @govukRadios(Radios(
-        name = "yesNo",
-        items = Seq(
-            RadioItem(
-                id = Some("Yes"),
-                value = Some(yes),
-                content = Text(messages("site.yes")),
-                checked = form("yesNo").value.contains(yes)
-            ),
-            RadioItem(
-                id = Some("No"),
-                value = Some(no),
-                content = Text(messages("site.no")),
-                checked = form("yesNo").value.contains(no)
-            )
-        ),
-        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
-    ))
-}
-
 @govukLayout(
     title = Title("declaration.seal.remove.title", "declaration.seal.section", containerId),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.SealController.displaySealSummary(mode, containerId)))) {
 
     @formHelper(action = SealController.submitSealRemove(mode, containerId, sealId), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.seal.section"))
 
@@ -96,7 +75,7 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 sealsTable,
-                removeSealRadios,
+                yesNoRadios(form),
                 saveButtons()
             ))
         ))

@@ -130,7 +130,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
         val view = createView(DispatchLocation.form().bind(Map[String, String]()))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#dispatchLocation")
+        view must containErrorElementWithTagAndHref("a", "#OutsideEU")
 
         view must containErrorElementWithMessageKey("supplementary.dispatchLocation.inputText.error.empty")
       }
@@ -140,7 +140,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
         val view = createView(DispatchLocation.form().fillAndValidate(DispatchLocation("12")))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#dispatchLocation")
+        view must containErrorElementWithTagAndHref("a", "#OutsideEU")
 
         view must containErrorElementWithMessageKey("supplementary.dispatchLocation.inputText.error.incorrect")
       }

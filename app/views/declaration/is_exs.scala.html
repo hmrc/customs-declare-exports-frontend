@@ -15,7 +15,6 @@
  *@
 
 @import controllers.navigation.Navigator
-@import forms.DeclarationPage
 @import forms.declaration.IsExs
 @import forms.declaration.IsExs._
 @import forms.common.YesNoAnswer.YesNoAnswers
@@ -24,6 +23,8 @@
 @import views.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
+@import views.ErrorMapper.radioGroupErrors
+
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -42,7 +43,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(IsExs, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.IsExsController.submit(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors(isExsKey, "code_yes", form.errors))
 
         @govukRadios(Radios(
             name = isExsKey,

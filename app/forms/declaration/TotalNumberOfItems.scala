@@ -22,7 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class TotalNumberOfItems(totalAmountInvoiced: Option[String], exchangeRate: Option[String])
+case class TotalNumberOfItems(exchangeRate: Option[String], totalAmountInvoiced: Option[String])
 
 object TotalNumberOfItems extends DeclarationPage {
   implicit val format = Json.format[TotalNumberOfItems]
@@ -33,13 +33,13 @@ object TotalNumberOfItems extends DeclarationPage {
   val exchangeRatePattern = "[0-9]{1,12}|[[0-9]{1,7}[.][0-9]{1,5}]{3,13}"
 
   val mapping = Forms.mapping(
-    "totalAmountInvoiced" -> optional(
-      text()
-        .verifying("declaration.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern))
-    ),
     "exchangeRate" -> optional(
       text()
         .verifying("declaration.exchangeRate.error", isEmpty or ofPattern(exchangeRatePattern))
+    ),
+    "totalAmountInvoiced" -> optional(
+      text()
+        .verifying("declaration.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern))
     )
   )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
 

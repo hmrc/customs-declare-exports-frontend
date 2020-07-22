@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import forms.common.YesNoAnswer.YesNoAnswers
 @import forms.common.YesNoAnswer
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
@@ -25,17 +24,16 @@
 @import views.html.components.gds._
 @import config.AppConfig
 @import forms.declaration.AdditionalInformationRequired
+@import views.ErrorMapper.yesNoErrors
 
 @this(
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
     headingContent: headingContent,
-    govukRadios: GovukRadios,
-    exportsInputText: exportsInputText,
-    govukDetails : GovukDetails,
     saveButtons: saveButtons,
     tariffDetails: tariffDetails,
     appConfig: AppConfig,
+    yesNoRadios: yesNoRadios,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -48,40 +46,22 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalInformationRequired, mode, ItemId(itemId))))) {
 
     @formHelper(action = controllers.declaration.routes.AdditionalInformationRequiredController.submitForm(mode, (itemId)), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(yesNoErrors(form.errors))
 
-        @govukRadios(Radios(
-        name = "yesNo",
-        fieldset = Some(Fieldset(
-            legend = Some(Legend(
-                content = HtmlContent(
-                    headingContent(
-                        messages("declaration.additionalInformationRequired.title"),
-                        Some(messages("supplementary.items"))
-                    )
-                ),
-                classes = gdsPageLegend
-            ))
-        )),
-            hint = Some(Hint(
-            content = HtmlContent(Html(messages("declaration.additionalInformationRequired.hint", tradeTariffLink)))
-            )),
-            items = Seq(
-                RadioItem(
-                id = Some("required_Yes"),
-                value = Some(YesNoAnswers.yes),
-                content = Text(messages("site.yes")),
-                checked = form("yesNo").value.contains(YesNoAnswers.yes)
-                ),
-                RadioItem(
-                id = Some("required_No"),
-                value = Some(YesNoAnswers.no),
-                content = Text(messages("site.no")),
-                checked = form("yesNo").value.contains(YesNoAnswers.no)
-                )
-            ),
-            errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-        ))
+        @yesNoRadios(
+              form,
+              Some(Fieldset(
+                  legend = Some(Legend(
+                      content = HtmlContent(
+                          headingContent(
+                              messages("declaration.additionalInformationRequired.title"),
+                              Some(messages("supplementary.items"))
+                          )
+                      ),
+                      classes = gdsPageLegend
+                  ))
+              ))
+        )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.declarant-details.help.bodyText", components.details_content_link())))
 

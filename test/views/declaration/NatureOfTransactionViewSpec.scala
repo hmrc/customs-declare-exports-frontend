@@ -128,7 +128,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
         val view = createView(form = NatureOfTransaction.form().fillAndValidate(NatureOfTransaction("")))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#natureType")
+        view must containErrorElementWithTagAndHref("a", "#Sale")
 
         view must containErrorElementWithMessageKey("declaration.natureOfTransaction.error")
       }
@@ -137,7 +137,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
         val view = createView(form = NatureOfTransaction.form().fillAndValidate(NatureOfTransaction("ABC")))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#natureType")
+        view must containErrorElementWithTagAndHref("a", "#Sale")
 
         view must containErrorElementWithMessageKey("declaration.natureOfTransaction.error")
       }

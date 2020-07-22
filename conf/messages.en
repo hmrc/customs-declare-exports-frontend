@@ -432,7 +432,7 @@ saved.declarations.pagination.singular = saved declaration
 saved.declarations.pagination.plural = saved declarations
 saved.declarations.remove.title = Are you sure you want to remove this declaration?
 saved.declarations.remove.submitButton = Continue
-saved.declarations.remove.option.error.empty = Select an option
+saved.declarations.remove.option.error.empty = Select yes if you want to remove this declaration
 
 declaration.declarationHolder.title = What authorisation is required for this export?
 declaration.declarationHolder.title.hint = This will depend on the type of procedure code used for this export. If no authorisation is needed, leave this page blank and continue.
@@ -693,8 +693,8 @@ declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty 
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect = Select a means of transport
 declaration.transportInformation.meansOfTransport.reference.header = Reference
 declaration.transportInformation.meansOfTransport.reference.hint = This can be up to 27 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
-declaration.transportInformation.meansOfTransport.reference.error.empty = Enter a reference, up to 28 alpha numeric characters
-declaration.transportInformation.meansOfTransport.reference.error.invalid = Enter a reference, up to 28 alpha numeric characters
+declaration.transportInformation.meansOfTransport.reference.error.empty = Enter a reference up to 35 characters
+declaration.transportInformation.meansOfTransport.reference.error.invalid = Enter a reference up to 35 characters
 
 declaration.transportInformation.meansOfTransport.IMOShipIDNumber = Ship IMO number
 declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label = Enter the IMO identification number
@@ -718,7 +718,7 @@ declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.
 declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
 
 declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.header = Reference
-declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty = Enter the transport reference
+declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty = Enter a reference up to 35 characters
 declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.length = Reference should be less than 35 alpha numeric characters
 declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid = Reference cannot contain invalid characters
 
@@ -871,6 +871,7 @@ declaration.previousDocuments.change.hint = Change document {0} type {1} referen
 declaration.previousDocuments.summary.header.singular = You have added 1 document
 declaration.previousDocuments.summary.header.plural = You have added {0} documents
 declaration.previousDocuments.remove.title = Are you sure you want to remove this document?
+declaration.previousDocuments.remove.empty = Select yes if you want to remove this document
 declaration.previousDocuments.addAnotherDocument = Do you need to add another document?
 declaration.previousDocuments.add.another.empty = Select yes to add another document
 
@@ -889,8 +890,8 @@ declaration.additionalInformation.item.description = 2/2 information
 declaration.additionalInformation.description.error = Enter a valid description
 declaration.additionalInformation.description.empty = Enter the information required by the code given, or put ''Not applicable''
 declaration.additionalInformation.add.another = Do you need to add another AI code?
-declaration.additionalInformation.add.another.empty = Select yes if you need to add another AI code?
-declaration.additionalInformation.remove.empty = Select yes if you want to remove this AI code?
+declaration.additionalInformation.add.another.empty = Select yes if you need to add another AI code
+declaration.additionalInformation.remove.empty = Select yes if you want to remove this AI code
 declaration.additionalInformation.table.heading = You have added 1 AI code
 declaration.additionalInformation.table.multiple.heading = You have added {0} AI codes
 declaration.additionalInformation.table.change.hint = Change code {0}.
@@ -1230,6 +1231,7 @@ declaration.itemsSummary.addAnotherItem.question = Do you need to declare anothe
 declaration.itemsSummary.addAnotherItem.error.empty = Select yes if you need to add more items to this declaration
 declaration.itemsSummary.item.incorrect = Item {0} does not contain all mandatory data
 declaration.itemsRemove.title = Are you sure you want to remove declaration item {0}?
+declaration.itemsRemove.error.empty = Select yes if you want to remove this item
 
 declaration.seal.title = What is the security seal for container {0}?
 declaration.seal.section = Transport details

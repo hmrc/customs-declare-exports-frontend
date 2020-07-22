@@ -67,7 +67,7 @@ case class ExportsDeclarationExchange(
     totalNumberOfItems = this.totalNumberOfItems.flatMap { exchange =>
       (exchange.totalAmountInvoiced, exchange.exchangeRate) match {
         case (None, None)                        => None
-        case (totalAmountInvoiced, exchangeRate) => Some(TotalNumberOfItems(totalAmountInvoiced, exchangeRate))
+        case (totalAmountInvoiced, exchangeRate) => Some(TotalNumberOfItems(exchangeRate, totalAmountInvoiced))
       }
     },
     totalPackageQuantity = this.totalNumberOfItems.map(exchange => TotalPackageQuantity(exchange.totalPackage)),

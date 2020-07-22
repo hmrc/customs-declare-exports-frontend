@@ -163,7 +163,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
         val view = createView(form(request.declarationType).bind(Map[String, String]()))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details")
+        view must containErrorElementWithTagAndHref("a", "#details_eori")
         view.getElementsByClass("govuk-list govuk-error-summary__list").attr("value") mustBe empty
 
       }

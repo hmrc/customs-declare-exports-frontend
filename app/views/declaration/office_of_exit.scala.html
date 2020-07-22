@@ -25,6 +25,7 @@
 @import services.OfficeOfExits
 @import views.Title
 @import views.BackButton
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -58,7 +59,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExitInsideUK, mode)))){
 
     @formHelper(action = controllers.declaration.routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("isUkOfficeOfExit", "Yes", form.errors))
 
         @govukRadios(Radios(
             name = "isUkOfficeOfExit",

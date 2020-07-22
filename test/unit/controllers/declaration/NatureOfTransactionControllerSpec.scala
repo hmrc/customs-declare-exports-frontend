@@ -18,6 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.NatureOfTransactionController
 import forms.declaration.{Document, NatureOfTransaction}
+import models.declaration.DocumentCategory.SimplifiedDeclaration
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -113,7 +114,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
       "user provided correct information" in {
 
-        withNewCaching(aDeclaration(withPreviousDocuments(Document("Y", "MCR", "reference", None))))
+        withNewCaching(aDeclaration(withPreviousDocuments(Document("MCR", "reference", SimplifiedDeclaration, None))))
         val correctForm = Json.toJson(NatureOfTransaction("1"))
 
         val result = controller.saveTransactionType(Mode.Normal)(postRequest(correctForm))

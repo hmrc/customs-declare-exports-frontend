@@ -35,6 +35,7 @@ import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExi
 import forms.{CancelDeclaration, Lrn}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
+import models.declaration.DocumentCategory.RelatedDocument
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
@@ -149,7 +150,7 @@ object ExportDeclarationTestData {
       supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
       inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)
     ),
-    previousDocuments = Some(PreviousDocumentsData(Seq(Document("X", "MCR", "DocumentReference", Some("123")))))
+    previousDocuments = Some(PreviousDocumentsData(Seq(Document("MCR", "DocumentReference", RelatedDocument, Some("123")))))
   )
 
   lazy val correctGovernmentAgencyGoodsItemJSON: JsValue = JsArray(Seq(Json.toJson(createGovernmentAgencyGoodsItem())))

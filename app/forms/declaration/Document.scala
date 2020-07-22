@@ -18,13 +18,15 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
+import models.declaration.DocumentCategory
+import models.declaration.DocumentCategory.{RelatedDocument, SimplifiedDeclaration}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, FormError, Forms}
 import play.api.libs.json.{JsValue, Json}
 import services.DocumentType
 import utils.validators.forms.FieldValidator._
 
-case class Document(documentCategory: String, documentType: String, documentReference: String, goodsItemIdentifier: Option[String]) {
+case class Document(documentType: String, documentReference: String, documentCategory: DocumentCategory, goodsItemIdentifier: Option[String]) {
   def toJson: JsValue = Json.toJson(this)(Document.format)
 }
 
@@ -35,33 +37,18 @@ object Document extends DeclarationPage {
 
   val formId = "PreviousDocuments"
 
-  import AllowedValues._
+  val correctDocumentCategories = Set(SimplifiedDeclaration.value, RelatedDocument.value)
 
-  val correctDocumentCategories = Set(SimplifiedDeclaration, RelatedDocument)
-
-  val mapping = Forms.mapping(
-    "documentCategory" -> requiredRadio("declaration.previousDocuments.documentCategory.error.empty")
-      .verifying("declaration.previousDocuments.documentCategory.error.empty", nonEmpty)
-      .verifying("declaration.previousDocuments.documentCategory.error.incorrect", isEmpty or isContainedIn(correctDocumentCategories)),
-    "documentType" -> text()
-      .verifying("declaration.previousDocuments.documentType.empty", nonEmpty)
-      .verifying("declaration.previousDocuments.documentType.error", isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code))),
-    "documentReference" -> text()
-      .verifying("declaration.previousDocuments.documentReference.empty", nonEmpty)
-      .verifying(
-        "declaration.previousDocuments.documentReference.error",
-        isEmpty or (isAlphanumericWithSpecialCharacters(Set('-', '/', ':')) and noLongerThan(35))
-      ),
-    "goodsItemIdentifier" -> optional(text().verifying("declaration.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
-  )(Document.apply)(Document.unapply)
+  val mapping =
+    Forms.mapping(documentTypeMapping, documentReferenceMapping, documentCategoryMapping, goodsIdentifierMapping)(Document.apply)(Document.unapply)
 
   def form(): Form[Document] = Form(mapping)
 
   def treatLikeOptional(document: Form[Document]): Form[Document] = {
     val errorsToIgnore = Seq(
-      FormError("documentCategory", "declaration.previousDocuments.documentCategory.error.empty"),
       FormError("documentType", "declaration.previousDocuments.documentType.empty"),
-      FormError("documentReference", "declaration.previousDocuments.documentReference.empty")
+      FormError("documentReference", "declaration.previousDocuments.documentReference.empty"),
+      FormError("documentCategory", "declaration.previousDocuments.documentCategory.error.empty")
     )
 
     if (document.errors == errorsToIgnore && document.data.get("goodsItemIdentifier").getOrElse("").isEmpty)
@@ -69,10 +56,30 @@ object Document extends DeclarationPage {
     else document
   }
 
-  object AllowedValues {
-    val SimplifiedDeclaration = "Y"
-    val RelatedDocument = "Z"
-  }
+  private def goodsIdentifierMapping =
+    "goodsItemIdentifier" -> optional(text().verifying("declaration.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
+
+  private def documentCategoryMapping =
+    "documentCategory" -> requiredRadio("declaration.previousDocuments.documentCategory.error.empty")
+      .verifying("declaration.previousDocuments.documentCategory.error.empty", nonEmpty)
+      .verifying("declaration.previousDocuments.documentCategory.error.incorrect", isEmpty or isContainedIn(correctDocumentCategories))
+      .transform[DocumentCategory]({
+        case SimplifiedDeclaration.value => SimplifiedDeclaration
+        case RelatedDocument.value       => RelatedDocument
+      }, category => category.value)
+
+  private def documentReferenceMapping =
+    "documentReference" -> text()
+      .verifying("declaration.previousDocuments.documentReference.empty", nonEmpty)
+      .verifying(
+        "declaration.previousDocuments.documentReference.error",
+        isEmpty or (isAlphanumericWithSpecialCharacters(Set('-', '/', ':')) and noLongerThan(35))
+      )
+
+  private def documentTypeMapping =
+    "documentType" -> text()
+      .verifying("declaration.previousDocuments.documentType.empty", nonEmpty)
+      .verifying("declaration.previousDocuments.documentType.error", isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code)))
 }
 
 case class PreviousDocumentsData(documents: Seq[Document])

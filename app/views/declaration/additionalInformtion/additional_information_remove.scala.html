@@ -23,6 +23,7 @@
 @import views.html.components.gds._
 @import views.{BackButton, Title}
 @import scala.collection.immutable
+@import views.ErrorMapper.yesNoErrors
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -59,7 +60,7 @@
     backButton = Some(BackButton(messages("site.back"), AdditionalInformationController.displayPage(mode, itemId)))) {
 
     @formHelper(action = AdditionalInformationRemoveController.submitForm(mode, itemId, informationId), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("supplementary.items"))
 

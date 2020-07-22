@@ -18,6 +18,7 @@ package views.declaration
 import base.Injector
 import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.declaration.{Document, PreviousDocumentsData}
+import models.declaration.DocumentCategory.{RelatedDocument, SimplifiedDeclaration}
 import models.declaration.Locations
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
@@ -74,7 +75,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
       "display two radio buttons with description (not selected)" in {
 
-        val view = createView(form = Document.form.fill(Document("", "", "", Some(""))))
+        val view = createView(form = Document.form.bindFromRequest(Map.empty))
 
         view.getElementById("simplified-declaration") mustNot beSelected
         view.getElementsByAttributeValue("for", "simplified-declaration").text() mustBe messages("declaration.previousDocuments.Y")
@@ -146,7 +147,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
         "there are documents in the cache" in {
 
-          val previousDocuments = PreviousDocumentsData(Seq(Document("Y", "MCR", "reference", None)))
+          val previousDocuments = PreviousDocumentsData(Seq(Document("MCR", "reference", SimplifiedDeclaration, None)))
           val requestWithPreviousDocuments = journeyRequest(request.cacheModel.copy(previousDocuments = Some(previousDocuments)))
 
           val backButton = createView()(requestWithPreviousDocuments).getElementById("back-link")
@@ -176,7 +177,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
     onEveryDeclarationJourney() { implicit request =>
       "display selected second radio button - Simplified Declaration (Y)" in {
 
-        val view = createView(form = Document.form.fill(Document("Y", "", "", Some(""))))
+        val view = createView(form = Document.form.fill(Document("", "", SimplifiedDeclaration, Some(""))))
 
         view.getElementById("simplified-declaration") must beSelected
         view.getElementById("related-document") mustNot beSelected
@@ -184,7 +185,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
       "display selected third radio button - Previous Documents (Z)" in {
 
-        val view = createView(form = Document.form.fill(Document("Z", "", "", Some(""))))
+        val view = createView(form = Document.form.fill(Document("", "", RelatedDocument, Some(""))))
 
         view.getElementById("simplified-declaration") mustNot beSelected
         view.getElementById("related-document") must beSelected
@@ -192,7 +193,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
       "display data in Document type input" in {
 
-        val view = createView(form = Document.form.fill(Document("", "Test", "", Some(""))))
+        val view = createView(form = Document.form.fill(Document("Test", "", RelatedDocument, Some(""))))
 
         view.getElementById("documentType").attr("value") must be("Test")
         view.getElementById("documentReference").attr("value") mustBe empty
@@ -201,7 +202,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
       "display data in Previous DUCR or MUCR input" in {
 
-        val view = createView(form = Document.form.fill(Document("", "", "Test", Some(""))))
+        val view = createView(form = Document.form.fill(Document("", "Test", RelatedDocument, Some(""))))
 
         view.getElementById("documentType").attr("value") mustBe empty
         view.getElementById("documentReference").attr("value") must be("Test")
@@ -210,7 +211,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
       "display data in Previous Goods Identifier input" in {
 
-        val view = createView(form = Document.form.fill(Document("", "", "", Some("Test"))))
+        val view = createView(form = Document.form.fill(Document("", "", RelatedDocument, Some("Test"))))
 
         view.getElementById("documentType").attr("value") mustBe empty
         view.getElementById("documentReference").attr("value") mustBe empty
@@ -219,7 +220,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
       "display all data entered" in {
 
-        val view = createView(form = Document.form.fill(Document("Y", "Test", "Test", Some("Test"))))
+        val view = createView(form = Document.form.fill(Document("Test", "Test", SimplifiedDeclaration, Some("Test"))))
 
         view.getElementById("simplified-declaration") must beSelected
         view.getElementById("related-document") mustNot beSelected

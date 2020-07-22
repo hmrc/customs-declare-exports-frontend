@@ -88,7 +88,7 @@ trait ExportsDeclarationBuilder {
     _.copy(totalNumberOfItems = Some(totalNumberOfItems))
 
   def withTotalNumberOfItems(totalAmountInvoiced: Option[String] = None, exchangeRate: Option[String] = None): ExportsDeclarationModifier =
-    _.copy(totalNumberOfItems = Some(TotalNumberOfItems(totalAmountInvoiced, exchangeRate)))
+    _.copy(totalNumberOfItems = Some(TotalNumberOfItems(exchangeRate, totalAmountInvoiced)))
 
   def withTotalPackageQuantity(quantity: String): ExportsDeclarationModifier =
     _.copy(totalPackageQuantity = Some(TotalPackageQuantity(Some(quantity))))

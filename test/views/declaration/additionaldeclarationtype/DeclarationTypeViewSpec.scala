@@ -290,7 +290,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formStandard.bind(Map[String, String]()), DeclarationType.STANDARD)
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
+        view must containErrorElementWithTagAndHref("a", "#PreLodged")
 
         view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.empty")
       }
@@ -300,7 +300,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formSupplementary.bind(Map[String, String]()), DeclarationType.SUPPLEMENTARY)
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
+        view must containErrorElementWithTagAndHref("a", "#Simplified")
 
         view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.empty")
       }
@@ -310,7 +310,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formSimplified.bind(Map[String, String]()), DeclarationType.SIMPLIFIED)
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
+        view must containErrorElementWithTagAndHref("a", "#PreLodged")
 
         view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.empty")
       }
@@ -320,7 +320,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formOccasional.bind(Map[String, String]()), DeclarationType.OCCASIONAL)
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
+        view must containErrorElementWithTagAndHref("a", "#PreLodged")
 
         view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.empty")
       }
@@ -330,7 +330,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formClearance.bind(Map[String, String]()), DeclarationType.CLEARANCE)
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
+        view must containErrorElementWithTagAndHref("a", "#PreLodged")
 
         view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.empty")
       }
@@ -343,7 +343,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formStandard.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.STANDARD)
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
+        view must containErrorElementWithTagAndHref("a", "#PreLodged")
 
         view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.incorrect")
       }
@@ -353,7 +353,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formSupplementary.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.SUPPLEMENTARY)
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
+        view must containErrorElementWithTagAndHref("a", "#Simplified")
 
         view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.incorrect")
       }
@@ -363,7 +363,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formSimplified.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.SIMPLIFIED)
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
+        view must containErrorElementWithTagAndHref("a", "#PreLodged")
 
         view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.incorrect")
       }
@@ -373,7 +373,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formOccasional.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.OCCASIONAL)
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
+        view must containErrorElementWithTagAndHref("a", "#PreLodged")
 
         view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.incorrect")
       }
@@ -383,7 +383,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formClearance.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.CLEARANCE)
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
+        view must containErrorElementWithTagAndHref("a", "#PreLodged")
 
         view must containErrorElementWithMessageKey("declaration.declarationType.inputText.error.incorrect")
       }

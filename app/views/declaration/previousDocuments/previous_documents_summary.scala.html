@@ -16,13 +16,10 @@
 
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
-@import forms.DeclarationPage
 @import forms.common.YesNoAnswer
 @import forms.declaration.{Document, DocumentSummary}
-@import forms.declaration.Document.AllowedValues._
 @import models.requests.JourneyRequest
 @import services.DocumentType
-@import services.view.AutoCompleteItem
 @import views.components.gds.Styles._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
@@ -30,6 +27,7 @@
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
 @import utils.ListItem._
+@import views.ErrorMapper.yesNoErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -126,7 +124,7 @@
 
     @formHelper(action = routes.PreviousDocumentsSummaryController.submit(mode), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.items"))
 

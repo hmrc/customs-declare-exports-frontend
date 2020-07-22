@@ -75,7 +75,7 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages w
       val view = createView(decWithDucr(), RemoveDraftDeclaration.form.bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#remove")
+      view must containErrorElementWithTagAndHref("a", "#Yes")
 
       view must containErrorElementWithMessageKey("saved.declarations.remove.option.error.empty")
     }

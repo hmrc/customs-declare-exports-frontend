@@ -107,7 +107,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
       val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#yesNo")
+      view must containErrorElementWithTagAndHref("a", "#code_yes")
 
       view must containErrorElementWithMessageKey("error.yesNo.required")
     }
