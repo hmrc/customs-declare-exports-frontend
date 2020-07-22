@@ -25,7 +25,7 @@ case class ConsignmentReferences(ducr: Ducr, lrn: Lrn)
 object ConsignmentReferences extends DeclarationPage {
 
   val mapping =
-    Forms.mapping("ducr" -> Ducr.ducrMapping, "lrn" -> Lrn.mapping("supplementary.consignmentReferences.lrn"))(ConsignmentReferences.apply)(
+    Forms.mapping("ducr" -> Ducr.ducrMapping, "lrn" -> Lrn.mapping("declaration.consignmentReferences.lrn"))(ConsignmentReferences.apply)(
       ConsignmentReferences.unapply
     )
 

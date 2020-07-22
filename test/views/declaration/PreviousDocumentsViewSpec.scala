@@ -54,7 +54,6 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.label")
       messages must haveTranslationFor("declaration.previousDocuments.Y")
       messages must haveTranslationFor("declaration.previousDocuments.Z")
-      messages must haveTranslationFor("supplementary.consignmentReferences.heading")
       messages must haveTranslationFor("declaration.previousDocuments.documentType")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier")
