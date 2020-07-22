@@ -15,23 +15,24 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.DeclarationPage
 @import forms.declaration.ConsigneeDetails
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
 @import config.AppConfig
 @import views.{BackButton, Title}
 @import views.html.components.gds._
-@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukDetails, govukFieldset}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
 @import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
 @this(
         govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
         govukFieldset: govukFieldset,
+        govukHint: govukHint,
         pageTitle: pageTitle,
         inputText: exportsInputText,
         inputTextArea: exportsInputTextArea,
@@ -63,9 +64,11 @@
                 classes = gdsPageLabel,
                 isPageHeading = true
             )),
-            html = group_address(form, "declaration.address", "details.address")
+            html = HtmlFormat.fill(immutable.Seq(
+                govukHint(Hint(content = Text(messages("declaration.consignee.hint")))),
+                group_address(form, "declaration.address", "details.address")
             ))
-
+        ))
 
         @tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody))
 

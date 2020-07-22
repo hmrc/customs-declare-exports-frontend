@@ -316,7 +316,8 @@ declaration.declarant.exporter.error = Select yes if you are also the exporter
 declaration.declarant.exporter.help-item = Go to data element 3/2 Exporter Identification Number in the {0}
 
 
-declaration.consignee.title = What is the consignee’s address?
+declaration.consignee.title = What address are the goods being sent to?
+declaration.consignee.hint = This is the address of the person receiving the goods, technically known as the consignee.
 declaration.consignee-details.help-item = Go to data element 3/9 Consignee Name and Address in the {0}
 
 declaration.consignorEori.title = Does the consignor have an EORI number?
