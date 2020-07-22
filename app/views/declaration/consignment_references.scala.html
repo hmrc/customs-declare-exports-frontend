@@ -42,27 +42,27 @@
 @tariffBody = { @components.tariff_body_partial(messages("declaration.type.consignmentDescListItemOne"), messages("declaration.type.consignmentDescListItemTwo"))(tariffBodyDesc)}
 
 @govukLayout(
-    title = Title("supplementary.consignmentReferences.header", "supplementary.consignmentReferences.heading"),
+    title = Title("declaration.consignmentReferences.header", "declaration.consignmentReferences.heading"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsignmentReferences, mode)))) {
 
     @formHelper(action = ConsignmentReferencesController.submitConsignmentReferences(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.consignmentReferences.heading"))
-        @pageTitle(messages("supplementary.consignmentReferences.header"))
+        @sectionHeader(messages("declaration.consignmentReferences.heading"))
+        @pageTitle(messages("declaration.consignmentReferences.header"))
 
         @exportsInputText(
             field = form("ducr.ducr"),
             inputClasses = Some("govuk-input"),
-            labelKey = "supplementary.consignmentReferences.ducr.info",
-            hintKey = Some("supplementary.consignmentReferences.ducr.hint")
+            labelKey = "declaration.consignmentReferences.ducr.info",
+            hintKey = Some("declaration.consignmentReferences.ducr.hint")
         )
 
         @exportsInputText(
             field = form("lrn"),
             inputClasses = Some("govuk-input"),
-            labelKey = "supplementary.consignmentReferences.lrn.info",
-            hintKey = Some("supplementary.consignmentReferences.lrn.hint")
+            labelKey = "declaration.consignmentReferences.lrn.info",
+            hintKey = Some("declaration.consignmentReferences.lrn.hint")
         )
 
         @tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody))

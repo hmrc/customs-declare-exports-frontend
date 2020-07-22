@@ -273,15 +273,15 @@ notDeclarent.referenceTitle = Help and support
 notDeclarent.reference.support = If you are having problems making a declaration, phone: {0}
 notDeclarent.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
-supplementary.consignmentReferences.heading = Your references
-supplementary.consignmentReferences.header =  Consignment references
-supplementary.consignmentReferences.ducr.info = Give this declaration a Unique Consignment Reference (UCR)
-supplementary.consignmentReferences.ducr.hint = This can be up to 35 characters and needs to be in the following format: 9GB123456789012-SHIP1234-1.
-supplementary.consignmentReferences.lrn.info = Give this declaration a Local Reference Number (LRN)
-supplementary.consignmentReferences.lrn.hint = This will help you identify it if you need it for audit purposes. Make sure it is unique to this declaration and memorable. For example, an invoice number. It can be up to 22 digits.
-supplementary.consignmentReferences.lrn.error.empty = Enter an LRN in the correct format
-supplementary.consignmentReferences.lrn.error.length = LRN cannot exceed 22 characters
-supplementary.consignmentReferences.lrn.error.specialCharacter = Enter an LRN in the correct format
+declaration.consignmentReferences.heading = Your references
+declaration.consignmentReferences.header =  Consignment references
+declaration.consignmentReferences.ducr.info = Give this declaration a Unique Consignment Reference (UCR)
+declaration.consignmentReferences.ducr.hint = This can be up to 35 characters. It is made up of the last number of the current year, your EORI number, and your own reference after the dash. For example, 9GB123456789012-SHIP1234-1.
+declaration.consignmentReferences.lrn.info = Give this declaration a unique reference
+declaration.consignmentReferences.lrn.hint = This can be up to 22 characters and is known as the Local Reference Number (LRN). It should be memorable so you can identify your declaration if you need to for audit purposes. For example, an invoice number.
+declaration.consignmentReferences.lrn.error.empty = Enter an LRN in the correct format
+declaration.consignmentReferences.lrn.error.length = LRN cannot exceed 22 characters
+declaration.consignmentReferences.lrn.error.specialCharacter = Enter an LRN in the correct format
 
 declaration.entryIntoDeclarantRecords.title = Is this an entry into declarant’s records (EIDR)?
 declaration.entryIntoDeclarantRecords.answer.yes = Yes
