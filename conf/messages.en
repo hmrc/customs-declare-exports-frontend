@@ -494,8 +494,8 @@ declaration.routingCountries.remove.countryHeader = Country
 declaration.routingCountries.duplication = Routing country already added
 declaration.routingCountries.limit = Maximum number of routing countries added
 
-declaration.goodsLocation.title = What is the goods location code?
-declaration.goodsLocation.hint = This is an alphanumeric code. For example, GBAUEMAEMAEMA.
+declaration.goodsLocation.title = What is the code for the location of the goods when they are declared?
+declaration.goodsLocation.hint = This is usually the port they are leaving from and is officially known as the Goods Location Code. For example, if they were at Felixstowe, it would be GBAUFXTFXTFXT.
 declaration.goodsLocation.code.empty = Enter a goods location code in the correct format
 declaration.goodsLocation.code.error = Enter a goods location code in the correct format
 declaration.goodsLocation.help.bodyText = Go to data element 5/23 Location of Goods in the {0}.
