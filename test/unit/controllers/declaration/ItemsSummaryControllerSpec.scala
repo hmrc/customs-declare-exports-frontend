@@ -190,8 +190,6 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     onEveryDeclarationJourney() { request =>
       "call cache" in {
 
-        reset(mockExportsCacheService)
-
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
         val result = controller.displayItemsSummaryPage(Mode.Normal)(getRequest())
