@@ -32,7 +32,7 @@
         pageTitle: pageTitle,
         yesNoRadios: yesNoRadios,
         govukButton: GovukButton,
-        govukTable: GovukTable,
+        govukSummaryList: GovukSummaryList,
         errorSummary: errorSummary,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -40,29 +40,18 @@
 
 @(mode: Mode, form: Form[YesNoAnswer], container: Container)(implicit request: Request[_], messages: Messages)
 
-
-@containersTable = {
-
-    @govukTable(Table(
-        attributes = Map("id" -> "container-table"),
+@containersSummary = {
+    @govukSummaryList(SummaryList(
         rows = Seq(
-            Seq(
-                TableRow(
-                    content = Text(container.id)
-                ),
-                TableRow(
-                    content = HtmlContent(container.seals.map(_.id).mkString("<br/>"))
-                )
-            )
-        ),
-        head = Some(List(
-            HeadCell(
-                content = Text(messages("declaration.transportInformation.containerId.title"))
+            SummaryListRow(
+                Key(Text(messages("declaration.transportInformation.containerId.title"))),
+                Value(Text(container.id))
             ),
-            HeadCell(
-                content = Text(messages("declaration.seal.summary.heading"))
+            SummaryListRow(
+                Key(Text(messages("declaration.seal.summary.heading"))),
+                Value(HtmlContent(container.seals.map(_.id).mkString("<br/>")))
             )
-        ))
+        )
     ))
 }
 
@@ -82,7 +71,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                containersTable,
+                containersSummary,
                 yesNoRadios(form),
                 saveButtons()
             ))
