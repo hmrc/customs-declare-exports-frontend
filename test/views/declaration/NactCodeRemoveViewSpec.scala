@@ -47,7 +47,7 @@ class NactCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers w
     }
 
     "display National Additional Code label" in {
-      view.getElementsByClass("govuk-summary-list__key").text() mustBe messages("declaration.nationalAdditionalCode.table.header")
+      view.getElementsByClass("govuk-summary-list__key") must containMessageForElements("declaration.nationalAdditionalCode.table.header")
     }
 
     "display Nact code to remove" in {

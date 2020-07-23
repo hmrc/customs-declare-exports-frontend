@@ -47,7 +47,7 @@ class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers 
     }
 
     "display Additional Code label" in {
-      view.getElementsByClass("govuk-summary-list__key").text() mustBe messages("declaration.taricAdditionalCodes.table.header")
+      view.getElementsByClass("govuk-summary-list__key") must containMessageForElements("declaration.taricAdditionalCodes.table.header")
     }
 
     "display Taric code to remove" in {

@@ -50,8 +50,12 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with 
       view.getElementsByTag("h1").text() must be(messages("declaration.seal.remove.title", containerId))
     }
 
+    "display Seal label" in {
+      view.getElementsByClass("govuk-summary-list__key") must containMessageForElements("declaration.seal.summary.heading")
+    }
+
     "display seal to remove" in {
-      view.getElementById("seal-table").text() must include(sealId)
+      view.getElementsByClass("govuk-summary-list__value").text() must include(sealId)
     }
 
     "display 'Back' button that links to 'seal summary' page" in {

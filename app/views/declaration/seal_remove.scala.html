@@ -31,7 +31,7 @@
         pageTitle: pageTitle,
         yesNoRadios: yesNoRadios,
         govukButton: GovukButton,
-        govukTable: GovukTable,
+        govukSummaryList: GovukSummaryList,
         errorSummary: errorSummary,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -39,22 +39,14 @@
 
 @(mode: Mode, form: Form[YesNoAnswer], containerId: String, sealId: String)(implicit request: Request[_], messages: Messages)
 
-@sealsTable = {
-
-    @govukTable(Table(
+@sealsSummary = {
+    @govukSummaryList(SummaryList(
         rows = Seq(
-            Seq(
-                TableRow(
-                    content = Text(sealId)
-                )
+            SummaryListRow(
+                Key(Text(messages("declaration.seal.summary.heading"))),
+                Value(Text(sealId))
             )
-        ),
-        head = Some(List(
-            HeadCell(
-                content = Text(messages("declaration.seal.summary.heading"))
-            )
-        )),
-        attributes = Map("id" -> "seal-table")
+        )
     ))
 }
 
@@ -74,7 +66,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                sealsTable,
+                sealsSummary,
                 yesNoRadios(form),
                 saveButtons()
             ))
