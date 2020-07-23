@@ -17,6 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ItemsSummaryController
+import controllers.util.SaveAndContinue
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
@@ -153,6 +154,8 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     onEveryDeclarationJourney() { request =>
       "call Navigator" in {
 
+        reset(navigator)
+
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
         controller.addFirstItem(Mode.Normal)(postRequest(Json.obj())).futureValue
@@ -168,6 +171,19 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
         status(result) mustBe SEE_OTHER
         thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemId)
+
+        theCacheModelUpdated.items.size mustBe 1
+      }
+
+      "not update cache when save and return" in {
+
+        withNewCaching(aDeclaration(withType(request.declarationType)))
+
+        val body = Seq((SaveAndContinue.toString -> ""))
+
+        controller.addFirstItem(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+
+        verifyTheCacheIsUnchanged
       }
     }
   }
@@ -176,6 +192,8 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
     onEveryDeclarationJourney() { request =>
       "call cache" in {
+
+        reset(mockExportsCacheService)
 
         withNewCaching(aDeclaration(withType(request.declarationType)))
 
@@ -207,6 +225,21 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayAddItemPage(Mode.Normal)
+        }
+      }
+
+      "remove un-used item" when {
+        "there is unused item in cache" in {
+
+          val emptyItem = anItem()
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem), withItem(emptyItem))
+          withNewCaching(cachedData)
+
+          val result = controller.displayItemsSummaryPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          verify(itemsSummaryPage).apply(any(), any(), any(), any())(any(), any())
+          itemsPassedToItemsSummaryView mustBe Seq(exportItem)
         }
       }
     }
