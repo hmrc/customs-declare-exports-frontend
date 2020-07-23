@@ -31,7 +31,7 @@ class DispatchLocationSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.dispatchLocation.inputText.error.empty")
+        form.errors.head.message must equal("declaration.dispatchLocation.inputText.error.empty")
       }
 
       "provided with a value not defined in AllowedDispatchLocations" in {
@@ -39,7 +39,7 @@ class DispatchLocationSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.dispatchLocation.inputText.error.incorrect")
+        form.errors.head.message must equal("declaration.dispatchLocation.inputText.error.incorrect")
       }
     }
 

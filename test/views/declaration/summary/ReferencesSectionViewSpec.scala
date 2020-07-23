@@ -43,7 +43,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
 
       val row = view.getElementsByClass("declarationType-row")
       row must haveSummaryKey(messages("declaration.summary.references.type"))
-      row must haveSummaryValue("Standard")
+      row must haveSummaryValue("Standard declaration")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.references.type.change")
 
@@ -54,7 +54,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
 
       val row = view.getElementsByClass("location-row")
       row must haveSummaryKey(messages("declaration.summary.references.location"))
-      row must haveSummaryValue(messages("site.yes"))
+      row must haveSummaryValue(messages("declaration.summary.references.dispatchlocation.outsideEu"))
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.references.location.change")
 
