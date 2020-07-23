@@ -38,7 +38,7 @@
         govukButton: GovukButton,
         govukRadios: GovukRadios,
         govukDetails : GovukDetails,
-        govukTable : GovukTable,
+        govukSummaryList: GovukSummaryList,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
@@ -48,18 +48,15 @@
 
 @(mode: Mode, form: Form[Boolean], countryToRemove: Country)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
-@routingTable = {
-    @govukTable(Table(
-        rows = Seq(Seq(TableRow(
-            content = Text(countryToRemove.asString()),
-            attributes = Map("id" -> "country-to-remove")
-        ))),
-        head = Some(List(HeadCell(
-            content = Text(messages("declaration.routingCountries.remove.countryHeader")),
-            attributes = Map("id" -> "country-header")
-        ))),
-        firstCellIsHeader = false
-  ))
+@routingSummary = {
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                Key(Text(messages("declaration.routingCountries.remove.countryHeader"))),
+                Value(Text(countryToRemove.asString()))
+            )
+        )
+    ))
 }
 
 @radios = {
@@ -99,7 +96,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                routingTable,
+                routingSummary,
                 radios,
                 saveButtons()
             ))

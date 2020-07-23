@@ -58,12 +58,12 @@ class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "display country header" in {
 
-      view.getElementById("country-header").text() mustBe messages("declaration.routingCountries.remove.countryHeader")
+      view.getElementsByClass("govuk-summary-list__key").text() mustBe messages("declaration.routingCountries.remove.countryHeader")
     }
 
     "display country to remove" in {
 
-      view.getElementById("country-to-remove").text() mustBe country.asString()
+      view.getElementsByClass("govuk-summary-list__value").text() mustBe country.asString()
     }
 
     "display Yes/No radio options" in {
