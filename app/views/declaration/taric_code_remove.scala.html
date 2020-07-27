@@ -33,7 +33,6 @@
         govukRadios: GovukRadios,
         govukButton: GovukButton,
         govukSummaryList : GovukSummaryList,
-        govukTable: GovukTable,
         errorSummary: errorSummary,
         saveButtons: saveButtons,
         yesNoRadios: yesNoRadios,
@@ -42,13 +41,12 @@
 
 @(mode: Mode, itemId: String, code: String, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
 
-@taricCodeTable = {
-    @govukTable(Table(
+@taricCodeSummary = {
+    @govukSummaryList(SummaryList(
         rows = Seq(
-            Seq(
-                TableRow(
-                    content = Text(code)
-                )
+            SummaryListRow(
+                Key(Text(messages("declaration.taricAdditionalCodes.table.header"))),
+                Value(Text(code))
             )
         )
     ))
@@ -70,7 +68,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                taricCodeTable,
+                taricCodeSummary,
                 yesNoRadios(form),
                 saveButtons()
             ))

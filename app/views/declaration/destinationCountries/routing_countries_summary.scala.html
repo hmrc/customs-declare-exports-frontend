@@ -31,6 +31,7 @@
 @import views.html.components.gds.link
 @import views.html.components.gds.sectionHeader
 @import views.html.components.gds.saveButtons
+@import views.html.components.gds.spanVisuallyHidden
 @import views.components.gds.Styles
 @import scala.collection.immutable
 @import play.twirl.api.HtmlFormat
@@ -46,6 +47,7 @@
         govukDetails : GovukDetails,
         govukTable : GovukTable,
         errorSummary: errorSummary,
+        spanVisuallyHidden: spanVisuallyHidden,
         sectionHeader: sectionHeader,
         link: link,
         saveButtons: saveButtons,
@@ -59,11 +61,6 @@
         @govukTable(Table(
             rows = countriesOfRouting.zipWithIndex.map { case (country, index) =>
                 Seq(
-                    TableRow(
-                        content = Text(messages("declaration.routingCountries.summary.table.code")),
-                        classes = "govuk-!-font-weight-bold",
-                        attributes = Map("id" -> s"country_of_routing_code_$index")
-                    ),
                     TableRow(
                         content = Text(country.asString()),
                         attributes = Map("id" -> s"country_of_routing_$index")
@@ -87,7 +84,17 @@
                     )
                 )
             },
-            head = None
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.routingCountries.summary.table.code"))
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
+            ))
         ))
     }
 }

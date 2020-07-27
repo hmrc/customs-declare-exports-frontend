@@ -57,6 +57,40 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
       view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingCountries.summary.header", "2")
     }
 
+    "display table header" in {
+
+      view.getElementsByTag("th").get(0) must containMessage("declaration.routingCountries.summary.table.code")
+    }
+
+    "have visually hidden headers for change and remove links" in {
+
+      view.getElementsByTag("th").get(1) must containMessage("site.change.header")
+      view.getElementsByTag("th").get(2) must containMessage("site.remove.header")
+    }
+
+    "display Country of routing" in {
+      val row = view.getElementsByTag("tr")
+      val country = countries.head.countryName
+
+      row.get(1).getElementById("country_of_routing_0").text() must include(country)
+    }
+
+    "have Change link" in {
+      val row = view.getElementsByTag("tr")
+      val changeLink = row.select(".govuk-link").get(0)
+
+      changeLink must containMessage("site.change", ("declaration.routingCountries.summary.change.hint", "France"))
+      changeLink must haveHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayChangeCountryPage(Mode.Normal, "FR"))
+    }
+
+    "have Remove link" in {
+      val row = view.getElementsByTag("tr")
+      val removeLink = row.select(".govuk-link").get(1)
+
+      removeLink must containMessage("site.remove", ("declaration.routingCountries.summary.remove.hint", "France"))
+      removeLink must haveHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayRemoveCountryPage(Mode.Normal, "FR"))
+    }
+
     "display page question" in {
 
       view.getElementsByClass("govuk-fieldset__legend--m").text() mustBe messages("declaration.routingCountries.summary.question")
