@@ -40,15 +40,15 @@
 @(mode: Mode, form: Form[DispatchLocation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @countriesDetails = {
-    <b>@messages("supplementary.dispatchLocation.summary.euCountries") </b>
+    <b>@messages("declaration.dispatchLocation.summary.euCountries") </b>
     @Countries.euCountries.mkString(", ")
     <br><br>
-    <b>@messages("supplementary.dispatchLocation.summary.euSpecialFiscalTerritories") </b>
+    <b>@messages("declaration.dispatchLocation.summary.euSpecialFiscalTerritories") </b>
     @Countries.euSpecialFiscalTerritories.mkString(", ")
 }
 
 @govukLayout(
-    title = Title("supplementary.dispatchLocation.header", "declaration.summary.locations.header"),
+    title = Title("declaration.dispatchLocation.header", "declaration.summary.locations.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DispatchLocation, mode)))){
 
     @formHelper(action = controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
@@ -60,7 +60,7 @@
                 legend = Some(Legend(
                     content = HtmlContent(
                         headingContent(
-                            messages("supplementary.dispatchLocation.header"),
+                            messages("declaration.dispatchLocation.header"),
                             Some(messages("declaration.summary.locations.header"))
                         )
                     ),
@@ -71,13 +71,15 @@
                 RadioItem(
                     id = Some("OutsideEU"),
                     value = Some(OutsideEU),
-                    content = Text(messages("supplementary.dispatchLocation.inputText.outsideEU")),
+                    content = Text(messages("declaration.dispatchLocation.inputText.outsideEU")),
+                    hint = Some(Hint(content = Text(messages("declaration.dispatchLocation.inputText.outsideEU.hint")))),
                     checked = form("dispatchLocation").value.contains(OutsideEU)
                 ),
                 RadioItem(
                     id = Some("SpecialFiscalTerritory"),
                     value = Some(SpecialFiscalTerritory),
-                    content = Text(messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")),
+                    content = Text(messages("declaration.dispatchLocation.inputText.specialFiscalTerritory")),
+                    hint = Some(Hint(content = Text(messages("declaration.dispatchLocation.inputText.specialFiscalTerritory.hint")))),
                     checked = form("dispatchLocation").value.contains(SpecialFiscalTerritory)
                 )
             ),
@@ -85,7 +87,7 @@
         ))
 
          @govukDetails(Details(
-            summary = Text(messages("supplementary.dispatchLocation.summary.heading")),
+            summary = Text(messages("declaration.dispatchLocation.summary.heading")),
             content = HtmlContent(countriesDetails)
           ))
 

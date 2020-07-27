@@ -36,7 +36,7 @@
                 content = Text(messages("declaration.summary.references.type"))
             ),
             value = Value(
-                content = Text(declarationData.`type`.toString().toLowerCase().capitalize)
+                content = Text(messages(s"declaration.type.${declarationData.`type`.toString().toLowerCase()}"))
             ),
             actions = actions(Actions(
                 items = Seq(
@@ -55,7 +55,7 @@
                     content = Text(messages("declaration.summary.references.location"))
                 ),
                 value = Value(
-                    content = Text(if(dispatchLocation.isOutsideEU) messages("site.yes") else messages("site.no"))
+                    content = Text(if(dispatchLocation.isOutsideEU) messages("declaration.summary.references.dispatchlocation.outsideEu") else messages("site.no"))
                 ),
                 actions = actions(Actions(
                     items = Seq(

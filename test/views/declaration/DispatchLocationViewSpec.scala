@@ -39,11 +39,11 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
   "Dispatch Location" should {
 
     "have correct message keys" in {
-      messages must haveTranslationFor("supplementary.dispatchLocation.header")
-      messages must haveTranslationFor("supplementary.dispatchLocation.inputText.outsideEU")
-      messages must haveTranslationFor("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
-      messages must haveTranslationFor("supplementary.dispatchLocation.inputText.error.empty")
-      messages must haveTranslationFor("supplementary.dispatchLocation.inputText.error.incorrect")
+      messages must haveTranslationFor("declaration.dispatchLocation.header")
+      messages must haveTranslationFor("declaration.dispatchLocation.inputText.outsideEU")
+      messages must haveTranslationFor("declaration.dispatchLocation.inputText.specialFiscalTerritory")
+      messages must haveTranslationFor("declaration.dispatchLocation.inputText.error.empty")
+      messages must haveTranslationFor("declaration.dispatchLocation.inputText.error.incorrect")
     }
   }
 
@@ -66,11 +66,11 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val optionOne = view.getElementsByAttributeValue("for", "OutsideEU")
         optionOne.attr("checked") mustBe empty
-        optionOne.text() mustBe messages("supplementary.dispatchLocation.inputText.outsideEU")
+        optionOne.text() mustBe messages("declaration.dispatchLocation.inputText.outsideEU")
 
         val optionTwo = view.getElementsByAttributeValue("for", "SpecialFiscalTerritory")
         optionTwo.attr("checked") mustBe empty
-        optionTwo.text() mustBe messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
+        optionTwo.text() mustBe messages("declaration.dispatchLocation.inputText.specialFiscalTerritory")
       }
 
       "display 'Back' button" when {
@@ -132,7 +132,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#OutsideEU")
 
-        view must containErrorElementWithMessageKey("supplementary.dispatchLocation.inputText.error.empty")
+        view must containErrorElementWithMessageKey("declaration.dispatchLocation.inputText.error.empty")
       }
 
       "display error if incorrect dispatch is selected" in {
@@ -142,7 +142,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#OutsideEU")
 
-        view must containErrorElementWithMessageKey("supplementary.dispatchLocation.inputText.error.incorrect")
+        view must containErrorElementWithMessageKey("declaration.dispatchLocation.inputText.error.incorrect")
       }
     }
   }
