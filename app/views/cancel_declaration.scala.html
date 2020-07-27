@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.BackButton
 @import views.html.components.gds._
+@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -43,7 +44,7 @@
 ) {
 
     @formHelper(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("changeReason", "noLongerRequired", form.errors))
 
         @pageTitle(messages("cancellation.title"))
 
