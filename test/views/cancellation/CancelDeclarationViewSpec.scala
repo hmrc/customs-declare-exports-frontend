@@ -145,7 +145,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
       "changeReason is empty" in {
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#changeReason")
+        view must containErrorElementWithTagAndHref("a", "#noLongerRequired")
         view must containErrorElementWithMessageKey("cancellation.changeReason.error.wrongValue")
       }
     }
@@ -259,7 +259,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         )
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#changeReason")
+        view must containErrorElementWithTagAndHref("a", "#noLongerRequired")
 
         view must containErrorElementWithMessageKey("cancellation.changeReason.error.wrongValue")
       }

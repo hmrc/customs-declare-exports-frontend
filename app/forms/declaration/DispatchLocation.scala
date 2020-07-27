@@ -36,8 +36,8 @@ object DispatchLocation extends DeclarationPage {
   private val allowedValues = Set(AllowedDispatchLocations.OutsideEU, AllowedDispatchLocations.SpecialFiscalTerritory)
 
   val formMapping: Mapping[DispatchLocation] = Forms.mapping(
-    "dispatchLocation" -> requiredRadio("supplementary.dispatchLocation.inputText.error.empty")
-      .verifying("supplementary.dispatchLocation.inputText.error.incorrect", isContainedIn(allowedValues))
+    "dispatchLocation" -> requiredRadio("declaration.dispatchLocation.inputText.error.empty")
+      .verifying("declaration.dispatchLocation.inputText.error.incorrect", isContainedIn(allowedValues))
   )(DispatchLocation.apply)(DispatchLocation.unapply)
 
   val formId: String = "DispatchLocation"

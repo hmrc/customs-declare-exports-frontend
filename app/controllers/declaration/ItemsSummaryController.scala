@@ -18,6 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import controllers.util.{FormAction, SaveAndReturn}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
@@ -57,15 +58,26 @@ class ItemsSummaryController @Inject()(
   }
 
   def addFirstItem(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    createNewItemInCache()
-      .map(newItem => navigator.continueTo(mode, controllers.declaration.routes.ProcedureCodesController.displayPage(_, newItem.id)))
+    val actionTypeOpt = FormAction.bindFromRequest()
+
+    actionTypeOpt match {
+      case SaveAndReturn => Future.successful(navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage))
+      case _ =>
+        createNewItemInCache()
+          .map(newItem => navigator.continueTo(mode, controllers.declaration.routes.ProcedureCodesController.displayPage(_, newItem.id)))
+    }
   }
 
-  def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (request.cacheModel.items.isEmpty)
-      navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
-    else
-      Ok(itemsSummaryPage(mode, itemSummaryForm, request.cacheModel.items.toList))
+  def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    removeEmptyItems().map(updatedModel => {
+      updatedModel.fold(navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage))(
+        model =>
+          if (model.items.isEmpty)
+            navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
+          else
+            Ok(itemsSummaryPage(mode, itemSummaryForm, model.items.toList))
+      )
+    })
   }
 
   //TODO Should we add validation for POST without items?
@@ -115,6 +127,11 @@ class ItemsSummaryController @Inject()(
           .copy(items = request.cacheModel.items :+ newItem.copy(sequenceId = request.cacheModel.items.size + 1))
       )
       .map(_ => newItem)
+  }
+
+  private def removeEmptyItems()(implicit request: JourneyRequest[AnyContent]) = {
+    val itemsWithAnswers = request.cacheModel.items.filter(ExportItem.containsAnswers)
+    exportsCacheService.update(request.cacheModel.copy(items = itemsWithAnswers))
   }
 
   def displayRemoveItemConfirmationPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

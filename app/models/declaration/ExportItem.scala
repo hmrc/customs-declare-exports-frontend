@@ -78,4 +78,7 @@ case class ExportItem(
 object ExportItem extends DeclarationPage {
 
   implicit val format = Json.format[ExportItem]
+
+  def containsAnswers(item: ExportItem): Boolean = item != ExportItem(id = item.id, sequenceId = item.sequenceId)
+
 }

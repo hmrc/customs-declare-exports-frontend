@@ -23,7 +23,7 @@ object OfficeOfExit {
   implicit val format = Json.format[OfficeOfExit]
 
   def from(officeOfExitOutsideUK: OfficeOfExitOutsideUK): OfficeOfExit =
-    OfficeOfExit(Some(officeOfExitOutsideUK.officeId), Some(AllowedUKOfficeOfExitAnswers.no))
+    OfficeOfExit(Some(officeOfExitOutsideUK.officeId.toUpperCase), Some(AllowedUKOfficeOfExitAnswers.no))
 
   def from(officeOfExitInsideUK: OfficeOfExitInsideUK, existingValue: Option[OfficeOfExit]): OfficeOfExit =
     officeOfExitInsideUK.isUkOfficeOfExit match {

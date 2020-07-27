@@ -17,8 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OfficeOfExitOutsideUkController
-import forms.declaration.Document
-import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit, OfficeOfExitOutsideUK}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -166,6 +165,8 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayPage()
         checkViewInteractions(0)
+
+        theCacheModelUpdated.locations.officeOfExit mustBe (Some(OfficeOfExit(Some("GB123456"), Some(AllowedUKOfficeOfExitAnswers.no))))
       }
     }
 
@@ -174,13 +175,15 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExitOutsideUK("GB123456"))
+        val correctForm = Json.toJson(OfficeOfExitOutsideUK("pl123456"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
         checkViewInteractions(0)
+
+        theCacheModelUpdated.locations.officeOfExit mustBe (Some(OfficeOfExit(Some("PL123456"), Some(AllowedUKOfficeOfExitAnswers.no))))
       }
     }
   }
