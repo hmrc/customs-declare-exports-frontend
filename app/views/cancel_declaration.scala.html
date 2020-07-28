@@ -89,7 +89,7 @@
                     id = Some("duplication"),
                     value = Some(Duplication.toString),
                     content = Text(messages("cancellation.reason.duplication")),
-                    checked = form("changeReason").value.contains(NoLongerRequired.toString)
+                    checked = form("changeReason").value.contains(Duplication.toString)
                 ),
                 RadioItem(
                     id = Some("otherReason"),
