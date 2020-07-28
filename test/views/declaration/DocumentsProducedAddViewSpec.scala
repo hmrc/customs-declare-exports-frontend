@@ -261,7 +261,7 @@ class DocumentsProducedAddViewSpec extends UnitViewSpec with CommonMessages with
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$dateOfValidityKey")
 
-          view must containErrorElementWithMessageKey("dateTime.date.error.outOfRange")
+          view must containErrorElementWithMessageKey("declaration.addDocument.dateOfValidity.error.outOfRange")
         }
 
         "provided with non-existing month and day" in {
@@ -274,7 +274,7 @@ class DocumentsProducedAddViewSpec extends UnitViewSpec with CommonMessages with
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$dateOfValidityKey")
 
-          view must containErrorElementWithMessageKey("dateTime.date.error.format")
+          view must containErrorElementWithMessageKey("declaration.addDocument.dateOfValidity.error.format")
         }
 
         "provided with partial date" in {
@@ -376,7 +376,7 @@ class DocumentsProducedAddViewSpec extends UnitViewSpec with CommonMessages with
         view must containErrorElementWithMessageKey("declaration.addDocument.documentStatus.error")
         view must containErrorElementWithMessageKey("declaration.addDocument.documentStatusReason.error")
         view must containErrorElementWithMessageKey("declaration.addDocument.issuingAuthorityName.error.length")
-        view must containErrorElementWithMessageKey("dateTime.date.error.format")
+        view must containErrorElementWithMessageKey("declaration.addDocument.dateOfValidity.error.format")
         view must containErrorElementWithMessageKey("declaration.addDocument.measurementUnit.error")
         view must containErrorElementWithMessageKey("declaration.addDocument.documentQuantity.error")
       }

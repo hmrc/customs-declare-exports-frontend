@@ -144,7 +144,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
           val input =
             JsObject(Map(dateOfValidityKey -> JsObject(Map(yearKey -> JsString("2000"), monthKey -> JsString("13"), dayKey -> JsString("32")))))
-          val expectedErrors = Seq(FormError(dateOfValidityKey, "dateTime.date.error.format"))
+          val expectedErrors = Seq(FormError(dateOfValidityKey, "declaration.addDocument.dateOfValidity.error.format"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
