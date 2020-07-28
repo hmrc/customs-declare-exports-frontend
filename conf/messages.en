@@ -73,9 +73,6 @@ unauthorised.applied.heading = If you’ve already applied to get access to CDS
 unauthorised.applied.paragraph1 = You can {0}.
 unauthorised.applied.paragraph1.link = check the status of your application (opens in a new window or tab)
 
-
-dateTime.date.error.format = Incorrect date format
-dateTime.date.error.outOfRange = Date range needs to be 2000-01-01 to 2099-12-31
 dateTime.date.day.error.empty = Enter a day
 dateTime.date.month.error.empty = Enter a month
 dateTime.date.year.error.empty = Enter a year
@@ -606,6 +603,8 @@ declaration.addDocument.issuingAuthorityName.hint = This should be specific enou
 declaration.addDocument.issuingAuthorityName.error.length = Enter an issuing authority name, up to 70 characters
 declaration.addDocument.dateOfValidity = Date of validity
 declaration.addDocument.dateOfValidity.hint = Enter the date required for this document. For example, a licence’s expiration date or the proof of origin issue date.
+declaration.addDocument.dateOfValidity.error.format = Date of validity must be a real date
+declaration.addDocument.dateOfValidity.error.outOfRange = Date of validity must be between 1st January 2000 and 31st December 2099
 declaration.addDocument.measurementUnit.header = Measurement unit and qualifier
 declaration.addDocument.measurementUnit.hint = This is required where a quantity and measurement type has to be deducted from a specific document. The measurement unit has to be 3 characters and the qualifier needs to be one. For example, ‘LTR A’.
 declaration.addDocument.measurementUnit.error = Enter a measurement unit in the correct format

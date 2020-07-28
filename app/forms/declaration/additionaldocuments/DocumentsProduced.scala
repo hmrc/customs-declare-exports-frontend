@@ -20,7 +20,7 @@ import forms.DeclarationPage
 import forms.common.Date
 import forms.declaration.additionaldocuments.DocumentWriteOff._
 import play.api.data.Forms._
-import play.api.data.{Form, FormError, Forms}
+import play.api.data.{Form, Forms}
 import play.api.libs.json.{JsValue, Json}
 import utils.validators.forms.FieldValidator._
 
@@ -73,7 +73,9 @@ object DocumentsProduced extends DeclarationPage {
         text()
           .verifying("declaration.addDocument.issuingAuthorityName.error.length", noLongerThan(issuingAuthorityNameMaxLength))
       ),
-      dateOfValidityKey -> optional(Date.mapping),
+      dateOfValidityKey -> optional(
+        Date.mapping("declaration.addDocument.dateOfValidity.error.format", "declaration.addDocument.dateOfValidity.error.outOfRange")
+      ),
       documentWriteOffKey -> optional(DocumentWriteOff.mapping)
     )(form2data)(DocumentsProduced.unapply)
 
@@ -100,21 +102,10 @@ object DocumentsProduced extends DeclarationPage {
 
   def globalErrors(form: Form[DocumentsProduced]): Form[DocumentsProduced] = {
 
-    def validate(docs: DocumentsProduced) =
+    def globalValidate(docs: DocumentsProduced) =
       docs.documentWriteOff.map(wo => DocumentWriteOff.globalErrors(wo)).getOrElse(Seq.empty)
 
-    def withMeasurementUnitGroupErrors(formErrors: Seq[FormError]) =
-      if (formErrors.exists(_.key.endsWith(measurementUnitKey)) && formErrors.exists(_.key.endsWith(qualifierKey))) {
-        val additionalErrors = Seq(
-          FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.addDocument.measurementUnitAndQualifier.error"),
-          FormError(s"$documentWriteOffKey.$qualifierKey", "")
-        )
-        val filteredErrors = formErrors.filter(err => !err.key.endsWith(measurementUnitKey) && !err.key.endsWith(qualifierKey))
-        additionalErrors ++ filteredErrors
-      } else
-        formErrors
-
-    form.copy(errors = withMeasurementUnitGroupErrors(form.errors) ++ form.value.map(validate).getOrElse(Seq.empty))
+    form.copy(errors = form.errors ++ form.value.map(globalValidate).getOrElse(Seq.empty))
   }
 
 }

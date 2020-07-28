@@ -53,21 +53,21 @@
       name = dayField.name,
       label = Some(messages("date.day")),
       value = dayField.value,
-      classes = "govuk-input--width-2"
+      classes = s"govuk-input--width-2 ${if(dateField.hasErrors || dayField.hasErrors) "govuk-input--error"}"
     ),
     InputItem(
       id = s"${fieldName}_$monthKey",
       name = monthField.name,
       label = Some(messages("date.month")),
       value = monthField.value,
-      classes = "govuk-input--width-2"
+      classes = s"govuk-input--width-2 ${if(dateField.hasErrors || monthField.hasErrors) "govuk-input--error"}"
     ),
     InputItem(
       id = s"${fieldName}_$yearKey",
       name = yearField.name,
       label = Some(messages("date.year")),
       value = yearField.value,
-      classes = "govuk-input--width-4"
+      classes = s"govuk-input--width-4 ${if(dateField.hasErrors || yearField.hasErrors) "govuk-input--error"}"
     )
   )
 ))

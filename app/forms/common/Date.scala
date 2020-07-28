@@ -50,14 +50,15 @@ object Date {
   private val isDateInRange: Date => Boolean = date =>
     LocalDate.parse(date.toString).isAfter(dateLowerLimit) && LocalDate.parse(date.toString).isBefore(dateUpperLimit)
 
-  val mapping = Forms
-    .mapping(
-      dayKey -> optional(number()).verifying("dateTime.date.day.error.empty", _.nonEmpty),
-      monthKey -> optional(number()).verifying("dateTime.date.month.error.empty", _.nonEmpty),
-      yearKey -> optional(number()).verifying("dateTime.date.year.error.empty", _.nonEmpty)
-    )(Date.apply)(Date.unapply)
-    .verifying("dateTime.date.error.format", isDateFormatValid)
-    .verifying("dateTime.date.error.outOfRange", date => !isDateFormatValid(date) || isDateInRange(date))
+  def mapping(formatError: String = "dateTime.date.error.format", rangeError: String = "dateTime.date.error.outOfRange") =
+    Forms
+      .mapping(
+        dayKey -> optional(number()).verifying("dateTime.date.day.error.empty", _.nonEmpty),
+        monthKey -> optional(number()).verifying("dateTime.date.month.error.empty", _.nonEmpty),
+        yearKey -> optional(number()).verifying("dateTime.date.year.error.empty", _.nonEmpty)
+      )(Date.apply)(Date.unapply)
+      .verifying(formatError, isDateFormatValid)
+      .verifying(rangeError, date => !isDateFormatValid(date) || isDateInRange(date))
 
-  def form(): Form[Date] = Form(mapping)
+  def form(): Form[Date] = Form(mapping())
 }
