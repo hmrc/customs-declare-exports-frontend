@@ -61,7 +61,7 @@ class DeclarantDetailsController @Inject()(
             updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None)))
               .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarantExporterController.displayPage))
           else
-            Future(Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant()).withNewSession)
+            Future(Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant()))
       )
   }
 
