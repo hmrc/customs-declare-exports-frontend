@@ -28,7 +28,7 @@
         govukButton: GovukButton,
         govukDetails : GovukDetails,
         pageTitle: pageTitle,
-        inputTextUnits: exportsInputTextWithPrefix,
+        currencyInput: currencyInput,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
@@ -51,16 +51,13 @@
     @formHelper(action = routes.StatisticalValueController.submitItemType(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @inputTextUnits(
+        @currencyInput(
             field = form("statisticalValue"),
             labelKey = "declaration.statisticalValue.header",
             labelClass = gdsPageLabel,
             isPageHeading = true,
-            prefixKey = "declaration.statisticalValue.units",
-            inputClass = "currency-prefix govuk-input govuk-input--width-10",
             hintKey = Some("declaration.statisticalValue.header.hint"),
-            prefixHintKey = Some("declaration.statisticalValue.units.hint"),
-            prefixClass = "currency-prefix",
+            currencyHintKey = Some("declaration.statisticalValue.units.hint"),
             sectionHeaderKey = Some("supplementary.items")
         )
 

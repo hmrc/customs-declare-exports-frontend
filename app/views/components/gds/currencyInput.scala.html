@@ -1,0 +1,85 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.helper.FieldElements
+
+@this(sectionHeader: sectionHeader)
+
+@(
+     field: Field,
+     labelKey: String,
+     labelClass: String = "govuk-label--m",
+     isPageHeading: Boolean = false,
+     inputClass: String = "govuk-input govuk-input--width-10",
+     hintKey: Option[String] = None,
+     currencyHintKey: Option[String] = None,
+     sectionHeaderKey: Option[String] = None
+)(implicit messages: Messages)
+
+@inputClasses = @{
+ if(field.hasErrors) s"$inputClass govuk-input--error" else inputClass
+}
+
+@groupClasses = @{
+ if(field.hasErrors) "govuk-form-group govuk-form-group--error" else "govuk-form-group"
+}
+
+@allErrors = @{
+ FieldElements(field.id, field, null, Map.empty, messages).errors
+}
+
+@hint(hintText: Option[String], prefixText: Option[String]) = {
+    @if(hintText.isDefined || prefixText.isDefined){
+        <span id=@{s"${field.id}-hint"}>
+            @prefixText.map{ text =>
+                <span class="govuk-visually-hidden">@text</span>
+            }
+            @hintText.map{ text =>
+                <span class="govuk-hint">@text</span>
+            }
+        </span>
+    }
+}
+
+<div class="@groupClasses" >
+
+    @if(isPageHeading) {
+        @sectionHeaderKey.map( key =>
+            sectionHeader(messages(key))
+        )
+        <h1 class="govuk-label-wrapper">
+    }
+
+    <label class="@{s"govuk-label $labelClass"}" for=@field.id>
+        @messages(labelKey)
+    </label>
+
+    @if(isPageHeading) {
+        </h1>
+    }
+
+    @hint(hintKey.map(messages(_)), currencyHintKey.map(messages(_)))
+
+    @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@error</span> }
+
+    <div class="hmrc-currency-input__wrapper">
+
+        <span class="hmrc-currency-input__unit" aria-hidden="true">£</span>
+        <input class="@inputClasses" id="@field.id" value="@field.value" name="@field.id" type="text"
+            aria-describedby=@{s"${field.id}-hint"} autocomplete="off" inputmode="decimal" />
+
+    </div>
+</div>
