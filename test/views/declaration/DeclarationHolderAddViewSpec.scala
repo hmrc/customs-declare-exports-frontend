@@ -62,7 +62,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
       "display page title" in {
 
-        document.getElementById("title").text() mustBe messages("declaration.declarationHolder.title")
+        document.getElementsByTag("h1").text() mustBe messages("declaration.declarationHolder.title")
       }
 
       "display section header" in {
