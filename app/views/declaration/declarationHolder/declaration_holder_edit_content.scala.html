@@ -20,13 +20,18 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
+@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
 
 @this(
     govukButton: GovukButton,
     govukTable : GovukTable,
     errorSummary: errorSummary,
+    govukFieldset: govukFieldset,
     sectionHeader: sectionHeader,
+    govukHint: govukHint,
     pageTitle: pageTitle,
     exportsInputText: exportsInputText,
     tariffDetails: tariffDetails,
@@ -43,25 +48,31 @@
 
     @sectionHeader(messages("declaration.summary.parties.header"))
 
-    @pageTitle(messages("declaration.declarationHolder.title"))
+    @govukFieldset(Fieldset(
+        legend = Some(Legend(
+            content = Text(messages("declaration.declarationHolder.title")),
+            classes = gdsPageLabel,
+            isPageHeading = true
+        )),
+        html = HtmlFormat.fill(immutable.Seq(
+            govukHint(Hint(content = Text(messages("declaration.declarationHolder.title.hint")))),
 
-    <p class="govuk-body">@messages("declaration.declarationHolder.title.hint")</p>
+            components.fields.field_accessible_autocomplete(
+                field = form("authorisationTypeCode"),
+                label = "declaration.declarationHolder.authorisationCode",
+                labelClass = Some("govuk-label--m"),
+                hintText = Some(messages("declaration.declarationHolder.authorisationCode.hint")),
+                emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
+                items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
+            ),
 
-
-    @components.fields.field_accessible_autocomplete(
-        field = form("authorisationTypeCode"),
-        label = "declaration.declarationHolder.authorisationCode",
-        labelClass = Some("govuk-label--m"),
-        hintText = Some(messages("declaration.declarationHolder.authorisationCode.hint")),
-        emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
-        items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
-    )
-
-    @exportsInputText(
-        field = form("eori"),
-        labelKey = "declaration.declarationHolder.eori",
-        isPageHeading = false
-    )
+            exportsInputText(
+                field = form("eori"),
+                labelKey = "declaration.declarationHolder.eori",
+                isPageHeading = false
+            )
+        ))
+    ))
 
     @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
