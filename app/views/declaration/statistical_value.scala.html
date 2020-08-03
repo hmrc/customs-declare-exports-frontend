@@ -22,6 +22,8 @@
 @import views.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcCurrencyInput
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.currencyinput.CurrencyInput
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -29,6 +31,7 @@
         govukDetails : GovukDetails,
         pageTitle: pageTitle,
         currencyInput: currencyInput,
+        hmrcCurrencyInput: HmrcCurrencyInput,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
@@ -51,15 +54,18 @@
     @formHelper(action = routes.StatisticalValueController.submitItemType(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @currencyInput(
-            field = form("statisticalValue"),
-            labelKey = "declaration.statisticalValue.header",
-            labelClass = gdsPageLabel,
-            isPageHeading = true,
-            hintKey = Some("declaration.statisticalValue.header.hint"),
-            currencyHintKey = Some("declaration.statisticalValue.units.hint"),
-            sectionHeaderKey = Some("supplementary.items")
-        )
+        @hmrcCurrencyInput(CurrencyInput(
+            id = "statisticalValue",
+            name = "statisticalValue",
+            label = Label(
+                content = Text(messages("declaration.statisticalValue.header")),
+                isPageHeading = true
+            ),
+            hint = Some(Hint(
+                content = Text(messages("declaration.statisticalValue.header.hint"))
+            )),
+            classes = "govuk-input--width-10"
+        ))
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
