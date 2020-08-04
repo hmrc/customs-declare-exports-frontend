@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.DispatchLocationController
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations._
+import models.requests.ExportsSessionKeys
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -123,8 +124,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.NotEligibleController.displayNotEligible()
+        session(result).get(ExportsSessionKeys.declarationId) must be(None)
       }
     }
   }

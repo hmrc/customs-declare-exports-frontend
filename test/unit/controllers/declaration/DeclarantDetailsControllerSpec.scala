@@ -20,6 +20,7 @@ import controllers.declaration.DeclarantDetailsController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
+import models.requests.ExportsSessionKeys
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -101,14 +102,29 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to is declarant exporter details page" in {
+    "return 303 (SEE_OTHER) and redirect to is declarant exporter details page" when {
 
-      val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
+      "answer is yes" in {
 
-      val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
 
-      await(result) mustBe aRedirectToTheNextPage
-      thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantExporterController.displayPage()
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantExporterController.displayPage()
+      }
+    }
+
+    "return 303 (SEE_OTHER) and redirect to Not Eligible page" when {
+
+      "answer is no" in {
+
+        val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.no)))
+
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+        session(result).get(ExportsSessionKeys.declarationId) must be(None)
+      }
     }
   }
 }

@@ -21,11 +21,11 @@ import controllers.navigation.Navigator
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import javax.inject.Inject
-import models.requests.JourneyRequest
+import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.dispatch_location
@@ -58,18 +58,18 @@ class DispatchLocationController @Inject()(
         (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(mode, formWithErrors))),
         validDispatchLocation =>
           updateCache(validDispatchLocation)
-            .map(_ => navigator.continueTo(mode, nextPage(validDispatchLocation)))
+            .map(
+              _ =>
+                validDispatchLocation.dispatchLocation match {
+                  case AllowedDispatchLocations.OutsideEU =>
+                    navigator.continueTo(mode, controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage)
+                  case AllowedDispatchLocations.SpecialFiscalTerritory =>
+                    Redirect(controllers.declaration.routes.NotEligibleController.displayNotEligible())
+                      .removingFromSession(ExportsSessionKeys.declarationId)
+              }
+          )
       )
   }
-
-  private def nextPage(providedDispatchLocation: DispatchLocation): Mode => Call =
-    providedDispatchLocation.dispatchLocation match {
-      case AllowedDispatchLocations.OutsideEU =>
-        controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage
-      case AllowedDispatchLocations.SpecialFiscalTerritory =>
-        _ =>
-          controllers.declaration.routes.NotEligibleController.displayNotEligible()
-    }
 
   private def updateCache(formData: DispatchLocation)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(dispatchLocation = Some(formData)))

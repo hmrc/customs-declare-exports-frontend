@@ -20,11 +20,9 @@ import controllers.declaration.NotEligibleController
 import models.DeclarationType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import play.api.data.Form
-import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
+import unit.base.ControllerWithoutFormSpec
 import views.html.declaration.{not_declarant, not_eligible}
 
 class NotEligibleControllerSpec extends ControllerWithoutFormSpec {
@@ -34,7 +32,7 @@ class NotEligibleControllerSpec extends ControllerWithoutFormSpec {
     val notDeclarantPage: not_declarant = mock[not_declarant]
 
     val controller =
-      new NotEligibleController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), notEligiblePage, notDeclarantPage)(ec)
+      new NotEligibleController(mockAuthAction, stubMessagesControllerComponents(), notEligiblePage, notDeclarantPage)(ec)
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
