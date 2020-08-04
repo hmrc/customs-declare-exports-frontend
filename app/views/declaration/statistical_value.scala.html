@@ -22,15 +22,18 @@
 @import views.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcCurrencyInput
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.currencyinput.CurrencyInput
 
 @this(
         govukLayout: gdsMainTemplate,
         govukButton: GovukButton,
         govukDetails : GovukDetails,
         pageTitle: pageTitle,
-        inputTextUnits: exportsInputTextWithPrefix,
+        hmrcCurrencyInput: HmrcCurrencyInput,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
+        headingContent: headingContent,
         saveButtons: saveButtons,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -51,18 +54,25 @@
     @formHelper(action = routes.StatisticalValueController.submitItemType(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @inputTextUnits(
-            field = form("statisticalValue"),
-            labelKey = "declaration.statisticalValue.header",
-            labelClass = gdsPageLabel,
-            isPageHeading = true,
-            prefixKey = "declaration.statisticalValue.units",
-            inputClass = "currency-prefix govuk-input govuk-input--width-10",
-            hintKey = Some("declaration.statisticalValue.header.hint"),
-            prefixHintKey = Some("declaration.statisticalValue.units.hint"),
-            prefixClass = "currency-prefix",
-            sectionHeaderKey = Some("supplementary.items")
-        )
+        @hmrcCurrencyInput(CurrencyInput(
+            id = "statisticalValue",
+            name = "statisticalValue",
+            value = form("statisticalValue").value,
+            label = Label(
+                content = HtmlContent(
+                    headingContent(
+                        messages("declaration.statisticalValue.header"),
+                        Some(messages("supplementary.items")),
+                        classes = "govuk-label--xl"
+                    )
+                )
+            ),
+            hint = Some(Hint(
+                content = Text(messages("declaration.statisticalValue.header.hint"))
+            )),
+            classes = "govuk-input--width-10",
+            errorMessage = form("statisticalValue").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
