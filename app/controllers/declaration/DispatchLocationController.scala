@@ -64,7 +64,7 @@ class DispatchLocationController @Inject()(
                   case AllowedDispatchLocations.OutsideEU =>
                     navigator.continueTo(mode, controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage)
                   case AllowedDispatchLocations.SpecialFiscalTerritory =>
-                    Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant())
+                    Redirect(controllers.declaration.routes.NotEligibleController.displayNotEligible())
                       .removingFromSession(ExportsSessionKeys.declarationId)
               }
           )
