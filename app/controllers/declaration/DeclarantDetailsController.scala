@@ -22,7 +22,7 @@ import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation, EntityDetails}
 import javax.inject.Inject
-import models.requests.JourneyRequest
+import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -61,7 +61,10 @@ class DeclarantDetailsController @Inject()(
             updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None)))
               .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarantExporterController.displayPage))
           else
-            Future(Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant()))
+            Future(
+              Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant())
+                .removingFromSession(ExportsSessionKeys.declarationId)
+          )
       )
   }
 
