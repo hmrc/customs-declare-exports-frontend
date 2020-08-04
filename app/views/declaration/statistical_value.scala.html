@@ -30,10 +30,10 @@
         govukButton: GovukButton,
         govukDetails : GovukDetails,
         pageTitle: pageTitle,
-        currencyInput: currencyInput,
         hmrcCurrencyInput: HmrcCurrencyInput,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
+        headingContent: headingContent,
         saveButtons: saveButtons,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -57,14 +57,21 @@
         @hmrcCurrencyInput(CurrencyInput(
             id = "statisticalValue",
             name = "statisticalValue",
+            value = form("statisticalValue").value,
             label = Label(
-                content = Text(messages("declaration.statisticalValue.header")),
-                isPageHeading = true
+                content = HtmlContent(
+                    headingContent(
+                        messages("declaration.statisticalValue.header"),
+                        Some(messages("supplementary.items")),
+                        classes = "govuk-label--xl"
+                    )
+                )
             ),
             hint = Some(Hint(
                 content = Text(messages("declaration.statisticalValue.header.hint"))
             )),
-            classes = "govuk-input--width-10"
+            classes = "govuk-input--width-10",
+            errorMessage = form("statisticalValue").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
