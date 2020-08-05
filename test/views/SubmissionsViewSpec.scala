@@ -46,6 +46,44 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
   ): Html =
     page(SubmissionsPagesElements(rejectedSubmissions, actionSubmissions, otherSubmissions))(request, messages)
 
+  val actionSubmission =
+    Action(requestType = SubmissionRequest, id = "conv-id", requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2019, 1, 1, 12, 0, 0), zone))
+
+  val actionCancellation =
+    Action(requestType = CancellationRequest, id = "conv-id", requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2021, 6, 1, 12, 0, 0), zone))
+
+  def submissionWithDucr(ducr: String = "ducr") =
+    Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = Some("mrn"), ducr = Some(ducr), actions = Seq(actionSubmission, actionCancellation))
+
+  val submission = submissionWithDucr()
+
+  val acceptedNotification = Notification(
+    actionId = "action-id",
+    mrn = "mrn",
+    dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 12, 30, 0), zone),
+    status = SubmissionStatus.ACCEPTED,
+    errors = Seq.empty,
+    payload = "payload"
+  )
+
+  val rejectedNotification = Notification(
+    actionId = "actionId",
+    mrn = "mrn",
+    dateTimeIssued = ZonedDateTime.now(ZoneId.of("UTC")),
+    status = SubmissionStatus.REJECTED,
+    errors = Seq.empty,
+    payload = ""
+  )
+
+  val actionNotification = Notification(
+    actionId = "actionId",
+    mrn = "mrn",
+    dateTimeIssued = ZonedDateTime.now(ZoneId.of("UTC")),
+    status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED,
+    errors = Seq.empty,
+    payload = ""
+  )
+
   "Submission View" should {
 
     "have proper messages for labels" in {
@@ -58,14 +96,35 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       messages must haveTranslationFor("submissions.status.header")
     }
 
-    val view = createView()
-
     "display same page title as header" in {
       val viewWithMessage = createView()
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
-    "display page messages" in {
+    "display single pagination summary" when {
+      "there are no submissions" in {
+
+        val noDeclarationText = s"${messages("site.pagination.showing.no")} ${messages("submissions.pagination.plural")}"
+        createView().getElementById("other-submissions").getElementsByClass("ceds-pagination__summary").text() mustBe noDeclarationText
+      }
+    }
+
+    "display two pagination summaries" when {
+      "there are submissions" in {
+        val view = createView(otherSubmissions = Paginated(Seq(submission -> Seq(acceptedNotification)), Page(), 1))
+
+        val oneDeclarationText = s"${messages("site.pagination.showing")} 1 ${messages("submissions.pagination.singular")}"
+
+        view
+          .getElementById("other-submissions")
+          .getElementsByClass("ceds-pagination__summary")
+          .text() mustBe s"$oneDeclarationText $oneDeclarationText"
+      }
+    }
+
+    "display table headers" in {
+      val view = createView(otherSubmissions = Paginated(Seq(submission -> Seq(acceptedNotification)), Page(), 1))
+
       tableHead(view)(0) must containMessage("submissions.ucr.header")
       tableHead(view)(1) must containMessage("submissions.lrn.header")
       tableHead(view)(2) must containMessage("submissions.mrn.header")
@@ -74,43 +133,6 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "display page submissions" when {
-      val actionSubmission =
-        Action(requestType = SubmissionRequest, id = "conv-id", requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2019, 1, 1, 12, 0, 0), zone))
-
-      val actionCancellation =
-        Action(requestType = CancellationRequest, id = "conv-id", requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2021, 6, 1, 12, 0, 0), zone))
-
-      def submissionWithDucr(ducr: String = "ducr") =
-        Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = Some("mrn"), ducr = Some(ducr), actions = Seq(actionSubmission, actionCancellation))
-
-      val submission = submissionWithDucr()
-
-      val acceptedNotification = Notification(
-        actionId = "action-id",
-        mrn = "mrn",
-        dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 12, 30, 0), zone),
-        status = SubmissionStatus.ACCEPTED,
-        errors = Seq.empty,
-        payload = "payload"
-      )
-
-      val rejectedNotification = Notification(
-        actionId = "actionId",
-        mrn = "mrn",
-        dateTimeIssued = ZonedDateTime.now(ZoneId.of("UTC")),
-        status = SubmissionStatus.REJECTED,
-        errors = Seq.empty,
-        payload = ""
-      )
-
-      val actionNotification = Notification(
-        actionId = "actionId",
-        mrn = "mrn",
-        dateTimeIssued = ZonedDateTime.now(ZoneId.of("UTC")),
-        status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED,
-        errors = Seq.empty,
-        payload = ""
-      )
 
       "all fields are populated with timestamp before BST" in {
         val view = tab("other", createView(otherSubmissions = Paginated(Seq(submission -> Seq(acceptedNotification)), Page(), 1)))
@@ -203,14 +225,14 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "display 'Back' button that links to 'Choice' page with Submissions selected" in {
-      val backButton = view.getElementById("back-link")
+      val backButton = createView().getElementById("back-link")
 
       backButton must containMessage("site.back")
       backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(Submissions))))
     }
 
     "display 'Start a new declaration' link on page" in {
-      val startButton = view.getElementsByClass("govuk-button").first()
+      val startButton = createView().getElementsByClass("govuk-button").first()
       startButton must containMessage("supplementary.startNewDec")
       startButton.attr("href") mustBe routes.ChoiceController.displayPage().url
     }
