@@ -58,55 +58,59 @@
 
     <h2 class="govuk-heading-l">@messages(title)</h2>
 
-    <div class="govuk-grid-row">
+    @if(tabSubmissions.nonEmpty) {
+        <div class="govuk-grid-row">
         @pagination_summary(
-            singularName =  messages("submissions.pagination.singular"),
+            singularName = messages("submissions.pagination.singular"),
             pluralName = messages("submissions.pagination.plural"),
             pager = tabSubmissions
         )
-    </div>
+        </div>
 
-    @govukTable(Table(
-        attributes = Map("id" -> s"submissions-tab-$id"),
-        rows = tabSubmissions.currentPageElements.zipWithIndex.map{ case((submission, notifications), index) =>
-            Seq(
-                TableRow(
-                    content = ucrLink(submission),
-                    classes = "govuk-table__cell_break-all",
-                    attributes = Map("id" -> s"submission-tab-$id-row$index-ucr")
-                ),
-                TableRow(
-                    content = Text(submission.lrn),
-                    classes = "govuk-table__cell_break-all",
-                    attributes = Map("id" -> s"submission-tab-$id-row$index-lrn")
-                ),
-                TableRow(
-                    content = Text(submission.mrn.getOrElse("")),
-                    classes = "govuk-table__cell_break-all",
-                    attributes = Map("id" -> s"submission-tab-$id-row$index-mrn")
-                ),
-                TableRow(
-                    content = Text(
-                        submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp.withZoneSameInstant(ZoneId.of("Europe/London"))).map(ViewDates.formatDateAtTime).getOrElse("")
+
+        @govukTable(Table(
+            attributes = Map("id" -> s"submissions-tab-$id"),
+            rows = tabSubmissions.currentPageElements.zipWithIndex.map { case ((submission, notifications), index) =>
+                Seq(
+                    TableRow(
+                        content = ucrLink(submission),
+                        classes = "govuk-table__cell_break-all",
+                        attributes = Map("id" -> s"submission-tab-$id-row$index-ucr")
                     ),
-                    attributes = Map("id" -> s"submission-tab-$id-row$index-dateAndTime")
-                ),
-                TableRow(
-                    content = Text(
-                        SubmissionStatus.format(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))
+                    TableRow(
+                        content = Text(submission.lrn),
+                        classes = "govuk-table__cell_break-all",
+                        attributes = Map("id" -> s"submission-tab-$id-row$index-lrn")
                     ),
-                    attributes = Map("id" -> s"submission-tab-$id-row$index-status")
+                    TableRow(
+                        content = Text(submission.mrn.getOrElse("")),
+                        classes = "govuk-table__cell_break-all",
+                        attributes = Map("id" -> s"submission-tab-$id-row$index-mrn")
+                    ),
+                    TableRow(
+                        content = Text(
+                            submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp.withZoneSameInstant(ZoneId.of("Europe/London"))).map(ViewDates.formatDateAtTime).getOrElse("")
+                        ),
+                        attributes = Map("id" -> s"submission-tab-$id-row$index-dateAndTime")
+                    ),
+                    TableRow(
+                        content = Text(
+                            SubmissionStatus.format(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))
+                        ),
+                        attributes = Map("id" -> s"submission-tab-$id-row$index-status")
+                    )
                 )
-            )
-        },
-        head = Some(List(
-            headCell("ucr"),
-            headCell("lrn"),
-            headCell("mrn"),
-            headCell("dateAndTime"),
-            headCell("status")
+            },
+            head = Some(List(
+                headCell("ucr"),
+                headCell("lrn"),
+                headCell("mrn"),
+                headCell("dateAndTime"),
+                headCell("status")
+            ))
         ))
-    ))
+
+    }
 
     <div class="govuk-grid-row">
         @pagination(
