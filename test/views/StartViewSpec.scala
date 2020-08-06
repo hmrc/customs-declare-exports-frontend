@@ -43,7 +43,7 @@ class StartViewSpec extends UnitViewSpec with Injector {
       messages must haveTranslationFor("startPage.useThisServiceTo.listItem.4")
       messages must haveTranslationFor("startPage.beforeYouStart.header")
       messages must haveTranslationFor("startPage.beforeYouStart.line.1")
-      messages must haveTranslationFor("startPage.beforeYouStart.line.2")
+      messages must haveTranslationFor("startPage.beforeYouStart.line.1.link")
       messages must haveTranslationFor("startPage.informationYouNeed.header")
       messages must haveTranslationFor("startPage.informationYouNeed.line.1")
       messages must haveTranslationFor("startPage.informationYouNeed.listItem.1")
@@ -130,15 +130,14 @@ class StartViewSpec extends UnitViewSpec with Injector {
 
       view.getElementById("before-you-start") must containMessage("startPage.beforeYouStart.header")
 
-      view.getElementById("before-you-start-element-1") must containMessage("startPage.beforeYouStart.line.1")
-      view.getElementById("before-you-start-element-2") must containMessage("startPage.beforeYouStart.line.2")
+      view.getElementById("before-you-start-element-1").text() must include(messages("startPage.beforeYouStart.line.1", "EORI"))
     }
 
     "display 'Information you need' section" in {
 
       view.getElementById("information-you-need") must containMessage("startPage.informationYouNeed.header")
 
-      view.getElementsByClass("govuk-body").get(3) must containMessage("startPage.informationYouNeed.line.1")
+      view.getElementsByClass("govuk-body").get(2) must containMessage("startPage.informationYouNeed.line.1")
 
       val informationYouNeedList = view.getElementsByClass("govuk-list--bullet").get(1)
 
