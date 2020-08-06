@@ -53,7 +53,7 @@ class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "display page header" in {
 
-      view.getElementById("section-header").text() must include(messages("declaration.routingCountries.remove.heading"))
+      view.getElementById("section-header").text() must include(messages("declaration.section.3"))
     }
 
     "display country header" in {

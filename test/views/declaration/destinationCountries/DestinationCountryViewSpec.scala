@@ -58,7 +58,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
       s"display page heading for ${request.declarationType}" in {
 
-        view(request).getElementById("section-header").text() must include(messages("declaration.destinationCountry.heading"))
+        view(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
       }
 
       s"display 'Save and continue' button for ${request.declarationType}" in {

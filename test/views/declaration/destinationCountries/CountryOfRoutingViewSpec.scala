@@ -65,7 +65,7 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
 
       s"have page heading for ${request.declarationType}" in {
 
-        firstRoutingView(request).getElementById("section-header").text() must include(messages("declaration.routingCountry.heading"))
+        firstRoutingView(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
       }
 
       s"display back button that links to 'Country of Routing question' page  for ${request.declarationType}" in {

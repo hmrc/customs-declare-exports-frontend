@@ -45,7 +45,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
     "have section header" in {
 
-      view.getElementById("section-header").text() must include(messages("declaration.routingQuestion.heading"))
+      view.getElementById("section-header").text() must include(messages("declaration.section.3"))
     }
 
     "have page question" in {

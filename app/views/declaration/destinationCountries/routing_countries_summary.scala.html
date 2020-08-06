@@ -129,14 +129,14 @@
 
 
 @govukLayout(
-    title = Title("declaration.routingCountries.summary.title", "declaration.routingCountries.summary.heading"),
+    title = Title("declaration.routingCountries.summary.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingQuestionPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submit(mode), 'autoComplete -> "off") {
 
         @errorSummary(radioGroupErrors("answer", "Yes", form.errors))
 
-        @sectionHeader(messages("declaration.routingCountries.summary.heading"))
+        @sectionHeader(messages("declaration.section.3"))
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.routingCountries.summary.header", countriesOfRouting.size)),

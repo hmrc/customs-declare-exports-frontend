@@ -49,7 +49,7 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
 
     "display page heading" in {
 
-      view.getElementById("section-header").text() must include(messages("declaration.routingCountries.summary.heading"))
+      view.getElementById("section-header").text() must include(messages("declaration.section.3"))
     }
 
     "display page title for the table" in {
