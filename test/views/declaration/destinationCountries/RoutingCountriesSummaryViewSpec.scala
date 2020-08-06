@@ -52,9 +52,20 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
       view.getElementById("section-header").text() must include(messages("declaration.routingCountries.summary.heading"))
     }
 
-    "display page title for the table" in {
+    "display page title for the table" when {
 
-      view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingCountries.summary.header", "2")
+      "there is 1 country added" in {
+
+        val countries = Seq(Country("Poland", "PL"))
+        val view = routingCountriesSummaryPage(Mode.Normal, form, countries)(journeyRequest(), messages)
+
+        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingCountries.summary.header")
+      }
+
+      "there are 2 countries added" in {
+
+        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingCountries.summary.header.plural", "2")
+      }
     }
 
     "display table header" in {

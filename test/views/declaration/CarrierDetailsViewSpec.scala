@@ -49,7 +49,6 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
     "have correct messages" in {
 
       messages must haveTranslationFor("declaration.carrier.title")
-      messages must haveTranslationFor("declaration.carrier.title.hint")
       messages must haveTranslationFor("declaration.carrier.eori.info")
       messages must haveTranslationFor("declaration.carrier.address.info")
     }
