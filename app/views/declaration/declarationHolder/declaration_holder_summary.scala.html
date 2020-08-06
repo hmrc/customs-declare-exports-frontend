@@ -49,9 +49,9 @@
 
 @title = @{
     if(holders.size == 1)
-        Title("declaration.declarationHolders.table.heading", "declaration.summary.parties.header")
+        Title("declaration.declarationHolders.table.heading", "declaration.section.2")
     else
-        Title("declaration.declarationHolders.table.multiple.heading", "declaration.summary.parties.header", holders.size.toString)
+        Title("declaration.declarationHolders.table.multiple.heading", "declaration.section.2", holders.size.toString)
 }
 
 @header = @{
@@ -118,7 +118,7 @@
     @formHelper(action = DeclarationHolderController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("declaration.summary.parties.header"))
+        @sectionHeader(messages("declaration.section.2"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

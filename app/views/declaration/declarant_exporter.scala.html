@@ -40,7 +40,7 @@
 @(mode: Mode, form: Form[DeclarantIsExporter])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.declarant.exporter.title"),
+    title = Title("declaration.declarant.exporter.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantIsExporter, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(mode), 'autoComplete -> "off") {
@@ -53,7 +53,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.declarant.exporter.title"),
-                            Some(messages("declaration.summary.parties.header"))
+                            Some(messages("declaration.section.2"))
                         )
                     ),
                     classes = gdsPageLegend

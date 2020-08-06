@@ -49,9 +49,9 @@
 
 @title = @{
     if(actors.size == 1)
-        Title("declaration.additionalActors.table.heading", "declaration.summary.parties.header")
+        Title("declaration.additionalActors.table.heading", "declaration.section.2")
     else
-        Title("declaration.additionalActors.table.multiple.heading", "declaration.summary.parties.header", actors.size.toString)
+        Title("declaration.additionalActors.table.multiple.heading", "declaration.section.2", actors.size.toString)
 }
 
 @header = @{
@@ -109,7 +109,7 @@
     @formHelper(action = AdditionalActorsSummaryController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("declaration.summary.parties.header"))
+        @sectionHeader(messages("declaration.section.2"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

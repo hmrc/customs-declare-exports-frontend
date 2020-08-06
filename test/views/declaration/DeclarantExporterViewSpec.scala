@@ -61,7 +61,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
 
       "display section header" in {
 
-        createView().getElementById("section-header") must containMessage("declaration.summary.parties.header")
+        createView().getElementById("section-header") must containMessage("declaration.section.2")
       }
 
       "display radio button with Yes option" in {

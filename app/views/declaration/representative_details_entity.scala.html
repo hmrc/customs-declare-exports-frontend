@@ -36,7 +36,7 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 @tariffBody = { @Html(messages("declaration.representative-entity.help-item", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.representative.entity.title"),
+    title = Title("declaration.representative.entity.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RepresentativeEntity, mode)))) {
 
     @formHelper(action = RepresentativeEntityController.submitForm(mode), 'autoComplete -> "off") {
@@ -46,7 +46,7 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
             field = form("details.eori"),
             labelKey = "declaration.representative.entity.title",
             isPageHeading = true,
-            sectionHeaderKey = Some("declaration.summary.parties.header")
+            sectionHeaderKey = Some("declaration.section.2")
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

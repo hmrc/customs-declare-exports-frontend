@@ -62,7 +62,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
       "display section header" in {
 
-        createView(form(request.declarationType)).getElementById("section-header") must containMessage("declaration.summary.parties.header")
+        createView(form(request.declarationType)).getElementById("section-header") must containMessage("declaration.section.2")
       }
 
       "display radio button with Yes option" in {

@@ -56,13 +56,13 @@
 }
 
 @govukLayout(
-    title = Title("declaration.declarationHolder.remove.title", "declaration.summary.parties.header"),
+    title = Title("declaration.declarationHolder.remove.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), DeclarationHolderController.displayPage(mode)))) {
 
     @formHelper(action = DeclarationHolderRemoveController.submitForm(mode, holder.id), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.2"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
