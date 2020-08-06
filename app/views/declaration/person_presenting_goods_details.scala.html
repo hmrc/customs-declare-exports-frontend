@@ -48,9 +48,9 @@
       @exportsInputText(
         field = form(fieldName),
         labelKey = "declaration.personPresentingGoodsDetails.title",
-        sectionHeaderKey = Some(messages("declaration.section.2")),
         isPageHeading = true,
-        headingClasses = gdsPageLabel
+        headingClasses = gdsPageLabel,
+        sectionHeaderKey = Some("declaration.section.2")
       )
 
       @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
