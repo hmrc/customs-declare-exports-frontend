@@ -52,7 +52,7 @@
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.taricAdditionalCodes.header.tradeTariff.link")</a>}
 
 @govukLayout(
-    title = Title("declaration.taricAdditionalCodes.addfirst.header", "supplementary.items"),
+    title = Title("declaration.taricAdditionalCodes.addfirst.header", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TaricCodeFirst, mode, ItemId(itemId))))) {
 
     @formHelper(action = TaricCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
@@ -65,7 +65,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.taricAdditionalCodes.addfirst.header"),
-                            Some(messages("supplementary.items"))
+                            Some(messages("declaration.section.5"))
                         )
                     ),
                     classes = gdsPageLegend

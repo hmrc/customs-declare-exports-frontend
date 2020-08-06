@@ -30,7 +30,7 @@
 @(mode: Mode, itemId: String, form: Form[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.additionalInformation.title", "supplementary.items"),
+    title = Title("declaration.additionalInformation.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalInformation, mode, ItemId(itemId))))) {
 
     @formHelper(action = AdditionalInformationAddController.submitForm(mode, itemId), 'autoComplete -> "off") {

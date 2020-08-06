@@ -124,7 +124,7 @@
 }
 
 @govukLayout(
-    title = Title(titleMessageKey, "supplementary.items", items.length.toString),
+    title = Title(titleMessageKey, "declaration.section.5", items.length.toString),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExportItem, mode))),
     useCustomContentWidth = true) {
 
@@ -132,7 +132,7 @@
 
         @errorSummary(yesNoErrors(itemsErrors ++ form.errors))
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages(titleMessageKey, items.length)),

@@ -45,14 +45,14 @@
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.tradeTariff.link")</a>}
 
 @govukLayout(
-    title = Title("declaration.nationalAdditionalCode.addnext.header", "supplementary.items"),
+    title = Title("declaration.nationalAdditionalCode.addnext.header", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCode, mode, ItemId(itemId))))) {
 
     @formHelper(action = NactCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
       @errorSummary(form.errors)
 
-      @sectionHeader(messages("supplementary.items"))
+      @sectionHeader(messages("declaration.section.5"))
 
       @exportsInputText(
         field = form(nactCodeKey),

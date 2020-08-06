@@ -53,9 +53,9 @@
 
 @title = @{
     if(documents.size == 1)
-        Title("declaration.addDocument.table.heading", "supplementary.items")
+        Title("declaration.addDocument.table.heading", "declaration.section.5")
     else
-        Title("declaration.addDocument.table.multiple.heading", "supplementary.items", documents.size.toString)
+        Title("declaration.addDocument.table.multiple.heading", "declaration.section.5", documents.size.toString)
 }
 
 @header = @{
@@ -133,7 +133,7 @@
 
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

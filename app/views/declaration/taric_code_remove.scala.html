@@ -53,13 +53,13 @@
 }
 
 @govukLayout(
-    title = Title("declaration.taricAdditionalCodes.remove.header", "supplementary.items"),
+    title = Title("declaration.taricAdditionalCodes.remove.header", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TaricCodeSummaryController.displayPage(mode, itemId)))) {
 
     @formHelper(action = TaricCodeRemoveController.submitForm(mode, itemId, code), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

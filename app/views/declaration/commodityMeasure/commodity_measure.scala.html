@@ -45,13 +45,13 @@
 @tariffBody = { @components.tariff_body_partial(messages("declaration.type.commodityMeasureListItemOne"), messages("declaration.type.commodityMeasureListItemTwo"), messages("declaration.type.commodityMeasureListItemThree"))(tariffBodyDesc)}
 
 @govukLayout(
-    title = Title("declaration.commodityMeasure.title", "supplementary.items"),
+    title = Title("declaration.commodityMeasure.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CommodityMeasure, mode, ItemId(itemId))))) {
 
     @formHelper(action = CommodityMeasureController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
         @pageTitle(messages("declaration.commodityMeasure.title"))
 
         @{

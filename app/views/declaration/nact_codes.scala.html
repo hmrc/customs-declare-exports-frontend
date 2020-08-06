@@ -57,9 +57,9 @@
 
 @title = @{
   if(nactCodes.size == 1)
-        Title("declaration.nationalAdditionalCode.header.singular", "supplementary.items")
+        Title("declaration.nationalAdditionalCode.header.singular", "declaration.section.5")
   else
-        Title("declaration.nationalAdditionalCode.header.plural", "supplementary.items", nactCodes.size.toString)
+        Title("declaration.nationalAdditionalCode.header.plural", "declaration.section.5", nactCodes.size.toString)
 }
 
 @header = @{
@@ -106,7 +106,7 @@
 
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

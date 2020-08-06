@@ -59,9 +59,9 @@
 
 @title = @{
     if(taricCodes.size == 1)
-        Title("declaration.taricAdditionalCodes.header.singular", "supplementary.items")
+        Title("declaration.taricAdditionalCodes.header.singular", "declaration.section.5")
     else
-        Title("declaration.taricAdditionalCodes.header.plural", "supplementary.items", taricCodes.size.toString)
+        Title("declaration.taricAdditionalCodes.header.plural", "declaration.section.5", taricCodes.size.toString)
 }
 
 @header = @{
@@ -108,7 +108,7 @@
 
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

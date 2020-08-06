@@ -91,13 +91,13 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 }
 
 @govukLayout(
-    title = Title("declaration.addDocument.remove.title", "supplementary.items"),
+    title = Title("declaration.addDocument.remove.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), DocumentsProducedController.displayPage(mode, itemId)))) {
 
     @formHelper(action = DocumentsProducedRemoveController.submitForm(mode, itemId, documentId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

@@ -31,7 +31,7 @@
 
 
 @govukLayout(
-    title = Title("declaration.addDocument.title", "supplementary.items"),
+    title = Title("declaration.addDocument.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentsProduced, mode, ItemId(itemId))))) {
 
     @formHelper(action = DocumentsProducedAddController.submitForm(mode, itemId), 'autoComplete -> "off") {

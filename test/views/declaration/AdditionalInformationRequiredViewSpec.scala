@@ -61,7 +61,7 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
       }
 
       "display section header" in {
-        createView(form(request.declarationType)).getElementById("section-header") must containMessage("supplementary.items")
+        createView(form(request.declarationType)).getElementById("section-header") must containMessage("declaration.section.5")
       }
 
       "display radio button with Yes option" in {

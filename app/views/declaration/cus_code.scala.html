@@ -55,7 +55,7 @@
 @ecicsToolLink = {<a target="_blank" href=@appConfig.ecicsToolUrl>@messages("declaration.cusCode.header.ecicsTool.link")</a>}
 
 @govukLayout(
-    title = Title("declaration.cusCode.header", "supplementary.items"),
+    title = Title("declaration.cusCode.header", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CusCode, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.CusCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
@@ -68,7 +68,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.cusCode.header"),
-                            Some(messages("supplementary.items"))
+                            Some(messages("declaration.section.5"))
                         )
                     ),
                     classes = gdsPageLegend

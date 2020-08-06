@@ -45,14 +45,14 @@
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.taricAdditionalCodes.header.tradeTariff.link")</a>}
 
 @govukLayout(
-    title = Title("declaration.taricAdditionalCodes.addnext.header", "supplementary.items"),
+    title = Title("declaration.taricAdditionalCodes.addnext.header", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TaricCode, mode, ItemId(itemId))))) {
 
     @formHelper(action = TaricCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
       @errorSummary(form.errors)
 
-      @sectionHeader(messages("supplementary.items"))
+      @sectionHeader(messages("declaration.section.5"))
 
       @exportsInputText(
           field = form(taricCodeKey),

@@ -72,14 +72,14 @@
 }
 
 @govukLayout(
-    title = Title("declaration.procedureCodes.title", "supplementary.items"),
+    title = Title("declaration.procedureCodes.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ProcedureCodes, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.ProcedureCodesController.submitProcedureCodes(mode, itemId), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

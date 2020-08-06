@@ -42,7 +42,7 @@
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.additionalInformationRequired.hint.link")</a>}
 
 @govukLayout(
-    title = Title("declaration.additionalInformationRequired.title", "supplementary.items"),
+    title = Title("declaration.additionalInformationRequired.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalInformationRequired, mode, ItemId(itemId))))) {
 
     @formHelper(action = controllers.declaration.routes.AdditionalInformationRequiredController.submitForm(mode, (itemId)), 'autoComplete -> "off") {
@@ -55,7 +55,7 @@
                       content = HtmlContent(
                           headingContent(
                               messages("declaration.additionalInformationRequired.title"),
-                              Some(messages("supplementary.items"))
+                              Some(messages("declaration.section.5"))
                           )
                       ),
                       classes = gdsPageLegend
