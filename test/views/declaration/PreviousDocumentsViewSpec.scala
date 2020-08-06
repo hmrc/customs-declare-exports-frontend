@@ -69,7 +69,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.previousDocuments.heading")
+        view.getElementById("section-header") must containMessage("declaration.section.4")
       }
 
       "display two radio buttons with description (not selected)" in {

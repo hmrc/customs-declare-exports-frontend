@@ -54,7 +54,7 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.summary.locations.header")
+        view.getElementById("section-header") must containMessage("declaration.section.3")
       }
 
       "display office of exit outside UK question" in {

@@ -61,7 +61,7 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
     onEveryDeclarationJourney() { implicit request =>
       "display section header" in {
 
-        createView().getElementById("section-header") must containMessage("declaration.items")
+        createView().getElementById("section-header") must containMessage("declaration.section.4")
       }
 
       "display same page title as header" in {

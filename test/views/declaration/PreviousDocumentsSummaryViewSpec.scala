@@ -62,7 +62,7 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
     onEveryDeclarationJourney() { implicit request =>
       "display section header" in {
 
-        createView().getElementById("section-header") must containMessage("declaration.items")
+        createView().getElementById("section-header") must containMessage("declaration.section.4")
       }
 
       "display singular header" in {

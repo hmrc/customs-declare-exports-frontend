@@ -47,13 +47,13 @@
 
 
 @govukLayout(
-    title = Title("declaration.invoice.details.title", "declaration.invoice.details.header"),
+    title = Title("declaration.invoice.details.title", "declaration.section.4"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TotalNumberOfItems, mode)))) {
 
     @formHelper(action = TotalNumberOfItemsController.saveNoOfItems(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.invoice.details.header"))
+        @sectionHeader(messages("declaration.section.4"))
         @pageTitle(messages("declaration.invoice.details.title"))
 
         @exportsInputText(

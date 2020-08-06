@@ -30,7 +30,7 @@
 @(mode: Mode, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.previousDocuments.title", "declaration.previousDocuments.heading"),
+    title = Title("declaration.previousDocuments.title", "declaration.section.4"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(Document, mode)))
 ) {
 

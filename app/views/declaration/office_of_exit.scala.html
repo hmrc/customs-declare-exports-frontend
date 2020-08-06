@@ -55,7 +55,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.officeOfExit.title", "declaration.summary.locations.header"),
+    title = Title("declaration.officeOfExit.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExitInsideUK, mode)))){
 
     @formHelper(action = controllers.declaration.routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
@@ -68,7 +68,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.officeOfExit.title"),
-                            Some(messages("declaration.summary.locations.header"))
+                            Some(messages("declaration.section.3"))
                         )
                     ),
                     classes = gdsPageLegend

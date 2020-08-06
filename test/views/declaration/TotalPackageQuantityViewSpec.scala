@@ -52,7 +52,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         }
 
         "display section header" in {
-          view.getElementById("section-header") must containMessage("supplementary.items")
+          view.getElementById("section-header") must containMessage("declaration.section.4")
         }
 
         "display header" in {

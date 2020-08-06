@@ -62,7 +62,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.invoice.details.header")
+        view.getElementById("section-header") must containMessage("declaration.section.4")
       }
 
       "display header" in {

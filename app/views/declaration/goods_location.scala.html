@@ -42,7 +42,7 @@
 
 
 @govukLayout(
-    title = Title("declaration.goodsLocation.title", "declaration.summary.locations.header"),
+    title = Title("declaration.goodsLocation.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(GoodsLocationForm, mode)))) {
 
     @formHelper(action = LocationController.saveLocation(mode), 'autoComplete -> "off") {
@@ -55,7 +55,7 @@
             hintKey = Some("declaration.goodsLocation.hint"),
             isPageHeading = true,
             headingClasses = gdsPageLabel,
-            sectionHeaderKey = Some("declaration.summary.locations.header")
+            sectionHeaderKey = Some("declaration.section.3")
         )
 
 

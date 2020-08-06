@@ -62,7 +62,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.natureOfTransaction.header")
+        view.getElementById("section-header") must containMessage("declaration.section.4")
       }
 
       "display radio button with Sale option" in {

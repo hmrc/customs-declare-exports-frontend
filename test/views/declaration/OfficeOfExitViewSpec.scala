@@ -65,7 +65,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.summary.locations.header")
+        view.getElementById("section-header") must containMessage("declaration.section.3")
       }
 
       "display office of exit question" in {

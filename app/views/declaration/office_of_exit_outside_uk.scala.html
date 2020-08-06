@@ -35,13 +35,13 @@
 @(mode: Mode, form: Form[OfficeOfExitOutsideUK])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.officeOfExitOutsideUk.title", "declaration.summary.locations.header"),
+    title = Title("declaration.officeOfExitOutsideUk.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExitOutsideUK, mode)))){
 
     @formHelper(action = controllers.declaration.routes.OfficeOfExitOutsideUkController.saveOffice(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.summary.locations.header"))
+        @sectionHeader(messages("declaration.section.3"))
 
         @exportsInputText(
             field = form("officeId"),
