@@ -42,7 +42,7 @@
 @tariffBody = { @Html(messages("declaration.type.warehouseInformationSummaryText", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.warehouse.identification.optional.title", "declaration.warehouse.identification.sectionHeader"),
+    title = Title("declaration.warehouse.identification.optional.title", "declaration.section.6"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(WarehouseIdentification, mode)))) {
 
     @formHelper(action = routes.WarehouseIdentificationController.saveIdentificationNumber(mode), 'autoComplete -> "off") {
@@ -55,7 +55,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.warehouse.identification.optional.title"),
-                            Some(messages("declaration.warehouse.identification.sectionHeader"))
+                            Some(messages("declaration.section.6"))
                         )
                     ),
                     classes = gdsPageLegend

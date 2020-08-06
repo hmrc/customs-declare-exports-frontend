@@ -100,14 +100,14 @@
 @tariffBody = { @Html(messages("declaration.type.fiscalInformationSummaryText", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.additionalFiscalReferences.title", "declaration.fiscalInformation.header"),
+    title = Title("declaration.additionalFiscalReferences.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalFiscalReference, mode, ItemId(itemId))))
     ) {
 
     @formHelper(action = routes.AdditionalFiscalReferencesController.saveReferences(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.fiscalInformation.header"))
+        @sectionHeader(messages("declaration.section.5"))
 
 
         @govukFieldset(Fieldset(

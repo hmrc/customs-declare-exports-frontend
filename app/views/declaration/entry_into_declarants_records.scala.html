@@ -40,11 +40,13 @@
 @(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.entryIntoDeclarantRecords.title"),
+    title = Title("declaration.entryIntoDeclarantRecords.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(EntryIntoDeclarantsRecords, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.submitForm(mode), 'autocomplete -> "off") {
       @errorSummary(radioGroupErrors(fieldName, "answer_yes", form.errors))
+
+      @sectionHeader(messages("declaration.section.2"))
 
       @govukRadios(Radios(
         name = fieldName,
