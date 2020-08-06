@@ -32,7 +32,6 @@ import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
 import uk.gov.hmrc.play.views.html.layouts._
 import views.html.layouts.GovUkTemplate
-import views.html.{govuk_wrapper, main_template}
 import views.html.components.gds._
 
 import scala.concurrent.ExecutionContext
@@ -96,20 +95,6 @@ trait Stubs {
   )
 
   private val footer: Footer = new Footer(new AssetsConfig(minimalConfiguration))
-
-  val govukWrapper: govuk_wrapper = new govuk_wrapper(
-    head,
-    new HeaderNav(),
-    footer,
-    new ServiceInfo(),
-    new MainContentHeader(),
-    new MainContent(),
-    new FooterLinks(),
-    new GovUkTemplate(),
-    minimalAppConfig
-  )
-
-  val mainTemplate: main_template = new main_template(govukWrapper, new Sidebar(), new Article())
 
   val gdsGovukLayout = new GovukLayout(
     new components.GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink()),
