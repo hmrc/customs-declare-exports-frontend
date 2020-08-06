@@ -335,9 +335,8 @@ declaration.carrier-details.help-item2 = Carrier’s name and business address, 
 declaration.carrier.error.addressAndEori = Enter only one of EORI or address
 
 
-declaration.representative.agent.title = Are you representing another agent?
-declaration.representative.agent.hint = This applies if you are completing this declaration on behalf of another agent.
-declaration.representative.agent.error = Select yes if you are representing another agent
+declaration.representative.agent.title = Are you completing this declaration on behalf of another agent?
+declaration.representative.agent.error = Select yes if you are completing this declaration on behalf of another agent
 declaration.representative.entity.title = What is the first representative’s EORI number?
 declaration.representative-entity.help-item = Go to data element 3/20 Representative Identification Number in the {0}
 declaration.representative.status.title = What type of representation will be used?
