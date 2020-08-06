@@ -43,13 +43,13 @@
 @tariffBody = { @Html(messages("declaration.transportInformation.transportPayment.paymentMethod.help.bodyText", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.transportInformation.transportPayment.paymentMethod"),
+    title = Title("declaration.transportInformation.transportPayment.paymentMethod", "declaration.section.6"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TransportPayment, mode)))) {
 
     @formHelper(action = TransportPaymentController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.transportInformation.transportPayment.section"))
+        @sectionHeader(messages("declaration.section.6"))
 
         @govukRadios(Radios(
             name = "paymentMethod",

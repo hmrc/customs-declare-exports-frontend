@@ -49,6 +49,10 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
       view.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.container.remove.title")
     }
 
+    "display section header" in {
+      view.getElementById("section-header") must containMessage("declaration.section.6")
+    }
+
     "display container and seal labels" in {
       view.getElementsByClass("govuk-summary-list__key").get(0) must containMessage("declaration.transportInformation.containerId.title")
       view.getElementsByClass("govuk-summary-list__key").get(1) must containMessage("declaration.seal.summary.heading")

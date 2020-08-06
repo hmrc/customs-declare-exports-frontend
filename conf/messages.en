@@ -117,13 +117,12 @@ declaration.choice.CAN = Cancel a declaration
 declaration.choice.CON = Continue a saved declaration
 declaration.choice.SUB = View declarations
 
-declaration.section.1 = Section 1 of 7
-declaration.section.2 = Section 2 of 7
-declaration.section.3 = Section 3 of 7
-declaration.section.4 = Section 4 of 7
-declaration.section.5 = Section 5 of 7
-declaration.section.6 = Section 6 of 7
-declaration.section.7 = Section 7 of 7
+declaration.section.1 = Section 1 of 6
+declaration.section.2 = Section 2 of 6
+declaration.section.3 = Section 3 of 6
+declaration.section.4 = Section 4 of 6
+declaration.section.5 = Section 5 of 6
+declaration.section.6 = Section 6 of 6
 
 declaration.type.description = Which type of declaration do you want to create?
 declaration.type.standard = Standard declaration

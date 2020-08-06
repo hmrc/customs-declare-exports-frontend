@@ -45,7 +45,7 @@
 
 
 @govukLayout(
-    title = Title("declaration.transport.leavingTheBorder.title", "declaration.transportInformation.title"),
+    title = Title("declaration.transport.leavingTheBorder.title", "declaration.section.6"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TransportLeavingTheBorder, mode)))) {
 
     @formHelper(action = TransportLeavingTheBorderController.submitForm(mode), 'autoComplete -> "off") {
@@ -58,7 +58,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.transport.leavingTheBorder.title"),
-                            Some(messages("declaration.transportInformation.title"))
+                            Some(messages("declaration.section.6"))
                         )
                     ),
                     classes = gdsPageLegend

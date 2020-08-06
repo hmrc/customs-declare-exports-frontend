@@ -57,6 +57,10 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
       multiContainerView.title() must include(messages("declaration.transportInformation.containers.multiple.title", 2))
     }
 
+    "display section header" in {
+      view.getElementById("section-header") must containMessage("declaration.section.6")
+    }
+
     "display table with headers" in {
       val tableHead = view.getElementsByTag("th")
 

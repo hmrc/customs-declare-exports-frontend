@@ -65,6 +65,10 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
       noSealsView.title() must include(title)
     }
 
+    "display section header" in {
+      view.getElementById("section-header") must containMessage("declaration.section.6")
+    }
+
     "display table with headers" in {
       view.getElementsByTag("th").get(0).text() mustBe messages("declaration.seal.summary.heading")
     }

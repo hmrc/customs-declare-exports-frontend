@@ -45,6 +45,10 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with St
         view.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.transportPayment.paymentMethod")
       }
 
+      "display section header" in {
+        view.getElementById("section-header") must containMessage("declaration.section.6")
+      }
+
       "display choices for payment method" in {
         val choices = view.getElementsByClass("govuk-fieldset").first()
         choices must containMessage("declaration.transportInformation.transportPayment.paymentMethod.cash")

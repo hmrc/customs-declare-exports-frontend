@@ -106,14 +106,14 @@
 }
 
 @govukLayout(
-    title = if(containers.size == 1) Title("declaration.transportInformation.containers.title", "declaration.transportInformation.containers.section")
-            else Title("declaration.transportInformation.containers.multiple.title", "declaration.transportInformation.containers.section", containers.size.toString),
+    title = if(containers.size == 1) Title("declaration.transportInformation.containers.title", "declaration.section.6")
+            else Title("declaration.transportInformation.containers.multiple.title", "declaration.section.6", containers.size.toString),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ContainerFirst, mode)))) {
 
     @formHelper(action = TransportContainerController.submitSummaryAction(mode), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("declaration.transportInformation.containers.section"))
+        @sectionHeader(messages("declaration.section.6"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

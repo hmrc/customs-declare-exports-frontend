@@ -54,6 +54,10 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
+      "display section header" in {
+        view.getElementById("section-header") must containMessage("declaration.section.6")
+      }
+
       "display 'Save and continue' button on page" in {
         view.getElementById("submit") must containMessage("site.save_and_continue")
       }

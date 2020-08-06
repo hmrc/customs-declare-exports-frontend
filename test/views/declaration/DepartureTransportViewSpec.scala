@@ -69,6 +69,10 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
         view.getElementsByTag("h1").text() mustBe messages("declaration.transportInformation.meansOfTransport.departure.title")
       }
 
+      "display section header" in {
+        view.getElementById("section-header") must containMessage("declaration.section.6")
+      }
+
       "display 'Save and continue' button on page" in {
         view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
       }
