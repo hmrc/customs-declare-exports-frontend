@@ -42,7 +42,6 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     "have defined translation for used labels" in {
 
       messages must haveTranslationFor("declaration.destinationCountry.title")
-      messages must haveTranslationFor("declaration.destinationCountry.heading")
       messages must haveTranslationFor("declaration.destinationCountry.empty")
       messages must haveTranslationFor("declaration.destinationCountry.error")
     }
@@ -58,7 +57,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
       s"display page heading for ${request.declarationType}" in {
 
-        view(request).getElementById("section-header").text() must include(messages("declaration.destinationCountry.heading"))
+        view(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
       }
 
       s"display 'Save and continue' button for ${request.declarationType}" in {

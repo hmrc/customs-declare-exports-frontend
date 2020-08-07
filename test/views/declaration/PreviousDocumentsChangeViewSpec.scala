@@ -41,7 +41,6 @@ class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
     "have all messages defined" in {
       messages must haveTranslationFor("declaration.previousDocuments.title")
       messages must haveTranslationFor("declaration.previousDocuments.hint")
-      messages must haveTranslationFor("declaration.previousDocuments.heading")
       messages must haveTranslationFor("declaration.previousDocuments.documentCategory.error.empty")
       messages must haveTranslationFor("declaration.previousDocuments.documentCategory.error.incorrect")
       messages must haveTranslationFor("declaration.previousDocuments.documentType.error")
@@ -71,7 +70,7 @@ class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
 
       "display section header" in {
 
-        view.getElementById("section-header") must containMessage("declaration.previousDocuments.heading")
+        view.getElementById("section-header") must containMessage("declaration.section.4")
       }
 
       "display two radio buttons with description" in {

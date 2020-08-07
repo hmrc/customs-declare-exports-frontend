@@ -53,7 +53,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.transportInformation.meansOfTransport.departure.title"),
+    title = Title("declaration.transportInformation.meansOfTransport.departure.title", "declaration.section.6"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DepartureTransport, mode)))) {
 
     @formHelper(action = DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
@@ -66,7 +66,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.transportInformation.meansOfTransport.departure.title"),
-                            Some(messages("declaration.transportInformation.meansOfTransport.departure.section"))
+                            Some(messages("declaration.section.6"))
                         )
                     ),
                     classes = gdsPageLegend

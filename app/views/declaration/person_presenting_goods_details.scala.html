@@ -39,17 +39,18 @@
 @tariffBody = { @Html(messages("declaration.personPresentingGoodsDetails.help-item", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.personPresentingGoodsDetails.title"),
+    title = Title("declaration.personPresentingGoodsDetails.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(PersonPresentingGoodsDetails, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.PersonPresentingGoodsDetailsController.submitForm(mode), 'autocomplete -> "off") {
       @errorSummary(form.errors)
-    
+
       @exportsInputText(
         field = form(fieldName),
         labelKey = "declaration.personPresentingGoodsDetails.title",
         isPageHeading = true,
-        headingClasses = gdsPageLabel
+        headingClasses = gdsPageLabel,
+        sectionHeaderKey = Some("declaration.section.2")
       )
 
       @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

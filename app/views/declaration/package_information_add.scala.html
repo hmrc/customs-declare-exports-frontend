@@ -58,14 +58,14 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 }
 
 @govukLayout(
-    title = Title("declaration.packageInformation.title", "supplementary.items"),
+    title = Title("declaration.packageInformation.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), backLink))
 ) {
 
     @formHelper(action = routes.PackageInformationAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
         @pageTitle(text = messages("declaration.packageInformation.title"))
 
         @components.fields.field_accessible_autocomplete(

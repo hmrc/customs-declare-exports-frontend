@@ -42,7 +42,7 @@
 @tariffBody = { @Html(messages("declaration.totalPackageQuantity.help.bodyText", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.totalPackageQuantity.title", "supplementary.items"),
+    title = Title("declaration.totalPackageQuantity.title", "declaration.section.4"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TotalPackageQuantity, mode)))
 ) {
 
@@ -55,7 +55,7 @@
             isPageHeading = true,
             headingClasses = gdsPageLabel,
             inputClasses = Some("govuk-input--width-10"),
-            sectionHeaderKey = Some("supplementary.items")
+            sectionHeaderKey = Some("declaration.section.4")
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

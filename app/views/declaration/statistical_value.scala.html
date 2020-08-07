@@ -48,7 +48,7 @@
 @tariffBody = { @Html(messages("declaration.statisticalValue.help.bodyText", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.statisticalValue.header", "supplementary.items"),
+    title = Title("declaration.statisticalValue.header", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(StatisticalValue, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.StatisticalValueController.submitItemType(mode, itemId), 'autoComplete -> "off") {
@@ -62,7 +62,7 @@
                 content = HtmlContent(
                     headingContent(
                         messages("declaration.statisticalValue.header"),
-                        Some(messages("supplementary.items")),
+                        Some(messages("declaration.section.5")),
                         classes = "govuk-label--xl"
                     )
                 )

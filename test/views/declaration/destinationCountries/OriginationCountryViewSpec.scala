@@ -44,7 +44,6 @@ class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     "have defined translation for used labels" in {
 
       messages must haveTranslationFor("declaration.originationCountry.title")
-      messages must haveTranslationFor("declaration.originationCountry.heading")
       messages must haveTranslationFor("declaration.originationCountry.empty")
       messages must haveTranslationFor("declaration.originationCountry.error")
     }
@@ -60,7 +59,7 @@ class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
       s"display page heading for ${request.declarationType}" in {
 
-        view(request).getElementById("section-header").text() must include(messages("declaration.originationCountry.heading"))
+        view(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
       }
 
       s"display back button that links to 'Declaration Holder' page for ${request.declarationType}" in {

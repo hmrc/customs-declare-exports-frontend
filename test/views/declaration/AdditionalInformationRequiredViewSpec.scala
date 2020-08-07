@@ -44,7 +44,6 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
     "have correct message keys" in {
 
       messages must haveTranslationFor("declaration.additionalInformationRequired.title")
-      messages must haveTranslationFor("supplementary.items")
       messages must haveTranslationFor("declaration.additionalInformationRequired.error")
       messages must haveTranslationFor("declaration.additionalInformationRequired.hint")
 
@@ -61,7 +60,7 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
       }
 
       "display section header" in {
-        createView(form(request.declarationType)).getElementById("section-header") must containMessage("supplementary.items")
+        createView(form(request.declarationType)).getElementById("section-header") must containMessage("declaration.section.5")
       }
 
       "display radio button with Yes option" in {

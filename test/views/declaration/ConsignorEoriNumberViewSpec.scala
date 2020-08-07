@@ -56,7 +56,6 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
 
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.consignorEori.title")
-        messages must haveTranslationFor("declaration.summary.parties.header")
         messages must haveTranslationFor("declaration.consignorEori.eori.label")
         messages must haveTranslationFor("declaration.consignorEori.hasEori.empty")
         messages must haveTranslationFor("declaration.consignorEori.help-item1")
@@ -67,7 +66,7 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.summary.parties.header")
+        view.getElementById("section-header") must containMessage("declaration.section.2")
       }
 
       "display eori question" in {

@@ -63,13 +63,13 @@
 }
 
 @govukLayout(
-    title = Title("declaration.packageInformation.remove.title", "supplementary.items"),
+    title = Title("declaration.packageInformation.remove.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)))) {
 
     @formHelper(action = PackageInformationRemoveController.submitForm(mode, itemId, info.id), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

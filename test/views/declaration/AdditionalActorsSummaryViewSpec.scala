@@ -74,7 +74,7 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
+        view.getElementById("section-header").text() must include(messages("declaration.section.2"))
       }
 
       "display'Save and continue' button on page" in {

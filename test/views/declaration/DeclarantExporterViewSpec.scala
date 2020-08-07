@@ -43,7 +43,6 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
 
     "have correct message keys" in {
       messages must haveTranslationFor("declaration.declarant.exporter.title")
-      messages must haveTranslationFor("declaration.summary.parties.header")
       messages must haveTranslationFor("declaration.declarant.exporter.answer.yes")
       messages must haveTranslationFor("declaration.declarant.exporter.answer.no")
       messages must haveTranslationFor("declaration.declarant.exporter.error")
@@ -61,7 +60,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
 
       "display section header" in {
 
-        createView().getElementById("section-header") must containMessage("declaration.summary.parties.header")
+        createView().getElementById("section-header") must containMessage("declaration.section.2")
       }
 
       "display radio button with Yes option" in {

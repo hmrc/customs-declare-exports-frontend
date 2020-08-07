@@ -48,7 +48,7 @@
 @tariffBody = { @components.tariff_body_partial(messages("declaration.type.containerAddFirstItemListOne"), messages("declaration.type.containerAddFirstItemListTwo"))(tariffBodyDesc)}
 
 @govukLayout(
-    title = Title("declaration.transportInformation.containers.first.title", "declaration.transportInformation.containers.section"),
+    title = Title("declaration.transportInformation.containers.first.title", "declaration.section.6"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ContainerFirst, mode)))) {
 
     @formHelper(action = TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
@@ -61,7 +61,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.transportInformation.containers.first.title"),
-                            Some(messages("declaration.transportInformation.containers.section"))
+                            Some(messages("declaration.section.6"))
                         )
                     ),
                     classes = gdsPageLegend

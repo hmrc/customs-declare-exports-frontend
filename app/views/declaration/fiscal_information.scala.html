@@ -54,7 +54,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.fiscalInformation.title", "declaration.fiscalInformation.header"),
+    title = Title("declaration.fiscalInformation.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(FiscalInformation, mode, ItemId(itemId))))) {
 
     @formHelper(action = FiscalInformationController.saveFiscalInformation(mode, itemId), 'autoComplete -> "off") {
@@ -67,7 +67,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.fiscalInformation.title"),
-                            Some(messages("declaration.fiscalInformation.header"))
+                            Some(messages("declaration.section.5"))
                         )
                     ),
                     classes = gdsPageLegend

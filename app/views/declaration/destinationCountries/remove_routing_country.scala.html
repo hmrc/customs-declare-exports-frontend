@@ -81,14 +81,14 @@
 }
 
 @govukLayout(
-    title = Title("declaration.routingCountries.remove.title", "declaration.routingCountries.remove.heading"),
+    title = Title("declaration.routingCountries.remove.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RemoveCountryPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitRemoveCountry(mode, countryToRemove.countryCode), 'autoComplete -> "off") {
 
         @errorSummary(radioGroupErrors("answer", "Yes", form.errors))
 
-        @sectionHeader(messages("declaration.routingCountries.remove.heading"))
+        @sectionHeader(messages("declaration.section.3"))
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.routingCountries.remove.question")),

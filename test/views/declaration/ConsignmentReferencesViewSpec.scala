@@ -46,7 +46,6 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
     "have correct message keys" in {
 
-      messages must haveTranslationFor("declaration.consignmentReferences.heading")
       messages must haveTranslationFor("declaration.consignmentReferences.header")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.info")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint")
@@ -68,7 +67,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
       "display section header" in {
 
-        createView().getElementById("section-header").text() must include(messages("declaration.consignmentReferences.heading"))
+        createView().getElementById("section-header").text() must include(messages("declaration.section.1"))
       }
 
       "display empty input with label for DUCR" in {

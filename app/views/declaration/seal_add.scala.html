@@ -37,7 +37,7 @@
 @tariffBody = { @Html(messages("declaration.type.sealsSummaryText", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.seal.title", "declaration.seal.section", containerId),
+    title = Title("declaration.seal.title", "declaration.section.6", containerId),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.SealController.displaySealSummary(mode, containerId)))) {
 
     @formHelper(action = SealController.submitAddSeal(mode, containerId), 'autoComplete -> "off") {
@@ -50,7 +50,7 @@
             labelArg = containerId,
             isPageHeading = true,
             inputClasses = Some("govuk-input--width-20"),
-            sectionHeaderKey = Some("declaration.seal.section")
+            sectionHeaderKey = Some("declaration.section.6")
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

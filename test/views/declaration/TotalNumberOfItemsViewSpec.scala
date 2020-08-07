@@ -43,7 +43,6 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.invoice.details.title")
-      messages must haveTranslationFor("declaration.invoice.details.header")
       messages must haveTranslationFor("declaration.totalAmountInvoiced")
       messages must haveTranslationFor("declaration.totalAmountInvoiced.hint")
       messages must haveTranslationFor("declaration.totalAmountInvoiced.error")
@@ -62,7 +61,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.invoice.details.header")
+        view.getElementById("section-header") must containMessage("declaration.section.4")
       }
 
       "display header" in {

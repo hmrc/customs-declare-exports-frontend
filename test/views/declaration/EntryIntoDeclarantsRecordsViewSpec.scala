@@ -44,6 +44,10 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
         createView().getElementsByTag("h1").first() must containMessage("declaration.entryIntoDeclarantRecords.title")
       }
 
+      "display section header" in {
+        createView().getElementById("section-header") must containMessage("declaration.section.2")
+      }
+
       "display radio button with yes and no options" in {
 
         val view = createView()

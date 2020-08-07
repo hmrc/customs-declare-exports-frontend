@@ -48,7 +48,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.originationCountry.title", "declaration.originationCountry.heading"),
+    title = Title("declaration.originationCountry.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OriginationCountryPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.OriginationCountryController.submit(mode), 'autoComplete -> "off") {
@@ -58,7 +58,7 @@
             form("countryCode"),
             "declaration.originationCountry.title",
             Some(gdsPageLabel),
-            Some("declaration.originationCountry.heading"),
+            Some("declaration.section.3"),
             None,
             messages("declaration.originationCountry.empty"),
             AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),

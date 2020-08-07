@@ -40,7 +40,7 @@
 @(mode: Mode, form: Form[DeclarantEoriConfirmation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.declarant.title"),
+    title = Title("declaration.declarant.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantDetails, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
@@ -53,7 +53,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.declarant.titleQuestion", request.eori),
-                            Some(messages("declaration.summary.parties.header"))
+                            Some(messages("declaration.section.2"))
                         )
                     ),
                     classes = gdsPageLegend

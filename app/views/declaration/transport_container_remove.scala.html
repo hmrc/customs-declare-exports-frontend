@@ -56,13 +56,13 @@
 }
 
 @govukLayout(
-    title = Title("declaration.transportInformation.container.remove.title", "declaration.transportInformation.containers.section"),
+    title = Title("declaration.transportInformation.container.remove.title", "declaration.section.6"),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)))) {
 
     @formHelper(action = TransportContainerController.submitContainerRemove(mode, container.id), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("declaration.transportInformation.containers.section"))
+        @sectionHeader(messages("declaration.section.6"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

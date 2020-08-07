@@ -103,13 +103,13 @@
 }
 
 @govukLayout(
-    title = Title("declaration.transportInformation.active.title", "declaration.transportInformation.title"),
+    title = Title("declaration.transportInformation.active.title", "declaration.section.6"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(BorderTransport, mode)))) {
 
     @formHelper(action = BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("borderTransportType", "IMOShipIDNumber", form.errors))
 
-        @sectionHeader(messages("declaration.transportInformation.title"))
+        @sectionHeader(messages("declaration.section.6"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

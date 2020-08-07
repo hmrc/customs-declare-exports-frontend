@@ -69,7 +69,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
 
       "display section header" in {
 
-        createView().getElementById("section-header").text() must include(messages("supplementary.items"))
+        createView().getElementById("section-header").text() must include(messages("declaration.section.5"))
       }
 
       "display empty input with label for net mass" in {

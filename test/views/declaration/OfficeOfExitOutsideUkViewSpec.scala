@@ -42,7 +42,6 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
     onEveryDeclarationJourney() { implicit request =>
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.officeOfExitOutsideUk.title")
-        messages must haveTranslationFor("declaration.summary.locations.header")
         messages must haveTranslationFor("declaration.officeOfExitOutsideUk.hint")
         messages must haveTranslationFor("declaration.officeOfExitOutsideUk.empty")
         messages must haveTranslationFor("declaration.officeOfExitOutsideUk.length")
@@ -54,7 +53,7 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.summary.locations.header")
+        view.getElementById("section-header") must containMessage("declaration.section.3")
       }
 
       "display office of exit outside UK question" in {

@@ -70,7 +70,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
       "display section header" in {
 
-        createView().getElementById("section-header") must containMessage("supplementary.items")
+        createView().getElementById("section-header") must containMessage("declaration.section.5")
       }
 
       "display 'Save and continue' button" in {

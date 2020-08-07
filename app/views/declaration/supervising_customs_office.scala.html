@@ -38,7 +38,7 @@
 @tariffBody = { @Html(messages("declaration.type.supervisingCustomsOfficeSummaryText", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.warehouse.supervisingCustomsOffice.title"),
+    title = Title("declaration.warehouse.supervisingCustomsOffice.title", "declaration.section.6"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(SupervisingCustomsOffice, mode)))){
 
     @formHelper(action = controllers.declaration.routes.SupervisingCustomsOfficeController.submit(mode), 'autoComplete -> "off") {
@@ -48,7 +48,7 @@
             form("supervisingCustomsOffice"),
             "declaration.warehouse.supervisingCustomsOffice.title",
             Some(gdsPageLabel),
-            Some("declaration.warehouse.supervisingCustomsOffice.sectionHeader"),
+            Some("declaration.section.6"),
             Some(messages("declaration.warehouse.supervisingCustomsOffice.hint")),
             messages("declaration.warehouse.supervisingCustomsOffice.label"),
             AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all),

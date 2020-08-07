@@ -72,7 +72,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.previousDocuments.remove.title", "declaration.previousDocuments.heading"),
+    title = Title("declaration.previousDocuments.remove.title", "declaration.section.4"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentChangeOrRemove, mode)))
 ) {
 
@@ -80,7 +80,7 @@
 
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("declaration.items"))
+        @sectionHeader(messages("declaration.section.4"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

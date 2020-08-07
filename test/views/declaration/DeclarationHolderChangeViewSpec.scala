@@ -68,7 +68,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
 
       "display section header" in {
 
-        view.getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
+        view.getElementById("section-header").text() must include(messages("declaration.section.2"))
       }
 
       "display 'Back' button that links to 'Summary' page" in {

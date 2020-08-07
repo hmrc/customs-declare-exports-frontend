@@ -42,7 +42,6 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
       val view = createView()
 
       "have proper messages for labels" in {
-        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.sectionHeader")
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.title")
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint")
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.error")
@@ -52,6 +51,10 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
       "display same page title as header" in {
         val viewWithMessage = createView()
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      }
+
+      "display section header" in {
+        view.getElementById("section-header") must containMessage("declaration.section.6")
       }
 
       "display 'Save and continue' button on page" in {

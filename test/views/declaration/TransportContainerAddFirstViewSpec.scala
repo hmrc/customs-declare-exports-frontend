@@ -45,6 +45,10 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
       view.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.containers.first.title")
     }
 
+    "display section header" in {
+      view.getElementById("section-header") must containMessage("declaration.section.6")
+    }
+
     "display 'Back' button that links to 'transport payment' page" in {
       val backLinkContainer = view.getElementById("back-link")
 

@@ -50,8 +50,8 @@ class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
       s"have page heading for ${request.declarationType}" in {
 
-        firstRoutingView(request).getElementById("section-header").text() must include(messages("declaration.routingCountry.heading"))
-        nextRoutingView(request).getElementById("section-header").text() must include(messages("declaration.routingCountry.heading"))
+        firstRoutingView(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
+        nextRoutingView(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
       }
 
       s"have page question during changing first routing country for ${request.declarationType}" in {

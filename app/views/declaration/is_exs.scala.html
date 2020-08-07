@@ -39,7 +39,7 @@
 @(mode: Mode, form: Form[IsExs])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.exs.title"),
+    title = Title("declaration.exs.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(IsExs, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.IsExsController.submit(mode), 'autoComplete -> "off") {
@@ -52,7 +52,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.exs.title"),
-                            Some(messages("declaration.summary.parties.header"))
+                            Some(messages("declaration.section.2"))
                         )
                     ),
                     classes = gdsPageLegend

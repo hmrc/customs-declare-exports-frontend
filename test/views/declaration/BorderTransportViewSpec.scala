@@ -56,6 +56,10 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       view.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.active.title")
     }
 
+    "display section header" in {
+      view.getElementById("section-header") must containMessage("declaration.section.6")
+    }
+
     "display 'Save and continue' button on page" in {
       view.getElementById("submit") must containMessage(saveAndContinueCaption)
     }

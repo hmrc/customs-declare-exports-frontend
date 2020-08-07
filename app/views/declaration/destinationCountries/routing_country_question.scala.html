@@ -49,7 +49,7 @@
 @tariffBody = { @Html(messages("declaration.routingQuestion.help.bodyText", components.details_content_link())) }
 
     @govukLayout(
-    title = Title("declaration.routingQuestion.title", "declaration.routingQuestion.heading", countryOfDestination),
+    title = Title("declaration.routingQuestion.title", "declaration.section.3", countryOfDestination),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingQuestionPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingAnswer(mode), 'autoComplete -> "off") {
@@ -62,7 +62,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.routingQuestion.title", countryOfDestination),
-                            Some(messages("declaration.routingQuestion.heading"))
+                            Some(messages("declaration.section.3"))
                         )
                     ),
                     classes = gdsPageLegend

@@ -53,7 +53,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
       }
 
       "display header" in {
-        view.getElementById("section-header").text() must include(messages("declaration.fiscalInformation.header"))
+        view.getElementById("section-header").text() must include(messages("declaration.section.5"))
       }
 
       "display country input" in {

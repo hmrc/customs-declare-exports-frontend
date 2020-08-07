@@ -56,7 +56,7 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("supplementary.items")
+        view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
       "display radio button with Yes option" in {

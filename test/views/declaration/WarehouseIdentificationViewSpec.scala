@@ -48,7 +48,6 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
 
       "have proper messages for labels" in {
         val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-        messages must haveTranslationFor("declaration.warehouse.identification.sectionHeader")
         messages must haveTranslationFor("declaration.warehouse.identification.required.title")
         messages must haveTranslationFor("declaration.warehouse.identification.label")
         messages must haveTranslationFor("declaration.warehouse.identification.label.hint")
@@ -63,7 +62,7 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
       }
 
       "have the correct section header" in {
-        view.getElementById("section-header").text() must include("declaration.warehouse.identification.sectionHeader")
+        view.getElementById("section-header").text() must include("declaration.section.6")
       }
 
       "have the correct page title" in {

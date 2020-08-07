@@ -52,8 +52,6 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
       messages must haveTranslationFor("declaration.previousDocuments.Z")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.summary.label")
       messages must haveTranslationFor("declaration.previousDocuments.title")
-      messages must haveTranslationFor("declaration.previousDocuments.heading")
-      messages must haveTranslationFor("declaration.items")
       messages must haveTranslationFor("declaration.previousDocuments.remove.title")
       messages must haveTranslationFor("declaration.previousDocuments.remove.title")
     }
@@ -61,7 +59,7 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
     onEveryDeclarationJourney() { implicit request =>
       "display section header" in {
 
-        createView().getElementById("section-header") must containMessage("declaration.items")
+        createView().getElementById("section-header") must containMessage("declaration.section.4")
       }
 
       "display same page title as header" in {

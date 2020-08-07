@@ -56,13 +56,13 @@
 }
 
 @govukLayout(
-    title = Title("declaration.additionalInformation.remove.title", "supplementary.items"),
+    title = Title("declaration.additionalInformation.remove.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), AdditionalInformationController.displayPage(mode, itemId)))) {
 
     @formHelper(action = AdditionalInformationRemoveController.submitForm(mode, itemId, informationId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

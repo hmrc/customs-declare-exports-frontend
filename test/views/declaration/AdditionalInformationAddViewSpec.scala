@@ -67,7 +67,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
 
       "display section header" in {
 
-        createView().getElementById("section-header") must containMessage("supplementary.items")
+        createView().getElementById("section-header") must containMessage("declaration.section.5")
       }
 
       "display empty input with label for Union code" in {

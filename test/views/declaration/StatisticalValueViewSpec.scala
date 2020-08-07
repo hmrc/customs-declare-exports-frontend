@@ -44,7 +44,6 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.statisticalValue.header")
-      messages must haveTranslationFor("supplementary.items")
       messages must haveTranslationFor("declaration.statisticalValue.header.hint")
     }
 
@@ -58,7 +57,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("supplementary.items")
+        view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
       "display empty input with label for Statistical Value" in {
@@ -99,7 +98,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       val view = createView()
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("supplementary.items")
+        view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
       "display empty input with label for Statistical Value" in {

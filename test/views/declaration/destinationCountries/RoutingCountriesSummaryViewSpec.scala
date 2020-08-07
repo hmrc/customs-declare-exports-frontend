@@ -41,7 +41,6 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
     "have defined translation for used labels" in {
 
       messages must haveTranslationFor("declaration.routingCountries.summary.title")
-      messages must haveTranslationFor("declaration.routingCountries.summary.heading")
       messages must haveTranslationFor("declaration.routingCountries.summary.header")
       messages must haveTranslationFor("declaration.routingCountries.summary.question")
       messages must haveTranslationFor("declaration.routingCountries.summary.table.code")
@@ -49,7 +48,7 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
 
     "display page heading" in {
 
-      view.getElementById("section-header").text() must include(messages("declaration.routingCountries.summary.heading"))
+      view.getElementById("section-header").text() must include(messages("declaration.section.3"))
     }
 
     "display page title for the table" when {

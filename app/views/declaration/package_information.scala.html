@@ -54,9 +54,9 @@
 
 @title = @{
     if(packages.size == 1)
-        Title("declaration.packageInformation.table.heading", "supplementary.items")
+        Title("declaration.packageInformation.table.heading", "declaration.section.5")
     else
-        Title("declaration.packageInformation.table.multiple.heading", "supplementary.items", packages.size.toString)
+        Title("declaration.packageInformation.table.multiple.heading", "declaration.section.5", packages.size.toString)
 }
 
 @header = @{
@@ -102,7 +102,7 @@
     @formHelper(action = routes.PackageInformationSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("supplementary.items"))
+        @sectionHeader(messages("declaration.section.5"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

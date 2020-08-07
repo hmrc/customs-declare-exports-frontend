@@ -83,7 +83,7 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.summary.parties.header")
+        view.getElementById("section-header") must containMessage("declaration.section.2")
       }
 
       "display'Save and continue' button on page" in {

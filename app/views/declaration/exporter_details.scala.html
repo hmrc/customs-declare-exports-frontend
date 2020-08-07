@@ -70,14 +70,14 @@
     @group_address(form,"declaration.address","details.address")
 }
 @govukLayout(
-    title = Title("declaration.exporter-detail.title", "declaration.summary.parties.header"),
+    title = Title("declaration.exporter-detail.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExporterDetails, mode)))){
 
     @formHelper(action = ExporterDetailsController.saveAddress(mode), 'autoComplete -> "off") {
 
         @errorSummary(eoriOrAddressErrors("details", form.errors))
 
-        @sectionHeader(messages("declaration.summary.parties.header"))
+        @sectionHeader(messages("declaration.section.2"))
 
         @pageTitle(messages("declaration.exporter-detail.title"))
 

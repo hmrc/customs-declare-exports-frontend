@@ -114,14 +114,14 @@
 }
 
 @govukLayout(
-    title = Title("declaration.additionalActors.title"),
+    title = Title("declaration.additionalActors.title",  "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationAdditionalActors, mode)))) {
 
     @formHelper(action = AdditionalActorsAddController.saveForm(mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.summary.parties.header"))
+        @sectionHeader(messages("declaration.section.2"))
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.additionalActors.title")),

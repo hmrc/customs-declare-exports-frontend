@@ -41,7 +41,7 @@
 @tariffBody = { @Html(messages("declaration.type.container.summary.help.text", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.transportInformation.containers.add.title", "declaration.transportInformation.containers.section"),
+    title = Title("declaration.transportInformation.containers.add.title", "declaration.section.6"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ContainerAdd, mode)))) {
 
     @formHelper(action = TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
@@ -53,7 +53,7 @@
             labelKey = "declaration.transportInformation.containers.add.title",
             isPageHeading = true,
             inputClasses = Some("govuk-input--width-20"),
-            sectionHeaderKey = Some("declaration.transportInformation.containers.section")
+            sectionHeaderKey = Some("declaration.section.6")
 
         )
 

@@ -51,7 +51,7 @@
 }
 
 @govukLayout(
-    title = Title(s"declaration.routingCountry.title", "declaration.routingCountry.heading"),
+    title = Title(s"declaration.routingCountry.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ChangeCountryPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitChangeCountry(mode, countryToChange), 'autoComplete -> "off") {
@@ -61,7 +61,7 @@
             form("countryCode"),
             s"declaration.${page.id}.question",
             Some(Styles.gdsPageLabel),
-            Some("declaration.routingCountry.heading"),
+            Some("declaration.section.3"),
             None,
             messages("declaration.routingCountry.empty"),
             AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),

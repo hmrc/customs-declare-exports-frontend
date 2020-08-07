@@ -39,7 +39,7 @@
 @tariffBody = { @Html(messages("declaration.representative-entity.help-item", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.representative.agent.title"),
+    title = Title("declaration.representative.agent.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RepresentativeAgent, mode)))) {
 
     @formHelper(action = RepresentativeAgentController.submitForm(mode), 'autoComplete -> "off") {
@@ -52,7 +52,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.representative.agent.title"),
-                            Some(messages("declaration.summary.parties.header"))
+                            Some(messages("declaration.section.2"))
                         )
                     ),
                     classes = gdsPageLegend

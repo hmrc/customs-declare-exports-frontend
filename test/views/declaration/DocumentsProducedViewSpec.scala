@@ -79,7 +79,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("supplementary.items")
+        view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
       "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {

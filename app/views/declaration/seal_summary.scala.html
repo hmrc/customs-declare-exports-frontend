@@ -86,7 +86,7 @@
                 content = HtmlContent(
                     headingContent(
                         messages("declaration.seal.add.first", containerId),
-                        Some(messages("declaration.seal.section"))
+                        Some(messages("declaration.section.6"))
                     )
                 ),
                 classes = gdsPageLegend
@@ -103,9 +103,9 @@
 }
 
 @govukLayout(
-    title = if(seals.isEmpty) Title("declaration.seal.add.first", "declaration.seal.section", containerId)
-            else if(seals.size == 1) Title("declaration.seal.summary.title", "declaration.seal.section", containerId)
-            else Title("declaration.seal.summary.multiple.title", "declaration.seal.section", "", Some(Seq(seals.size.toString, containerId))),
+    title = if(seals.isEmpty) Title("declaration.seal.add.first", "declaration.section.6", containerId)
+            else if(seals.size == 1) Title("declaration.seal.summary.title", "declaration.section.6", containerId)
+            else Title("declaration.seal.summary.multiple.title", "declaration.section.6", "", Some(Seq(seals.size.toString, containerId))),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)))) {
 
     @formHelper(action = SealController.submitSummaryAction(mode, containerId), 'autoComplete -> "off") {
@@ -114,7 +114,7 @@
         @if(seals.isEmpty){
             @addSealRadios
         } else {
-            @sectionHeader(messages("declaration.seal.section"))
+            @sectionHeader(messages("declaration.section.6"))
             @govukFieldset(Fieldset(
                 legend = Some(Legend(
                     content = Text(

@@ -40,7 +40,7 @@
 @tariffBody = { @Html(messages("declaration.natureOfTransaction.help.bodyText", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.natureOfTransaction.title", "declaration.natureOfTransaction.header"),
+    title = Title("declaration.natureOfTransaction.title", "declaration.section.4"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NatureOfTransaction, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.NatureOfTransactionController.saveTransactionType(mode), 'autoComplete -> "off") {
@@ -53,7 +53,7 @@
                     content = HtmlContent(
                         headingContent(
                             messages("declaration.natureOfTransaction.title"),
-                            Some(messages("declaration.natureOfTransaction.header"))
+                            Some(messages("declaration.section.4"))
                         )
                     ),
                     classes = gdsPageLegend

@@ -40,6 +40,10 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
         view.getElementsByTag("h1") must containMessageForElements("declaration.transport.leavingTheBorder.title")
       }
 
+      "display section header" in {
+        view.getElementById("section-header") must containMessage("declaration.section.6")
+      }
+
       "display 'Back' button that links to 'Items Summary' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.back")

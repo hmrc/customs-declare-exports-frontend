@@ -52,7 +52,6 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.officeOfExit.title")
-        messages must haveTranslationFor("declaration.summary.locations.header")
         messages must haveTranslationFor("declaration.officeOfExit")
         messages must haveTranslationFor("declaration.officeOfExit.hint")
         messages must haveTranslationFor("declaration.officeOfExit.empty")
@@ -65,7 +64,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       }
 
       "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.summary.locations.header")
+        view.getElementById("section-header") must containMessage("declaration.section.3")
       }
 
       "display office of exit question" in {

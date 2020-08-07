@@ -53,16 +53,14 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.label")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.label")
       messages must haveTranslationFor("declaration.previousDocuments.title")
-      messages must haveTranslationFor("declaration.previousDocuments.heading")
       messages must haveTranslationFor("declaration.previousDocuments.addAnotherDocument")
       messages must haveTranslationFor("site.details.summary_text_this")
-      messages must haveTranslationFor("declaration.items")
     }
 
     onEveryDeclarationJourney() { implicit request =>
       "display section header" in {
 
-        createView().getElementById("section-header") must containMessage("declaration.items")
+        createView().getElementById("section-header") must containMessage("declaration.section.4")
       }
 
       "display singular header" in {

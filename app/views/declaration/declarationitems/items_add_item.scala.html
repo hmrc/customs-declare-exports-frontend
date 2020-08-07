@@ -48,12 +48,12 @@
 }
 
 @govukLayout(
-  title = Title("declaration.itemsAdd.title", "supplementary.items"),
+  title = Title("declaration.itemsAdd.title", "declaration.section.5"),
   backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExportItem, mode)))) {
 
   @formHelper(action = routes.ItemsSummaryController.addFirstItem(mode), 'autoComplete -> "off") {
 
-    @sectionHeader(messages("supplementary.items"))
+    @sectionHeader(messages("declaration.section.5"))
     @govukFieldset(Fieldset(
       legend = Some(Legend(
         content = Text(messages("declaration.itemsAdd.title")),

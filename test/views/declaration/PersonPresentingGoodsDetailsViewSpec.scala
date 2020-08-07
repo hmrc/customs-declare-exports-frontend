@@ -43,6 +43,11 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
         createView().getElementsByTag("h1").first() must containMessage("declaration.personPresentingGoodsDetails.title")
       }
 
+      "display section header" in {
+
+        createView().getElementById("section-header") must containMessage("declaration.section.2")
+      }
+
       "display text input element" in {
 
         createView().getElementById("eori").attr("value") mustBe empty
