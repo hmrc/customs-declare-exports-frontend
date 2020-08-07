@@ -46,7 +46,6 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
     "have correct message keys" in {
 
-      messages must haveTranslationFor("declaration.consignmentReferences.heading")
       messages must haveTranslationFor("declaration.consignmentReferences.header")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.info")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint")

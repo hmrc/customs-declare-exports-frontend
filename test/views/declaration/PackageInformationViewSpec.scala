@@ -45,7 +45,6 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.packageInformation.title")
-    messages must haveTranslationFor("supplementary.items")
     messages must haveTranslationFor("declaration.packageInformation.typesOfPackages")
     messages must haveTranslationFor("declaration.packageInformation.numberOfPackages")
     messages must haveTranslationFor("declaration.packageInformation.shippingMarks")

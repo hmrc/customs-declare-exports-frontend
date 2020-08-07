@@ -43,7 +43,6 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.previousDocuments.title")
       messages must haveTranslationFor("declaration.previousDocuments.hint")
-      messages must haveTranslationFor("declaration.previousDocuments.heading")
       messages must haveTranslationFor("declaration.previousDocuments.documentCategory.error.empty")
       messages must haveTranslationFor("declaration.previousDocuments.documentCategory.error.incorrect")
       messages must haveTranslationFor("declaration.previousDocuments.documentType.error")

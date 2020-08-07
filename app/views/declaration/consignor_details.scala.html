@@ -40,13 +40,13 @@
 @(mode: Mode, form: Form[ConsignorDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.consignorAddress.title", "declaration.summary.parties.header"),
+    title = Title("declaration.consignorAddress.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsignorDetails, mode)))) {
 
     @formHelper(action = ConsignorDetailsController.saveAddress(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.summary.parties.header"))
+        @sectionHeader(messages("declaration.section.2"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

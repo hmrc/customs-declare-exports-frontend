@@ -44,7 +44,6 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
     "have correct message keys" in {
 
       messages must haveTranslationFor("declaration.additionalInformationRequired.title")
-      messages must haveTranslationFor("supplementary.items")
       messages must haveTranslationFor("declaration.additionalInformationRequired.error")
       messages must haveTranslationFor("declaration.additionalInformationRequired.hint")
 

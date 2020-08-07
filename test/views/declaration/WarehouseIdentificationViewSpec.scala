@@ -48,7 +48,6 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
 
       "have proper messages for labels" in {
         val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-        messages must haveTranslationFor("declaration.warehouse.identification.sectionHeader")
         messages must haveTranslationFor("declaration.warehouse.identification.required.title")
         messages must haveTranslationFor("declaration.warehouse.identification.label")
         messages must haveTranslationFor("declaration.warehouse.identification.label.hint")

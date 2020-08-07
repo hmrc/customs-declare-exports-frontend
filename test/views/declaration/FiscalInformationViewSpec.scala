@@ -50,7 +50,6 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       messages must haveTranslationFor("declaration.fiscalInformation.details.item4")
       messages must haveTranslationFor("declaration.fiscalInformation.details.item5")
       messages must haveTranslationFor("declaration.fiscalInformation.onwardSupplyRelief.error")
-      messages must haveTranslationFor("declaration.fiscalInformation.header")
       messages must haveTranslationFor("declaration.additionalFiscalReferences.title")
       messages must haveTranslationFor("declaration.additionalFiscalReferences.numbers.header")
       messages must haveTranslationFor("declaration.additionalFiscalReferences.country")

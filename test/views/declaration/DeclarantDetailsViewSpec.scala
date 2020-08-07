@@ -45,7 +45,6 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
     "have correct message keys" in {
       messages must haveTranslationFor("declaration.declarant.title")
-      messages must haveTranslationFor("declaration.summary.parties.header")
       messages must haveTranslationFor("declaration.eori.error.format")
       messages must haveTranslationFor("declaration.eori.empty")
     }

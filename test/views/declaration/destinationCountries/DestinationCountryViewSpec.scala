@@ -42,7 +42,6 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     "have defined translation for used labels" in {
 
       messages must haveTranslationFor("declaration.destinationCountry.title")
-      messages must haveTranslationFor("declaration.destinationCountry.heading")
       messages must haveTranslationFor("declaration.destinationCountry.empty")
       messages must haveTranslationFor("declaration.destinationCountry.error")
     }

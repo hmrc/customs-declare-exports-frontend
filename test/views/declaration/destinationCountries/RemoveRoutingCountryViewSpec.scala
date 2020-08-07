@@ -41,7 +41,6 @@ class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
     "have defined translation for used labels" in {
 
       messages must haveTranslationFor("declaration.routingCountries.remove.title")
-      messages must haveTranslationFor("declaration.routingCountries.remove.heading")
       messages must haveTranslationFor("declaration.routingCountries.remove.question")
       messages must haveTranslationFor("declaration.routingCountries.remove.countryHeader")
     }

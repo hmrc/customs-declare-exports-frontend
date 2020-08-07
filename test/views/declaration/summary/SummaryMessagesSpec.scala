@@ -226,11 +226,5 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.container.securitySeals")
     }
 
-    "have defined deprecated messages used in different places than summary" in {
-
-      messages must haveTranslationFor("declaration.summary.locations.header")
-      messages must haveTranslationFor("declaration.summary.parties.header")
-      messages must haveTranslationFor("supplementary.summary.yourReferences.header")
-    }
   }
 }

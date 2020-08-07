@@ -44,7 +44,6 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.statisticalValue.header")
-      messages must haveTranslationFor("supplementary.items")
       messages must haveTranslationFor("declaration.statisticalValue.header.hint")
     }
 

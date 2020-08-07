@@ -41,7 +41,6 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
     "have defined translation for used labels" in {
 
       messages must haveTranslationFor("declaration.routingCountries.summary.title")
-      messages must haveTranslationFor("declaration.routingCountries.summary.heading")
       messages must haveTranslationFor("declaration.routingCountries.summary.header")
       messages must haveTranslationFor("declaration.routingCountries.summary.question")
       messages must haveTranslationFor("declaration.routingCountries.summary.table.code")

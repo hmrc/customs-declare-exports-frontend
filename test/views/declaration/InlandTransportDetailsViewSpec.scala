@@ -42,7 +42,6 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
       val view = createView()
 
       "have proper messages for labels" in {
-        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.sectionHeader")
         messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.title")
         messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.hint")
         messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.error.incorrect")

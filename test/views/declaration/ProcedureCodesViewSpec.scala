@@ -40,7 +40,6 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.procedureCodes.title")
-      messages must haveTranslationFor("supplementary.items")
       messages must haveTranslationFor("declaration.procedureCodes.procedureCode.header")
       messages must haveTranslationFor("declaration.procedureCodes.procedureCode.header.hint")
       messages must haveTranslationFor("declaration.procedureCodes.additionalProcedureCode.header")

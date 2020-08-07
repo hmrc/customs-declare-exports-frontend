@@ -272,7 +272,6 @@ notDeclarent.referenceTitle = Help and support
 notDeclarent.reference.support = If you are having problems making a declaration, phone: {0}
 notDeclarent.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
-declaration.consignmentReferences.heading = Your references
 declaration.consignmentReferences.header =  Consignment references
 declaration.consignmentReferences.ducr.info = Give this declaration a Unique Consignment Reference (UCR)
 declaration.consignmentReferences.ducr.hint = This can be up to 35 characters. It is made up of the last number of the current year, your EORI number, and your own reference after the dash. For example, 9GB123456789012-SHIP1234-1.
@@ -455,31 +454,26 @@ declaration.declarationHolders.remove.empty = Select yes if you want to remove t
 declaration.declarationHolder.remove.title = Are you sure you want to remove this authorisation?
 
 declaration.originationCountry.title = Which country are the goods being dispatched from?
-declaration.originationCountry.heading = Locations
 declaration.originationCountry.empty = Select a country of dispatch
 declaration.originationCountry.error = Select a country of dispatch
 
 declaration.destinationCountry.title = What is the final country the goods are destined for?
-declaration.destinationCountry.heading = Locations
 declaration.destinationCountry.empty = Select a country of destination
 declaration.destinationCountry.error = Select a country of destination
 
 declaration.routingQuestion.title = Will the goods pass through any other non-EU countries before arriving in {0}?
-declaration.routingQuestion.heading = Locations
-declaration.routingQuestion.empty = Select yes if the goods will pass through any other non-EU country 
+declaration.routingQuestion.empty = Select yes if the goods will pass through any other non-EU country
 declaration.routingQuestion.add.empty = Select yes if you need to add another country
 declaration.routingQuestion.remove.empty = Select yes if you want to remove this routing country
 declaration.routingQuestion.help.bodyText = Go to data element 5/18 Country of Routing Codes in the {0}.
 
 declaration.routingCountry.title = Routing country
-declaration.routingCountry.heading = Locations
 declaration.routingCountry.question = Where will the goods be sent through next?
 declaration.routingCountry.empty = Select a country of routing
 declaration.firstRoutingCountry.question = Where will the goods be sent through first?
 declaration.firstRoutingCountry.empty = Select a country of routing
 
 declaration.routingCountries.summary.title = Countries of routing
-declaration.routingCountries.summary.heading = Locations
 declaration.routingCountries.summary.header = You have added {0} countries of routing
 declaration.routingCountries.summary.question = Do you need to add any more countries?
 declaration.routingCountries.summary.table.code = Country code
@@ -487,7 +481,6 @@ declaration.routingCountries.summary.change.hint = Change country {0}.
 declaration.routingCountries.summary.remove.hint = Remove country {0}.
 
 declaration.routingCountries.remove.title = Remove routing country
-declaration.routingCountries.remove.heading = Locations
 declaration.routingCountries.remove.question = Are you sure you want to remove this routing country?
 declaration.routingCountries.remove.countryHeader = Country
 
@@ -533,7 +526,6 @@ declaration.officeOfExitOutsideUk.specialCharacters = Only letters and digits ar
 declaration.officeOfExitOutsideUk.format = Enter the office of exit reference in the correct format
 declaration.officeOfExitOutsideUk.help-item1 = Go to data element 5/12 Customs Office of Exit in the {0}
 
-declaration.warehouse.identification.sectionHeader = Locations
 declaration.warehouse.identification.optional.title =  Were the goods in a customs approved warehouse?
 declaration.warehouse.identification.required.title =  What is the customs approved warehouse number?
 declaration.warehouse.identification.label =  Warehouse identification number
@@ -542,13 +534,11 @@ declaration.warehouse.identification.answer.error = Select yes if the goods were
 declaration.warehouse.identification.identificationNumber.error = Enter a customs warehouse identification number in the correct format. It must be no more than 36 characters.
 declaration.warehouse.identification.identificationNumber.empty = Enter the warehouse identification number
 
-declaration.warehouse.supervisingCustomsOffice.sectionHeader = Locations
 declaration.warehouse.supervisingCustomsOffice.title = Where is the supervising customs office?
 declaration.warehouse.supervisingCustomsOffice.hint = If your goods have been altered or are being sent out to be altered, this is the office that gives authorisation for that procedure.
 declaration.warehouse.supervisingCustomsOffice.error = Select a customs supervising office from the list
 declaration.warehouse.supervisingCustomsOffice.label = Select a customs supervising office
 
-declaration.warehouse.inlandTransportDetails.sectionHeader = Locations
 declaration.warehouse.inlandTransportDetails.title = What mode of transport took the goods from the warehouse to the border?
 declaration.warehouse.inlandTransportDetails.hint = The type of transport that will move the goods from a warehouse to the port where they will depart the EU.
 declaration.warehouse.inlandTransportDetails.error.incorrect = Select an inland mode of transport from the list
@@ -565,7 +555,6 @@ declaration.warehouse.inlandTransportDetails.help.bodyText = Go to data element 
 declaration.fiscalInformation.title = Do you want to claim Onward Supply Relief (OSR)?
 declaration.fiscalInformation.onwardSupplyRelief.empty = Select yes if you want to claim onward supply relief
 declaration.fiscalInformation.onwardSupplyRelief.error = Select yes if you want to claim onward supply relief
-declaration.fiscalInformation.header = Items
 declaration.fiscalInformation.details.summary = You can claim OSR if:
 declaration.fiscalInformation.details.item1 = you are VAT registered in the UK
 declaration.fiscalInformation.details.item2 = you regularly import goods
@@ -638,8 +627,6 @@ declaration.addDocument.remove.dateOfValidity = Date of validity
 declaration.addDocument.remove.measurementUnitAndQualifier = Measurement unit and qualifier
 declaration.addDocument.remove.documentQuantity = Quantity of the measurement unit
 
-supplementary.items = Items
-declaration.items = Items
 declaration.totalPackageQuantity = Total number of packages
 declaration.totalPackageQuantity.empty = Enter the total number of packages
 declaration.totalPackageQuantity.error = Enter the total number of packages
@@ -661,7 +648,6 @@ declaration.transport.leavingTheBorder.transportMode.empty = I don’t know
 declaration.transport.leavingTheBorder.transportMode.help.bodyText = Go to data element 7/4 Mode of Transport at the Border in the {0}.
 
 
-declaration.transportInformation.title = Transport details
 declaration.transportInformation.active.title = Transport leaving the border
 declaration.transportInformation.borderTransportMode.error.empty = Select the mode of transport at the border
 declaration.transportInformation.borderTransportMode.error.empty.optional = Select the mode of transport at the border or I don’t know
@@ -671,7 +657,6 @@ declaration.transportInformation.active.help-item2 = The country the transport i
 
 
 declaration.transportInformation.transportPayment.paymentMethod = If this is an express consignment, tell us how you paid for the transport
-declaration.transportInformation.transportPayment.section = Transport details
 declaration.transportInformation.transportPayment.paymentMethod.hint = If you are not submitting an express consignment, you can leave this blank.
 declaration.transportInformation.transportPayment.paymentMethod.cash = Payment in cash
 declaration.transportInformation.transportPayment.paymentMethod.creditCard = Payment by credit card
@@ -683,7 +668,6 @@ declaration.transportInformation.transportPayment.paymentMethod.notPrePaid = Not
 declaration.transportInformation.transportPayment.paymentMethod.help.bodyText = Go to data element 4/2 Transport charges method of payment in the {0}.
 
 declaration.transportInformation.meansOfTransport.departure.title = What are the details for the transport the goods are physically loaded on for departure?
-declaration.transportInformation.meansOfTransport.departure.section = Transport details
 declaration.transportInformation.meansOfTransport.departure.error.empty = Select the transport identifier
 declaration.transportInformation.meansOfTransport.departure.error.empty.optional = Select the transport identifier or I don’t know
 declaration.transportInformation.meansOfTransport.departure.error.incorrect = Enter the transport details
@@ -747,7 +731,6 @@ declaration.transportInformation.containers.no = No
 declaration.transportInformation.containerId = Enter the container ID
 
 declaration.invoice.details.title = Invoice and exchange rate details
-declaration.invoice.details.header = Items
 declaration.totalAmountInvoiced.error = Enter the total amount invoiced in numbers only
 declaration.totalAmountInvoiced = Total amount invoiced
 declaration.totalAmountInvoiced.hint = This is the total amount of all items added to the declaration. Declare this in the currency it was invoiced in, for example USD. If multiple currencies were used, declare in GBP.
@@ -844,7 +827,6 @@ declaration.statisticalValue.help.bodyText = Go to data element 8/6 Statistical 
 
 declaration.previousDocuments.title = What documents are you using to make this declaration?
 declaration.previousDocuments.hint = Any documents added here, such as an MRN or commercial invoice, must relate to all items declared. If none were used, leave this page blank.
-declaration.previousDocuments.heading = Your references
 declaration.previousDocuments.documentCategory.error.empty = Select the reason why you are adding this document
 declaration.previousDocuments.documentCategory.error.incorrect = Select the reason why you are adding this document
 declaration.previousDocuments.reasonQuestion = Why are you adding this?
@@ -973,10 +955,6 @@ declaration.commodityMeasure.supplementaryUnits.error = A supplementary unit can
 declaration.commodityMeasure.units = Kg
 declaration.commodityMeasure.units.hint = Enter weight in kilograms.
 
-
-declaration.summary.locations.header = Locations
-declaration.summary.parties.header = Parties
-supplementary.summary.yourReferences.header = Your references
 
 declaration.summary.normal-header = Check your answers before making this declaration
 declaration.summary.amend-header = Check your answers

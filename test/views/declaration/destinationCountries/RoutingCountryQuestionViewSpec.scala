@@ -38,7 +38,6 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
     "have defined translation for used labels" in {
 
       messages must haveTranslationFor("declaration.routingQuestion.title")
-      messages must haveTranslationFor("declaration.routingQuestion.heading")
       messages must haveTranslationFor("declaration.routingQuestion.empty")
       messages must haveTranslationFor("site.details.summary_text_this")
     }

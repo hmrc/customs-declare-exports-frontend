@@ -52,7 +52,6 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.officeOfExit.title")
-        messages must haveTranslationFor("declaration.summary.locations.header")
         messages must haveTranslationFor("declaration.officeOfExit")
         messages must haveTranslationFor("declaration.officeOfExit.hint")
         messages must haveTranslationFor("declaration.officeOfExit.empty")
