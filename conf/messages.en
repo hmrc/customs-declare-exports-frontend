@@ -130,7 +130,7 @@ declaration.type.standard.hint = This is a full declaration.
 declaration.type.simplified = Simplified declaration
 declaration.type.simplified.hint = This is a shorter version of the full declaration that requires specific authorisation and a follow-up supplementary declaration.
 declaration.type.supplementary = Supplementary declaration
-declaration.type.supplementary.hint = This needs to be completed within 14 days of the departure of the goods from the UK when exporting under a simplified declaration or entry into declarant’s records (EIDR) authorisation.
+declaration.type.supplementary.hint = This needs to be completed within 14 days of the departure of the goods from the UK when exporting under a simplified declaration or Entry into Declarant’s Records (EIDR) authorisation.
 declaration.type.or = or
 declaration.type.occasional = Simplified declaration for occasional use
 declaration.type.occasional.hint = This is a shorter version of the full declaration. It can only be used with specific procedure codes. It does not require a follow-up declaration.
@@ -147,7 +147,7 @@ declaration.type.additionalActorsSummaryText = Go to data element 3/37 Additiona
 declaration.type.holderOfAuthorisationSummaryText = Go to data element 3/39 Holder of the Authorisation Identification Number in the {0}
 declaration.type.originationCountrySummaryText = Go to data element 5/14 Country of Dispatch/Export Code in the {0}
 declaration.type.destinationCountrySummaryText = Go to data element 5/8 Country of Destination Code in the {0}
-declaration.type.previousDocumentsSummaryText = Go to data element 2/1 Simplifed Declaration/Previous Documents in the {0}
+declaration.type.previousDocumentsSummaryText = Go to data element 2/1 Simplified Declaration/Previous Documents in the {0}
 declaration.type.procedureCodeDescListItemOne = Procedure code, go to data element 1/10 Procedure
 declaration.type.procedureCodeDescListItemTwo = Additional procedure code, go to data element 1/11 Additional Procedure Code
 declaration.type.fiscalInformationSummaryText = Go to data element 3/40 Additional Fiscal References Identification Number in the {0}
@@ -170,7 +170,7 @@ declaration.type.sealsSummaryText = Go to data element 7/18 Seal Number in the {
 declaration.type.error = Select a declaration type
 
 startPage.title.sectionHeader = Guidance
-startPage.title = Declare goods you’re exporting using the Customs Declaration Service
+startPage.title = Declare goods you are exporting using the Customs Declaration Service (CDS)
 startPage.description = If you’re a UK business sending goods outside the EU you can use the Customs Declaration Service to make a declaration
 startPage.hmrcUrl = HM Revenue & Customs
 startPage.from = From: 
@@ -182,8 +182,8 @@ startPage.useThisServiceTo.listItem.2 = complete or discard any drafts
 startPage.useThisServiceTo.listItem.3 = cancel declarations you’ve already submitted
 startPage.useThisServiceTo.listItem.4 = view notifications
 startPage.beforeYouStart.header = Before you start
-startPage.beforeYouStart.line.1 = To use this service, you need a Government Gateway user ID and password linked to your EORI number.
-startPage.beforeYouStart.line.2 = If you don’t have a user ID you can get one the first time you make a declaration.
+startPage.beforeYouStart.line.1 = To use this service, you need a Government Gateway user ID and password linked to your {0} number.
+startPage.beforeYouStart.line.1.link = EORI
 startPage.informationYouNeed.header = Information you need
 startPage.informationYouNeed.line.1 = You will need:
 startPage.informationYouNeed.listItem.1 = the EORI numbers or addresses for the exporter, carrier, consignee, and any representatives or other parties involved
@@ -228,7 +228,7 @@ declaration.dispatchLocation.summary.heading=EU countries and special fiscal ter
 declaration.dispatchLocation.summary.euCountries=EU countries:
 declaration.dispatchLocation.summary.euSpecialFiscalTerritories=EU Special Fiscal Territories:
 
-declaration.declarationType.title = Declaration Type
+declaration.declarationType.title = Declaration type
 declaration.declarationType.header.supplementary = What type of supplementary declaration do you want to make?
 declaration.declarationType.header.standard = What type of standard declaration do you want to make?
 declaration.declarationType.header.simplified = What type of simplified declaration do you want to make?
@@ -327,7 +327,6 @@ declaration.consignorAddress.title = What is the consignor’s name and address?
 declaration.consignorAddress.help-item1 = Go to data element 3/7 Consignor in the {0}
 
 declaration.carrier.title = Who is the carrier?
-declaration.carrier.title.hint = Enter the carrier’s EORI number or name and business address.
 declaration.carrier.eori.info = Carrier’s EORI number
 declaration.carrier.address.info = Carrier’s name and business address
 declaration.carrier-details.help-item1 = Carrier’s EORI number, go to data element 3/32 Carrier Identification Number
@@ -335,9 +334,8 @@ declaration.carrier-details.help-item2 = Carrier’s name and business address, 
 declaration.carrier.error.addressAndEori = Enter only one of EORI or address
 
 
-declaration.representative.agent.title = Are you representing another agent?
-declaration.representative.agent.hint = This applies if you are completing this declaration on behalf of another agent.
-declaration.representative.agent.error = Select yes if you are representing another agent
+declaration.representative.agent.title = Are you completing this declaration on behalf of another agent?
+declaration.representative.agent.error = Select yes if you are completing this declaration on behalf of another agent
 declaration.representative.entity.title = What is the first representative’s EORI number?
 declaration.representative-entity.help-item = Go to data element 3/20 Representative Identification Number in the {0}
 declaration.representative.status.title = What type of representation will be used?
@@ -469,12 +467,13 @@ declaration.routingQuestion.help.bodyText = Go to data element 5/18 Country of R
 
 declaration.routingCountry.title = Routing country
 declaration.routingCountry.question = Where will the goods be sent through next?
-declaration.routingCountry.empty = Select a country of routing
+declaration.routingCountry.empty = Select the next country the goods will pass through
 declaration.firstRoutingCountry.question = Where will the goods be sent through first?
-declaration.firstRoutingCountry.empty = Select a country of routing
+declaration.firstRoutingCountry.empty = Select the first country the goods will pass through
 
 declaration.routingCountries.summary.title = Countries of routing
-declaration.routingCountries.summary.header = You have added {0} countries of routing
+declaration.routingCountries.summary.header = You have added 1 country of routing
+declaration.routingCountries.summary.header.plural = You have added {0} countries of routing
 declaration.routingCountries.summary.question = Do you need to add any more countries?
 declaration.routingCountries.summary.table.code = Country code
 declaration.routingCountries.summary.change.hint = Change country {0}.
@@ -628,8 +627,8 @@ declaration.addDocument.remove.measurementUnitAndQualifier = Measurement unit an
 declaration.addDocument.remove.documentQuantity = Quantity of the measurement unit
 
 declaration.totalPackageQuantity = Total number of packages
-declaration.totalPackageQuantity.empty = Enter the total number of packages
-declaration.totalPackageQuantity.error = Enter the total number of packages
+declaration.totalPackageQuantity.empty = Enter the total number of packages up to 99999999
+declaration.totalPackageQuantity.error = Enter the total number of packages up to 99999999
 declaration.totalPackageQuantity.help.bodyText = Go to data element 6/18 Total packages in the {0}
 
 declaration.totalPackageQuantity.title = What is the total number of packages covered by this export declaration?

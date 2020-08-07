@@ -127,6 +127,14 @@
     ))
 }
 
+@headerContentText = @{
+  if(countriesOfRouting.size == 1) {
+    messages("declaration.routingCountries.summary.header")
+  } else {
+    messages("declaration.routingCountries.summary.header.plural", countriesOfRouting.size)
+  }
+}
+
 
 @govukLayout(
     title = Title("declaration.routingCountries.summary.title", "declaration.section.3"),
@@ -139,7 +147,7 @@
         @sectionHeader(messages("declaration.section.3"))
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("declaration.routingCountries.summary.header", countriesOfRouting.size)),
+                content = Text(headerContentText),
                 classes = Styles.gdsPageLegend,
                 isPageHeading = true
             )),

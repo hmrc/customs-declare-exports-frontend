@@ -49,12 +49,6 @@
 }
 @tariff = { @components.details(messages("site.details.summary_text_these")){ @tariffBody } }
 
-@pageHint = {
-    <span class="govuk-hint">
-        @messages("declaration.carrier.title.hint")
-    </span>
-}
-
 @or = {
     <p class="govuk-body">Or</p>
 }
@@ -74,8 +68,6 @@
         @sectionHeader(messages("declaration.section.2"))
 
         @pageTitle(messages("declaration.carrier.title"))
-
-        @pageHint
 
         @exportsInputText(
             field = form("details.eori"),

@@ -71,6 +71,13 @@
     )
 }
 
+@eoriLink = @{
+    link(
+        text = messages("startPage.beforeYouStart.line.1.link"),
+        call = Call("GET", externalServicesConfig.eoriService)
+    )
+}
+
 @govukLayout(
     title = Title("startPage.title"),
     useCustomContentWidth = true
@@ -111,8 +118,7 @@
 
         <div>
             <h2 id="before-you-start" class="govuk-heading-m">@messages("startPage.beforeYouStart.header")</h2>
-            @paragraphBody(message = messages("startPage.beforeYouStart.line.1"), id = Some("before-you-start-element-1"))
-            @paragraphBody(message = messages("startPage.beforeYouStart.line.2"), id = Some("before-you-start-element-2"), classes = "govuk-body")
+            @paragraphBody(message = messages("startPage.beforeYouStart.line.1", eoriLink), id = Some("before-you-start-element-1"))
         </div>
 
         <div class="govuk-!-margin-bottom-9">

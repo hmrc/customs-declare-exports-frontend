@@ -32,7 +32,7 @@ To avoid problems, we need to remove [] from field.
 }
 
 <div id="@(fieldNameWithoutBrackets)-container" class="autocomplete__wrapper govuk-input--width-20">
-    <select class="govuk-form-group" id="@(fieldNameWithoutBrackets)" name="@field.name" value="@field.value">
+    <select class="govuk-form-group" id="@(fieldNameWithoutBrackets)" name="@field.name" value="@field.value" data-gov-select-autocomplete="true">
         <option value="">@emptySelectValue</option>
         @items.map { i =>
             <option value="@i.value" @if(selectedValue == i.value) {selected="selected"}>@i.label</option>
@@ -41,6 +41,8 @@ To avoid problems, we need to remove [] from field.
 </div>
 
 <script src="/customs-declare-exports/assets/lib/accessible-autocomplete/dist/accessible-autocomplete.min.js" type="text/javascript"></script>
+<script src="/customs-declare-exports/assets/javascripts/jquery-3.5.1.slim.min.js" type="text/javascript"></script>
+<script src="/customs-declare-exports/assets/javascripts/auto-complete-fix.js" type="text/javascript"></script>
 <script type="text/javascript">
     var selectedElement = document.querySelector("#@(fieldNameWithoutBrackets)")
     accessibleAutocomplete.enhanceSelectElement({

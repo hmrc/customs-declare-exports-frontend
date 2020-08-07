@@ -65,9 +65,9 @@ POST        /is-this-exs                         controllers.declaration.IsExsCo
 
 # Representative details
 
-GET         /are-you-representing-another-agent  controllers.declaration.RepresentativeAgentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /are-you-representing-another-agent  controllers.declaration.RepresentativeAgentController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 GET         /representatives-eori-number         controllers.declaration.RepresentativeEntityController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
