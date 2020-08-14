@@ -40,5 +40,5 @@ object Eori {
     text()
       .verifying("declaration.eori.empty", nonEmpty)
       .verifying("declaration.eori.error.format", isEmpty or isValidEori)
-      .transform(build, unapply(_).getOrElse(""))
+      .transform(build, _.value)
 }
