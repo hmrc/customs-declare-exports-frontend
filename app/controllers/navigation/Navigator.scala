@@ -25,6 +25,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStan
 import forms.declaration.additionaldocuments.{DocumentsProduced, DocumentsProducedSummary}
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
+import forms.declaration.DeclarationSummaryHolder
 import forms.declaration.officeOfExit.{OfficeOfExitInsideUK, OfficeOfExitOutsideUK}
 import forms.declaration.removals.RemoveItem
 import forms.{Choice, DeclarationPage}

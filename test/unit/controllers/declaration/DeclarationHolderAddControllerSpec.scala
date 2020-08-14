@@ -19,8 +19,9 @@ package unit.controllers.declaration
 import controllers.declaration.DeclarationHolderAddController
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
+import models.DeclarationType._
+import models.Mode
 import models.declaration.DeclarationHoldersData
-import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -144,7 +145,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "return 303 (SEE_OTHER)" when {
 
         "user submits no data" in {
@@ -154,14 +155,11 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage(Mode.Normal)
-
-          val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
-          savedHolder mustBe Some(DeclarationHoldersData(Seq.empty))
         }
       }
     }
 
-    onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE) { request =>
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "return 303 (SEE_OTHER)" when {
 
         "user submits no data" in {
@@ -171,9 +169,6 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountryController.displayPage(Mode.Normal)
-
-          val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
-          savedHolder mustBe Some(DeclarationHoldersData(Seq.empty))
         }
       }
     }

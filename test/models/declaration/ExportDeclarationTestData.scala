@@ -27,7 +27,7 @@ import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
-import forms.declaration._
+import forms.declaration.{DeclarationHolder, _}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import forms.declaration.countries.Country

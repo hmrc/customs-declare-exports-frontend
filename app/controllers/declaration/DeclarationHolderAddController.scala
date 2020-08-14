@@ -25,7 +25,7 @@ import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
@@ -59,20 +59,9 @@ class DeclarationHolderAddController @Inject()(
       holder =>
         if (holder.isComplete)
           saveHolder(mode, boundForm, holders)
-        else if (holder.isEmpty)
-          continue(mode, holders)
         else
-          Future.successful(BadRequest(declarationHolderPage(mode, appendMissingFieldErrors(boundForm))))
+          Future.successful(continue(mode, holders))
     )
-  }
-
-  private def appendMissingFieldErrors(form: Form[DeclarationHolder]) = {
-    val missingEori = if (form.data("eori").isEmpty) Some(FormError("eori", "declaration.eori.empty")) else None
-    val missingCode =
-      if (form.data("authorisationTypeCode").isEmpty)
-        Some(FormError("authorisationTypeCode", "declaration.declarationHolder.authorisationCode.empty"))
-      else None
-    form.copy(errors = MultipleItemsHelper.appendAll(form.errors, missingCode, missingEori))
   }
 
   private def cachedHolders(implicit request: JourneyRequest[_]) =
@@ -90,15 +79,11 @@ class DeclarationHolderAddController @Inject()(
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage))
       )
 
-  private def continue(mode: Mode, cachedData: Seq[DeclarationHolder])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    updateExportsCache(cachedData)
-      .map(
-        _ =>
-          if (cachedData.isEmpty)
-            navigator.continueTo(mode, DeclarationHolderController.nextPage)
-          else
-            navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage)
-      )
+  private def continue(mode: Mode, cachedData: Seq[DeclarationHolder])(implicit request: JourneyRequest[AnyContent]): Result =
+    if (cachedData.isEmpty)
+      navigator.continueTo(mode, DeclarationHolderController.nextPage)
+    else
+      navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage)
 
   private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {

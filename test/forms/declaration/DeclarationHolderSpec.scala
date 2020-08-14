@@ -35,6 +35,14 @@ class DeclarationHolderSpec extends WordSpec with MustMatchers {
         mapping.bind(input).isRight mustBe true
       }
 
+      "provided with empty String values" in {
+
+        val input = Map("authorisationTypeCode" -> "", "eori" -> "")
+
+        val result = mapping.bind(input)
+        result.isRight mustBe true
+      }
+
       "provided with all fields" in {
 
         val input = Map("authorisationTypeCode" -> correctDeclarationHolder.authorisationTypeCode.get, "eori" -> "GB123456789012")
@@ -43,7 +51,6 @@ class DeclarationHolderSpec extends WordSpec with MustMatchers {
       }
     }
 
-    pending
     "return errors" when {
 
       "provided with code only" in {
@@ -55,7 +62,7 @@ class DeclarationHolderSpec extends WordSpec with MustMatchers {
         result.isLeft mustBe true
         val errors = result.left.get
         errors.size mustBe 1
-        errors.head.message mustBe "declaration.declarationHolder.authorisationCode.empty"
+        errors.head.message mustBe "declaration.eori.empty"
       }
 
       "provided with eori only" in {
@@ -67,7 +74,57 @@ class DeclarationHolderSpec extends WordSpec with MustMatchers {
         result.isLeft mustBe true
         val errors = result.left.get
         errors.size mustBe 1
-        errors.head.message mustBe "declaration.eori.empty"
+        errors.head.message mustBe "declaration.declarationHolder.authorisationCode.empty"
+      }
+
+      "provided with incorrect code" in {
+
+        val input = Map("authorisationTypeCode" -> "INCORRECT_CODE", "eori" -> "GB123456789012")
+
+        val result = mapping.bind(input)
+
+        result.isLeft mustBe true
+        val errors = result.left.get
+        errors.size mustBe 1
+        errors.head.message mustBe "declaration.declarationHolder.authorisationCode.invalid"
+      }
+
+      "provided with incorrect eori" in {
+
+        val input = Map("authorisationTypeCode" -> correctDeclarationHolder.authorisationTypeCode.get, "eori" -> "INCORRECT_EORI")
+
+        val result = mapping.bind(input)
+
+        result.isLeft mustBe true
+        val errors = result.left.get
+        errors.size mustBe 1
+        errors.head.message mustBe "declaration.eori.error.format"
+      }
+
+      "provided with incorrect code and no eori" in {
+
+        val input = Map("authorisationTypeCode" -> "INCORRECT_CODE")
+
+        val result = mapping.bind(input)
+
+        result.isLeft mustBe true
+        val errors = result.left.get
+        errors.size mustBe 2
+        errors.map(_.message) must contain("declaration.declarationHolder.authorisationCode.invalid")
+        errors.map(_.message) must contain("declaration.eori.empty")
+      }
+
+      "provided with no code and incorrect eori" in {
+
+        val input = Map("eori" -> "INCORRECT_EORI")
+
+        val result = mapping.bind(input)
+
+        result.isLeft mustBe true
+        val errors = result.left.get
+        errors.size mustBe 2
+        errors.map(_.message) must contain("declaration.declarationHolder.authorisationCode.empty")
+        errors.map(_.message) must contain("declaration.eori.error.format")
       }
     }
   }
@@ -101,6 +158,19 @@ class DeclarationHolderSpec extends WordSpec with MustMatchers {
         errors.map(_.message) must contain("declaration.eori.empty")
       }
 
+      "provided with empty String values" in {
+
+        val input = Map("authorisationTypeCode" -> "", "eori" -> "")
+
+        val result = mapping.bind(input)
+
+        result.isLeft mustBe true
+        val errors = result.left.get
+        errors.size mustBe 2
+        errors.map(_.message) must contain("declaration.declarationHolder.authorisationCode.empty")
+        errors.map(_.message) must contain("declaration.eori.empty")
+      }
+
       "provided with code only" in {
 
         val input = Map("authorisationTypeCode" -> correctDeclarationHolder.authorisationTypeCode.get)
@@ -123,6 +193,56 @@ class DeclarationHolderSpec extends WordSpec with MustMatchers {
         val errors = result.left.get
         errors.size mustBe 1
         errors.head.message mustBe "declaration.declarationHolder.authorisationCode.empty"
+      }
+
+      "provided with incorrect code" in {
+
+        val input = Map("authorisationTypeCode" -> "INCORRECT_CODE", "eori" -> "GB123456789012")
+
+        val result = mapping.bind(input)
+
+        result.isLeft mustBe true
+        val errors = result.left.get
+        errors.size mustBe 1
+        errors.head.message mustBe "declaration.declarationHolder.authorisationCode.invalid"
+      }
+
+      "provided with incorrect eori" in {
+
+        val input = Map("authorisationTypeCode" -> correctDeclarationHolder.authorisationTypeCode.get, "eori" -> "INCORRECT_EORI")
+
+        val result = mapping.bind(input)
+
+        result.isLeft mustBe true
+        val errors = result.left.get
+        errors.size mustBe 1
+        errors.head.message mustBe "declaration.eori.error.format"
+      }
+
+      "provided with incorrect code and no eori" in {
+
+        val input = Map("authorisationTypeCode" -> "INCORRECT_CODE")
+
+        val result = mapping.bind(input)
+
+        result.isLeft mustBe true
+        val errors = result.left.get
+        errors.size mustBe 2
+        errors.map(_.message) must contain("declaration.declarationHolder.authorisationCode.invalid")
+        errors.map(_.message) must contain("declaration.eori.empty")
+      }
+
+      "provided with no code and incorrect eori" in {
+
+        val input = Map("eori" -> "INCORRECT_EORI")
+
+        val result = mapping.bind(input)
+
+        result.isLeft mustBe true
+        val errors = result.left.get
+        errors.size mustBe 2
+        errors.map(_.message) must contain("declaration.declarationHolder.authorisationCode.empty")
+        errors.map(_.message) must contain("declaration.eori.error.format")
       }
     }
   }
