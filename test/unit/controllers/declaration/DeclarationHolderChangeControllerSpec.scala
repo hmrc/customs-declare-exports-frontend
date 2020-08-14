@@ -78,7 +78,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
   "DeclarationHolder Change Controller" must {
 
     onEveryDeclarationJourney() { request =>
-      "return 200 (OK)" that {
+      "return 200 (OK)" when {
         "display page method is invoked" in {
 
           withNewCaching(request.cacheModel)
@@ -127,6 +127,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
           verifyAddPageInvoked()
         }
       }
+
       "return 303 (SEE_OTHER)" when {
         "user submits valid data" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder1)))

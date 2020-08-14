@@ -125,6 +125,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           verifyAddPageInvoked()
         }
       }
+
       "return 303 (SEE_OTHER)" when {
         "user submits valid data" in {
           withNewCaching(request.cacheModel)
