@@ -51,7 +51,7 @@ object ExportDeclarationTestData {
   val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
   val correctTransportInformationContainerDataJSON: JsValue = Json.toJson(correctTransportInformationContainerData)
 
-  val correctDeclarationHolder = DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some(Eori("PL213472539481923")))
+  val correctDeclarationHolder = DeclarationHolder(authorisationTypeCode = Some("ACE"), eori = Some(Eori("PL213472539481923")))
   val correctDeclarationHoldersData = DeclarationHoldersData(Seq(correctDeclarationHolder))
 
   lazy val allRecords = declaration.copy(

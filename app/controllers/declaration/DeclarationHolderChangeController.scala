@@ -45,7 +45,7 @@ class DeclarationHolderChangeController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holder = DeclarationHolder.buildId(id)
+    val holder = DeclarationHolder.fromId(id)
     Ok(declarationHolderChangePage(mode, id, form().fill(holder).withSubmissionErrors()))
   }
 
@@ -53,7 +53,7 @@ class DeclarationHolderChangeController @Inject()(
     val boundForm = form().bindFromRequest()
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, id, formWithErrors))),
-      holder => changeHolder(mode, DeclarationHolder.buildId(id), holder, boundForm)
+      holder => changeHolder(mode, DeclarationHolder.fromId(id), holder, boundForm)
     )
   }
 

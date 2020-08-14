@@ -19,10 +19,11 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.common.Eori
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import services.HolderOfAuthorisationCode
 import utils.validators.forms.FieldValidator._
+import views.pdf.DeclarationType.DeclarationType
 
 case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[Eori]) {
   override def toString: String = id
@@ -40,10 +41,10 @@ object DeclarationHolder extends DeclarationPage {
   private def codeMapping =
     optional(text().verifying("declaration.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.code))))
 
-  val optionalMapping =
+  val optionalMapping: Mapping[DeclarationHolder] =
     Forms.mapping("authorisationTypeCode" -> codeMapping, "eori" -> eoriMapping)(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
-  val requiredMapping = Forms.mapping(
+  val requiredMapping: Mapping[DeclarationHolder] = Forms.mapping(
     "authorisationTypeCode" -> codeMapping.verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined),
     "eori" -> eoriMapping.verifying("declaration.eori.empty", _.isDefined)
   )(DeclarationHolder.apply)(DeclarationHolder.unapply)
@@ -54,9 +55,15 @@ object DeclarationHolder extends DeclarationPage {
   def buildId(value: String): DeclarationHolder = {
     val dividedString: Array[String] = value.split('-')
 
-    if (dividedString.length == 0) DeclarationHolder(None, None)
-    else if (dividedString.length == 1) DeclarationHolder(Some(value.split('-')(0)), None)
-    else DeclarationHolder(Some(value.split('-')(0)), Some(Eori(value.split('-')(1))))
+  // Method to parse format typeCode-eori
+  def fromId(id: String): DeclarationHolder = {
+    val dividedString: Array[String] = id.split('-').filterNot(_.isEmpty)
+
+    dividedString.length match {
+      case 0 => DeclarationHolder(None, None)
+      case 1 => DeclarationHolder(Some(dividedString(0).trim), None)
+      case _ => DeclarationHolder(Some(dividedString(0).trim), Some(Eori(dividedString(1).trim)))
+    }
   }
 }
 
