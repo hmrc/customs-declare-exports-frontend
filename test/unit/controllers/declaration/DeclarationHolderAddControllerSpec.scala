@@ -78,6 +78,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {
+
         "display page method is invoked" in {
 
           withNewCaching(request.cacheModel)
@@ -93,6 +94,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
       }
 
       "return 400 (BAD_REQUEST)" when {
+
         "user adds invalid data" in {
           withNewCaching(request.cacheModel)
 
@@ -128,6 +130,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
       }
 
       "return 303 (SEE_OTHER)" when {
+
         "user submits valid data" in {
           withNewCaching(request.cacheModel)
 
@@ -145,9 +148,9 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY) { request =>
-      "return 303 (SEE_OTHER)" when {
+    "return 303 (SEE_OTHER)" when {
 
+      onJourney(STANDARD, SUPPLEMENTARY) { request =>
         "user submits no data" in {
           withNewCaching(request.cacheModel)
 
@@ -157,11 +160,8 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage(Mode.Normal)
         }
       }
-    }
 
-    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
-      "return 303 (SEE_OTHER)" when {
-
+      onJourney(OCCASIONAL, CLEARANCE) { request =>
         "user submits no data" in {
           withNewCaching(request.cacheModel)
 

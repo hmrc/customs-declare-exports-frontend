@@ -17,10 +17,13 @@
 package forms.declaration
 
 import forms.common.Eori
+import models.DeclarationType._
+import models.declaration.ExportDeclarationTestData
 import models.declaration.ExportDeclarationTestData.correctDeclarationHolder
 import org.scalatest.{MustMatchers, WordSpec}
+import unit.base.JourneyTypeTestRunner
 
-class DeclarationHolderSpec extends WordSpec with MustMatchers {
+class DeclarationHolderSpec extends WordSpec with MustMatchers with JourneyTypeTestRunner {
 
   "DeclarationHolder optionalMapping" should {
 
@@ -129,9 +132,9 @@ class DeclarationHolderSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "DeclarationHolder requiredMapping" should {
+  "DeclarationHolder mandatoryMapping" should {
 
-    val mapping = DeclarationHolder.requiredMapping
+    val mapping = DeclarationHolder.mandatoryMapping
 
     "return no errors" when {
 
@@ -247,7 +250,56 @@ class DeclarationHolderSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "DeclarationHolder on form method" when {}
+  "DeclarationHolder on form method" when {
+
+    onSimplified { implicit request =>
+      "provided with empty holders list" should {
+        "return mandatoryMapping" in {
+
+          val holders = Seq.empty[DeclarationHolder]
+
+          val result = DeclarationHolder.form(holders)
+
+          result.mapping mustBe DeclarationHolder.mandatoryMapping
+        }
+      }
+
+      "provided with non-empty holders list" should {
+        "return mandatoryMapping" in {
+
+          val holders = Seq(ExportDeclarationTestData.correctDeclarationHolder)
+
+          val result = DeclarationHolder.form(holders)
+
+          result.mapping mustBe DeclarationHolder.mandatoryMapping
+        }
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE) { implicit request =>
+      "provided with empty holders list" should {
+        "return optionalMapping" in {
+
+          val holders = Seq.empty[DeclarationHolder]
+
+          val result = DeclarationHolder.form(holders)
+
+          result.mapping mustBe DeclarationHolder.optionalMapping
+        }
+      }
+
+      "provided with non-empty holders list" should {
+        "return mandatoryMapping" in {
+
+          val holders = Seq(ExportDeclarationTestData.correctDeclarationHolder)
+
+          val result = DeclarationHolder.form(holders)
+
+          result.mapping mustBe DeclarationHolder.mandatoryMapping
+        }
+      }
+    }
+  }
 
   "DeclarationHolder on fromId method" should {
 

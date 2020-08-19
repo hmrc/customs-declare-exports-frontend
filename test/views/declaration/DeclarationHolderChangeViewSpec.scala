@@ -37,7 +37,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
   val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")))
   val id = "ACE-GB42354735346235"
 
-  private val form: Form[DeclarationHolder] = DeclarationHolder.form()
+  private val form: Form[DeclarationHolder] = DeclarationHolder.mandatoryForm()
   private val declarationHolderPage = instanceOf[declaration_holder_change]
   private def createView(form: Form[DeclarationHolder] = form)(implicit request: JourneyRequest[_]): Document =
     declarationHolderPage(Mode.Normal, id, form)(request, messages)
@@ -59,7 +59,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
 
   "Declaration Holder View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
-      val view = createView(DeclarationHolder.form().fill(declarationHolder))
+      val view = createView(DeclarationHolder.mandatoryForm().fill(declarationHolder))
 
       "display page title" in {
 
@@ -107,7 +107,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
 
         val view = createView(
           DeclarationHolder
-            .form()
+            .mandatoryForm()
             .fillAndValidate(DeclarationHolder(Some("12345"), Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
         )
 
@@ -121,7 +121,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
 
         val view = createView(
           DeclarationHolder
-            .form()
+            .mandatoryForm()
             .fillAndValidate(DeclarationHolder(Some("ACE"), Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
@@ -135,7 +135,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
 
         val view = createView(
           DeclarationHolder
-            .form()
+            .mandatoryForm()
             .fillAndValidate(
               DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(Eori(TestHelper.createRandomAlphanumericString(18))))
             )

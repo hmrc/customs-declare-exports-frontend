@@ -19,13 +19,14 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.common.Eori
 import forms.mappings.ConditionalMapping
+import models.DeclarationType.SIMPLIFIED
 import models.StringOption
+import models.requests.JourneyRequest
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import services.HolderOfAuthorisationCode
 import utils.validators.forms.FieldValidator._
-import views.pdf.DeclarationType.DeclarationType
 
 case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[Eori]) {
   override def toString: String = id
@@ -71,16 +72,18 @@ object DeclarationHolder extends DeclarationPage {
       DeclarationHolder.unapply
     )
 
-  val requiredMapping: Mapping[DeclarationHolder] =
+  val mandatoryMapping: Mapping[DeclarationHolder] =
     Forms.mapping(
       "authorisationTypeCode" -> codeMapping.verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined),
       "eori" -> eoriMapping.verifying("declaration.eori.empty", _.isDefined)
     )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
-  def form(optional: Boolean = false): Form[DeclarationHolder] = if (optional) Form(optionalMapping) else Form(requiredMapping)
+  def mandatoryForm(): Form[DeclarationHolder] = Form(mandatoryMapping)
 
-  def form(holders: Seq[DeclarationHolder], declarationType: DeclarationType): Form[DeclarationHolder] = ???
-//    if (optional) Form(optionalMapping) else Form(requiredMapping)
+  def form(holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_]): Form[DeclarationHolder] = request.declarationType match {
+    case SIMPLIFIED => Form(mandatoryMapping)
+    case _          => if (holders.isEmpty) Form(optionalMapping) else Form(mandatoryMapping)
+  }
 
   // Method to parse format typeCode-eori
   def fromId(id: String): DeclarationHolder = {

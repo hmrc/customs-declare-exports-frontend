@@ -35,7 +35,7 @@ import views.tags.ViewTest
 @ViewTest
 class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val form: Form[DeclarationHolder] = DeclarationHolder.form()
+  private val form: Form[DeclarationHolder] = DeclarationHolder.mandatoryForm()
   private val declarationHolderPage = instanceOf[declaration_holder_add]
   private def createView(form: Form[DeclarationHolder] = form)(implicit request: JourneyRequest[_]): Document =
     declarationHolderPage(Mode.Normal, form)(request, messages)
@@ -127,7 +127,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
         val view = createView(
           DeclarationHolder
-            .form()
+            .mandatoryForm()
             .fillAndValidate(DeclarationHolder(Some("12345"), Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
         )
 
@@ -141,7 +141,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
         val view = createView(
           DeclarationHolder
-            .form()
+            .mandatoryForm()
             .fillAndValidate(DeclarationHolder(Some("ACE"), Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
@@ -155,7 +155,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
         val view = createView(
           DeclarationHolder
-            .form()
+            .mandatoryForm()
             .fillAndValidate(
               DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(Eori(TestHelper.createRandomAlphanumericString(18))))
             )
@@ -177,7 +177,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
     onEveryDeclarationJourney() { implicit request =>
       "display data in Authorisation Code input" in {
 
-        val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), None)))
+        val view = createView(DeclarationHolder.mandatoryForm().fill(DeclarationHolder(Some("test"), None)))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
         view.getElementById("eori").attr("value") mustBe empty
@@ -185,7 +185,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
       "display data in EORI input" in {
 
-        val view = createView(DeclarationHolder.form().fill(DeclarationHolder(None, Some(Eori("test")))))
+        val view = createView(DeclarationHolder.mandatoryForm().fill(DeclarationHolder(None, Some(Eori("test")))))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe empty
         view.getElementById("eori").attr("value") mustBe "test"
@@ -193,7 +193,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
       "display data in both inputs" in {
 
-        val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), Some(Eori("test1")))))
+        val view = createView(DeclarationHolder.mandatoryForm().fill(DeclarationHolder(Some("test"), Some(Eori("test1")))))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
         view.getElementById("eori").attr("value") mustBe "test1"
