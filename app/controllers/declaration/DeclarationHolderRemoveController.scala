@@ -19,7 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarationHolder
 import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
@@ -45,12 +45,12 @@ class DeclarationHolderRemoveController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holder = DeclarationHolder.buildId(id)
+    val holder = DeclarationHolder.fromId(id)
     Ok(holderRemovePage(mode, holder, removeYesNoForm.withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val holderToRemove = DeclarationHolder.buildId(id)
+    val holderToRemove = DeclarationHolder.fromId(id)
     removeYesNoForm
       .bindFromRequest()
       .fold(

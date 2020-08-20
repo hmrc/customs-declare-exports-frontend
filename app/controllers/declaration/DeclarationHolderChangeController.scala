@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.DeclarationHolder
-import forms.declaration.DeclarationHolder.form
+import forms.declaration.DeclarationHolder.mandatoryForm
 import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
@@ -45,15 +45,15 @@ class DeclarationHolderChangeController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holder = DeclarationHolder.buildId(id)
-    Ok(declarationHolderChangePage(mode, id, form().fill(holder).withSubmissionErrors()))
+    val holder = DeclarationHolder.fromId(id)
+    Ok(declarationHolderChangePage(mode, id, mandatoryForm().fill(holder).withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form().bindFromRequest()
+    val boundForm = mandatoryForm().bindFromRequest()
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, id, formWithErrors))),
-      holder => changeHolder(mode, DeclarationHolder.buildId(id), holder, boundForm)
+      holder => changeHolder(mode, DeclarationHolder.fromId(id), holder, boundForm)
     )
   }
 

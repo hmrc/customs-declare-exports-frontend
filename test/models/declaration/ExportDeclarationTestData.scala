@@ -27,14 +27,13 @@ import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
-import forms.declaration._
+import forms.declaration.{DeclarationHolder, _}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import forms.declaration.countries.Country
 import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.{CancelDeclaration, Lrn}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
-import models.declaration.DeclarationHoldersDataSpec._
 import models.declaration.DocumentCategory.RelatedDocument
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
@@ -51,6 +50,9 @@ object ExportDeclarationTestData {
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
   val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
   val correctTransportInformationContainerDataJSON: JsValue = Json.toJson(correctTransportInformationContainerData)
+
+  val correctDeclarationHolder = DeclarationHolder(authorisationTypeCode = Some("ACE"), eori = Some(Eori("PL213472539481923")))
+  val correctDeclarationHoldersData = DeclarationHoldersData(Seq(correctDeclarationHolder))
 
   lazy val allRecords = declaration.copy(
     dispatchLocation = Some(correctDispatchLocation),

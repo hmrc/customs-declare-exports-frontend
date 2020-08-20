@@ -21,7 +21,7 @@ import java.util.UUID
 
 import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
-import forms.declaration._
+import forms.declaration.{DeclarationHolder, _}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.consignor.ConsignorDetails
