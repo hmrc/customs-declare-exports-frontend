@@ -60,7 +60,7 @@ class DeclarationHolderAddController @Inject()(
         if (holder.isComplete)
           saveHolder(mode, boundForm, holders)
         else
-          Future.successful(continue(mode, holders))
+          continue(mode, holders)
     )
   }
 
@@ -79,11 +79,13 @@ class DeclarationHolderAddController @Inject()(
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage))
       )
 
-  private def continue(mode: Mode, cachedData: Seq[DeclarationHolder])(implicit request: JourneyRequest[AnyContent]): Result =
-    if (cachedData.isEmpty)
-      navigator.continueTo(mode, DeclarationHolderController.nextPage)
-    else
-      navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage)
+  private def continue(mode: Mode, cachedData: Seq[DeclarationHolder])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+    updateExportsCache(cachedData).map { _ =>
+      if (cachedData.isEmpty)
+        navigator.continueTo(mode, DeclarationHolderController.nextPage)
+      else
+        navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage)
+    }
 
   private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
