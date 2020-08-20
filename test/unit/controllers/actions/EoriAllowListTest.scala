@@ -16,26 +16,26 @@
 
 package unit.controllers.actions
 
-import controllers.actions.EoriWhitelist
+import controllers.actions.EoriAllowList
 import unit.base.UnitSpec
 
-class EoriWhitelistTest extends UnitSpec {
+class EoriAllowListTest extends UnitSpec {
 
-  "Eori whitelist" when {
+  "Eori allow list" when {
     "has empty" should {
       "allow everyone" in {
-        val whitelist = new EoriWhitelist(Seq.empty)
-        whitelist.allows("12345") mustBe true
-        whitelist.allows("0987") mustBe true
+        val allowList = new EoriAllowList(Seq.empty)
+        allowList.allows("12345") mustBe true
+        allowList.allows("0987") mustBe true
       }
     }
     "has elements" should {
-      val whitelist = new EoriWhitelist(Seq("12345"))
+      val allowList = new EoriAllowList(Seq("12345"))
       "allow listed eori" in {
-        whitelist.allows("12345") mustBe true
+        allowList.allows("12345") mustBe true
       }
       "disallow not listed eori" in {
-        whitelist.allows("0987") mustBe false
+        allowList.allows("0987") mustBe false
       }
     }
   }
