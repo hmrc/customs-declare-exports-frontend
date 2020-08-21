@@ -31,7 +31,17 @@ To avoid problems, we need to remove [] from field.
     field.value getOrElse ""
 }
 
-<div id="@(fieldNameWithoutBrackets)-container" class="autocomplete__wrapper govuk-input--width-20">
+@widthClass = @{
+  val LowerWidthBand = 35
+  val UpperWidthBand = 60
+  val maxLength = items.map(elem => elem.label.length + elem.value.length).max
+
+  if (maxLength >= UpperWidthBand) "govuk-input--width-full"
+  else if (maxLength >= LowerWidthBand && maxLength < UpperWidthBand) "govuk-input--width-30"
+  else "govuk-input--width-20"
+}
+
+<div id="@(fieldNameWithoutBrackets)-container" class="autocomplete__wrapper @widthClass">
     <select class="govuk-form-group" id="@(fieldNameWithoutBrackets)" name="@field.name" value="@field.value" data-gov-select-autocomplete="true">
         <option value="">@emptySelectValue</option>
         @items.map { i =>
