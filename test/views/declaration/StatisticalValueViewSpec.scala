@@ -142,6 +142,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
         val view = createView()
 
         view.getElementById("statisticalValue-hint") must containMessage("declaration.statisticalValue.header.hint")
+        view.getElementById("statisticalValue-units-hint") must containMessage("declaration.statisticalValue.units.hint")
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 

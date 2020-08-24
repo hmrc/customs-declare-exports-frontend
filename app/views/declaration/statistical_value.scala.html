@@ -47,6 +47,10 @@
 
 @tariffBody = { @Html(messages("declaration.statisticalValue.help.bodyText", components.details_content_link())) }
 
+@unitsHint = {
+    <span class="govuk-visually-hidden" id="statisticalValue-units-hint" aria-hidden="true">@messages("declaration.statisticalValue.units.hint")</span>
+}
+
 @govukLayout(
     title = Title("declaration.statisticalValue.header", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(StatisticalValue, mode, ItemId(itemId))))) {
@@ -54,9 +58,12 @@
     @formHelper(action = routes.StatisticalValueController.submitItemType(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
+        @unitsHint
+
         @hmrcCurrencyInput(CurrencyInput(
             id = "statisticalValue",
             name = "statisticalValue",
+            describedBy = Some("statisticalValue-units-hint"),
             value = form("statisticalValue").value,
             label = Label(
                 content = HtmlContent(
