@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionImpl @Inject()(
   override val authConnector: AuthConnector,
-  eoriWhitelist: EoriWhitelist,
+  eoriAllowList: EoriAllowList,
   mcc: MessagesControllerComponents,
   metrics: Metrics
 ) extends AuthAction with AuthorisedFunctions {
@@ -90,10 +90,10 @@ class AuthActionImpl @Inject()(
 
           val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments, identityData)
 
-          if (eoriWhitelist.allows(cdsLoggedInUser.eori)) {
+          if (eoriAllowList.allows(cdsLoggedInUser.eori)) {
             block(new AuthenticatedRequest(request, cdsLoggedInUser))
           } else {
-            logger.warn("User is not in whitelist")
+            logger.warn("User is not in allow list")
             Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad()))
           }
       }
@@ -124,12 +124,12 @@ trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with Ac
 
 case class NoExternalId() extends NoActiveSession("No externalId was found")
 
-@ProvidedBy(classOf[EoriWhitelistProvider])
-class EoriWhitelist(values: Seq[String]) {
+@ProvidedBy(classOf[EoriAllowListProvider])
+class EoriAllowList(values: Seq[String]) {
   def allows(eori: String): Boolean = values.isEmpty || values.contains(eori)
 }
 
-class EoriWhitelistProvider @Inject()(configuration: Configuration) extends Provider[EoriWhitelist] {
-  override def get(): EoriWhitelist =
-    new EoriWhitelist(configuration.get[Seq[String]]("whitelist.eori"))
+class EoriAllowListProvider @Inject()(configuration: Configuration) extends Provider[EoriAllowList] {
+  override def get(): EoriAllowList =
+    new EoriAllowList(configuration.get[Seq[String]]("allowList.eori"))
 }

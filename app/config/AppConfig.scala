@@ -118,7 +118,7 @@ class AppConfig @Inject()(
       .getOrElse(Array(DeclarationType.STANDARD.toString))
       .toSeq
 
-  private def whitelistConfig(key: String): Seq[String] =
+  private def allowListConfig(key: String): Seq[String] =
     Some(
       new String(
         Base64.getDecoder.decode(
@@ -130,15 +130,15 @@ class AppConfig @Inject()(
       )
     ).map(_.split(",")).getOrElse(Array.empty).toSeq
 
-  val shutterPageToWhitelist: String = "whitelist.shutterPage"
-  val whitelistedIps: String = "whitelist.ips"
-  val whitelistExcludedPathsDefined: String = "whitelist.excludedPaths"
-  val whitelisted: String = "whitelist.enabled"
+  val shutterPageToAllowList: String = "allowList.shutterPage"
+  val allowListedIps: String = "allowList.ips"
+  val allowListExcludedPathsDefined: String = "allowList.excludedPaths"
+  val allowListed: String = "allowList.enabled"
 
-  lazy val shutterPage: String = servicesConfig.getString(shutterPageToWhitelist)
-  lazy val whitelistIps: Seq[String] = whitelistConfig(whitelistedIps)
-  lazy val whitelistExcludedPaths: Seq[Call] =
-    whitelistConfig(whitelistExcludedPathsDefined).map(path => Call("GET", path))
-  lazy val whiteListEnabled: Boolean = servicesConfig.getBoolean(whitelisted)
+  lazy val shutterPage: String = servicesConfig.getString(shutterPageToAllowList)
+  lazy val allowListIps: Seq[String] = allowListConfig(allowListedIps)
+  lazy val allowListExcludedPaths: Seq[Call] =
+    allowListConfig(allowListExcludedPathsDefined).map(path => Call("GET", path))
+  lazy val allowListEnabled: Boolean = servicesConfig.getBoolean(allowListed)
 
 }

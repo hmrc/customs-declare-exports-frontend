@@ -16,20 +16,20 @@
 
 package unit.controllers.actions
 
-import controllers.actions.{EoriWhitelist, EoriWhitelistProvider}
+import controllers.actions.{EoriAllowList, EoriAllowListProvider}
 import play.api.Configuration
 import unit.base.UnitSpec
 
-class EoriWhitelistProviderTest extends UnitSpec {
+class EoriAllowListProviderTest extends UnitSpec {
 
-  "EoriWhitelistProvider" should {
-    "reload correctly from cofniguration" in {
-      val config = Configuration("whitelist.eori.0" -> "1234")
-      val provider = new EoriWhitelistProvider(config)
-      provider.get() mustBe a[EoriWhitelist]
+  "EoriAllowListProvider" should {
+    "reload correctly from configuration" in {
+      val config = Configuration("allowList.eori.0" -> "1234")
+      val provider = new EoriAllowListProvider(config)
+      provider.get() mustBe a[EoriAllowList]
     }
     "throw exception when there is not configuration key" in {
-      val provider = new EoriWhitelistProvider(Configuration.empty)
+      val provider = new EoriAllowListProvider(Configuration.empty)
       an[Exception] mustBe thrownBy {
         provider.get()
       }
