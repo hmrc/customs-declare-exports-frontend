@@ -33,7 +33,7 @@ html {
   background-color: govuk-colour("white");
 
   @include govuk-media-query($from: tablet) {
-    width: 435px;
+    width: 460px;
     @include govuk-if-ie8 {
       margin-top: -128px;
       margin-left: -227px;
