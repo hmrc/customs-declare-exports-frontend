@@ -28,7 +28,6 @@ import models.requests.AuthenticatedRequest
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes}

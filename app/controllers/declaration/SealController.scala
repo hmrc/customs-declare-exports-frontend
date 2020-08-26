@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.saveAndContinue
 import controllers.util.{FormAction, Remove}
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.Seal
 import handlers.ErrorHandler
 import javax.inject.Inject

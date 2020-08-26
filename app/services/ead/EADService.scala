@@ -24,7 +24,7 @@ import org.apache.xmlgraphics.util.MimeConstants
 import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.XmlFormat
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.http.HeaderCarrier
 import views.xml.pdf.pdfTemplate
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -22,7 +22,6 @@ import forms.declaration.RoutingQuestionYesNo
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import forms.declaration.countries.{Countries, Country}
 import javax.inject.Inject
-import models.Mode.ErrorFix
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport

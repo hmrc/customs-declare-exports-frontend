@@ -18,7 +18,6 @@ package controllers.declaration
 
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
-import play.api.mvc.AnyContent
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 

@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformation
 import javax.inject.Inject
 import models.declaration.AdditionalInformationData

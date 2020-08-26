@@ -20,7 +20,6 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.additionaldocuments.DocumentsProduced.form
 import javax.inject.Inject
 import models.Mode
 import models.requests.JourneyRequest
