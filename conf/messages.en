@@ -460,7 +460,7 @@ declaration.destinationCountry.empty = Select a country of destination
 declaration.destinationCountry.error = Select a country of destination
 
 declaration.routingQuestion.title = Will the goods pass through any other non-EU countries before arriving in {0}?
-declaration.routingQuestion.empty = Select yes if the goods will pass through any other non-EU country
+declaration.routingQuestion.empty = Select yes if the goods will pass through any non-EU countries
 declaration.routingQuestion.add.empty = Select yes if you need to add another country
 declaration.routingQuestion.remove.empty = Select yes if you want to remove this routing country
 declaration.routingQuestion.help.bodyText = Go to data element 5/18 Country of Routing Codes in the {0}.
