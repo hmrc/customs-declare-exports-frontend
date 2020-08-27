@@ -32,7 +32,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.procedure_codes
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration.OriginationCountryController
 import forms.declaration.countries.Country
-import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentCaptor

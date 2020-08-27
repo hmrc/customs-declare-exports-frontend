@@ -20,18 +20,15 @@ import controllers.actions.AuthAction
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{not_declarant, not_eligible}
-
-import scala.concurrent.ExecutionContext
 
 class NotEligibleController @Inject()(
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
   notEligiblePage: not_eligible,
   notDeclarantPage: not_declarant
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+) extends FrontendController(mcc) with I18nSupport {
 
   def displayNotEligible(): Action[AnyContent] = authenticate { implicit request =>
     Ok(notEligiblePage())

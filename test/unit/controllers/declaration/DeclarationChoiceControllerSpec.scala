@@ -25,13 +25,12 @@ import models.{DeclarationStatus, DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.OptionValues
-import play.api.data.Form
 import play.api.libs.json.JsValue
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson, Request}
+import play.api.mvc.{AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
+import unit.base.ControllerWithoutFormSpec
 import utils.FakeRequestCSRFSupport._
 import views.html.declaration.declaration_choice
 
@@ -93,7 +92,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
         val request = getRequest()
         val result = controller.displayPage(Mode.Normal)(request)
-        var form = Choice.form()
+        val form = Choice.form()
 
         viewOf(result) must be(choicePage(Mode.Normal, form)(request, controller.messagesApi.preferred(request)))
       }

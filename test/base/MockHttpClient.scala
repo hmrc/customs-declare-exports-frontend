@@ -20,9 +20,8 @@ import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import play.api.libs.json.Writes
 import play.api.libs.ws.WSClient
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.{HttpClient, _}
 import uk.gov.hmrc.http.hooks.HttpHook
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.ws._
 
 import scala.concurrent.{ExecutionContext, Future}

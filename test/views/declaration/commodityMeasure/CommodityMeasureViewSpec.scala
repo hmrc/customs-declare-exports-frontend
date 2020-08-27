@@ -39,8 +39,6 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
   private def createView(form: Option[Form[CommodityMeasure]] = None)(implicit request: JourneyRequest[_]): Document =
     goodsMeasurePage(Mode.Normal, itemId, form.getOrElse(CommodityMeasure.form(request.declarationType)))(request, messages)
 
-  private def form()(implicit request: JourneyRequest[_]): Form[CommodityMeasure] = CommodityMeasure.form(request.declarationType)
-
   "Commodity Measure" should {
 
     "have correct message keys" in {

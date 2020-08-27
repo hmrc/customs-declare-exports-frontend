@@ -43,7 +43,7 @@ class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
       navigator,
       stubMessagesControllerComponents(),
       mockPage
-    )(ec)
+    )
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])

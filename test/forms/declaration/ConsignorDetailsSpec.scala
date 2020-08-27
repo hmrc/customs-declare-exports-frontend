@@ -16,7 +16,6 @@
 
 package forms.declaration
 
-import forms.declaration
 import forms.declaration.consignor.ConsignorDetails
 import play.api.libs.json.{JsObject, JsValue}
 

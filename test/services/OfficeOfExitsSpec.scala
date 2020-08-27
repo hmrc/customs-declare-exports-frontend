@@ -16,7 +16,7 @@
 
 package services
 
-import org.scalatest.{Matchers, MustMatchers, WordSpec}
+import org.scalatest.{Matchers, WordSpec}
 import services.model.OfficeOfExit
 
 class OfficeOfExitsSpec extends WordSpec with Matchers {

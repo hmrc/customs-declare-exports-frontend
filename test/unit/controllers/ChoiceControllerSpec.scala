@@ -29,7 +29,7 @@ import play.api.mvc.{AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
+import unit.base.ControllerWithoutFormSpec
 import utils.FakeRequestCSRFSupport._
 import views.html.choice_page
 
@@ -38,7 +38,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   val choicePage = mock[choice_page]
   val controller =
-    new ChoiceController(mockAuthAction, stubMessagesControllerComponents(), choicePage)(ec)
+    new ChoiceController(mockAuthAction, stubMessagesControllerComponents(), choicePage)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -110,7 +110,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
         val request = getRequest()
         val result = controller.displayPage(None)(request)
-        var form = Choice.form()
+        val form = Choice.form()
 
         viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
       }

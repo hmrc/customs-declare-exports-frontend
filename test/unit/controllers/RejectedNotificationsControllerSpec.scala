@@ -16,9 +16,7 @@
 
 package unit.controllers
 
-import controllers.{routes, RejectedNotificationsController}
-import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, Submission}
+import controllers._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues

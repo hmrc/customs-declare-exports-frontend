@@ -20,18 +20,15 @@ import controllers.actions.AuthAction
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{draft_confirmation_page, submission_confirmation_page}
-
-import scala.concurrent.ExecutionContext
 
 class ConfirmationController @Inject()(
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
   submissionConfirmationPage: submission_confirmation_page,
   draftConfirmationPage: draft_confirmation_page
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+) extends FrontendController(mcc) with I18nSupport {
 
   def displaySubmissionConfirmation(): Action[AnyContent] = authenticate { implicit request =>
     Ok(submissionConfirmationPage())

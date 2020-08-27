@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.office_of_exit_outside_uk
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -65,7 +65,7 @@ class OfficeOfExitOutsideUkController @Inject()(
       )
   }
 
-  private def nextPage(declarationType: DeclarationType)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+  private def nextPage(declarationType: DeclarationType): Mode => Call =
     declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.TotalNumberOfItemsController.displayPage

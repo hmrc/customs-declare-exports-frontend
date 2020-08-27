@@ -50,7 +50,6 @@ class DepartureTransportSpec extends FormSpec {
 
     "has errors" when {
 
-      val transportType = IMOShipIDNumber
       val transportTypeField = DepartureTransport.meansOfTransportOnDepartureTypeKey
       val idNumberField = s"meansOfTransportOnDepartureIDNumber_$IMOShipIDNumber"
 

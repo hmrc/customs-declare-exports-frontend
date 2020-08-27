@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration._
-import forms.declaration.{TransportPayment, WarehouseIdentification}
+import forms.declaration.TransportPayment
 import models.DeclarationType._
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor

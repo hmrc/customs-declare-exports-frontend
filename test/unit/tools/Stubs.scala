@@ -18,20 +18,18 @@ package unit.tools
 
 import com.typesafe.config.{Config, ConfigFactory}
 import config.{AppConfig, TimeoutDialogConfig}
-import play.api.Mode.Test
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test.NoMaterializer
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.hmrcfrontend.views.html.components.{HmrcBanner, HmrcHeader}
 import uk.gov.hmrc.govukfrontend.views.html.components
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _, _}
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.hmrcfrontend.views.html.components.{HmrcBanner, HmrcHeader}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
 import uk.gov.hmrc.play.views.html.layouts._
-import views.html.layouts.GovUkTemplate
 import views.html.components.gds._
 
 import scala.concurrent.ExecutionContext
@@ -81,8 +79,7 @@ trait Stubs {
 
   private val environment = Environment.simple()
 
-  private def runMode(conf: Configuration): RunMode = new RunMode(conf, Test)
-  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
+  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf)
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
   private def timeoutDialogConfig() = new TimeoutDialogConfig(servicesConfig(minimalConfiguration))
 

@@ -18,9 +18,8 @@ package base
 
 import controllers.navigation.Navigator
 import models.Mode
-import models.Mode.ErrorFix
 import models.requests.JourneyRequest
-import org.mockito.ArgumentMatchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.{BeforeAndAfterEach, Suite}

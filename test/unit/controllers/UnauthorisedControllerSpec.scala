@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
+import unit.base.ControllerWithoutFormSpec
 import views.html.unauthorised
 
 class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
@@ -30,7 +30,7 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
     val unauthorisedPage = mock[unauthorised]
 
     val controller =
-      new UnauthorisedController(stubMessagesControllerComponents(), unauthorisedPage)(ec)
+      new UnauthorisedController(stubMessagesControllerComponents(), unauthorisedPage)
 
     when(unauthorisedPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }

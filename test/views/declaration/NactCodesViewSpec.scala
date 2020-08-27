@@ -94,7 +94,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
         codes.zipWithIndex.foreach {
           case (code, index) => {
             view.getElementById(s"nactCode-table-row$index-label").text mustBe code.nactCode
-            var removeButton = view.getElementById(s"nactCode-table-row$index-remove_button")
+            val removeButton = view.getElementById(s"nactCode-table-row$index-remove_button")
             removeButton must containMessage(removeCaption)
             removeButton must containMessage("declaration.nationalAdditionalCode.remove.hint", code.nactCode)
           }

@@ -24,12 +24,10 @@ import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
 
-import scala.concurrent.ExecutionContext
-
-class ChoiceController @Inject()(authenticate: AuthAction, mcc: MessagesControllerComponents, choicePage: choice_page)(implicit ec: ExecutionContext)
+class ChoiceController @Inject()(authenticate: AuthAction, mcc: MessagesControllerComponents, choicePage: choice_page)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(previousChoice: Option[Choice]): Action[AnyContent] = authenticate { implicit request =>

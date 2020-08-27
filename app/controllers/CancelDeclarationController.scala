@@ -31,7 +31,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{cancel_declaration, cancellation_confirmation_page}
 
 import scala.concurrent.{ExecutionContext, Future}

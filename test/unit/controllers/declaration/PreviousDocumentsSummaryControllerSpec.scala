@@ -19,8 +19,8 @@ package unit.controllers.declaration
 import controllers.declaration.PreviousDocumentsSummaryController
 import forms.common.YesNoAnswer
 import forms.declaration.Document
+import models.Mode
 import models.declaration.DocumentCategory.SimplifiedDeclaration
-import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}

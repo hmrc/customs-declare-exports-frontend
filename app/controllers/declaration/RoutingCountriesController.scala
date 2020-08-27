@@ -28,7 +28,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.Countries.findByCode
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
 
 import scala.concurrent.{ExecutionContext, Future}

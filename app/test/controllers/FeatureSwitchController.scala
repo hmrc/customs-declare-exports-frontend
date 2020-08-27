@@ -20,14 +20,14 @@ import config.FeatureSwitchConfig
 import features.Feature.Feature
 import features.FeatureStatus.FeatureStatus
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
 @Singleton
-class FeatureSwitchController @Inject()(implicit val featureSwitchConfig: FeatureSwitchConfig, cc: ControllerComponents)
-    extends BackendController(cc) {
+class FeatureSwitchController @Inject()(implicit val featureSwitchConfig: FeatureSwitchConfig, mcc: MessagesControllerComponents)
+    extends FrontendController(mcc) {
 
   def set(feature: Feature, status: FeatureStatus): Action[AnyContent] = Action.async { implicit req =>
     featureSwitchConfig.setFeatureStatus(feature, status)

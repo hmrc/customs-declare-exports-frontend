@@ -29,9 +29,8 @@ import models.dis.MrnStatus
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}

@@ -15,7 +15,6 @@
  */
 
 package forms.common
-import forms.Choice
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 

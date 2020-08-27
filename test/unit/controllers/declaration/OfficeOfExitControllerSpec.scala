@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OfficeOfExitController
-import forms.declaration.Document
 import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit, OfficeOfExitInsideUK}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor

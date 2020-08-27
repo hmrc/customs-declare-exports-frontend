@@ -16,15 +16,7 @@
 
 package base
 
-import java.time.Instant
-import java.util.UUID
-
-import connectors.exchange.ExportsDeclarationExchange
 import controllers.util.{Add, Remove, SaveAndContinue}
-import models.requests.{AuthenticatedRequest, JourneyRequest}
-import models.{DeclarationStatus, ExportsDeclaration}
-import play.api.mvc.Request
-import play.api.test.FakeRequest
 
 import scala.util.Random
 

@@ -20,7 +20,6 @@ import java.util.UUID
 
 import base.MockAuthAction
 import models.DeclarationType
-import play.api.mvc.AnyContentAsEmpty
 import services.cache.ExportsDeclarationBuilder
 import unit.base.UnitSpec
 

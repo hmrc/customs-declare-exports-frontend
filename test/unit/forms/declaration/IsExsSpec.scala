@@ -18,7 +18,6 @@ package unit.forms.declaration
 
 import forms.declaration.IsExs
 import play.api.data.FormError
-import play.api.libs.json.{JsObject, JsString}
 import unit.base.UnitSpec
 
 class IsExsSpec extends UnitSpec {

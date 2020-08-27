@@ -27,10 +27,8 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.nact_codes
-
-import scala.concurrent.ExecutionContext
 
 class NactCodeSummaryController @Inject()(
   authenticate: AuthAction,
@@ -39,8 +37,7 @@ class NactCodeSummaryController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   nactCodesPage: nact_codes
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   import NactCodeSummaryController._
 

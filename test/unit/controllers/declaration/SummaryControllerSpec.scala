@@ -25,13 +25,11 @@ import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
-import play.api.data.Form
-import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
-import unit.base.{ControllerSpec, ControllerWithoutFormSpec}
+import unit.base.ControllerWithoutFormSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.summary._
 
