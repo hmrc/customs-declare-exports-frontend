@@ -22,8 +22,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContentAsEmpty, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,7 +36,6 @@ import scala.concurrent.Future
 
 class JourneyActionSpec extends WordSpec with MustMatchers with MockitoSugar with BeforeAndAfterEach with ExportsDeclarationBuilder {
 
-  private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private val cache = mock[ExportsCacheService]
   private val block = mock[JourneyRequest[_] => Future[Result]]
   private val user = SignedInUser("eori", Enrolments(Set.empty), IdentityData())

@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.DocumentsProducedController
 import forms.common.YesNoAnswer
 import forms.declaration.additionaldocuments.DocumentsProduced
-import models.{DeclarationType, Mode}
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -42,7 +42,7 @@ class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMo
     navigator,
     stubMessagesControllerComponents(),
     mockDocumentProducedPage
-  )(ec)
+  )
 
   val itemId = "itemId"
 

@@ -44,7 +44,7 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
     navigator,
     stubMessagesControllerComponents(),
     mockPage
-  )(ec)
+  )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

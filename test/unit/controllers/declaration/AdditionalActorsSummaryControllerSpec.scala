@@ -44,7 +44,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
     navigator,
     stubMessagesControllerComponents(),
     mockPage
-  )(ec)
+  )
   val additionalActorsData = DeclarationAdditionalActorsData(Seq(DeclarationAdditionalActors(Some(Eori("GB56523343784324")), Some("CS"))))
   val id = "ACE-GB56523343784324"
 

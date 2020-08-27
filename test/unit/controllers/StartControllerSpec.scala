@@ -29,7 +29,7 @@ class StartControllerSpec extends ControllerWithoutFormSpec {
   val mcc = stubMessagesControllerComponents()
   val startPage = mock[start_page]
 
-  val controller = new StartController(mcc, startPage)(ec)
+  val controller = new StartController(mcc, startPage)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

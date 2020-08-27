@@ -26,7 +26,7 @@ import org.mockito.Mockito.{verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -97,14 +97,14 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         val response = controller.displayPage(Mode.Normal).apply(getRequest())
 
         status(response) must be(SEE_OTHER)
-        redirectLocation(response) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        redirectLocation(response) mustBe Some(controllers.routes.StartController.displayStartPage().url)
       }
     }
 
   }
   "Inland Transport Details Controller on POST" when {
 
-    val body = Json.obj("inlandModeOfTransportCode" -> exampleTransportMode)
+    val body = Json.obj("inlandModeOfTransportCode" -> JsString(exampleTransportMode.value))
 
     onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { request =>
       "update cache after successful bind" in {

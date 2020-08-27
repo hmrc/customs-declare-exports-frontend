@@ -16,7 +16,7 @@
 
 package connectors
 
-import java.time.{Instant, ZoneOffset, ZonedDateTime}
+import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
 import base.TestHelper._
@@ -35,8 +35,6 @@ import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
 import play.api.test.Helpers._
 import services.cache.ExportsDeclarationBuilder
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
 

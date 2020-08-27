@@ -37,7 +37,6 @@ import views.html.declaration.entry_into_declarants_records
 class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with ScalaFutures {
 
   private val page = mock[entry_into_declarants_records]
-  implicit private val implicitHeaderCarrier = hc
 
   private val controller = new EntryIntoDeclarantsRecordsController(
     mockAuthAction,

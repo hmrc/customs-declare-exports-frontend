@@ -23,11 +23,10 @@ import forms.Choice
 import helpers.views.declaration.CommonMessages
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
-import play.api.Mode.Test
 import play.api.data.Form
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -71,8 +70,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
                                   """.stripMargin)
 
       val conf: Configuration = Configuration(config)
-      val runMode: RunMode = new RunMode(conf, Test)
-      val servicesConfig = new ServicesConfig(conf, runMode)
+      val servicesConfig = new ServicesConfig(conf)
       val appConfig = new AppConfig(conf, Environment.simple(), servicesConfig, "AppName")
 
       val page = new choice_page(

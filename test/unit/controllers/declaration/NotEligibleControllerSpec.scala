@@ -32,7 +32,7 @@ class NotEligibleControllerSpec extends ControllerWithoutFormSpec {
     val notDeclarantPage: not_declarant = mock[not_declarant]
 
     val controller =
-      new NotEligibleController(mockAuthAction, stubMessagesControllerComponents(), notEligiblePage, notDeclarantPage)(ec)
+      new NotEligibleController(mockAuthAction, stubMessagesControllerComponents(), notEligiblePage, notDeclarantPage)
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))

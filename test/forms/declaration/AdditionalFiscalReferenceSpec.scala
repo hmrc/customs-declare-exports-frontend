@@ -17,7 +17,6 @@
 package forms.declaration
 
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class AdditionalFiscalReferenceSpec extends WordSpec with MustMatchers {
   import AdditionalFiscalReferenceSpec._

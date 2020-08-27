@@ -21,16 +21,15 @@ import java.util.concurrent.TimeUnit
 
 import config.AppConfig
 import controllers.util._
-import forms.DeclarationPage
 import forms.declaration.CarrierDetails
-import models.{Mode, SignedInUser}
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
-import org.mockito.ArgumentMatchers
+import models.{Mode, SignedInUser}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito._
-import org.mockito.Mockito.{verify, verifyZeroInteractions}
-import org.scalatest.{Matchers, WordSpec}
+import org.mockito.Mockito.{verify, verifyNoInteractions}
+import org.mockito.{ArgumentMatchers, Mockito}
+import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Call, Result}
 import play.api.test.FakeRequest
@@ -42,7 +41,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 
-class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with ExportsDeclarationBuilder {
+class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with ExportsDeclarationBuilder with BeforeAndAfterEach {
 
   private val mode = Mode.Normal
   private val call: Mode => Call = _ => Call("GET", "url")
@@ -50,6 +49,16 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
   private val auditService = mock[AuditService]
   private val hc: HeaderCarrier = mock[HeaderCarrier]
   private val navigator = new Navigator(config, auditService)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(config, auditService, hc)
+  }
+
+  override def afterEach(): Unit = {
+    Mockito.reset(config, auditService, hc)
+    super.afterEach()
+  }
 
   "Continue To" should {
     val updatedDate = LocalDate.of(2020, 1, 1)
@@ -84,7 +93,7 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
-        verifyZeroInteractions(auditService)
+        verifyNoInteractions(auditService)
       }
 
       "Add" in {
@@ -92,7 +101,7 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
-        verifyZeroInteractions(auditService)
+        verifyNoInteractions(auditService)
       }
 
       "Remove" in {
@@ -100,7 +109,7 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
-        verifyZeroInteractions(auditService)
+        verifyNoInteractions(auditService)
       }
 
       "Unknown Action" in {
@@ -108,7 +117,7 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
-        verifyZeroInteractions(auditService)
+        verifyNoInteractions(auditService)
       }
     }
   }

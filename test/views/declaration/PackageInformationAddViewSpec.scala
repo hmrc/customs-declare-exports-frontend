@@ -38,7 +38,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
   private val itemId = "item1"
 
-  private def form(implicit request: JourneyRequest[_]): Form[PackageInformation] = PackageInformation.form()
+  private def form(): Form[PackageInformation] = PackageInformation.form()
   private val page = instanceOf[package_information_add]
 
   private def createView(withForm: Option[Form[PackageInformation]] = None, packages: Seq[PackageInformation] = Seq.empty)(

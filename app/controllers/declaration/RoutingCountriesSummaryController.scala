@@ -22,14 +22,13 @@ import forms.declaration.RoutingQuestionYesNo
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import forms.declaration.countries.{Countries, Country}
 import javax.inject.Inject
-import models.Mode.ErrorFix
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.Countries.findByCodes
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.destinationCountries.{change_routing_country, remove_routing_country, routing_countries_summary}
 
 import scala.concurrent.{ExecutionContext, Future}

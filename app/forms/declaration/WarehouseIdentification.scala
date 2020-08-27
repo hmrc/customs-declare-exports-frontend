@@ -18,7 +18,7 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
-import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
+import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -38,16 +38,16 @@ object WarehouseIdentification extends DeclarationPage {
   private def form2ModelYesNo: (String, Option[String]) => WarehouseIdentification = {
     case (inWarehouse, warehouseId) =>
       inWarehouse match {
-        case yes => WarehouseIdentification(warehouseId.map(_.toUpperCase))
-        case no  => WarehouseIdentification(None)
+        case YesNoAnswers.yes => WarehouseIdentification(warehouseId.map(_.toUpperCase))
+        case YesNoAnswers.no  => WarehouseIdentification(None)
       }
   }
 
   private def model2FormYesNo: WarehouseIdentification => Option[(String, Option[String])] =
     model =>
       model.identificationNumber match {
-        case Some(id) => Some((yes, Some(id)))
-        case None     => Some((no, None))
+        case Some(id) => Some((YesNoAnswers.yes, Some(id)))
+        case None     => Some((YesNoAnswers.no, None))
     }
 
   private def form2Model: (String) => WarehouseIdentification = id => WarehouseIdentification(Some(id.toUpperCase))
@@ -62,7 +62,7 @@ object WarehouseIdentification extends DeclarationPage {
       warehouseIdKey ->
         mandatoryIfEqual(
           inWarehouseKey,
-          yes,
+          YesNoAnswers.yes,
           text().verifying(
             "declaration.warehouse.identification.identificationNumber.error",
             startsWithIgnoreCase(validWarehouseTypes) and noShorterThan(2) and noLongerThan(36) and isAlphanumeric

@@ -21,9 +21,8 @@ import java.util.concurrent.TimeUnit
 import com.typesafe.config.{Config, ConfigFactory}
 import forms.Choice
 import models.DeclarationType
-import play.api.Mode.Test
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import unit.base.UnitSpec
 
 import scala.concurrent.duration.FiniteDuration
@@ -79,8 +78,7 @@ class AppConfigSpec extends UnitSpec {
   val validServicesConfiguration = Configuration(validAppConfig)
   private val emptyServicesConfiguration = Configuration(emptyAppConfig)
 
-  private def runMode(conf: Configuration): RunMode = new RunMode(conf, Test)
-  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
+  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf)
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
 
   val validConfigService: AppConfig = appConfig(validServicesConfiguration)
@@ -227,7 +225,7 @@ class AppConfigSpec extends UnitSpec {
   }
 
   "throw an exception when auth.host is missing" in {
-    intercept[Exception](emptyConfigService.authUrl).getMessage must be("Could not find config auth.host")
+    intercept[Exception](emptyConfigService.authUrl).getMessage must be("Could not find config key 'auth.host'")
   }
 
   "throw an exception when urls.login is missing" in {
@@ -239,7 +237,7 @@ class AppConfigSpec extends UnitSpec {
   }
 
   "throw an exception when customs-declare-exports.host is missing" in {
-    intercept[Exception](emptyConfigService.customsDeclareExports).getMessage must be("Could not find config customs-declare-exports.host")
+    intercept[Exception](emptyConfigService.customsDeclareExports).getMessage must be("Could not find config key 'customs-declare-exports.host'")
   }
 
   "throw an exception when submit declaration uri is missing" in {

@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.saveAndContinue
 import controllers.util.{FormAction, Remove}
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.Seal
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -32,7 +32,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{seal_add, seal_remove, seal_summary}
 
 import scala.concurrent.{ExecutionContext, Future}

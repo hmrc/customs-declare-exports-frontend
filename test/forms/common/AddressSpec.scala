@@ -17,7 +17,6 @@
 package forms.common
 
 import base.TestHelper._
-import forms.common.AddressSpec.addressWithEmptyFullname
 import org.scalatest.{MustMatchers, WordSpec}
 
 class AddressSpec extends WordSpec with MustMatchers {

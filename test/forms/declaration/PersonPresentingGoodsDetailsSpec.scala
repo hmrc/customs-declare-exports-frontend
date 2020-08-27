@@ -16,7 +16,6 @@
 
 package forms.declaration
 
-import base.ExportsTestData
 import unit.base.UnitSpec
 
 class PersonPresentingGoodsDetailsSpec extends UnitSpec {

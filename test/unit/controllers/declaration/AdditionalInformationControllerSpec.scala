@@ -43,7 +43,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     navigator,
     stubMessagesControllerComponents(),
     mockSummaryPage
-  )(ec)
+  )
 
   val itemId = "itemId"
 

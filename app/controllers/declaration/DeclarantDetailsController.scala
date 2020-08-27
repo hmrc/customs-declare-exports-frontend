@@ -20,15 +20,15 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.DeclarantEoriConfirmation.form
 import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation, EntityDetails}
 import javax.inject.Inject
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.{ExportsDeclaration, Mode}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarant_details
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -67,9 +67,6 @@ class DeclarantDetailsController @Inject()(
           )
       )
   }
-
-  private def form()(implicit request: JourneyRequest[AnyContent]): Form[DeclarantEoriConfirmation] =
-    DeclarantEoriConfirmation.form()
 
   private def updateCache(declarant: DeclarantDetails)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {

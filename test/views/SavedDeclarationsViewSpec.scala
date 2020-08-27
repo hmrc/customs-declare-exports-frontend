@@ -20,9 +20,8 @@ import java.time.{LocalDateTime, ZoneOffset}
 
 import base.{ExportsTestData, Injector}
 import controllers.routes
+import forms.Choice
 import forms.Choice.AllowedChoiceValues.ContinueDec
-import forms.declaration.ConsignmentReferences
-import forms.{Choice, Ducr, Lrn}
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
 import play.twirl.api.Html
@@ -43,12 +42,6 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
   private val decWithoutDucr = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 9, 45, 0).toInstant(ZoneOffset.UTC))
-  )
-
-  private def decWithDucr(index: Int = 1) = ExportsTestData.aDeclaration(
-    withStatus(DeclarationStatus.DRAFT),
-    withConsignmentReferences(ConsignmentReferences(Ducr(s"DUCR-XXXX-$index"), Lrn("LRN-1234"))),
-    withUpdateTime(LocalDateTime.of(2019, 1, 1, 10, 0, 0).toInstant(ZoneOffset.UTC))
   )
 
   private def createView(declarations: Seq[ExportsDeclaration] = Seq.empty, page: Int = 1, pageSize: Int = 10, total: Int = 0) = {

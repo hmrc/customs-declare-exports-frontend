@@ -128,7 +128,6 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
   onJourney(CLEARANCE) { implicit request =>
     "display 'Mode of Transport' section" which {
       "have 'I don't know' option" in {
-        val section = view.getElementById("transportLeavingTheBorder")
         view
           .getElementsByAttributeValue("for", "Border_Empty") must containMessageForElements(
           "declaration.transport.leavingTheBorder.transportMode.empty"

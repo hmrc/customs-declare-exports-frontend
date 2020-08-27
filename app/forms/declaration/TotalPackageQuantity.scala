@@ -17,10 +17,9 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import models.DeclarationType._
-import models.DeclarationType.DeclarationType
+import models.DeclarationType.{DeclarationType, _}
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 
 case class TotalPackageQuantity(totalPackage: Option[String])

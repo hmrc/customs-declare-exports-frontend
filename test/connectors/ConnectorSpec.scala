@@ -17,10 +17,8 @@
 package connectors
 
 import com.codahale.metrics.SharedMetricRegistries
-import config.AppConfig
-import org.mockito.BDDMockito.given
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
