@@ -29,7 +29,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.fiscal_information
+import views.html.declaration.fiscalInformation.fiscal_information
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -53,7 +53,7 @@ class FiscalInformationController @Inject()(
         .exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code))
 
     if (fastForward && cacheContainsFiscalReferenceData) {
-      navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
+      navigator.continueTo(mode, routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
     } else if (fastForward && cacheItemIneligibleForOSR) {
       navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId))
     } else {
@@ -93,7 +93,7 @@ class FiscalInformationController @Inject()(
   ): Result =
     fiscalInformation.onwardSupplyRelief match {
       case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
-        navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
+        navigator.continueTo(mode, routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
       case FiscalInformation.AllowedFiscalInformationAnswers.no =>
         navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
     }

@@ -30,7 +30,7 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.fiscal_information
+import views.html.declaration.fiscalInformation.fiscal_information
 
 class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
