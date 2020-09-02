@@ -1,0 +1,86 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes
+@import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
+@import services.Countries
+
+@import services.view.AutoCompleteItem
+@import controllers.navigation.{Navigator, ItemId}
+@import models.requests.JourneyRequest
+@import views.components.gds.Styles._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukButton: GovukButton,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    tariffDetails: tariffDetails,
+    saveButtons: saveButtons,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
+
+@(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
+
+@inputFields = {
+    @components.fields.field_accessible_autocomplete(
+        field = form("country"),
+        label = "declaration.additionalFiscalReferences.country",
+        labelClass = Some("govuk-label--m"),
+        hintText = None,
+        emptySelectValue = messages("declaration.additionalFiscalReferences.country.empty"),
+        items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+    )
+
+    @exportsInputText(
+        field = form("reference"),
+        labelKey = "declaration.additionalFiscalReferences.reference"
+    )
+}
+@tariffBody = { @Html(messages("declaration.type.fiscalInformationSummaryText", components.details_content_link())) }
+
+@govukLayout(
+    title = Title("declaration.additionalFiscalReferences.title", "declaration.section.5"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalFiscalReference, mode, ItemId(itemId))))
+) {
+
+    @formHelper(action = routes.AdditionalFiscalReferencesAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.section.5"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.additionalFiscalReferences.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                inputFields,
+                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                saveButtons()
+            ))
+        ))
+    }
+}
