@@ -110,6 +110,7 @@ object Navigator {
     case NactCode                      => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case NactCodeFirst                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
     case CommodityMeasure              => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case AdditionalFiscalReferencesSummary => controllers.declaration.routes.ProcedureCodesController.displayPage
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
@@ -138,6 +139,7 @@ object Navigator {
   val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case AdditionalInformationRequired => controllers.declaration.routes.CommodityMeasureController.displayPage
     case AdditionalInformationSummary  => controllers.declaration.routes.CommodityMeasureController.displayPage
+    case AdditionalFiscalReferencesSummary => controllers.declaration.routes.ProcedureCodesController.displayPage
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
@@ -170,6 +172,7 @@ object Navigator {
     case NactCode                      => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case NactCodeFirst                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
     case CommodityMeasure              => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case AdditionalFiscalReferencesSummary => controllers.declaration.routes.ProcedureCodesController.displayPage
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
@@ -203,6 +206,7 @@ object Navigator {
     case NactCode                      => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case NactCodeFirst                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
     case CommodityMeasure              => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case AdditionalFiscalReferencesSummary => controllers.declaration.routes.ProcedureCodesController.displayPage
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 
@@ -237,6 +241,7 @@ object Navigator {
     case NactCode                      => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case NactCodeFirst                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
     case CommodityMeasure              => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case AdditionalFiscalReferencesSummary => controllers.declaration.routes.ProcedureCodesController.displayPage
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
@@ -263,7 +268,7 @@ object Navigator {
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case FiscalInformation         => controllers.declaration.routes.ProcedureCodesController.displayPage
-    case AdditionalFiscalReference => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = false)
+//    case AdditionalFiscalReference => controllers.declaration.routes.ProcedureCodesController.displayPage
     case CommodityDetails          => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
     case UNDangerousGoodsCode      => controllers.declaration.routes.CommodityDetailsController.displayPage
     case TaricCode                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
@@ -282,6 +287,7 @@ object Navigator {
     case DocumentsProducedSummary => documentsProducedSummaryPreviousPage
     case DocumentsProduced        => documentsProducedPreviousPage
     case AdditionalInformation    => additionalInformationPreviousPage
+    case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
@@ -372,6 +378,12 @@ object Navigator {
       controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
     else
       controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
+
+  private def additionalFiscalReferencesPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    if (cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).exists(_.references.nonEmpty))
+      controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(mode, itemId)
+    else
+      controllers.declaration.routes.FiscalInformationController.displayPage(mode, itemId)
 
   private def previousDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.hasPreviousDocuments)

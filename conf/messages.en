@@ -576,6 +576,7 @@ declaration.additionalFiscalReferences.table.multiple.heading = You have added {
 declaration.additionalFiscalReferences.add.another = Do you need to add more VAT details?
 declaration.additionalFiscalReferences.add.another.empty = Select yes if you need to add more VAT details
 declaration.additionalFiscalReferences.remove.title = Are you sure you want to remove these VAT details?
+declaration.additionalFiscalReferences.remove.empty = Select yes if you want to remove these VAT details
 
 declaration.addDocument.title = Do you need to add any documents, certificates, licences or authorisations?
 declaration.addDocument.hint = The boxes that need to be completed will be indicated by the {0} and the 4-digit document code you use.
