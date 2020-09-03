@@ -17,6 +17,8 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
 import play.api.libs.json.Json
@@ -42,7 +44,7 @@ object AdditionalFiscalReference extends DeclarationPage {
   def form(): Form[AdditionalFiscalReference] = Form(mapping)
 }
 
-case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference]) {
+case class AdditionalFiscalReferencesData(isRequired: Option[YesNoAnswer], references: Seq[AdditionalFiscalReference]) {
   def removeReferences(values: Seq[String]): AdditionalFiscalReferencesData = {
     val patterns = values.toSet
     copy(references = references.filterNot(reference => patterns.contains(reference.asString)))
@@ -55,7 +57,14 @@ case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalRefere
 object AdditionalFiscalReferencesData {
   implicit val format = Json.format[AdditionalFiscalReferencesData]
 
+  def apply(references: Seq[AdditionalFiscalReference]): AdditionalFiscalReferencesData =
+    new AdditionalFiscalReferencesData(Some(if (references.nonEmpty) YesNoAnswer(YesNoAnswers.yes) else YesNoAnswer(YesNoAnswers.no)), references)
+
+  def default: AdditionalFiscalReferencesData = AdditionalFiscalReferencesData(None, Seq.empty)
+
   val formId = "AdditionalFiscalReferences"
 
   val limit = 99
 }
+
+object AdditionalFiscalReferencesSummary extends DeclarationPage

@@ -90,7 +90,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(mode, item.id).url,
+                        href = controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.VATdetails.change", item.sequenceId))
                     )

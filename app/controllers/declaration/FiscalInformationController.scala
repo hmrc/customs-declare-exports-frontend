@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.FiscalInformation
+import forms.declaration.{AdditionalFiscalReferencesData, FiscalInformation}
 import forms.declaration.FiscalInformation._
 import javax.inject.Inject
 import models.declaration.ProcedureCodesData
@@ -53,14 +53,18 @@ class FiscalInformationController @Inject()(
         .exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code))
 
     if (fastForward && cacheContainsFiscalReferenceData) {
-      navigator.continueTo(mode, routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
+      navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
     } else if (fastForward && cacheItemIneligibleForOSR) {
       navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId))
     } else {
       val frm = form().withSubmissionErrors()
-      request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
-        case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, frm.fill(fiscalInformation)))
-        case _                       => Ok(fiscalInformationPage(mode, itemId, frm))
+      if (cacheContainsFiscalReferenceData) {
+        navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
+      } else {
+        request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
+          case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, frm.fill(fiscalInformation)))
+          case _ => Ok(fiscalInformationPage(mode, itemId, frm))
+        }
       }
     }
   }
