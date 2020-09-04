@@ -23,7 +23,7 @@ import models.declaration.ExportItem
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers._
@@ -67,11 +67,15 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    val item = anItem()
-    withNewCaching(aDeclaration(withItems(item)))
+    val item = anItem(withAdditionalFiscalReferenceData(
+      AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "123124124")))))
+    withNewCaching(aDeclaration(withItem(item)))
     await(controller.displayPage(Mode.Normal, item.id)(request))
     theResponseForm
   }
+
+  private def verifyPageInvoked(numberOfTimes: Int = 1) =
+    verify(additionalFiscalReferencesPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   "Additional fiscal references controller" should {
 
@@ -88,6 +92,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val result: Future[Result] = controller.displayPage(Mode.Normal, itemCacheData.id)(getRequest())
 
         status(result) must be(OK)
+        verifyPageInvoked()
       }
     }
 

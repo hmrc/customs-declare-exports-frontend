@@ -268,7 +268,6 @@ object Navigator {
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case FiscalInformation         => controllers.declaration.routes.ProcedureCodesController.displayPage
-//    case AdditionalFiscalReference => controllers.declaration.routes.ProcedureCodesController.displayPage
     case CommodityDetails          => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
     case UNDangerousGoodsCode      => controllers.declaration.routes.CommodityDetailsController.displayPage
     case TaricCode                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
