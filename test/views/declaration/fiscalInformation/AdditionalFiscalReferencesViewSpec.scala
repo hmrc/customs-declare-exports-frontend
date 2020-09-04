@@ -48,7 +48,6 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
 
   "Additional Fiscal References View" should {
     onEveryDeclarationJourney() { implicit request =>
-
       val additionalReferences = AdditionalFiscalReference("FR", "12345")
       val view = createView(references = Seq(additionalReferences))
 

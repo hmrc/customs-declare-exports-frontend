@@ -35,19 +35,19 @@ import views.html.declaration.fiscalInformation.additional_fiscal_references_add
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalFiscalReferencesAddController @Inject()(
-                                                         authenticate: AuthAction,
-                                                         journeyType: JourneyAction,
-                                                      override val exportsCacheService: ExportsCacheService,
-                                                      navigator: Navigator,
-                                                      mcc: MessagesControllerComponents,
-                                                      additionalFiscalReferencesPage: additional_fiscal_references_add
-                                                    )(implicit ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
+  override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
+  mcc: MessagesControllerComponents,
+  additionalFiscalReferencesPage: additional_fiscal_references_add
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
-      Ok(additionalFiscalReferencesPage(mode, itemId, frm))
-    }
+    Ok(additionalFiscalReferencesPage(mode, itemId, frm))
+  }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
@@ -56,7 +56,7 @@ class AdditionalFiscalReferencesAddController @Inject()(
       formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors))),
       _ => saveAndContinue(mode, itemId, boundForm, cachedData(itemId))
     )
-    }
+  }
 
   private def cachedData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).getOrElse(AdditionalFiscalReferencesData.default)
@@ -69,8 +69,8 @@ class AdditionalFiscalReferencesAddController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors))),
         updatedCache =>
-            updateExportsCache(itemId, cachedData.copy(references = updatedCache))
-              .map(_ => navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId)))
+          updateExportsCache(itemId, cachedData.copy(references = updatedCache))
+            .map(_ => navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId)))
       )
 
   private def updateExportsCache(itemId: String, updatedAdditionalFiscalReferencesData: AdditionalFiscalReferencesData)(

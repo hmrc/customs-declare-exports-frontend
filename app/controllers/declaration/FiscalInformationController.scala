@@ -63,7 +63,7 @@ class FiscalInformationController @Inject()(
       } else {
         request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
           case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, frm.fill(fiscalInformation)))
-          case _ => Ok(fiscalInformationPage(mode, itemId, frm))
+          case _                       => Ok(fiscalInformationPage(mode, itemId, frm))
         }
       }
     }

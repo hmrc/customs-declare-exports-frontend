@@ -103,15 +103,15 @@ object Navigator {
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
   val standardItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation            => controllers.declaration.routes.StatisticalValueController.displayPage
-    case AdditionalInformationRequired => controllers.declaration.routes.CommodityMeasureController.displayPage
-    case AdditionalInformationSummary  => controllers.declaration.routes.CommodityMeasureController.displayPage
-    case CusCode                       => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode                      => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
-    case CommodityMeasure              => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case PackageInformation                => controllers.declaration.routes.StatisticalValueController.displayPage
+    case AdditionalInformationRequired     => controllers.declaration.routes.CommodityMeasureController.displayPage
+    case AdditionalInformationSummary      => controllers.declaration.routes.CommodityMeasureController.displayPage
+    case CusCode                           => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
+    case NactCode                          => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case NactCodeFirst                     => controllers.declaration.routes.TaricCodeSummaryController.displayPage
+    case CommodityMeasure                  => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case AdditionalFiscalReferencesSummary => controllers.declaration.routes.ProcedureCodesController.displayPage
-    case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
+    case page                              => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -137,10 +137,10 @@ object Navigator {
   }
 
   val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case AdditionalInformationRequired => controllers.declaration.routes.CommodityMeasureController.displayPage
-    case AdditionalInformationSummary  => controllers.declaration.routes.CommodityMeasureController.displayPage
+    case AdditionalInformationRequired     => controllers.declaration.routes.CommodityMeasureController.displayPage
+    case AdditionalInformationSummary      => controllers.declaration.routes.CommodityMeasureController.displayPage
     case AdditionalFiscalReferencesSummary => controllers.declaration.routes.ProcedureCodesController.displayPage
-    case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
+    case page                              => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -165,15 +165,15 @@ object Navigator {
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
   val supplementaryItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation            => controllers.declaration.routes.StatisticalValueController.displayPage
-    case AdditionalInformationRequired => controllers.declaration.routes.CommodityMeasureController.displayPage
-    case AdditionalInformationSummary  => controllers.declaration.routes.CommodityMeasureController.displayPage
-    case CusCode                       => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode                      => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
-    case CommodityMeasure              => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case PackageInformation                => controllers.declaration.routes.StatisticalValueController.displayPage
+    case AdditionalInformationRequired     => controllers.declaration.routes.CommodityMeasureController.displayPage
+    case AdditionalInformationSummary      => controllers.declaration.routes.CommodityMeasureController.displayPage
+    case CusCode                           => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
+    case NactCode                          => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case NactCodeFirst                     => controllers.declaration.routes.TaricCodeSummaryController.displayPage
+    case CommodityMeasure                  => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case AdditionalFiscalReferencesSummary => controllers.declaration.routes.ProcedureCodesController.displayPage
-    case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
+    case page                              => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -199,15 +199,15 @@ object Navigator {
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation            => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case AdditionalInformationRequired => controllers.declaration.routes.PackageInformationSummaryController.displayPage
-    case AdditionalInformationSummary  => controllers.declaration.routes.PackageInformationSummaryController.displayPage
-    case CusCode                       => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode                      => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
-    case CommodityMeasure              => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case PackageInformation                => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case AdditionalInformationRequired     => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case AdditionalInformationSummary      => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case CusCode                           => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
+    case NactCode                          => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case NactCodeFirst                     => controllers.declaration.routes.TaricCodeSummaryController.displayPage
+    case CommodityMeasure                  => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case AdditionalFiscalReferencesSummary => controllers.declaration.routes.ProcedureCodesController.displayPage
-    case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
+    case page                              => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 
   val occasional: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -234,15 +234,15 @@ object Navigator {
   }
 
   val occasionalItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation            => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case AdditionalInformationRequired => controllers.declaration.routes.PackageInformationSummaryController.displayPage
-    case AdditionalInformationSummary  => controllers.declaration.routes.PackageInformationSummaryController.displayPage
-    case CusCode                       => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode                      => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
-    case CommodityMeasure              => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case PackageInformation                => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case AdditionalInformationRequired     => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case AdditionalInformationSummary      => controllers.declaration.routes.PackageInformationSummaryController.displayPage
+    case CusCode                           => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
+    case NactCode                          => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case NactCodeFirst                     => controllers.declaration.routes.TaricCodeSummaryController.displayPage
+    case CommodityMeasure                  => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case AdditionalFiscalReferencesSummary => controllers.declaration.routes.ProcedureCodesController.displayPage
-    case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
+    case page                              => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
   val common: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -267,12 +267,12 @@ object Navigator {
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case FiscalInformation         => controllers.declaration.routes.ProcedureCodesController.displayPage
-    case CommodityDetails          => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
-    case UNDangerousGoodsCode      => controllers.declaration.routes.CommodityDetailsController.displayPage
-    case TaricCode                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
-    case TaricCodeFirst            => controllers.declaration.routes.CusCodeController.displayPage
-    case StatisticalValue          => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case FiscalInformation    => controllers.declaration.routes.ProcedureCodesController.displayPage
+    case CommodityDetails     => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
+    case UNDangerousGoodsCode => controllers.declaration.routes.CommodityDetailsController.displayPage
+    case TaricCode            => controllers.declaration.routes.TaricCodeSummaryController.displayPage
+    case TaricCodeFirst       => controllers.declaration.routes.CusCodeController.displayPage
+    case StatisticalValue     => controllers.declaration.routes.NactCodeSummaryController.displayPage
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
@@ -283,9 +283,9 @@ object Navigator {
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
-    case DocumentsProducedSummary => documentsProducedSummaryPreviousPage
-    case DocumentsProduced        => documentsProducedPreviousPage
-    case AdditionalInformation    => additionalInformationPreviousPage
+    case DocumentsProducedSummary  => documentsProducedSummaryPreviousPage
+    case DocumentsProduced         => documentsProducedPreviousPage
+    case AdditionalInformation     => additionalInformationPreviousPage
     case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
   }
 

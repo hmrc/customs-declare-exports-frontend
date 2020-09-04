@@ -38,10 +38,8 @@ class AdditionalFiscalReferencesRemoveViewSpec extends UnitViewSpec with Exports
 
   private val page = instanceOf[additional_fiscal_references_remove]
 
-  private def createView(
-    form: Form[YesNoAnswer] = YesNoAnswer.form(),
-    reference: AdditionalFiscalReference = additionalReference
-                        ): Document = page(Mode.Normal, itemId, referenceId, reference, form)(request, messages)
+  private def createView(form: Form[YesNoAnswer] = YesNoAnswer.form(), reference: AdditionalFiscalReference = additionalReference): Document =
+    page(Mode.Normal, itemId, referenceId, reference, form)(request, messages)
 
   "AdditionalFiscalReferences Remove View" should {
     val view = createView()
@@ -59,9 +57,7 @@ class AdditionalFiscalReferencesRemoveViewSpec extends UnitViewSpec with Exports
       val backLink = view.getElementById("back-link")
 
       backLink must containMessage(backCaption)
-      backLink must haveHref(
-        controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemId)
-      )
+      backLink must haveHref(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemId))
     }
 
     "display 'Save and continue' button on page" in {
@@ -87,4 +83,3 @@ class AdditionalFiscalReferencesRemoveViewSpec extends UnitViewSpec with Exports
     }
   }
 }
-

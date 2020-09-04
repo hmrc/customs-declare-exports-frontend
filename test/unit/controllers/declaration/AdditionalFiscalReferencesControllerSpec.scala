@@ -67,8 +67,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    val item = anItem(withAdditionalFiscalReferenceData(
-      AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "123124124")))))
+    val item = anItem(withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "123124124")))))
     withNewCaching(aDeclaration(withItem(item)))
     await(controller.displayPage(Mode.Normal, item.id)(request))
     theResponseForm

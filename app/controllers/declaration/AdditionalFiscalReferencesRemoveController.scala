@@ -36,19 +36,19 @@ import views.html.declaration.fiscalInformation.additional_fiscal_references_rem
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalFiscalReferencesRemoveController @Inject()(
-                                                       authenticate: AuthAction,
-                                                       journeyType: JourneyAction,
-                                                       override val exportsCacheService: ExportsCacheService,
-                                                       navigator: Navigator,
-                                                       mcc: MessagesControllerComponents,
-                                                       removePage: additional_fiscal_references_remove
-                                                     )(implicit ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
+  override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
+  mcc: MessagesControllerComponents,
+  removePage: additional_fiscal_references_remove
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalFiscalReference(itemId, id) match {
       case Some(reference) => Ok(removePage(mode, itemId, id, reference, removeYesNoForm.withSubmissionErrors()))
-      case _                 => returnToSummary(mode, itemId)
+      case _               => returnToSummary(mode, itemId)
     }
   }
 
@@ -79,20 +79,24 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
   private def afterRemove(mode: Mode, itemId: String, declaration: Option[ExportsDeclaration])(implicit request: JourneyRequest[AnyContent]) =
     declaration.flatMap(_.itemBy(itemId)).flatMap(_.additionalFiscalReferencesData).map(_.references) match {
       case Some(references) if references.nonEmpty => returnToSummary(mode, itemId)
-      case _                             => navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId))
+      case _                                       => navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId))
     }
 
   private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
 
-  private def findAdditionalFiscalReference(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalFiscalReference] =
+  private def findAdditionalFiscalReference(itemId: String, id: String)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Option[AdditionalFiscalReference] =
     ListItem.findById(id, request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).map(_.references).getOrElse(Seq.empty))
 
   private def removeAdditionalFiscalReference(itemId: String, itemToRemove: AdditionalFiscalReference)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] = {
-    val cachedInformation = request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).getOrElse(AdditionalFiscalReferencesData(Seq.empty))
-    val updatedInformation = cachedInformation.copy(references = remove(cachedInformation.references, itemToRemove.equals(_: AdditionalFiscalReference)))
+    val cachedInformation =
+      request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).getOrElse(AdditionalFiscalReferencesData(Seq.empty))
+    val updatedInformation =
+      cachedInformation.copy(references = remove(cachedInformation.references, itemToRemove.equals(_: AdditionalFiscalReference)))
     updateExportsDeclarationSyncDirect(model => {
       model.updatedItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedInformation)))
     })
