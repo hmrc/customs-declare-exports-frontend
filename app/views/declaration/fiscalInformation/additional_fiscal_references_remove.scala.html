@@ -38,18 +38,18 @@
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, informationId: String, reference: AdditionalFiscalReference, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, itemId: String, referenceId: String, additionalReference: AdditionalFiscalReference, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
 
 @informationTable = {
     @govukSummaryList(SummaryList(
         rows = Seq(
             SummaryListRow(
                 Key(Text(messages("declaration.additionalFiscalReferences.country.header"))),
-                Value(Text(reference.country))
+                Value(Text(additionalReference.countryName))
             ),
             SummaryListRow(
                 Key(Text(messages("declaration.additionalFiscalReferences.numbers.header"))),
-                Value(Text(reference.reference))
+                Value(Text(additionalReference.reference))
             )
         )
     ))
@@ -59,7 +59,7 @@
     title = Title("declaration.additionalFiscalReferences.remove.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), AdditionalFiscalReferencesController.displayPage(mode, itemId)))) {
 
-    @formHelper(action = AdditionalFiscalReferencesRemoveController.submitForm(mode, itemId, informationId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalFiscalReferencesRemoveController.submitForm(mode, itemId, referenceId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

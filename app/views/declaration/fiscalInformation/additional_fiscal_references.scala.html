@@ -75,7 +75,7 @@
             rows = additionalReferences.zipWithIndex.map { case (additionalReference, index) =>
                 Seq(
                     TableRow(
-                        content = Text(additionalReference.country),
+                        content = Text(additionalReference.countryName),
                         attributes = Map("id" -> s"additional_fiscal_references-row$index-label")
                     ),
                     TableRow(

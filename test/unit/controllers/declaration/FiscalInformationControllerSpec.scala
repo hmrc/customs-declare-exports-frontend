@@ -123,7 +123,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveFiscalInformation(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesAddController
           .displayPage(Mode.Normal, itemId)
         verifyPageAccessed(0)
       }

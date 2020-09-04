@@ -22,11 +22,13 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
 import play.api.libs.json.Json
-import services.Countries.allCountries
+import services.Countries.{allCountries, countryCodeMap}
 import utils.validators.forms.FieldValidator._
 
 case class AdditionalFiscalReference(country: String, reference: String) {
   val asString: String = country + reference
+
+  val countryName = countryCodeMap(country).asString()
 }
 
 object AdditionalFiscalReference extends DeclarationPage {
