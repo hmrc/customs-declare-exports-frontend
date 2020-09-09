@@ -27,7 +27,9 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.summary.noData.header")){
+    title = Title("declaration.summary.noData.header"),
+    useCustomContentWidth = true
+) {
 
     @pageTitle(messages("declaration.summary.noData.header"))
 

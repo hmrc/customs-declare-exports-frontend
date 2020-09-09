@@ -45,7 +45,9 @@
 
 @govukLayout(
     title = Title("declaration.summary.normal-header"),
-    backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)))) {
+    backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal))),
+    useCustomContentWidth = true
+) {
 
     @formHelper(action = routes.SummaryController.submitDeclaration(), 'autoComplete -> "off") {
         @errorSummary(legalDeclarationForm.errors)
