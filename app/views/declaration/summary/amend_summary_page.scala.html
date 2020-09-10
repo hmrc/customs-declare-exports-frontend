@@ -42,7 +42,9 @@
 
 @govukLayout(
  title = Title("declaration.summary.amend-header"),
- backButton = Some(BackButton(messages("site.back"), controllers.routes.SubmissionsController.displayListOfSubmissions()))) {
+ backButton = Some(BackButton(messages("site.back"), controllers.routes.SubmissionsController.displayListOfSubmissions())),
+ useCustomContentWidth = true
+) {
 
  @pageTitle(messages("declaration.summary.amend-header"))
 
