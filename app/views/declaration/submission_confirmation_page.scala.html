@@ -46,31 +46,40 @@
     )))
 }
 
-@govukLayout(title = Title(titleKey)) {
+@govukLayout(title = Title(titleKey), useCustomContentWidth = true) {
 
-    @govukPanel(Panel(
-        title = Text(messages(titleKey)),
-        content = HtmlContent(flash.get(FlashKeys.lrn).map(lrn => lrnMessage(lrn)).getOrElse(HtmlFormat.empty))
-    ))
+  <div class="govuk-grid-row">
+    <div id="confirmation-content" class="govuk-grid-column-full">
 
-    @flash.get(FlashKeys.decId).map{decId =>
-        @govukInsetText(InsetText(
-            content = HtmlContent(decisionContent(decId))
-        ))
-    }
+      @govukPanel(Panel(
+          title = Text(messages(titleKey)),
+          content = HtmlContent(flash.get(FlashKeys.lrn).map(lrn => lrnMessage(lrn)).getOrElse(HtmlFormat.empty))
+      ))
 
-    <p class="govuk-body">
-        @Html(messages("declaration.confirmation.info", link(
-            id = Some("submissions-link"),
-            text = messages("declaration.confirmation.info.link"),
-            call = routes.SubmissionsController.displayListOfSubmissions()
-        )))
-    </p>
+      @flash.get(FlashKeys.decId).map{decId =>
+          @govukInsetText(InsetText(
+              content = HtmlContent(decisionContent(decId))
+          ))
+      }
 
-    <p class="govuk-body">
-        @link(
-            id = Some("back-to-start-link"),
-            text = messages("declaration.confirmation.submitAnotherDeclaration"),
-            call = routes.ChoiceController.displayPage())
-    </p>
+      <p class="govuk-body">
+          @Html(messages("declaration.confirmation.info", link(
+              id = Some("submissions-link"),
+              text = messages("declaration.confirmation.info.link"),
+              call = routes.SubmissionsController.displayListOfSubmissions()
+          )))
+      </p>
+
+      <p class="govuk-body">
+          @link(
+              id = Some("back-to-start-link"),
+              text = messages("declaration.confirmation.submitAnotherDeclaration"),
+              call = routes.ChoiceController.displayPage())
+      </p>
+
+    </div>
+  </div>
 }
+
+<script src="@routes.Assets.versioned("javascripts/textResizeDetector.js")" type="text/javascript"></script>
+<script src="@routes.Assets.versioned("javascripts/changingConfirmationPageWidth.js")" type="text/javascript"></script>
