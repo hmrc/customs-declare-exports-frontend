@@ -46,28 +46,34 @@
     useCustomContentWidth = true
 ) {
 
-    @pageTitle(messages("declaration.summary.saved-header"))
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
 
-    @draftInfoSection(request.cacheModel)
+      @pageTitle(messages("declaration.summary.saved-header"))
 
-    @references_section(Mode.Draft, request.cacheModel)
+      @draftInfoSection(request.cacheModel)
 
-    @parties_section(Mode.Draft, request.cacheModel)
+      @references_section(Mode.Draft, request.cacheModel)
 
-    @countries_section(Mode.Draft, request.cacheModel)
+      @parties_section(Mode.Draft, request.cacheModel)
 
-    @locations_section(Mode.Draft, request.cacheModel)
+      @countries_section(Mode.Draft, request.cacheModel)
 
-    @transaction_section(Mode.Draft, request.cacheModel)
+      @locations_section(Mode.Draft, request.cacheModel)
 
-    @items_section(Mode.Draft, request.cacheModel)
+      @transaction_section(Mode.Draft, request.cacheModel)
 
-    @warehouse_section(Mode.Draft, request.cacheModel)
+      @items_section(Mode.Draft, request.cacheModel)
 
-    @transport_section(Mode.Draft, request.cacheModel)
+      @warehouse_section(Mode.Draft, request.cacheModel)
+
+      @transport_section(Mode.Draft, request.cacheModel)
 
 
-    @paragraphBody(messages("saved.declarations.summary.paragraph"))
+      @paragraphBody(messages("saved.declarations.summary.paragraph"))
 
-    @linkButton("saved.declarations.summary.continue", routes.DispatchLocationController.displayPage(Mode.Draft))
+      @linkButton("saved.declarations.summary.continue", routes.DispatchLocationController.displayPage(Mode.Draft))
+
+    </div>
+  </div>
 }

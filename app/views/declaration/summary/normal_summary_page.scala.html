@@ -49,29 +49,35 @@
     useCustomContentWidth = true
 ) {
 
-    @formHelper(action = routes.SummaryController.submitDeclaration(), 'autoComplete -> "off") {
-        @errorSummary(legalDeclarationForm.errors)
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
 
-        @pageTitle(messages("declaration.summary.normal-header"))
+      @formHelper(action = routes.SummaryController.submitDeclaration(), 'autoComplete -> "off") {
+          @errorSummary(legalDeclarationForm.errors)
 
-        @references_section(Mode.Change, request.cacheModel)
+          @pageTitle(messages("declaration.summary.normal-header"))
 
-        @parties_section(Mode.Change, request.cacheModel)
+          @references_section(Mode.Change, request.cacheModel)
 
-        @countries_section(Mode.Change, request.cacheModel)
+          @parties_section(Mode.Change, request.cacheModel)
 
-        @locations_section(Mode.Change, request.cacheModel)
+          @countries_section(Mode.Change, request.cacheModel)
 
-        @transaction_section(Mode.Change, request.cacheModel)
+          @locations_section(Mode.Change, request.cacheModel)
 
-        @items_section(Mode.Change, request.cacheModel)
+          @transaction_section(Mode.Change, request.cacheModel)
 
-        @warehouse_section(Mode.Change, request.cacheModel)
+          @items_section(Mode.Change, request.cacheModel)
 
-        @transport_section(Mode.Change, request.cacheModel)
+          @warehouse_section(Mode.Change, request.cacheModel)
 
-        @legal_declaration(legalDeclarationForm)
+          @transport_section(Mode.Change, request.cacheModel)
 
-        @saveAndContinue("site.acceptAndSubmitDeclaration")
-    }
+          @legal_declaration(legalDeclarationForm)
+
+          @saveAndContinue("site.acceptAndSubmitDeclaration")
+      }
+
+    </div>
+  </div>
 }

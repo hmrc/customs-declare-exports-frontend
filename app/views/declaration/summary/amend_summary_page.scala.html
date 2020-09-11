@@ -46,26 +46,32 @@
  useCustomContentWidth = true
 ) {
 
- @pageTitle(messages("declaration.summary.amend-header"))
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
 
- @references_section(Mode.ChangeAmend, request.cacheModel)
+      @pageTitle(messages("declaration.summary.amend-header"))
 
- @parties_section(Mode.ChangeAmend, request.cacheModel)
+      @references_section(Mode.ChangeAmend, request.cacheModel)
 
- @countries_section(Mode.ChangeAmend, request.cacheModel)
+      @parties_section(Mode.ChangeAmend, request.cacheModel)
 
- @locations_section(Mode.ChangeAmend, request.cacheModel)
+      @countries_section(Mode.ChangeAmend, request.cacheModel)
 
- @transaction_section(Mode.ChangeAmend, request.cacheModel)
+      @locations_section(Mode.ChangeAmend, request.cacheModel)
 
- @items_section(Mode.ChangeAmend, request.cacheModel)
+      @transaction_section(Mode.ChangeAmend, request.cacheModel)
 
- @warehouse_section(Mode.ChangeAmend, request.cacheModel)
+      @items_section(Mode.ChangeAmend, request.cacheModel)
 
- @transport_section(Mode.ChangeAmend, request.cacheModel)
+      @warehouse_section(Mode.ChangeAmend, request.cacheModel)
+
+      @transport_section(Mode.ChangeAmend, request.cacheModel)
 
 
- @paragraphBody(messages("summary.amend.information"))
+      @paragraphBody(messages("summary.amend.information"))
 
- @linkButton("site.continue", routes.DeclarationChoiceController.displayPage(Mode.Amend))
+      @linkButton("site.continue", routes.DeclarationChoiceController.displayPage(Mode.Amend))
+
+    </div>
+  </div>
 }

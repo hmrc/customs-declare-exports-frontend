@@ -31,10 +31,15 @@
     useCustomContentWidth = true
 ) {
 
-    @pageTitle(messages("declaration.summary.noData.header"))
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
 
-    @paragraphBody(messages("declaration.summary.noData.header.secondary"))
+      @pageTitle(messages("declaration.summary.noData.header"))
 
-    @linkButton("declaration.summary.noData.button", routes.StartController.displayStartPage())
+      @paragraphBody(messages("declaration.summary.noData.header.secondary"))
 
+      @linkButton("declaration.summary.noData.button", routes.StartController.displayStartPage())
+
+    </div>
+  </div>
 }
