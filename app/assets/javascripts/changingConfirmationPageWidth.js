@@ -9,7 +9,6 @@ function onFontResize(e, args) {
 }
 
 function adjustColumnWidth(fontSize) {
-    console.log("Changing page width for font of size " + fontSize);
     var bodyContentClass = "govuk-grid-column-full";
     if (fontSize < 30)
         bodyContentClass = "govuk-grid-column-two-thirds";
