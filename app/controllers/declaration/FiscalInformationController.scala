@@ -52,19 +52,25 @@ class FiscalInformationController @Inject()(
         .flatMap(_.procedureCode)
         .exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code))
 
-    if (fastForward && cacheContainsFiscalReferenceData) {
+    def displayFiscalInformationPage() = {
+      val frm = form().withSubmissionErrors()
+      request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
+        case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, frm.fill(fiscalInformation)))
+        case _                       => Ok(fiscalInformationPage(mode, itemId, frm))
+      }
+    }
+
+    if (mode == Mode.Change) {
+      displayFiscalInformationPage()
+    } else if (fastForward && cacheContainsFiscalReferenceData) {
       navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
     } else if (fastForward && cacheItemIneligibleForOSR) {
       navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId))
     } else {
-      val frm = form().withSubmissionErrors()
       if (cacheContainsFiscalReferenceData) {
         navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
       } else {
-        request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
-          case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, frm.fill(fiscalInformation)))
-          case _                       => Ok(fiscalInformationPage(mode, itemId, frm))
-        }
+        displayFiscalInformationPage()
       }
     }
   }
