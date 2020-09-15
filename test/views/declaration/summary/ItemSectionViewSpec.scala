@@ -90,7 +90,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.VATdetails.change", "1")
 
         row must haveSummaryActionsHref(
-          controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(Mode.Normal, itemWithAnswers.id)
+          controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemWithAnswers.id)
         )
       }
 

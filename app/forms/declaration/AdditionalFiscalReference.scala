@@ -32,6 +32,7 @@ case class AdditionalFiscalReference(country: String, reference: String) {
 }
 
 object AdditionalFiscalReference extends DeclarationPage {
+  def build(country: String, reference: String): AdditionalFiscalReference = new AdditionalFiscalReference(country, reference.toUpperCase)
   implicit val format = Json.format[AdditionalFiscalReference]
 
   val mapping = Forms.mapping(
@@ -41,7 +42,7 @@ object AdditionalFiscalReference extends DeclarationPage {
     "reference" -> text()
       .verifying("declaration.additionalFiscalReferences.reference.empty", _.trim.nonEmpty)
       .verifying("declaration.additionalFiscalReferences.reference.error", isAlphanumeric and noLongerThan(15))
-  )(AdditionalFiscalReference.apply)(AdditionalFiscalReference.unapply)
+  )(AdditionalFiscalReference.build)(AdditionalFiscalReference.unapply)
 
   def form(): Form[AdditionalFiscalReference] = Form(mapping)
 }
