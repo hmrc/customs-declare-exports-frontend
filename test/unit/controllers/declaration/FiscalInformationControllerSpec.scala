@@ -102,7 +102,8 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
       "mode is Change and there is additionalFiscalReferencesData in cache" in {
         val item = anItem(
           withFiscalInformation(FiscalInformation(yes)),
-          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12345")))))
+          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12345"))))
+        )
         withNewCaching(aDeclaration(withItems(item)))
 
         val result = controller.displayPage(Mode.Change, item.id, fastForward = false)(getRequest())
@@ -180,7 +181,8 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
       "user navigates to Fiscal Information page with additionalFiscalReferencesData in cache and mode is Normal" in {
         val item = anItem(
           withFiscalInformation(FiscalInformation(yes)),
-          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12345")))))
+          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12345"))))
+        )
         withNewCaching(aDeclaration(withItems(item)))
 
         val result = controller.displayPage(Mode.Normal, item.id, fastForward = false)(getRequest())
