@@ -76,11 +76,11 @@
                 Seq(
                     TableRow(
                         content = Text(additionalReference.countryName),
-                        attributes = Map("id" -> s"additional_fiscal_references-row$index-country")
+                        attributes = Map("id" -> s"additional_fiscal_references-row-$index-country")
                     ),
                     TableRow(
                         content = Text(additionalReference.reference),
-                        attributes = Map("id" -> s"additional_fiscal_references-row$index-reference")
+                        attributes = Map("id" -> s"additional_fiscal_references-row-$index-reference")
                     ),
                     TableRow(
                         content = HtmlContent(link(

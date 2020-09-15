@@ -99,6 +99,17 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value.value.onwardSupplyRelief mustBe yes
       }
 
+      "mode is Change and there is additionalFiscalReferencesData in cache" in {
+        val item = anItem(
+          withFiscalInformation(FiscalInformation(yes)),
+          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12345")))))
+        withNewCaching(aDeclaration(withItems(item)))
+
+        val result = controller.displayPage(Mode.Change, item.id, fastForward = false)(getRequest())
+
+        status(result) mustBe OK
+        verifyPageAccessed(1)
+      }
     }
 
     "return 400 (BAD_REQUEST)" when {
@@ -163,6 +174,19 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, item.id)
+        verifyPageAccessed(0)
+      }
+
+      "user navigates to Fiscal Information page with additionalFiscalReferencesData in cache and mode is Normal" in {
+        val item = anItem(
+          withFiscalInformation(FiscalInformation(yes)),
+          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12345")))))
+        withNewCaching(aDeclaration(withItems(item)))
+
+        val result = controller.displayPage(Mode.Normal, item.id, fastForward = false)(getRequest())
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, item.id)
         verifyPageAccessed(0)
       }
     }
