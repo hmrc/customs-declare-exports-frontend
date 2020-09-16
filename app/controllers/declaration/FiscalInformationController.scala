@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.FiscalInformation
+import forms.declaration.{AdditionalFiscalReferencesData, FiscalInformation}
 import forms.declaration.FiscalInformation._
 import javax.inject.Inject
 import models.declaration.ProcedureCodesData
@@ -29,7 +29,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.fiscal_information
+import views.html.declaration.fiscalInformation.fiscal_information
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,15 +52,25 @@ class FiscalInformationController @Inject()(
         .flatMap(_.procedureCode)
         .exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code))
 
-    if (fastForward && cacheContainsFiscalReferenceData) {
-      navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
-    } else if (fastForward && cacheItemIneligibleForOSR) {
-      navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId))
-    } else {
+    def displayFiscalInformationPage() = {
       val frm = form().withSubmissionErrors()
       request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
         case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, frm.fill(fiscalInformation)))
         case _                       => Ok(fiscalInformationPage(mode, itemId, frm))
+      }
+    }
+
+    if (mode == Mode.Change) {
+      displayFiscalInformationPage()
+    } else if (fastForward && cacheContainsFiscalReferenceData) {
+      navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
+    } else if (fastForward && cacheItemIneligibleForOSR) {
+      navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId))
+    } else {
+      if (cacheContainsFiscalReferenceData) {
+        navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
+      } else {
+        displayFiscalInformationPage()
       }
     }
   }
@@ -93,7 +103,7 @@ class FiscalInformationController @Inject()(
   ): Result =
     fiscalInformation.onwardSupplyRelief match {
       case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
-        navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
+        navigator.continueTo(mode, routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
       case FiscalInformation.AllowedFiscalInformationAnswers.no =>
         navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
     }

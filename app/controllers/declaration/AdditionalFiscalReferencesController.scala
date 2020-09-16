@@ -18,99 +18,62 @@ package controllers.declaration
 
 import controllers.actions.ItemActionBuilder
 import controllers.navigation.Navigator
-import controllers.util.{MultipleItemsHelper, _}
-import forms.declaration.AdditionalFiscalReference.form
-import forms.declaration.AdditionalFiscalReferencesData._
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
-import handlers.ErrorHandler
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.additional_fiscal_references
-
-import scala.concurrent.{ExecutionContext, Future}
+import views.html.declaration.fiscalInformation.additional_fiscal_references
 
 class AdditionalFiscalReferencesController @Inject()(
   itemAction: ItemActionBuilder,
-  errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalFiscalReferencesPage: additional_fiscal_references
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
-    val frm = form().withSubmissionErrors()
-    request.item.additionalFiscalReferencesData.fold(Ok(additionalFiscalReferencesPage(mode, itemId, frm))) { data =>
-      Ok(additionalFiscalReferencesPage(mode, itemId, frm, data.references))
-    }
-  }
-
-  def saveReferences(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId).async { implicit request =>
-    val actionTypeOpt = FormAction.bindFromRequest()
-    val cache = request.item.additionalFiscalReferencesData.getOrElse(AdditionalFiscalReferencesData(Seq.empty))
-    val boundForm = form().bindFromRequest()
-
-    actionTypeOpt match {
-      case Add                             => addReference(mode, itemId, boundForm, cache)
-      case SaveAndContinue | SaveAndReturn => saveAndContinue(mode, itemId, boundForm, cache)
-      case _                               => errorHandler.displayErrorPage()
-    }
-
-  }
-
-  private def addReference(mode: Mode, itemId: String, form: Form[AdditionalFiscalReference], cachedData: AdditionalFiscalReferencesData)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    MultipleItemsHelper
-      .add(form, cachedData.references, limit)
-      .fold(
-        formWithErrors => Future.successful(badRequest(mode, itemId, formWithErrors, cachedData.references)),
-        updatedCache =>
-          updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache))
-            .map(_ => navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId)))
-      )
-
-  private def saveAndContinue(mode: Mode, itemId: String, form: Form[AdditionalFiscalReference], cachedData: AdditionalFiscalReferencesData)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    MultipleItemsHelper
-      .saveAndContinue(form, cachedData.references, isMandatory = true, limit)
-      .fold(
-        formWithErrors => Future.successful(badRequest(mode, itemId, formWithErrors, cachedData.references)),
-        updatedCache =>
-          if (updatedCache != cachedData.references)
-            updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache))
-              .map(_ => navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId)))
-          else Future.successful(navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId)))
-      )
-
-  def removeReference(mode: Mode, itemId: String, value: String) = itemAction(itemId).async { implicit request =>
-    val cacheModel = request.item.additionalFiscalReferencesData
-      .getOrElse(AdditionalFiscalReferencesData(Seq.empty))
-    val updatedCache = cacheModel.removeReference(value)
-    updateExportsCache(itemId, updatedCache).map {
+    val frm = addAnotherYesNoForm.withSubmissionErrors()
+    cachedAdditionalReferencesData(itemId) match {
+      case Some(data) if data.references.nonEmpty =>
+        Ok(additionalFiscalReferencesPage(mode, itemId, frm, data.references))
       case Some(_) =>
-        navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
-      case None => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage(_))
+        navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
+      case _ =>
+        navigator.continueTo(mode, controllers.declaration.routes.FiscalInformationController.displayPage(_, itemId))
     }
   }
 
-  private def badRequest(mode: Mode, itemId: String, formWithErrors: Form[AdditionalFiscalReference], references: Seq[AdditionalFiscalReference])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Result =
-    BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors, references))
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
+    addAnotherYesNoForm
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[YesNoAnswer]) =>
+          BadRequest(
+            additionalFiscalReferencesPage(
+              mode,
+              itemId,
+              formWithErrors,
+              cachedAdditionalReferencesData(itemId).map(_.references).getOrElse(Seq.empty)
+            )
+        ),
+        validYesNo =>
+          validYesNo.answer match {
+            case YesNoAnswers.yes =>
+              navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
+            case YesNoAnswers.no => navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
+        }
+      )
+  }
 
-  private def updateExportsCache(itemId: String, updatedAdditionalFiscalReferencesData: AdditionalFiscalReferencesData)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
-      model.updatedItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedAdditionalFiscalReferencesData)))
-    }
+  private def addAnotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalFiscalReferences.add.another.empty")
+
+  private def cachedAdditionalReferencesData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+    request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData)
 }

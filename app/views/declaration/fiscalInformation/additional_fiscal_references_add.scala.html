@@ -29,58 +29,19 @@
 @import scala.collection.immutable
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukButton: GovukButton,
-        govukTable : GovukTable,
-        govukRadios: GovukRadios,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        spanVisuallyHidden: spanVisuallyHidden,
-        tariffDetails: tariffDetails,
-        addButton: addButton,
-        saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukButton: GovukButton,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    tariffDetails: tariffDetails,
+    saveButtons: saveButtons,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
-
-@removeButton(value: String) = {
-    <button class="govuk-button govuk-button--secondary govuk-!-margin-0" type="submit" formmethod="post" formaction="@routes.AdditionalFiscalReferencesController.removeReference(mode, itemId, value)">
-        <span aria-hidden="true">@messages("site.remove")</span>
-        <span class="govuk-visually-hidden">@{messages("declaration.additionalFiscalReferences.remove.hint", value)}</span>
-    </button>
-}
-
-@referenceTable = {
-    @if(additionalReferences.nonEmpty) {
-        @govukTable(Table(
-            rows = additionalReferences.zipWithIndex.map { case (reference, index) =>
-                Seq(
-                    TableRow(
-                        content = Text(reference.asString),
-                        attributes = Map("id" -> s"removable_elements-row$index-label")
-                    ),
-                    TableRow(
-                        content = HtmlContent(removeButton(reference.asString)),
-                        attributes = Map("id" -> s"removable_elements-row$index-remove_button")
-                    )
-                )
-            },
-            head = Some(List(
-                HeadCell(
-                    content = Text(messages("declaration.additionalFiscalReferences.numbers.header"))
-                ),
-                HeadCell(
-                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
-                )
-            )),
-            attributes = Map("id" -> "removable_elements")
-        ))
-    }
-}
 
 @inputFields = {
     @components.fields.field_accessible_autocomplete(
@@ -102,13 +63,12 @@
 @govukLayout(
     title = Title("declaration.additionalFiscalReferences.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalFiscalReference, mode, ItemId(itemId))))
-    ) {
+) {
 
-    @formHelper(action = routes.AdditionalFiscalReferencesController.saveReferences(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = routes.AdditionalFiscalReferencesAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))
-
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
@@ -117,14 +77,10 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                referenceTable,
                 inputFields,
                 tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-                addButton(label = "site.add", hiddenLabel = Some(messages("declaration.additionalFiscalReferences.add.hint"))),
                 saveButtons()
             ))
         ))
-
     }
-
 }

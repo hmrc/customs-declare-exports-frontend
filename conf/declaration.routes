@@ -268,11 +268,17 @@ POST         /items/:itemId/fiscal-information   controllers.declaration.FiscalI
 
 # Additional Fiscal References
 
-GET         /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-fiscal-references-list        controllers.declaration.AdditionalFiscalReferencesController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesController.saveReferences(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-fiscal-references-list        controllers.declaration.AdditionalFiscalReferencesController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/additional-fiscal-references/:reference  controllers.declaration.AdditionalFiscalReferencesController.removeReference(mode: models.Mode ?= models.Mode.Normal, itemId, reference)
+GET         /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferencesRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+
+POST        /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferencesRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
 
 # Commodity Details
 

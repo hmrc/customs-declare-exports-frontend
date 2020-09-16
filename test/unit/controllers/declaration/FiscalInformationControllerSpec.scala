@@ -30,7 +30,7 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.fiscal_information
+import views.html.declaration.fiscalInformation.fiscal_information
 
 class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
@@ -99,6 +99,18 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value.value.onwardSupplyRelief mustBe yes
       }
 
+      "mode is Change" in {
+        val item = anItem(
+          withFiscalInformation(FiscalInformation(yes)),
+          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12345"))))
+        )
+        withNewCaching(aDeclaration(withItems(item)))
+
+        val result = controller.displayPage(Mode.Change, item.id, fastForward = false)(getRequest())
+
+        status(result) mustBe OK
+        verifyPageAccessed(1)
+      }
     }
 
     "return 400 (BAD_REQUEST)" when {
@@ -123,7 +135,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveFiscalInformation(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesAddController
           .displayPage(Mode.Normal, itemId)
         verifyPageAccessed(0)
       }
@@ -163,6 +175,20 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, item.id)
+        verifyPageAccessed(0)
+      }
+
+      "user navigates to Fiscal Information page with additionalFiscalReferencesData in cache and mode is Normal" in {
+        val item = anItem(
+          withFiscalInformation(FiscalInformation(yes)),
+          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12345"))))
+        )
+        withNewCaching(aDeclaration(withItems(item)))
+
+        val result = controller.displayPage(Mode.Normal, item.id, fastForward = false)(getRequest())
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, item.id)
         verifyPageAccessed(0)
       }
     }

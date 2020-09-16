@@ -262,13 +262,13 @@ object Navigator {
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case FiscalInformation         => controllers.declaration.routes.ProcedureCodesController.displayPage
-    case AdditionalFiscalReference => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = false)
-    case CommodityDetails          => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
-    case UNDangerousGoodsCode      => controllers.declaration.routes.CommodityDetailsController.displayPage
-    case TaricCode                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
-    case TaricCodeFirst            => controllers.declaration.routes.CusCodeController.displayPage
-    case StatisticalValue          => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case FiscalInformation                 => controllers.declaration.routes.ProcedureCodesController.displayPage
+    case AdditionalFiscalReferencesSummary => controllers.declaration.routes.ProcedureCodesController.displayPage
+    case CommodityDetails                  => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
+    case UNDangerousGoodsCode              => controllers.declaration.routes.CommodityDetailsController.displayPage
+    case TaricCode                         => controllers.declaration.routes.TaricCodeSummaryController.displayPage
+    case TaricCodeFirst                    => controllers.declaration.routes.CusCodeController.displayPage
+    case StatisticalValue                  => controllers.declaration.routes.NactCodeSummaryController.displayPage
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
@@ -279,9 +279,10 @@ object Navigator {
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
-    case DocumentsProducedSummary => documentsProducedSummaryPreviousPage
-    case DocumentsProduced        => documentsProducedPreviousPage
-    case AdditionalInformation    => additionalInformationPreviousPage
+    case DocumentsProducedSummary  => documentsProducedSummaryPreviousPage
+    case DocumentsProduced         => documentsProducedPreviousPage
+    case AdditionalInformation     => additionalInformationPreviousPage
+    case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
@@ -372,6 +373,12 @@ object Navigator {
       controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
     else
       controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
+
+  private def additionalFiscalReferencesPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    if (cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).exists(_.references.nonEmpty))
+      controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(mode, itemId)
+    else
+      controllers.declaration.routes.FiscalInformationController.displayPage(mode, itemId)
 
   private def previousDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.hasPreviousDocuments)

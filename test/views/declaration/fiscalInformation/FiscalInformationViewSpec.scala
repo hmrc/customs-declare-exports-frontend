@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration
+package views.declaration.fiscalInformation
 
 import base.Injector
 import controllers.util.SaveAndReturn
@@ -27,7 +27,7 @@ import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.fiscal_information
+import views.html.declaration.fiscalInformation.fiscal_information
 import views.tags.ViewTest
 
 @ViewTest

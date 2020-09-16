@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package views.declaration
+package views.declaration.fiscalInformation
 
 import base.Injector
-import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
+import controllers.util.{SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalFiscalReference
 import helpers.views.declaration.CommonMessages
 import models.Mode
@@ -27,15 +27,15 @@ import play.api.data.Form
 import services.cache.ExportItemIdGeneratorService
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.additional_fiscal_references
+import views.html.declaration.fiscalInformation.additional_fiscal_references_add
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
+class AdditionalFiscalReferencesAddViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
 
   private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
 
-  private val additionalFiscalReferencesPage = instanceOf[additional_fiscal_references]
+  private val additionalFiscalReferencesPage = instanceOf[additional_fiscal_references_add]
 
   val itemId = new ExportItemIdGeneratorService().generateItemId()
 
@@ -85,36 +85,6 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
 
       "display 'Save and return' button" in {
         view must containElement("button").withName(SaveAndReturn.toString)
-      }
-
-      "display 'Add' button" in {
-        view must containElement("button").withName(Add.toString)
-      }
-    }
-  }
-
-  "Additional Fiscal References" should {
-    onEveryDeclarationJourney() { implicit request =>
-      val view = createView(references = Seq(AdditionalFiscalReference("FR", "12345")))
-
-      "display table header" in {
-        view.getElementsByTag("th").get(0).text() mustBe messages("declaration.additionalFiscalReferences.numbers.header")
-      }
-
-      "have visually hidden header for Remove links" in {
-        view.getElementsByTag("th").get(1).text() mustBe messages("site.remove.header")
-      }
-
-      "display references" in {
-        view.text() must include("FR12345")
-
-      }
-
-      "display remove button" in {
-        view.getElementsByClass("govuk-button--secondary").first() must submitTo(
-          controllers.declaration.routes.AdditionalFiscalReferencesController
-            .removeReference(Mode.Normal, itemId, "FR12345")
-        )
       }
     }
   }

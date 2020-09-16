@@ -17,17 +17,22 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
 import play.api.libs.json.Json
-import services.Countries.allCountries
+import services.Countries.{allCountries, countryCodeMap}
 import utils.validators.forms.FieldValidator._
 
 case class AdditionalFiscalReference(country: String, reference: String) {
   val asString: String = country + reference
+
+  val countryName = countryCodeMap(country).asString()
 }
 
 object AdditionalFiscalReference extends DeclarationPage {
+  def build(country: String, reference: String): AdditionalFiscalReference = new AdditionalFiscalReference(country, reference.toUpperCase)
   implicit val format = Json.format[AdditionalFiscalReference]
 
   val mapping = Forms.mapping(
@@ -37,7 +42,7 @@ object AdditionalFiscalReference extends DeclarationPage {
     "reference" -> text()
       .verifying("declaration.additionalFiscalReferences.reference.empty", _.trim.nonEmpty)
       .verifying("declaration.additionalFiscalReferences.reference.error", isAlphanumeric and noLongerThan(15))
-  )(AdditionalFiscalReference.apply)(AdditionalFiscalReference.unapply)
+  )(AdditionalFiscalReference.build)(AdditionalFiscalReference.unapply)
 
   def form(): Form[AdditionalFiscalReference] = Form(mapping)
 }
@@ -55,7 +60,14 @@ case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalRefere
 object AdditionalFiscalReferencesData {
   implicit val format = Json.format[AdditionalFiscalReferencesData]
 
+  def apply(references: Seq[AdditionalFiscalReference]): AdditionalFiscalReferencesData =
+    new AdditionalFiscalReferencesData(references)
+
+  def default: AdditionalFiscalReferencesData = AdditionalFiscalReferencesData(Seq.empty)
+
   val formId = "AdditionalFiscalReferences"
 
   val limit = 99
 }
+
+object AdditionalFiscalReferencesSummary extends DeclarationPage

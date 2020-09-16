@@ -642,7 +642,14 @@ function fiscalReferences(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-fiscal-references')) {
         selectFromAutoPredict(document.getElementById('country-container'), 'GB');
         document.getElementById('reference').value = '1234';
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
+    }
+}
+
+function fiscalReferencesSummary(){
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-fiscal-references-list')) {
+        document.getElementById('code_no').checked = 'checked';
+        document.getElementById('submit').click()
     }
 }
 
@@ -1062,6 +1069,7 @@ function completeJourney() {
     procedureCodes();
     fiscalInformation();
     fiscalReferences();
+    fiscalReferencesSummary();
     commodityDetails();
     unDangerousGoodsCode();
     cusCode();

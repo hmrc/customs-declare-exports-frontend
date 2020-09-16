@@ -18,6 +18,7 @@
 @import models.requests.JourneyRequest
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.elements_in_separate_lines
 @import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import views.components.gds.ActionItemBuilder._
@@ -84,9 +85,7 @@
             key = Key(
                 content = Text(messages("declaration.summary.items.item.VATdetails"))
             ),
-            value = Value(
-                content = Text(additionalFiscalReferences.references.map(_.asString).mkString(", "))
-            ),
+            value = Value(HtmlContent(elements_in_separate_lines(additionalFiscalReferences.references.map(_.asString)))),
             actions = actions(Actions(
                 items = Seq(
                     actionItem(

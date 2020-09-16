@@ -16,21 +16,21 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, AdditionalFiscalReferencesController}
-import controllers.util.Remove
+import controllers.declaration.AdditionalFiscalReferencesController
+import forms.common.YesNoAnswer
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import models.declaration.ExportItem
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.{ErrorHandlerMocks, ItemActionMocks}
-import views.html.declaration.additional_fiscal_references
+import views.html.declaration.fiscalInformation.additional_fiscal_references
 
 import scala.concurrent.Future
 
@@ -40,12 +40,11 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
   val controller = new AdditionalFiscalReferencesController(
     mockItemAction,
-    mockErrorHandler,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
     additionalFiscalReferencesPage
-  )(ec)
+  )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -61,41 +60,25 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
     reset(additionalFiscalReferencesPage)
   }
 
-  def theResponseForm: Form[AdditionalFiscalReference] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[AdditionalFiscalReference]])
+  def theResponseForm: Form[YesNoAnswer] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
     verify(additionalFiscalReferencesPage).apply(any(), any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    val item = anItem()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+    val item = anItem(withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "123124124")))))
+    withNewCaching(aDeclaration(withItem(item)))
     await(controller.displayPage(Mode.Normal, item.id)(request))
     theResponseForm
   }
 
+  private def verifyPageInvoked(numberOfTimes: Int = 1) =
+    verify(additionalFiscalReferencesPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+
   "Additional fiscal references controller" should {
 
     "return 200 (OK)" when {
-
-      "display page method is invoked with empty cache" in {
-        val item = anItem()
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
-        val result: Future[Result] = controller.displayPage(Mode.Normal, item.id)(getRequest())
-
-        status(result) must be(OK)
-      }
-
-      "display page method is invoked with empty additional fiscal references" in {
-        val itemCacheData = ExportItem("itemId", additionalFiscalReferencesData = None)
-        val cachedData: ExportsDeclaration =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
-        val result: Future[Result] = controller.displayPage(Mode.Normal, itemCacheData.id)(getRequest())
-
-        status(result) must be(OK)
-      }
 
       "display page method is invoked with data in cache" in {
 
@@ -108,6 +91,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val result: Future[Result] = controller.displayPage(Mode.Normal, itemCacheData.id)(getRequest())
 
         status(result) must be(OK)
+        verifyPageInvoked()
       }
     }
 
@@ -120,108 +104,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val wrongAction: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), ("WrongAction", ""))
 
         val result: Future[Result] =
-          controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(wrongAction: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 400 (BAD_REQUEST) during adding" when {
-
-      "user put incorrect data" in {
-        val item = anItem()
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
-
-        val incorrectForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "!@#$"), addActionUrlEncoded())
-
-        val result: Future[Result] =
-          controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user put duplicated item" in {
-
-        val itemCacheData =
-          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
-        val cachedData: ExportsDeclaration =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
-        val duplicatedForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded())
-
-        val result: Future[Result] =
-          controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user reach maximum amount of items" in {
-
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
-        )
-        val cachedData: ExportsDeclaration =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
-        val form: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "54321"), addActionUrlEncoded())
-
-        val result: Future[Result] =
-          controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(form: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 400 (BAD_REQUEST) during saving" when {
-
-      "user put incorrect data" in {
-        val item = anItem()
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
-
-        val incorrectForm: Seq[(String, String)] =
-          Seq(("country", "PL"), ("reference", "!@#$"), saveAndContinueActionUrlEncoded)
-
-        val result: Future[Result] =
-          controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user put duplicated item" in {
-
-        val itemCacheData =
-          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
-        val cachedData: ExportsDeclaration =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
-        val duplicatedForm: Seq[(String, String)] =
-          Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
-
-        val result: Future[Result] =
-          controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user reach maximum amount of items" in {
-
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
-        )
-        val cachedData: ExportsDeclaration =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
-        val form: Seq[(String, String)] =
-          Seq(("country", "PL"), ("reference", "54321"), saveAndContinueActionUrlEncoded)
-
-        val result: Future[Result] =
-          controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(form: _*))
+          controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -229,66 +112,28 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
     "return 303 (SEE_OTHER)" when {
 
-      "user correctly add new item" in {
+      "user submits valid Yes answer" in {
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
-        val correctForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded())
+        val requestBody = Seq("yesNo" -> "Yes")
+        val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
-        val result: Future[Result] =
-          controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) must be(SEE_OTHER)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(Mode.Normal, item.id)
       }
 
-      "user save correct data" in {
+      "user submits valid No answer" in {
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
-        val correctForm: Seq[(String, String)] =
-          Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
-
-        val result: Future[Result] =
-          controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val requestBody = Seq("yesNo" -> "No")
+        val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)
+        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)
       }
 
-      "user save correct data without new item" in {
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
-        )
-        val cachedData: ExportsDeclaration =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
-        val correctForm: (String, String) = saveAndContinueActionUrlEncoded
-
-        val result: Future[Result] =
-          controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(Mode.Normal, "itemId")
-      }
-
-      "user remove existing item" in {
-
-        val itemCacheData =
-          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
-        val cachedData: ExportsDeclaration =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
-        val removeForm: (String, String) = (Remove.toString, "0")
-
-        val result: Future[Result] =
-          controller.removeReference(Mode.Normal, itemCacheData.id, "12345")(postRequestAsFormUrlEncoded(removeForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemCacheData.id)
-      }
     }
   }
 }
