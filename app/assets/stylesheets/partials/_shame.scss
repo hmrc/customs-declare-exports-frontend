@@ -14,3 +14,10 @@
     display: revert;
   }
 }
+
+// reduce breaking font size on smaller screens on confirmation page
+@media screen and (max-width: 40.0625em){
+  .govuk-panel.govuk-panel--confirmation .govuk-panel__title {
+    font-size: 1.5em;
+  }
+}
