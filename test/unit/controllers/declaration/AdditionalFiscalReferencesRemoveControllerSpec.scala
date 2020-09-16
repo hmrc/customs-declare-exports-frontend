@@ -153,9 +153,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, item.id)
 
-          theCacheModelUpdated.itemBy(item.id).flatMap(_.additionalFiscalReferencesData) mustBe Some(
-            AdditionalFiscalReferencesData(Some(YesNoAnswer(YesNoAnswers.yes)), Seq.empty)
-          )
+          theCacheModelUpdated.itemBy(item.id).flatMap(_.additionalFiscalReferencesData) mustBe Some(AdditionalFiscalReferencesData(Seq.empty))
         }
 
         "user submits 'No' answer" in {

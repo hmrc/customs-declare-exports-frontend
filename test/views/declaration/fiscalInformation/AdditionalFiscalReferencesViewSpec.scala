@@ -76,8 +76,8 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
       }
 
       "display table header" in {
-        view.getElementsByTag("th").get(0) must containMessage("declaration.additionalFiscalReferences.country.header")
-        view.getElementsByTag("th").get(1) must containMessage("declaration.additionalFiscalReferences.numbers.header")
+        view.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.additionalFiscalReferences.country.header")
+        view.getElementsByClass("govuk-table__header").get(1) must containMessage("declaration.additionalFiscalReferences.numbers.header")
 
       }
 

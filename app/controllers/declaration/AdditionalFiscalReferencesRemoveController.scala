@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, AdditionalInformation}
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -47,7 +47,7 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
 
   def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalFiscalReference(itemId, id) match {
-      case Some(reference) => Ok(removePage(mode, itemId, id, reference, removeYesNoForm.withSubmissionErrors()))
+      case Some(reference) => Ok(removePage(mode, itemId, id, reference, removalYesNoForm.withSubmissionErrors()))
       case _               => returnToSummary(mode, itemId)
     }
   }
@@ -55,7 +55,7 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
   def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalFiscalReference(itemId, id) match {
       case Some(reference) =>
-        removeYesNoForm
+        removalYesNoForm
           .bindFromRequest()
           .fold(
             (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, itemId, id, reference, formWithErrors))),
@@ -63,7 +63,7 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
               formData.answer match {
                 case YesNoAnswers.yes =>
                   removeAdditionalFiscalReference(itemId, reference)
-                    .map(declaration => afterRemove(mode, itemId, declaration))
+                    .map(declaration => redirectAfterRemove(mode, itemId, declaration))
                 case YesNoAnswers.no =>
                   Future.successful(returnToSummary(mode, itemId))
               }
@@ -74,9 +74,9 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
 
   }
 
-  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalFiscalReferences.remove.empty")
+  private def removalYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalFiscalReferences.remove.empty")
 
-  private def afterRemove(mode: Mode, itemId: String, declaration: Option[ExportsDeclaration])(implicit request: JourneyRequest[AnyContent]) =
+  private def redirectAfterRemove(mode: Mode, itemId: String, declaration: Option[ExportsDeclaration])(implicit request: JourneyRequest[AnyContent]) =
     declaration.flatMap(_.itemBy(itemId)).flatMap(_.additionalFiscalReferencesData).map(_.references) match {
       case Some(references) if references.nonEmpty => returnToSummary(mode, itemId)
       case _                                       => navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId))

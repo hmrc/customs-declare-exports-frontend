@@ -39,7 +39,7 @@ class AdditionalFiscalReferencesController @Inject()(
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
-    val frm = anotherYesNoForm.withSubmissionErrors()
+    val frm = addAnotherYesNoForm.withSubmissionErrors()
     cachedAdditionalReferencesData(itemId) match {
       case Some(data) if data.references.nonEmpty =>
         Ok(additionalFiscalReferencesPage(mode, itemId, frm, data.references))
@@ -51,7 +51,7 @@ class AdditionalFiscalReferencesController @Inject()(
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
-    anotherYesNoForm
+    addAnotherYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) =>
@@ -72,7 +72,7 @@ class AdditionalFiscalReferencesController @Inject()(
       )
   }
 
-  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalFiscalReferences.add.another.empty")
+  private def addAnotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalFiscalReferences.add.another.empty")
 
   private def cachedAdditionalReferencesData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData)

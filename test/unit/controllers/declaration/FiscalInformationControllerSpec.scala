@@ -99,7 +99,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value.value.onwardSupplyRelief mustBe yes
       }
 
-      "mode is Change and there is additionalFiscalReferencesData in cache" in {
+      "mode is Change" in {
         val item = anItem(
           withFiscalInformation(FiscalInformation(yes)),
           withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12345"))))

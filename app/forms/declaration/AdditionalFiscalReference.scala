@@ -47,7 +47,7 @@ object AdditionalFiscalReference extends DeclarationPage {
   def form(): Form[AdditionalFiscalReference] = Form(mapping)
 }
 
-case class AdditionalFiscalReferencesData(isRequired: Option[YesNoAnswer], references: Seq[AdditionalFiscalReference]) {
+case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference]) {
   def removeReferences(values: Seq[String]): AdditionalFiscalReferencesData = {
     val patterns = values.toSet
     copy(references = references.filterNot(reference => patterns.contains(reference.asString)))
@@ -61,9 +61,9 @@ object AdditionalFiscalReferencesData {
   implicit val format = Json.format[AdditionalFiscalReferencesData]
 
   def apply(references: Seq[AdditionalFiscalReference]): AdditionalFiscalReferencesData =
-    new AdditionalFiscalReferencesData(Some(if (references.nonEmpty) YesNoAnswer(YesNoAnswers.yes) else YesNoAnswer(YesNoAnswers.no)), references)
+    new AdditionalFiscalReferencesData(references)
 
-  def default: AdditionalFiscalReferencesData = AdditionalFiscalReferencesData(None, Seq.empty)
+  def default: AdditionalFiscalReferencesData = AdditionalFiscalReferencesData(Seq.empty)
 
   val formId = "AdditionalFiscalReferences"
 
