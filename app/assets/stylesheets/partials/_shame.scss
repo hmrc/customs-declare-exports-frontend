@@ -21,3 +21,9 @@
     font-size: 1.5em;
   }
 }
+
+@media screen and (min-width: 40.0625em){
+  .govuk-panel.govuk-panel--confirmation .govuk-panel__title {
+    font-size: 2.1em;
+  }
+}
