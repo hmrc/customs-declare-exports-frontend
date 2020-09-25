@@ -37,9 +37,8 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
   val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")))
   val id = "ACE-GB42354735346235"
 
-  private val form: Form[DeclarationHolder] = DeclarationHolder.mandatoryForm()
   private val declarationHolderPage = instanceOf[declaration_holder_change]
-  private def createView(form: Form[DeclarationHolder] = form)(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[DeclarationHolder])(implicit request: JourneyRequest[_]): Document =
     declarationHolderPage(Mode.Normal, id, form)(request, messages)
 
   "Declaration holder" should {

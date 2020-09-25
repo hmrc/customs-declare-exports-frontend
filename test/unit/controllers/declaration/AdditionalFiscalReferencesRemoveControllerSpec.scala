@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration.AdditionalFiscalReferencesRemoveController
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import models.Mode
 import org.mockito.ArgumentCaptor

@@ -29,7 +29,7 @@ import scala.concurrent.Future
 class FeatureSwitchController @Inject()(implicit val featureSwitchConfig: FeatureSwitchConfig, mcc: MessagesControllerComponents)
     extends FrontendController(mcc) {
 
-  def set(feature: Feature, status: FeatureStatus): Action[AnyContent] = Action.async { implicit req =>
+  def set(feature: Feature, status: FeatureStatus): Action[AnyContent] = Action.async { _ =>
     featureSwitchConfig.setFeatureStatus(feature, status)
     Future.successful(Ok(s"${feature} ${status}"))
   }

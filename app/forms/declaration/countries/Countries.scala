@@ -45,19 +45,19 @@ object Countries {
     override val id = "routingCountry"
   }
 
-  private def mapping(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty): Mapping[String] =
+  private def mapping(page: CountryPage, cachedCountries: Seq[Country]): Mapping[String] =
     text()
       .verifying(s"declaration.${page.id}.empty", _.trim.nonEmpty)
       .verifying(s"declaration.${page.id}.error", emptyOrValidCountry)
       .verifying(s"declaration.routingCountries.duplication", !cachedCountries.flatMap(_.code).contains(_))
       .verifying(s"declaration.routingCountries.limit", _ => cachedCountries.length < limit)
 
-  private def mandatoryMapping(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty): Mapping[Country] =
+  private def mandatoryMapping(page: CountryPage, cachedCountries: Seq[Country]): Mapping[Country] =
     Forms.mapping("countryCode" -> mapping(page, cachedCountries))(country => if (country.nonEmpty) Country(Some(country)) else Country(None))(
       country => country.code
     )
 
-  private def optionalForm(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty): Mapping[Country] =
+  private def optionalForm(page: CountryPage, cachedCountries: Seq[Country]): Mapping[Country] =
     Forms.mapping("countryCode" -> optional(mapping(page, cachedCountries)))(Country.apply)(Country.unapply)
 
   def form(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty)(implicit request: JourneyRequest[_]): Form[Country] =

@@ -41,9 +41,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
 
   val itemId = new ExportItemIdGeneratorService().generateItemId()
 
-  private def createView(form: Form[YesNoAnswer] = form, references: Seq[AdditionalFiscalReference] = Seq.empty)(
-    implicit request: JourneyRequest[_]
-  ): Document =
+  private def createView(form: Form[YesNoAnswer] = form, references: Seq[AdditionalFiscalReference])(implicit request: JourneyRequest[_]): Document =
     additionalFiscalReferencesPage(Mode.Normal, itemId, form, references)
 
   "Additional Fiscal References View" should {

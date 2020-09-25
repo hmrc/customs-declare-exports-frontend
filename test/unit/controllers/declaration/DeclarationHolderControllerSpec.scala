@@ -43,7 +43,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
     navigator,
     stubMessagesControllerComponents(),
     mockPage
-  )(ec)
+  )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

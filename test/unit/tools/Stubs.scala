@@ -28,8 +28,6 @@ import uk.gov.hmrc.govukfrontend.views.html.components
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _, _}
 import uk.gov.hmrc.hmrcfrontend.views.html.components.{HmrcBanner, HmrcHeader}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
-import uk.gov.hmrc.play.views.html.layouts._
 import views.html.components.gds._
 
 import scala.concurrent.ExecutionContext
@@ -84,14 +82,6 @@ trait Stubs {
   private def timeoutDialogConfig() = new TimeoutDialogConfig(servicesConfig(minimalConfiguration))
 
   val minimalAppConfig = appConfig(minimalConfiguration)
-
-  private val head: Head = new Head(
-    new OptimizelySnippet(new OptimizelyConfig(minimalConfiguration)),
-    new AssetsConfig(minimalConfiguration),
-    new GTMSnippet(new GTMConfig(minimalConfiguration))
-  )
-
-  private val footer: Footer = new Footer(new AssetsConfig(minimalConfiguration))
 
   val gdsGovukLayout = new GovukLayout(
     new components.GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink()),
