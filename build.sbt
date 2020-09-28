@@ -24,13 +24,7 @@ lazy val microservice = Project(appName, file("."))
   )
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
-  .settings(
-    Keys.fork in IntegrationTest := false,
-    unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest)(base => Seq(base / "it")).value,
-    addTestReportOption(IntegrationTest, "int-test-reports"),
-    testGrouping in IntegrationTest := TestPhases.oneForkedJvmPerTest((definedTests in IntegrationTest).value),
-    parallelExecution in IntegrationTest := false
-  )
+  .settings(integrationTestSettings())
   .settings(resolvers ++= Seq(Resolver.bintrayRepo("hmrc", "releases"), Resolver.jcenterRepo, Resolver.bintrayRepo("emueller", "maven")))
   .settings(publishingSettings: _*)
   .settings(
@@ -48,6 +42,7 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(scoverageSettings)
   .settings(silencerSettings)
+  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
 
 lazy val scoverageSettings: Seq[Setting[_]] = Seq(
   coverageExcludedPackages := List(

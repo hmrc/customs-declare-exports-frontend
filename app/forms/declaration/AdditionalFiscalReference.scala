@@ -17,10 +17,8 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
-import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.{allCountries, countryCodeMap}
 import utils.validators.forms.FieldValidator._

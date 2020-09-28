@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.{AdditionalFiscalReferencesData, FiscalInformation}
+import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation._
 import javax.inject.Inject
 import models.declaration.ProcedureCodesData

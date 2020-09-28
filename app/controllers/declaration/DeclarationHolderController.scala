@@ -31,8 +31,6 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_summary
 
-import scala.concurrent.ExecutionContext
-
 class DeclarationHolderController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -40,8 +38,7 @@ class DeclarationHolderController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   declarationHolderPage: declaration_holder_summary
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   import DeclarationHolderController._
 

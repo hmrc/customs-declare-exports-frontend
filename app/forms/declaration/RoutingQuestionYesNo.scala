@@ -39,7 +39,7 @@ object RoutingQuestionYesNo {
   def formAdd(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] = form("declaration.routingQuestion.add.empty", cachedCountries)
   def formRemove(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] = form("declaration.routingQuestion.remove.empty", cachedCountries)
 
-  private def form(errorMessage: String, cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] = Form(
+  private def form(errorMessage: String, cachedCountries: Seq[Country]): Form[Boolean] = Form(
     Forms.mapping(
       "answer" -> requiredRadio(errorMessage)
         .verifying("declaration.routingQuestion.error", isContainedIn(allowedValues))
