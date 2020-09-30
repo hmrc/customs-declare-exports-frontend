@@ -20,7 +20,7 @@ import play.api.mvc.PathBindable
 
 object Feature extends Enumeration {
   type Feature = Value
-  val default, ead, sfus, changeErrorLink = Value
+  val default, ead, sfus, changeErrorLink, betaBanner = Value
 
   implicit object featurePathStringBinder
       extends PathBindable.Parsing[Feature.Feature](
