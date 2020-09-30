@@ -19,19 +19,20 @@
 @import views.Title
 @import views.html.components.gds.timeoutDialog
 @import config.TimeoutDialogConfig
+@import config.BetaBannerConfig
 @import models.requests.AuthenticatedRequest
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable.Seq
 
 @this(
-        govukHeader: GovukHeader,
-        govukLayout: GovukLayout,
-        govukFlexibleLayout: govukFlexibleLayout,
-        govukPhaseBanner: GovukPhaseBanner,
-        govukBackLink: GovukBackLink,
-        siteHeader: components.gds.siteHeader,
-        phaseBanner: components.gds.phaseBanner,
-        timeoutDialogConfig: TimeoutDialogConfig
+  govukHeader: GovukHeader,
+  govukLayout: GovukLayout,
+  govukFlexibleLayout: govukFlexibleLayout,
+  govukBackLink: GovukBackLink,
+  siteHeader: components.gds.siteHeader,
+  phaseBanner: components.gds.phaseBanner,
+  timeoutDialogConfig: TimeoutDialogConfig,
+  betaBannerConfig: BetaBannerConfig
 )
 
 @(
@@ -68,7 +69,9 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    @phaseBanner("beta")
+    @if(betaBannerConfig.isBetaBannerEnabled) {
+      @phaseBanner("beta")
+    }
 
     @if(useTimeoutDialog) {
         @timeoutDialog(request.uri, timeoutDialogConfig.timeout, timeoutDialogConfig.countdown)

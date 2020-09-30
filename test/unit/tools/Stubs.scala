@@ -17,7 +17,7 @@
 package unit.tools
 
 import com.typesafe.config.{Config, ConfigFactory}
-import config.{AppConfig, TimeoutDialogConfig}
+import config.{AppConfig, BetaBannerConfig, FeatureSwitchConfig, TimeoutDialogConfig}
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
@@ -67,6 +67,7 @@ trait Stubs {
       |timeoutDialog.timeout=13min
       |timeoutDialog.countdown=3min
       |list-of-available-journeys = "SMP,STD,CAN,SUB,CON"
+      |microservice.services.features.default=disabled
       |microservice.services.features.use-improved-error-messages=true
       |urls.tradeTariff=tradeTariff
       |urls.classificationHelp=classificationHelp
@@ -80,6 +81,7 @@ trait Stubs {
   private def servicesConfig(conf: Configuration) = new ServicesConfig(conf)
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
   private def timeoutDialogConfig() = new TimeoutDialogConfig(servicesConfig(minimalConfiguration))
+  private def betaBannerConfig() = new BetaBannerConfig(new FeatureSwitchConfig(minimalConfiguration))
 
   val minimalAppConfig = appConfig(minimalConfiguration)
 
@@ -104,10 +106,10 @@ trait Stubs {
     govukHeader = govukHeader,
     govukLayout = gdsGovukLayout,
     govukFlexibleLayout = gdsGovukFlexibleLayout,
-    govukPhaseBanner = new components.GovukPhaseBanner(new govukTag()),
     govukBackLink = new components.GovukBackLink(),
     siteHeader = sHeader,
     phaseBanner = pBanner,
-    timeoutDialogConfig = timeoutDialogConfig()
+    timeoutDialogConfig = timeoutDialogConfig(),
+    betaBannerConfig = betaBannerConfig()
   )
 }
