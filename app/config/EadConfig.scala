@@ -16,11 +16,11 @@
 
 package config
 
-import features.{Feature, FeatureStatus}
+import features.Feature
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class EadConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
-  val isEadEnabled = featureSwitchConfig.featureStatus(Feature.ead) == FeatureStatus.enabled
+  lazy val isEadEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.ead)
 }

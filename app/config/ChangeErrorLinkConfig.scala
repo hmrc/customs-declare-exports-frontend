@@ -16,10 +16,10 @@
 
 package config
 
-import features.{Feature, FeatureStatus}
+import features.Feature
 import javax.inject.Inject
 
 class ChangeErrorLinkConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
-  val isEnabled = featureSwitchConfig.featureStatus(Feature.changeErrorLink) == FeatureStatus.enabled
+  lazy val isEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.changeErrorLink)
 }
