@@ -16,11 +16,11 @@
 
 package config
 
-import features.Feature
 import javax.inject.{Inject, Singleton}
+import play.api.Configuration
 
 @Singleton
-class GoogleFormFeedbackLinkConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class GoogleFormFeedbackLinkConfig @Inject()(configuration: Configuration) {
 
-  lazy val isGoogleFormFeedbackLinkEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.googleFormFeedbackLink)
+  val googleFormFeedbackLink: Option[String] = configuration.getOptional[String](s"urls.googleFormFeedbackLink")
 }

@@ -22,35 +22,28 @@ import unit.base.UnitSpec
 
 class GoogleFormFeedbackLinkConfigSpec extends UnitSpec {
 
-  private val configWithGoogleFormFeedbackLinkEnabled: Configuration =
-    Configuration(ConfigFactory.parseString("microservice.services.features.googleFormFeedbackLink=enabled"))
-  private val configWithGoogleFormFeedbackLinkDisabled: Configuration =
-    Configuration(ConfigFactory.parseString("microservice.services.features.googleFormFeedbackLink=disabled"))
-  private val emptyConfig: Configuration =
-    Configuration(ConfigFactory.parseString("microservice.services.features.default=disabled"))
+  private val googleFormLink = "googleFormLink"
+  private val configWithGoogleFormFeedbackLink: Configuration =
+    Configuration(ConfigFactory.parseString(s"urls.googleFormFeedbackLink=$googleFormLink"))
+  private val emptyConfig: Configuration = Configuration(ConfigFactory.parseString(""))
 
-  private def googleFormFeedbackLinkConfig(configuration: Configuration) = new GoogleFormFeedbackLinkConfig(new FeatureSwitchConfig(configuration))
+  private def googleFormFeedbackLinkConfig(configuration: Configuration) = new GoogleFormFeedbackLinkConfig(configuration)
 
-  "GoogleFormFeedbackLinkConfig on isGoogleFormFeedbackLinkEnabled" should {
+  "GoogleFormFeedbackLinkConfig on googleFormFeedbackLink" when {
 
-    "return true" when {
+    "the link is present in configuration" should {
 
-      "the feature is enabled" in {
+      "return the link" in {
 
-        googleFormFeedbackLinkConfig(configWithGoogleFormFeedbackLinkEnabled).isGoogleFormFeedbackLinkEnabled mustBe true
+        googleFormFeedbackLinkConfig(configWithGoogleFormFeedbackLink).googleFormFeedbackLink mustBe Some(googleFormLink)
       }
     }
 
-    "return false" when {
+    "the link is not present in configuration" should {
 
-      "the feature is disabled" in {
-        googleFormFeedbackLinkConfig(configWithGoogleFormFeedbackLinkDisabled).isGoogleFormFeedbackLinkEnabled mustBe false
+      "return empty Option" in {
 
-      }
-
-      "there is no config for the feature" in {
-
-        googleFormFeedbackLinkConfig(emptyConfig).isGoogleFormFeedbackLinkEnabled mustBe false
+        googleFormFeedbackLinkConfig(emptyConfig).googleFormFeedbackLink mustBe None
       }
     }
   }
