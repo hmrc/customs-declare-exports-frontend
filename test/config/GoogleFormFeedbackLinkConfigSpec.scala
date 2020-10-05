@@ -22,9 +22,9 @@ import unit.base.UnitSpec
 
 class GoogleFormFeedbackLinkConfigSpec extends UnitSpec {
 
-  private val googleFormLink = "googleFormLink"
+  private val googleFormFeedbackLink = "googleFormFeedbackLink"
   private val configWithGoogleFormFeedbackLink: Configuration =
-    Configuration(ConfigFactory.parseString(s"urls.googleFormFeedbackLink=$googleFormLink"))
+    Configuration(ConfigFactory.parseString(s"urls.googleFormFeedbackLink=$googleFormFeedbackLink"))
   private val emptyConfig: Configuration = Configuration(ConfigFactory.parseString(""))
 
   private def googleFormFeedbackLinkConfig(configuration: Configuration) = new GoogleFormFeedbackLinkConfig(configuration)
@@ -35,7 +35,7 @@ class GoogleFormFeedbackLinkConfigSpec extends UnitSpec {
 
       "return the link" in {
 
-        googleFormFeedbackLinkConfig(configWithGoogleFormFeedbackLink).googleFormFeedbackLink mustBe Some(googleFormLink)
+        googleFormFeedbackLinkConfig(configWithGoogleFormFeedbackLink).googleFormFeedbackLink mustBe Some(googleFormFeedbackLink)
       }
     }
 

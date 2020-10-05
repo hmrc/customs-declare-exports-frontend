@@ -1249,11 +1249,13 @@ declaration.confirmation.decision.link = declaration’s timeline
 declaration.confirmation.info = Any other previously submitted declarations can be found in {0}.
 declaration.confirmation.info.link = your declarations
 declaration.confirmation.submitAnotherDeclaration = Create a new declaration
+declaration.confirmation.leaveFeedback.text = Please leave feedback on the service in this {0}.
+declaration.confirmation.leaveFeedback.link = form here
 
 confirmation.draft.title = Your declaration has been saved
 confirmation.draft.info = Your information is held until
 confirmation.draft.nextHeading = What you can do next
-confirmation.draft.nextText = You can {0} or you can {1}. 
+confirmation.draft.nextText = You can {0} or you can {1}.
 confirmation.draft.nextContinueLink = continue a saved declaration
 confirmation.draft.nextStartFreshLink = start a new one
 

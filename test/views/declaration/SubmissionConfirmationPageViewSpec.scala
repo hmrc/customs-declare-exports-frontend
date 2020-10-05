@@ -15,48 +15,83 @@
  */
 
 package views.declaration
-import base.Injector
+
+import base.OverridableInjector
+import config.GoogleFormFeedbackLinkConfig
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
 import models.responses.FlashKeys
 import org.jsoup.nodes.Document
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import play.api.inject.bind
 import play.api.mvc.Flash
-import services.cache.ExportsTestData
-import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.submission_confirmation_page
 import views.tags.ViewTest
 
 @ViewTest
-class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class SubmissionConfirmationPageViewSpec extends UnitViewSpec with BeforeAndAfterEach {
 
-  private val page = instanceOf[submission_confirmation_page]
+  private val googleFormFeedbackLink = "googleFormFeedbackLink"
+  private val googleFormFeedbackLinkConfig = mock[GoogleFormFeedbackLinkConfig]
+  private val injector = new OverridableInjector(bind[GoogleFormFeedbackLinkConfig].toInstance(googleFormFeedbackLinkConfig))
+
+  private val page = injector.instanceOf[submission_confirmation_page]
   private val withoutFlash = new Flash(Map.empty)
   private def withFlash(devType: DeclarationType, lrn: String, decId: String) =
     new Flash(Map(FlashKeys.decId -> decId, FlashKeys.lrn -> lrn, FlashKeys.decType -> devType.toString))
-  private def createView(flash: Flash): Document =
-    page()(journeyRequest(), flash, messages)
+
+  private def createView(flash: Flash = withoutFlash): Document = page()(journeyRequest(), flash, messages)
 
   private def getHighlightBox(view: Document) = view.getElementsByClass("govuk-panel govuk-panel--confirmation").first()
-
   private def getDecisionLink(view: Document) = view.getElementById("decision-link")
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(googleFormFeedbackLinkConfig)
+    when(googleFormFeedbackLinkConfig.googleFormFeedbackLink).thenReturn(None)
+  }
+
+  override def afterEach(): Unit = {
+    reset(googleFormFeedbackLinkConfig)
+    super.afterEach()
+  }
+
   "Confirmation Page View on empty page" should {
-    val view = createView(withoutFlash)
 
     "display header with default" in {
-      val highlightBox = getHighlightBox(view)
+      val highlightBox = getHighlightBox(createView())
       highlightBox must containText("Declaration has been submitted")
       highlightBox mustNot containText("The LRN is")
     }
 
+    "display Google Form feedback link" when {
+
+      "GoogleFormFeedbackLinkConfig returns non-empty Option" in {
+        when(googleFormFeedbackLinkConfig.googleFormFeedbackLink).thenReturn(Some(googleFormFeedbackLink))
+
+        val feedbackLink = createView().getElementById("feedback-link")
+
+        feedbackLink must containMessage("declaration.confirmation.leaveFeedback.link")
+        feedbackLink must haveHref(googleFormFeedbackLink)
+      }
+    }
+
+    "not display Google Form feedback link" when {
+
+      "GoogleFormFeedbackLinkConfig return empty Option" in {
+        createView().getElementById("feedback-link") mustBe null
+      }
+    }
+
     "display declaration status" in {
-      val declarationInfo = view.getElementById("submissions-link")
+      val declarationInfo = createView().getElementById("submissions-link")
       declarationInfo must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
     }
 
-    "render start again link" in {
-      val button = view.getElementById("back-to-start-link")
+    "display start again link" in {
+      val button = createView().getElementById("back-to-start-link")
       button must haveHref(controllers.routes.ChoiceController.displayPage().url)
       button must containText("Create a new declaration")
     }
