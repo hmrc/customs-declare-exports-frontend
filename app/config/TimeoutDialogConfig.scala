@@ -24,6 +24,6 @@ import scala.concurrent.duration.{Duration, FiniteDuration}
 @Singleton
 class TimeoutDialogConfig @Inject()(config: ServicesConfig) {
 
-  lazy val timeout: Duration = config.getDuration("timeoutDialog.timeout").asInstanceOf[FiniteDuration]
-  lazy val countdown: Duration = config.getDuration("timeoutDialog.countdown").asInstanceOf[FiniteDuration]
+  val timeout: Duration = config.getDuration("timeoutDialog.timeout").asInstanceOf[FiniteDuration]
+  val countdown: Duration = config.getDuration("timeoutDialog.countdown").asInstanceOf[FiniteDuration]
 }

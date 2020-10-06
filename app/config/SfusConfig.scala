@@ -26,5 +26,5 @@ class SfusConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, config: Con
   val sfusLink: String =
     config.getOptional[String]("urls.sfus").getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend start"))
 
-  lazy val isSfusEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.sfus)
+  val isSfusEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.sfus)
 }

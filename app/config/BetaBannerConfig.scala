@@ -22,5 +22,5 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class BetaBannerConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
-  lazy val isBetaBannerEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.betaBanner)
+  val isBetaBannerEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.betaBanner)
 }

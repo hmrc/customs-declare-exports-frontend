@@ -22,5 +22,5 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class EadConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
-  lazy val isEadEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.ead)
+  val isEadEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.ead)
 }
