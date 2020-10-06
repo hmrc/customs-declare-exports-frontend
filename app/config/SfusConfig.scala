@@ -23,8 +23,8 @@ import play.api.Configuration
 @Singleton
 class SfusConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
 
-  val sfusLink =
+  val sfusLink: String =
     config.getOptional[String]("urls.sfus").getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend start"))
 
-  val isSfusEnabled = featureSwitchConfig.featureStatus(Feature.sfus) == FeatureStatus.enabled
+  val isSfusEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.sfus)
 }

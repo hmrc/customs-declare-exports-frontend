@@ -26,5 +26,4 @@ class TimeoutDialogConfig @Inject()(config: ServicesConfig) {
 
   val timeout: Duration = config.getDuration("timeoutDialog.timeout").asInstanceOf[FiniteDuration]
   val countdown: Duration = config.getDuration("timeoutDialog.countdown").asInstanceOf[FiniteDuration]
-
 }

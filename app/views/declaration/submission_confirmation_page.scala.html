@@ -16,18 +16,20 @@
 
 @import models.responses.FlashKeys
 
+@import config.GoogleFormFeedbackLinkConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.html.components.gds._
 @import play.twirl.api.HtmlFormat
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukPanel : GovukPanel,
-        govukButton: GovukButton,
-        govukInsetText : GovukInsetText,
-        link: link,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+  govukLayout: gdsMainTemplate,
+  govukPanel : GovukPanel,
+  govukButton: GovukButton,
+  govukInsetText : GovukInsetText,
+  link: link,
+  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+  googleFormFeedbackLinkConfig: GoogleFormFeedbackLinkConfig
 )
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
@@ -53,10 +55,21 @@
         content = HtmlContent(flash.get(FlashKeys.lrn).map(lrn => lrnMessage(lrn)).getOrElse(HtmlFormat.empty))
     ))
 
-    @flash.get(FlashKeys.decId).map{decId =>
+    @flash.get(FlashKeys.decId).map { decId =>
         @govukInsetText(InsetText(
             content = HtmlContent(decisionContent(decId))
         ))
+    }
+
+    @googleFormFeedbackLinkConfig.googleFormFeedbackLink.map { feedbackLink =>
+      <p class="govuk-body">
+        @Html(messages("declaration.confirmation.leaveFeedback.text", link(
+          id = Some("feedback-link"),
+          text = messages("declaration.confirmation.leaveFeedback.link"),
+          call = Call(method = "GET", url = feedbackLink),
+          target = "_blank"
+        )))
+      </p>
     }
 
     <p class="govuk-body">

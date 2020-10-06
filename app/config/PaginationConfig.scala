@@ -22,7 +22,7 @@ import play.api.Configuration
 @Singleton
 class PaginationConfig @Inject()(configuration: Configuration) {
 
-  lazy val itemsPerPage: Int = configuration
+  val itemsPerPage: Int = configuration
     .getOptional[Int]("pagination.itemsPerPage")
     .getOrElse(throw new IllegalStateException("Missing configuration key: [pagination.itemsPerPage]"))
 }

@@ -29,8 +29,7 @@ class BetaBannerConfigSpec extends UnitSpec {
   private val emptyConfig: Configuration =
     Configuration(ConfigFactory.parseString("microservice.services.features.default=disabled"))
 
-  private def betaBannerConfig(configuration: Configuration) =
-    new BetaBannerConfig(new FeatureSwitchConfig(configuration))
+  private def betaBannerConfig(configuration: Configuration) = new BetaBannerConfig(new FeatureSwitchConfig(configuration))
 
   "BetaBannerConfig on isBetaBannerEnabled" should {
 

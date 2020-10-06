@@ -16,11 +16,11 @@
 
 package config
 
-import features.Feature
 import javax.inject.{Inject, Singleton}
+import play.api.Configuration
 
 @Singleton
-class EadConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class GoogleFormFeedbackLinkConfig @Inject()(configuration: Configuration) {
 
-  val isEadEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.ead)
+  val googleFormFeedbackLink: Option[String] = configuration.getOptional[String](s"urls.googleFormFeedbackLink")
 }

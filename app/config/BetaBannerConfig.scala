@@ -16,11 +16,11 @@
 
 package config
 
-import features.{Feature, FeatureStatus}
+import features.Feature
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class BetaBannerConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
-  lazy val isBetaBannerEnabled: Boolean = featureSwitchConfig.featureStatus(Feature.betaBanner) == FeatureStatus.enabled
+  val isBetaBannerEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.betaBanner)
 }
