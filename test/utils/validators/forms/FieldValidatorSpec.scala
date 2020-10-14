@@ -690,7 +690,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
       }
     }
 
-    "return false" when {
+    "return true" when {
       "input is empty" in {
         validateDecimal(totalDecimalLength)(decimalPlaces)(emptyString) must be(true)
       }

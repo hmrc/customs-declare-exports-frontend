@@ -46,7 +46,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       messages must haveTranslationFor("declaration.commodityMeasure.title")
       messages must haveTranslationFor("declaration.commodityMeasure.netMass")
       messages must haveTranslationFor("declaration.commodityMeasure.netMass.empty")
-      messages must haveTranslationFor("declaration.commodityMeasure.netMass.error")
+      messages must haveTranslationFor("declaration.commodityMeasure.netMass.error.format")
       messages must haveTranslationFor("declaration.commodityMeasure.grossMass")
       messages must haveTranslationFor("declaration.commodityMeasure.grossMass.empty")
       messages must haveTranslationFor("declaration.commodityMeasure.grossMass.error")
@@ -166,7 +166,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
 
-        view must containErrorElementWithMessageKey("declaration.commodityMeasure.netMass.error")
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.netMass.error.format")
       }
 
       "display error when gross mass is empty" in {
