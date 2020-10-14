@@ -1345,6 +1345,7 @@ field.declaration.items.$.documentProduced.$.documentIdentifier = <ol><li>Item {
 field.declaration.items.$.documentProduced.$.documentTypeCode = <ol><li>Item {0}</li><li>Additional document {1}</li><li>Type code</li></ol>
 field.declaration.items.$.documentProduced.$.dateOfValidity = <ol><li>Item {0}</li><li>Additional document {1}</li><li>Date of validity</li></ol>
 field.declaration.items.$.documentProduced.$.documentStatus = <ol><li>Item {0}</li><li>Additional document {1}</li><li>Document status</li></ol>
+field.declaration.items.$.documentProduced.$.documentStatusReason = <ol><li>Item {0}</li><li>Additional document {1}</li><li>Document status reason</li></ol>
 field.declaration.items.$.documentProduced.$.issuingAuthorityName = <ol><li>Item {0}</li><li>Additional document {1}</li><li>Issuing authority name</li></ol>
 field.declaration.items.$.documentProduced.$.documentWriteOff.documentQuantity = <ol><li>Item {0}</li><li>Additional document {1}</li><li>Quantity</li></ol>
 field.declaration.items.$.additionalInformation.$.code = <ol><li>Item {0}</li><li>Additional information {1}</li><li>Code</li></ol>
