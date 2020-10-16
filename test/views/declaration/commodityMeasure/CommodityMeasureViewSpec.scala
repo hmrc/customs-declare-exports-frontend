@@ -126,7 +126,8 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display error when nothing is entered" in {
 
-        val view = createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some(""), Some(""), Some("")))))
+        val view =
+          createView(Some(CommodityMeasure.form(request.declarationType).bind(Map("supplementaryUnits" -> "", "grossMass" -> "", "netMass" -> ""))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
@@ -138,17 +139,22 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
 
       "display error when supplementary units are incorrect" in {
 
-        val view = createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("0.0"), Some(""), Some("")))))
+        val view = createView(
+          Some(CommodityMeasure.form(request.declarationType).bind(Map("supplementaryUnits" -> "0.0", "grossMass" -> "", "netMass" -> "")))
+        )
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#supplementaryUnits")
 
         view must containErrorElementWithMessageKey("declaration.commodityMeasure.supplementaryUnits.error")
       }
+
       "display error when net mass is empty" in {
 
         val view =
-          createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some("10.00"), Some("")))))
+          createView(
+            Some(CommodityMeasure.form(request.declarationType).bind(Map("supplementaryUnits" -> "99.99", "grossMass" -> "10.00", "netMass" -> "")))
+          )
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
@@ -160,7 +166,11 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view =
           createView(
-            Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some("20.99"), Some("10.0055345"))))
+            Some(
+              CommodityMeasure
+                .form(request.declarationType)
+                .bind(Map("supplementaryUnits" -> "99.99", "grossMass" -> "20.99", "netMass" -> "10.0055345"))
+            )
           )
 
         view must haveGovukGlobalErrorSummary
@@ -172,7 +182,9 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display error when gross mass is empty" in {
 
         val view =
-          createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some(""), Some("10.00")))))
+          createView(
+            Some(CommodityMeasure.form(request.declarationType).bind(Map("supplementaryUnits" -> "99.99", "grossMass" -> "", "netMass" -> "10.00")))
+          )
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#grossMass")
@@ -183,7 +195,11 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display error when gross mass is incorrect" in {
 
         val view = createView(
-          Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some("5.00234ff"), Some("100.100"))))
+          Some(
+            CommodityMeasure
+              .form(request.declarationType)
+              .bind(Map("supplementaryUnits" -> "99.99", "grossMass" -> "5.00234ff", "netMass" -> "100.100"))
+          )
         )
 
         view must haveGovukGlobalErrorSummary
