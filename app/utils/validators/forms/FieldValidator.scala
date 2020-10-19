@@ -120,15 +120,6 @@ object FieldValidator {
       pattern.matcher(input).matches()
   }
 
-  val validateDecimal: Int => Int => String => Boolean = (totalLength: Int) =>
-    (decimalPlaces: Int) =>
-      (input: String) =>
-        input.split('.') match {
-          case Array(a, b) if isNumeric(a) && isNumeric(b) => b.length <= decimalPlaces && (a + b).length <= totalLength
-          case Array(a) if isNumeric(a)                    => a.length <= totalLength
-          case _                                           => false
-  }
-
   val validateDecimalGreaterThanZero: Int => Int => String => Boolean = (totalLength: Int) =>
     (decimalPlaces: Int) =>
       (input: String) =>
@@ -137,7 +128,7 @@ object FieldValidator {
           BigDecimal(input).scale <= decimalPlaces &&
           input.length <= totalLength
         } catch {
-          case e: java.lang.NumberFormatException => false
+          case _: java.lang.NumberFormatException => false
   }
 
   val containsDuplicates: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size != input.size
