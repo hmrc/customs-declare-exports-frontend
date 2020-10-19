@@ -144,8 +144,8 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   def createCancellation(cancellation: CancelDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     logPayload("Create Cancellation Request", cancellation)
     httpClient
-      .POST[CancelDeclaration, HttpResponse](s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}", cancellation) filter (_.status == Status.OK) map (
-      _ => (): Unit
-    )
+      .POST[CancelDeclaration, HttpResponse](s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}", cancellation)
+      .filter(_.status == Status.OK)
+      .map(_ => (): Unit)
   }
 }

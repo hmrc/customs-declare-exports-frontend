@@ -59,7 +59,7 @@ object CommodityMeasure extends DeclarationPage {
         secondaryKey = "",
         constraints = Seq(
           ("declaration.commodityMeasure.grossMass.empty", (gross: String, _: String) => nonEmpty(gross)),
-          ("declaration.commodityMeasure.grossMass.error", (gross: String, _: String) => netMassFormatValidation(gross)),
+          ("declaration.commodityMeasure.grossMass.error", (gross: String, _: String) => netMassFormatValidation(gross))
         )
       )
     ),
