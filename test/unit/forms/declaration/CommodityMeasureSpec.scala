@@ -128,6 +128,36 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
         errorKeys must be(expectedErrorKeys)
         errorMessages must be(expectedErrorMessages)
       }
+
+      "user provided net mass only" in {
+
+        val incorrectForm = Map("grossMass" -> "", "netMass" -> "124.12")
+
+        val result = formDefault.bind(incorrectForm)
+
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorKeys = List("grossMass")
+        val expectedErrorMessages = List("declaration.commodityMeasure.grossMass.empty")
+
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
+      }
+
+      "user provided gross mass only" in {
+
+        val incorrectForm = Map("grossMass" -> "123.12", "netMass" -> "")
+
+        val result = formDefault.bind(incorrectForm)
+
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorKeys = List("netMass")
+        val expectedErrorMessages = List("declaration.commodityMeasure.netMass.empty")
+
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
+      }
     }
   }
 

@@ -47,19 +47,16 @@ object CommodityMeasure extends DeclarationPage {
   def unapplyClearance(value: CommodityMeasure): Option[(Option[String], Option[String])] =
     Some((value.grossMass, value.netMass))
 
-  private val netMassFormatValidation: String => Boolean = str =>
-    isEmpty(str) or validateDecimalGreaterThanZero(16)(6)(str) and containsNotOnlyZeros(str)
+  private val massFormatValidation: String => Boolean = str => validateDecimalGreaterThanZero(16)(6)(str) and containsNotOnlyZeros(str)
 
   private val mappingDefault = Forms.mapping(
-    "supplementaryUnits" -> optional(
-      text().verifying("declaration.commodityMeasure.supplementaryUnits.error", validateDecimalGreaterThanZero(16)(6) and containsNotOnlyZeros)
-    ),
+    "supplementaryUnits" -> optional(text().verifying("declaration.commodityMeasure.supplementaryUnits.error", massFormatValidation)),
     "grossMass" -> of(
       CrossFieldFormatter(
         secondaryKey = "",
         constraints = Seq(
           ("declaration.commodityMeasure.grossMass.empty", (gross: String, _: String) => nonEmpty(gross)),
-          ("declaration.commodityMeasure.grossMass.error", (gross: String, _: String) => netMassFormatValidation(gross))
+          ("declaration.commodityMeasure.grossMass.error", (gross: String, _: String) => isEmpty(gross) or massFormatValidation(gross))
         )
       )
     ),
@@ -68,10 +65,10 @@ object CommodityMeasure extends DeclarationPage {
         secondaryKey = "grossMass",
         constraints = Seq(
           ("declaration.commodityMeasure.netMass.empty", (net: String, _: String) => nonEmpty(net)),
-          ("declaration.commodityMeasure.netMass.error.format", (net: String, _: String) => netMassFormatValidation(net)),
+          ("declaration.commodityMeasure.netMass.error.format", (net: String, _: String) => isEmpty(net) or massFormatValidation(net)),
           (
             "declaration.commodityMeasure.netMass.error.biggerThanGrossMass",
-            (net: String, gross: String) => isEmpty(net) || isFirstGreaterOrEqual(gross, net)
+            (net: String, gross: String) => isEmpty(net) or isEmpty(gross) or !massFormatValidation(net) or isFirstSmallerOrEqual(net, gross)
           )
         )
       )
@@ -81,17 +78,17 @@ object CommodityMeasure extends DeclarationPage {
   private val mappingClearance = Forms.mapping(
     "grossMass" -> optional(
       text()
-        .verifying("declaration.commodityMeasure.grossMass.error", isEmpty or validateDecimalGreaterThanZero(16)(6) and containsNotOnlyZeros)
+        .verifying("declaration.commodityMeasure.grossMass.error", isEmpty or massFormatValidation)
     ),
     "netMass" -> optional(
       of(
         CrossFieldFormatter(
           secondaryKey = "grossMass",
           constraints = Seq(
-            ("declaration.commodityMeasure.netMass.error.format", (net: String, _: String) => netMassFormatValidation(net)),
+            ("declaration.commodityMeasure.netMass.error.format", (net: String, _: String) => isEmpty(net) or massFormatValidation(net)),
             (
               "declaration.commodityMeasure.netMass.error.biggerThanGrossMass",
-              (net: String, gross: String) => !netMassFormatValidation(net) || isFirstGreaterOrEqual(gross, net)
+              (net: String, gross: String) => isEmpty(net) or isEmpty(gross) or !massFormatValidation(net) or isFirstSmallerOrEqual(net, gross)
             )
           )
         )
@@ -99,15 +96,12 @@ object CommodityMeasure extends DeclarationPage {
     )
   )(CommodityMeasure.applyClearance)(CommodityMeasure.unapplyClearance)
 
-  private def isFirstGreaterOrEqual(first: String, second: String): Boolean = {
-    val firstNumOpt = Try(BigDecimal(first)).toOption
-    val secondNumOpt = Try(BigDecimal(second)).toOption
-
-    (for {
-      firstNum <- firstNumOpt
-      secondNum <- secondNumOpt
-    } yield firstNum >= secondNum).getOrElse(true)
-  }
+  private def isFirstSmallerOrEqual(first: String, second: String): Boolean =
+    Try {
+      val firstNum = BigDecimal(first)
+      val secondNum = BigDecimal(second)
+      firstNum <= secondNum
+    }.getOrElse(false)
 
   def form(declarationType: DeclarationType): Form[CommodityMeasure] = declarationType match {
     case DeclarationType.CLEARANCE => Form(mappingClearance)
