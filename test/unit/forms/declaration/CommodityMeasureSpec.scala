@@ -24,7 +24,7 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
 
   "Commodity Measure" should {
 
-    "has correct form id" in {
+    "have correct form id" in {
 
       CommodityMeasure.commodityFormId must be("CommodityMeasure")
     }
@@ -33,58 +33,130 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
   "Commodity Measure default form" should {
     val formDefault = CommodityMeasure.form(DeclarationType.STANDARD)
 
-    "has no errors" when {
+    "have no errors" when {
 
       "user fill only mandatory fields with correct values" in {
 
-        val correctForm = CommodityMeasure(None, Some("123.12"), Some("123.12"))
+        val correctForm = Map("grossMass" -> "124.12", "netMass" -> "123.12")
 
-        val result = formDefault.fillAndValidate(correctForm)
+        val result = formDefault.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+
+      "net and gross mass are equal" in {
+
+        val correctForm = Map("grossMass" -> "123.12", "netMass" -> "123.12")
+
+        val result = formDefault.bind(correctForm)
 
         result.errors must be(empty)
       }
 
       "user fill all fields with correct values" in {
 
-        val correctForm = CommodityMeasure(Some("1231.12"), Some("123.0"), Some("123.12"))
+        val correctForm = Map("supplementaryUnits" -> "1231.12", "grossMass" -> "124.12", "netMass" -> "123.12")
 
-        val result = formDefault.fillAndValidate(correctForm)
+        val result = formDefault.bind(correctForm)
 
         result.errors must be(empty)
       }
     }
 
-    "has errors" when {
+    "have errors" when {
 
       "mandatory fields are empty" in {
 
         val incorrectForm = Map("supplementaryUnits" -> "", "grossMass" -> "", "netMass" -> "")
 
         val result = formDefault.bind(incorrectForm)
+
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
+        val expectedErrorKeys = List("grossMass", "netMass")
+        val expectedErrorMessages = List("declaration.commodityMeasure.grossMass.empty", "declaration.commodityMeasure.netMass.empty")
 
-        errorKeys must be(List("grossMass", "netMass"))
-        errorMessages must be(List("declaration.commodityMeasure.grossMass.empty", "declaration.commodityMeasure.netMass.empty"))
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
+      }
+
+      "no mandatory fields are present" in {
+
+        val incorrectForm = Map.empty[String, String]
+
+        val result = formDefault.bind(incorrectForm)
+
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorKeys = List("grossMass", "netMass")
+        val expectedErrorMessages = List("declaration.commodityMeasure.grossMass.empty", "declaration.commodityMeasure.netMass.empty")
+
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
       }
 
       "data provided by user is incorrect" in {
 
-        val incorrectForm =
-          Map("supplementaryUnits" -> "0", "grossMass" -> "12345.12333333", "netMass" -> "123453333333333.1234")
+        val incorrectForm = Map("supplementaryUnits" -> "0", "grossMass" -> "12345.12333333", "netMass" -> "1234.533333333331234")
 
         val result = formDefault.bind(incorrectForm)
+
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
-
-        errorKeys must be(List("supplementaryUnits", "grossMass", "netMass"))
-        errorMessages must be(
-          List(
-            "declaration.commodityMeasure.supplementaryUnits.error",
-            "declaration.commodityMeasure.grossMass.error",
-            "declaration.commodityMeasure.netMass.error"
-          )
+        val expectedErrorKeys = List("supplementaryUnits", "grossMass", "netMass")
+        val expectedErrorMessages = List(
+          "declaration.commodityMeasure.supplementaryUnits.error",
+          "declaration.commodityMeasure.grossMass.error",
+          "declaration.commodityMeasure.netMass.error.format"
         )
+
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
+      }
+
+      "net mass is greater than gross mass" in {
+
+        val incorrectForm = Map("grossMass" -> "123.12", "netMass" -> "124.12")
+
+        val result = formDefault.bind(incorrectForm)
+
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorKeys = List("netMass")
+        val expectedErrorMessages = List("declaration.commodityMeasure.netMass.error.biggerThanGrossMass")
+
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
+      }
+
+      "user provided net mass only" in {
+
+        val incorrectForm = Map("grossMass" -> "", "netMass" -> "124.12")
+
+        val result = formDefault.bind(incorrectForm)
+
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorKeys = List("grossMass")
+        val expectedErrorMessages = List("declaration.commodityMeasure.grossMass.empty")
+
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
+      }
+
+      "user provided gross mass only" in {
+
+        val incorrectForm = Map("grossMass" -> "123.12", "netMass" -> "")
+
+        val result = formDefault.bind(incorrectForm)
+
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorKeys = List("netMass")
+        val expectedErrorMessages = List("declaration.commodityMeasure.netMass.empty")
+
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
       }
     }
   }
@@ -92,13 +164,40 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
   "Commodity Measure clearance form" should {
     val formClearance = CommodityMeasure.form(DeclarationType.CLEARANCE)
 
-    "has no errors" when {
+    "have no errors" when {
 
-      "user fill all fields with correct values" in {
+      "user fills all fields with correct values" in {
 
-        val correctForm = CommodityMeasure(None, Some("123.12"), Some("123.12"))
+        val correctForm = Map("grossMass" -> "124.12", "netMass" -> "123.12")
 
-        val result = formClearance.fillAndValidate(correctForm)
+        val result = formClearance.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+
+      "user fills net mass only" in {
+
+        val correctForm = Map("netMass" -> "123.12")
+
+        val result = formClearance.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+
+      "user fills gross mass only" in {
+
+        val correctForm = Map("grossMass" -> "124.12")
+
+        val result = formClearance.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+
+      "net and gross mass are equal" in {
+
+        val correctForm = Map("grossMass" -> "123.12", "netMass" -> "123.12")
+
+        val result = formClearance.bind(correctForm)
 
         result.errors must be(empty)
       }
@@ -111,21 +210,47 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
 
         result.errors must be(empty)
       }
+
+      "no fields are present" in {
+
+        val incorrectForm = Map.empty[String, String]
+
+        val result = formClearance.bind(incorrectForm)
+
+        result.errors must be(empty)
+      }
     }
 
-    "has errors" when {
+    "have errors" when {
 
       "data provided by user is incorrect" in {
 
-        val incorrectForm =
-          Map("grossMass" -> "12345.12333333", "netMass" -> "123453333333333.1234")
+        val incorrectForm = Map("grossMass" -> "12345.12333333", "netMass" -> "123453333333333.1234")
 
         val result = formClearance.bind(incorrectForm)
+
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
+        val expectedErrorKeys = List("grossMass", "netMass")
+        val expectedErrorMessages = List("declaration.commodityMeasure.grossMass.error", "declaration.commodityMeasure.netMass.error.format")
 
-        errorKeys must be(List("grossMass", "netMass"))
-        errorMessages must be(List("declaration.commodityMeasure.grossMass.error", "declaration.commodityMeasure.netMass.error"))
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
+      }
+
+      "net mass is greater than gross mass" in {
+
+        val incorrectForm = Map("grossMass" -> "123.12", "netMass" -> "124.12")
+
+        val result = formClearance.bind(incorrectForm)
+
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorKeys = List("netMass")
+        val expectedErrorMessages = List("declaration.commodityMeasure.netMass.error.biggerThanGrossMass")
+
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
       }
     }
   }

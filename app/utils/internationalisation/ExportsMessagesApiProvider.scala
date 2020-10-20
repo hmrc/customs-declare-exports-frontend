@@ -32,8 +32,7 @@ class ExportsMessagesApiProvider @Inject()(environment: Environment, config: Con
       .map(_.code)
       .map { code =>
         (code, loadMessageFiles(s".$code"))
-      }(breakOut): Map[String, Map[String, String]])
-      .+("default" -> loadMessageFiles("")) + ("default.play" -> loadMessageFiles(".default"))
+      }(breakOut): Map[String, Map[String, String]]) + ("default" -> loadMessageFiles("")) + ("default.play" -> loadMessageFiles(".default"))
 
   private def loadMessageFiles(suffix: String): Map[String, String] =
     config.get[Seq[String]]("messages.file.names").foldLeft(Map.empty[String, String]) {

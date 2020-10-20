@@ -652,65 +652,74 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  val totalDecimalLength = 10
-  val decimalPlaces = 5
+  "FieldValidator validateDecimalGreaterThanZero" should {
 
-  "FieldValidator validate decimal" should {
+    val totalDecimalLength = 10
+    val decimalPlaces = 5
+
     "return false" when {
+
+      "input is empty" in {
+        validateDecimalGreaterThanZero(totalDecimalLength)(decimalPlaces)(emptyString) must be(false)
+      }
+
       "input contains letters" in {
         val input = "123.asd213"
 
-        validateDecimal(totalDecimalLength)(decimalPlaces)(input) must be(false)
+        validateDecimalGreaterThanZero(totalDecimalLength)(decimalPlaces)(input) must be(false)
       }
 
       "input contains two or more dots" in {
         val firstInput = "123.123.123"
         val secondInput = "1243.1423.121233.135423.124"
 
-        validateDecimal(totalDecimalLength)(decimalPlaces)(firstInput) must be(false)
-        validateDecimal(totalDecimalLength)(decimalPlaces)(secondInput) must be(false)
+        validateDecimalGreaterThanZero(totalDecimalLength)(decimalPlaces)(firstInput) must be(false)
+        validateDecimalGreaterThanZero(totalDecimalLength)(decimalPlaces)(secondInput) must be(false)
       }
 
-      "input without decimal places, but longer than allowed" in {
+      "input contains no decimal places, but longer than allowed" in {
         val input = "12345678901"
 
-        validateDecimal(totalDecimalLength)(decimalPlaces)(input) must be(false)
+        validateDecimalGreaterThanZero(totalDecimalLength)(decimalPlaces)(input) must be(false)
       }
 
-      "input longer than length" in {
+      "input is longer than length" in {
         val input = "123456.12345"
 
-        validateDecimal(totalDecimalLength)(decimalPlaces)(input) must be(false)
+        validateDecimalGreaterThanZero(totalDecimalLength)(decimalPlaces)(input) must be(false)
       }
 
-      "input with more decimal places than allowed" in {
+      "input contains more decimal places than allowed" in {
         val input = "12.123456"
 
-        validateDecimal(totalDecimalLength)(decimalPlaces)(input) must be(false)
+        validateDecimalGreaterThanZero(totalDecimalLength)(decimalPlaces)(input) must be(false)
+      }
+
+      "input is negative" in {
+        val input = "-1234.1234"
+
+        validateDecimalGreaterThanZero(totalDecimalLength)(decimalPlaces)(input) must be(false)
       }
     }
 
-    "return false" when {
-      "input is empty" in {
-        validateDecimal(totalDecimalLength)(decimalPlaces)(emptyString) must be(true)
-      }
+    "return true" when {
 
       "input without decimal places" in {
         val input = "123456"
 
-        validateDecimal(totalDecimalLength)(decimalPlaces)(input) must be(true)
+        validateDecimalGreaterThanZero(totalDecimalLength)(decimalPlaces)(input) must be(true)
       }
 
       "input with dot and without decimal places" in {
         val input = "123456."
 
-        validateDecimal(totalDecimalLength)(decimalPlaces)(input) must be(true)
+        validateDecimalGreaterThanZero(totalDecimalLength)(decimalPlaces)(input) must be(true)
       }
 
       "input with whole decimal number" in {
         val input = "1234.1234"
 
-        validateDecimal(totalDecimalLength)(decimalPlaces)(input) must be(true)
+        validateDecimalGreaterThanZero(totalDecimalLength)(decimalPlaces)(input) must be(true)
       }
     }
   }

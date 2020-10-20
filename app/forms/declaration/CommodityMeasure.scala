@@ -15,13 +15,17 @@
  */
 
 package forms.declaration
+
 import forms.DeclarationPage
+import forms.mappings.CrossFieldFormatter
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
-import play.api.data.Forms.{optional, text}
+import play.api.data.Forms.{of, optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
+
+import scala.util.Try
 
 case class CommodityMeasure(supplementaryUnits: Option[String], grossMass: Option[String], netMass: Option[String])
 
@@ -35,39 +39,73 @@ object CommodityMeasure extends DeclarationPage {
     CommodityMeasure(supplementaryUnits, if (grossMass.isEmpty) None else Some(grossMass), if (netMass.isEmpty) None else Some(netMass))
 
   def unapplyDefault(value: CommodityMeasure): Option[(Option[String], String, String)] =
-    Some(value.supplementaryUnits, value.grossMass.getOrElse(""), value.netMass.getOrElse(""))
+    Some((value.supplementaryUnits, value.grossMass.getOrElse(""), value.netMass.getOrElse("")))
 
   def applyClearance(grossMass: Option[String], netMass: Option[String]): CommodityMeasure =
     CommodityMeasure(None, grossMass, netMass)
 
   def unapplyClearance(value: CommodityMeasure): Option[(Option[String], Option[String])] =
-    Some(value.grossMass, value.netMass)
+    Some((value.grossMass, value.netMass))
+
+  private val massFormatValidation: String => Boolean = str => validateDecimalGreaterThanZero(16)(6)(str) and containsNotOnlyZeros(str)
 
   private val mappingDefault = Forms.mapping(
-    "supplementaryUnits" -> optional(
-      text().verifying("declaration.commodityMeasure.supplementaryUnits.error", validateDecimalGreaterThanZero(16)(6) and containsNotOnlyZeros)
+    "supplementaryUnits" -> optional(text().verifying("declaration.commodityMeasure.supplementaryUnits.error", massFormatValidation)),
+    "grossMass" -> of(
+      CrossFieldFormatter(
+        secondaryKey = "",
+        constraints = Seq(
+          ("declaration.commodityMeasure.grossMass.empty", (gross: String, _: String) => nonEmpty(gross)),
+          ("declaration.commodityMeasure.grossMass.error", (gross: String, _: String) => isEmpty(gross) or massFormatValidation(gross))
+        )
+      )
     ),
-    "grossMass" -> text
-      .verifying("declaration.commodityMeasure.grossMass.empty", nonEmpty)
-      .verifying("declaration.commodityMeasure.grossMass.error", isEmpty or validateDecimalGreaterThanZero(16)(6) and containsNotOnlyZeros),
-    "netMass" -> text
-      .verifying("declaration.commodityMeasure.netMass.empty", nonEmpty)
-      .verifying("declaration.commodityMeasure.netMass.error", isEmpty or validateDecimalGreaterThanZero(16)(6) and containsNotOnlyZeros)
+    "netMass" -> of(
+      CrossFieldFormatter(
+        secondaryKey = "grossMass",
+        constraints = Seq(
+          ("declaration.commodityMeasure.netMass.empty", (net: String, _: String) => nonEmpty(net)),
+          ("declaration.commodityMeasure.netMass.error.format", (net: String, _: String) => isEmpty(net) or massFormatValidation(net)),
+          (
+            "declaration.commodityMeasure.netMass.error.biggerThanGrossMass",
+            (net: String, gross: String) => isEmpty(net) or isEmpty(gross) or !massFormatValidation(net) or isFirstSmallerOrEqual(net, gross)
+          )
+        )
+      )
+    )
   )(CommodityMeasure.applyDefault)(CommodityMeasure.unapplyDefault)
 
   private val mappingClearance = Forms.mapping(
     "grossMass" -> optional(
       text()
-        .verifying("declaration.commodityMeasure.grossMass.error", isEmpty or validateDecimalGreaterThanZero(16)(6) and containsNotOnlyZeros)
+        .verifying("declaration.commodityMeasure.grossMass.error", isEmpty or massFormatValidation)
     ),
     "netMass" -> optional(
-      text()
-        .verifying("declaration.commodityMeasure.netMass.error", isEmpty or validateDecimalGreaterThanZero(16)(6) and containsNotOnlyZeros)
+      of(
+        CrossFieldFormatter(
+          secondaryKey = "grossMass",
+          constraints = Seq(
+            ("declaration.commodityMeasure.netMass.error.format", (net: String, _: String) => isEmpty(net) or massFormatValidation(net)),
+            (
+              "declaration.commodityMeasure.netMass.error.biggerThanGrossMass",
+              (net: String, gross: String) => isEmpty(net) or isEmpty(gross) or !massFormatValidation(net) or isFirstSmallerOrEqual(net, gross)
+            )
+          )
+        )
+      )
     )
   )(CommodityMeasure.applyClearance)(CommodityMeasure.unapplyClearance)
+
+  private def isFirstSmallerOrEqual(first: String, second: String): Boolean =
+    Try {
+      val firstNum = BigDecimal(first)
+      val secondNum = BigDecimal(second)
+      firstNum <= secondNum
+    }.getOrElse(false)
 
   def form(declarationType: DeclarationType): Form[CommodityMeasure] = declarationType match {
     case DeclarationType.CLEARANCE => Form(mappingClearance)
     case _                         => Form(mappingDefault)
   }
+
 }
