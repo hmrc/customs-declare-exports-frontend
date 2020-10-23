@@ -321,7 +321,7 @@ declaration.consignee-details.help-item = Go to data element 3/9 Consignee Name 
 declaration.consignorEori.title = Does the consignor have an EORI number?
 declaration.consignorEori.eori.label = EORI number
 declaration.consignorEori.help-item1 = Go to data element 3/8 Consignor Identification Number in the {0}
-declaration.consignorEori.hasEori.empty = Select if the consignor has an EORI number
+declaration.consignorEori.hasEori.empty = Select if the consignor has an EORI number.
 
 declaration.consignorAddress.title = What is the consignor’s name and address?
 declaration.consignorAddress.help-item1 = Go to data element 3/7 Consignor in the {0}
@@ -375,8 +375,8 @@ declaration.additionalActors.table.party = Party
 declaration.additionalActors.table.eori = EORI number
 declaration.additionalActors.table.remove.hint = Remove party {0} {1}.
 declaration.additionalActors.add.another = Do you need to add another party?
-declaration.additionalActors.add.another.empty = Select yes if you need to add another party
-declaration.additionalActors.remove.empty = Select yes if you need to remove this party
+declaration.additionalActors.add.another.empty = Select yes if you need to add another party.
+declaration.additionalActors.remove.empty = Select yes if you need to remove this party.
 declaration.additionalActors.remove.title = Are you sure you want to remove this party?
 
 
@@ -483,8 +483,8 @@ declaration.routingCountries.remove.title = Remove routing country
 declaration.routingCountries.remove.question = Are you sure you want to remove this routing country?
 declaration.routingCountries.remove.countryHeader = Country
 
-declaration.routingCountries.duplication = Routing country already added
-declaration.routingCountries.limit = Maximum number of routing countries added
+declaration.routingCountries.duplication = Routing country already added.
+declaration.routingCountries.limit = Maximum number of routing countries added.
 
 declaration.goodsLocation.title = What is the code for the location of the goods when they are declared?
 declaration.goodsLocation.hint = This is usually the port they are leaving from and is officially known as the Goods Location Code. For example, if they were at Felixstowe, it would be GBAUFXTFXTFXT.
