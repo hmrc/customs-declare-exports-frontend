@@ -869,6 +869,7 @@ declaration.additionalInformationRequired.title = Do you need to add an Addition
 declaration.additionalInformationRequired.hint = These are {0} and are determined by the commodity code or procedure code used.
 declaration.additionalInformationRequired.hint.link = union and national AI codes
 declaration.additionalInformationRequired.error = Select yes if there are any AI codes.
+declaration.additionalInformationRequired.help.bodyText = Go to data element 2/2 Additional Information in the {0}.
 declaration.additionalInformation.title = Additional information
 declaration.additionalInformation.code = What is the union or national AI code?
 declaration.additionalInformation.code.hint = Always declare the union AI code first if an item has both {0}.
