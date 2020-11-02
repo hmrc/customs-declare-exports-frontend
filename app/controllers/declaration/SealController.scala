@@ -144,7 +144,7 @@ class SealController @Inject()(
   }
 
   private def saveSeal(mode: Mode, boundForm: Form[Seal], cachedContainer: Container)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    saveAndContinue(boundForm, cachedContainer.seals, isMandatory = true, Seal.sealsAllowed).fold(
+    saveAndContinue(boundForm, cachedContainer.seals, isMandatory = true, Seal.sealsAllowed, "id").fold(
       formWithErrors => Future.successful(BadRequest(addPage(mode, formWithErrors, cachedContainer.id))),
       updatedCache =>
         if (updatedCache != cachedContainer.seals) updateCache(cachedContainer.copy(seals = updatedCache)).map { _ =>

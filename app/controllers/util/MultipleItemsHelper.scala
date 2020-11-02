@@ -34,19 +34,19 @@ object MultipleItemsHelper {
     * @tparam A - type of case class represents form
     * @return Either which can contain Form with errors or Sequence ready to insert to db
     */
-  def add[A](form: Form[A], cachedData: Seq[A], limit: Int): Either[Form[A], Seq[A]] = form.value match {
-    case Some(document) => prepareData(form, document, cachedData, limit)
+  def add[A](form: Form[A], cachedData: Seq[A], limit: Int, field: String = ""): Either[Form[A], Seq[A]] = form.value match {
+    case Some(document) => prepareData(form, document, cachedData, limit, field)
     case _              => Left(form)
   }
 
-  private def prepareData[A](form: Form[A], document: A, cachedData: Seq[A], limit: Int): Either[Form[A], Seq[A]] =
-    (duplication(document, cachedData) ++ limitOfElems(limit, cachedData)) match {
+  private def prepareData[A](form: Form[A], document: A, cachedData: Seq[A], limit: Int, field: String): Either[Form[A], Seq[A]] =
+    (duplication(document, cachedData, field) ++ limitOfElems(limit, cachedData)) match {
       case Seq()  => Right(addElement(document, cachedData))
       case errors => Left(form.copy(errors = errors))
     }
 
-  private def duplication[A](document: A, cachedData: Seq[A]): Seq[FormError] =
-    if (cachedData.contains(document)) Seq(FormError("", "supplementary.duplication")) else Seq.empty
+  private def duplication[A](document: A, cachedData: Seq[A], field: String): Seq[FormError] =
+    if (cachedData.contains(document)) Seq(FormError(field, "supplementary.duplication")) else Seq.empty
 
   private def limitOfElems[A](limit: Int, cachedData: Seq[A]): Seq[FormError] =
     if (cachedData.length >= limit) Seq(FormError("", "supplementary.limit")) else Seq.empty
@@ -88,8 +88,8 @@ object MultipleItemsHelper {
     * @tparam A - type of case class represents form
     * @return Form with updated errors or Sequence ready to insert to db
     */
-  def saveAndContinue[A](form: Form[A], cachedData: Seq[A], isMandatory: Boolean, limit: Int): Either[Form[A], Seq[A]] =
-    if (!isFormEmpty(form)) add(form, cachedData, limit)
+  def saveAndContinue[A](form: Form[A], cachedData: Seq[A], isMandatory: Boolean, limit: Int, field: String = ""): Either[Form[A], Seq[A]] =
+    if (!isFormEmpty(form)) add(form, cachedData, limit, field)
     else {
       val mandatoryFieldsError = checkMandatory(isMandatory, cachedData)
       if (mandatoryFieldsError.nonEmpty) Left(form.copy(errors = mandatoryFieldsError))
