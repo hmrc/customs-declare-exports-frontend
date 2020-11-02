@@ -80,7 +80,7 @@ class TaricCodeAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData, taricCodeLimit)
+      .add(boundForm, cachedData, taricCodeLimit, "taricCode")
       .fold(
         formWithErrors => Future.successful(BadRequest(taricCodeAdd(mode, itemId, formWithErrors))),
         updatedCache =>
