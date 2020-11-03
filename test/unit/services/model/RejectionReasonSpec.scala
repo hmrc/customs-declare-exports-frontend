@@ -20,19 +20,21 @@ import java.time.{ZoneOffset, ZonedDateTime}
 
 import base.Injector
 import config.AppConfig
+import forms.common.Eori
 import forms.declaration.Seal
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.declaration.Container
 import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.SubmissionStatus
-import models.{Pointer, PointerSection, PointerSectionType}
+import models.{DeclarationType, Pointer, PointerSection, PointerSectionType}
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito.given
 import play.api.i18n.Messages
 import services.cache.ExportsTestData
 import services.model.{RejectionReason, RejectionReasons}
-import unit.base.UnitSpec
+import unit.base.{JourneyTypeTestRunner, UnitSpec}
 
-class RejectionReasonSpec extends UnitSpec with ExportsTestData with Injector {
+class RejectionReasonSpec extends UnitSpec with ExportsTestData with JourneyTypeTestRunner with Injector {
 
   private val messages = mock[Messages]
   private val config: AppConfig = instanceOf[AppConfig]
@@ -93,7 +95,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData with Injector {
     "have the correct url" in {
 
       reasons.allRejectionReasons.find(_.code == "CDS40045").flatMap(_.url) mustBe Some(
-        "/customs-declare-exports/declaration/items/ITEM_ID/add-document"
+        "/customs-declare-exports/declaration/items/[ITEM_ID]/add-document"
       )
     }
   }
@@ -180,7 +182,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData with Injector {
         PointerSection("documentStatus", PointerSectionType.FIELD)
       )
       val pointer = Pointer(sections)
-      val url = "/customs-declare-exports/declaration/items/ITEM_ID/add-document"
+      val url = "/customs-declare-exports/declaration/items/[ITEM_ID]/add-document"
       val expectedItemId = "itemId2"
       val declaration =
         aDeclaration(withItems(anItem(withSequenceId(1), withItemId("itemId1")), anItem(withSequenceId(2), withItemId(expectedItemId))))
@@ -203,7 +205,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData with Injector {
           PointerSection("documentStatus", PointerSectionType.FIELD)
         )
         val pointer = Pointer(sections)
-        val url = "/customs-declare-exports/declaration/items/ITEM_ID/add-document"
+        val url = "/customs-declare-exports/declaration/items/[ITEM_ID]/add-document"
         val declaration = aDeclaration()
 
         val expectedUrl = s"/customs-declare-exports/declaration/export-items"
@@ -213,7 +215,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData with Injector {
 
       "pointer is missing" in {
 
-        val url = "/customs-declare-exports/declaration/containers/ITEM_ID/seals"
+        val url = "/customs-declare-exports/declaration/containers/[ITEM_ID]/seals"
         val declaration =
           aDeclaration(withItems(anItem(withSequenceId(1), withItemId("itemId1")), anItem(withSequenceId(2), withItemId("itemId2"))))
 
@@ -234,13 +236,83 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData with Injector {
         PointerSection("id", PointerSectionType.FIELD)
       )
       val pointer = Pointer(sections)
-      val url = "/customs-declare-exports/declaration/containers/CONTAINER_ID/seals"
+      val url = "/customs-declare-exports/declaration/containers/[CONTAINER_ID]/seals"
       val expectedContainerId = "containerId2"
       val declaration = aDeclaration(withContainerData(Seq(Container("containerId1", Seq.empty), Container(expectedContainerId, Seq(Seal("1234"))))))
 
       val expectedUrl = s"/customs-declare-exports/declaration/containers/$expectedContainerId/seals"
 
       RejectionReason.url(url, declaration, Some(pointer)) mustBe expectedUrl
+    }
+
+    "correctly build a pointer [declaration.declarantDetails.details.eori] base url for a CLEARANCE Declaration" in {
+
+      val sections = Seq(
+        PointerSection("declaration", PointerSectionType.FIELD),
+        PointerSection("declarantDetails", PointerSectionType.FIELD),
+        PointerSection("details", PointerSectionType.FIELD),
+        PointerSection("eori", PointerSectionType.FIELD)
+      )
+      val pointer = Pointer(sections)
+      val url = "/customs-declare-exports/declaration/[URL_PATH]"
+      val declaration = aDeclaration(withType(DeclarationType.CLEARANCE))
+
+      val expectedUrl = "/customs-declare-exports/declaration/declarant-details"
+
+      RejectionReason.url(url, declaration, Some(pointer)) mustBe expectedUrl
+    }
+
+    "correctly build a pointer [declaration.declarantDetails.details.eori] base url for a CLEARANCE Declaration with EXS" in {
+
+      val sections = Seq(
+        PointerSection("declaration", PointerSectionType.FIELD),
+        PointerSection("declarantDetails", PointerSectionType.FIELD),
+        PointerSection("details", PointerSectionType.FIELD),
+        PointerSection("eori", PointerSectionType.FIELD)
+      )
+      val pointer = Pointer(sections)
+      val url = "/customs-declare-exports/declaration/[URL_PATH]"
+      val declaration = aDeclaration(withType(DeclarationType.CLEARANCE), withIsExs(), withPersonPresentingGoodsDetails(Some(Eori("GB201920200000"))))
+
+      val expectedUrl = "/customs-declare-exports/declaration/person-presenting-goods"
+
+      RejectionReason.url(url, declaration, Some(pointer)) mustBe expectedUrl
+    }
+
+    "correctly build a pointer [declaration.declarantDetails.details.eori] base url" when {
+
+      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+        "should redirect to /declarant-details" in {
+          val sections = Seq(
+            PointerSection("declaration", PointerSectionType.FIELD),
+            PointerSection("declarantDetails", PointerSectionType.FIELD),
+            PointerSection("details", PointerSectionType.FIELD),
+            PointerSection("eori", PointerSectionType.FIELD)
+          )
+          val pointer = Pointer(sections)
+          val url = "/customs-declare-exports/declaration/[URL_PATH]"
+          val declaration = aDeclaration(withType(request.declarationType))
+//          val declaration = aDeclaration()
+
+          val expectedUrl = "/customs-declare-exports/declaration/declarant-details"
+
+          RejectionReason.url(url, declaration, Some(pointer)) mustBe expectedUrl
+        }
+      }
+    }
+
+    "throw an exception when pointer based URL not expected" in {
+      val sections = Seq(
+        PointerSection("declaration", PointerSectionType.FIELD),
+        PointerSection("some", PointerSectionType.FIELD),
+        PointerSection("other", PointerSectionType.FIELD),
+        PointerSection("pointer", PointerSectionType.FIELD)
+      )
+      val pointer = Pointer(sections)
+      val url = "/customs-declare-exports/declaration/[URL_PATH]"
+      val declaration = aDeclaration()
+
+      intercept[IllegalArgumentException](RejectionReason.url(url, declaration, Some(pointer)))
     }
 
     "return default url for container" when {
@@ -256,7 +328,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData with Injector {
           PointerSection("documentStatus", PointerSectionType.FIELD)
         )
         val pointer = Pointer(sections)
-        val url = "/customs-declare-exports/declaration/containers/CONTAINER_ID/seals"
+        val url = "/customs-declare-exports/declaration/containers/[CONTAINER_ID]/seals"
         val declaration = aDeclaration()
 
         val expectedUrl = s"/customs-declare-exports/declaration/containers"
@@ -266,7 +338,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData with Injector {
 
       "pointer is missing" in {
 
-        val url = "/customs-declare-exports/declaration/containers/CONTAINER_ID/seals"
+        val url = "/customs-declare-exports/declaration/containers/[CONTAINER_ID]/seals"
         val declaration = aDeclaration(withContainerData(Seq(Container("containerId1", Seq.empty), Container("containerId2", Seq(Seal("1234"))))))
 
         val expectedUrl = "/customs-declare-exports/declaration/containers"

@@ -20,7 +20,7 @@ import com.github.tototoshi.csv._
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.declaration.notifications.Notification
-import models.{ExportsDeclaration, Pointer}
+import models.{DeclarationType, ExportsDeclaration, Pointer}
 import play.api.Logger
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
@@ -56,14 +56,15 @@ object RejectionReason {
     * Placeholders for Item Id and Container Id.
     * Those placeholders are used in pointer urls in the error-dms-rej-list.csv
     */
-  private val itemIdPlaceholder = "ITEM_ID"
-  private val containerIdPlaceholder = "CONTAINER_ID"
+  private val itemIdPlaceholder = "[ITEM_ID]"
+  private val containerIdPlaceholder = "[CONTAINER_ID]"
+  private val urlPathPlaceholder = "[URL_PATH]"
 
   /**
     * Build a url for items and containers.
     * For other pages return the input url.
-    * Items contains ITEM_ID to replace with real item Id
-    * Containers contains CONTAINER_ID to replace with real container Id
+    * Items contains [ITEM_ID] to replace with real item Id
+    * Containers contains [CONTAINER_ID] to replace with real container Id
     */
   def url(url: String, declaration: ExportsDeclaration, pointerOpt: Option[Pointer]): String = {
     val defaultItemsUrl = "/customs-declare-exports/declaration/export-items"
@@ -91,8 +92,20 @@ object RejectionReason {
           }.getOrElse(defaultContainersUrl)
         case _ => defaultContainersUrl
       }
+    } else if (url.contains(urlPathPlaceholder)) {
+      pointerBasedUrl(url, declaration, pointerOpt)
     } else url
   }
+
+  private def pointerBasedUrl(url: String, declaration: ExportsDeclaration, pointerOpt: Option[Pointer]) =
+    pointerOpt match {
+      case Some(pointer) if pointer.toString == "declaration.declarantDetails.details.eori" =>
+        if (declaration.`type` == DeclarationType.CLEARANCE && declaration.isExs && declaration.parties.personPresentingGoodsDetails.nonEmpty) {
+          url.replace(urlPathPlaceholder, "person-presenting-goods")
+        } else url.replace(urlPathPlaceholder, "declarant-details")
+      case Some(pointer) => throw new IllegalArgumentException(s"Pointer [${pointer.toString}] does not have a corresponding URL")
+    }
+
 }
 
 @Singleton
