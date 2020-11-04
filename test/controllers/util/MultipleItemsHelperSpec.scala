@@ -27,25 +27,25 @@ class MultipleItemsHelperSpec extends WordSpec with MustMatchers {
   "MultipleItemsHelper on add method" should {
     "return sequence with value" when {
       "input data is correct" in {
-        MultipleItemsHelper.add(correctForm, Seq(), limit) must be(Right(Seq(correctValue)))
+        MultipleItemsHelper.add(correctForm, Seq(), limit, fieldId = valueFieldName) must be(Right(Seq(correctValue)))
       }
     }
 
     "return form with errors" when {
       "limit of elements is reached" in {
-        val expectedOutput = Left(correctForm.copy(errors = limitError))
+        val expectedOutput = Left(correctForm.copy(errors = limitError(valueFieldName)))
 
-        MultipleItemsHelper.add(correctForm, Seq(), 0) must be(expectedOutput)
+        MultipleItemsHelper.add(correctForm, Seq(), 0, fieldId = valueFieldName) must be(expectedOutput)
       }
 
       "elements is duplicated" in {
-        val expectedOutput = Left(correctForm.copy(errors = duplicationError))
+        val expectedOutput = Left(correctForm.copy(errors = duplicationError(valueFieldName)))
 
-        MultipleItemsHelper.add(correctForm, Seq(correctValue), limit) must be(expectedOutput)
+        MultipleItemsHelper.add(correctForm, Seq(correctValue), limit, fieldId = valueFieldName) must be(expectedOutput)
       }
 
       "input is incorrect" in {
-        MultipleItemsHelper.add(incorrectForm, Seq(), limit) must be(Left(incorrectForm))
+        MultipleItemsHelper.add(incorrectForm, Seq(), limit, fieldId = valueFieldName) must be(Left(incorrectForm))
       }
     }
   }
@@ -70,21 +70,21 @@ class MultipleItemsHelperSpec extends WordSpec with MustMatchers {
   "MultipleItemsHelper on continue" should {
     "return errors" when {
       "user fill inputs" in {
-        val expectedOutput = correctForm.copy(errors = continueError)
+        val expectedOutput = correctForm.copy(errors = continueError(valueFieldName))
 
-        MultipleItemsHelper.continue(correctForm, Seq(), false) must be(expectedOutput)
+        MultipleItemsHelper.continue(correctForm, Seq(), isMandatory = false, fieldId = valueFieldName) must be(expectedOutput)
       }
 
       "user doesn't add any data and screen is mandatory" in {
-        val expectedOutput = testForm.copy(errors = mandatoryError)
+        val expectedOutput = testForm.copy(errors = mandatoryError(valueFieldName))
 
-        MultipleItemsHelper.continue(testForm, Seq(), true) must be(expectedOutput)
+        MultipleItemsHelper.continue(testForm, Seq(), isMandatory = true, fieldId = valueFieldName) must be(expectedOutput)
       }
     }
 
     "return form without errors" when {
       "inputs are empty and cache contains data" in {
-        MultipleItemsHelper.continue(testForm, Seq(TestForm("ABC")), true) must be(testForm)
+        MultipleItemsHelper.continue(testForm, Seq(TestForm("ABC")), isMandatory = true, fieldId = valueFieldName) must be(testForm)
       }
     }
   }
@@ -93,19 +93,19 @@ class MultipleItemsHelperSpec extends WordSpec with MustMatchers {
     "add item when form is not empty" in {
       val expectedOutput = Right(Seq(correctValue))
 
-      MultipleItemsHelper.saveAndContinue(correctForm, Seq(), true, limit) must be(expectedOutput)
+      MultipleItemsHelper.saveAndContinue(correctForm, Seq(), isMandatory = true, limit, fieldId = valueFieldName) must be(expectedOutput)
     }
 
     "return form with errors when cache is empty and page is mandatory" in {
-      val expectedOutput = Left(testForm.copy(errors = mandatoryError))
+      val expectedOutput = Left(testForm.copy(errors = mandatoryError(valueFieldName)))
 
-      MultipleItemsHelper.saveAndContinue(testForm, Seq(), true, limit) must be(expectedOutput)
+      MultipleItemsHelper.saveAndContinue(testForm, Seq(), isMandatory = true, limit, fieldId = valueFieldName) must be(expectedOutput)
     }
 
     "return sequence with actual cache when user has data in cache and has empty form" in {
       val cachedData = Seq(TestForm("ABC"))
 
-      MultipleItemsHelper.saveAndContinue(testForm, cachedData, true, limit) must be(Right(cachedData))
+      MultipleItemsHelper.saveAndContinue(testForm, cachedData, isMandatory = true, limit, fieldId = valueFieldName) must be(Right(cachedData))
     }
   }
 
@@ -135,18 +135,19 @@ object MultipleItemsHelperSpec {
   val correctValue = TestForm("Correct value")
   val incorrectValue = TestForm("Incorrect value")
 
-  val duplicationError = Seq(FormError("", "supplementary.duplication"))
-  val limitError = Seq(FormError("", "supplementary.limit"))
-  val continueError = Seq(FormError("", "supplementary.continue.error"))
-  val mandatoryError = Seq(FormError("", "supplementary.continue.mandatory"))
+  def duplicationError(id: String = "") = Seq(FormError(id, "supplementary.duplication"))
+  def limitError(id: String = "") = Seq(FormError(id, "supplementary.limit"))
+  def continueError(id: String = "") = Seq(FormError(id, "supplementary.continue.error"))
+  def mandatoryError(id: String = "") = Seq(FormError(id, "supplementary.continue.mandatory"))
 
-  val correctJson: JsValue = JsObject(Map("value" -> JsString(correctValue.value)))
-  val incorrectJson: JsValue = JsObject(Map("value" -> JsString(incorrectValue.value)))
+  val valueFieldName = "value"
+  val correctJson: JsValue = JsObject(Map(valueFieldName -> JsString(correctValue.value)))
+  val incorrectJson: JsValue = JsObject(Map(valueFieldName -> JsString(incorrectValue.value)))
 
   val limit = 10
 
   val testMapping =
-    mapping("value" -> text().verifying(errorMessage, _ == correctValue.value))(TestForm.apply)(TestForm.unapply)
+    mapping(valueFieldName -> text().verifying(errorMessage, _ == correctValue.value))(TestForm.apply)(TestForm.unapply)
 
   val testForm: Form[TestForm] = Form(testMapping)
 
