@@ -15,33 +15,36 @@
  *@
 
 @import controllers.declaration.routes
+@import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
 @import controllers.navigation.Navigator
 @import forms.declaration.PackageInformation
 @import uk.gov.hmrc.play.views.html._
 @import services.model.PackageType
 @import services.PackageTypes
 @import models.requests.JourneyRequest
+@import scala.collection.immutable
 
 @import services.view.AutoCompleteItem
 @import views.{BackButton, Title}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
 @import views.components.fields.LabelledValue
+@import play.twirl.api.HtmlFormat
 @import controllers.navigation.ItemId
 
 @this(
-govukLayout: gdsMainTemplate,
-govukButton: GovukButton,
-govukTable : GovukTable,
-errorSummary: errorSummary,
-sectionHeader: sectionHeader,
-pageTitle: pageTitle,
-exportsInputText: exportsInputText,
-tariffDetails: tariffDetails,
-addButton: addButton,
-removeButton: removeButton,
-saveButtons: saveButtons,
-formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+  govukLayout: gdsMainTemplate,
+  govukButton: GovukButton,
+  formGroupWrapper: formGroupWrapper,
+  errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
+  pageTitle: pageTitle,
+  exportsInputText: exportsInputText,
+  tariffDetails: tariffDetails,
+  addButton: addButton,
+  removeButton: removeButton,
+  saveButtons: saveButtons,
+  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
@@ -68,30 +71,32 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
         @sectionHeader(messages("declaration.section.5"))
         @pageTitle(text = messages("declaration.packageInformation.title"))
 
-        @components.fields.field_accessible_autocomplete(
-          field = form("typesOfPackages"),
-          label = "declaration.packageInformation.typesOfPackages",
-          labelClass = Some("govuk-label--m"),
-          hintText = None,
-          emptySelectValue = messages("declaration.packageInformation.typesOfPackages.empty"),
-          items = AutoCompleteItem.fromPackageType(PackageTypes.all),
-          'otherErrorFields -> Seq("typesOfPackages")
-        )
+        @formGroupWrapper(field = form(PackageInformationFormGroupId)){
+            @components.fields.field_accessible_autocomplete(
+              field = form("typesOfPackages"),
+              label = "declaration.packageInformation.typesOfPackages",
+              labelClass = Some("govuk-label--m"),
+              hintText = None,
+              emptySelectValue = messages("declaration.packageInformation.typesOfPackages.empty"),
+              items = AutoCompleteItem.fromPackageType(PackageTypes.all),
+              'otherErrorFields -> Seq("typesOfPackages")
+            )
 
-        @exportsInputText(
-          field = form("numberOfPackages"),
-          labelKey = "declaration.packageInformation.numberOfPackages",
-          isPageHeading = false,
-          inputClasses = Some("govuk-input--width-10")
-        )
+            @exportsInputText(
+              field = form("numberOfPackages"),
+              labelKey = "declaration.packageInformation.numberOfPackages",
+              isPageHeading = false,
+              inputClasses = Some("govuk-input--width-10")
+            )
 
-        @exportsInputText(
-          field = form("shippingMarks"),
-          labelKey = "declaration.packageInformation.shippingMarks",
-          hintKey = Some("declaration.packageInformation.shippingMarks.hint"),
-          isPageHeading = false,
-          inputClasses = Some("govuk-input--width-20")
-        )
+            @exportsInputText(
+              field = form("shippingMarks"),
+              labelKey = "declaration.packageInformation.shippingMarks",
+              hintKey = Some("declaration.packageInformation.shippingMarks.hint"),
+              isPageHeading = false,
+              inputClasses = Some("govuk-input--width-20")
+            )
+        }
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 

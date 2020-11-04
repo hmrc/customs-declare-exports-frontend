@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.PackageInformation
@@ -57,7 +58,7 @@ class PackageInformationAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData, PackageInformation.limit)
+      .add(boundForm, cachedData, PackageInformation.limit, fieldId = PackageInformationFormGroupId)
       .fold(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
@@ -70,4 +71,8 @@ class PackageInformationAddController @Inject()(
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedCache.toList))))
 
+}
+
+object PackageInformationAddController {
+  val PackageInformationFormGroupId: String = "packageInformation"
 }
