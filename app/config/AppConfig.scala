@@ -141,4 +141,5 @@ class AppConfig @Inject()(
     allowListConfig(allowListExcludedPathsDefined).map(path => Call("GET", path))
   lazy val allowListEnabled: Boolean = servicesConfig.getBoolean(allowListed)
 
+  lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
 }

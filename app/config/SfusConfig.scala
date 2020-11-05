@@ -16,7 +16,7 @@
 
 package config
 
-import features.{Feature, FeatureStatus}
+import features.{Feature}
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 
