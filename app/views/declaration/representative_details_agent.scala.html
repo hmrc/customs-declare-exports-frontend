@@ -27,13 +27,13 @@
 @import views.ErrorMapper.radioGroupErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukRadios: GovukRadios,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        tariffDetails: tariffDetails,
-        saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    tariffDetails: tariffDetails,
+    saveButtons: saveButtons,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[RepresentativeAgent])(implicit request: JourneyRequest[_], messages: Messages)
