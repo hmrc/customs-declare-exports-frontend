@@ -25,6 +25,7 @@ import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.seal_summary
 import views.tags.ViewTest
@@ -47,7 +48,7 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
     "display page title for no seals" in {
       val noSealsView = createView(seals = Seq.empty)
       val title = messages("declaration.seal.add.first", containerId)
-      noSealsView.getElementsByTag("h1").text() must be(title)
+      noSealsView.getElementsByClass(Styles.gdsPageLegend).text() must be(title)
       noSealsView.title() must include(title)
     }
 

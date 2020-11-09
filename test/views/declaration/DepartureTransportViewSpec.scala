@@ -28,6 +28,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.twirl.api.Html
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.departure_transport
 import views.tags.ViewTest
@@ -66,7 +67,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       }
 
       "display page title" in {
-        view.getElementsByTag("h1").text() mustBe messages("declaration.transportInformation.meansOfTransport.departure.title")
+        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.transportInformation.meansOfTransport.departure.title")
       }
 
       "display section header" in {

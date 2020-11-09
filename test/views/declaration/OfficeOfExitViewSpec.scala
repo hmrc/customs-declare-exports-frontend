@@ -25,6 +25,7 @@ import org.scalatest.Matchers._
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.office_of_exit
 import views.tags.ViewTest
@@ -60,7 +61,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       }
 
       "display page title" in {
-        view.getElementsByClass("govuk-fieldset__heading") must containMessageForElements("declaration.officeOfExit.title")
+        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.officeOfExit.title")
       }
 
       "display section header" in {

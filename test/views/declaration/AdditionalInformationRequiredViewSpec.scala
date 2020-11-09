@@ -28,6 +28,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additionalInformtion.additional_information_required
 import views.tags.ViewTest
@@ -54,7 +55,7 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-        createView(form(request.declarationType)).getElementsByTag("h1") must containMessageForElements(
+        createView(form(request.declarationType)).getElementsByClass(Styles.gdsPageLegend) must containMessageForElements(
           "declaration.additionalInformationRequired.title"
         )
       }

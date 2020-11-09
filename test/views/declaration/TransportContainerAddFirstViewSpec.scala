@@ -25,6 +25,7 @@ import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.transport_container_add_first
 import views.tags.ViewTest
@@ -42,7 +43,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.containers.first.title")
+      view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.transportInformation.containers.first.title")
     }
 
     "display section header" in {

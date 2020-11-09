@@ -25,6 +25,7 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.transport_leaving_the_border
 
@@ -37,7 +38,7 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-        view.getElementsByTag("h1") must containMessageForElements("declaration.transport.leavingTheBorder.title")
+        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.transport.leavingTheBorder.title")
       }
 
       "display section header" in {

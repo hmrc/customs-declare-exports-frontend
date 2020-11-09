@@ -25,6 +25,7 @@ import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.nact_code_add_first
 import views.tags.ViewTest
@@ -43,7 +44,7 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1") must containMessageForElements("declaration.nationalAdditionalCode.addfirst.header")
+      view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.nationalAdditionalCode.addfirst.header")
     }
 
     "display 'Back' button that links to 'taric codes' page" in {

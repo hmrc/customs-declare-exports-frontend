@@ -28,6 +28,7 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.is_exs
 
@@ -48,7 +49,7 @@ class IsExsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessage
     onClearance { implicit request =>
       "display page title" in {
 
-        createView().getElementsByTag("h1") must containMessageForElements("declaration.exs.title")
+        createView().getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.exs.title")
       }
 
       "display section header" in {

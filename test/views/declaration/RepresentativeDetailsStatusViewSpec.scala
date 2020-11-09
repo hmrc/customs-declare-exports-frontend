@@ -26,6 +26,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.representative_details_status
 import views.tags.ViewTest
@@ -46,7 +47,7 @@ class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestD
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").first() must containMessage("declaration.representative.status.title")
+      view.getElementsByClass(Styles.gdsPageLegend).first() must containMessage("declaration.representative.status.title")
     }
 
     "display two radio buttons with description (not selected)" in {

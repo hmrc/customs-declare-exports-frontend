@@ -28,6 +28,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declarant_exporter
 import views.tags.ViewTest
@@ -55,7 +56,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
-        createView().getElementsByTag("h1") must containMessageForElements("declaration.declarant.exporter.title")
+        createView().getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.declarant.exporter.title")
       }
 
       "display section header" in {
