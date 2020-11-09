@@ -26,13 +26,15 @@
 @import views.BackButton
 @import views.ErrorMapper.radioGroupErrors
 
-@this(govukLayout: gdsMainTemplate,
+@this(
+        govukLayout: gdsMainTemplate,
         govukRadios: GovukRadios,
         errorSummary: errorSummary,
-        headingContent: headingContent,
+        sectionHeader: sectionHeader,
         tariffDetails: tariffDetails,
         saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[RepresentativeAgent])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -45,16 +47,13 @@
     @formHelper(action = RepresentativeAgentController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("representingAgent", "agent_yes", form.errors))
 
+        @sectionHeader(messages("declaration.section.2"))
+
         @govukRadios(Radios(
             name = "representingAgent",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.representative.agent.title"),
-                            Some(messages("declaration.section.2"))
-                        )
-                    ),
+                    content = Text(messages("declaration.representative.agent.title")),
                     classes = gdsPageLegend
                 ))
             )),

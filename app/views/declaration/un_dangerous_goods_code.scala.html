@@ -27,25 +27,25 @@
 @import views.ErrorMapper.radioGroupErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        errorSummary: errorSummary,
-        headingContent: headingContent,
-        exportsInputText: exportsInputText,
-        body: paragraphBody,
-        pageTitle: pageTitle,
-        saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        appConfig: AppConfig,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    body: paragraphBody,
+    pageTitle: pageTitle,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    appConfig: AppConfig,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(
-        mode: Mode,
-        itemId: String,
-        form: Form[UNDangerousGoodsCode]
+    mode: Mode,
+    itemId: String,
+    form: Form[UNDangerousGoodsCode]
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.unDangerousGoodsCode.traderTariff.link")</a>}
@@ -60,16 +60,13 @@
     @formHelper(action = routes.UNDangerousGoodsCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasDangerousGoodsCodeKey, "code_yes", form.errors))
 
+        @sectionHeader(messages("declaration.section.5"))
+
         @govukRadios(Radios(
             name = hasDangerousGoodsCodeKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.unDangerousGoodsCode.header"),
-                            Some(messages("declaration.section.5"))
-                        )
-                    ),
+                    content = Text(messages("declaration.unDangerousGoodsCode.header")),
                     classes = gdsPageLegend
                 ))
             )),

@@ -29,7 +29,7 @@
 @this(
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
-    headingContent: headingContent,
+    sectionHeader: sectionHeader,
     govukRadios: GovukRadios,
     govukDetails : GovukDetails,
     saveButtons: saveButtons,
@@ -45,16 +45,13 @@
     @formHelper(action = controllers.declaration.routes.IsExsController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(isExsKey, "code_yes", form.errors))
 
+        @sectionHeader(messages("declaration.section.2"))
+
         @govukRadios(Radios(
             name = isExsKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.exs.title"),
-                            Some(messages("declaration.section.2"))
-                        )
-                    ),
+                    content = Text(messages("declaration.exs.title")),
                     classes = gdsPageLegend
                 ))
             )),

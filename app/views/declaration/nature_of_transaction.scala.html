@@ -25,14 +25,14 @@
 @import views.ErrorMapper.radioGroupErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        errorSummary: errorSummary,
-        headingContent: headingContent,
-        saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[NatureOfTransaction])(implicit request: JourneyRequest[_], messages: Messages)
@@ -46,16 +46,13 @@
     @formHelper(action = controllers.declaration.routes.NatureOfTransactionController.saveTransactionType(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("natureType", "Sale", form.errors))
 
+        @sectionHeader(messages("declaration.section.4"))
+
         @govukRadios(Radios(
             name = "natureType",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.natureOfTransaction.title"),
-                            Some(messages("declaration.section.4"))
-                        )
-                    ),
+                    content = Text(messages("declaration.natureOfTransaction.title")),
                     classes = gdsPageLegend
                 ))
             )),

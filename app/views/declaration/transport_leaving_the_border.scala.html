@@ -26,17 +26,17 @@
 @import views.ErrorMapper.radioGroupErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        govukRadios: GovukRadios,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        errorSummary: errorSummary,
-        headingContent: headingContent,
-        saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukDetails : GovukDetails,
+    govukRadios: GovukRadios,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(form: Form[TransportLeavingTheBorder], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
@@ -51,16 +51,13 @@
     @formHelper(action = TransportLeavingTheBorderController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("transportLeavingTheBorder", "Border_Sea", form.errors))
 
+        @sectionHeader(messages("declaration.section.6"))
+
         @govukRadios(Radios(
             name = "transportLeavingTheBorder",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.transport.leavingTheBorder.title"),
-                            Some(messages("declaration.section.6"))
-                        )
-                    ),
+                    content = Text(messages("declaration.transport.leavingTheBorder.title")),
                     classes = gdsPageLegend
                 ))
             )),

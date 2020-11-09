@@ -31,7 +31,7 @@
         govukRadios: GovukRadios,
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
-        headingContent: headingContent,
+        sectionHeader: sectionHeader,
         saveAndContinue: saveAndContinue,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -54,16 +54,13 @@
     @formHelper(action = controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("dispatchLocation", "OutsideEU", form.errors))
 
+        @sectionHeader(messages("declaration.section.1"))
+
         @govukRadios(Radios(
             name = "dispatchLocation",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.dispatchLocation.header"),
-                            Some(messages("declaration.section.1"))
-                        )
-                    ),
+                    content = Text(messages("declaration.dispatchLocation.header")),
                     classes = gdsPageLegend
                 ))
             )),

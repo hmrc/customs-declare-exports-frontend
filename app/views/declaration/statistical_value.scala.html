@@ -26,23 +26,23 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.currencyinput.CurrencyInput
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        pageTitle: pageTitle,
-        hmrcCurrencyInput: HmrcCurrencyInput,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        headingContent: headingContent,
-        saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukDetails : GovukDetails,
+    pageTitle: pageTitle,
+    hmrcCurrencyInput: HmrcCurrencyInput,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    headingContent: headingContent,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(
-        mode: Mode,
-        itemId: String,
-        form: Form[StatisticalValue]
+    mode: Mode,
+    itemId: String,
+    form: Form[StatisticalValue]
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.statisticalValue.help.bodyText", components.details_content_link())) }
@@ -58,6 +58,8 @@
     @formHelper(action = routes.StatisticalValueController.submitItemType(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
+        @sectionHeader(messages("declaration.section.5"))
+
         @unitsHint
 
         @hmrcCurrencyInput(CurrencyInput(
@@ -69,7 +71,7 @@
                 content = HtmlContent(
                     headingContent(
                         messages("declaration.statisticalValue.header"),
-                        Some(messages("declaration.section.5")),
+                        None,
                         classes = "govuk-label--xl"
                     )
                 )

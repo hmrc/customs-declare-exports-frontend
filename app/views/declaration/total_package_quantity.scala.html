@@ -34,7 +34,8 @@
     exportsInputText: exportsInputText,
     tariffDetails: tariffDetails,
     saveButtons: saveButtons,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    sectionHeader: sectionHeader
 )
 
 @(mode: Mode, form: Form[TotalPackageQuantity])(implicit request: JourneyRequest[_], messages: Messages)
@@ -49,13 +50,15 @@
     @formHelper(action = TotalPackageQuantityController.saveTotalPackageQuantity(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
+        @sectionHeader(messages("declaration.section.4"))
+
         @exportsInputText(
             labelKey = "declaration.totalPackageQuantity.title",
             field = form("totalPackage"),
             isPageHeading = true,
             headingClasses = gdsPageLabel,
             inputClasses = Some("govuk-input--width-10"),
-            sectionHeaderKey = Some("declaration.section.4")
+            sectionHeaderKey = None
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

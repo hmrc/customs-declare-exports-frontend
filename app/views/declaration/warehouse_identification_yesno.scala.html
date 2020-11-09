@@ -29,7 +29,7 @@
     govukLayout: gdsMainTemplate,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
-    headingContent: headingContent,
+    sectionHeader: sectionHeader,
     exportsInputText: exportsInputText,
     pageTitle: pageTitle,
     saveButtons: saveButtons,
@@ -48,16 +48,13 @@
     @formHelper(action = routes.WarehouseIdentificationController.saveIdentificationNumber(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
+        @sectionHeader(messages("declaration.section.6"))
+
         @govukRadios(Radios(
             name = inWarehouseKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.warehouse.identification.optional.title"),
-                            Some(messages("declaration.section.6"))
-                        )
-                    ),
+                    content = Text(messages("declaration.warehouse.identification.optional.title")),
                     classes = gdsPageLegend
                 ))
             )),

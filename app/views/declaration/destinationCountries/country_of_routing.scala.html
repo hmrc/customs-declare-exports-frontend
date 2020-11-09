@@ -33,7 +33,7 @@
         govukDetails : GovukDetails,
         govukFieldset: GovukFieldset,
         errorSummary: errorSummary,
-        headingContent: headingContent,
+        sectionHeader: sectionHeader,
         saveButtons: saveButtons,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -54,11 +54,13 @@
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
+        @sectionHeader(messages("declaration.section.3"))
+
         @components.fields.field_accessible_autocomplete_with_header(
             form("countryCode"),
             s"declaration.${page.id}.question",
             Some(gdsPageLabel),
-            Some("declaration.section.3"),
+            None,
             None,
             messages("declaration.routingCountry.empty"),
             AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),

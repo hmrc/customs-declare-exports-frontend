@@ -32,7 +32,8 @@
     saveButtons: saveButtons,
     tariffDetails: tariffDetails,
     pageTitle: pageTitle,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    sectionHeader: sectionHeader
 )
 
 
@@ -48,13 +49,15 @@
 
         @errorSummary(form.errors)
 
+        @sectionHeader(messages("declaration.section.6"))
+
         @exportsInputText(
             field = form("identificationNumber"),
             labelKey = "declaration.warehouse.identification.required.title",
             hintKey = Some("declaration.warehouse.identification.label.hint"),
             isPageHeading = true,
             headingClasses = gdsPageLabel,
-            sectionHeaderKey = Some("declaration.section.6")
+            sectionHeaderKey = None
         )
 
 

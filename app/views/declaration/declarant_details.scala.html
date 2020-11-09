@@ -28,7 +28,7 @@
 @this(
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
-    headingContent: headingContent,
+    sectionHeader: sectionHeader,
     govukRadios: GovukRadios,
     exportsInputText: exportsInputText,
     govukDetails : GovukDetails,
@@ -46,16 +46,13 @@
     @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(isEoriKey, "code_yes", form.errors))
 
+        @sectionHeader(messages("declaration.section.2"))
+
         @govukRadios(Radios(
             name = isEoriKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.declarant.titleQuestion", request.eori),
-                            Some(messages("declaration.section.2"))
-                        )
-                    ),
+                    content = Text(messages("declaration.declarant.titleQuestion", request.eori)),
                     classes = gdsPageLegend
                 ))
             )),
