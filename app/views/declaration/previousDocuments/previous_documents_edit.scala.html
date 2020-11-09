@@ -16,6 +16,7 @@
 
 @import forms.declaration.Document
 @import models.requests.JourneyRequest
+@import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
 @import services.DocumentType
 @import services.view.AutoCompleteItem
 @import views.components.gds.Styles._
@@ -29,6 +30,7 @@
 @this(
         govukLayout: gdsMainTemplate,
         govukFieldset: GovukFieldset,
+        formGroupWrapper: formGroupWrapper,
         govukButton: GovukButton,
         govukRadios: GovukRadios,
         errorSummary: errorSummary,
@@ -106,24 +108,31 @@
     )
 }
 
+@pageFields = {
+    @formGroupWrapper(field = form(PreviousDocumentsFormGroupId)){
+        @pageHint
+        @documentType
+        @documentReference
+        @documentCategory
+        @goodsItemIdentifier
+    }
+}
 
 @errorSummary(radioGroupErrors("documentCategory", "simplified-declaration", form.errors))
 
 @sectionHeader(messages("declaration.section.4"))
 
-@govukFieldset(Fieldset(
-    legend = Some(Legend(
-        content = Text(messages("declaration.previousDocuments.title")),
-        classes = gdsPageLegend,
-        isPageHeading = true
-    )),
-    html = HtmlFormat.fill(immutable.Seq(
-        pageHint,
-        documentType,
-        documentReference,
-        documentCategory,
-        goodsItemIdentifier,
-        tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-        saveButtons()
+
+    @govukFieldset(Fieldset(
+        legend = Some(Legend(
+            content = Text(messages("declaration.previousDocuments.title")),
+            classes = gdsPageLegend,
+            isPageHeading = true
+        )),
+        html = HtmlFormat.fill(immutable.Seq(
+            pageFields
+        ))
     ))
-))
+
+@tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+@saveButtons()
