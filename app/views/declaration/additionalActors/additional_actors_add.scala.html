@@ -16,6 +16,7 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
+@import controllers.declaration.AdditionalActorsAddController.AdditionalActorsFormGroupId
 @import forms.declaration.DeclarationAdditionalActors
 @import forms.declaration.DeclarationAdditionalActors.PartyType._
 @import models.requests.JourneyRequest
@@ -30,6 +31,7 @@
 @this(govukLayout: gdsMainTemplate,
         govukFieldset: GovukFieldset,
         govukButton: GovukButton,
+        formGroupWrapper: formGroupWrapper,
         govukRadios: GovukRadios,
         govukTable : GovukTable,
         errorSummary: errorSummary,
@@ -64,6 +66,7 @@
 }
 
 @radios = {
+@formGroupWrapper(field = form(AdditionalActorsFormGroupId)){
     @govukRadios(Radios(
         name = "partyType",
         items = Seq(
@@ -104,6 +107,7 @@
         ),
         errorMessage = form("partyType").error.map(err => ErrorMessage(content = Text(messages("declaration.partyType.error"))))
     ))
+}
 }
 
 @tariffBody = {
