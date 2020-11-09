@@ -130,9 +130,8 @@
             isPageHeading = true
         )),
         html = HtmlFormat.fill(immutable.Seq(
-            pageFields
+            pageFields,
+            tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+            saveButtons()
         ))
     ))
-
-@tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-@saveButtons()

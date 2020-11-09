@@ -65,7 +65,6 @@
     }
 }
 
-
 @errorSummary(form.errors)
 
 @sectionHeader(messages("declaration.section.2"))
@@ -78,10 +77,8 @@
     )),
     html = HtmlFormat.fill(immutable.Seq(
         govukHint(Hint(content = Text(messages("declaration.declarationHolder.title.hint")))),
-        pageFields
+        pageFields,
+        tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+        saveButtons()
     ))
 ))
-
-@tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
-
-@saveButtons()
