@@ -15,6 +15,7 @@
  *@
 
 @import forms.declaration.DeclarationHolder
+@import controllers.declaration.DeclarationHolderAddController.DeclarationHolderFormGroupId
 @import services.HolderOfAuthorisationCode
 @import services.view.AutoCompleteItem
 @import models.requests.JourneyRequest
@@ -30,6 +31,7 @@
     govukButton: GovukButton,
     govukTable : GovukTable,
     errorSummary: errorSummary,
+    formGroupWrapper: formGroupWrapper,
     govukFieldset: govukFieldset,
     sectionHeader: sectionHeader,
     govukHint: govukHint,
@@ -44,37 +46,42 @@
 
 @tariffBody = { @Html(messages("declaration.type.holderOfAuthorisationSummaryText", components.details_content_link())) }
 
+@pageFields = {
+    @formGroupWrapper(field = form(DeclarationHolderFormGroupId)){
+        @components.fields.field_accessible_autocomplete(
+            field = form("authorisationTypeCode"),
+            label = "declaration.declarationHolder.authorisationCode",
+            labelClass = Some("govuk-label--m"),
+            hintText = Some(messages("declaration.declarationHolder.authorisationCode.hint")),
+            emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
+            items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
+        )
 
-    @errorSummary(form.errors)
+        @exportsInputText(
+            field = form("eori"),
+            labelKey = "declaration.declarationHolder.eori",
+            isPageHeading = false
+        )
+    }
+}
 
-    @sectionHeader(messages("declaration.section.2"))
 
-    @govukFieldset(Fieldset(
-        legend = Some(Legend(
-            content = Text(messages("declaration.declarationHolder.title")),
-            classes = gdsPageLabel,
-            isPageHeading = true
-        )),
-        html = HtmlFormat.fill(immutable.Seq(
-            govukHint(Hint(content = Text(messages("declaration.declarationHolder.title.hint")))),
+@errorSummary(form.errors)
 
-            components.fields.field_accessible_autocomplete(
-                field = form("authorisationTypeCode"),
-                label = "declaration.declarationHolder.authorisationCode",
-                labelClass = Some("govuk-label--m"),
-                hintText = Some(messages("declaration.declarationHolder.authorisationCode.hint")),
-                emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
-                items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
-            ),
+@sectionHeader(messages("declaration.section.2"))
 
-            exportsInputText(
-                field = form("eori"),
-                labelKey = "declaration.declarationHolder.eori",
-                isPageHeading = false
-            )
-        ))
+@govukFieldset(Fieldset(
+    legend = Some(Legend(
+        content = Text(messages("declaration.declarationHolder.title")),
+        classes = gdsPageLabel,
+        isPageHeading = true
+    )),
+    html = HtmlFormat.fill(immutable.Seq(
+        govukHint(Hint(content = Text(messages("declaration.declarationHolder.title.hint")))),
+        pageFields
     ))
+))
 
-    @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+@tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
-    @saveButtons()
+@saveButtons()

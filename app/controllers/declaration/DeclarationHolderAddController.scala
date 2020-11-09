@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.DeclarationHolderAddController.DeclarationHolderFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
 import forms.declaration.DeclarationHolder
@@ -71,7 +72,7 @@ class DeclarationHolderAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData, DeclarationHoldersData.limitOfHolders)
+      .add(boundForm, cachedData, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId)
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors))),
         updatedCache =>
@@ -92,4 +93,8 @@ class DeclarationHolderAddController @Inject()(
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders)))
       model.copy(parties = updatedParties)
     })
+}
+
+object DeclarationHolderAddController {
+  val DeclarationHolderFormGroupId: String = "declarationHolder"
 }
