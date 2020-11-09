@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.AdditionalInformationAddController.AdditionalInformationFormGroupId
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.AdditionalInformation
@@ -65,7 +66,7 @@ class AdditionalInformationAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData.items, maxNumberOfItems)
+      .add(boundForm, cachedData.items, maxNumberOfItems, AdditionalInformationFormGroupId)
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors))),
         updatedItems =>
@@ -79,4 +80,8 @@ class AdditionalInformationAddController @Inject()(
     updateExportsDeclarationSyncDirect(model => {
       model.updatedItem(itemId, item => item.copy(additionalInformation = Some(updatedData)))
     })
+}
+
+object AdditionalInformationAddController {
+  val AdditionalInformationFormGroupId: String = "additionalInformation"
 }

@@ -18,6 +18,7 @@
 @import forms.declaration.additionaldocuments.DocumentWriteOff._
 @import forms.declaration.additionaldocuments.DocumentsProduced
 @import forms.declaration.additionaldocuments.DocumentsProduced._
+@import controllers.declaration.DocumentsProducedAddController.DocumentsProducedFormGroupId
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import config.AppConfig
 @import views.html.components.gds._
@@ -29,6 +30,7 @@
         govukFieldset: GovukFieldset,
         govukInput: GovukInput,
         errorSummary: errorSummary,
+        formGroupWrapper: formGroupWrapper,
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
         exportsInputTextArea: exportsInputTextArea,
@@ -113,66 +115,70 @@
     </span>
 }
 
+@pageFields = {
+    @formGroupWrapper(field = form(DocumentsProducedFormGroupId)){
+        @exportsInputText(
+            field = form(documentTypeCodeKey),
+            labelKey = "declaration.addDocument.documentTypeCode",
+            hintKey = Some("declaration.addDocument.documentTypeCode.hint"),
+            inputClasses = Some("govuk-input--width-4")
+        ),
+        @exportsInputText(
+            field = form(documentIdentifierKey),
+            labelKey = "declaration.addDocument.documentIdentifier",
+            hintKey = Some("declaration.addDocument.documentIdentifier.hint"),
+            inputClasses = Some("govuk-input--width-30")
+        ),
+        @exportsInputText(
+            field = form(documentStatusKey),
+            labelKey = "declaration.addDocument.documentStatus",
+            hintKey = Some("declaration.addDocument.documentStatus.hint"),
+            inputClasses = Some("govuk-input--width-2")
+        ),
+        @exportsInputText(
+            field = form(documentStatusReasonKey),
+            labelKey = "declaration.addDocument.documentStatusReason",
+            hintKey = Some("declaration.addDocument.documentStatusReason.hint"),
+            inputClasses = Some("govuk-input--width-30")
+        ),
+        @exportsInputTextArea(
+            field = form(issuingAuthorityNameKey),
+            labelKey = "declaration.addDocument.issuingAuthorityName",
+            hintKey = Some("declaration.addDocument.issuingAuthorityName.hint"),
+            inputClasses = Some("govuk-input--width-20")
+        ),
+        @exportsDateInput(
+            fieldName = dateOfValidityKey,
+            form = form,
+            labelKey = "declaration.addDocument.dateOfValidity",
+            hintKey = Some("declaration.addDocument.dateOfValidity.hint")
+        ),
+        @measurementUnitAndQualifier,
+        @exportsInputText(
+            field = form(s"$documentWriteOffKey.$documentQuantityKey"),
+            labelKey = "declaration.addDocument.documentQuantity",
+            hintKey = Some("declaration.addDocument.documentQuantity.hint"),
+            inputClasses = Some("govuk-input--width-20")
+        )
+    }
+}
+
 
 
 @errorSummary(form.errors)
 
 @sectionHeader(messages("declaration.section.5"))
 
-@govukFieldset(Fieldset(
-    legend = Some(Legend(
-        content = Text(messages("declaration.addDocument.title")),
-        classes = gdsPageLegend,
-        isPageHeading = true
-    )),
-    html = HtmlFormat.fill(immutable.Seq(
-        pageHint,
-        exportsInputText(
-            field = form(documentTypeCodeKey),
-            labelKey = "declaration.addDocument.documentTypeCode",
-            hintKey = Some("declaration.addDocument.documentTypeCode.hint"),
-            inputClasses = Some("govuk-input--width-4")
-        ),
-        exportsInputText(
-            field = form(documentIdentifierKey),
-            labelKey = "declaration.addDocument.documentIdentifier",
-            hintKey = Some("declaration.addDocument.documentIdentifier.hint"),
-            inputClasses = Some("govuk-input--width-30")
-        ),
-        exportsInputText(
-            field = form(documentStatusKey),
-            labelKey = "declaration.addDocument.documentStatus",
-            hintKey = Some("declaration.addDocument.documentStatus.hint"),
-            inputClasses = Some("govuk-input--width-2")
-        ),
-        exportsInputText(
-            field = form(documentStatusReasonKey),
-            labelKey = "declaration.addDocument.documentStatusReason",
-            hintKey = Some("declaration.addDocument.documentStatusReason.hint"),
-            inputClasses = Some("govuk-input--width-30")
-        ),
-        exportsInputTextArea(
-            field = form(issuingAuthorityNameKey),
-            labelKey = "declaration.addDocument.issuingAuthorityName",
-            hintKey = Some("declaration.addDocument.issuingAuthorityName.hint"),
-            inputClasses = Some("govuk-input--width-20")
-        ),
-        exportsDateInput(
-            fieldName = dateOfValidityKey,
-            form = form,
-            labelKey = "declaration.addDocument.dateOfValidity",
-            hintKey = Some("declaration.addDocument.dateOfValidity.hint")
-        ),
-        measurementUnitAndQualifier,
-        exportsInputText(
-            field = form(s"$documentWriteOffKey.$documentQuantityKey"),
-            labelKey = "declaration.addDocument.documentQuantity",
-            hintKey = Some("declaration.addDocument.documentQuantity.hint"),
-            inputClasses = Some("govuk-input--width-20")
-        ),
-        tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-        saveButtons()
+    @govukFieldset(Fieldset(
+        legend = Some(Legend(
+            content = Text(messages("declaration.addDocument.title")),
+            classes = gdsPageLegend,
+            isPageHeading = true
+        )),
+        html = HtmlFormat.fill(immutable.Seq(
+            pageHint,
+            pageFields,
+            tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+            saveButtons()
+        ))
     ))
-))
-
-

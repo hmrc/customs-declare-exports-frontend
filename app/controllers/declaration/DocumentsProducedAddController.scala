@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.DocumentsProducedAddController.DocumentsProducedFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
 import forms.declaration.additionaldocuments.DocumentsProduced
@@ -82,7 +83,7 @@ class DocumentsProducedAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData, maxNumberOfItems)
+      .add(boundForm, cachedData, maxNumberOfItems, DocumentsProducedFormGroupId)
       .fold(
         formWithErrors => Future.successful(BadRequest(documentProducedPage(mode, itemId, formWithErrors))),
         updatedCache =>
@@ -96,4 +97,8 @@ class DocumentsProducedAddController @Inject()(
     updateExportsDeclarationSyncDirect(model => {
       model.updatedItem(itemId, item => item.copy(documentsProducedData = Some(updatedData)))
     })
+}
+
+object DocumentsProducedAddController {
+  val DocumentsProducedFormGroupId: String = "documentsProduced"
 }

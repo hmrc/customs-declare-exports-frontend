@@ -92,9 +92,9 @@
 
         @govukFieldset(Fieldset(
             attributes = Map("id" -> "details"),
-                legend = Some(Legend(
-                    content = Text(messages("declaration.exporter-detail.addressHeading")),
-                    classes = "govuk-fieldset__legend--m"
+            legend = Some(Legend(
+                content = Text(messages("declaration.exporter-detail.addressHeading")),
+                classes = "govuk-fieldset__legend--m"
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 groupAddress,

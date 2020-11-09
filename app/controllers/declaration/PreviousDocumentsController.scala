@@ -19,6 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util._
+import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
 import forms.declaration.Document._
 import forms.declaration.{Document, PreviousDocumentsData}
 import javax.inject.Inject
@@ -56,7 +57,7 @@ class PreviousDocumentsController @Inject()(
         navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
       } else
       MultipleItemsHelper
-        .add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems)
+        .add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems, fieldId = PreviousDocumentsFormGroupId)
         .fold(
           formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors))),
           updatedCache =>
@@ -69,4 +70,8 @@ class PreviousDocumentsController @Inject()(
     updateExportsDeclarationSyncDirect(model => model.copy(previousDocuments = Some(formData)))
 
   private def isFirstPreviousDocument()(implicit request: JourneyRequest[AnyContent]): Boolean = !request.cacheModel.hasPreviousDocuments
+}
+
+object PreviousDocumentsController {
+  val PreviousDocumentsFormGroupId: String = "previousDocuments"
 }

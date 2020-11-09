@@ -16,6 +16,7 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
+@import controllers.declaration.AdditionalActorsAddController.AdditionalActorsFormGroupId
 @import forms.declaration.DeclarationAdditionalActors
 @import forms.declaration.DeclarationAdditionalActors.PartyType._
 @import models.requests.JourneyRequest
@@ -30,6 +31,7 @@
 @this(govukLayout: gdsMainTemplate,
         govukFieldset: GovukFieldset,
         govukButton: GovukButton,
+        formGroupWrapper: formGroupWrapper,
         govukRadios: GovukRadios,
         govukTable : GovukTable,
         errorSummary: errorSummary,
@@ -64,46 +66,48 @@
 }
 
 @radios = {
-    @govukRadios(Radios(
-        name = "partyType",
-        items = Seq(
-            RadioItem(
-                id = Some(Consolidator.toString),
-                value = Some(Consolidator.toString),
-                content = Text(messages(s"declaration.partyType.$Consolidator")),
-                conditionalHtml = inputField(Consolidator),
-                checked = form("partyType").value.contains(Consolidator.toString)
+    @formGroupWrapper(field = form(AdditionalActorsFormGroupId)){
+        @govukRadios(Radios(
+            name = "partyType",
+            items = Seq(
+                RadioItem(
+                    id = Some(Consolidator.toString),
+                    value = Some(Consolidator.toString),
+                    content = Text(messages(s"declaration.partyType.$Consolidator")),
+                    conditionalHtml = inputField(Consolidator),
+                    checked = form("partyType").value.contains(Consolidator.toString)
+                ),
+                RadioItem(
+                    id = Some(Manufacturer.toString),
+                    value = Some(Manufacturer.toString),
+                    content = Text(messages(s"declaration.partyType.$Manufacturer")),
+                    conditionalHtml = inputField(Manufacturer),
+                    checked = form("partyType").value.contains(Manufacturer.toString)
+                ),
+                RadioItem(
+                    id = Some(FreightForwarder.toString),
+                    value = Some(FreightForwarder.toString),
+                    content = Text(messages(s"declaration.partyType.$FreightForwarder")),
+                    conditionalHtml = inputField(FreightForwarder),
+                    checked = form("partyType").value.contains(FreightForwarder.toString)
+                ),
+                RadioItem(
+                    id = Some(WarehouseKeeper.toString),
+                    value = Some(WarehouseKeeper.toString),
+                    content = Text(messages(s"declaration.partyType.$WarehouseKeeper")),
+                    conditionalHtml = inputField(WarehouseKeeper),
+                    checked = form("partyType").value.contains(WarehouseKeeper.toString)
+                ),
+                RadioItem(
+                    id = Some("no"),
+                    value = Some("no"),
+                    content = Text(messages("site.no")),
+                    checked = form("partyType").value.contains("no")
+                )
             ),
-            RadioItem(
-                id = Some(Manufacturer.toString),
-                value = Some(Manufacturer.toString),
-                content = Text(messages(s"declaration.partyType.$Manufacturer")),
-                conditionalHtml = inputField(Manufacturer),
-                checked = form("partyType").value.contains(Manufacturer.toString)
-            ),
-            RadioItem(
-                id = Some(FreightForwarder.toString),
-                value = Some(FreightForwarder.toString),
-                content = Text(messages(s"declaration.partyType.$FreightForwarder")),
-                conditionalHtml = inputField(FreightForwarder),
-                checked = form("partyType").value.contains(FreightForwarder.toString)
-            ),
-            RadioItem(
-                id = Some(WarehouseKeeper.toString),
-                value = Some(WarehouseKeeper.toString),
-                content = Text(messages(s"declaration.partyType.$WarehouseKeeper")),
-                conditionalHtml = inputField(WarehouseKeeper),
-                checked = form("partyType").value.contains(WarehouseKeeper.toString)
-            ),
-            RadioItem(
-                id = Some("no"),
-                value = Some("no"),
-                content = Text(messages("site.no")),
-                checked = form("partyType").value.contains("no")
-            )
-        ),
-        errorMessage = form("partyType").error.map(err => ErrorMessage(content = Text(messages("declaration.partyType.error"))))
-    ))
+            errorMessage = form("partyType").error.map(err => ErrorMessage(content = Text(messages("declaration.partyType.error"))))
+        ))
+    }
 }
 
 @tariffBody = {
@@ -135,6 +139,5 @@
               saveButtons()
             ))
         ))
-
     }
 }

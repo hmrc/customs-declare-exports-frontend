@@ -17,7 +17,7 @@
 @import controllers.declaration.routes
 @import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 @import services.Countries
-
+@import controllers.declaration.AdditionalFiscalReferencesAddController.AdditionalFiscalReferencesFormGroupId
 @import services.view.AutoCompleteItem
 @import controllers.navigation.{Navigator, ItemId}
 @import models.requests.JourneyRequest
@@ -32,6 +32,7 @@
     govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
     govukButton: GovukButton,
+    formGroupWrapper: formGroupWrapper,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
@@ -44,20 +45,23 @@
 @(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
 @inputFields = {
-    @components.fields.field_accessible_autocomplete(
-        field = form("country"),
-        label = "declaration.additionalFiscalReferences.country",
-        labelClass = Some("govuk-label--m"),
-        hintText = None,
-        emptySelectValue = messages("declaration.additionalFiscalReferences.country.empty"),
-        items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-    )
+    @formGroupWrapper(field = form(AdditionalFiscalReferencesFormGroupId)){
+        @components.fields.field_accessible_autocomplete(
+            field = form("country"),
+            label = "declaration.additionalFiscalReferences.country",
+            labelClass = Some("govuk-label--m"),
+            hintText = None,
+            emptySelectValue = messages("declaration.additionalFiscalReferences.country.empty"),
+            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+        )
 
-    @exportsInputText(
-        field = form("reference"),
-        labelKey = "declaration.additionalFiscalReferences.reference"
-    )
+        @exportsInputText(
+            field = form("reference"),
+            labelKey = "declaration.additionalFiscalReferences.reference"
+        )
+    }
 }
+
 @tariffBody = { @Html(messages("declaration.type.fiscalInformationSummaryText", components.details_content_link())) }
 
 @govukLayout(

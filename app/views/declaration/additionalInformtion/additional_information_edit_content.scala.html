@@ -16,6 +16,7 @@
 
 @import models.requests.JourneyRequest
 @import forms.declaration.AdditionalInformation
+@import controllers.declaration.AdditionalInformationAddController.AdditionalInformationFormGroupId
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import config.AppConfig
 @import views.html.components.gds._
@@ -27,6 +28,7 @@
         govukFieldset: GovukFieldset,
         govukInput: GovukInput,
         errorSummary: errorSummary,
+        formGroupWrapper: formGroupWrapper,
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
         exportsInputTextArea: exportsInputTextArea,
@@ -41,8 +43,22 @@
 
 @tariffBody = { @Html(messages("declaration.type.additionalActorsSummaryText", components.details_content_link())) }
 
-
-
+@pageFields = {
+    @formGroupWrapper(field = form(AdditionalInformationFormGroupId)){
+        @exportsInputText(
+            field = form("code"),
+            labelKey = "declaration.additionalInformation.code",
+            inputClasses = Some("govuk-input--width-4"),
+            hintKey = Some("declaration.additionalInformation.code.hint"),
+            hintKeyLinks = Seq(tradeTariffLink)
+        ),
+        @exportsInputTextArea(
+            field = form("description"),
+            labelKey = "declaration.additionalInformation.description",
+            inputClasses = Some("govuk-input--width-20")
+        )
+    }
+}
 
 @errorSummary(form.errors)
 
@@ -55,18 +71,7 @@
         isPageHeading = true
     )),
     html = HtmlFormat.fill(immutable.Seq(
-        exportsInputText(
-            field = form("code"),
-            labelKey = "declaration.additionalInformation.code",
-            inputClasses = Some("govuk-input--width-4"),
-            hintKey = Some("declaration.additionalInformation.code.hint"),
-            hintKeyLinks = Seq(tradeTariffLink)
-        ),
-        exportsInputTextArea(
-            field = form("description"),
-            labelKey = "declaration.additionalInformation.description",
-            inputClasses = Some("govuk-input--width-20")
-        ),
+        pageFields,
         tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
         saveButtons()
     ))

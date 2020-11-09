@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.AdditionalActorsAddController.AdditionalActorsFormGroupId
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.NoneOfTheAbove
@@ -79,7 +80,7 @@ class AdditionalActorsAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedActors, DeclarationAdditionalActorsData.maxNumberOfActors)
+      .add(boundForm, cachedActors, DeclarationAdditionalActorsData.maxNumberOfActors, AdditionalActorsFormGroupId)
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationAdditionalActorsPage(mode, formWithErrors))),
         updatedActors =>
@@ -92,4 +93,8 @@ class AdditionalActorsAddController @Inject()(
       val updatedParties = model.parties.copy(declarationAdditionalActorsData = Some(formData))
       model.copy(parties = updatedParties)
     })
+}
+
+object AdditionalActorsAddController {
+  val AdditionalActorsFormGroupId: String = "additionalActors"
 }

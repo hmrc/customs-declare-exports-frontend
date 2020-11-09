@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.AdditionalFiscalReferencesAddController.AdditionalFiscalReferencesFormGroupId
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.AdditionalFiscalReference.form
@@ -65,7 +66,7 @@ class AdditionalFiscalReferencesAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(form, cachedData.references, limit)
+      .add(form, cachedData.references, limit, AdditionalFiscalReferencesFormGroupId)
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors))),
         updatedCache =>
@@ -79,4 +80,8 @@ class AdditionalFiscalReferencesAddController @Inject()(
     updateExportsDeclarationSyncDirect { model =>
       model.updatedItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedAdditionalFiscalReferencesData)))
     }
+}
+
+object AdditionalFiscalReferencesAddController {
+  val AdditionalFiscalReferencesFormGroupId: String = "additionalFiscalReferences"
 }
