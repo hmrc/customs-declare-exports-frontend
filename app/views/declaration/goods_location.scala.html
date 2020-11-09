@@ -26,20 +26,19 @@
 @import views.components.gds.Styles._
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    errorSummary: errorSummary,
-    exportsInputText: exportsInputText,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    pageTitle: pageTitle,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        errorSummary: errorSummary,
+        exportsInputText: exportsInputText,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        pageTitle: pageTitle,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        sectionHeader: sectionHeader
 )
 
 
 @(mode: Mode, form: Form[GoodsLocationForm])(implicit request: JourneyRequest[_], messages: Messages)
-
-
 
 @govukLayout(
     title = Title("declaration.goodsLocation.title", "declaration.section.3"),
@@ -49,13 +48,15 @@
 
         @errorSummary(form.errors)
 
+        @sectionHeader(messages("declaration.section.3"))
+
         @exportsInputText(
             field = form("code"),
             labelKey = "declaration.goodsLocation.title",
             hintKey = Some("declaration.goodsLocation.hint"),
             isPageHeading = true,
             headingClasses = gdsPageLabel,
-            sectionHeaderKey = Some("declaration.section.3")
+            sectionHeaderKey = None
         )
 
 

@@ -25,6 +25,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.un_dangerous_goods_code
 import views.tags.ViewTest
@@ -52,7 +53,7 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
 
       val view = createView()
       "display page title" in {
-        view.getElementsByTag("h1") must containMessageForElements("declaration.unDangerousGoodsCode.header")
+        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.unDangerousGoodsCode.header")
       }
 
       "display section header" in {

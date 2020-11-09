@@ -23,6 +23,7 @@ import models.Mode
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.routing_country_question
 
@@ -49,7 +50,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
     "have page question" in {
 
-      view.getElementsByClass("govuk-fieldset__heading").text() mustBe messages("declaration.routingQuestion.title", countryOfDestination)
+      view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingQuestion.title", countryOfDestination)
     }
 
     "have Yes/No answers" in {

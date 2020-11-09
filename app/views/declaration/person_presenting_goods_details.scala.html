@@ -25,13 +25,14 @@
 @import views.components.gds.Styles._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        exportsInputText: exportsInputText,
-        inputText: exportsInputText,
-        errorSummary: errorSummary,
-        saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    exportsInputText: exportsInputText,
+    inputText: exportsInputText,
+    errorSummary: errorSummary,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    sectionHeader: sectionHeader,
 )
 
 @(mode: Mode, form: Form[PersonPresentingGoodsDetails])(implicit request: JourneyRequest[_], messages: Messages)
@@ -43,19 +44,21 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(PersonPresentingGoodsDetails, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.PersonPresentingGoodsDetailsController.submitForm(mode), 'autocomplete -> "off") {
-      @errorSummary(form.errors)
+        @errorSummary(form.errors)
 
-      @exportsInputText(
+        @sectionHeader(messages("declaration.section.2"))
+
+        @exportsInputText(
         field = form(fieldName),
         labelKey = "declaration.personPresentingGoodsDetails.title",
         isPageHeading = true,
         headingClasses = gdsPageLabel,
-        sectionHeaderKey = Some("declaration.section.2")
-      )
+        sectionHeaderKey = None
+        )
 
-      @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
-      @saveButtons()
+        @saveButtons()
     }
 }
 

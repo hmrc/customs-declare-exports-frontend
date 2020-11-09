@@ -25,6 +25,7 @@ import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.taric_code_add_first
 import views.tags.ViewTest
@@ -43,7 +44,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.addfirst.header")
+      view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.taricAdditionalCodes.addfirst.header")
     }
 
     "display 'Back' button that links to 'CUS codes' page" in {

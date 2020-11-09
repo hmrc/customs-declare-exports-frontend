@@ -27,6 +27,7 @@ import org.scalatest.Matchers._
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.consignor_eori_number
 import views.tags.ViewTest
@@ -62,7 +63,7 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
       }
 
       "display page title" in {
-        view.getElementsByClass("govuk-fieldset__heading") must containMessageForElements("declaration.consignorEori.title")
+        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.consignorEori.title")
       }
 
       "display section header" in {

@@ -29,7 +29,7 @@
 @this(
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
-    headingContent: headingContent,
+    sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffDetails: tariffDetails,
     appConfig: AppConfig,
@@ -48,16 +48,13 @@
     @formHelper(action = controllers.declaration.routes.AdditionalInformationRequiredController.submitForm(mode, (itemId)), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
+        @sectionHeader(messages("declaration.section.5"))
+
         @yesNoRadios(
               form,
               Some(Fieldset(
                   legend = Some(Legend(
-                      content = HtmlContent(
-                          headingContent(
-                              messages("declaration.additionalInformationRequired.title"),
-                              Some(messages("declaration.section.5"))
-                          )
-                      ),
+                      content = Text(messages("declaration.additionalInformationRequired.title")),
                       classes = gdsPageLegend
                   ))
               ))

@@ -27,17 +27,19 @@
 @import views.BackButton
 @import views.ErrorMapper.radioGroupErrors
 
-@this(govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        errorSummary: errorSummary,
-        headingContent: headingContent,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        govukInput : GovukInput,
-        tariffDetails: tariffDetails,
-        saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    govukInput : GovukInput,
+    tariffDetails: tariffDetails,
+    saveButtons: saveButtons,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, navigationForm: DeclarationPage, form: Form[RepresentativeStatus])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -50,16 +52,13 @@
     @formHelper(action = RepresentativeStatusController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("statusCode", DirectRepresentative, form.errors))
 
+        @sectionHeader(messages("declaration.section.2"))
+
         @govukRadios(Radios(
             name = "statusCode",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.representative.status.title"),
-                            Some(messages("declaration.section.2"))
-                        )
-                    ),
+                    content = Text(messages("declaration.representative.status.title")),
                     classes = gdsPageLegend
                 ))
             )),

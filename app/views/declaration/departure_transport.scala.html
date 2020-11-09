@@ -34,7 +34,7 @@
     pageTitle: pageTitle,
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
-    headingContent: headingContent,
+    sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffDetails: tariffDetails,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -59,16 +59,13 @@
     @formHelper(action = DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("meansOfTransportOnDepartureType", "Departure_IMOShipIDNumber", form.errors))
 
+        @sectionHeader(messages("declaration.section.6"))
+
         @govukRadios(Radios(
             name = "meansOfTransportOnDepartureType",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.transportInformation.meansOfTransport.departure.title"),
-                            Some(messages("declaration.section.6"))
-                        )
-                    ),
+                    content = Text(messages("declaration.transportInformation.meansOfTransport.departure.title")),
                     classes = gdsPageLegend
                 ))
             )),

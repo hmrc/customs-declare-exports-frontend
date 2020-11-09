@@ -28,25 +28,25 @@
 @import views.ErrorMapper.radioGroupErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        errorSummary: errorSummary,
-        headingContent: headingContent,
-        exportsInputText: exportsInputText,
-        body: paragraphBody,
-        pageTitle: pageTitle,
-        saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        appConfig: AppConfig,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    body: paragraphBody,
+    pageTitle: pageTitle,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    appConfig: AppConfig,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(
-        mode: Mode,
-        itemId: String,
-        form: Form[CusCode]
+    mode: Mode,
+    itemId: String,
+    form: Form[CusCode]
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.cusCode.help.bodyText", components.details_content_link())) }
@@ -61,16 +61,13 @@
     @formHelper(action = routes.CusCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasCusCodeKey, "code_yes", form.errors))
 
+        @sectionHeader(messages("declaration.section.5"))
+
         @govukRadios(Radios(
             name = hasCusCodeKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.cusCode.header"),
-                            Some(messages("declaration.section.5"))
-                        )
-                    ),
+                    content = Text(messages("declaration.cusCode.header")),
                     classes = gdsPageLegend
                 ))
             )),

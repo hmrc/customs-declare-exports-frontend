@@ -26,15 +26,15 @@
 @import views.ErrorMapper.radioGroupErrors
 
 @this(
-    govukLayout: gdsMainTemplate,
-    errorSummary: errorSummary,
-    headingContent: headingContent,
-    govukRadios: GovukRadios,
-    exportsInputText: exportsInputText,
-    govukDetails : GovukDetails,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        govukRadios: GovukRadios,
+        exportsInputText: exportsInputText,
+        govukDetails : GovukDetails,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[DeclarantIsExporter])(implicit request: JourneyRequest[_], messages: Messages)
@@ -46,16 +46,13 @@
     @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(answerKey, "answer_yes", form.errors))
 
+        @sectionHeader(messages("declaration.section.2"))
+
         @govukRadios(Radios(
             name = answerKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.declarant.exporter.title"),
-                            Some(messages("declaration.section.2"))
-                        )
-                    ),
+                    content = Text(messages("declaration.declarant.exporter.title")),
                     classes = gdsPageLegend
                 ))
             )),

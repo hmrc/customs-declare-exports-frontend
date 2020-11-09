@@ -26,20 +26,20 @@
 @import views.ErrorMapper.yesNoErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        sectionHeader: sectionHeader,
-        headingContent: headingContent,
-        govukFieldset: GovukFieldset,
-        pageTitle: pageTitle,
-        changeLink: link,
-        govukButton: GovukButton,
-        govukTable: GovukTable,
-        errorSummary: errorSummary,
-        yesNoRadios: yesNoRadios,
-        tariffDetails: tariffDetails,
-        spanVisuallyHidden: spanVisuallyHidden,
-        saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    sectionHeader: sectionHeader,
+    headingContent: headingContent,
+    govukFieldset: GovukFieldset,
+    pageTitle: pageTitle,
+    changeLink: link,
+    govukButton: GovukButton,
+    govukTable: GovukTable,
+    errorSummary: errorSummary,
+    yesNoRadios: yesNoRadios,
+    tariffDetails: tariffDetails,
+    spanVisuallyHidden: spanVisuallyHidden,
+    saveButtons: saveButtons,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[YesNoAnswer], containerId: String, seals: Seq[Seal])(implicit request: Request[_], messages: Messages)
@@ -50,45 +50,40 @@
 
 @sealsTable = {
     @if(seals.nonEmpty) {
-    @govukTable(Table(
-        rows = seals.zipWithIndex.map{ case(seal, index) =>
-            Seq(
-                TableRow(
-                    content = Text(seal.id),
-                    attributes = Map("id" -> s"removable_elements-row$index-label")
-                ),
-                TableRow(
-                    content = HtmlContent(changeLink(messages("site.remove"), Some(messages("declaration.seal.remove.hint", seal.id)), SealController.submitSealRemove(mode, containerId, seal.id))),
-                    attributes = Map("id" -> s"removable_elements-row$index-remove_button")
+        @govukTable(Table(
+            rows = seals.zipWithIndex.map{ case(seal, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(seal.id),
+                        attributes = Map("id" -> s"removable_elements-row$index-label")
+                    ),
+                    TableRow(
+                        content = HtmlContent(changeLink(messages("site.remove"), Some(messages("declaration.seal.remove.hint", seal.id)), SealController.submitSealRemove(mode, containerId, seal.id))),
+                        attributes = Map("id" -> s"removable_elements-row$index-remove_button")
+                    )
                 )
-            )
-        },
-        head = Some(List(
-            HeadCell(
-                content = Text(messages("declaration.seal.summary.heading")),
-                attributes = Map("id" -> s"removable_elements-heading")
-            ),
-            HeadCell(
-                content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
-            )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.seal.summary.heading")),
+                    attributes = Map("id" -> s"removable_elements-heading")
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
+            ))
         ))
-    ))
-
-}
+    }
 }
 
 @addSealRadios = {
+    @sectionHeader(messages("declaration.section.6"))
     @yesNoRadios(
       form,
       if(seals.isEmpty)
         Some(Fieldset(
             legend = Some(Legend(
-                content = HtmlContent(
-                    headingContent(
-                        messages("declaration.seal.add.first", containerId),
-                        Some(messages("declaration.section.6"))
-                    )
-                ),
+                content = Text(messages("declaration.seal.add.first", containerId)),
                 classes = gdsPageLegend
             ))
         ))
@@ -135,5 +130,4 @@
       @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
       @saveButtons()
     }
-
 }

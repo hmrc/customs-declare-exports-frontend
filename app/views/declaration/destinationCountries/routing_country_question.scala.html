@@ -37,7 +37,7 @@
         govukRadios: GovukRadios,
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
-        headingContent: headingContent,
+        sectionHeader: sectionHeader,
         saveButtons: saveButtons,
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -55,16 +55,13 @@
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingAnswer(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("answer", "Yes", form.errors))
 
+        @sectionHeader(messages("declaration.section.3"))
+
         @govukRadios(Radios(
             name = "answer",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.routingQuestion.title", countryOfDestination),
-                            Some(messages("declaration.section.3"))
-                        )
-                    ),
+                    content = Text(messages("declaration.routingQuestion.title", countryOfDestination)),
                     classes = gdsPageLegend
                 ))
             )),

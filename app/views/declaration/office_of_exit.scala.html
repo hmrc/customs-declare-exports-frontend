@@ -28,18 +28,17 @@
 @import views.ErrorMapper.radioGroupErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        govukRadios: GovukRadios,
-        govukFieldset: GovukFieldset,
-        errorSummary: errorSummary,
-        headingContent: headingContent,
-        saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukDetails : GovukDetails,
+    govukRadios: GovukRadios,
+    govukFieldset: GovukFieldset,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
-
 
 @(mode: Mode, form: Form[OfficeOfExitInsideUK])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -61,16 +60,13 @@
     @formHelper(action = controllers.declaration.routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("isUkOfficeOfExit", "Yes", form.errors))
 
+        @sectionHeader(messages("declaration.section.3"))
+
         @govukRadios(Radios(
             name = "isUkOfficeOfExit",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.officeOfExit.title"),
-                            Some(messages("declaration.section.3"))
-                        )
-                    ),
+                    content = Text(messages("declaration.officeOfExit.title")),
                     classes = gdsPageLegend
                 ))
             )),

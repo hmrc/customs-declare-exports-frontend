@@ -29,6 +29,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declarant_details
 import views.tags.ViewTest
@@ -56,7 +57,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       "display page title" in {
 
         createView(form(request.declarationType))
-          .getElementsByTag("h1") must containMessageForElements("declaration.declarant.titleQuestion", request.eori)
+          .getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.declarant.titleQuestion", request.eori)
       }
 
       "display section header" in {

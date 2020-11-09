@@ -27,18 +27,18 @@
 @import views.ErrorMapper.radioGroupErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        errorSummary: errorSummary,
-        headingContent: headingContent,
-        exportsInputText: exportsInputText,
-        body: paragraphBody,
-        pageTitle: pageTitle,
-        saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    body: paragraphBody,
+    pageTitle: pageTitle,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
@@ -54,16 +54,13 @@
     @formHelper(action = TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasContainerKey, "code_yes", form.errors))
 
+        @sectionHeader(messages("declaration.section.6"))
+
         @govukRadios(Radios(
             name = hasContainerKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = HtmlContent(
-                        headingContent(
-                            messages("declaration.transportInformation.containers.first.title"),
-                            Some(messages("declaration.section.6"))
-                        )
-                    ),
+                    content = Text(messages("declaration.transportInformation.containers.first.title")),
                     classes = gdsPageLegend
                 ))
             )),
