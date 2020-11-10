@@ -46,6 +46,9 @@ class AppConfigSpec extends UnitSpec {
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
         |google-analytics.host=localhostGoogle
+        |
+        |tracking-consent-frontend.gtm.container=a
+        |
         |countryCodesCsvFilename=code-lists/mdg-country-codes.csv
         |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
         |list-of-available-journeys="CRT,CAN,SUB"
@@ -92,6 +95,10 @@ class AppConfigSpec extends UnitSpec {
 
     "have analytics host" in {
       validConfigService.analyticsHost must be("localhostGoogle")
+    }
+
+    "have gtm container" in {
+      validConfigService.gtmContainer must be("a")
     }
 
     "have auth URL" in {
@@ -214,6 +221,10 @@ class AppConfigSpec extends UnitSpec {
   "empty Declaration type options when list-of-available-declarations is not defined" in {
     emptyConfigService.availableDeclarations().size must be(1)
     emptyConfigService.availableDeclarations() must contain(DeclarationType.STANDARD.toString)
+  }
+
+  "throw an exception when gtm.container is missing" in {
+    intercept[Exception](emptyConfigService.gtmContainer).getMessage must be("Could not find config key 'tracking-consent-frontend.gtm.container'")
   }
 
   "throw an exception when google-analytics.host is missing" in {

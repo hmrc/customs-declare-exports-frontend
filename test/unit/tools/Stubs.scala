@@ -26,7 +26,9 @@ import play.api.test.NoMaterializer
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.govukfrontend.views.html.components
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _, _}
+import uk.gov.hmrc.hmrcfrontend.config.TrackingConsentConfig
 import uk.gov.hmrc.hmrcfrontend.views.html.components.{HmrcBanner, HmrcHeader}
+import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcTrackingConsentSnippet, TrackingConsentConfig}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.html.components.gds._
 
@@ -57,6 +59,7 @@ trait Stubs {
       |assets.version="version"
       |google-analytics.token=N/A
       |google-analytics.host=localhostGoogle
+      |tracking-consent-frontend.gtm.container=a
       |metrics.name=""
       |metrics.rateUnit="SECONDS"
       |metrics.durationUnit="SECONDS"
@@ -99,6 +102,8 @@ trait Stubs {
     new GovukBackLink()
   )
 
+  val hmrcTrackingConsentSnippet = new HmrcTrackingConsentSnippet(new TrackingConsentConfig(Configuration(minimalConfig)))
+
   val govukHeader = new GovukHeader()
   val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner()))
   val pBanner = new phaseBanner(new GovukPhaseBanner(new govukTag()))
@@ -110,6 +115,7 @@ trait Stubs {
     siteHeader = sHeader,
     phaseBanner = pBanner,
     timeoutDialogConfig = timeoutDialogConfig(),
-    betaBannerConfig = betaBannerConfig()
+    betaBannerConfig = betaBannerConfig(),
+    hmrcTrackingConsentSnippet = hmrcTrackingConsentSnippet
   )
 }
