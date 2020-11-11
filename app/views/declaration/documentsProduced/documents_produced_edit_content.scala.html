@@ -122,38 +122,38 @@
             labelKey = "declaration.addDocument.documentTypeCode",
             hintKey = Some("declaration.addDocument.documentTypeCode.hint"),
             inputClasses = Some("govuk-input--width-4")
-        ),
+        )
         @exportsInputText(
             field = form(documentIdentifierKey),
             labelKey = "declaration.addDocument.documentIdentifier",
             hintKey = Some("declaration.addDocument.documentIdentifier.hint"),
             inputClasses = Some("govuk-input--width-30")
-        ),
+        )
         @exportsInputText(
             field = form(documentStatusKey),
             labelKey = "declaration.addDocument.documentStatus",
             hintKey = Some("declaration.addDocument.documentStatus.hint"),
             inputClasses = Some("govuk-input--width-2")
-        ),
+        )
         @exportsInputText(
             field = form(documentStatusReasonKey),
             labelKey = "declaration.addDocument.documentStatusReason",
             hintKey = Some("declaration.addDocument.documentStatusReason.hint"),
             inputClasses = Some("govuk-input--width-30")
-        ),
+        )
         @exportsInputTextArea(
             field = form(issuingAuthorityNameKey),
             labelKey = "declaration.addDocument.issuingAuthorityName",
             hintKey = Some("declaration.addDocument.issuingAuthorityName.hint"),
             inputClasses = Some("govuk-input--width-20")
-        ),
+        )
         @exportsDateInput(
             fieldName = dateOfValidityKey,
             form = form,
             labelKey = "declaration.addDocument.dateOfValidity",
             hintKey = Some("declaration.addDocument.dateOfValidity.hint")
-        ),
-        @measurementUnitAndQualifier,
+        )
+        @measurementUnitAndQualifier
         @exportsInputText(
             field = form(s"$documentWriteOffKey.$documentQuantityKey"),
             labelKey = "declaration.addDocument.documentQuantity",
