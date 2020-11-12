@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.AdditionalInformationAddController.AdditionalInformationFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
 import forms.declaration.AdditionalInformation
@@ -87,7 +88,7 @@ class AdditionalInformationChangeController @Inject()(
     val itemsWithoutExisting = cachedData.items.filterNot(_ == existingInformation)
 
     MultipleItemsHelper
-      .add(boundForm, itemsWithoutExisting, maxNumberOfItems)
+      .add(boundForm, itemsWithoutExisting, maxNumberOfItems, AdditionalInformationFormGroupId)
       .fold(
         formWithErrors => Future.successful(BadRequest(changePage(mode, itemId, id, formWithErrors))),
         _ => {

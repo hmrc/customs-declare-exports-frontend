@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.DocumentsProducedAddController.DocumentsProducedFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
 import forms.declaration.additionaldocuments.DocumentsProduced
@@ -94,7 +95,7 @@ class DocumentsProducedChangeController @Inject()(
     val documentsWithoutExisting: Seq[DocumentsProduced] = existingDocuments.filterNot(_ == existingDocument)
 
     MultipleItemsHelper
-      .add(boundForm, documentsWithoutExisting, maxNumberOfItems)
+      .add(boundForm, documentsWithoutExisting, maxNumberOfItems, DocumentsProducedFormGroupId)
       .fold(
         formWithErrors => Future.successful(BadRequest(documentProducedPage(mode, itemId, documentId, formWithErrors))),
         _ => {
