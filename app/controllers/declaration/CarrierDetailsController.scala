@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.CarrierDetails
+import forms.declaration.carrier.CarrierDetails
 import javax.inject.Inject
 import models.DeclarationType._
 import models.Mode
@@ -56,7 +56,7 @@ class CarrierDetailsController @Inject()(
 
   def saveAddress(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
-      form()
+        form()
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
@@ -72,5 +72,4 @@ class CarrierDetailsController @Inject()(
       val updatedParties = model.parties.copy(carrierDetails = Some(formData))
       model.copy(parties = updatedParties)
     })
-
 }

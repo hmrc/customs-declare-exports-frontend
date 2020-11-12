@@ -17,9 +17,8 @@
 package forms.declaration.consignor
 
 import forms.DeclarationPage
-import forms.common.Address
 import forms.declaration.EntityDetails
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
 case class ConsignorDetails(details: EntityDetails)
@@ -29,10 +28,7 @@ object ConsignorDetails extends DeclarationPage {
 
   val id = "ConsignorDetails"
 
-  val consignorMapping: Mapping[EntityDetails] =
-    Forms.mapping("address" -> Address.mapping)(address => EntityDetails(None, Some(address)))(entityDetails => entityDetails.address)
-
-  val mapping = Forms.mapping("details" -> consignorMapping)(ConsignorDetails.apply)(ConsignorDetails.unapply)
+  val mapping = Forms.mapping("details" -> EntityDetails.addressMapping)(ConsignorDetails.apply)(ConsignorDetails.unapply)
 
   def form(): Form[ConsignorDetails] = Form(mapping)
 

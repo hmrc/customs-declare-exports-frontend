@@ -68,7 +68,7 @@ class DeclarantExporterController @Inject()(
         case DeclarationType.CLEARANCE =>
           controllers.declaration.routes.IsExsController.displayPage
         case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-          controllers.declaration.routes.CarrierDetailsController.displayPage
+          controllers.declaration.routes.CarrierEoriNumberController.displayPage
       }
     } else controllers.declaration.routes.ExporterDetailsController.displayPage
 

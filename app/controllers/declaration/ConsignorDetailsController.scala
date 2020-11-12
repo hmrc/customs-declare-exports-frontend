@@ -65,7 +65,7 @@ class ConsignorDetailsController @Inject()(
 
   private def nextPage()(implicit request: JourneyRequest[_]): Mode => Call =
     if (request.cacheModel.isDeclarantExporter) {
-      controllers.declaration.routes.CarrierDetailsController.displayPage
+      controllers.declaration.routes.CarrierEoriNumberController.displayPage
     } else {
       controllers.declaration.routes.RepresentativeAgentController.displayPage
     }

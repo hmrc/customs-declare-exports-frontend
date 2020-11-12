@@ -24,6 +24,7 @@ import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.declaration.{DeclarationHolder, _}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
 import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}

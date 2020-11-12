@@ -22,6 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration._
+import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
