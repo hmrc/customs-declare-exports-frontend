@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.{Document, PreviousDocumentsData}
@@ -56,7 +57,7 @@ class PreviousDocumentsChangeController @Inject()(
         val documentsWithoutExisting = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty).filterNot(_ == existingDocument)
 
         MultipleItemsHelper
-          .add(boundForm, documentsWithoutExisting, PreviousDocumentsData.maxAmountOfItems)
+          .add(boundForm, documentsWithoutExisting, PreviousDocumentsData.maxAmountOfItems, PreviousDocumentsFormGroupId)
           .fold(
             formWithErrors => Future.successful(BadRequest(changePage(mode, id, formWithErrors))),
             updatedDocuments => updateCache(updatedDocuments).map(_ => returnToSummary(mode))
