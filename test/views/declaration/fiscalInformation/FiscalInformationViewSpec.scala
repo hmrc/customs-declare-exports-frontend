@@ -23,9 +23,11 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.fiscalInformation.fiscal_information
 import views.tags.ViewTest
@@ -64,7 +66,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView()
 
       "display page title" in {
-        view.getElementsByTag("h1") must containMessageForElements("declaration.fiscalInformation.title")
+        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.fiscalInformation.title")
       }
 
       "display section header" in {

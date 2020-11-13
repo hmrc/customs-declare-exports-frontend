@@ -21,22 +21,19 @@
 @import views.html.components.gds._
 @import views.ErrorMapper.radioGroupErrors
 
-@this(govukRadios: GovukRadios, errorSummary: errorSummary, headingContent: headingContent)
+@this(govukRadios: GovukRadios, errorSummary: errorSummary, sectionHeader: sectionHeader)
 
 @(form: Form[AdditionalDeclarationType])(implicit messages: Messages)
 
 @errorSummary(radioGroupErrors("additionalDeclarationType", "PreLodged", form.errors))
 
+@sectionHeader(messages("declaration.section.1"))
+
 @govukRadios(Radios(
     name = "additionalDeclarationType",
     fieldset = Some(Fieldset(
         legend = Some(Legend(
-            content = HtmlContent(
-                headingContent(
-                    messages("declaration.declarationType.header.clearance"),
-                    Some(messages("declaration.section.1"))
-                )
-            ),
+            content = Text(messages("declaration.declarationType.header.clearance")),
             classes = gdsPageLegend
         ))
     )),

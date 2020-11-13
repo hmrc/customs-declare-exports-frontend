@@ -42,11 +42,12 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
     @formHelper(action = RepresentativeEntityController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
+        @sectionHeader(messages("declaration.section.2"))
+
         @exportsInputText(
             field = form("details.eori"),
             labelKey = "declaration.representative.entity.title",
-            isPageHeading = true,
-            sectionHeaderKey = Some("declaration.section.2")
+            isPageHeading = true
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
