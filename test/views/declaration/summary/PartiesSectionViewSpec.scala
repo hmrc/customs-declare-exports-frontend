@@ -68,14 +68,14 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         eoriRow must haveSummaryKey(messages("declaration.summary.parties.exporter.eori"))
         eoriRow must haveSummaryValue(exampleEori)
         eoriRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.exporter.eori.change")
-        eoriRow must haveSummaryActionsHref(controllers.declaration.routes.ExporterDetailsController.displayPage(Mode.Change))
+        eoriRow must haveSummaryActionsHref(controllers.declaration.routes.ExporterEoriNumberController.displayPage(Mode.Change))
 
         val addressRow = view.getElementsByClass("exporter-address-row")
 
         addressRow must haveSummaryKey(messages("declaration.summary.parties.exporter.address"))
         addressRow must haveSummaryValue(exampleAddressContents)
         addressRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.exporter.address.change")
-        addressRow must haveSummaryActionsHref(controllers.declaration.routes.ExporterDetailsController.displayPage(Mode.Change))
+        addressRow must haveSummaryActionsHref(controllers.declaration.routes.ExporterEoriNumberController.displayPage(Mode.Change))
       }
 
       "contains consignee details with change button" in {

@@ -19,13 +19,12 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.common.YesNoAnswer.YesNoAnswers
-import forms.common.{Address, Eori, YesNoAnswer}
-import forms.declaration.{EntityDetails, ExporterDetails}
+import forms.common.Address
+import forms.declaration.exporter.ExporterDetails
+import forms.declaration.{exporter, EntityDetails}
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
 import models.Mode
-import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -55,14 +54,6 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display section header" in {
 
         createView(form(request.declarationType)).getElementById("section-header").text() must include(messages("declaration.section.2"))
-      }
-
-      "display empty input with label for EORI" in {
-
-        val view = createView(form(request.declarationType))
-
-        view.getElementsByAttributeValue("for", "details_eori").text() mustBe messages("declaration.exporter-detail.eori")
-        view.getElementById("details_eori").attr("value") mustBe empty
       }
 
       "display empty input with label for Full name" in {
@@ -116,41 +107,13 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'Declarant Is Exporter' page" in {
+    onEveryDeclarationJourney() { implicit request =>
+      "display 'Back' button that links to 'Exporter Eori Number' page" in {
 
         val backButton = createView(form(request.declarationType)).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
-      }
-    }
-
-    onClearance { implicit request =>
-      "display 'Back' button that links to 'Declarant Is Exporter' page" when {
-        "user have answered 'No' on 'Entry into Declarant's Records' page" in {
-
-          val cachedParties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer(YesNoAnswers.no)))
-          val requestWithCachedEidr = journeyRequest(simpleClearanceDeclaration.copy(parties = cachedParties))
-
-          val backButton = createView(form(request.declarationType))(requestWithCachedEidr).getElementById("back-link")
-
-          backButton.text() mustBe messages(backCaption)
-          backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
-        }
-      }
-
-      "display 'Back' button that links to 'Person Presenting Goods Details' page" when {
-        "user have answered 'Yes' on 'Entry into Declarant's Records' page" in {
-
-          val cachedParties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer(YesNoAnswers.yes)))
-          val requestWithCachedEidr = journeyRequest(simpleClearanceDeclaration.copy(parties = cachedParties))
-
-          val backButton = createView(form(request.declarationType))(requestWithCachedEidr).getElementById("back-link")
-
-          backButton.text() mustBe messages(backCaption)
-          backButton.attr("href") mustBe routes.PersonPresentingGoodsDetailsController.displayPage().url
-        }
+        backButton.attr("href") mustBe routes.ExporterEoriNumberController.displayPage().url
       }
     }
   }
@@ -166,18 +129,6 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
         view must containErrorElementWithTagAndHref("a", "#details_eori")
         view.getElementsByClass("govuk-list govuk-error-summary__list").attr("value") mustBe empty
 
-      }
-
-      "display error when EORI is provided, but is incorrect" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(ExporterDetails(EntityDetails(Some(Eori(TestHelper.createRandomAlphanumericString(18))), None)))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_eori")
-        view.getElementById("details_eori-error") must containMessage("declaration.eori.error.format")
       }
 
       "display error for empty Full name" in {
@@ -426,18 +377,6 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
   "Exporter Details View when filled" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      "display data in EORI input" in {
-
-        val view = createView(form(request.declarationType).fill(ExporterDetails(EntityDetails(Some(Eori("1234")), None))))
-
-        view.getElementById("details_eori").attr("value") mustBe "1234"
-        view.getElementById("details_address_fullName").attr("value") mustBe empty
-        view.getElementById("details_address_addressLine").attr("value") mustBe empty
-        view.getElementById("details_address_townOrCity").attr("value") mustBe empty
-        view.getElementById("details_address_postCode").attr("value") mustBe empty
-        view.getElementById("details_address_country").attr("value") mustBe empty
-      }
-
       "display data in Business address inputs" in {
 
         val view = createView(
@@ -445,22 +384,6 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             .fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
         )
 
-        view.getElementById("details_eori").attr("value") mustBe empty
-        view.getElementById("details_address_fullName").attr("value") mustBe "test"
-        view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
-        view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
-        view.getElementById("details_address_postCode").attr("value") mustBe "test3"
-        view.getElementById("details_address_country").attr("value") mustBe "test4"
-      }
-
-      "display data in both EORI and Business address inputs" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fill(ExporterDetails(EntityDetails(Some(Eori("1234")), Some(Address("test", "test1", "test2", "test3", "test4")))))
-        )
-
-        view.getElementById("details_eori").attr("value") mustBe "1234"
         view.getElementById("details_address_fullName").attr("value") mustBe "test"
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
         view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"

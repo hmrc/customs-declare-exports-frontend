@@ -70,7 +70,7 @@ class DeclarantExporterController @Inject()(
         case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
           controllers.declaration.routes.CarrierEoriNumberController.displayPage
       }
-    } else controllers.declaration.routes.ExporterDetailsController.displayPage
+    } else controllers.declaration.routes.ExporterEoriNumberController.displayPage
 
   private def updateCache(answer: DeclarantIsExporter)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {

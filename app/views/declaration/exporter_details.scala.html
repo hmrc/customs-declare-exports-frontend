@@ -15,13 +15,12 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.declaration.ExporterDetails
 @import views.Title
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
+@import forms.declaration.exporter.ExporterDetails
+
 @import scala.collection.immutable
-
-
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
 @import views.BackButton
@@ -82,13 +81,6 @@
         @pageTitle(messages("declaration.exporter-detail.title"))
 
         @pageHint
-
-        @exportsInputText(
-            field = form("details.eori"),
-            labelKey = "declaration.exporter-detail.eori"
-         )
-
-        @or
 
         @govukFieldset(Fieldset(
             attributes = Map("id" -> "details"),

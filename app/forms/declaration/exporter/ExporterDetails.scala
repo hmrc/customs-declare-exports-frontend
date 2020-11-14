@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.declaration.exporter
 
 import forms.DeclarationPage
+import forms.declaration.EntityDetails
+import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsDeclaration
 import play.api.data.{Form, Forms}
@@ -35,4 +37,14 @@ object ExporterDetails extends DeclarationPage {
     case CLEARANCE if cachedModel.exists(_.isNotEntryIntoDeclarantsRecords) => Form(optionalMapping)
     case _                                                                  => Form(defaultMapping)
   }
+
+  def from(exporterEoriNumber: ExporterEoriNumber, savedExporterDetails: Option[ExporterDetails]): ExporterDetails =
+    exporterEoriNumber.eori match {
+      case None =>
+        savedExporterDetails.flatMap(_.details.address) match {
+          case None          => ExporterDetails(EntityDetails(None, None))
+          case Some(address) => ExporterDetails(EntityDetails(None, Some(address)))
+        }
+      case Some(_) => ExporterDetails(EntityDetails(exporterEoriNumber.eori, None))
+    }
 }

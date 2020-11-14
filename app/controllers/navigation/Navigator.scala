@@ -26,6 +26,7 @@ import forms.declaration.additionaldocuments.{DocumentsProduced, DocumentsProduc
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.DeclarationSummaryHolder
+import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.declaration.officeOfExit.{OfficeOfExitInsideUK, OfficeOfExitOutsideUK}
 import forms.declaration.removals.RemoveItem
 import forms.{Choice, DeclarationPage}
@@ -81,7 +82,8 @@ object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => controllers.declaration.routes.ConsignmentReferencesController.displayPage
-    case ExporterDetails             => controllers.declaration.routes.DeclarantExporterController.displayPage
+    case ExporterEoriNumber          => controllers.declaration.routes.DeclarantExporterController.displayPage
+    case ExporterDetails             => controllers.declaration.routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case TransportPayment            => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
@@ -95,7 +97,6 @@ object Navigator {
     case GoodsLocationForm           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case DeclarationSummaryHolder    => controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
-    case RepresentativeAgent         => controllers.declaration.routes.ExporterDetailsController.displayPage
     case DepartureTransport          => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.ConsigneeDetailsController.displayPage
@@ -115,6 +116,7 @@ object Navigator {
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
     case EntryIntoDeclarantsRecords   => controllers.declaration.routes.ConsignmentReferencesController.displayPage
+    case ExporterDetails              => controllers.declaration.routes.ExporterEoriNumberController.displayPage
     case DeclarantDetails             => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
     case PersonPresentingGoodsDetails => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
     case TransportPayment             => controllers.declaration.routes.DepartureTransportController.displayPage
@@ -143,7 +145,8 @@ object Navigator {
 
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => controllers.declaration.routes.ConsignmentReferencesController.displayPage
-    case ExporterDetails             => controllers.declaration.routes.DeclarantExporterController.displayPage
+    case ExporterEoriNumber          => controllers.declaration.routes.DeclarantExporterController.displayPage
+    case ExporterDetails             => controllers.declaration.routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -153,7 +156,6 @@ object Navigator {
     case DocumentSummary             => controllers.declaration.routes.NatureOfTransactionController.displayPage
     case OfficeOfExitInsideUK        => controllers.declaration.routes.LocationController.displayPage
     case OfficeOfExitOutsideUK       => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case RepresentativeAgent         => controllers.declaration.routes.ExporterDetailsController.displayPage
     case AdditionalActorsSummary     => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case DeclarationSummaryHolder    => controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
@@ -175,7 +177,8 @@ object Navigator {
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => controllers.declaration.routes.ConsignmentReferencesController.displayPage
-    case ExporterDetails             => controllers.declaration.routes.DeclarantExporterController.displayPage
+    case ExporterEoriNumber          => controllers.declaration.routes.DeclarantExporterController.displayPage
+    case ExporterDetails             => controllers.declaration.routes.ExporterEoriNumberController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
@@ -184,7 +187,6 @@ object Navigator {
     case DestinationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
-    case RepresentativeAgent         => controllers.declaration.routes.ExporterDetailsController.displayPage
     case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => controllers.declaration.routes.ConsigneeDetailsController.displayPage
@@ -207,7 +209,8 @@ object Navigator {
 
   val occasional: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => controllers.declaration.routes.ConsignmentReferencesController.displayPage
-    case ExporterDetails             => controllers.declaration.routes.DeclarantExporterController.displayPage
+    case ExporterEoriNumber          => controllers.declaration.routes.DeclarantExporterController.displayPage
+    case ExporterDetails             => controllers.declaration.routes.ExporterEoriNumberController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
@@ -216,7 +219,6 @@ object Navigator {
     case DestinationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
-    case RepresentativeAgent         => controllers.declaration.routes.ExporterDetailsController.displayPage
     case GoodsLocationForm           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case DeclarationSummaryHolder    => controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
@@ -285,40 +287,44 @@ object Navigator {
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case Document         => previousDocumentsPreviousPageDefault
-    case ConsigneeDetails => consigneeDetailsPreviousPage
+    case Document            => previousDocumentsPreviousPageDefault
+    case ConsigneeDetails    => consigneeDetailsPreviousPage
+    case RepresentativeAgent => representativeAgentPreviousPage
   }
 
   val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
 
   val supplementaryCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case ConsigneeDetails => consigneeDetailsSupplementaryPreviousPage
-    case Document         => previousDocumentsPreviousPageDefault
+    case ConsigneeDetails    => consigneeDetailsSupplementaryPreviousPage
+    case Document            => previousDocumentsPreviousPageDefault
+    case RepresentativeAgent => representativeAgentPreviousPage
   }
 
   val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
 
   val simplifiedCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case CarrierEoriNumber => carrierEoriNumberPreviousPage
-    case Document          => previousDocumentsPreviousPage
-    case DocumentSummary   => previousDocumentsSummaryPreviousPage
-    case ConsigneeDetails  => consigneeDetailsPreviousPage
+    case CarrierEoriNumber   => carrierEoriNumberPreviousPage
+    case Document            => previousDocumentsPreviousPage
+    case DocumentSummary     => previousDocumentsSummaryPreviousPage
+    case ConsigneeDetails    => consigneeDetailsPreviousPage
+    case RepresentativeAgent => representativeAgentPreviousPage
   }
 
   val simplifiedCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
 
   val occasionalCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case CarrierEoriNumber => carrierEoriNumberPreviousPage
-    case Document          => previousDocumentsPreviousPage
-    case DocumentSummary   => previousDocumentsSummaryPreviousPage
-    case ConsigneeDetails  => consigneeDetailsPreviousPage
+    case CarrierEoriNumber   => carrierEoriNumberPreviousPage
+    case Document            => previousDocumentsPreviousPage
+    case DocumentSummary     => previousDocumentsSummaryPreviousPage
+    case ConsigneeDetails    => consigneeDetailsPreviousPage
+    case RepresentativeAgent => representativeAgentPreviousPage
   }
 
   val occasionalCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
 
   val clearanceCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case ExporterDetails     => exporterDetailsClearancePreviousPage
     case CarrierEoriNumber   => carrierEoriNumberClearancePreviousPage
+    case ExporterEoriNumber  => exporterEoriNumberClearancePreviousPage
     case ConsigneeDetails    => consigneeDetailsClearancePreviousPage
     case RepresentativeAgent => representativeAgentClearancePreviousPage
     case IsExs               => isExsClearancePreviousPage
@@ -393,7 +399,7 @@ object Navigator {
       controllers.declaration.routes.OfficeOfExitController.displayPage(mode)
     else controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage(mode)
 
-  private def exporterDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+  private def exporterEoriNumberClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords)
       controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode)
     else
@@ -443,9 +449,10 @@ object Navigator {
 
   private def isExsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isDeclarantExporter)
-      exporterDetailsClearancePreviousPage(cacheModel, mode)
-    else
-      controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
+      exporterEoriNumberClearancePreviousPage(cacheModel, mode)
+    else if (cacheModel.parties.exporterDetails.flatMap(_.details.eori).isDefined)
+      controllers.declaration.routes.ExporterEoriNumberController.displayPage(mode)
+    else controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
 
   private def totalNumberOfItemsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.locations.isOfficeOfExitInUk)
@@ -467,6 +474,11 @@ object Navigator {
       case OCCASIONAL | SIMPLIFIED => controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(mode)
       case _                       => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(mode)
     }
+
+  private def representativeAgentPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.parties.exporterDetails.flatMap(_.details.eori).isDefined)
+      controllers.declaration.routes.ExporterEoriNumberController.displayPage(mode)
+    else controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
 
   private def supervisingCustomsOfficePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.requiresWarehouseId || cacheModel.`type` == CLEARANCE)

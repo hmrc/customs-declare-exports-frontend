@@ -151,7 +151,7 @@
             "exporter",
             export.details.eori,
             export.details.address,
-            controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
+            controllers.declaration.routes.ExporterEoriNumberController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
                 ++ (Seq.empty :+ declarationData.parties.isExs.map { exs =>

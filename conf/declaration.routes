@@ -51,11 +51,17 @@ GET         /person-presenting-goods             controllers.declaration.PersonP
 
 POST        /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
+# Exporter Eori
+
+GET         /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
+
 # Exporter address
 
-GET         /exporter-details                    controllers.declaration.ExporterDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /exporter-address                    controllers.declaration.ExporterDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /exporter-details                    controllers.declaration.ExporterDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
+POST        /exporter-address                    controllers.declaration.ExporterDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
 # EXS Declaration
 

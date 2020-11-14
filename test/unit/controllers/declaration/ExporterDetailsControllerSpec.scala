@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.ExporterDetailsController
 import forms.common.{Address, Eori}
-import forms.declaration.ExporterDetails
+import forms.declaration.exporter.ExporterDetails
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

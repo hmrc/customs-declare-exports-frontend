@@ -18,7 +18,7 @@ package unit.forms.declaration
 
 import forms.LightFormMatchers
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.ExporterDetails
+import forms.declaration.exporter.ExporterDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
 import org.scalatest.{MustMatchers, WordSpec}
