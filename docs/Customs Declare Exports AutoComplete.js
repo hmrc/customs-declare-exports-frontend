@@ -364,7 +364,7 @@ function representativeType(){
 }
 
 function carrierDetails(){
-    if (currentPageIs('/customs-declare-exports/declaration/carrier-details')) {
+    if (currentPageIs('/customs-declare-exports/declaration/carrier-address')) {
         document.getElementById('details_address_fullName').value = 'XYZ Carrier';
         document.getElementById('details_address_addressLine').value = 'School Road';
         document.getElementById('details_address_townOrCity').value = 'London';
