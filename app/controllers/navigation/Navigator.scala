@@ -285,8 +285,8 @@ object Navigator {
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case Document           => previousDocumentsPreviousPageDefault
-    case ConsigneeDetails         => consigneeDetailsPreviousPage
+    case Document         => previousDocumentsPreviousPageDefault
+    case ConsigneeDetails => consigneeDetailsPreviousPage
   }
 
   val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -299,19 +299,19 @@ object Navigator {
   val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
 
   val simplifiedCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case CarrierEoriNumber  => carrierEoriNumberPreviousPage
-    case Document           => previousDocumentsPreviousPage
-    case DocumentSummary    => previousDocumentsSummaryPreviousPage
-    case ConsigneeDetails   => consigneeDetailsPreviousPage
+    case CarrierEoriNumber => carrierEoriNumberPreviousPage
+    case Document          => previousDocumentsPreviousPage
+    case DocumentSummary   => previousDocumentsSummaryPreviousPage
+    case ConsigneeDetails  => consigneeDetailsPreviousPage
   }
 
   val simplifiedCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
 
   val occasionalCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case CarrierEoriNumber  => carrierEoriNumberPreviousPage
-    case Document           => previousDocumentsPreviousPage
-    case DocumentSummary    => previousDocumentsSummaryPreviousPage
-    case ConsigneeDetails   => consigneeDetailsPreviousPage
+    case CarrierEoriNumber => carrierEoriNumberPreviousPage
+    case Document          => previousDocumentsPreviousPage
+    case DocumentSummary   => previousDocumentsSummaryPreviousPage
+    case ConsigneeDetails  => consigneeDetailsPreviousPage
   }
 
   val occasionalCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -415,12 +415,11 @@ object Navigator {
         controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode)
     }
 
-  private def consigneeDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call = {
+  private def consigneeDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.parties.carrierDetails.flatMap(_.details.eori).isEmpty)
       controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
     else
       controllers.declaration.routes.CarrierEoriNumberController.displayPage(mode)
-  }
 
   private def consigneeDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isExs)

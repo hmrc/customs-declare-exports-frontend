@@ -29,7 +29,7 @@ import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.{DeclarationHolder, _}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
-import forms.declaration.additionaldocuments.{DocumentsProduced, DocumentWriteOff}
+import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import forms.declaration.countries.Country
 import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.{CancelDeclaration, Lrn}
