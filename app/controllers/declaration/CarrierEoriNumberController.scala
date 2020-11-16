@@ -60,7 +60,6 @@ class CarrierEoriNumberController @Inject()(
       .fold(
         (formWithErrors: Form[CarrierEoriNumber]) => {
           val formWithAdjustedErrors = formWithErrors
-
           Future.successful(BadRequest(carrierEoriDetailsPage(mode, formWithAdjustedErrors)))
         },
         form =>

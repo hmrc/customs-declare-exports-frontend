@@ -150,7 +150,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage()
         }
       }
     }
