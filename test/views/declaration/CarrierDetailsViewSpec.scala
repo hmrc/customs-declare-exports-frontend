@@ -23,8 +23,8 @@ import forms.common.Address
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails
 import helpers.views.declaration.CommonMessages
-import models.{DeclarationType, Mode}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -107,65 +107,47 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       val defaultForm = CarrierDetails.form(request.declarationType)
+      val view = createView(defaultForm)
 
       "display page title" in {
-
-        createView(defaultForm).getElementsByClass("govuk-fieldset__heading").first().text() mustBe messages("declaration.carrierAddress.title")
+        view.getElementsByClass("govuk-fieldset__heading").first().text() mustBe messages("declaration.carrierAddress.title")
       }
 
       "display section header" in {
-
-        val view = createView(defaultForm)
-
         view.getElementById("section-header").text() must include(messages("declaration.section.2"))
       }
 
       "display empty input with label for Full name" in {
-
-        val view = createView(defaultForm)
-
         view.getElementsByAttributeValue("for", "details_address_fullName").first().text() mustBe messages("declaration.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
       }
 
       "display empty input with label for Address" in {
-
-        val view = createView(defaultForm)
-
         view.getElementsByAttributeValue("for", "details_address_addressLine").first().text() mustBe messages("declaration.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
       "display empty input with label for Town or City" in {
-
-        val view = createView(defaultForm)
-
         view.getElementsByAttributeValue("for", "details_address_townOrCity").first().text() mustBe messages("declaration.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
       }
 
       "display empty input with label for Postcode" in {
-
-        val view = createView(defaultForm)
-
         view.getElementsByAttributeValue("for", "details_address_postCode").first().text() mustBe messages("declaration.address.postCode")
         view.getElementById("details_address_postCode").attr("value") mustBe empty
       }
 
       "display empty input with label for Country" in {
-
-        val view = createView(defaultForm)
-
         view.getElementsByAttributeValue("for", "details_address_country").first().text() mustBe messages("declaration.address.country")
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
       "display 'Save and continue' button on page" in {
-        createView(defaultForm).getElementById("submit").text() mustBe messages(saveAndContinueCaption)
+        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
       }
 
       "display 'Save and return' button on page" in {
-        val button = createView(defaultForm).getElementById("submit_and_return")
+        val button = view.getElementById("submit_and_return")
         button.text() mustBe messages(saveAndReturnCaption)
         button.attr("name") mustBe SaveAndReturn.toString
       }

@@ -102,9 +102,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           status(result) must be(OK)
         }
       }
-    }
 
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "return 400 (BAD_REQUEST)" when {
 
         "form is incorrect" in {
@@ -135,14 +133,16 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         }
       }
 
-      "method is invoked and cache is empty" in {
-        withNoDeclaration()
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
+        "method is invoked and cache is empty" in {
+          withNoDeclaration()
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
 
-        verifyPageInvocations(0)
+          verifyPageInvocations(0)
+        }
       }
 
       onJourney(SUPPLEMENTARY) { request =>
