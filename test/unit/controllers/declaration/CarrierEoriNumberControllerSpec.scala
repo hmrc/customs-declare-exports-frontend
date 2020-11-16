@@ -148,7 +148,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
   }
 
   "should return a 400 (BAD_REQUEST)" when {
-    onJourney(DeclarationType.CLEARANCE) { request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "EORI is incorrect" in {
 
         withNewCaching(request.cacheModel)

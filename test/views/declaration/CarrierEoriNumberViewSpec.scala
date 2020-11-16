@@ -22,6 +22,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.carrier.CarrierEoriNumber
 import models.{DeclarationType, Mode}
 import models.requests.JourneyRequest
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.data.Form
@@ -43,7 +44,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with S
     page(mode, form)(request, messages)
 
   "Carrier Eori Number View" should {
-    onJourney(DeclarationType.CLEARANCE) { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       val view = createView()
       "display answer input" in {
         val carrierEoriNumber = CarrierEoriNumber.form().fill(CarrierEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes))

@@ -24,7 +24,7 @@ import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails
 import helpers.views.declaration.CommonMessages
 import models.{DeclarationType, Mode}
-import models.DeclarationType.CLEARANCE
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -105,7 +105,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
       messages must haveTranslationFor("declaration.carrierAddress.help-item1")
     }
 
-    onJourney(CLEARANCE) { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       val defaultForm = CarrierDetails.form(request.declarationType)
 
       "display page title" in {
@@ -174,7 +174,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
   "Carrier Details View with invalid input" should {
 
-    onJourney(CLEARANCE) { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       "display error for empty Full name" in {
 
         val emptyFullNameAddress = validAddress.copy(fullName = "")
@@ -267,11 +267,11 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
   "Carrier Details View when filled" should {
 
-    onJourney(CLEARANCE) { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       "display data in Business address inputs" in {
 
         val form = CarrierDetails
-          .form(CLEARANCE)
+          .form(request.declarationType)
           .fill(CarrierDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "Ukraine")))))
         val view = createView(form)
 
@@ -286,7 +286,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
   "Carrier Details View back links" should {
 
-    onJourney(DeclarationType.CLEARANCE) { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       "display 'Back' button that links to 'Carrier Eori Number' page" in {
 
         val backButton = createView(CarrierDetails.form(request.declarationType)).getElementById("back-link")

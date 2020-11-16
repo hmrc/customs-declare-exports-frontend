@@ -197,7 +197,8 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         "with invalid journey type" in {
 
           withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some(Eori("12345678")), None)))
+          val correctForm =
+            Json.toJson(CarrierDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
