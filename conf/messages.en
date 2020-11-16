@@ -870,9 +870,9 @@ declaration.additionalInformationRequired.hint = These are {0} and are determine
 declaration.additionalInformationRequired.hint.link = union and national AI codes
 declaration.additionalInformationRequired.error = Select yes if there are any AI codes.
 declaration.additionalInformationRequired.help.bodyText = Go to data element 2/2 Additional Information in the {0}.
-declaration.additionalInformation.title = Additional information
+declaration.additionalInformation.title = Additional information (AI)
 declaration.additionalInformation.code = What is the union or national AI code?
-declaration.additionalInformation.code.hint = Always declare the union AI code first if an item has both {0}.
+declaration.additionalInformation.code.hint = Always declare the union <abbr title="additional information">AI</abbr> code first if an item has both {0}.
 declaration.additionalInformation.item.code = 2/2 union or national code
 declaration.additionalInformation.code.error = Enter a valid union or national AI code.
 declaration.additionalInformation.code.empty = Enter the union or national AI code.
