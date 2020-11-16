@@ -56,7 +56,7 @@ class CarrierDetailsController @Inject()(
 
   def saveAddress(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
-        form()
+      form()
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
