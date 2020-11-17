@@ -52,7 +52,9 @@ object EoriOrAddress {
     Seq(
       emptyRow,
       eori.map(eori => rowForEori(key, eoriLabel, eoriChangeLabel, eoriChangeController, Some(eori), actionsEnabled)),
-      address.map(address => forForAddress(key, addressLabel, addressChangeLabel, addressChangeController, extractAddress _, Some(address), actionsEnabled))
+      address.map(
+        address => forForAddress(key, addressLabel, addressChangeLabel, addressChangeController, extractAddress _, Some(address), actionsEnabled)
+      )
     )
   }
 
