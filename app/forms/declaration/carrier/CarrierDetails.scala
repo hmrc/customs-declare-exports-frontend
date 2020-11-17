@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.declaration.carrier
 
 import forms.DeclarationPage
-import models.DeclarationType.{DeclarationType, _}
+import forms.declaration.EntityDetails
+import models.DeclarationType.{CLEARANCE, DeclarationType}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
@@ -28,11 +29,21 @@ object CarrierDetails extends DeclarationPage {
 
   val id = "CarrierDetails"
 
-  val defaultMapping = Forms.mapping("details" -> EntityDetails.eitherEoriOrAddressMapping)(CarrierDetails.apply)(CarrierDetails.unapply)
-  val optionalMapping = Forms.mapping("details" -> EntityDetails.eitherEoriOrAddressOptionalMapping)(CarrierDetails.apply)(CarrierDetails.unapply)
+  val defaultMapping = Forms.mapping("details" -> EntityDetails.addressMapping)(CarrierDetails.apply)(CarrierDetails.unapply)
+  val optionalMapping = Forms.mapping("details" -> EntityDetails.optionalAddressMapping)(CarrierDetails.apply)(CarrierDetails.unapply)
 
   def form(declarationType: DeclarationType): Form[CarrierDetails] = declarationType match {
     case CLEARANCE => Form(optionalMapping)
     case _         => Form(defaultMapping)
   }
+
+  def from(carrierEoriDetails: CarrierEoriNumber, savedCarrierDetails: Option[CarrierDetails]): CarrierDetails =
+    carrierEoriDetails.eori match {
+      case None =>
+        savedCarrierDetails.flatMap(_.details.address) match {
+          case None          => CarrierDetails(EntityDetails(None, None))
+          case Some(address) => CarrierDetails(EntityDetails(None, Some(address)))
+        }
+      case Some(_) => CarrierDetails(EntityDetails(carrierEoriDetails.eori, None))
+    }
 }

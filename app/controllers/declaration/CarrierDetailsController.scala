@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.CarrierDetails
+import forms.declaration.carrier.CarrierDetails
 import javax.inject.Inject
 import models.DeclarationType._
 import models.Mode
@@ -72,5 +72,4 @@ class CarrierDetailsController @Inject()(
       val updatedParties = model.parties.copy(carrierDetails = Some(formData))
       model.copy(parties = updatedParties)
     })
-
 }

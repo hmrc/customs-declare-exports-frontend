@@ -17,8 +17,9 @@
 package unit.controllers.declaration
 
 import controllers.declaration.CarrierDetailsController
-import forms.common.Eori
-import forms.declaration.{CarrierDetails, EntityDetails}
+import forms.common.{Address, Eori}
+import forms.declaration.EntityDetails
+import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -75,37 +76,73 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
   "Carrier Details Controller display page" should {
 
-    "return OK (200)" when {
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
+      "return 200 (OK)" when {
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
-        "with valid journey type" in {
+        "display page method is invoked and cache is empty" in {
 
-          val eori = Some(Eori("1234"))
-          withNewCaching(aDeclarationAfter(request.cacheModel, withCarrierDetails(eori)))
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
-          status(result) mustBe OK
-          verifyPageInvocations(1)
-
-          theResponseForm.value mustBe Some(CarrierDetails(EntityDetails(eori, None)))
-          theResponseForm.errors mustBe Seq.empty
+          status(result) must be(OK)
         }
 
+        "display page method is invoked and cache contains data" in {
+
+          withNewCaching(
+            aDeclarationAfter(
+              request.cacheModel,
+              withCarrierDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))
+            )
+          )
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
+      }
+
+      "return 400 (BAD_REQUEST)" when {
+
+        "form is incorrect" in {
+
+          withNewCaching(request.cacheModel)
+
+          val incorrectForm = Json.toJson(CarrierDetails(EntityDetails(None, Some(Address("", "", "Leeds", "LS1 2PW", "United Kingdom")))))
+
+          val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) must be(BAD_REQUEST)
+        }
       }
     }
 
     "return 303 (SEE_OTHER)" when {
 
-      "method is invoked and cache is empty" in {
+      onJourney(CLEARANCE) { request =>
+        "form is empty" in {
 
-        withNoDeclaration()
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          withNewCaching(request.cacheModel)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+          val incorrectForm = Json.toJson(CarrierDetails(EntityDetails(None, None)))
 
-        verifyPageInvocations(0)
+          val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) must be(SEE_OTHER)
+        }
+      }
+
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
+        "method is invoked and cache is empty" in {
+          withNoDeclaration()
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+
+          verifyPageInvocations(0)
+        }
       }
 
       onJourney(SUPPLEMENTARY) { request =>
@@ -146,7 +183,8 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         "with valid journey type" in {
 
           withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some(Eori("GB12345678912345")), None)))
+          val correctForm =
+            Json.toJson(CarrierDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
@@ -159,7 +197,8 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         "with invalid journey type" in {
 
           withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some(Eori("12345678")), None)))
+          val correctForm =
+            Json.toJson(CarrierDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 

@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
 
 import config.AppConfig
 import controllers.util._
-import forms.declaration.CarrierDetails
+import forms.declaration.carrier.CarrierDetails
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import models.{Mode, SignedInUser}

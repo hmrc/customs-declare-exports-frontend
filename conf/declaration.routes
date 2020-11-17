@@ -95,11 +95,17 @@ GET         /consignor-address                   controllers.declaration.Consign
 
 POST        /consignor-address                   controllers.declaration.ConsignorDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
+# Carrier Eori Number
+
+GET         /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
+
 # Carrier details
 
-GET         /carrier-details                     controllers.declaration.CarrierDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /carrier-address                     controllers.declaration.CarrierDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /carrier-details                     controllers.declaration.CarrierDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
+POST        /carrier-address                     controllers.declaration.CarrierDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
 # Declaration other parties
 

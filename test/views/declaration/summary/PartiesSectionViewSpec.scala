@@ -168,7 +168,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         eoriRow must haveSummaryKey(messages("declaration.summary.parties.carrier.eori"))
         eoriRow must haveSummaryValue(exampleEori)
         eoriRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.carrier.eori.change")
-        eoriRow must haveSummaryActionsHref(controllers.declaration.routes.CarrierDetailsController.displayPage(Mode.Change))
+        eoriRow must haveSummaryActionsHref(controllers.declaration.routes.CarrierEoriNumberController.displayPage(Mode.Change))
 
         val addressRow = view.getElementsByClass("carrier-address-row")
 

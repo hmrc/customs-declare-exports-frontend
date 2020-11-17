@@ -363,13 +363,21 @@ function representativeType(){
     }
 }
 
-function carrierDetails() {
-    if (currentPageIs('/customs-declare-exports/declaration/carrier-details')) {
+function carrierDetails(){
+    if (currentPageIs('/customs-declare-exports/declaration/carrier-address')) {
         document.getElementById('details_address_fullName').value = 'XYZ Carrier';
         document.getElementById('details_address_addressLine').value = 'School Road';
         document.getElementById('details_address_townOrCity').value = 'London';
         document.getElementById('details_address_postCode').value = 'WS1 2AB';
         selectFromAutoPredict(document.getElementById('details_address_country-container'), "United Kingdom");
+        document.getElementById('submit').click()
+    }
+}
+
+function carrierEoriNumber(){
+    if (currentPageIs('/customs-declare-exports/declaration/carrier-eori-number')) {
+        document.getElementById('Yes').checked = 'checked';
+        document.getElementById('eori').value = 'GB123456789000';
         document.getElementById('submit').click()
     }
 }
@@ -1043,6 +1051,7 @@ function completeJourney() {
     representingAnotherAgent();
     representativeEori();
     representativeType()
+    carrierEoriNumber();
     carrierDetails();
     otherPartiesInvolved();
     holderOfAuthorisation();

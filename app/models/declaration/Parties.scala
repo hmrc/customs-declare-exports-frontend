@@ -18,6 +18,7 @@ package models.declaration
 
 import forms.common.YesNoAnswer
 import forms.declaration._
+import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
 import models.ExportsDeclaration
 import play.api.libs.json.Json

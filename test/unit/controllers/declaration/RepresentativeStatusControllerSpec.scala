@@ -146,7 +146,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage()
 
         verifyPage(0)
       }
@@ -164,7 +164,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage()
 
           verifyPage(0)
         }

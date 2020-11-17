@@ -70,12 +70,12 @@ class RepresentativeStatusController @Inject()(
       case SUPPLEMENTARY =>
         controllers.declaration.routes.ConsigneeDetailsController.displayPage
       case STANDARD | SIMPLIFIED | OCCASIONAL =>
-        controllers.declaration.routes.CarrierDetailsController.displayPage
+        controllers.declaration.routes.CarrierEoriNumberController.displayPage
       case CLEARANCE =>
         if (cacheModel.exists(_.isNotExs))
           controllers.declaration.routes.ConsigneeDetailsController.displayPage
         else
-          controllers.declaration.routes.CarrierDetailsController.displayPage
+          controllers.declaration.routes.CarrierEoriNumberController.displayPage
     }
 
   private def navigationForm()(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
