@@ -40,7 +40,7 @@
     else Seq.empty
 }
 
-@eoriOrAddress(key: String, eori: Option[Eori], address: Option[Address], change: Call, isEoriDefault: Boolean = true) = @{
+@eoriOrAddress(key: String, eori: Option[Eori], address: Option[Address], eoriChange: Call, addressChange: Call, isEoriDefault: Boolean = true) = @{
     EoriOrAddress.rows(
         key = key,
         eori = eori,
@@ -49,7 +49,8 @@
         eoriChangeLabel = s"declaration.summary.parties.$key.eori.change",
         addressLabel = s"declaration.summary.parties.$key.address",
         addressChangeLabel = s"declaration.summary.parties.$key.address.change",
-        changeController = change,
+        eoriChangeController = eoriChange,
+        addressChangeController = addressChange,
         isEoriDefault = isEoriDefault,
         actionsEnabled = actionsEnabled
     )
@@ -151,6 +152,7 @@
             "exporter",
             export.details.eori,
             export.details.address,
+            controllers.declaration.routes.ExporterDetailsController.displayPage(mode),
             controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
@@ -200,6 +202,7 @@
             "representative",
             details.eori,
             details.address,
+            controllers.declaration.routes.RepresentativeEntityController.displayPage(mode),
             controllers.declaration.routes.RepresentativeEntityController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
@@ -229,6 +232,7 @@
             carrier.details.eori,
             carrier.details.address,
             controllers.declaration.routes.CarrierEoriNumberController.displayPage(mode),
+            controllers.declaration.routes.CarrierDetailsController.displayPage(mode),
             isEoriDefault = false
         )).getOrElse(Seq.empty)
 
@@ -236,6 +240,7 @@
             "consignee",
             consignee.details.eori,
             consignee.details.address,
+            controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
             controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
             isEoriDefault = false
         )).getOrElse(Seq.empty)
@@ -245,6 +250,7 @@
             consignor.details.eori,
             consignor.details.address,
             controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode),
+            controllers.declaration.routes.ConsignorDetailsController.displayPage(mode),
             isEoriDefault = false
         )).getOrElse(Seq.empty),
 

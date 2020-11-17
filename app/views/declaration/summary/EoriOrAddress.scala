@@ -34,7 +34,8 @@ object EoriOrAddress {
     eoriChangeLabel: String,
     addressLabel: String,
     addressChangeLabel: String,
-    changeController: Call,
+    eoriChangeController: Call,
+    addressChangeController: Call,
     isEoriDefault: Boolean = true,
     actionsEnabled: Boolean = true
   )(implicit messages: Messages): Seq[Option[SummaryListRow]] = {
@@ -42,16 +43,16 @@ object EoriOrAddress {
     def emptyRow =
       if (eori.isEmpty && address.isEmpty) {
         if (isEoriDefault) {
-          Some(rowForEori(key, eoriLabel, eoriChangeLabel, changeController, None, actionsEnabled))
+          Some(rowForEori(key, eoriLabel, eoriChangeLabel, eoriChangeController, None, actionsEnabled))
         } else {
-          Some(forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress, None, actionsEnabled))
+          Some(forForAddress(key, addressLabel, addressChangeLabel, addressChangeController, extractAddress, None, actionsEnabled))
         }
       } else None
 
     Seq(
       emptyRow,
-      eori.map(eori => rowForEori(key, eoriLabel, eoriChangeLabel, changeController, Some(eori), actionsEnabled)),
-      address.map(address => forForAddress(key, addressLabel, addressChangeLabel, changeController, extractAddress _, Some(address), actionsEnabled))
+      eori.map(eori => rowForEori(key, eoriLabel, eoriChangeLabel, eoriChangeController, Some(eori), actionsEnabled)),
+      address.map(address => forForAddress(key, addressLabel, addressChangeLabel, addressChangeController, extractAddress _, Some(address), actionsEnabled))
     )
   }
 
