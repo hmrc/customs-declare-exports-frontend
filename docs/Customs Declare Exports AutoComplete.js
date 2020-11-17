@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.63
+// @version      1.64
 // @description  decs supported: (Std-Arrived A), (Occ-Arrived B), (Smp-Arrived C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Arrived J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -267,8 +267,22 @@ function isDeclarantExporter(){
 }
 
 function exporterDetails(){
-    if (currentPageIs('/customs-declare-exports/declaration/exporter-details')) {
-        document.getElementById('details_eori').value = 'GB717572504502801';
+    if (currentPageIs('/customs-declare-exports/declaration/exporter-address')) {
+        document.getElementById('details_address_fullName').value = 'Exporters R Us';
+        document.getElementById('details_address_addressLine').value = '1 Uxbridge Road';
+        document.getElementById('details_address_townOrCity').value = 'London';
+        document.getElementById('details_address_postCode').value = 'WC1 3RD';
+
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America");
+        document.getElementById('submit').click()
+
+    }
+}
+
+function exporterEoriNumber(){
+    if (currentPageIs('/customs-declare-exports/declaration/exporter-eori-number')) {
+        document.getElementById('Yes').checked = 'checked';
+        document.getElementById('eori').value = 'GB123456789000';
         document.getElementById('submit').click()
     }
 }
@@ -1043,6 +1057,7 @@ function completeJourney() {
     personPresentingGoodsDetails();
     declarantDetails();
     isDeclarantExporter();
+    exporterEoriNumber();
     exporterDetails();
     isExs();
     consigneeDetails();
