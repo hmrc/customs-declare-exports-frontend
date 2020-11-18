@@ -45,8 +45,7 @@ class EoriOrAddressSpec extends UnitViewSpec {
         eoriChangeLabel = eoriChangeLabel,
         addressLabel = addressLabel,
         addressChangeLabel = addressChangeLabel,
-        eoriChangeController = controllers.declaration.routes.CarrierEoriNumberController.displayPage(),
-        addressChangeController = controllers.declaration.routes.CarrierDetailsController.displayPage(),
+        changeController = controllers.declaration.routes.ConsigneeDetailsController.displayPage(),
         isEoriDefault = isEoriDefault,
         actionsEnabled = actionsEnabled
       )

@@ -175,7 +175,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         addressRow must haveSummaryKey(messages("declaration.summary.parties.carrier.address"))
         addressRow must haveSummaryValue(exampleAddressContents)
         addressRow must haveSummaryActionsTexts("site.change", "declaration.summary.parties.carrier.address.change")
-        addressRow must haveSummaryActionsHref(controllers.declaration.routes.CarrierDetailsController.displayPage(Mode.Change))
+        addressRow must haveSummaryActionsHref(controllers.declaration.routes.CarrierEoriNumberController.displayPage(Mode.Change))
       }
 
       "does not contain exporter when section not answered" in {

@@ -27,10 +27,10 @@
 @import views.components.gds.ActionItemBuilder._
 
 @this(
-    summaryList: summary_list,
-    linkContent: linkContent,
-    additionalActorsSection: parties_section_additional_actors,
-    holdersSection: parties_section_holders
+        summaryList: summary_list,
+        linkContent: linkContent,
+        additionalActorsSection: parties_section_additional_actors,
+        holdersSection: parties_section_holders
 )
 
 @(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
@@ -40,7 +40,7 @@
     else Seq.empty
 }
 
-@eoriOrAddress(key: String, eori: Option[Eori], address: Option[Address], eoriChange: Call, addressChange: Call, isEoriDefault: Boolean = true) = @{
+@eoriOrAddress(key: String, eori: Option[Eori], address: Option[Address], change: Call, isEoriDefault: Boolean = true) = @{
     EoriOrAddress.rows(
         key = key,
         eori = eori,
@@ -49,8 +49,7 @@
         eoriChangeLabel = s"declaration.summary.parties.$key.eori.change",
         addressLabel = s"declaration.summary.parties.$key.address",
         addressChangeLabel = s"declaration.summary.parties.$key.address.change",
-        eoriChangeController = eoriChange,
-        addressChangeController = addressChange,
+        changeController = change,
         isEoriDefault = isEoriDefault,
         actionsEnabled = actionsEnabled
     )
@@ -114,7 +113,7 @@
             )
         ))
 
-        ++ (Seq.empty :+ declarationData.parties.isEntryIntoDeclarantsRecords.map { isEidr =>
+                ++ (Seq.empty :+ declarationData.parties.isEntryIntoDeclarantsRecords.map { isEidr =>
             SummaryListRow(
                 classes = "is-entry-into-declarants-records-row",
                 key = Key(content = Text(messages("declaration.summary.parties.eidr"))),
@@ -131,7 +130,7 @@
             )
         })
 
-        ++ (Seq.empty :+ declarationData.parties.personPresentingGoodsDetails.map { personPresentingGoods =>
+                ++ (Seq.empty :+ declarationData.parties.personPresentingGoodsDetails.map { personPresentingGoods =>
             SummaryListRow(
                 classes = "person-presenting-goods-row",
                 key = Key(content = Text(messages("declaration.summary.parties.personPresentingGoods"))),
@@ -148,15 +147,14 @@
             )
         })
 
-        ++ declarationData.parties.exporterDetails.map(export => eoriOrAddress(
+                ++ declarationData.parties.exporterDetails.map(export => eoriOrAddress(
             "exporter",
             export.details.eori,
             export.details.address,
-            controllers.declaration.routes.ExporterDetailsController.displayPage(mode),
             controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
-        ++ (Seq.empty :+ declarationData.parties.isExs.map { exs =>
+                ++ (Seq.empty :+ declarationData.parties.isExs.map { exs =>
             SummaryListRow(
                 classes = "isExs-row",
                 key = Key(
@@ -177,7 +175,7 @@
             )
         })
 
-        ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.representingOtherAgent).map(agent =>
+                ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.representingOtherAgent).map(agent =>
             SummaryListRow(
                 classes = "representingAnotherAgent-row",
                 key = Key(
@@ -198,15 +196,14 @@
             )
         ))
 
-        ++ declarationData.parties.representativeDetails.flatMap(_.details).map(details => eoriOrAddress(
+                ++ declarationData.parties.representativeDetails.flatMap(_.details).map(details => eoriOrAddress(
             "representative",
             details.eori,
             details.address,
-            controllers.declaration.routes.RepresentativeEntityController.displayPage(mode),
             controllers.declaration.routes.RepresentativeEntityController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
-        ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.statusCode).map(statusCode =>
+                ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.statusCode).map(statusCode =>
             SummaryListRow(
                 classes = "representationType-row",
                 key = Key(
@@ -227,30 +224,27 @@
             )
         ))
 
-        ++ declarationData.parties.carrierDetails.map(carrier => eoriOrAddress(
+                ++ declarationData.parties.carrierDetails.map(carrier => eoriOrAddress(
             "carrier",
             carrier.details.eori,
             carrier.details.address,
             controllers.declaration.routes.CarrierEoriNumberController.displayPage(mode),
-            controllers.declaration.routes.CarrierDetailsController.displayPage(mode),
             isEoriDefault = false
         )).getOrElse(Seq.empty)
 
-        ++ declarationData.parties.consigneeDetails.map(consignee => eoriOrAddress(
+                ++ declarationData.parties.consigneeDetails.map(consignee => eoriOrAddress(
             "consignee",
             consignee.details.eori,
             consignee.details.address,
             controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
-            controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
             isEoriDefault = false
         )).getOrElse(Seq.empty)
 
-        ++ declarationData.parties.consignorDetails.map(consignor => eoriOrAddress(
+                ++ declarationData.parties.consignorDetails.map(consignor => eoriOrAddress(
             "consignor",
             consignor.details.eori,
             consignor.details.address,
             controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode),
-            controllers.declaration.routes.ConsignorDetailsController.displayPage(mode),
             isEoriDefault = false
         )).getOrElse(Seq.empty),
 
