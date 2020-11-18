@@ -35,227 +35,227 @@
 
 @(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-    @actionItems(item: ActionItem) = @{
-        if(actionsEnabled) Seq(item)
-        else Seq.empty
-    }
+@actionItems(item: ActionItem) = @{
+    if(actionsEnabled) Seq(item)
+    else Seq.empty
+}
 
-    @eoriOrAddress(key: String, eori: Option[Eori], address: Option[Address], change: Call, isEoriDefault: Boolean = true) = @{
-        EoriOrAddress.rows(
-            key = key,
-            eori = eori,
-            address = address,
-            eoriLabel = s"declaration.summary.parties.$key.eori",
-            eoriChangeLabel = s"declaration.summary.parties.$key.eori.change",
-            addressLabel = s"declaration.summary.parties.$key.address",
-            addressChangeLabel = s"declaration.summary.parties.$key.address.change",
-            changeController = change,
-            isEoriDefault = isEoriDefault,
-            actionsEnabled = actionsEnabled
-        )
-    }
+@eoriOrAddress(key: String, eori: Option[Eori], address: Option[Address], change: Call, isEoriDefault: Boolean = true) = @{
+    EoriOrAddress.rows(
+        key = key,
+        eori = eori,
+        address = address,
+        eoriLabel = s"declaration.summary.parties.$key.eori",
+        eoriChangeLabel = s"declaration.summary.parties.$key.eori.change",
+        addressLabel = s"declaration.summary.parties.$key.address",
+        addressChangeLabel = s"declaration.summary.parties.$key.address.change",
+        changeController = change,
+        isEoriDefault = isEoriDefault,
+        actionsEnabled = actionsEnabled
+    )
+}
 
-    @sectionRequired(parties: Parties) = @{
-        parties.exporterDetails.isDefined ||
-                parties.consigneeDetails.isDefined ||
-                parties.declarantDetails.isDefined ||
-                parties.representativeDetails.isDefined ||
-                parties.declarationAdditionalActorsData.isDefined ||
-                parties.declarationHoldersData.isDefined ||
-                parties.carrierDetails.isDefined
-    }
+@sectionRequired(parties: Parties) = @{
+    parties.exporterDetails.isDefined ||
+            parties.consigneeDetails.isDefined ||
+            parties.declarantDetails.isDefined ||
+            parties.representativeDetails.isDefined ||
+            parties.declarationAdditionalActorsData.isDefined ||
+            parties.declarationHoldersData.isDefined ||
+            parties.carrierDetails.isDefined
+}
 
-    @extractAddress(address: Address) = @{
-        Seq(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString("<br>")
-    }
+@extractAddress(address: Address) = @{
+    Seq(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString("<br>")
+}
 
-    @declarantEori(declarant: DeclarantDetails) = {
-        <dl class="govuk-summary-list govuk-!-margin-bottom-0">
-            <div class="govuk-summary-list__row declarant-eori-row">
-                <dt class="govuk-summary-list__key">
-                @messages("declaration.summary.parties.declarant.eori")
-                </dt>
-                <dd class="govuk-summary-list__value">
-                @declarant.details.eori.map(_.value).getOrElse("")
-                </dd>
-                <dd class="govuk-summary-list__actions"></dd>
-            </div>
-        </dl>
-    }
+@declarantEori(declarant: DeclarantDetails) = {
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+        <div class="govuk-summary-list__row declarant-eori-row">
+            <dt class="govuk-summary-list__key">
+            @messages("declaration.summary.parties.declarant.eori")
+            </dt>
+            <dd class="govuk-summary-list__value">
+            @declarant.details.eori.map(_.value).getOrElse("")
+            </dd>
+            <dd class="govuk-summary-list__actions"></dd>
+        </div>
+    </dl>
+}
 
-    @if(sectionRequired(declarationData.parties)) {
+@if(sectionRequired(declarationData.parties)) {
 
-        <h2 class="govuk-heading-m">Parties</h2>
+    <h2 class="govuk-heading-m">Parties</h2>
 
-        @declarationData.parties.declarantDetails.map(declarant =>
-            declarantEori(declarant)
-        )
-        @summaryList("declaration-parties-summary", None,
+    @declarationData.parties.declarantDetails.map(declarant =>
+        declarantEori(declarant)
+    )
+    @summaryList("declaration-parties-summary", None,
 
-            (Seq.empty :+ declarationData.parties.declarantIsExporter.map(isExporter =>
-                SummaryListRow(
-                    classes = "declarantIsExporter-row",
-                    key = Key(
-                        content = Text(messages("declaration.summary.parties.declarantIsExporter"))
-                    ),
-                    value = Value(
-                        content = Text(messages(s"declaration.summary.parties.declarantIsExporter.${isExporter.answer.toLowerCase}"))
-                    ),
-                    actions = Some(Actions(
-                        items = actionItems(
-                            actionItem(
-                                href = controllers.declaration.routes.DeclarantExporterController.displayPage(mode).url,
-                                content = HtmlContent(linkContent(messages("site.change"))),
-                                visuallyHiddenText = Some(messages("declaration.summary.parties.declarantIsExporter.change"))
-                            )
+        (Seq.empty :+ declarationData.parties.declarantIsExporter.map(isExporter =>
+            SummaryListRow(
+                classes = "declarantIsExporter-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.declarantIsExporter"))
+                ),
+                value = Value(
+                    content = Text(messages(s"declaration.summary.parties.declarantIsExporter.${isExporter.answer.toLowerCase}"))
+                ),
+                actions = Some(Actions(
+                    items = actionItems(
+                        actionItem(
+                            href = controllers.declaration.routes.DeclarantExporterController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.declarantIsExporter.change"))
                         )
-                    ))
-                )
-            ))
+                    )
+                ))
+            )
+        ))
 
-                    ++ (Seq.empty :+ declarationData.parties.isEntryIntoDeclarantsRecords.map { isEidr =>
-                SummaryListRow(
-                    classes = "is-entry-into-declarants-records-row",
-                    key = Key(content = Text(messages("declaration.summary.parties.eidr"))),
-                    value = Value(content = Text(messages(s"declaration.summary.parties.eidr.${isEidr.answer.toLowerCase}"))),
-                    actions = Some(Actions(
-                        items = actionItems(
-                            actionItem(
-                                href = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage(mode).url,
-                                content = HtmlContent(linkContent(messages("site.change"))),
-                                visuallyHiddenText = Some(messages("declaration.summary.parties.eidr.change"))
-                            )
+                ++ (Seq.empty :+ declarationData.parties.isEntryIntoDeclarantsRecords.map { isEidr =>
+            SummaryListRow(
+                classes = "is-entry-into-declarants-records-row",
+                key = Key(content = Text(messages("declaration.summary.parties.eidr"))),
+                value = Value(content = Text(messages(s"declaration.summary.parties.eidr.${isEidr.answer.toLowerCase}"))),
+                actions = Some(Actions(
+                    items = actionItems(
+                        actionItem(
+                            href = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.eidr.change"))
                         )
-                    ))
-                )
-            })
+                    )
+                ))
+            )
+        })
 
-                    ++ (Seq.empty :+ declarationData.parties.personPresentingGoodsDetails.map { personPresentingGoods =>
-                SummaryListRow(
-                    classes = "person-presenting-goods-row",
-                    key = Key(content = Text(messages("declaration.summary.parties.personPresentingGoods"))),
-                    value = Value(content = Text(personPresentingGoods.eori.value)),
-                    actions = Some(Actions(
-                        items = actionItems(
-                            actionItem(
-                                href = controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode).url,
-                                content = HtmlContent(linkContent(messages("site.change"))),
-                                visuallyHiddenText = Some(messages("declaration.summary.parties.personPresentingGoods.change"))
-                            )
+                ++ (Seq.empty :+ declarationData.parties.personPresentingGoodsDetails.map { personPresentingGoods =>
+            SummaryListRow(
+                classes = "person-presenting-goods-row",
+                key = Key(content = Text(messages("declaration.summary.parties.personPresentingGoods"))),
+                value = Value(content = Text(personPresentingGoods.eori.value)),
+                actions = Some(Actions(
+                    items = actionItems(
+                        actionItem(
+                            href = controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.personPresentingGoods.change"))
                         )
-                    ))
-                )
-            })
+                    )
+                ))
+            )
+        })
 
-                    ++ declarationData.parties.exporterDetails.map(export => eoriOrAddress(
-                "exporter",
-                export.details.eori,
-                export.details.address,
-                controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
-            )).getOrElse(Seq.empty)
+                ++ declarationData.parties.exporterDetails.map(export => eoriOrAddress(
+            "exporter",
+            export.details.eori,
+            export.details.address,
+            controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
+        )).getOrElse(Seq.empty)
 
-                    ++ (Seq.empty :+ declarationData.parties.isExs.map { exs =>
-                SummaryListRow(
-                    classes = "isExs-row",
-                    key = Key(
-                        content = Text(messages("declaration.summary.parties.exs"))
-                    ),
-                    value = Value(
-                        content = Text(exs.isExs)
-                    ),
-                    actions = Some(Actions(
-                        items = actionItems(
-                            actionItem(
-                                href = controllers.declaration.routes.IsExsController.displayPage(mode).url,
-                                content = HtmlContent(linkContent(messages("site.change"))),
-                                visuallyHiddenText = Some(messages("declaration.summary.parties.exs.change"))
-                            )
+                ++ (Seq.empty :+ declarationData.parties.isExs.map { exs =>
+            SummaryListRow(
+                classes = "isExs-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.exs"))
+                ),
+                value = Value(
+                    content = Text(exs.isExs)
+                ),
+                actions = Some(Actions(
+                    items = actionItems(
+                        actionItem(
+                            href = controllers.declaration.routes.IsExsController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.exs.change"))
                         )
-                    ))
-                )
-            })
+                    )
+                ))
+            )
+        })
 
-                    ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.representingOtherAgent).map(agent =>
-                SummaryListRow(
-                    classes = "representingAnotherAgent-row",
-                    key = Key(
-                        content = Text(messages("declaration.summary.parties.representative.agent"))
-                    ),
-                    value = Value(
-                        content = Text(agent.map(answer => messages(s"declaration.summary.parties.representative.agent.${answer.toLowerCase}")).getOrElse(""))
-                    ),
-                    actions = Some(Actions(
-                        items = actionItems(
-                            actionItem(
-                                href = controllers.declaration.routes.RepresentativeAgentController.displayPage(mode).url,
-                                content = HtmlContent(linkContent(messages("site.change"))),
-                                visuallyHiddenText = Some(messages("declaration.summary.parties.representative.agent.change"))
-                            )
+                ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.representingOtherAgent).map(agent =>
+            SummaryListRow(
+                classes = "representingAnotherAgent-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.representative.agent"))
+                ),
+                value = Value(
+                    content = Text(agent.map(answer => messages(s"declaration.summary.parties.representative.agent.${answer.toLowerCase}")).getOrElse(""))
+                ),
+                actions = Some(Actions(
+                    items = actionItems(
+                        actionItem(
+                            href = controllers.declaration.routes.RepresentativeAgentController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.representative.agent.change"))
                         )
-                    ))
-                )
-            ))
+                    )
+                ))
+            )
+        ))
 
-                    ++ declarationData.parties.representativeDetails.flatMap(_.details).map(details => eoriOrAddress(
-                "representative",
-                details.eori,
-                details.address,
-                controllers.declaration.routes.RepresentativeEntityController.displayPage(mode)
-            )).getOrElse(Seq.empty)
+                ++ declarationData.parties.representativeDetails.flatMap(_.details).map(details => eoriOrAddress(
+            "representative",
+            details.eori,
+            details.address,
+            controllers.declaration.routes.RepresentativeEntityController.displayPage(mode)
+        )).getOrElse(Seq.empty)
 
-                    ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.statusCode).map(statusCode =>
-                SummaryListRow(
-                    classes = "representationType-row",
-                    key = Key(
-                        content = Text(messages("declaration.summary.parties.representative.type"))
-                    ),
-                    value = Value(
-                        content = Text(statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code")).getOrElse(""))
-                    ),
-                    actions = Some(Actions(
-                        items = actionItems(
-                            actionItem(
-                                href = controllers.declaration.routes.RepresentativeStatusController.displayPage(mode).url,
-                                content = HtmlContent(linkContent(messages("site.change"))),
-                                visuallyHiddenText = Some(messages("declaration.summary.parties.representative.type.change"))
-                            )
+                ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.statusCode).map(statusCode =>
+            SummaryListRow(
+                classes = "representationType-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.representative.type"))
+                ),
+                value = Value(
+                    content = Text(statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code")).getOrElse(""))
+                ),
+                actions = Some(Actions(
+                    items = actionItems(
+                        actionItem(
+                            href = controllers.declaration.routes.RepresentativeStatusController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.representative.type.change"))
                         )
-                    ))
-                )
-            ))
+                    )
+                ))
+            )
+        ))
 
-                    ++ declarationData.parties.carrierDetails.map(carrier => eoriOrAddress(
-                "carrier",
-                carrier.details.eori,
-                carrier.details.address,
-                controllers.declaration.routes.CarrierEoriNumberController.displayPage(mode),
-                isEoriDefault = false
-            )).getOrElse(Seq.empty)
+                ++ declarationData.parties.carrierDetails.map(carrier => eoriOrAddress(
+            "carrier",
+            carrier.details.eori,
+            carrier.details.address,
+            controllers.declaration.routes.CarrierEoriNumberController.displayPage(mode),
+            isEoriDefault = false
+        )).getOrElse(Seq.empty)
 
-                    ++ declarationData.parties.consigneeDetails.map(consignee => eoriOrAddress(
-                "consignee",
-                consignee.details.eori,
-                consignee.details.address,
-                controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
-                isEoriDefault = false
-            )).getOrElse(Seq.empty)
+                ++ declarationData.parties.consigneeDetails.map(consignee => eoriOrAddress(
+            "consignee",
+            consignee.details.eori,
+            consignee.details.address,
+            controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
+            isEoriDefault = false
+        )).getOrElse(Seq.empty)
 
-                    ++ declarationData.parties.consignorDetails.map(consignor => eoriOrAddress(
-                "consignor",
-                consignor.details.eori,
-                consignor.details.address,
-                controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode),
-                isEoriDefault = false
-            )).getOrElse(Seq.empty),
+                ++ declarationData.parties.consignorDetails.map(consignor => eoriOrAddress(
+            "consignor",
+            consignor.details.eori,
+            consignor.details.address,
+            controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode),
+            isEoriDefault = false
+        )).getOrElse(Seq.empty),
 
-            classes = "govuk-!-margin-bottom-0"
-        )
+        classes = "govuk-!-margin-bottom-0"
+    )
 
-        @declarationData.parties.declarationAdditionalActorsData.map(data =>
-            additionalActorsSection(mode, data.actors, actionsEnabled)
-        )
+    @declarationData.parties.declarationAdditionalActorsData.map(data =>
+        additionalActorsSection(mode, data.actors, actionsEnabled)
+    )
 
-        @declarationData.parties.declarationHoldersData.map(data =>
-            holdersSection(mode, data.holders, actionsEnabled)
-        )
-    }
+    @declarationData.parties.declarationHoldersData.map(data =>
+        holdersSection(mode, data.holders, actionsEnabled)
+    )
+}
