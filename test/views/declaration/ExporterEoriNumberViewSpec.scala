@@ -22,9 +22,10 @@ import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.exporter.ExporterEoriNumber
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.Mode
 import models.declaration.Parties
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.data.Form
@@ -45,8 +46,8 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with 
   ): Document =
     page(mode, form)(request, messages)
 
-  "ExporterEoriNumber Eori Number View" should {
-    onEveryDeclarationJourney() { implicit request =>
+  onEveryDeclarationJourney() { implicit request =>
+    "ExporterEoriNumber Eori Number View" should {
       val view = createView()
       "display answer input" in {
         val exporterEoriNumber = ExporterEoriNumber.form().fill(ExporterEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes))
@@ -76,33 +77,6 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with 
       "display eori question" in {
         view.getElementsByClass("govuk-label--m") must containMessageForElements("declaration.exporterEori.eori.label")
         view.getElementById("eori").attr("value") mustBe empty
-      }
-
-      "display 'Back' button that links to the correct page" in {
-        request.declarationType match {
-          case DeclarationType.CLEARANCE => {
-            val cachedParties = Parties(
-              isEntryIntoDeclarantsRecords = Some(YesNoAnswer("Yes")),
-              consignorDetails =
-                Some(ConsignorDetails(EntityDetails(None, address = Some(Address("fullName", "addressLine", "townOrCity", "postCode", "country")))))
-            )
-            val req = journeyRequest(request.cacheModel.copy(parties = cachedParties))
-
-            val view = createView()(req)
-            val backButton = view.getElementById("back-link")
-
-            backButton must containMessage("site.back")
-            backButton.getElementById("back-link") must haveHref(
-              controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(Mode.Normal)
-            )
-          }
-          case _ => {
-            val backButton = view.getElementById("back-link")
-
-            backButton must containMessage("site.back")
-            backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarantExporterController.displayPage(Mode.Normal))
-          }
-        }
       }
 
       "display 'Save and continue' button" in {
@@ -136,6 +110,34 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with 
           view must containErrorElementWithMessageKey("declaration.eori.error.format")
         }
       }
+    }
+  }
+
+  onJourney(CLEARANCE) { implicit request =>
+    "display 'Back' button that links to the correct page" in {
+      val cachedParties = Parties(
+        isEntryIntoDeclarantsRecords = Some(YesNoAnswer("Yes")),
+        consignorDetails =
+          Some(ConsignorDetails(EntityDetails(None, address = Some(Address("fullName", "addressLine", "townOrCity", "postCode", "country")))))
+      )
+      val req = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+      val view = createView()(req)
+      val backButton = view.getElementById("back-link")
+
+      backButton must containMessage("site.back")
+      backButton.getElementById("back-link") must haveHref(
+        controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(Mode.Normal)
+      )
+    }
+  }
+
+  onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+    "display 'Back' button that links to the correct page" in {
+      val backButton = createView().getElementById("back-link")
+
+      backButton must containMessage("site.back")
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarantExporterController.displayPage(Mode.Normal))
     }
   }
 }

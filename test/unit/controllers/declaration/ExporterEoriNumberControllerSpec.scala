@@ -21,6 +21,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -170,7 +171,6 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         checkViewInteractions()
       }
     }
-
     "should return a 303 (SEE_OTHER)" when {
       "'No' is selected" in {
 
@@ -185,7 +185,11 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         checkViewInteractions(0)
         theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(None, None))))
       }
+    }
+  }
 
+  onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>
+    "should return a 303 (SEE_OTHER)" when {
       "'Yes' is selected" in {
 
         withNewCaching(request.cacheModel)
@@ -196,11 +200,26 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        if (request.declarationType == DeclarationType.CLEARANCE) {
-          thePageNavigatedTo mustBe controllers.declaration.routes.IsExsController.displayPage()
-        } else {
-          thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
-        }
+        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
+        checkViewInteractions(0)
+        theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(eoriInput, None))))
+      }
+    }
+  }
+
+  onJourney(CLEARANCE) { request =>
+    "should return a 303 (SEE_OTHER)" when {
+      "'Yes' is selected" in {
+
+        withNewCaching(request.cacheModel)
+
+        val eoriInput = Some(Eori("GB123456789000"))
+        val correctForm = Json.toJson(ExporterEoriNumber(eori = eoriInput, YesNoAnswers.yes))
+
+        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.IsExsController.displayPage()
         checkViewInteractions(0)
         theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(eoriInput, None))))
       }
