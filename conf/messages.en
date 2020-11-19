@@ -296,6 +296,12 @@ declaration.exporter-detail.title = Who is the exporter?
 declaration.exporter-detail.title.hint = Enter the exporter’s EORI number or name and business address.
 declaration.exporter-detail.addressHeading = Exporter’s name and address
 
+declaration.exporterEori.title = Does the exporter have an EORI number?
+declaration.exporterEori.eori.label = EORI number
+declaration.exporterEori.help-item1 = Go to data element 3/2 Exporter Identification Number in the {0}
+declaration.exporterEori.hasEori.empty = Select if the exporter has an EORI number.
+
+
 declaration.exs.title = Do you need to give us safety and security information?
 declaration.exs.hint = This is also known as an exit summary declaration (EXS).
 declaration.exs.error = Select yes if you are the declaring an EXS.

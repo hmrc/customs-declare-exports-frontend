@@ -27,6 +27,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.Add
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
+import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.{Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus

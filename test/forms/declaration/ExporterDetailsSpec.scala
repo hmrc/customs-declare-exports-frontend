@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.declaration.exporter.ExporterDetails
 import play.api.libs.json.{JsObject, JsValue}
 
 object ExporterDetailsSpec {
