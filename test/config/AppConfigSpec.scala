@@ -31,7 +31,7 @@ class AppConfigSpec extends UnitSpec {
 
   private val environment = Environment.simple()
 
-  private val validAppConfig: Config =
+  private val validConfig: Config =
     ConfigFactory.parseString(
       """
         |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
@@ -61,7 +61,7 @@ class AppConfigSpec extends UnitSpec {
         |microservice.services.features.welsh-translation=false
         |microservice.services.features.use-improved-error-messages=true
         |microservice.services.auth.port=9988
-        |microservice.services.customs-declare-exports.host=localhoste
+        |microservice.services.customs-declare-exports.host=localhost
         |microservice.services.customs-declare-exports.port=9875
         |microservice.services.customs-declare-exports.submit-declaration=/declaration
         |microservice.services.customs-declare-exports.declarations=/v2/declaration
@@ -73,66 +73,67 @@ class AppConfigSpec extends UnitSpec {
         |microservice.services.customs-declare-exports-movements.host=localhostm
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
+        |microservice.services.contact-frontend.host=localhost
+        |microservice.services.contact-frontend.port=9250
+        |microservice.services.contact-frontend.serviceId=DeclarationServiceId
         |mongodb.timeToLive=24h
 
       """.stripMargin
     )
-  private val emptyAppConfig: Config = ConfigFactory.empty()
-  val validServicesConfiguration = Configuration(validAppConfig)
-  private val emptyServicesConfiguration = Configuration(emptyAppConfig)
+  private val emptyConfig: Config = ConfigFactory.empty()
+  val validServicesConfiguration = Configuration(validConfig)
+  private val emptyServicesConfiguration = Configuration(emptyConfig)
 
   private def servicesConfig(conf: Configuration) = new ServicesConfig(conf)
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
 
-  val validConfigService: AppConfig = appConfig(validServicesConfiguration)
-  val emptyConfigService: AppConfig = appConfig(emptyServicesConfiguration)
+  val validAppConfig: AppConfig = appConfig(validServicesConfiguration)
+  val emptyAppConfig: AppConfig = appConfig(emptyServicesConfiguration)
 
   "The config" should {
 
     "have analytics token" in {
-      validConfigService.analyticsToken must be("N/A")
+      validAppConfig.analyticsToken must be("N/A")
     }
 
     "have analytics host" in {
-      validConfigService.analyticsHost must be("localhostGoogle")
+      validAppConfig.analyticsHost must be("localhostGoogle")
     }
 
     "have gtm container" in {
-      validConfigService.gtmContainer must be("a")
+      validAppConfig.gtmContainer must be("a")
     }
 
     "have auth URL" in {
-      validConfigService.authUrl must be("http://localhostauth:9988")
+      validAppConfig.authUrl must be("http://localhostauth:9988")
     }
 
     "have login URL" in {
-      validConfigService.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
+      validAppConfig.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
     }
 
     "have customsDeclarationsGoodsTakenOutOfEu URL" in {
-      validConfigService.customsDeclarationsGoodsTakenOutOfEuUrl must be(
-        "https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
-      )
+      validAppConfig.customsDeclarationsGoodsTakenOutOfEuUrl must be("https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu")
     }
 
     "have commodityCodes URL" in {
-      validConfigService.commodityCodesUrl must be("https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports")
+      validAppConfig.commodityCodesUrl must be("https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports")
     }
 
     "have relevantLicenses URL" in {
-      validConfigService.relevantLicensesUrl must be("https://www.gov.uk/starting-to-export/licences")
+      validAppConfig.relevantLicensesUrl must be("https://www.gov.uk/starting-to-export/licences")
     }
 
     "have serviceAvailability URL" in {
-      validConfigService.serviceAvailabilityUrl must be("https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues")
+      validAppConfig.serviceAvailabilityUrl must be("https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues")
     }
 
     "have customsMovementsFrontend URL" in {
-      validConfigService.customsMovementsFrontendUrl must be("http://url-to-movements-frontend/start")
+      validAppConfig.customsMovementsFrontendUrl must be("http://url-to-movements-frontend/start")
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {
-      val choices = validConfigService.availableJourneys()
+      val choices = validAppConfig.availableJourneys()
       choices.size must be(3)
 
       choices must contain(Choice.AllowedChoiceValues.CreateDec)
@@ -141,7 +142,7 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "load the Declaration options when list-of-available-declarations is defined" in {
-      val choices = validConfigService.availableDeclarations()
+      val choices = validAppConfig.availableDeclarations()
       choices.size must be(2)
 
       choices must contain(DeclarationType.STANDARD.toString)
@@ -149,144 +150,173 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have login continue URL" in {
-      validConfigService.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
+      validAppConfig.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
     }
 
     "have language translation enabled field" in {
-      validConfigService.languageTranslationEnabled must be(false)
+      validAppConfig.languageTranslationEnabled must be(false)
     }
 
     "have improved error messages feature toggle set to false if not defined" in {
-      emptyConfigService.isUsingImprovedErrorMessages must be(false)
+      emptyAppConfig.isUsingImprovedErrorMessages must be(false)
     }
 
     "have improved error messages feature toggle set to true if defined" in {
-      validConfigService.isUsingImprovedErrorMessages must be(true)
+      validAppConfig.isUsingImprovedErrorMessages must be(true)
     }
 
     "have language map with English" in {
-      validConfigService.languageMap.get("english").isDefined must be(true)
+      validAppConfig.languageMap.get("english").isDefined must be(true)
     }
 
     "have language map with Cymraeg" in {
-      validConfigService.languageMap.get("cymraeg").isDefined must be(true)
+      validAppConfig.languageMap.get("cymraeg").isDefined must be(true)
     }
 
-    "have customs declare exports" in {
-      validConfigService.customsDeclareExports must be("http://localhoste:9875")
+    "have customs declare exports URL" in {
+      validAppConfig.customsDeclareExportsBaseUrl must be("http://localhost:9875")
     }
 
     "have submit declaration URL" in {
-      validConfigService.declarations must be("/v2/declaration")
+      validAppConfig.declarations must be("/v2/declaration")
     }
 
     "have cancel declaration URL" in {
-      validConfigService.cancelDeclaration must be("/cancellations")
+      validAppConfig.cancelDeclaration must be("/cancellations")
     }
 
     "have ead URL" in {
-      validConfigService.fetchMrnStatus must be("/ead")
+      validAppConfig.fetchMrnStatus must be("/ead")
     }
 
     "have fetch notification URL" in {
-      validConfigService.fetchNotifications must be("/notifications")
+      validAppConfig.fetchNotifications must be("/notifications")
     }
 
     "have fetchSubmissions URL" in {
-      validConfigService.fetchSubmissions must be("/submissions")
+      validAppConfig.fetchSubmissions must be("/submissions")
+    }
+
+//    "have contact-frontend URL" in {
+//      validAppConfig.contactFrontendBaseUrl must be("http://localhost:9250")
+//    }
+//
+//    "have serviceId for contact-frontend" in {
+//      validAppConfig.contactFrontendServiceId must be("DeclarationServiceId")
+//    }
+
+    "have link for 'give feedback'" in {
+      validAppConfig.giveFeedbackLink must be("http://localhost:9250/contact/beta-feedback-unauthenticated?service=DeclarationServiceId")
     }
 
     "have countryCodesJsonFilename" in {
-      validConfigService.countryCodesJsonFilename must be("code-lists/location-autocomplete-canonical-list.json")
+      validAppConfig.countryCodesJsonFilename must be("code-lists/location-autocomplete-canonical-list.json")
     }
 
     "have countriesCsvFilename" in {
-      validConfigService.countriesCsvFilename must be("code-lists/mdg-country-codes.csv")
+      validAppConfig.countriesCsvFilename must be("code-lists/mdg-country-codes.csv")
     }
 
     "have ttl lifetime" in {
-      validConfigService.cacheTimeToLive must be(FiniteDuration(24, "h"))
+      validAppConfig.cacheTimeToLive must be(FiniteDuration(24, "h"))
     }
 
     "have draft lifetime" in {
-      validConfigService.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
+      validAppConfig.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
     }
   }
 
   "empty Choice options when list-of-available-journeys is not defined" in {
-    emptyConfigService.availableJourneys().size must be(1)
-    emptyConfigService.availableJourneys() must contain(Choice.AllowedChoiceValues.Submissions)
+    emptyAppConfig.availableJourneys().size must be(1)
+    emptyAppConfig.availableJourneys() must contain(Choice.AllowedChoiceValues.Submissions)
   }
 
   "empty Declaration type options when list-of-available-declarations is not defined" in {
-    emptyConfigService.availableDeclarations().size must be(1)
-    emptyConfigService.availableDeclarations() must contain(DeclarationType.STANDARD.toString)
+    emptyAppConfig.availableDeclarations().size must be(1)
+    emptyAppConfig.availableDeclarations() must contain(DeclarationType.STANDARD.toString)
   }
 
-  "throw an exception when gtm.container is missing" in {
-    intercept[Exception](emptyConfigService.gtmContainer).getMessage must be("Could not find config key 'tracking-consent-frontend.gtm.container'")
-  }
+  "throw an exception" when {
 
-  "throw an exception when google-analytics.host is missing" in {
-    intercept[Exception](emptyConfigService.analyticsHost).getMessage must be("Missing configuration key: google-analytics.host")
-  }
+    "gtm.container is missing" in {
+      intercept[Exception](emptyAppConfig.gtmContainer).getMessage must be("Could not find config key 'tracking-consent-frontend.gtm.container'")
+    }
 
-  "throw an exception when google-analytics.token is missing" in {
-    intercept[Exception](emptyConfigService.analyticsToken).getMessage must be("Missing configuration key: google-analytics.token")
-  }
+    "google-analytics.host is missing" in {
+      intercept[Exception](emptyAppConfig.analyticsHost).getMessage must be("Missing configuration key: google-analytics.host")
+    }
 
-  "throw an exception when auth.host is missing" in {
-    intercept[Exception](emptyConfigService.authUrl).getMessage must be("Could not find config key 'auth.host'")
-  }
+    "google-analytics.token is missing" in {
+      intercept[Exception](emptyAppConfig.analyticsToken).getMessage must be("Missing configuration key: google-analytics.token")
+    }
 
-  "throw an exception when urls.login is missing" in {
-    intercept[Exception](emptyConfigService.loginUrl).getMessage must be("Missing configuration key: urls.login")
-  }
+    "auth.host is missing" in {
+      intercept[Exception](emptyAppConfig.authUrl).getMessage must be("Could not find config key 'auth.host'")
+    }
 
-  "throw an exception when urls.loginContinue is missing" in {
-    intercept[Exception](emptyConfigService.loginContinueUrl).getMessage must be("Missing configuration key: urls.loginContinue")
-  }
+    "urls.login is missing" in {
+      intercept[Exception](emptyAppConfig.loginUrl).getMessage must be("Missing configuration key: urls.login")
+    }
 
-  "throw an exception when customs-declare-exports.host is missing" in {
-    intercept[Exception](emptyConfigService.customsDeclareExports).getMessage must be("Could not find config key 'customs-declare-exports.host'")
-  }
+    "urls.loginContinue is missing" in {
+      intercept[Exception](emptyAppConfig.loginContinueUrl).getMessage must be("Missing configuration key: urls.loginContinue")
+    }
 
-  "throw an exception when submit declaration uri is missing" in {
-    intercept[Exception](emptyConfigService.declarations).getMessage must be(
-      "Missing configuration for Customs Declarations Exports submit declaration URI"
-    )
-  }
+    "customs-declare-exports.host is missing" in {
+      intercept[Exception](emptyAppConfig.customsDeclareExportsBaseUrl).getMessage must be("Could not find config key 'customs-declare-exports.host'")
+    }
 
-  "throw an exception when cancel declaration uri is missing" in {
-    intercept[Exception](emptyConfigService.cancelDeclaration).getMessage must be(
-      "Missing configuration for Customs Declaration Export cancel declaration URI"
-    )
-  }
+    "submit declaration uri is missing" in {
+      intercept[Exception](emptyAppConfig.declarations).getMessage must be(
+        "Missing configuration for Customs Declarations Exports submit declaration URI"
+      )
+    }
 
-  "throw an exception when fetch mrn status uri is missing" in {
-    intercept[Exception](emptyConfigService.fetchMrnStatus).getMessage must be(
-      "Missing configuration for Customs Declaration Export fetch mrn status URI"
-    )
-  }
+    "cancel declaration uri is missing" in {
+      intercept[Exception](emptyAppConfig.cancelDeclaration).getMessage must be(
+        "Missing configuration for Customs Declaration Export cancel declaration URI"
+      )
+    }
 
-  "throw an exception when fetchSubmissions uri is missing" in {
-    intercept[Exception](emptyConfigService.fetchSubmissions).getMessage must be(
-      "Missing configuration for Customs Declaration Exports fetch submission URI"
-    )
-  }
+    "fetch mrn status uri is missing" in {
+      intercept[Exception](emptyAppConfig.fetchMrnStatus).getMessage must be(
+        "Missing configuration for Customs Declaration Export fetch mrn status URI"
+      )
+    }
 
-  "throw an exception when fetch notifications uri is missing" in {
-    intercept[Exception](emptyConfigService.fetchNotifications).getMessage must be(
-      "Missing configuration for Customs Declarations Exports fetch notification URI"
-    )
-  }
+    "fetchSubmissions uri is missing" in {
+      intercept[Exception](emptyAppConfig.fetchSubmissions).getMessage must be(
+        "Missing configuration for Customs Declaration Exports fetch submission URI"
+      )
+    }
 
-  "throw an exception when countryCodesJsonFilename is missing" in {
-    intercept[Exception](emptyConfigService.countryCodesJsonFilename).getMessage must be("Missing configuration key: countryCodesJsonFilename")
-  }
+    "fetch notifications uri is missing" in {
+      intercept[Exception](emptyAppConfig.fetchNotifications).getMessage must be(
+        "Missing configuration for Customs Declarations Exports fetch notification URI"
+      )
+    }
 
-  "throw an exception when countryCodesCsvFilename is missing" in {
-    intercept[Exception](emptyConfigService.countriesCsvFilename).getMessage must be("Missing configuration key: countryCodesCsvFilename")
+//    "contact-frontend URL is missing" in {
+//      intercept[Exception](emptyAppConfig.contactFrontendBaseUrl).getMessage must be("Could not find config key 'contact-frontend.host'")
+//    }
+//
+//    "serviceId for contact-frontend is missing" in {
+//      intercept[Exception](emptyAppConfig.contactFrontendServiceId).getMessage must be(
+//        "Missing configuration key: microservice.services.contact-frontend.serviceId"
+//      )
+//    }
+
+    "link for 'give feedback' is missing" in {
+      intercept[Exception](emptyAppConfig.giveFeedbackLink).getMessage must be("Could not find config key 'contact-frontend.host'")
+    }
+
+    "countryCodesJsonFilename is missing" in {
+      intercept[Exception](emptyAppConfig.countryCodesJsonFilename).getMessage must be("Missing configuration key: countryCodesJsonFilename")
+    }
+
+    "countryCodesCsvFilename is missing" in {
+      intercept[Exception](emptyAppConfig.countriesCsvFilename).getMessage must be("Missing configuration key: countryCodesCsvFilename")
+    }
   }
 
 }

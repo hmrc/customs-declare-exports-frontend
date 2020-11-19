@@ -59,7 +59,14 @@ class AppConfig @Inject()(
   lazy val classificationHelpUrl = loadConfig("urls.classificationHelp")
   lazy val ecicsToolUrl = loadConfig("urls.ecicsTool")
 
-  lazy val customsDeclareExports = servicesConfig.baseUrl("customs-declare-exports")
+  lazy val customsDeclareExportsBaseUrl = servicesConfig.baseUrl("customs-declare-exports")
+
+  lazy val giveFeedbackLink = {
+    val contactFrontendBaseUrl = servicesConfig.baseUrl("contact-frontend")
+    val contactFrontendServiceId = loadConfig("microservice.services.contact-frontend.serviceId")
+
+    s"$contactFrontendBaseUrl/contact/beta-feedback-unauthenticated?service=$contactFrontendServiceId"
+  }
 
   lazy val declarations = servicesConfig.getConfString(
     "customs-declare-exports.declarations",

@@ -14,20 +14,24 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(govukPhaseBanner: GovukPhaseBanner)
+@this(govukPhaseBanner: GovukPhaseBanner, appConfig: AppConfig)
 
 @(phase: String)(implicit request: Request[_], messages: Messages)
 
+@protocol = @{ if(request.secure) "https" else "http" }
+@betaFeedbackUrl = @{s"${appConfig.giveFeedbackLink}&backUrl=$protocol://${request.host}${request.uri}"}
 
-@link = {<a href="todo">@messages("feedback.link")</a>}
+@link = {<a href="@betaFeedbackUrl">@messages("feedback.link")</a>}
+
 @feedbackBanner = {
- @Html(messages("feedback", link))
+  @Html(messages("feedback", link))
 }
 
 @govukPhaseBanner(PhaseBanner(
-    tag = Some(Tag(content = Text(phase))),
-    content = HtmlContent(feedbackBanner),
-    classes ="govuk-!-display-none-print"
+  tag = Some(Tag(content = Text(phase))),
+  content = HtmlContent(feedbackBanner),
+  classes ="govuk-!-display-none-print"
 ))
