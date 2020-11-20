@@ -18,7 +18,6 @@ package forms.declaration.exporter
 
 import forms.DeclarationPage
 import forms.declaration.EntityDetails
-import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsDeclaration
 import play.api.data.{Form, Forms}

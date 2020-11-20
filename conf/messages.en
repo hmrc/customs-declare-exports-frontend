@@ -334,12 +334,12 @@ declaration.consignorAddress.help-item1 = Go to data element 3/7 Consignor in th
 
 declaration.carrierEori.title = Does the carrier have an EORI number?
 declaration.carrierEori.eori.label = Carrier’s EORI number
-declaration.carrierEori.help-item1 = Carrier’s EORI number, go to data element 3/32 Carrier Identification Number
+declaration.carrierEori.help-item1 = Go to data element 3/32 Carrier Identification Number in the {0}
 declaration.carrierEori.hasEori.empty = Select if the carrier has an EORI number.
 declaration.carrier.error.addressAndEori = Enter only one of EORI or address.
 
 declaration.carrierAddress.title = What is the carrier’s name and business address?
-declaration.carrierAddress.help-item1 = Carrier’s name and business address, go to data element 3/31 Carrier Name and Address
+declaration.carrierAddress.help-item1 = Go to data element 3/31 Carrier Name and Address in the {0}
 
 declaration.representative.agent.title = Are you completing this declaration on behalf of another agent?
 declaration.representative.agent.error = Select yes if you are completing this declaration on behalf of another agent.

@@ -155,7 +155,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
-          thePageNavigatedTo mustBe controllers.declaration.routes.ExporterDetailsController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.ExporterEoriNumberController.displayPage()
         }
 
         "call Cache to update it" in {
