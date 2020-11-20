@@ -27,19 +27,14 @@
 
 @this(
   govukLayout: gdsMainTemplate,
-  govukFieldset: GovukFieldset,
   sectionHeader: sectionHeader,
+  pageTitle: pageTitle,
+  paragraphBody: paragraphBody,
   addButton: addButton,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
-
-@pageHint = {
-  <span class="govuk-hint">
-    @messages("declaration.itemsAdd.title.hint")
-  </span>
-}
 
 @saveAsDraftButton = {
   <p class="govuk-body">
@@ -54,17 +49,10 @@
   @formHelper(action = routes.ItemsSummaryController.addFirstItem(mode), 'autoComplete -> "off") {
 
     @sectionHeader(messages("declaration.section.5"))
-    @govukFieldset(Fieldset(
-      legend = Some(Legend(
-        content = Text(messages("declaration.itemsAdd.title")),
-        classes = gdsPageLegend,
-        isPageHeading = true
-      )),
-      html = HtmlFormat.fill(immutable.Seq(
-        pageHint,
-        addButton(label = "site.add.item", hiddenLabel = Some(messages("site.add.item"))),
-        saveAsDraftButton
-      ))
-    ))
+    @pageTitle(messages("declaration.itemsAdd.title"))
+    @paragraphBody(messages("declaration.itemsAdd.title.hint"), "govuk-body govuk-hint")
+    @addButton(label = "site.add.item", hiddenLabel = Some(messages("site.add.item")))
+    @saveAsDraftButton
+
   }
 }

@@ -54,7 +54,7 @@ class ItemsAddItemViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
     "display title" in {
 
-      view.getElementsByClass(Styles.gdsPageLegend).first() must containMessage("declaration.itemsAdd.title")
+      view.getElementsByClass("govuk-heading-xl").first() must containMessage("declaration.itemsAdd.title")
     }
 
     "display page hint" in {
