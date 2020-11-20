@@ -43,7 +43,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
     val allLinks = view.getElementsByClass("govuk-link")
 
     val filter = new Predicate[Element] {
-      override def test(elm: Element): Boolean = elm.text().contains("Print") || elm.text().contains("Sign out")
+      override def test(elm: Element): Boolean = elm.text().contains("Print") || elm.text().contains("Sign out") || elm.text().contains("Get help")
     }
     allLinks.removeIf(filter)
     allLinks

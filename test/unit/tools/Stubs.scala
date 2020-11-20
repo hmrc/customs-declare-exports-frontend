@@ -27,8 +27,9 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.govukfrontend.views.html.components
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _, _}
 import uk.gov.hmrc.hmrcfrontend.config.TrackingConsentConfig
-import uk.gov.hmrc.hmrcfrontend.views.html.components.{HmrcBanner, HmrcHeader}
+import uk.gov.hmrc.hmrcfrontend.views.html.components.{HmrcBanner, HmrcHeader, HmrcReportTechnicalIssue}
 import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcTrackingConsentSnippet, TrackingConsentConfig}
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.html.components.gds._
 
@@ -103,6 +104,7 @@ trait Stubs {
   )
 
   val hmrcTrackingConsentSnippet = new HmrcTrackingConsentSnippet(new TrackingConsentConfig(Configuration(minimalConfig)))
+  val hmrcReportTechnicalIssue = new HmrcReportTechnicalIssue()
 
   val govukHeader = new GovukHeader()
   val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner()))
@@ -116,6 +118,8 @@ trait Stubs {
     phaseBanner = pBanner,
     timeoutDialogConfig = timeoutDialogConfig(),
     betaBannerConfig = betaBannerConfig(),
-    hmrcTrackingConsentSnippet = hmrcTrackingConsentSnippet
+    hmrcTrackingConsentSnippet = hmrcTrackingConsentSnippet,
+    hmrcReportTechnicalIssue = hmrcReportTechnicalIssue,
+    appConfig = minimalAppConfig
   )
 }
