@@ -55,7 +55,8 @@ class PersonPresentingGoodsDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(personPresentingGoodsDetailsPage(mode, formWithErrors))),
-        validData => updateCache(validData).map(_ => navigator.continueTo(mode, controllers.declaration.routes.ExporterEoriNumberController.displayPage))
+        validData =>
+          updateCache(validData).map(_ => navigator.continueTo(mode, controllers.declaration.routes.ExporterEoriNumberController.displayPage))
       )
   }
 
