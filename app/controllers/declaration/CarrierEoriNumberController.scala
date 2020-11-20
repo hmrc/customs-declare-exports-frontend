@@ -68,7 +68,7 @@ class CarrierEoriNumberController @Inject()(
       )
   }
 
-  private def nextPage(hasEori: String)(implicit request: JourneyRequest[_]): Mode => Call =
+  private def nextPage(hasEori: String): Mode => Call =
     if (hasEori == YesNoAnswers.yes) {
       controllers.declaration.routes.ConsigneeDetailsController.displayPage
     } else {
