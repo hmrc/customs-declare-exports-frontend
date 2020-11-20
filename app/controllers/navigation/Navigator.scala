@@ -276,7 +276,6 @@ object Navigator {
     case DeclarationHolder        => declarationHolderPreviousPage
     case SupervisingCustomsOffice => supervisingCustomsOfficePreviousPage
     case WarehouseIdentification  => warehouseIdentificationPreviousPage
-    case CarrierEoriNumber        => carrierEoriNumberPreviousPage
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -287,6 +286,7 @@ object Navigator {
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case CarrierEoriNumber   => carrierEoriNumberClearancePreviousPage
     case Document            => previousDocumentsPreviousPageDefault
     case ConsigneeDetails    => consigneeDetailsPreviousPage
     case RepresentativeAgent => representativeAgentPreviousPage
