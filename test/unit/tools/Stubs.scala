@@ -106,7 +106,7 @@ trait Stubs {
 
   val govukHeader = new GovukHeader()
   val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner()))
-  val pBanner = new phaseBanner(new GovukPhaseBanner(new govukTag()))
+  val pBanner = new phaseBanner(new GovukPhaseBanner(new govukTag()), minimalAppConfig)
   val gdsMainTemplate = new gdsMainTemplate(
     govukHeader = govukHeader,
     govukLayout = gdsGovukLayout,

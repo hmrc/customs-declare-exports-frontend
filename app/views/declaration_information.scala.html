@@ -50,7 +50,7 @@
 
 @renderDeclarationLinks = {
     <div class="govuk-list">
-        @if(notifications.headOption.map(_.status).exists(SubmissionStatus.acceptableStatuses.contains) && eadDocumentConfig.isEadEnabled) {
+        @if(notifications.headOption.map(_.status).exists(SubmissionStatus.eadAcceptableStatuses.contains) && eadDocumentConfig.isEadEnabled) {
             @createEADLink
         }
         @viewDeclarationLink
