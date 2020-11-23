@@ -289,12 +289,10 @@ declaration.entryIntoDeclarantRecords.error = Select yes if this is an entry int
 declaration.personPresentingGoodsDetails.title = What is the EORI number of the person presenting the goods to customs?
 declaration.personPresentingGoodsDetails.help-item = Go to data element 3/41 Presenter Identification Number in the {0}
 
-declaration.exporter-detail.eori = Exporter’s EORI number
-declaration.exporter-details.help-item1 = Exporter’s EORI number, go to data element 3/2 Exporter Identification Number
-declaration.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
-declaration.exporter-detail.title = Who is the exporter?
-declaration.exporter-detail.title.hint = Enter the exporter’s EORI number or name and business address.
-declaration.exporter-detail.addressHeading = Exporter’s name and address
+declaration.exporter-address.help-item1 = Exporter’s name and business address, go to data element 3/1 Exporter
+declaration.exporter-address.title = What is the exporter’s name and business address?
+declaration.exporter-address.title.hint = Enter the exporter’s name and business address.
+declaration.exporter-address.addressHeading = Exporter’s name and address
 
 declaration.exporterEori.title = Does the exporter have an EORI number?
 declaration.exporterEori.eori.label = EORI number
