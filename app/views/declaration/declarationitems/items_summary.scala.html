@@ -83,6 +83,8 @@
                 HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))),
                 HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
             )),
+            caption = Some(messages("declaration.itemsSummary.addAnotherItem.table.caption")),
+            captionClasses = "govuk-visually-hidden",
             rows = items.zipWithIndex.map { case (item, index) =>
                 Seq(
                     TableRow(
