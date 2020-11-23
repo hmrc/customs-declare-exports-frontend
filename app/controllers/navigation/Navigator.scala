@@ -411,7 +411,7 @@ object Navigator {
     else
       controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
 
-  private def carrierEoriNumberClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call = {
+  private def carrierEoriNumberClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (!cacheModel.parties.declarantIsExporter.exists(_.isExporter))
       controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
     else {
@@ -420,7 +420,6 @@ object Navigator {
       else
         controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode)
     }
-  }
 
   private def consigneeDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.parties.carrierDetails.flatMap(_.details.eori).isEmpty)
