@@ -47,17 +47,14 @@
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
 
 @tariffBody = {
-    @components.tariff_body_partial(
-                    messages("declaration.exporter-details.help-item1"),
-                    messages("declaration.exporter-details.help-item2")
-                )(tariffBodyDesc)
+    @components.tariff_body_partial(messages("declaration.exporter-address.help-item1"))(tariffBodyDesc)
 }
 
 @tariff = { @components.details(messages("site.details.summary_text_these")){ @tariffBody } }
 
 @pageHint = {
     <span class="govuk-hint">
-        @messages("declaration.exporter-detail.title.hint")
+        @messages("declaration.exporter-address.title.hint")
     </span>
 }
 
@@ -69,7 +66,7 @@
     @group_address(form,"declaration.address","details.address")
 }
 @govukLayout(
-    title = Title("declaration.exporter-detail.title", "declaration.section.2"),
+    title = Title("declaration.exporter-address.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExporterDetails, mode)))){
 
     @formHelper(action = ExporterDetailsController.saveAddress(mode), 'autoComplete -> "off") {
@@ -78,14 +75,14 @@
 
         @sectionHeader(messages("declaration.section.2"))
 
-        @pageTitle(messages("declaration.exporter-detail.title"))
+        @pageTitle(messages("declaration.exporter-address.title"))
 
         @pageHint
 
         @govukFieldset(Fieldset(
             attributes = Map("id" -> "details"),
             legend = Some(Legend(
-                content = Text(messages("declaration.exporter-detail.addressHeading")),
+                content = Text(messages("declaration.exporter-address.addressHeading")),
                 classes = "govuk-fieldset__legend--m"
             )),
             html = HtmlFormat.fill(immutable.Seq(

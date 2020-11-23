@@ -30,13 +30,13 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.exporter_details
+import views.html.declaration.exporter_address
 
 import scala.concurrent.ExecutionContext
 
 class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
-  val exporter_details = mock[exporter_details]
+  val exporter_address = mock[exporter_address]
 
   val controller = new ExporterDetailsController(
     mockAuthAction,
@@ -44,12 +44,12 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    exporter_details
+    exporter_address
   )(ExecutionContext.global)
 
   def theResponseForm: Form[ExporterDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ExporterDetails]])
-    verify(exporter_details).apply(any(), captor.capture())(any(), any())
+    verify(exporter_address).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -62,11 +62,11 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(exporter_details.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(exporter_address.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(exporter_details)
+    reset(exporter_address)
     super.afterEach()
   }
 
