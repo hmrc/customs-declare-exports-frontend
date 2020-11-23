@@ -94,7 +94,9 @@
                 HeadCell(
                     content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
                 )
-            ))
+            )),
+            caption = Some(messages("declaration.routingCountries.summary.table.caption")),
+            captionClasses = "govuk-visually-hidden"
         ))
     }
 }

@@ -87,7 +87,9 @@
                 HeadCell(
                     content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
                 )
-            ))
+            )),
+            caption = Some(messages("declaration.transportInformation.containers.table.caption")),
+            captionClasses = "govuk-visually-hidden"
         ))
 
     }

@@ -120,7 +120,9 @@
                 HeadCell(
                     content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
                 )
-            ))
+            )),
+            caption = Some(messages("declaration.addDocument.table.caption")),
+            captionClasses = "govuk-visually-hidden"
         ))
     }
 }

@@ -75,6 +75,8 @@
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.shippingMarks"))),
         HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
       )),
+      caption = Some(messages("declaration.packageInformation.table.caption")),
+      captionClasses = "govuk-visually-hidden",
       rows = packages.zipWithIndex.map { case (item, index) =>
         Seq(
           TableRow(content = Text(item.typesOfPackages.map(PackageTypes.findByCode).map(_.asText()).getOrElse(""))),
