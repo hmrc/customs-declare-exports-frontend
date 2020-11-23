@@ -30,13 +30,13 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.exporter_details
+import views.html.declaration.exporter_address
 import views.tags.ViewTest
 
 @ViewTest
 class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val exporterDetailsPage = instanceOf[exporter_details]
+  private val exporterDetailsPage = instanceOf[exporter_address]
 
   private def form(journeyType: DeclarationType): Form[ExporterDetails] = ExporterDetails.form(journeyType)
 
