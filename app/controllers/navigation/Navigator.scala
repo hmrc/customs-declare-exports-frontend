@@ -286,7 +286,7 @@ object Navigator {
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case CarrierEoriNumber   => carrierEoriNumberClearancePreviousPage
+    case CarrierEoriNumber   => carrierEoriNumberPreviousPage
     case Document            => previousDocumentsPreviousPageDefault
     case ConsigneeDetails    => consigneeDetailsPreviousPage
     case RepresentativeAgent => representativeAgentPreviousPage
@@ -412,10 +412,13 @@ object Navigator {
       controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
 
   private def carrierEoriNumberClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.parties.declarantIsExporter.exists(_.isExporter))
-      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
-    else {
+    if (!cacheModel.parties.declarantIsExporter.exists(_.isExporter))
       controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+    else {
+      if (cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined)
+        controllers.declaration.routes.ConsignorDetailsController.displayPage(mode)
+      else
+        controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode)
     }
 
   private def consigneeDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
