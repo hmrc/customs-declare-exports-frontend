@@ -44,13 +44,11 @@
 
 @(mode: Mode, form: Form[ExporterDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
-
-@tariffBody = {
-    @components.tariff_body_partial(messages("declaration.exporter-address.help-item1"))(tariffBodyDesc)
+@tariff = {
+    @components.details(messages("site.details.summary_text_this")){
+        @Html(messages("declaration.exporter-address.help-item1", components.details_content_link()))
+    }
 }
-
-@tariff = { @components.details(messages("site.details.summary_text_these")){ @tariffBody } }
 
 @pageHint = {
     <span class="govuk-hint">
