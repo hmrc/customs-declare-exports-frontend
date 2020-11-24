@@ -197,14 +197,6 @@ class AppConfigSpec extends UnitSpec {
       validAppConfig.fetchSubmissions must be("/submissions")
     }
 
-//    "have contact-frontend URL" in {
-//      validAppConfig.contactFrontendBaseUrl must be("http://localhost:9250")
-//    }
-//
-//    "have serviceId for contact-frontend" in {
-//      validAppConfig.contactFrontendServiceId must be("DeclarationServiceId")
-//    }
-
     "have link for 'give feedback'" in {
       validAppConfig.giveFeedbackLink must be("http://localhost:9250/contact/beta-feedback-unauthenticated?service=DeclarationServiceId")
     }
@@ -295,16 +287,6 @@ class AppConfigSpec extends UnitSpec {
         "Missing configuration for Customs Declarations Exports fetch notification URI"
       )
     }
-
-//    "contact-frontend URL is missing" in {
-//      intercept[Exception](emptyAppConfig.contactFrontendBaseUrl).getMessage must be("Could not find config key 'contact-frontend.host'")
-//    }
-//
-//    "serviceId for contact-frontend is missing" in {
-//      intercept[Exception](emptyAppConfig.contactFrontendServiceId).getMessage must be(
-//        "Missing configuration key: microservice.services.contact-frontend.serviceId"
-//      )
-//    }
 
     "link for 'give feedback' is missing" in {
       intercept[Exception](emptyAppConfig.giveFeedbackLink).getMessage must be("Could not find config key 'contact-frontend.host'")
