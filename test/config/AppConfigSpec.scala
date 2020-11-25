@@ -73,8 +73,7 @@ class AppConfigSpec extends UnitSpec {
         |microservice.services.customs-declare-exports-movements.host=localhostm
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
-        |microservice.services.contact-frontend.host=localhost
-        |microservice.services.contact-frontend.port=9250
+        |microservice.services.contact-frontend.url=/contact-frontend-url
         |microservice.services.contact-frontend.serviceId=DeclarationServiceId
         |mongodb.timeToLive=24h
 
@@ -198,7 +197,7 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have link for 'give feedback'" in {
-      validAppConfig.giveFeedbackLink must be("http://localhost:9250/contact/beta-feedback-unauthenticated?service=DeclarationServiceId")
+      validAppConfig.giveFeedbackLink must be("/contact-frontend-url?service=DeclarationServiceId")
     }
 
     "have countryCodesJsonFilename" in {
@@ -289,7 +288,9 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "link for 'give feedback' is missing" in {
-      intercept[Exception](emptyAppConfig.giveFeedbackLink).getMessage must be("Could not find config key 'contact-frontend.host'")
+      intercept[Exception](emptyAppConfig.giveFeedbackLink).getMessage must be(
+        "Missing configuration key: microservice.services.contact-frontend.url"
+      )
     }
 
     "countryCodesJsonFilename is missing" in {

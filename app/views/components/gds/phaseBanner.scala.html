@@ -21,9 +21,7 @@
 
 @(phase: String)(implicit request: Request[_], messages: Messages)
 
-@protocol = @{ if(request.secure) "https" else "http" }
-@betaFeedbackUrl = @{s"${appConfig.giveFeedbackLink}&backUrl=$protocol://${request.host}${request.uri}"}
-
+@betaFeedbackUrl = @{s"${appConfig.giveFeedbackLink}&backURL=${request.uri}"}
 @link = {<a href="@betaFeedbackUrl">@messages("feedback.link")</a>}
 
 @feedbackBanner = {

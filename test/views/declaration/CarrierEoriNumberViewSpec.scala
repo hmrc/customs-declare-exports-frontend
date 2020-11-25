@@ -20,9 +20,9 @@ import base.Injector
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.carrier.CarrierEoriNumber
-import models.{DeclarationType, Mode}
-import models.requests.JourneyRequest
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.data.Form

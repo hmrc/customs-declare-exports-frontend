@@ -55,7 +55,7 @@ class PhaseBannerSpec extends UnitViewSpec with BeforeAndAfterEach {
 
     "display feedback link with correct href" in {
       createBanner().getElementsByClass("govuk-phase-banner__text").first().getElementsByTag("a").first() must haveHref(
-        s"$giveFeedbackLinkTest&backUrl=http://localhost$requestPath"
+        s"$giveFeedbackLinkTest&backURL=$requestPath"
       )
     }
   }
