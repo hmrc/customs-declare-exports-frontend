@@ -95,7 +95,7 @@ class DocumentsProducedChangeController @Inject()(
     val documentsWithoutExisting: Seq[DocumentsProduced] = existingDocuments.filterNot(_ == existingDocument)
 
     MultipleItemsHelper
-      .add(boundForm, documentsWithoutExisting, maxNumberOfItems, DocumentsProducedFormGroupId)
+      .add(boundForm, documentsWithoutExisting, maxNumberOfItems, DocumentsProducedFormGroupId, "declaration.addDocument")
       .fold(
         formWithErrors => Future.successful(BadRequest(documentProducedPage(mode, itemId, documentId, formWithErrors))),
         _ => {

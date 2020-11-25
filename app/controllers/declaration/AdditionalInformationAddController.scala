@@ -66,7 +66,7 @@ class AdditionalInformationAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData.items, maxNumberOfItems, AdditionalInformationFormGroupId)
+      .add(boundForm, cachedData.items, maxNumberOfItems, AdditionalInformationFormGroupId, "declaration.additionalInformation")
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors))),
         updatedItems =>

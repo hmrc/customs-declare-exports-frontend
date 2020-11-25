@@ -83,7 +83,7 @@ class DocumentsProducedAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData, maxNumberOfItems, DocumentsProducedFormGroupId)
+      .add(boundForm, cachedData, maxNumberOfItems, DocumentsProducedFormGroupId, "declaration.addDocument")
       .fold(
         formWithErrors => Future.successful(BadRequest(documentProducedPage(mode, itemId, formWithErrors))),
         updatedCache =>

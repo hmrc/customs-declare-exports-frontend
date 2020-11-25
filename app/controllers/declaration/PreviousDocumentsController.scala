@@ -57,7 +57,13 @@ class PreviousDocumentsController @Inject()(
         navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
       } else
       MultipleItemsHelper
-        .add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems, fieldId = PreviousDocumentsFormGroupId)
+        .add(
+          boundForm,
+          cache.documents,
+          PreviousDocumentsData.maxAmountOfItems,
+          fieldId = PreviousDocumentsFormGroupId,
+          "declaration.previousDocuments"
+        )
         .fold(
           formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors))),
           updatedCache =>

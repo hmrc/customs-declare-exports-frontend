@@ -57,7 +57,13 @@ class PreviousDocumentsChangeController @Inject()(
         val documentsWithoutExisting = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty).filterNot(_ == existingDocument)
 
         MultipleItemsHelper
-          .add(boundForm, documentsWithoutExisting, PreviousDocumentsData.maxAmountOfItems, PreviousDocumentsFormGroupId)
+          .add(
+            boundForm,
+            documentsWithoutExisting,
+            PreviousDocumentsData.maxAmountOfItems,
+            PreviousDocumentsFormGroupId,
+            "declaration.previousDocuments"
+          )
           .fold(
             formWithErrors => Future.successful(BadRequest(changePage(mode, id, formWithErrors))),
             updatedDocuments => updateCache(updatedDocuments).map(_ => returnToSummary(mode))

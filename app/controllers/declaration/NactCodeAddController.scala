@@ -82,7 +82,7 @@ class NactCodeAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData, nactCodeLimit, "nactCode")
+      .add(boundForm, cachedData, nactCodeLimit, "nactCode", "declaration.nationalAdditionalCode")
       .fold(
         formWithErrors => Future.successful(BadRequest(nactCodeAdd(mode, itemId, formWithErrors))),
         updatedCache =>

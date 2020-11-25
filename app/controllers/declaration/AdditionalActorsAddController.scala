@@ -80,7 +80,7 @@ class AdditionalActorsAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedActors, DeclarationAdditionalActorsData.maxNumberOfActors, AdditionalActorsFormGroupId)
+      .add(boundForm, cachedActors, DeclarationAdditionalActorsData.maxNumberOfActors, AdditionalActorsFormGroupId, "declaration.additionalActors")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationAdditionalActorsPage(mode, formWithErrors))),
         updatedActors =>

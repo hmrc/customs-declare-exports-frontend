@@ -88,7 +88,7 @@ class AdditionalInformationChangeController @Inject()(
     val itemsWithoutExisting = cachedData.items.filterNot(_ == existingInformation)
 
     MultipleItemsHelper
-      .add(boundForm, itemsWithoutExisting, maxNumberOfItems, AdditionalInformationFormGroupId)
+      .add(boundForm, itemsWithoutExisting, maxNumberOfItems, AdditionalInformationFormGroupId, "declaration.additionalInformation")
       .fold(
         formWithErrors => Future.successful(BadRequest(changePage(mode, itemId, id, formWithErrors))),
         _ => {

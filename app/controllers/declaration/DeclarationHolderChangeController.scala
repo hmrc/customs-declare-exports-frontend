@@ -66,7 +66,7 @@ class DeclarationHolderChangeController @Inject()(
     val holdersWithoutExisting: Seq[DeclarationHolder] = cachedHolders.filterNot(_ == existingHolder)
 
     MultipleItemsHelper
-      .add(boundForm, holdersWithoutExisting, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId)
+      .add(boundForm, holdersWithoutExisting, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, existingHolder.id, formWithErrors))),
         _ => {
