@@ -140,7 +140,7 @@ class TransportContainerController @Inject()(
   private def removeContainerYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.transportInformation.container.remove.empty")
 
   private def duplication(id: String, cachedData: Seq[Container]): Seq[FormError] =
-    if (cachedData.exists(_.id == id)) Seq(FormError("id", "supplementary.duplication")) else Seq.empty
+    if (cachedData.exists(_.id == id)) Seq(FormError("id", "declaration.transportInformation.error.duplicate")) else Seq.empty
 
   private def limitOfElems[A](limit: Int, cachedData: Seq[Container]): Seq[FormError] =
     if (cachedData.length >= limit) Seq(FormError("", "supplementary.limit")) else Seq.empty

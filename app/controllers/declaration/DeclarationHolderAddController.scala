@@ -72,7 +72,7 @@ class DeclarationHolderAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId)
+      .add(boundForm, cachedData, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors))),
         updatedCache =>

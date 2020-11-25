@@ -66,7 +66,7 @@ class AdditionalFiscalReferencesAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(form, cachedData.references, limit, AdditionalFiscalReferencesFormGroupId)
+      .add(form, cachedData.references, limit, AdditionalFiscalReferencesFormGroupId, "declaration.additionalFiscalReferences")
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors))),
         updatedCache =>
