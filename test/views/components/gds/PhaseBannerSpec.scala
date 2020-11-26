@@ -35,6 +35,7 @@ class PhaseBannerSpec extends UnitViewSpec with BeforeAndAfterEach {
   private val requestPath = "/customs-declare-exports/any-page"
   private implicit val fakeRequest = FakeRequest("GET", requestPath)
 
+  private val selfBaseUrlTest = "selfBaseUrlTest"
   private val giveFeedbackLinkTest = "giveFeedbackLinkTest"
 
   private def createBanner(): Html = bannerPartial("")(fakeRequest, messages)
@@ -43,6 +44,7 @@ class PhaseBannerSpec extends UnitViewSpec with BeforeAndAfterEach {
     super.beforeEach()
 
     reset(appConfig)
+    when(appConfig.selfBaseUrl).thenReturn(Some(selfBaseUrlTest))
     when(appConfig.giveFeedbackLink).thenReturn(giveFeedbackLinkTest)
   }
 
@@ -53,10 +55,18 @@ class PhaseBannerSpec extends UnitViewSpec with BeforeAndAfterEach {
 
   "phaseBanner" should {
 
-    "display feedback link with correct href" in {
-      createBanner().getElementsByClass("govuk-phase-banner__text").first().getElementsByTag("a").first() must haveHref(
-        s"$giveFeedbackLinkTest&backUrl=http://localhost$requestPath"
-      )
+    "display feedback link with correct href" when {
+
+      "selfBaseUrl is defined" in {
+        createBanner().getElementsByClass("govuk-phase-banner__text").first().getElementsByTag("a").first() must haveHref(
+          s"$giveFeedbackLinkTest&backUrl=$selfBaseUrlTest$requestPath"
+        )
+      }
+
+      "selfBaseUrl is not defined" in {
+        when(appConfig.selfBaseUrl).thenReturn(None)
+        createBanner().getElementsByClass("govuk-phase-banner__text").first().getElementsByTag("a").first() must haveHref(s"$giveFeedbackLinkTest")
+      }
     }
   }
 

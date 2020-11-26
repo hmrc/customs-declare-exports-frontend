@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.CarrierDetailsController
-import forms.common.{Address, Eori}
+import forms.common.Address
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType._

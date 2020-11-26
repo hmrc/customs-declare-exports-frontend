@@ -61,11 +61,12 @@ class AppConfig @Inject()(
 
   lazy val customsDeclareExportsBaseUrl = servicesConfig.baseUrl("customs-declare-exports")
 
+  lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   lazy val giveFeedbackLink = {
-    val contactFrontendBaseUrl = servicesConfig.baseUrl("contact-frontend")
+    val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
     val contactFrontendServiceId = loadConfig("microservice.services.contact-frontend.serviceId")
 
-    s"$contactFrontendBaseUrl/contact/beta-feedback-unauthenticated?service=$contactFrontendServiceId"
+    s"$contactFrontendUrl?service=$contactFrontendServiceId"
   }
 
   lazy val declarations = servicesConfig.getConfString(
