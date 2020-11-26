@@ -21,7 +21,8 @@
 
 @(phase: String)(implicit request: Request[_], messages: Messages)
 
-@betaFeedbackUrl = @{s"${appConfig.giveFeedbackLink}&backURL=${request.uri}"}
+@backUrl = @{ appConfig.selfBaseUrl.map(url => s"&backUrl=$url${request.uri}").getOrElse("") }
+@betaFeedbackUrl = @{s"${appConfig.giveFeedbackLink}$backUrl"}
 @link = {<a href="@betaFeedbackUrl">@messages("feedback.link")</a>}
 
 @feedbackBanner = {
