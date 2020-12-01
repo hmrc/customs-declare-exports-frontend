@@ -69,10 +69,7 @@ object DocumentWriteOff {
           .verifying(
             "declaration.addDocument.documentQuantity.error",
             input => input.isEmpty || noLongerThan(documentQuantityMaxLength)(input.replaceAll("\\.", ""))
-          )
-          .verifying(
-            "declaration.addDocument.documentQuantity.error",
-            isEmpty or isDecimalWithNoMoreDecimalPlacesThan(documentQuantityMaxDecimalPlaces)
+            || isDecimalWithNoMoreDecimalPlacesThan(documentQuantityMaxDecimalPlaces)(input)
           )
       )
     )(form2Model)(model2Form)
