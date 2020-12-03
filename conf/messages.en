@@ -1275,6 +1275,10 @@ declaration.confirmation.info.link = your declarations
 declaration.confirmation.submitAnotherDeclaration = Create a new declaration
 declaration.confirmation.leaveFeedback.text = Please leave feedback on the service in this {0}.
 declaration.confirmation.leaveFeedback.link = form here
+declaration.confirmation.feedback.header = Tell us what you think
+declaration.confirmation.feedback.line.1 = This is a new service and we want to know what you think of it.
+declaration.confirmation.feedback.line.2 = {0}. Your thoughts and ideas will help us to make improvements.
+declaration.confirmation.feedback.link = Send us your feedback
 
 confirmation.draft.title = Your declaration has been saved
 confirmation.draft.info = Your information is held until
