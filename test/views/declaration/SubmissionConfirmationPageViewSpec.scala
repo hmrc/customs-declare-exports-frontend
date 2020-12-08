@@ -99,7 +99,7 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with BeforeAndAfte
     "display Exit Survey link" in {
       val feedbackLink = createView().getElementById("feedback")
 
-      feedbackLink must containMessage("declaration.confirmation.feedback.header")
+      feedbackLink must containMessage("declaration.feedback.header")
     }
   }
   "Confirmation Page View when filled" should {
