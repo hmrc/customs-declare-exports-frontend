@@ -42,6 +42,7 @@ class AppConfigSpec extends UnitSpec {
         |urls.relevantLicenses="https://www.gov.uk/starting-to-export/licences"
         |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
         |urls.customsMovementsFrontend="http://url-to-movements-frontend/start"
+        |urls.feedbackFrontendUrl="http://localhost:9514/feedback/customs-declare-exports-frontend"
         |
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
@@ -129,6 +130,10 @@ class AppConfigSpec extends UnitSpec {
 
     "have customsMovementsFrontend URL" in {
       validAppConfig.customsMovementsFrontendUrl must be("http://url-to-movements-frontend/start")
+    }
+
+    "have feedbackFrontend URL" in {
+      validAppConfig.feedbackFrontendUrl must be("http://localhost:9514/feedback/customs-declare-exports-frontend")
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {

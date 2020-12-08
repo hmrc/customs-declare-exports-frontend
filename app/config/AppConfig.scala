@@ -53,6 +53,7 @@ class AppConfig @Inject()(
   lazy val relevantLicensesUrl = loadConfig("urls.relevantLicenses")
   lazy val serviceAvailabilityUrl = loadConfig("urls.serviceAvailability")
   lazy val customsMovementsFrontendUrl = loadConfig("urls.customsMovementsFrontend")
+  lazy val feedbackFrontendUrl = loadConfig("urls.feedbackFrontendUrl")
 
   lazy val govUkUrl = loadConfig("urls.govUk")
   lazy val tradeTariffUrl = loadConfig("urls.tradeTariff")
