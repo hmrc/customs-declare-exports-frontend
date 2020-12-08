@@ -20,8 +20,8 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.html.components.gds._
+@import views.html.components.feedback_frontend
 @import play.twirl.api.HtmlFormat
-@import config.AppConfig
 
 @this(
   govukLayout: gdsMainTemplate,
@@ -31,8 +31,7 @@
   link: link,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
   googleFormFeedbackLinkConfig: GoogleFormFeedbackLinkConfig,
-  paragraphBody: paragraphBody,
-  appConfig: AppConfig
+  feedbackFrontend: feedback_frontend
 )
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
@@ -51,8 +50,6 @@
     )))
 }
 
-@backUrl = @{ appConfig.selfBaseUrl.map(url => s"&backUrl=$url${request.uri}").getOrElse("") }
-@betaFeedbackUrl = @{s"${appConfig.giveFeedbackLink}$backUrl"}
 
 @govukLayout(title = Title(titleKey)) {
 
@@ -93,13 +90,5 @@
             call = routes.ChoiceController.displayPage())
     </p>
 
-    <div>
-        <h2 id="feedback" class="govuk-heading-m">@messages("declaration.confirmation.feedback.header")</h2>
-        @paragraphBody(message = messages("declaration.confirmation.feedback.line.1"), id=Some("feedback-element-1"))
-        @paragraphBody(message = messages("declaration.confirmation.feedback.line.2", link(
-          text = messages("declaration.confirmation.feedback.link"),
-          call = Call("GET", betaFeedbackUrl),
-            id=Some("feedback-element-2")
-        )))
-    </div>
+    @feedbackFrontend()
 }
