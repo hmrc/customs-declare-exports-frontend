@@ -133,7 +133,7 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have feedbackFrontend URL" in {
-      validAppConfig.feedbackFrontendUrl must be("http://localhost:9514/feedback/customs-declare-exports-frontend")
+      validAppConfig.exitSurveyUrl must be("http://localhost:9514/feedback/customs-declare-exports-frontend")
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {
