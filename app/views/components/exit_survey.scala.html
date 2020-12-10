@@ -23,11 +23,11 @@
 
 @()(implicit messages: Messages)
 
-<h2 id="feedback" class="govuk-heading-m">@messages("declaration.feedback.header")</h2>
-@paragraphBody(message = messages("declaration.feedback.line.1"), id=Some("feedback-element-1"))
-@paragraphBody(message = messages("declaration.feedback.line.2", link(
-    text = messages("declaration.feedback.link"),
+<h2 id="exit-survey" class="govuk-heading-m">@messages("declaration.exitSurvey.header")</h2>
+@paragraphBody(message = messages("declaration.exitSurvey.line.1"), id=Some("exit-survey-element-1"))
+@paragraphBody(message = messages("declaration.exitSurvey.line.2", link(
+    text = messages("declaration.exitSurvey.link"),
     call = Call("GET", appConfig.exitSurveyUrl),
-    id=Some("feedback-element-2")
+    id=Some("exit-survey-element-2")
 )))
 

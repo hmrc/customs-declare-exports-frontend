@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.html.components.gds._
-@import views.html.components.feedback_frontend
+@import views.html.components.exit_survey
 @import play.twirl.api.HtmlFormat
 
 @this(
@@ -31,7 +31,7 @@
   link: link,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
   googleFormFeedbackLinkConfig: GoogleFormFeedbackLinkConfig,
-  feedbackFrontend: feedback_frontend
+  exitSurvey: exit_survey
 )
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
@@ -90,5 +90,5 @@
             call = routes.ChoiceController.displayPage())
     </p>
 
-    @feedbackFrontend()
+    @exitSurvey()
 }

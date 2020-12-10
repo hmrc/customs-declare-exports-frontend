@@ -16,7 +16,7 @@
 
 @import views.Title
 @import views.html.components.gds._
-@import views.html.components.feedback_frontend
+@import views.html.components.exit_survey
 
 @this(
     gdsTemplate: gdsMainTemplate,
@@ -24,7 +24,7 @@
     paragraphBody: paragraphBody,
     linkButton: linkButton,
     link: link,
-    feedbackFrontend: feedback_frontend
+    exitSurvey: exit_survey
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -45,7 +45,7 @@
     @link(text= messages("userSignedOut.startPageLink", request.host), call = controllers.routes.StartController.displayStartPage())
   </p>
 
-  @feedbackFrontend()
+  @exitSurvey()
 
   @govukLink
 }
