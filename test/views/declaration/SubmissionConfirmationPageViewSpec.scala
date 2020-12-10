@@ -95,8 +95,13 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with BeforeAndAfte
       button must haveHref(controllers.routes.ChoiceController.displayPage().url)
       button must containText("Create a new declaration")
     }
-  }
 
+    "display Exit Survey link" in {
+      val exitSurvey = createView().getElementById("exit-survey")
+
+      exitSurvey must containMessage("declaration.exitSurvey.header")
+    }
+  }
   "Confirmation Page View when filled" should {
 
     "display header with declaration type Standard and LRN" in {

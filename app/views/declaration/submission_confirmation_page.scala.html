@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.html.components.gds._
+@import views.html.components.exit_survey
 @import play.twirl.api.HtmlFormat
 
 @this(
@@ -29,7 +30,8 @@
   govukInsetText : GovukInsetText,
   link: link,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-  googleFormFeedbackLinkConfig: GoogleFormFeedbackLinkConfig
+  googleFormFeedbackLinkConfig: GoogleFormFeedbackLinkConfig,
+  exitSurvey: exit_survey
 )
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
@@ -47,6 +49,7 @@
         call = routes.SubmissionsController.displayDeclarationWithNotifications(decId)
     )))
 }
+
 
 @govukLayout(title = Title(titleKey)) {
 
@@ -86,4 +89,6 @@
             text = messages("declaration.confirmation.submitAnotherDeclaration"),
             call = routes.ChoiceController.displayPage())
     </p>
+
+    @exitSurvey()
 }
