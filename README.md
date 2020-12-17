@@ -42,3 +42,28 @@ or
 Auto Complete Script to help speed through the form journey.
 
 These scripts can be found in the docs directory.
+
+### Updating Tariff Code lists
+
+There is a small Node.js project on tariff-codes-parser that allows us to automate this task.
+We have been informed that the most up-to-date codes can be found on the [CDS Tariff](https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2).
+
+We use the following codes:
+ * [Country codes](https://www.gov.uk/government/publications/country-codes-for-the-customs-declaration-service)
+ * [Authorisation codes](https://www.gov.uk/government/publications/authorisation-type-codes-for-data-element-339-of-the-customs-declaration-service) (3/39 in tariff)
+ * [UK Office of Exit codes](https://www.gov.uk/government/publications/uk-customs-office-codes-for-data-element-512-of-the-customs-declaration-service) (5/12 in tariff)
+ * [Document type codes (previous document page)](https://www.gov.uk/government/publications/previous-document-codes-for-data-element-21-of-the-customs-declaration-service) (2/1 in tariff)
+ * [Package Type codes](https://www.gov.uk/government/publications/package-type-codes-for-data-element-69-of-the-customs-declaration-service) (6/9 in tariff)
+ * [Customs supervising office codes](https://www.gov.uk/government/publications/supervising-office-codes-for-data-element-527-of-the-customs-declaration-service) (5/27 in tariff)
+
+**The steps required to update the code-lists:** 
+ 1. Install [Node.js](https://nodejs.dev/learn/how-to-install-nodejs) and [npm](https://www.npmjs.com/get-npm) on your local machine.
+ 2. Ensure the URLs are still valid and update them on `urls.js`
+ 3. Go into the Node.js project: `cd tariff-codes-parser`    
+ 4. Install the Node.js dependencies:  `npm install`
+ 5. Execute, parse and update the code lists: `node start.js`
+ 6. Check the differences: `git diff`
+ 
+ **Recommended future work:** 
+  * Move this into the CDS Exports Code Lists microservice once all the codes are centralised.
+  * Consider moving this code to Scala
