@@ -22,7 +22,6 @@ import models.Mode
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestData
 import unit.tools.Stubs
-import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declarationitems.items_add_item
 import views.tags.ViewTest
