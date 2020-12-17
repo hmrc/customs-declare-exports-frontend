@@ -18,14 +18,14 @@
 
 @this(paragraphBody: paragraphBody)
 
-@(title: String, elements: Seq[String])(implicit messages: Messages)
+@(title: Option[String] = None, elements: Seq[Html])(implicit messages: Messages)
 
 <nav>
-    @paragraphBody(messages(title), "govuk-body")
+    @title.map(paragraphBody(_, "govuk-body"))
     <ul class="govuk-list govuk-list--bullet">
         @elements.map { element =>
             <li class="dashed-list-item">
-                @Html(element)
+                @element
             </li>
         }
     </ul>
