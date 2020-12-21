@@ -123,7 +123,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "valid options are selected" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
+          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom, Great Britain, Northern Ireland")
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -146,7 +146,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       "valid options are selected" in {
         withNewCaching(request.cacheModel)
 
-        val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
+        val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom, Great Britain, Northern Ireland")
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 

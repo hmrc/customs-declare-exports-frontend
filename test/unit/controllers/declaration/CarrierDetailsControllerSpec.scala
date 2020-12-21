@@ -184,7 +184,14 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
           val correctForm =
-            Json.toJson(CarrierDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
+            Json.toJson(
+              CarrierDetails(
+                EntityDetails(
+                  None,
+                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
+                )
+              )
+            )
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
@@ -198,7 +205,14 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
           val correctForm =
-            Json.toJson(CarrierDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
+            Json.toJson(
+              CarrierDetails(
+                EntityDetails(
+                  None,
+                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
+                )
+              )
+            )
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 

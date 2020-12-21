@@ -44,8 +44,8 @@ class PackageTypesSpec extends UnitSpec {
 
       somePackageTypes mustBe List(
         PackageType("43", "Bag, super bulk"),
-        PackageType("ZZ", "Defined mutually"),
-        PackageType("AD", "Wooden receptacle")
+        PackageType("ZZ", "Mutually defined"),
+        PackageType("AD", "Receptacle, wooden")
       )
     }
   }

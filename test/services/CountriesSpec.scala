@@ -25,8 +25,12 @@ class CountriesSpec extends UnitSpec {
   "Countries" should {
 
     "give all countries with codes in alphabetical order of country name" in {
-      val threeCountries = allCountries.filter(c => c.countryName == "Afghanistan" || c.countryName == "Mayotte" || c.countryName == "Zimbabwe")
-      threeCountries must contain inOrderOnly (Country("Afghanistan", "AF"), Country("Mayotte", "YT"), Country("Zimbabwe", "ZW"))
+      val threeCountries =
+        allCountries.filter(c => c.countryName == "Afghanistan" || c.countryName.startsWith("Mayotte") || c.countryName == "Zimbabwe")
+      threeCountries must contain inOrderOnly (Country("Afghanistan", "AF"), Country("Mayotte - Grande-Terre and Pamandzi", "YT"), Country(
+        "Zimbabwe",
+        "ZW"
+      ))
     }
 
     "give list of EU countries" in {

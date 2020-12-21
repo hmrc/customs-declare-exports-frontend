@@ -24,7 +24,7 @@ class HolderOfAuthorisationCodeSpec extends UnitSpec {
     "read from file" in {
       val codes = HolderOfAuthorisationCode.all
       codes must contain(HolderOfAuthorisationCode("ACE", "Authorised consignee for Union transit")) // First in file
-      codes must contain(HolderOfAuthorisationCode("UKCS", "UK Continental shelf")) // Last in file
+      codes must contain(HolderOfAuthorisationCode("UKCS", "UK Continental Shelf")) // Last in file
     }
 
     "exclude header" in {
