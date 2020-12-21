@@ -96,23 +96,23 @@
 
         <div id="contents">
             @dashList(
-                title = "startPage.contents.header",
+                title = Some(messages("startPage.contents.header")),
                 elements = Seq(
-                    (messages("startPage.beforeYouStart.header"), "#before-you-start"),
-                    (messages("startPage.informationYouNeed.header"), "#information-you-need"),
-                    (messages("startPage.makeDeclaration.header"), "#make-declaration"),
-                    (messages("startPage.afterDeclaringGoods.header"), "#after-declaring-goods")
+                    link(text = messages("startPage.beforeYouStart.header"), call = Call("GET", "#before-you-start")),
+                    link(text = messages("startPage.informationYouNeed.header"), call = Call("GET", "#information-you-need")),
+                    link(text = messages("startPage.makeDeclaration.header"), call = Call("GET", "#make-declaration")),
+                    link(text = messages("startPage.afterDeclaringGoods.header"), call = Call("GET", "#after-declaring-goods"))
                 )
             )
         </div>
 
         @bulletList(
-            title = "startPage.useThisServiceTo.header",
+            title = Some(messages("startPage.useThisServiceTo.header")),
             elements = Seq(
-                messages("startPage.useThisServiceTo.listItem.1"),
-                messages("startPage.useThisServiceTo.listItem.2"),
-                messages("startPage.useThisServiceTo.listItem.3"),
-                messages("startPage.useThisServiceTo.listItem.4")
+                Html(messages("startPage.useThisServiceTo.listItem.1")),
+                Html(messages("startPage.useThisServiceTo.listItem.2")),
+                Html(messages("startPage.useThisServiceTo.listItem.3")),
+                Html(messages("startPage.useThisServiceTo.listItem.4"))
             )
         )
 
@@ -130,14 +130,14 @@
         <div class="govuk-!-margin-bottom-9">
             <h2 id="information-you-need" class="govuk-heading-m">@messages("startPage.informationYouNeed.header")</h2>
             @bulletList(
-                title = "startPage.informationYouNeed.line.1",
+                title = Some(messages("startPage.informationYouNeed.line.1")),
                 elements = Seq(
-                    messages("startPage.informationYouNeed.listItem.1"),
-                    messages("startPage.informationYouNeed.listItem.2"),
-                    messages("startPage.informationYouNeed.listItem.3", commodityCodeLink),
-                    messages("startPage.informationYouNeed.listItem.4", licencesLink),
-                    messages("startPage.informationYouNeed.listItem.5"),
-                    messages("startPage.informationYouNeed.listItem.6")
+                    Html(messages("startPage.informationYouNeed.listItem.1")),
+                    Html(messages("startPage.informationYouNeed.listItem.2")),
+                    Html(messages("startPage.informationYouNeed.listItem.3", commodityCodeLink)),
+                    Html(messages("startPage.informationYouNeed.listItem.4", licencesLink)),
+                    Html(messages("startPage.informationYouNeed.listItem.5")),
+                    Html(messages("startPage.informationYouNeed.listItem.6"))
                 )
             )
         </div>
