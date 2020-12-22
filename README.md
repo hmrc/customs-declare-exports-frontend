@@ -58,12 +58,12 @@ We use the following codes:
 
 **The steps required to update the code-lists:** 
  1. Install [Node.js](https://nodejs.dev/learn/how-to-install-nodejs) and [npm](https://www.npmjs.com/get-npm) on your local machine.
- 2. Ensure the URLs are still valid and update them on `urls.js`
- 3. Go into the Node.js project: `cd tariff-codes-parser`    
- 4. Install the Node.js dependencies:  `npm install`
- 5. Execute, parse and update the code lists: `node start.js`
- 6. Check the differences: `git diff`
+ 2. Clone [Exports Acceptance project](https://github.com/hmrc/cds-exports-acceptance) into the same repo as this project, as we will have to update the code lists as well. 
+ 3. Ensure the tariff URLs are still valid and update them on `tariff-codes.js`
+ 4. Go into the Node.js project: `cd tariff-codes-parser`    
+ 5. Install the Node.js dependencies:  `npm install`
+ 6. Execute, parse and update the code lists: `node start.js`
+ 7. Check the differences `git diff` and/or create a Pull Request.
  
  **Recommended future work:** 
-  * Move this into the CDS Exports Code Lists microservice once all the codes are centralised.
   * Consider moving this code to Scala
