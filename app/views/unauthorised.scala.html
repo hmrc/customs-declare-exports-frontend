@@ -19,65 +19,47 @@
 @import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        pageTitle: pageTitle,
-        paragraphBody: paragraphBody,
-        link: link,
-        config: ExternalServicesConfig
+  govukLayout: gdsMainTemplate,
+  pageTitle: pageTitle,
+  paragraphBody: paragraphBody,
+  link: link,
+  bulletList: bulletList,
+  config: ExternalServicesConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
 @howToSection = {
-  <h2 class="govuk-heading-m">@messages("unauthorised.how.heading")</h2>
-
-    <p class="govuk-body">
-    @Html(messages(
-        "unauthorised.how.paragraph1",
-        link(
-            id = Some("get_eori_link"),
-            text = messages("unauthorised.how.paragraph1.link"),
-            call = Call("GET", config.eoriService),
-            target = "_blank"
-        )
-    ))
-    </p>
-    <p class="govuk-body">
-    @Html(messages(
-        "unauthorised.how.paragraph2",
-        link(
-            id = Some("access_cds_link"),
-            text = messages("unauthorised.how.paragraph2.link"),
-            call = Call("GET", config.cdsRegister),
-            target = "_blank"
-        )
-    ))
-    </p>
-    <p class="govuk-body">
-    @messages(
-        "unauthorised.how.paragraph3"
+  <p class="govuk-body">@messages("unauthorised.paragraph.1")</p>
+  @bulletList(
+    title = None,
+    elements = Seq(
+      Html(messages("unauthorised.paragraph.1.bullet.1", link(
+        id = Some("get_eori_link"),
+        text = messages("unauthorised.paragraph.1.bullet.1.link"),
+        call = Call("GET", config.eoriService)
+      ))),
+      link(
+        id = Some("access_cds_link"),
+        text = messages("unauthorised.paragraph.1.bullet.2.link"),
+        call = Call("GET", config.cdsRegister)
+      )
     )
-    </p>
+  )
 }
 
 @appliedSection = {
-    <h2 class="govuk-heading-m">@messages("unauthorised.applied.heading")</h2>
-
-    <p class="govuk-body">
-    @Html(messages(
-        "unauthorised.applied.paragraph1",
-        link(
-            id = Some("check_cds_status_link"),
-            text = messages("unauthorised.applied.paragraph1.link"),
-            call = Call("GET", config.cdsCheckStatus),
-            target = "_blank"
-        )
-    ))
-    </p>
+  <p class="govuk-body">
+  @Html(messages("unauthorised.paragraph.2", link(
+      id = Some("check_cds_application_status_link"),
+      text = messages("unauthorised.paragraph.2.link"),
+      call = Call("GET", config.cdsCheckStatus)
+    )
+  ))
+  </p>
 }
 
-@govukLayout(
-  title = Title("unauthorised.heading")) {
+@govukLayout(title = Title("unauthorised.heading")) {
 
   @pageTitle(messages("unauthorised.heading"))
 
