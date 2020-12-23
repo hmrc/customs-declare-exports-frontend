@@ -67,7 +67,7 @@ const documentTypeCodes = {
 }
 const euCurrencyCodes = ['EUR', 'BGN', 'HRK', 'CZK', 'DKK', 'HUF', 'PLN', 'RON', 'SEK', 'CHF']
 
-const charactersToReplace = /[^a-zA-Z0-9,\.\-()<> &:'’\[\]\\"\*\/]/g
+const charactersToReplace = /[^a-zA-Z0-9,;#%\.\-()<> &:'’\[\]\\"\*\/]/g
 
 const supportedAcceptanceCodes = [countryCodes, officesOfExitCodes, packageCodes, supervisingOfficeCodes, documentTypeCodes]
 
