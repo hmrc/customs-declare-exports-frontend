@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.exporter.ExporterDetails
-import forms.declaration.{exporter, EntityDetails}
+import forms.declaration.EntityDetails
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
 import models.Mode
