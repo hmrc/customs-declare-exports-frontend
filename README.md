@@ -45,6 +45,10 @@ These scripts can be found in the docs directory.
 
 ### Updating Tariff Code lists
 
+As per Exports Product Manager and CDS Stakeholders instructions, the [CDS Tariff](https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2) 
+is our source of truth for any CDS codes going forward, until further instructions or until we connect with a service that 
+provides this data for us.
+
 There is a small Node.js project on tariff-codes-parser that allows us to automate this task.
 We have been informed that the most up-to-date codes can be found on the [CDS Tariff](https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2).
 
