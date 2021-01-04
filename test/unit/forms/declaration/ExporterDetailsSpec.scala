@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import forms.declaration.exporter.ExporterDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.data.Form
 import unit.base.JourneyTypeTestRunner
 
 class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatchers with JourneyTypeTestRunner {
