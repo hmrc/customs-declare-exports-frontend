@@ -157,7 +157,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "100"
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").text() mustBe "Shipping Mark"
 
-        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe "Open-ended box and pallet (PB)"
+        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe "Pallet, box Combined open-ended box and pallet (PB)"
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "101"
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)").text() mustBe "Shipping Mark"
       }

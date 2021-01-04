@@ -39,7 +39,7 @@ class BorderTransportSpec extends FormSpec {
       "all fields contains correct data" in {
 
         val correctForm =
-          BorderTransport(Some("United Kingdom"), "40", "Id.Number")
+          BorderTransport(Some("United Kingdom, Great Britain, Northern Ireland"), "40", "Id.Number")
 
         val result = form.fillAndValidate(correctForm)
 

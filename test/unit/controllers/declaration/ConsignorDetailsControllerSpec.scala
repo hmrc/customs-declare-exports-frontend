@@ -90,7 +90,10 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
           withNewCaching(
             aDeclarationAfter(
               request.cacheModel,
-              withConsignorDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))
+              withConsignorDetails(
+                None,
+                Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
+              )
             )
           )
 
@@ -123,7 +126,14 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
 
           val correctForm =
-            Json.toJson(ConsignorDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
+            Json.toJson(
+              ConsignorDetails(
+                EntityDetails(
+                  None,
+                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
+                )
+              )
+            )
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
@@ -145,7 +155,14 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
           )
 
           val correctForm =
-            Json.toJson(ConsignorDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
+            Json.toJson(
+              ConsignorDetails(
+                EntityDetails(
+                  None,
+                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
+                )
+              )
+            )
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
@@ -160,7 +177,14 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
         withNewCaching(request.cacheModel)
 
         val correctForm =
-          Json.toJson(ConsignorDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
+          Json.toJson(
+            ConsignorDetails(
+              EntityDetails(
+                None,
+                Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
+              )
+            )
+          )
 
         val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 

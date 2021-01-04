@@ -89,7 +89,10 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
           withNewCaching(
             aDeclarationAfter(
               request.cacheModel,
-              withConsigneeDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))
+              withConsigneeDetails(
+                None,
+                Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
+              )
             )
           )
 
@@ -122,7 +125,14 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
 
           val correctForm =
-            Json.toJson(ConsigneeDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
+            Json.toJson(
+              ConsigneeDetails(
+                EntityDetails(
+                  None,
+                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
+                )
+              )
+            )
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
@@ -140,7 +150,14 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
 
           val correctForm =
-            Json.toJson(ConsigneeDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
+            Json.toJson(
+              ConsigneeDetails(
+                EntityDetails(
+                  None,
+                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
+                )
+              )
+            )
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
