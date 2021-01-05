@@ -59,7 +59,7 @@ const executeEtl = () => {
                     // identify when potential comments might start
                     if (Object.values(record)[0].trim().length === 0) return;
 
-                    const description = record['Reference identifier for Document Name/Type (3rd component)'].replace(/ /g, " ").replace(/ /g, " ")
+                    const description = record['Reference identifier for Document Name/Type (3rd component)'].replace("—", "-").replace(/ /g, " ").replace(/ /g, " ")
                     const code = record['Code to be Declared (2nd component)'].replace(/ /g, " ")
 
                     transformedRecords = transformedRecords.concat([[description, code]])
@@ -79,7 +79,7 @@ const executeEtl = () => {
                     // identify when potential comments might start
                     if (Object.values(record)[0].trim().length === 0) return;
 
-                    const transformedCountryRecord = [record['Country name'], `country:${record['Country code']}`]
+                    const transformedCountryRecord = [record['Country name'].replace("*", ""), `country:${record['Country code']}`]
                     transformedRecords = transformedRecords.concat([transformedCountryRecord])
                 })
                 fs.writeFile(tariffCodes.countryCodes.exportsFEOutputPath, JSON.stringify(transformedRecords, null, 4), (err) => {

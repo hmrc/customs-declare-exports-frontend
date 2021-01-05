@@ -53,16 +53,16 @@ There is a small Node.js project on tariff-codes-parser that allows us to automa
 We have been informed that the most up-to-date codes can be found on the [CDS Tariff](https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2).
 
 We use the following codes:
- * [Country codes](https://www.gov.uk/government/publications/country-codes-for-the-customs-declaration-service)
- * [Authorisation codes](https://www.gov.uk/government/publications/authorisation-type-codes-for-data-element-339-of-the-customs-declaration-service) (3/39 in tariff)
- * [UK Office of Exit codes](https://www.gov.uk/government/publications/uk-customs-office-codes-for-data-element-512-of-the-customs-declaration-service) (5/12 in tariff)
- * [Document type codes (previous document page)](https://www.gov.uk/government/publications/previous-document-codes-for-data-element-21-of-the-customs-declaration-service) (2/1 in tariff)
- * [Package Type codes](https://www.gov.uk/government/publications/package-type-codes-for-data-element-69-of-the-customs-declaration-service) (6/9 in tariff)
- * [Customs supervising office codes](https://www.gov.uk/government/publications/supervising-office-codes-for-data-element-527-of-the-customs-declaration-service) (5/27 in tariff)
+ * [Country codes](https://www.gov.uk/government/publications/country-codes-for-the-customs-declaration-service) *Last published: 1 August 2018*
+ * [Authorisation codes](https://www.gov.uk/government/publications/authorisation-type-codes-for-data-element-339-of-the-customs-declaration-service) (3/39 in tariff) *Last published: 1 August 2018*
+ * [UK Office of Exit codes](https://www.gov.uk/government/publications/uk-customs-office-codes-for-data-element-512-of-the-customs-declaration-service) (5/12 in tariff) *Last published: 1 August 2018*
+ * [Document type codes (previous document page)](https://www.gov.uk/government/publications/previous-document-codes-for-data-element-21-of-the-customs-declaration-service) (2/1 in tariff) *Last published: 1 August 2018*
+ * [Package Type codes](https://www.gov.uk/government/publications/package-type-codes-for-data-element-69-of-the-customs-declaration-service) (6/9 in tariff) *Last published: 1 August 2018*
+ * [Customs supervising office codes](https://www.gov.uk/government/publications/supervising-office-codes-for-data-element-527-of-the-customs-declaration-service) (5/27 in tariff) *Last published: 1 August 2018*
 
 **The steps required to update the code-lists:** 
  1. Install [Node.js](https://nodejs.dev/learn/how-to-install-nodejs) and [npm](https://www.npmjs.com/get-npm) on your local machine.
- 2. Clone [Exports Acceptance project](https://github.com/hmrc/cds-exports-acceptance) into the same repo as this project, as we will have to update the code lists as well. 
+ 2. Clone [Exports Acceptance project](https://github.com/hmrc/cds-exports-acceptance), [External Movements](https://github.com/hmrc/customs-movements-frontend) and [Internal Movements](https://github.com/hmrc/customs-exports-internal-frontend) into the same workspace folder as this project, as we will have to update the code lists as well. 
  3. Ensure the tariff URLs are still valid and update them on `tariff-codes.js`
  4. Go into the Node.js project: `cd tariff-codes-parser`    
  5. Install the Node.js dependencies:  `npm install`
