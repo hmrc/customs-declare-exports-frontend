@@ -28,8 +28,8 @@ import uk.gov.hmrc.govukfrontend.views.html.components
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _, _}
 import uk.gov.hmrc.hmrcfrontend.views.html.helpers.hmrcStandardFooter
 import uk.gov.hmrc.hmrcfrontend.config.TrackingConsentConfig
-import uk.gov.hmrc.hmrcfrontend.views.html.components.{HmrcBanner, HmrcHeader, HmrcReportTechnicalIssue, HmrcFooter}
-import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcTrackingConsentSnippet, HmrcFooterItems}
+import uk.gov.hmrc.hmrcfrontend.views.html.components.{HmrcBanner, HmrcFooter, HmrcHeader, HmrcReportTechnicalIssue}
+import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcFooterItems, HmrcTrackingConsentSnippet}
 import uk.gov.hmrc.hmrcfrontend.config.AccessibilityStatementConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.html.components.gds._
@@ -104,7 +104,7 @@ trait Stubs {
     new GovukBackLink()
   )
 
-  val hmrcFooter = new hmrcStandardFooter(new HmrcFooter(), new HmrcFooterItems( new AccessibilityStatementConfig(minimalConfiguration)))
+  val hmrcFooter = new hmrcStandardFooter(new HmrcFooter(), new HmrcFooterItems(new AccessibilityStatementConfig(minimalConfiguration)))
 
   val hmrcTrackingConsentSnippet = new HmrcTrackingConsentSnippet(new TrackingConsentConfig(Configuration(minimalConfig)))
   val hmrcReportTechnicalIssue = new HmrcReportTechnicalIssue()
