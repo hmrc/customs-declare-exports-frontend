@@ -3,6 +3,8 @@ const countryCodes = {
     tariffUrl: 'https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/897009/Table_1_-_listed_by_country_code.csv',
     exportsFEOutputPath: '../conf/code-lists/location-autocomplete-canonical-list.json',
     e2eOutputPath: '../../cds-exports-acceptance/src/main/resources/lists/countries.json',
+    externalMovementsPath: '../../customs-movements-frontend/conf/code_lists/location-autocomplete-canonical-list.json',
+    internalMovementsPath: '../../customs-exports-internal-frontend/conf/code_lists/location-autocomplete-canonical-list.json',
     tariffHeaders: {
         code: 'Country code',
         description: 'Country name'
