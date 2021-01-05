@@ -62,7 +62,7 @@ We use the following codes:
 
 **The steps required to update the code-lists:** 
  1. Install [Node.js](https://nodejs.dev/learn/how-to-install-nodejs) and [npm](https://www.npmjs.com/get-npm) on your local machine.
- 2. Clone [Exports Acceptance project](https://github.com/hmrc/cds-exports-acceptance), [External Movements](https://github.com/hmrc/customs-movements-frontend) and [Internal Movements](https://github.com/hmrc/customs-exports-internal-frontend) into the same workspace folder as this project, as we will have to update the code lists as well. 
+ 2. Clone [Exports Acceptance project](https://github.com/hmrc/cds-exports-acceptance), [External Movements](https://github.com/hmrc/customs-movements-frontend), [Internal Movements](https://github.com/hmrc/customs-exports-internal-frontend) and [Declarations BE](https://github.com/hmrc/customs-declare-exports) into the same workspace folder as this project, as we will have to update the code lists as well. 
  3. Ensure the tariff URLs are still valid and update them on `tariff-codes.js`
  4. Go into the Node.js project: `cd tariff-codes-parser`    
  5. Install the Node.js dependencies:  `npm install`

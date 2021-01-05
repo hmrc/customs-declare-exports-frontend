@@ -4,7 +4,7 @@ const https         = require('https')
 const csv2Json      = require('csvtojson')
 const tariffCodes   = require('../data/tariff-codes')
 
-const executeEtl = () => {
+const etlExportsFe = () => {
     const authorisationHoldersOutput = fs.createWriteStream(tariffCodes.authorisationHoldersCodes.exportsFEOutputPath);
     https.get(tariffCodes.authorisationHoldersCodes.tariffUrl, (response) => {
         response.pipe(
@@ -90,5 +90,5 @@ const executeEtl = () => {
 }
 
 module.exports = {
-    executeEtl
+    executeEtl: etlExportsFe
 }

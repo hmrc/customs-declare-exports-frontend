@@ -1,18 +1,21 @@
 const tariffCodes   = require('./src/data/tariff-codes')
 const etlAcceptance = require('./src/etl/etl-acceptance')
 const etlMovements = require('./src/etl/etl-movements')
-const etlExports    = require('./src/etl/execute-etl')
+const etlExportsBe = require('./src/etl/etl-exports-be')
+const etlExportsFe    = require('./src/etl/etl-exports-fe')
 
-//Update CDS Exports code lists
-etlExports.executeEtl()
+//Update CDS Exports FE code lists
+etlExportsFe.executeEtl()
+
+//Update CDS Exports BE code lists
+etlExportsBe.executeEtl()
+
+//Update Internal and External Movements FE code lists
+etlMovements.executeEtl()
 
 // Update CDS Exports Acceptance code lists
 tariffCodes.supportedAcceptanceCodes.map( (tariffObj) =>
     etlAcceptance.etl(tariffObj))
 
-//Update Movements code lists
-etlMovements.executeEtl()
-
-// Update Exports Acceptance tests
 etlAcceptance.etlAuthorisationHolders(tariffCodes.authorisationHoldersCodes)
 
