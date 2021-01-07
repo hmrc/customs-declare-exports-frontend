@@ -30,14 +30,14 @@ const extractData = (tariffObj, records) => {
 
         let transformedRecord = {
             'code': record[tariffObj.tariffHeaders.code],
-            'description': record[tariffObj.tariffHeaders.description].trim().replace("—", "-").replace("–", "-").replace(tariffCodes.charactersToReplace, " ")
+            'description': record[tariffObj.tariffHeaders.description].trim().replace("—", "-").replace("–", "-").replace(tariffCodes.charactersToReplace, " ").replace("  ", " ")
         }
 
         if (record['Currency code']) {
             //country data, which has a slightly different structure and headers
             transformedRecord = {
                 'code': record[tariffObj.tariffHeaders.code],
-                'name': record[tariffObj.tariffHeaders.description].trim().replace("*", "").replace("—", "-").replace("–", "-").replace(tariffCodes.charactersToReplace, " "),
+                'name': record[tariffObj.tariffHeaders.description].trim().replace("*", "").replace("—", "-").replace("–", "-").replace(tariffCodes.charactersToReplace, " ").replace("  ", " "),
                 'zone': tariffCodes.euCurrencyCodes.includes(record['Currency code']) ? 'EU' : ''
             }
         }

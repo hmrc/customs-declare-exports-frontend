@@ -22,7 +22,7 @@ const etlExportsFe = () => {
         response.pipe(
             csv.parse()).pipe(
             csv.transform((line) => {
-                return [2, 3].map(index => line[index].trim().replace("—", "-").replace("–", "-").replace(tariffCodes.charactersToReplace, " ")
+                return [2, 3].map(index => line[index].trim().replace("—", "-").replace("–", "-").replace(tariffCodes.charactersToReplace, "")
                     .replace("Usual name", "Description").replace("COL code", "Code"))
             })).pipe(
             csv.stringify({quoted: true})).pipe(officesOfExitOutput)
@@ -33,7 +33,7 @@ const etlExportsFe = () => {
         response.pipe(
             csv.parse()).pipe(
             csv.transform((line) => {
-                return [0, 1].map(index => line[index].trim().replace("—", "-").replace("–", "-").replace(tariffCodes.charactersToReplace, " ")
+                return [0, 1].map(index => line[index].trim().replace("—", "-").replace("–", "-").replace(tariffCodes.charactersToReplace, "").replace("  ", " ")
                     .replace("Name", "Description"))
             })).pipe(
             csv.stringify({quoted: true})).pipe(packageCodesOutput)
@@ -44,7 +44,7 @@ const etlExportsFe = () => {
         response.pipe(
             csv.parse()).pipe(
             csv.transform((line) => {
-                return [1, 0].map(index => line[index].trim().replace("—", "-").replace("–", "-").replace(tariffCodes.charactersToReplace, " ")
+                return [1, 0].map(index => line[index].trim().replace("—", "-").replace("–", "-").replace(tariffCodes.charactersToReplace, "")
                     .replace("HMRC office", "Description").replace("UK supervising office code to be declared in Data Element 5/27", "Code"))
             })).pipe(
             csv.stringify({quoted: true})).pipe(customsOfficeOutput)
@@ -59,7 +59,7 @@ const etlExportsFe = () => {
                     // identify when potential comments might start
                     if (Object.values(record)[0].trim().length === 0) return;
 
-                    const description = record['Reference identifier for Document Name/Type (3rd component)'].replace("—", "-").replace(/ /g, " ").replace(/ /g, " ")
+                    const description = record['Reference identifier for Document Name/Type (3rd component)'].replace("—", "-").replace(/ /g, " ").replace(/ /g, " ").replace("  ", " ")
                     const code = record['Code to be Declared (2nd component)'].replace(/ /g, " ")
 
                     transformedRecords = transformedRecords.concat([[description, code]])
