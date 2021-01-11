@@ -29,7 +29,7 @@
         govukDetails : GovukDetails,
         pageTitle: pageTitle,
         inputText: exportsInputText,
-        inputTextArea: exportsInputTextArea,
+        govukCharacterCount : GovukCharacterCount,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
@@ -78,11 +78,18 @@
             content = HtmlContent(commodityDetailsInformation)
         ))
 
-        @inputTextArea(
-            field = form(CommodityDetails.descriptionOfGoodsKey),
-            labelKey = "declaration.commodityDetails.description.header",
-            hintKey = Some("declaration.commodityDetails.description.header.hint")
-        )
+        @govukCharacterCount(CharacterCount(
+            id = "with-hint",
+            name = "with-hint",
+            maxLength = Some(280),
+            label = Label(
+                classes = "govuk-label govuk-label--m",
+              content = Text(messages("declaration.commodityDetails.description.header"))
+            ),
+            hint = Some(Hint(
+              content = Text(messages("declaration.commodityDetails.description.header.hint"))
+            ))
+        ))
 
         @tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody))
 
