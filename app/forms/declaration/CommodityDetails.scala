@@ -31,9 +31,9 @@ object CommodityDetails extends DeclarationPage {
 
   val combinedNomenclatureCodeKey = "combinedNomenclatureCode"
   val descriptionOfGoodsKey = "descriptionOfGoods"
+  val descriptionOfGoodsMaxLength = 280
 
   private val combinedNomenclatureCodeMaxLength = 8
-  private val descriptionOfGoodsMaxLength = 280
 
   private def mappingCombinedNomenclatureCodeRequired: Mapping[Option[String]] =
     optional(
