@@ -29,7 +29,7 @@
         govukDetails : GovukDetails,
         pageTitle: pageTitle,
         inputText: exportsInputText,
-        inputTextArea: exportsInputTextArea,
+        characterCount: exportsInputCharacterCount,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
@@ -48,8 +48,8 @@
 @classificationTeamLink = {<a class="govuk-link govuk-link--no-visited-state" target="_blank" href=@appConfig.classificationHelpUrl>@messages("declaration.commodityDetails.how.classificationTeam")</a>}
 
 @commodityDetailsInformation = {
-@Html(messages("declaration.commodityDetails.how.step1", tradeTariffLink))
-@Html(messages("declaration.commodityDetails.how.summary", classificationTeamLink))
+    @Html(messages("declaration.commodityDetails.how.step1", tradeTariffLink))
+    @Html(messages("declaration.commodityDetails.how.summary", classificationTeamLink))
 }
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
@@ -78,10 +78,11 @@
             content = HtmlContent(commodityDetailsInformation)
         ))
 
-        @inputTextArea(
+        @characterCount(
             field = form(CommodityDetails.descriptionOfGoodsKey),
             labelKey = "declaration.commodityDetails.description.header",
-            hintKey = Some("declaration.commodityDetails.description.header.hint")
+            hintKey = Some("declaration.commodityDetails.description.header.hint"),
+            maxLength = Some(CommodityDetails.descriptionOfGoodsMaxLength)
         )
 
         @tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody))
