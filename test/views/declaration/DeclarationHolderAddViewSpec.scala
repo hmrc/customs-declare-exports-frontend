@@ -22,7 +22,6 @@ import controllers.util.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -92,27 +91,14 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         saveAndReturnButton.text() mustBe messages(saveAndReturnCaption)
         saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
       }
-    }
 
-    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'Additional Info' page" in {
+      "display 'Back' button that links to 'Is Authorisation Required' page" in {
 
         val document = createView()
         val backButton = document.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.AdditionalActorsSummaryController.displayPage().url
-      }
-    }
-
-    onJourney(CLEARANCE) { implicit request =>
-      "display 'Back' button that links to 'Consignee Details' page" in {
-
-        val document = createView()
-        val backButton = document.getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.ConsigneeDetailsController.displayPage().url
+        backButton.attr("href") mustBe routes.DeclarationHolderRequiredController.displayPage().url
       }
     }
   }

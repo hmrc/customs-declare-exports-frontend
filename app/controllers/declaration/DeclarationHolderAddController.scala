@@ -47,12 +47,12 @@ class DeclarationHolderAddController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val holders = cachedHolders
-    Ok(declarationHolderPage(mode, form(holders).withSubmissionErrors()))
+    Ok(declarationHolderPage(mode, form.withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val holders = cachedHolders
-    val boundForm = form(holders).bindFromRequest()
+    val boundForm = form.bindFromRequest()
     boundForm.fold(
       formWithErrors => {
         Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors)))
@@ -65,7 +65,7 @@ class DeclarationHolderAddController @Inject()(
     )
   }
 
-  private def cachedHolders(implicit request: JourneyRequest[_]) =
+  private def cachedHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] =
     request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
 
   private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder], cachedData: Seq[DeclarationHolder])(

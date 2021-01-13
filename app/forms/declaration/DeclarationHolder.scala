@@ -18,9 +18,6 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.common.Eori
-import forms.mappings.ConditionalMapping
-import models.DeclarationType.SIMPLIFIED
-import models.StringOption
 import models.requests.JourneyRequest
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
@@ -39,38 +36,13 @@ case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option
 object DeclarationHolder extends DeclarationPage {
   implicit val format = Json.format[DeclarationHolder]
 
-  private def codeMapping =
+  private def codeMapping: Mapping[Option[String]] =
     optional(
       text()
         .verifying("declaration.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.code)))
     )
 
-  private def eoriMapping = optional(Eori.mapping)
-
-  private val condition: Map[String, String] => Boolean = { data =>
-    val authorisationTypeCode = data.get("authorisationTypeCode").flatMap(StringOption(_))
-    val eori = data.get("eori").flatMap(StringOption(_))
-    areBothEmpty(authorisationTypeCode, eori) || areBothNonEmpty(authorisationTypeCode, eori)
-  }
-  private def areBothEmpty(field1: Option[String], field2: Option[String]): Boolean = !isPresent(field1) && !isPresent(field2)
-  private def areBothNonEmpty(field1: Option[String], field2: Option[String]): Boolean = isPresent(field1) && isPresent(field2)
-  private def isPresent(field: Option[String]): Boolean = field.exists(_.trim.nonEmpty)
-
-  private val authorisationTypeCodeConditionalMapping = ConditionalMapping(
-    conditionalMapping = codeMapping,
-    defaultMapping = codeMapping.verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined),
-    condition = condition
-  )
-  private val eoriConditionalMapping = ConditionalMapping(
-    conditionalMapping = eoriMapping,
-    defaultMapping = eoriMapping.verifying("declaration.eori.empty", _.isDefined),
-    condition = condition
-  )
-
-  val optionalMapping: Mapping[DeclarationHolder] =
-    Forms.mapping("authorisationTypeCode" -> authorisationTypeCodeConditionalMapping, "eori" -> eoriConditionalMapping)(DeclarationHolder.apply)(
-      DeclarationHolder.unapply
-    )
+  private def eoriMapping: Mapping[Option[Eori]] = optional(Eori.mapping)
 
   val mandatoryMapping: Mapping[DeclarationHolder] =
     Forms.mapping(
@@ -80,10 +52,7 @@ object DeclarationHolder extends DeclarationPage {
 
   def mandatoryForm(): Form[DeclarationHolder] = Form(mandatoryMapping)
 
-  def form(holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_]): Form[DeclarationHolder] = request.declarationType match {
-    case SIMPLIFIED => Form(mandatoryMapping)
-    case _          => if (holders.isEmpty) Form(optionalMapping) else Form(mandatoryMapping)
-  }
+  def form(implicit request: JourneyRequest[_]): Form[DeclarationHolder] = Form(mandatoryMapping)
 
   // Method to parse format typeCode-eori
   def fromId(id: String): DeclarationHolder = {
@@ -98,4 +67,5 @@ object DeclarationHolder extends DeclarationPage {
 
 }
 
+object DeclarationHolderRequired extends DeclarationPage
 object DeclarationSummaryHolder extends DeclarationPage

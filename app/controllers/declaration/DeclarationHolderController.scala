@@ -43,10 +43,11 @@ class DeclarationHolderController @Inject()(
   import DeclarationHolderController._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = addAnotherYesNoForm.withSubmissionErrors()
-    request.cacheModel.parties.declarationHoldersData match {
-      case Some(data) if data.holders.nonEmpty => Ok(declarationHolderPage(mode, frm, data.holders))
-      case _                                   => navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
+    val holders = request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+    if (holders.isEmpty) navigator.continueTo(mode, routes.DeclarationHolderRequiredController.displayPage)
+    else {
+      val frm = addAnotherYesNoForm.withSubmissionErrors()
+      Ok(declarationHolderPage(mode, frm, holders))
     }
   }
 

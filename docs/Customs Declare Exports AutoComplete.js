@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.65
+// @version      1.66
 // @description  decs supported: (Std-Arrived A), (Occ-Arrived B), (Smp-Arrived C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Arrived J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -407,7 +407,10 @@ function consigneeDetails(){
         document.getElementById('details_address_townOrCity').value = 'New York';
         document.getElementById('details_address_postCode').value = '10001';
 
-        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America (the), Including Puerto Rico");
+        selectFromAutoPredict(
+            document.getElementById('details_address_country-container'),
+            "United States of America (the), Including Puerto Rico"
+        );
         document.getElementById('submit').click()
     }
 }
@@ -415,6 +418,13 @@ function consigneeDetails(){
 function otherPartiesInvolved(){
     if (currentPageIs('/customs-declare-exports/declaration/other-parties-involved')) {
         selectRadioOptionFromInputs(document.getElementsByName('partyType'), 4);
+        document.getElementById('submit').click()
+    }
+}
+
+function isAuthorisationRequired(){
+    if (currentPageIs('/customs-declare-exports/declaration/is-authorisation-required')) {
+        document.getElementById('code_yes').checked = 'checked';
         document.getElementById('submit').click()
     }
 }
@@ -1155,6 +1165,7 @@ function completeJourney() {
     carrierEoriNumber();
     carrierDetails();
     otherPartiesInvolved();
+    isAuthorisationRequired();
     holderOfAuthorisation();
     authorisationsSummary();
 

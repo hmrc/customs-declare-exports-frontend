@@ -19,7 +19,6 @@ package unit.controllers.declaration
 import controllers.declaration.DeclarationHolderAddController
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
-import models.DeclarationType._
 import models.Mode
 import models.declaration.DeclarationHoldersData
 import org.mockito.ArgumentCaptor
@@ -70,7 +69,8 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
     captor.getValue
   }
 
-  private def verifyAddPageInvoked(numberOfTimes: Int = 1) = verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+  private def verifyAddPageInvoked(numberOfTimes: Int = 1) =
+    verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456789012")))
 
@@ -88,7 +88,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           status(result) mustBe OK
           verifyAddPageInvoked()
 
-          theDeclarationHolder.value mustBe empty
+          theDeclarationHolder.value mustBe None
         }
 
       }
@@ -127,6 +127,15 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
         }
+
+        "user submits no data" in {
+          withNewCaching(request.cacheModel)
+
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded())
+
+          status(result) mustBe BAD_REQUEST
+          verifyAddPageInvoked()
+        }
       }
 
       "return 303 (SEE_OTHER)" when {
@@ -145,31 +154,6 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           savedHolder mustBe Some(DeclarationHoldersData(Seq(declarationHolder)))
         }
 
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-
-      onJourney(STANDARD, SUPPLEMENTARY) { request =>
-        "user submits no data" in {
-          withNewCaching(request.cacheModel)
-
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded())
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage(Mode.Normal)
-        }
-      }
-
-      onJourney(OCCASIONAL, CLEARANCE) { request =>
-        "user submits no data" in {
-          withNewCaching(request.cacheModel)
-
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded())
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountryController.displayPage(Mode.Normal)
-        }
       }
     }
   }
