@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.64
+// @version      1.65
 // @description  decs supported: (Std-Arrived A), (Occ-Arrived B), (Smp-Arrived C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Arrived J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -16,7 +16,12 @@
 })();
 
 // helper methods
-function setDeclaration(choice) { GM_setValue("declaration", choice); }
+function setDeclaration(choice) {
+
+    GM_setValue("declaration", choice);
+    setAdditionalDocuments()
+    setHoldersOfAuthorisation()
+}
 
 function getDeclaration() { return GM_getValue("declaration"); }
 
@@ -139,8 +144,8 @@ function findRadioOption(fieldname) {
 
 function currentPageIs(path) {
     if(path.includes("*")) {
-        let matches = window.location.pathname.match(path);
-        return matches && matches.length > 0
+        let matches = window.location.pathname.match(path)
+        return (matches && window.location.pathname.endsWith(path.slice(-5)))
     } else {
         return (path == window.location.pathname);
     }
@@ -228,7 +233,7 @@ function additionalDeclarationType(){
     }
 }
 
-function consignmentRefereences(){
+function consignmentReferences(){
     if (currentPageIs('/customs-declare-exports/declaration/consignment-references')) {
         document.getElementById('lrn').value = 'QSLRN' + Math.floor(Math.random() * 8999) + 100;
         document.getElementById('ducr_ducr').value = '8GB123456' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1';
@@ -261,7 +266,7 @@ function declarantDetails(){
 
 function isDeclarantExporter(){
     if (currentPageIs('/customs-declare-exports/declaration/are-you-the-exporter')) {
-        document.getElementById('answer_no').checked = 'checked';
+        document.getElementById('answer_yes').checked = 'checked';
         document.getElementById('submit').click();
     }
 }
@@ -273,7 +278,7 @@ function exporterDetails(){
         document.getElementById('details_address_townOrCity').value = 'London';
         document.getElementById('details_address_postCode').value = 'WC1 3RD';
 
-        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America");
+        selectFromAutoPredict(document.getElementById('details_address_country-container"'), "United States of America (the), Including Puerto Rico");
         document.getElementById('submit').click()
 
     }
@@ -302,7 +307,7 @@ function consignorAddress(){
         document.getElementById('details_address_townOrCity').value = 'New York';
         document.getElementById('details_address_postCode').value = '10001';
 
-        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America");
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America (the), Including Puerto Rico");
         document.getElementById('submit').click()
     }
 }
@@ -383,15 +388,14 @@ function carrierDetails(){
         document.getElementById('details_address_addressLine').value = 'School Road';
         document.getElementById('details_address_townOrCity').value = 'London';
         document.getElementById('details_address_postCode').value = 'WS1 2AB';
-        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United Kingdom");
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United Kingdom, Great Britain, Northern Ireland");
         document.getElementById('submit').click()
     }
 }
 
 function carrierEoriNumber(){
     if (currentPageIs('/customs-declare-exports/declaration/carrier-eori-number')) {
-        document.getElementById('Yes').checked = 'checked';
-        document.getElementById('eori').value = 'GB123456789000';
+        document.getElementById('No').checked = 'checked';
         document.getElementById('submit').click()
     }
 }
@@ -403,7 +407,7 @@ function consigneeDetails(){
         document.getElementById('details_address_townOrCity').value = 'New York';
         document.getElementById('details_address_postCode').value = '10001';
 
-        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America");
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America (the), Including Puerto Rico");
         document.getElementById('submit').click()
     }
 }
@@ -415,13 +419,43 @@ function otherPartiesInvolved(){
     }
 }
 
+// holder of authorisation
+function getHoACode(dec) {
+
+    var decType = "hoa-code" + dec
+
+    var codes = GM_getValue(decType)
+    var code = codes.pop()
+    GM_setValue(decType, codes)
+
+    return code;
+}
+
+function getHoAEori(dec) {
+
+    var decType = "hoa-eori" + dec
+
+    var eoris = GM_getValue(decType)
+    var eori = eoris.pop()
+    GM_setValue(decType, eoris)
+
+    return eori;
+}
+
+function setHoldersOfAuthorisation() {
+
+    GM_setValue("hoa-codeC", ['CSE', 'SDE'])
+    GM_setValue("hoa-eoriC", ['GB717572504502801', 'GB717572504502801'])
+    GM_setValue("hoa-lengthC", 2)
+}
+
 function holderOfAuthorisation(){
     if (currentPageIs('/customs-declare-exports/declaration/add-authorisation-required')) {
         switch(getDeclaration())
         {
             case 'C':
-                selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "IPO");
-                document.getElementById('eori').value = 'GB717572504502801';
+                selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), getHoACode("C"));
+                document.getElementById('eori').value = getHoAEori("C");
                 document.getElementById('submit').click();
                 break;
             case 'Z':
@@ -447,12 +481,12 @@ function holderOfAuthorisation(){
                 break;
             case 'A':
                 selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "CSE");
-                document.getElementById('eori').value = 'GB717572504502802';
+                document.getElementById('eori').value = 'GB717572504502801';
                 document.getElementById('submit').click();
                 break;
             case 'D':
                 selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "AEOC");
-                document.getElementById('eori').value = 'GB717572504502811';
+                document.getElementById('eori').value = 'GB717572504502801';
                 document.getElementById('submit').click();
                 break;
             case 'E':
@@ -465,8 +499,21 @@ function holderOfAuthorisation(){
 
 function authorisationsSummary(){
     if (currentPageIs('/customs-declare-exports/declaration/authorisations-required')) {
-        document.getElementById('code_no').checked = 'checked';
-        document.getElementById('submit').click();
+        switch(getDeclaration()) {
+            case 'C':
+                if(document.getElementsByClassName("govuk-table")[0].querySelectorAll("tbody tr").length < GM_getValue("hoa-lengthC")) {
+                    document.getElementById('code_yes').checked = 'checked';
+                    document.getElementById('submit').click();
+                } else {
+                    document.getElementById('code_no').checked = 'checked';
+                    document.getElementById('submit').click();
+                }
+            break;
+            default:
+                    document.getElementById('code_no').checked = 'checked';
+                    document.getElementById('submit').click();
+                break;
+        }
     }
 }
 
@@ -486,8 +533,16 @@ function destinationCountry(){
 
 function countryOfRouting(){
     if (currentPageIs('/customs-declare-exports/declaration/country-of-routing')) {
-        document.getElementById('Yes').click();
-        document.getElementById('submit').click();
+        switch(getDeclaration()){
+            case 'F':
+                document.getElementById('Yes').click();
+                break;
+            default:
+                document.getElementById('No').click();
+                break;
+        }
+
+        document.getElementById('submit').click()
     }
 }
 
@@ -509,7 +564,6 @@ function locationOfGoods(){
     if (currentPageIs('/customs-declare-exports/declaration/location-of-goods')) {
         switch(getDeclaration()){
             case 'B':
-            case 'C':
             case 'E':
             case 'F':
             case 'K':
@@ -517,6 +571,7 @@ function locationOfGoods(){
                 document.getElementById('code').value = 'GBAUBELBFSBEL';
                 break;
             case 'J':
+            case 'C':
                 document.getElementById('code').value = 'GBAUFXTFXTFXT';
                 break;
             case 'Z':
@@ -538,7 +593,6 @@ function officeOfExit(){
         }
 
         switch(getDeclaration()){
-            case 'C':
             case 'E':
             case 'F':
             case 'K':
@@ -583,6 +637,7 @@ function natureOfTransaction(){
 function previousDocuments(){
     if (currentPageIs('/customs-declare-exports/declaration/add-previous-document')) {
         switch(getDeclaration()){
+            case 'A':
             case 'C':
             case 'D':
             case 'E':
@@ -622,10 +677,6 @@ function addFirstItem(){
 function procedureCodes(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/procedure-codes')) {
         switch(getDeclaration()){
-            case 'C':
-                document.getElementById('procedureCode').value = '3151';
-                document.getElementById('additionalProcedureCode').value ='1CS';
-                break;
             case 'D':
             case 'F':
             case 'J':
@@ -678,6 +729,10 @@ function fiscalReferencesSummary(){
 function commodityDetails(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/commodity-details')) {
         switch(getDeclaration()){
+            case 'A':
+                document.getElementById("combinedNomenclatureCode").value = '29291000';
+                document.getElementById('descriptionOfGoods').value ='nonblockingdocumentary';
+                break;
             case 'B':
             case 'C':
             case 'E':
@@ -765,7 +820,7 @@ function packageInformationSummary(){
     }
 }
 
-function commodityMeasurments(){
+function commodityMeasurements(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/commodity-measure')) {
         switch(getDeclaration()){
             case 'D':
@@ -799,19 +854,6 @@ function addAdditionalInformation(){
 
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-information')) {
         switch(getDeclaration()){
-            case 'C':
-                if (!document.getElementById("removable_elements__row0")) {
-                    document.getElementById('code').value ='00400';
-                    document.getElementById('description').value ='EXPORTER';
-                    document.getElementById('submit').click();
-                } else if (!document.getElementById("removable_elements__row1")) {
-                    document.getElementById('code').value ='10200';
-                    document.getElementById('description').value ='IPOSDE';
-                    document.getElementById('add').click();
-                } else {
-                    document.getElementById('submit').click();
-                }
-                break;
             case 'K':
             case 'Z':
                 document.getElementById('code').value ='00600';
@@ -833,26 +875,56 @@ function additionalInformationSummary(){
     }
 }
 
+// additional documents
+function getAdCode(dec) {
+
+    var decType = "ad-code" + dec
+
+    var codes = GM_getValue(decType)
+    var code = codes.pop()
+    GM_setValue(decType, codes)
+
+    return code;
+}
+
+function getAdIdent(dec) {
+
+    var decType = "ad-idents" + dec
+
+    var idents = GM_getValue(decType)
+    var ident = idents.pop()
+    GM_setValue(decType, idents)
+
+    return ident;
+}
+
+function setAdditionalDocuments() {
+
+    GM_setValue("ad-codeA", ['Y923', 'Y957', 'C676'])
+    GM_setValue("ad-identsA", ['005345678', '005345678', 'GBCSE717572504502801'])
+    GM_setValue("ad-lengthA", 3)
+
+    GM_setValue("ad-codeC", ['C676', 'C512'])
+    GM_setValue("ad-identsC", ['GBCSE717572504502801', 'GBCSE717572504502801'])
+    GM_setValue("ad-lengthC", 2)
+}
+
 function addDocuments(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-documentation')) {
         switch(getDeclaration())
         {
+            case 'A':
+                document.getElementById('documentTypeCode').value = getAdCode("A");
+                document.getElementById('documentIdentifier').value = getAdIdent("A");
+                document.getElementById('documentStatusReason').value = "Reason";
+                document.getElementById('submit').click();
+
+                break;
             case 'C':
-                if (!document.querySelector("#content>article>form>table>tbody>tr>th")) {
-                    document.getElementById('documentTypeCode').value ='C601';
-                    document.getElementById('documentIdentifier').value ='GBIPO717572504502801';
-                    document.getElementById('submit').click();
-                } else if (!document.querySelector("#content>article>form>table>tbody>tr:nth-child(2)>th")) {
-                    document.getElementById('documentTypeCode').value ='C512';
-                    document.getElementById('documentIdentifier').value ='GBSDE717572504502801';
-                    document.getElementById('add').click();
-                } else if (!document.querySelector("#content>article>form>table>tbody>tr:nth-child(3)>th")) {
-                    document.getElementById('documentTypeCode').value ='C676';
-                    document.getElementById('documentIdentifier').value ='GBCSE717572504502801';
-                    document.getElementById('add').click();
-                } else {
-                    document.getElementById('submit').click();
-                }
+                document.getElementById('documentTypeCode').value = getAdCode("C");
+                document.getElementById('documentIdentifier').value = getAdIdent("C");
+                document.getElementById('submit').click();
+
                 break;
             case 'Z':
                 if (!document.querySelector("#content>article>form>table>tbody>tr>th")) {
@@ -898,25 +970,17 @@ function addDocuments(){
                 document.getElementById('documentIdentifier').value ='GBEIR717572504502811';
                 document.getElementById('submit').click();
                 break;
-            case 'A':
-                document.getElementById('documentTypeCode').value ='C676';
-                document.getElementById('documentIdentifier').value ='GBCSE717572504502802';
-                document.getElementById('submit').click();
-                break;
             case 'B':
                 document.getElementById('documentTypeCode').value = 'C676';
                 document.getElementById('documentIdentifier').value = 'GBCSE717572504502801';
                 document.getElementById('submit').click();
                 break;
             case 'E':
-                document.getElementById('submit').click();
-                break;
             case 'K':
                 document.getElementById('submit').click();
-                break;
             default:
                 document.getElementById('documentTypeCode').value ='C501';
-                document.getElementById('documentIdentifier').value ='GBAEOC717572504502811';
+                document.getElementById('documentIdentifier').value ='GBAEOC717572504502801';
                 document.getElementById('submit').click();
         }
     }
@@ -924,8 +988,30 @@ function addDocuments(){
 
 function addDocumentsSummary(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-documentation-list')) {
-        document.getElementById('code_no').checked = 'checked';
-        document.getElementById('submit').click();
+        switch(getDeclaration()) {
+            case 'A':
+                if(document.getElementById("documents_produced").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthA")) {
+                    document.getElementById('code_yes').checked = 'checked';
+                    document.getElementById('submit').click();
+                } else {
+                    document.getElementById('code_no').checked = 'checked';
+                    document.getElementById('submit').click();
+                }
+                break;
+            case 'C':
+                if(document.getElementById("documents_produced").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthC")) {
+                    document.getElementById('code_yes').checked = 'checked';
+                    document.getElementById('submit').click();
+                } else {
+                    document.getElementById('code_no').checked = 'checked';
+                    document.getElementById('submit').click();
+                }
+                break;
+            default:
+                document.getElementById('code_no').checked = 'checked';
+                document.getElementById('submit').click();
+                break;
+        }
     }
 }
 
@@ -947,11 +1033,11 @@ function transportLeavingBorder(){
 function warehouseIdentification(){
     if (currentPageIs('/customs-declare-exports/declaration/warehouse-details')) {
 
-        if(document.getElementById('code_yes')) {
-            document.getElementById('code_yes').click()
+        // K
+        if(document.getElementById('code_no')) {
+            document.getElementById('code_no').click()
         }
 
-        document.getElementById('identificationNumber').value ='R1234567GB';
         document.getElementById('submit').click();
     }
 }
@@ -960,10 +1046,10 @@ function supervisingCustomsOffice(){
     if (currentPageIs('/customs-declare-exports/declaration/supervising-customs-office')) {
         switch(getDeclaration()){
             case 'A':
+            case 'D':
             case 'Z':
                 break;
             case 'B':
-            case 'C':
             case 'E':
             case 'F':
             case 'K':
@@ -994,7 +1080,7 @@ function departureTransport(){
 
 function borderTransport(){
     if (currentPageIs('/customs-declare-exports/declaration/border-transport')) {
-        selectFromAutoPredict(document.getElementById('borderTransportNationality-container'), "United Kingdom");
+        selectFromAutoPredict(document.getElementById('borderTransportNationality-container'), "United Kingdom, Great Britain, Northern Ireland");
         document.getElementById('nameOfVessel').checked = 'checked';
         document.getElementById('borderTransportReference_nameOfVessel').value = 'Superfast Hawk Millenium';
         document.getElementById('submit').click();
@@ -1050,7 +1136,7 @@ function completeJourney() {
     declarationChoice();
     dispatchLocation();
     additionalDeclarationType();
-    consignmentRefereences();
+    consignmentReferences();
 
     // parties
     isEntryIntoDeclarantsRecords();
@@ -1102,7 +1188,7 @@ function completeJourney() {
     statisticalValue();
     addPackageInformation();
     packageInformationSummary();
-    commodityMeasurments();
+    commodityMeasurements();
     additionalInformationSummary();
     isAdditionalInformationRequired();
     addAdditionalInformation();
