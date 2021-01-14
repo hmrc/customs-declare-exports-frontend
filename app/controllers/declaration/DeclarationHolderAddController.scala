@@ -46,7 +46,6 @@ class DeclarationHolderAddController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holders = cachedHolders
     Ok(declarationHolderPage(mode, form.withSubmissionErrors()))
   }
 

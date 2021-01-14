@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.DeclarationHolder
 import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
@@ -43,12 +44,9 @@ class DeclarationHolderController @Inject()(
   import DeclarationHolderController._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holders = request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+    val holders = cachedHolders
     if (holders.isEmpty) navigator.continueTo(mode, routes.DeclarationHolderRequiredController.displayPage)
-    else {
-      val frm = addAnotherYesNoForm.withSubmissionErrors()
-      Ok(declarationHolderPage(mode, frm, holders))
-    }
+    else Ok(declarationHolderPage(mode, addAnotherYesNoForm.withSubmissionErrors(), holders))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -64,6 +62,9 @@ class DeclarationHolderController @Inject()(
         }
       )
   }
+
+  private def cachedHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] =
+    request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
 
   private def addAnotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
 
