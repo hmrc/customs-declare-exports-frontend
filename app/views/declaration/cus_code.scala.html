@@ -51,8 +51,8 @@
 
 @tariffBody = { @Html(messages("declaration.cusCode.help.bodyText", components.details_content_link())) }
 
-@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.cusCode.header.tradeTariff.link")</a>}
-@ecicsToolLink = {<a target="_blank" href=@appConfig.ecicsToolUrl>@messages("declaration.cusCode.header.ecicsTool.link")</a>}
+@tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.cusCode.header.tradeTariff.link")</a>}
+@ecicsToolLink = {<a target="_blank" class="govuk-link" href=@appConfig.ecicsToolUrl>@messages("declaration.cusCode.header.ecicsTool.link")</a>}
 
 @govukLayout(
     title = Title("declaration.cusCode.header", "declaration.section.5"),
