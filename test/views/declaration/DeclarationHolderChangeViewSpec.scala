@@ -48,11 +48,8 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       messages must haveTranslationFor("declaration.declarationHolder.title.hint")
       messages must haveTranslationFor("declaration.declarationHolder.eori")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode")
-      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.hint")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.invalid")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.empty")
-      messages must haveTranslationFor("declaration.declarationHolders.maximumAmount.error")
-      messages must haveTranslationFor("declaration.declarationHolders.duplicated")
     }
   }
 

@@ -47,11 +47,8 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       messages must haveTranslationFor("declaration.declarationHolder.title.hint")
       messages must haveTranslationFor("declaration.declarationHolder.eori")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode")
-      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.hint")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.invalid")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.empty")
-      messages must haveTranslationFor("declaration.declarationHolders.maximumAmount.error")
-      messages must haveTranslationFor("declaration.declarationHolders.duplicated")
     }
   }
 
@@ -72,7 +69,6 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       "display empty input with label for Authorisation Code" in {
 
         document.getElementById("authorisationTypeCode-label").text() mustBe messages("declaration.declarationHolder.authorisationCode")
-        document.getElementById("authorisationTypeCode-hint").text() mustBe messages("declaration.declarationHolder.authorisationCode.hint")
         document.getElementById("authorisationTypeCode").attr("value") mustBe empty
       }
 

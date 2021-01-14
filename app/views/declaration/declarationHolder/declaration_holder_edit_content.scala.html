@@ -52,7 +52,7 @@
             field = form("authorisationTypeCode"),
             label = "declaration.declarationHolder.authorisationCode",
             labelClass = Some("govuk-label--m"),
-            hintText = Some(messages("declaration.declarationHolder.authorisationCode.hint")),
+            hintText = None,
             emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
             items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
         )
