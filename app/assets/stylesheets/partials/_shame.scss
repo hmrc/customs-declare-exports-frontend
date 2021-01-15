@@ -27,3 +27,7 @@
     font-size: 2.1em;
   }
 }
+
+button.button-link.govuk-link.govuk-link--no-visited-state:focus {
+  background: #fd0!important;
+}

@@ -44,7 +44,8 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     val filter = new Predicate[Element] {
       override def test(elm: Element): Boolean =
-        elm.text().contains("Print") || elm.text().contains("Sign out") || elm.text().contains("page not working")
+        elm.text().contains("Print") || elm.text().contains("feedback") ||
+          elm.text().contains("Sign out") || elm.text().contains("page not working")
     }
     allLinks.removeIf(filter)
     allLinks
@@ -52,12 +53,12 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
   "Summary page" should {
 
-    "should display correct title" in {
+    "display correct title" in {
 
       createView().getElementById("title").text() mustBe messages("declaration.summary.submitted-header")
     }
 
-    "should display correct back link" in {
+    "display correct back link" in {
 
       val backButton = createView().getElementById("back-link")
 

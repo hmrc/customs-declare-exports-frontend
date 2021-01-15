@@ -39,7 +39,7 @@
 
 @(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.additionalInformationRequired.hint.link")</a>}
+@tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.additionalInformationRequired.hint.link")</a>}
 
 @govukLayout(
     title = Title("declaration.additionalInformationRequired.title", "declaration.section.5"),
