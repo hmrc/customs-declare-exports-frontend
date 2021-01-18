@@ -50,7 +50,6 @@ class AppConfigSpec extends UnitSpec {
         |
         |tracking-consent-frontend.gtm.container=a
         |
-        |countryCodesCsvFilename=code-lists/mdg-country-codes.csv
         |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
         |list-of-available-journeys="CRT,CAN,SUB"
         |list-of-available-declarations="STANDARD,SUPPLEMENTARY"
@@ -214,10 +213,6 @@ class AppConfigSpec extends UnitSpec {
       validAppConfig.countryCodesJsonFilename must be("code-lists/location-autocomplete-canonical-list.json")
     }
 
-    "have countriesCsvFilename" in {
-      validAppConfig.countriesCsvFilename must be("code-lists/mdg-country-codes.csv")
-    }
-
     "have ttl lifetime" in {
       validAppConfig.cacheTimeToLive must be(FiniteDuration(24, "h"))
     }
@@ -310,10 +305,6 @@ class AppConfigSpec extends UnitSpec {
 
       "countryCodesJsonFilename is missing" in {
         intercept[Exception](emptyAppConfig.countryCodesJsonFilename).getMessage must be("Missing configuration key: countryCodesJsonFilename")
-      }
-
-      "countryCodesCsvFilename is missing" in {
-        intercept[Exception](emptyAppConfig.countriesCsvFilename).getMessage must be("Missing configuration key: countryCodesCsvFilename")
       }
     }
   }

@@ -101,8 +101,6 @@ class AppConfig @Inject()(
   lazy val isUsingImprovedErrorMessages =
     runModeConfiguration.getOptional[Boolean]("microservice.services.features.use-improved-error-messages").getOrElse(false)
 
-  lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
-
   lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
 
   def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
