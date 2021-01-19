@@ -18,7 +18,6 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.common.Eori
-import models.requests.JourneyRequest
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
@@ -50,9 +49,7 @@ object DeclarationHolder extends DeclarationPage {
       "eori" -> eoriMapping.verifying("declaration.eori.empty", _.isDefined)
     )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
-  def mandatoryForm(): Form[DeclarationHolder] = Form(mandatoryMapping)
-
-  def form(implicit request: JourneyRequest[_]): Form[DeclarationHolder] = Form(mandatoryMapping)
+  val form: Form[DeclarationHolder] = Form(mandatoryMapping)
 
   // Method to parse format typeCode-eori
   def fromId(id: String): DeclarationHolder = {
@@ -64,7 +61,6 @@ object DeclarationHolder extends DeclarationPage {
       case _ => DeclarationHolder(Some(dividedString(0).trim), Some(Eori(dividedString(1).trim)))
     }
   }
-
 }
 
 object DeclarationHolderRequired extends DeclarationPage

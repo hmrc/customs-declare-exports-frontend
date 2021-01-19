@@ -21,7 +21,7 @@ import controllers.declaration.DeclarationHolderAddController.DeclarationHolderF
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.DeclarationHolder
-import forms.declaration.DeclarationHolder.mandatoryForm
+import forms.declaration.DeclarationHolder.form
 import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
@@ -47,11 +47,11 @@ class DeclarationHolderChangeController @Inject()(
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val holder = DeclarationHolder.fromId(id)
-    Ok(declarationHolderChangePage(mode, id, mandatoryForm().fill(holder).withSubmissionErrors()))
+    Ok(declarationHolderChangePage(mode, id, form.fill(holder).withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = mandatoryForm().bindFromRequest()
+    val boundForm = form.bindFromRequest()
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, id, formWithErrors))),
       holder => changeHolder(mode, DeclarationHolder.fromId(id), holder, boundForm)
@@ -62,15 +62,14 @@ class DeclarationHolderChangeController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
 
-    val cachedHolders: Seq[DeclarationHolder] = request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
-    val holdersWithoutExisting: Seq[DeclarationHolder] = cachedHolders.filterNot(_ == existingHolder)
+    val holdersWithoutExisting: Seq[DeclarationHolder] = DeclarationHolderController.cachedHolders.filterNot(_ == existingHolder)
 
     MultipleItemsHelper
       .add(boundForm, holdersWithoutExisting, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, existingHolder.id, formWithErrors))),
         _ => {
-          val updatedHolders: Seq[DeclarationHolder] = cachedHolders.map(holder => if (holder == existingHolder) newHolder else holder)
+          val updatedHolders = DeclarationHolderController.cachedHolders.map(holder => if (holder == existingHolder) newHolder else holder)
           updateExportsCache(updatedHolders)
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage))
         }

@@ -435,7 +435,7 @@ saved.declarations.remove.submitButton = Continue
 saved.declarations.remove.option.error.empty = Select yes if you want to remove this declaration.
 
 declaration.declarationHolderRequired.title = Do you need to add authorisations?
-declaration.declarationHolderRequired.hint.1 = Certain commodities or procedures require an authorisation. If this is the case you must add a code to identify the type of customs authorisation held, along with the EORI number of the authorisation holder.
+declaration.declarationHolderRequired.hint.1 = Certain commodities codes or procedures require an authorisation. If this is the case you must add a code to identify the type of customs authorisation held, along with the EORI number of the authorisation holder.
 declaration.declarationHolderRequired.hint.2 = This is not required when an authorisation by customs declaration is used for special procedures. Go to data element 1/10 in the {0} to confirm what type of authorisation must be declared.
 declaration.declarationHolderRequired.tradeTariff.link = UK Trade Tariff (opens in new tab)
 declaration.declarationHolderRequired.help.bodyText = Go to data element 3/39: Holder of the Authorisation Identification Number in the {0}.

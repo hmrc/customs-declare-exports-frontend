@@ -16,17 +16,17 @@
 
 package controllers.declaration
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.DeclarationHolder
 import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.Mode
+import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -41,29 +41,34 @@ class DeclarationHolderRequiredController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   declarationHolderRequired: declaration_holder_required
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holders = cachedHolders
-    if (holders.isEmpty) Ok(declarationHolderRequired(mode, form.withSubmissionErrors()))
+    val holders = DeclarationHolderController.cachedHolders
+    if (holders.isEmpty) Ok(declarationHolderRequired(mode, formWithPreviousAnswer.withSubmissionErrors()))
     else navigator.continueTo(mode, routes.DeclarationHolderController.displayPage(_))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    Future.successful {
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => BadRequest(declarationHolderRequired(mode, formWithErrors)),
-          validYesNo => navigator.continueTo(mode, nextPage(validYesNo))
-        )
-    }
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(declarationHolderRequired(mode, formWithErrors))),
+        validYesNo =>
+          updateCache(validYesNo).map { _ =>
+            navigator.continueTo(mode, nextPage(validYesNo))
+        }
+      )
   }
 
-  private def cachedHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] =
-    request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
-
   private val form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolderRequired.empty")
+
+  private def formWithPreviousAnswer(implicit request: JourneyRequest[AnyContent]): Form[YesNoAnswer] =
+    request.cacheModel.parties.declarationHoldersData.flatMap(_.isRequired) match {
+      case Some(answer) => form.fill(answer)
+      case _            => form
+    }
 
   private def nextPage(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Mode => Call =
     yesNoAnswer.answer match {
@@ -76,4 +81,11 @@ class DeclarationHolderRequiredController @Inject()(
       case SUPPLEMENTARY | STANDARD            => routes.OriginationCountryController.displayPage
       case SIMPLIFIED | OCCASIONAL | CLEARANCE => routes.DestinationCountryController.displayPage
     }
+
+  private def updateCache(yesNoAnswer: YesNoAnswer)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => {
+      val declarationHoldersData = DeclarationHoldersData(DeclarationHolderController.cachedHolders, Some(yesNoAnswer))
+      val updatedParties = model.parties.copy(declarationHoldersData = Some(declarationHoldersData))
+      model.copy(parties = updatedParties)
+    })
 }

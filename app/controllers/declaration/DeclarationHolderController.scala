@@ -24,6 +24,7 @@ import forms.declaration.DeclarationHolder
 import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
+import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -41,11 +42,9 @@ class DeclarationHolderController @Inject()(
   declarationHolderPage: declaration_holder_summary
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  import DeclarationHolderController._
-
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holders = cachedHolders
-    if (holders.isEmpty) navigator.continueTo(mode, routes.DeclarationHolderRequiredController.displayPage)
+    val holders = DeclarationHolderController.cachedHolders
+    if (holders.isEmpty) navigator.continueTo(mode, continueToPageOnJourney)
     else Ok(declarationHolderPage(mode, addAnotherYesNoForm.withSubmissionErrors(), holders))
   }
 
@@ -63,21 +62,23 @@ class DeclarationHolderController @Inject()(
       )
   }
 
-  private def cachedHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] =
-    request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
-
   private def addAnotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
 
-}
+  private def continueToPageOnJourney(implicit request: JourneyRequest[_]): Mode => Call =
+    if (request.declarationType == SIMPLIFIED) routes.DeclarationHolderAddController.displayPage
+    else routes.DeclarationHolderRequiredController.displayPage
 
-object DeclarationHolderController {
-
-  def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
+  private def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {
       case SUPPLEMENTARY | STANDARD =>
         controllers.declaration.routes.OriginationCountryController.displayPage
       case SIMPLIFIED | OCCASIONAL | CLEARANCE =>
         controllers.declaration.routes.DestinationCountryController.displayPage
     }
+}
 
+object DeclarationHolderController {
+
+  def cachedHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] =
+    request.cacheModel.parties.declarationHoldersData.getOrElse(DeclarationHoldersData.default).holders
 }

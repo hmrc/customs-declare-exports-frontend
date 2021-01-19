@@ -54,6 +54,8 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
 
   "Declaration Holder Required View on empty page" should {
 
+    val tradeTariffVol3ForCds2Url = instanceOf[AppConfig].tradeTariffVol3ForCds2Url
+
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
         view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.declarationHolderRequired.title")
@@ -68,7 +70,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
 
         val hint2 = view.getElementById("declaration-holder-required-hint2")
         hint2.childNodeSize() mustBe 3
-        hint2.child(0) must haveHref(instanceOf[AppConfig].tradeTariffUrl)
+        hint2.child(0) must haveHref(tradeTariffVol3ForCds2Url)
       }
 
       "display radio button with Yes option" in {
@@ -90,11 +92,11 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
 
   "Declaration Holder Required View back link" should {
 
-    onJourney(DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED, DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
+    onJourney(DeclarationType.OCCASIONAL, DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
       "display 'Back' button that links to the 'Additional Actors Summary' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage(Mode.Normal))
+        backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
       }
     }
 
@@ -102,7 +104,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
       "display 'Back' button that links to the 'Consignee Details' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.ConsigneeDetailsController.displayPage(Mode.Normal))
+        backButton must haveHref(routes.ConsigneeDetailsController.displayPage())
       }
     }
   }

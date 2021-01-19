@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.{routes, DeclarationHolderRequiredController}
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.DeclarationHolder
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -73,10 +73,9 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
 
   "DeclarationHolder Required Controller" should {
 
-    onEveryDeclarationJourney() { request =>
-      "return 200 (OK)" that {
-
-        "display page method is invoked and cache is empty" in {
+    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY) { request =>
+      "return 200 (OK)" when {
+        "display page method (GET) is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -86,9 +85,22 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
         }
       }
 
-      "return 400 (BAD_REQUEST)" when {
+      "return 303 (SEE_OTHER)" when {
+        "display page method (GET) is invoked and cache contains already one or more authorisations" in {
+          val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-        "user does not answer with yes or no" in {
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.DeclarationHolderController.displayPage(Mode.Normal)
+        }
+      }
+    }
+
+    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY) { request =>
+      "return 400 (BAD_REQUEST)" when {
+        "the user submits the page but does not answer with yes or no" in {
           withNewCaching(request.cacheModel)
 
           val requestBody = Seq("yesNo" -> "")
@@ -100,18 +112,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
       }
 
       "return 303 (SEE_OTHER)" when {
-
-        "Additional item(s) exist in cache" in {
-          val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")))
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderController.displayPage(Mode.Normal)
-        }
-
-        "user submits valid Yes answer" in {
+        "the user submits the page answering Yes" in {
           withNewCaching(request.cacheModel)
 
           val requestBody = Seq("yesNo" -> "Yes")
@@ -123,9 +124,9 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
       }
     }
 
-    "re-direct to next question" when {
+    "re-direct to the next question" when {
       onJourney(STANDARD, SUPPLEMENTARY) { request =>
-        "user submits valid No answer " in {
+        "the user submits the page answering No" in {
           withNewCaching(request.cacheModel)
 
           val requestBody = Seq("yesNo" -> "No")
@@ -136,8 +137,8 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
         }
       }
 
-      onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
-        "user submits valid No answer (declarationType: STANDARD)" in {
+      onJourney(CLEARANCE, OCCASIONAL) { request =>
+        "the user submits the page answering No" in {
           withNewCaching(request.cacheModel)
 
           val requestBody = Seq("yesNo" -> "No")

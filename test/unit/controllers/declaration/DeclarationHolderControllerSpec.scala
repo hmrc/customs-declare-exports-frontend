@@ -85,7 +85,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {
-        "display page method is invoked and cache contains data" in {
+        "display page method is invoked and the cache contains one or more holders" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -99,10 +99,10 @@ class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
 
       "return 400 (BAD_REQUEST)" when {
 
-        "user submits invalid answer" in {
+        "the user submits the page but does not answer with yes or no" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Seq("yesNo" -> "invalid")
+          val requestBody = Seq("yesNo" -> "")
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
@@ -112,17 +112,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "return 303 (SEE_OTHER)" when {
-
-        "there are no holders in the cache" in {
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
-        }
-
-        "user submits valid Yes answer" in {
+        "the user submits the page answering Yes" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody = Seq("yesNo" -> "Yes")
@@ -134,9 +124,35 @@ class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
+    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY) { implicit request =>
+      "return 303 (SEE_OTHER)" when {
+        "there are no holders in the cache" in {
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
+        }
+      }
+    }
+
+    onSimplified { implicit request =>
+      "return 303 (SEE_OTHER)" when {
+        "there are no holders in the cache" in {
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+        }
+      }
+    }
+
     "re-direct to next question" when {
       onJourney(STANDARD, SUPPLEMENTARY) { request =>
-        "user submits valid No answer" in {
+        "the user submits the page answering No" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody = Seq("yesNo" -> "No")
@@ -148,7 +164,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
       }
 
       onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
-        "user submits valid No answer" in {
+        "the user submits the page answering No" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody = Seq("yesNo" -> "No")

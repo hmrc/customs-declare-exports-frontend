@@ -70,10 +70,11 @@ class DeclarationHolderRemoveController @Inject()(
   private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.remove.empty")
 
   private def updateExportsCache(
-    itemToRemove: DeclarationHolder
-  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
-    val updatedHolders = request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty).filterNot(_ == itemToRemove)
-    val updatedParties = request.cacheModel.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(updatedHolders)))
-    updateExportsDeclarationSyncDirect(model => model.copy(parties = updatedParties))
-  }
+    holderToRemove: DeclarationHolder
+  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => {
+      val updatedHolders = DeclarationHolderController.cachedHolders.filterNot(_ == holderToRemove)
+      val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(updatedHolders)))
+      model.copy(parties = updatedParties)
+    })
 }

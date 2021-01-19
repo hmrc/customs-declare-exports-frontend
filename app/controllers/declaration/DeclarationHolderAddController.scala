@@ -50,42 +50,23 @@ class DeclarationHolderAddController @Inject()(
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val holders = cachedHolders
     val boundForm = form.bindFromRequest()
-    boundForm.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors)))
-      },
-      holder =>
-        if (holder.isComplete)
-          saveHolder(mode, boundForm, holders)
-        else
-          continue(mode, holders)
-    )
+    boundForm.fold(formWithErrors => {
+      Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors)))
+    }, _ => saveHolder(mode, boundForm, DeclarationHolderController.cachedHolders))
   }
 
-  private def cachedHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] =
-    request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
-
-  private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder], cachedData: Seq[DeclarationHolder])(
+  private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
+      .add(boundForm, holders, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors))),
-        updatedCache =>
-          updateExportsCache(updatedCache)
+        updatedHolders =>
+          updateExportsCache(updatedHolders)
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage))
       )
-
-  private def continue(mode: Mode, cachedData: Seq[DeclarationHolder])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    updateExportsCache(cachedData).map { _ =>
-      if (cachedData.isEmpty)
-        navigator.continueTo(mode, DeclarationHolderController.nextPage)
-      else
-        navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage)
-    }
 
   private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {

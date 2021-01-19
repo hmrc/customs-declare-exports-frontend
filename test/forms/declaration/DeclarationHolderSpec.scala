@@ -141,14 +141,6 @@ class DeclarationHolderSpec extends WordSpec with MustMatchers with JourneyTypeT
     }
   }
 
-  "DeclarationHolder on form method" should {
-    onEveryDeclarationJourney() { implicit request =>
-      "return mandatoryMapping" in {
-        DeclarationHolder.form.mapping mustBe DeclarationHolder.mandatoryMapping
-      }
-    }
-  }
-
   "DeclarationHolder on fromId method" should {
 
     "return DeclarationHolder with both fields empty" when {
