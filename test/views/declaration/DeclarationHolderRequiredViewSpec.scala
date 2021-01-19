@@ -46,6 +46,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
       messages must haveTranslationFor("declaration.declarationHolderRequired.title")
       messages must haveTranslationFor("declaration.declarationHolderRequired.hint.1")
       messages must haveTranslationFor("declaration.declarationHolderRequired.hint.2")
+      messages must haveTranslationFor("declaration.declarationHolderRequired.hint.link")
       messages must haveTranslationFor("declaration.declarationHolderRequired.tradeTariff.link")
       messages must haveTranslationFor("declaration.declarationHolderRequired.help.bodyText")
       messages must haveTranslationFor("declaration.declarationHolderRequired.empty")
@@ -54,7 +55,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
 
   "Declaration Holder Required View on empty page" should {
 
-    val tradeTariffVol3ForCds2Url = instanceOf[AppConfig].tradeTariffVol3ForCds2Url
+    val previousProcedureCodesUrl = instanceOf[AppConfig].previousProcedureCodesUrl
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
@@ -70,7 +71,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
 
         val hint2 = view.getElementById("declaration-holder-required-hint2")
         hint2.childNodeSize() mustBe 3
-        hint2.child(0) must haveHref(tradeTariffVol3ForCds2Url)
+        hint2.child(0) must haveHref(previousProcedureCodesUrl)
       }
 
       "display radio button with Yes option" in {

@@ -41,8 +41,8 @@
 
 @(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tradeTariffLink = {
-  <a target="_blank" href=@appConfig.tradeTariffVol3ForCds2Url>@messages("declaration.declarationHolderRequired.tradeTariff.link")</a>
+@hintLink = {
+    <a target="_blank" href="@appConfig.previousProcedureCodesUrl">@messages("declaration.declarationHolderRequired.hint.link")</a>
 }
 
 @hintParagraph1 = {
@@ -52,8 +52,12 @@
 }
 @hintParagraph2 = {
     <span id="declaration-holder-required-hint2" class="govuk-hint">
-        @Html(messages("declaration.declarationHolderRequired.hint.2", tradeTariffLink))
+        @Html(messages("declaration.declarationHolderRequired.hint.2", hintLink))
     </span>
+}
+
+@tradeTariffLink = {
+    <a target="_blank" href="@appConfig.tradeTariffVol3ForCds2Url">@messages("declaration.declarationHolderRequired.tradeTariff.link")</a>
 }
 
 @govukLayout(
