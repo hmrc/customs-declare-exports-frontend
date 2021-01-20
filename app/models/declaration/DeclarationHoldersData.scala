@@ -31,8 +31,6 @@ object DeclarationHoldersData {
   def apply(holders: Seq[DeclarationHolder]): DeclarationHoldersData =
     new DeclarationHoldersData(holders, Some(if (holders.isEmpty) YesNoAnswer(YesNoAnswers.no) else YesNoAnswer(YesNoAnswers.yes)))
 
-  def default: DeclarationHoldersData = DeclarationHoldersData(Seq.empty, None)
-
   val formId = "DeclarationHoldersData"
 
   val limitOfHolders = 99

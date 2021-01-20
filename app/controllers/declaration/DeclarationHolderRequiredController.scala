@@ -20,10 +20,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import controllers.util.DeclarationHolderHelper.cachedHolders
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -44,8 +45,10 @@ class DeclarationHolderRequiredController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holders = DeclarationHolderController.cachedHolders
+  private val validJourneys = Seq(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)
+
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+    val holders = cachedHolders
     if (holders.isEmpty) Ok(declarationHolderRequired(mode, formWithPreviousAnswer.withSubmissionErrors()))
     else navigator.continueTo(mode, routes.DeclarationHolderController.displayPage(_))
   }
@@ -78,13 +81,13 @@ class DeclarationHolderRequiredController @Inject()(
 
   private def nextPageOnDeclarationType(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {
-      case SUPPLEMENTARY | STANDARD            => routes.OriginationCountryController.displayPage
-      case SIMPLIFIED | OCCASIONAL | CLEARANCE => routes.DestinationCountryController.displayPage
+      case SUPPLEMENTARY | STANDARD => routes.OriginationCountryController.displayPage
+      case _                        => routes.DestinationCountryController.displayPage
     }
 
   private def updateCache(yesNoAnswer: YesNoAnswer)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      val declarationHoldersData = DeclarationHoldersData(DeclarationHolderController.cachedHolders, Some(yesNoAnswer))
+      val declarationHoldersData = DeclarationHoldersData(cachedHolders, Some(yesNoAnswer))
       val updatedParties = model.parties.copy(declarationHoldersData = Some(declarationHoldersData))
       model.copy(parties = updatedParties)
     })

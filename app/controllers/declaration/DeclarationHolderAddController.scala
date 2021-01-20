@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.DeclarationHolderAddController.DeclarationHolderFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
+import controllers.util.DeclarationHolderHelper._
 import forms.declaration.DeclarationHolder
 import forms.declaration.DeclarationHolder.form
 import javax.inject.Inject
@@ -53,7 +53,7 @@ class DeclarationHolderAddController @Inject()(
     val boundForm = form.bindFromRequest()
     boundForm.fold(formWithErrors => {
       Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors)))
-    }, _ => saveHolder(mode, boundForm, DeclarationHolderController.cachedHolders))
+    }, _ => saveHolder(mode, boundForm, cachedHolders))
   }
 
   private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(
@@ -65,7 +65,7 @@ class DeclarationHolderAddController @Inject()(
         formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors))),
         updatedHolders =>
           updateExportsCache(updatedHolders)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage))
+            .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
       )
 
   private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
@@ -73,8 +73,4 @@ class DeclarationHolderAddController @Inject()(
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders)))
       model.copy(parties = updatedParties)
     })
-}
-
-object DeclarationHolderAddController {
-  val DeclarationHolderFormGroupId: String = "declarationHolder"
 }

@@ -31,8 +31,9 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_remove
-
 import scala.concurrent.{ExecutionContext, Future}
+
+import controllers.util.DeclarationHolderHelper
 
 class DeclarationHolderRemoveController @Inject()(
   authenticate: AuthAction,
@@ -67,13 +68,13 @@ class DeclarationHolderRemoveController @Inject()(
       )
   }
 
-  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.remove.empty")
+  private val removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.remove.empty")
 
   private def updateExportsCache(
     holderToRemove: DeclarationHolder
   )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      val updatedHolders = DeclarationHolderController.cachedHolders.filterNot(_ == holderToRemove)
+      val updatedHolders = DeclarationHolderHelper.cachedHolders.filterNot(_ == holderToRemove)
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(updatedHolders)))
       model.copy(parties = updatedParties)
     })

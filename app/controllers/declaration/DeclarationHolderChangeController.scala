@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.DeclarationHolderAddController.DeclarationHolderFormGroupId
 import controllers.navigation.Navigator
+import controllers.util.DeclarationHolderHelper._
 import controllers.util.MultipleItemsHelper
 import forms.declaration.DeclarationHolder
 import forms.declaration.DeclarationHolder.form
@@ -62,16 +62,16 @@ class DeclarationHolderChangeController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
 
-    val holdersWithoutExisting: Seq[DeclarationHolder] = DeclarationHolderController.cachedHolders.filterNot(_ == existingHolder)
+    val holdersWithoutExisting: Seq[DeclarationHolder] = cachedHolders.filterNot(_ == existingHolder)
 
     MultipleItemsHelper
       .add(boundForm, holdersWithoutExisting, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, existingHolder.id, formWithErrors))),
         _ => {
-          val updatedHolders = DeclarationHolderController.cachedHolders.map(holder => if (holder == existingHolder) newHolder else holder)
+          val updatedHolders = cachedHolders.map(holder => if (holder == existingHolder) newHolder else holder)
           updateExportsCache(updatedHolders)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage))
+            .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
         }
       )
   }
