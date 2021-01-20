@@ -22,7 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType._
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -35,9 +35,8 @@ import views.tags.ViewTest
 @ViewTest
 class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val form: Form[DeclarationHolder] = DeclarationHolder.mandatoryForm()
   private val declarationHolderPage = instanceOf[declaration_holder_add]
-  private def createView(form: Form[DeclarationHolder] = form)(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[DeclarationHolder] = DeclarationHolder.form)(implicit request: JourneyRequest[_]): Document =
     declarationHolderPage(Mode.Normal, form)(request, messages)
 
   "Declaration holder" should {
@@ -48,71 +47,61 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       messages must haveTranslationFor("declaration.declarationHolder.title.hint")
       messages must haveTranslationFor("declaration.declarationHolder.eori")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode")
-      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.hint")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.invalid")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.empty")
-      messages must haveTranslationFor("declaration.declarationHolders.maximumAmount.error")
-      messages must haveTranslationFor("declaration.declarationHolders.duplicated")
     }
   }
 
   "Declaration Holder View on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
-      val document = createView()
+      val view = createView()
 
       "display page title" in {
 
-        document.getElementsByTag("h1").text() mustBe messages("declaration.declarationHolder.title")
+        view.getElementsByTag("h1").text() mustBe messages("declaration.declarationHolder.title")
       }
 
       "display section header" in {
 
-        document.getElementById("section-header").text() must include(messages("declaration.section.2"))
+        view.getElementById("section-header").text() must include(messages("declaration.section.2"))
       }
 
       "display empty input with label for Authorisation Code" in {
 
-        document.getElementById("authorisationTypeCode-label").text() mustBe messages("declaration.declarationHolder.authorisationCode")
-        document.getElementById("authorisationTypeCode-hint").text() mustBe messages("declaration.declarationHolder.authorisationCode.hint")
-        document.getElementById("authorisationTypeCode").attr("value") mustBe empty
+        view.getElementById("authorisationTypeCode-label").text() mustBe messages("declaration.declarationHolder.authorisationCode")
+        view.getElementById("authorisationTypeCode").attr("value") mustBe empty
       }
 
       "display empty input with label for EORI" in {
 
-        document.getElementsByAttributeValue("for", "eori").text() mustBe messages("declaration.declarationHolder.eori")
-        document.getElementById("eori").attr("value") mustBe empty
+        view.getElementsByAttributeValue("for", "eori").text() mustBe messages("declaration.declarationHolder.eori")
+        view.getElementById("eori").attr("value") mustBe empty
       }
 
       "display 'Save and continue' button on page" in {
 
-        val saveAndContinueButton = document.getElementById("submit")
+        val saveAndContinueButton = view.getElementById("submit")
         saveAndContinueButton.text() mustBe messages(saveAndContinueCaption)
 
-        val saveAndReturnButton = document.getElementById("submit_and_return")
+        val saveAndReturnButton = view.getElementById("submit_and_return")
         saveAndReturnButton.text() mustBe messages(saveAndReturnCaption)
         saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
       }
     }
 
-    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'Additional Info' page" in {
-
-        val document = createView()
-        val backButton = document.getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.AdditionalActorsSummaryController.displayPage().url
+    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY) { implicit request =>
+      "display 'Back' button that links to the 'Do you need to add authorisations?' page" in {
+        val backButton = createView().getElementById("back-link")
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.DeclarationHolderRequiredController.displayPage())
       }
     }
 
-    onJourney(CLEARANCE) { implicit request =>
-      "display 'Back' button that links to 'Consignee Details' page" in {
-
-        val document = createView()
-        val backButton = document.getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.ConsigneeDetailsController.displayPage().url
+    onSimplified { implicit request =>
+      "display 'Back' button that links to the 'Additional Actors Summary' page" in {
+        val backButton = createView().getElementById("back-link")
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
       }
     }
   }
@@ -126,8 +115,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       "display error for incorrect Authorisation code" in {
 
         val view = createView(
-          DeclarationHolder
-            .mandatoryForm()
+          DeclarationHolder.form
             .fillAndValidate(DeclarationHolder(Some("12345"), Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
         )
 
@@ -140,8 +128,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       "display error for incorrect EORI" in {
 
         val view = createView(
-          DeclarationHolder
-            .mandatoryForm()
+          DeclarationHolder.form
             .fillAndValidate(DeclarationHolder(Some("ACE"), Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
@@ -154,8 +141,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       "display error for both incorrect fields" in {
 
         val view = createView(
-          DeclarationHolder
-            .mandatoryForm()
+          DeclarationHolder.form
             .fillAndValidate(
               DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(Eori(TestHelper.createRandomAlphanumericString(18))))
             )
@@ -177,7 +163,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
     onEveryDeclarationJourney() { implicit request =>
       "display data in Authorisation Code input" in {
 
-        val view = createView(DeclarationHolder.mandatoryForm().fill(DeclarationHolder(Some("test"), None)))
+        val view = createView(DeclarationHolder.form.fill(DeclarationHolder(Some("test"), None)))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
         view.getElementById("eori").attr("value") mustBe empty
@@ -185,7 +171,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
       "display data in EORI input" in {
 
-        val view = createView(DeclarationHolder.mandatoryForm().fill(DeclarationHolder(None, Some(Eori("test")))))
+        val view = createView(DeclarationHolder.form.fill(DeclarationHolder(None, Some(Eori("test")))))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe empty
         view.getElementById("eori").attr("value") mustBe "test"
@@ -193,7 +179,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
       "display data in both inputs" in {
 
-        val view = createView(DeclarationHolder.mandatoryForm().fill(DeclarationHolder(Some("test"), Some(Eori("test1")))))
+        val view = createView(DeclarationHolder.form.fill(DeclarationHolder(Some("test"), Some(Eori("test1")))))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
         view.getElementById("eori").attr("value") mustBe "test1"

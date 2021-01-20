@@ -48,7 +48,12 @@
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
 
-@tariffBody = { @components.tariff_body_partial(messages("declaration.transportInformation.active.help-item1"), messages("declaration.transportInformation.active.help-item2"))(tariffBodyDesc)}
+@tariffBody = {
+    @components.tariff_body_partial(
+        messages("declaration.transportInformation.active.help-item1"),
+        messages("declaration.transportInformation.active.help-item2")
+    )(tariffBodyDesc)
+}
 
 @inputField(transportType: String, labelKey: String) = @{Some(exportsInputText(
     field = form(s"borderTransportReference_$transportType"),

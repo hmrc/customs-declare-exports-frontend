@@ -129,6 +129,10 @@ POST        /other-party/:id/remove              controllers.declaration.Additio
 
 # Declaration holder of authorisation
 
+GET         /is-authorisation-required           controllers.declaration.DeclarationHolderRequiredController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /is-authorisation-required           controllers.declaration.DeclarationHolderRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
 GET         /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.submitForm(mode: models.Mode ?= models.Mode.Normal)

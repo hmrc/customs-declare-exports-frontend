@@ -22,7 +22,6 @@ import forms.declaration.exporter.ExporterDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.data.Form
 import unit.base.JourneyTypeTestRunner
 
 class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatchers with JourneyTypeTestRunner {

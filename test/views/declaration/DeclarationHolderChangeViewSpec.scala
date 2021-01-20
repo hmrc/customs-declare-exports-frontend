@@ -48,17 +48,14 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       messages must haveTranslationFor("declaration.declarationHolder.title.hint")
       messages must haveTranslationFor("declaration.declarationHolder.eori")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode")
-      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.hint")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.invalid")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.empty")
-      messages must haveTranslationFor("declaration.declarationHolders.maximumAmount.error")
-      messages must haveTranslationFor("declaration.declarationHolders.duplicated")
     }
   }
 
   "Declaration Holder View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
-      val view = createView(DeclarationHolder.mandatoryForm().fill(declarationHolder))
+      val view = createView(DeclarationHolder.form.fill(declarationHolder))
 
       "display page title" in {
 
@@ -105,8 +102,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       "display error for incorrect Authorisation code" in {
 
         val view = createView(
-          DeclarationHolder
-            .mandatoryForm()
+          DeclarationHolder.form
             .fillAndValidate(DeclarationHolder(Some("12345"), Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
         )
 
@@ -119,8 +115,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       "display error for incorrect EORI" in {
 
         val view = createView(
-          DeclarationHolder
-            .mandatoryForm()
+          DeclarationHolder.form
             .fillAndValidate(DeclarationHolder(Some("ACE"), Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
@@ -133,8 +128,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       "display error for both incorrect fields" in {
 
         val view = createView(
-          DeclarationHolder
-            .mandatoryForm()
+          DeclarationHolder.form
             .fillAndValidate(
               DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(Eori(TestHelper.createRandomAlphanumericString(18))))
             )

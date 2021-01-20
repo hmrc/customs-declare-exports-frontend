@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.DeclarationHolderAddController.DeclarationHolderFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
+import controllers.util.DeclarationHolderHelper._
 import forms.declaration.DeclarationHolder
 import forms.declaration.DeclarationHolder.form
 import javax.inject.Inject
@@ -46,55 +46,31 @@ class DeclarationHolderAddController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holders = cachedHolders
-    Ok(declarationHolderPage(mode, form(holders).withSubmissionErrors()))
+    Ok(declarationHolderPage(mode, form.withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val holders = cachedHolders
-    val boundForm = form(holders).bindFromRequest()
-    boundForm.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors)))
-      },
-      holder =>
-        if (holder.isComplete)
-          saveHolder(mode, boundForm, holders)
-        else
-          continue(mode, holders)
-    )
+    val boundForm = form.bindFromRequest()
+    boundForm.fold(formWithErrors => {
+      Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors)))
+    }, _ => saveHolder(mode, boundForm, cachedHolders))
   }
 
-  private def cachedHolders(implicit request: JourneyRequest[_]) =
-    request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
-
-  private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder], cachedData: Seq[DeclarationHolder])(
+  private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
+      .add(boundForm, holders, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors))),
-        updatedCache =>
-          updateExportsCache(updatedCache)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage))
+        updatedHolders =>
+          updateExportsCache(updatedHolders)
+            .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
       )
-
-  private def continue(mode: Mode, cachedData: Seq[DeclarationHolder])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    updateExportsCache(cachedData).map { _ =>
-      if (cachedData.isEmpty)
-        navigator.continueTo(mode, DeclarationHolderController.nextPage)
-      else
-        navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage)
-    }
 
   private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders)))
       model.copy(parties = updatedParties)
     })
-}
-
-object DeclarationHolderAddController {
-  val DeclarationHolderFormGroupId: String = "declarationHolder"
 }

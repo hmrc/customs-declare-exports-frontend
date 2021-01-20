@@ -18,10 +18,11 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import controllers.util.DeclarationHolderHelper.cachedHolders
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -40,42 +41,36 @@ class DeclarationHolderController @Inject()(
   declarationHolderPage: declaration_holder_summary
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  import DeclarationHolderController._
-
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = addAnotherYesNoForm.withSubmissionErrors()
-    request.cacheModel.parties.declarationHoldersData match {
-      case Some(data) if data.holders.nonEmpty => Ok(declarationHolderPage(mode, frm, data.holders))
-      case _                                   => navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
-    }
+    val holders = cachedHolders
+    if (holders.isEmpty) navigator.continueTo(mode, nextPageWhenNoHolders)
+    else Ok(declarationHolderPage(mode, addAnotherYesNoForm.withSubmissionErrors(), holders))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holders = request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+    val holders = cachedHolders
     addAnotherYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(declarationHolderPage(mode, formWithErrors, holders)),
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderAddController.displayPage)
+            case YesNoAnswers.yes => navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
             case YesNoAnswers.no  => navigator.continueTo(mode, nextPage)
         }
       )
   }
 
-  private def addAnotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
+  private val addAnotherYesNoForm: Form[YesNoAnswer] =
+    YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
 
-}
+  private def nextPageWhenNoHolders(implicit request: JourneyRequest[_]): Mode => Call =
+    if (request.declarationType == SIMPLIFIED) routes.DeclarationHolderAddController.displayPage
+    else routes.DeclarationHolderRequiredController.displayPage
 
-object DeclarationHolderController {
-
-  def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
+  private def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {
-      case SUPPLEMENTARY | STANDARD =>
-        controllers.declaration.routes.OriginationCountryController.displayPage
-      case SIMPLIFIED | OCCASIONAL | CLEARANCE =>
-        controllers.declaration.routes.DestinationCountryController.displayPage
+      case SUPPLEMENTARY | STANDARD => routes.OriginationCountryController.displayPage
+      case _                        => routes.DestinationCountryController.displayPage
     }
-
 }
