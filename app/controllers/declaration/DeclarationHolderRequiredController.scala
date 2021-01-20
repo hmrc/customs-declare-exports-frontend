@@ -53,7 +53,7 @@ class DeclarationHolderRequiredController @Inject()(
     else navigator.continueTo(mode, routes.DeclarationHolderController.displayPage(_))
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
