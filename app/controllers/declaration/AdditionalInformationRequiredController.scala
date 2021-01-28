@@ -29,7 +29,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.additionalInformtion.additional_information_required
+import views.html.declaration.additionalInformation.additional_information_required
 
 import scala.concurrent.{ExecutionContext, Future}
 

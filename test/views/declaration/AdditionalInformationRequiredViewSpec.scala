@@ -30,7 +30,7 @@ import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.additionalInformtion.additional_information_required
+import views.html.declaration.additionalInformation.additional_information_required
 import views.tags.ViewTest
 
 @ViewTest

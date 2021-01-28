@@ -28,7 +28,7 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.additionalInformtion.additional_information_add
+import views.html.declaration.additionalInformation.additional_information_add
 import views.tags.ViewTest
 
 @ViewTest

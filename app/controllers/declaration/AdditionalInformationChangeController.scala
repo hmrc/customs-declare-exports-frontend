@@ -33,7 +33,7 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
-import views.html.declaration.additionalInformtion.additional_information_change
+import views.html.declaration.additionalInformation.additional_information_change
 
 import scala.concurrent.{ExecutionContext, Future}
 

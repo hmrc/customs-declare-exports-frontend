@@ -32,7 +32,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import utils.ListItem
-import views.html.declaration.additionalInformtion.additional_information_remove
+import views.html.declaration.additionalInformation.additional_information_remove
 
 class AdditionalInformationRemoveControllerSpec extends ControllerSpec with OptionValues {
 
