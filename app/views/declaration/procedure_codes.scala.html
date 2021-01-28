@@ -24,6 +24,7 @@
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
+@import config.AppConfig
 
 @this(govukLayout: gdsMainTemplate,
         govukFieldset: GovukFieldset,
@@ -34,15 +35,13 @@
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
         spanVisuallyHidden: spanVisuallyHidden,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
+)
 
 @(mode: Mode, itemId: String, form: Form[ProcedureCodes], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText",  components.details_content_link())) }
-
-@tariffBody = { @components.tariff_body_partial(messages("declaration.type.procedureCodeDescListItemOne"), messages("declaration.type.procedureCodeDescListItemTwo"))(tariffBodyDesc)}
 
 @additionalCodesTable = {
     @if(codes.nonEmpty) {
@@ -101,7 +100,7 @@
                     hintKey = Some("declaration.procedureCodes.additionalProcedureCode.header.hint"),
                     inputClasses = Some("govuk-input--width-4")
                 ),
-                tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody)),
+                tariffExpander(ProcedureCodes, request.declarationType)(messages, appConfig),
                 addButton(hiddenLabel = Some(messages("declaration.procedureCodes.additionalProcedureCode.add.hint"))),
                 saveButtons()
             ))

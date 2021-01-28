@@ -17,8 +17,10 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import play.api.data.Forms._
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.DeclarationType
 import play.api.data.{Form, Forms}
+import play.api.data.Forms._
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -48,7 +50,14 @@ object AdditionalInformation extends DeclarationPage {
   )(AdditionalInformation.apply)(AdditionalInformation.unapply)
 
   def form(): Form[AdditionalInformation] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.item.additionalInformation.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
-object AdditionalInformationRequired extends DeclarationPage
+object AdditionalInformationRequired extends DeclarationPage {
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.item.isAdditionalInformationRequired.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
+}
+
 object AdditionalInformationSummary extends DeclarationPage

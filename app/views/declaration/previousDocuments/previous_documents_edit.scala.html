@@ -26,6 +26,7 @@
 @import scala.collection.immutable
 @import models.declaration.DocumentCategory._
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -37,14 +38,13 @@
         sectionHeader: sectionHeader,
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.type.previousDocumentsSummaryText", components.details_content_link())) }
 
 @pageHint = {
     <span class="govuk-hint">
@@ -122,16 +122,15 @@
 
 @sectionHeader(messages("declaration.section.4"))
 
-
-    @govukFieldset(Fieldset(
-        legend = Some(Legend(
-            content = Text(messages("declaration.previousDocuments.title")),
-            classes = gdsPageLegend,
-            isPageHeading = true
-        )),
-        html = HtmlFormat.fill(immutable.Seq(
-            pageFields,
-            tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-            saveButtons()
-        ))
+@govukFieldset(Fieldset(
+    legend = Some(Legend(
+        content = Text(messages("declaration.previousDocuments.title")),
+        classes = gdsPageLegend,
+        isPageHeading = true
+    )),
+    html = HtmlFormat.fill(immutable.Seq(
+        pageFields,
+        tariffExpander(Document, request.declarationType)(messages, appConfig),
+        saveButtons()
     ))
+))

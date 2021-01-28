@@ -18,6 +18,8 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.common.Eori
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
@@ -36,4 +38,6 @@ object RepresentativeEntity extends DeclarationPage {
 
   def form(): Form[RepresentativeEntity] = Form(mapping)
 
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.representativesEoriNumber.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

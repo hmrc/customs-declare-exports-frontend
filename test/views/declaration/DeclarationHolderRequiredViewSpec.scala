@@ -48,7 +48,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
       messages must haveTranslationFor("declaration.declarationHolderRequired.hint.2")
       messages must haveTranslationFor("declaration.declarationHolderRequired.hint.link")
       messages must haveTranslationFor("declaration.declarationHolderRequired.tradeTariff.link")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.help.bodyText")
+      messages must haveTranslationFor("tariff.declaration.addAuthorisationRequired.clearance.text")
       messages must haveTranslationFor("declaration.declarationHolderRequired.empty")
     }
   }

@@ -30,32 +30,24 @@
 @import views.ErrorMapper.yesNoErrors
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
-    govukTable : GovukTable,
-    govukRadios: GovukRadios,
-    addButton: addButton,
-    link: link,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    exportsInputText: exportsInputText,
-    spanVisuallyHidden: spanVisuallyHidden,
-    tariffDetails: tariffDetails,
-    addAnotherQuestion: addAnotherQuestion,
-    saveButtons: saveButtons,
-    appConfig: AppConfig,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukTable : GovukTable,
+        govukRadios: GovukRadios,
+        addButton: addButton,
+        link: link,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        spanVisuallyHidden: spanVisuallyHidden,
+        tariffExpander: tariffExpander,
+        addAnotherQuestion: addAnotherQuestion,
+        saveButtons: saveButtons,
+        appConfig: AppConfig,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(
-        mode: Mode,
-        itemId: String,
-        form: Form[YesNoAnswer],
-        taricCodes: Seq[TaricCode] = Seq.empty
-)(implicit request: JourneyRequest[_], messages: Messages)
-
-
-@tariffBody = { @Html(messages("declaration.taricAdditionalCodes.help.bodyText", components.details_content_link())) }
+@(mode: Mode, itemId: String, form: Form[YesNoAnswer], taricCodes: Seq[TaricCode] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(taricCodes.size == 1)
@@ -119,7 +111,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 taricCodesTable,
                 addAnotherQuestion("declaration.taricAdditionalCodes.label", form),
-                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                tariffExpander(TaricCode, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

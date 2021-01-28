@@ -19,8 +19,10 @@ package forms.declaration.officeOfExit
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.officeOfExit.AllowedUKOfficeOfExitAnswers.allowedCodes
-import play.api.data.Forms.text
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
+import play.api.data.Forms.text
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
@@ -57,4 +59,6 @@ object OfficeOfExitInsideUK extends DeclarationPage {
       case _ => OfficeOfExitInsideUK(officeId = None, isUkOfficeOfExit = AllowedUKOfficeOfExitAnswers.no)
     }
 
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.officeOfExit.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

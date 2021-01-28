@@ -15,14 +15,13 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.declaration. CommodityMeasure
-@import uk.gov.hmrc.play.views.html._
-@import views.Title
+@import controllers.navigation.{ItemId, Navigator}
+@import forms.declaration.CommodityMeasure
 @import models.requests.JourneyRequest
-@import controllers.navigation.{Navigator, ItemId}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import views.html.components.gds._
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -34,15 +33,12 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, itemId: String, form: Form[CommodityMeasure])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
-
-@tariffBody = { @components.tariff_body_partial(messages("declaration.type.commodityMeasureListItemOne"), messages("declaration.type.commodityMeasureListItemTwo"), messages("declaration.type.commodityMeasureListItemThree"))(tariffBodyDesc)}
 
 @govukLayout(
     title = Title("declaration.commodityMeasure.title", "declaration.section.5"),
@@ -61,7 +57,7 @@
                 inputFields(form)
         }
 
-        @tariffDetails(messages("site.details.summary_text_these"), HtmlContent(tariffBody))
+        @tariffExpander(CommodityMeasure, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

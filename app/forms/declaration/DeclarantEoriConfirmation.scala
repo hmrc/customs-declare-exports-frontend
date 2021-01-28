@@ -19,6 +19,8 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.common.YesNoAnswer
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.DeclarationType
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
@@ -37,4 +39,7 @@ object DeclarantEoriConfirmation extends DeclarationPage {
     )(DeclarantEoriConfirmation.apply)(DeclarantEoriConfirmation.unapply)
 
   def form(): Form[DeclarantEoriConfirmation] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.declarantDetails.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

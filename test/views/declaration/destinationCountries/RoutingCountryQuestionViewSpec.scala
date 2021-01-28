@@ -40,7 +40,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
       messages must haveTranslationFor("declaration.routingQuestion.title")
       messages must haveTranslationFor("declaration.routingQuestion.empty")
-      messages must haveTranslationFor("site.details.summary_text_this")
+      messages must haveTranslationFor("tariff.expander.title.clearance")
     }
 
     "have section header" in {
@@ -61,7 +61,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
     "display Tariff section text" in {
       val tariffText = view.getElementsByClass("govuk-details__summary-text").first().text()
-      tariffText.text() mustBe messages("site.details.summary_text_this")
+      tariffText.text() mustBe messages("tariff.expander.title.common")
     }
 
     "display back button that links to 'Declaration Holder' page" in {

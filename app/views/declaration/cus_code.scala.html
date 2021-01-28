@@ -28,28 +28,22 @@
 @import views.ErrorMapper.radioGroupErrors
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukRadios: GovukRadios,
-    govukDetails : GovukDetails,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    exportsInputText: exportsInputText,
-    body: paragraphBody,
-    pageTitle: pageTitle,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    appConfig: AppConfig,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        body: paragraphBody,
+        pageTitle: pageTitle,
+        saveButtons: saveButtons,
+        tariffExpander: tariffExpander,
+        appConfig: AppConfig,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(
-    mode: Mode,
-    itemId: String,
-    form: Form[CusCode]
-)(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.cusCode.help.bodyText", components.details_content_link())) }
+@(mode: Mode, itemId: String, form: Form[CusCode])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.cusCode.header.tradeTariff.link")</a>}
 @ecicsToolLink = {<a target="_blank" class="govuk-link" href=@appConfig.ecicsToolUrl>@messages("declaration.cusCode.header.ecicsTool.link")</a>}
@@ -97,7 +91,7 @@
             errorMessage = form(hasCusCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(CusCode, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

@@ -18,6 +18,8 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
@@ -45,4 +47,7 @@ object FiscalInformation extends DeclarationPage {
   val formId = "FiscalInformation"
 
   def form(): Form[FiscalInformation] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.item.fiscalInformation.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

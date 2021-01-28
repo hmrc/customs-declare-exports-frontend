@@ -16,10 +16,11 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import models.DeclarationType._
-import unit.base.{JourneyTypeTestRunner, UnitSpec}
+import unit.base.JourneyTypeTestRunner
 
-class TransportLeavingTheBorderSpec extends UnitSpec with JourneyTypeTestRunner {
+class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 
   "TransportLeavingTheBorder classicMapping" should {
 
@@ -135,4 +136,7 @@ class TransportLeavingTheBorderSpec extends UnitSpec with JourneyTypeTestRunner 
     }
   }
 
+  "TransportLeavingTheBorder" when {
+    testTariffContentKeys(TransportLeavingTheBorder, "tariff.declaration.transportLeavingTheBorder")
+  }
 }

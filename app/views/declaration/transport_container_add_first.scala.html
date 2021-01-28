@@ -25,27 +25,25 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukRadios: GovukRadios,
-    govukDetails : GovukDetails,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    exportsInputText: exportsInputText,
-    body: paragraphBody,
-    pageTitle: pageTitle,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        body: paragraphBody,
+        pageTitle: pageTitle,
+        saveButtons: saveButtons,
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
-
-@tariffBody = { @components.tariff_body_partial(messages("declaration.type.containerAddFirstItemListOne"), messages("declaration.type.containerAddFirstItemListTwo"))(tariffBodyDesc)}
 
 @govukLayout(
     title = Title("declaration.transportInformation.containers.first.title", "declaration.section.6"),
@@ -87,7 +85,7 @@
             errorMessage = form(hasContainerKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffDetails(messages("site.details.summary_text_these"), HtmlContent(tariffBody))
+        @tariffExpander(ContainerFirst, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

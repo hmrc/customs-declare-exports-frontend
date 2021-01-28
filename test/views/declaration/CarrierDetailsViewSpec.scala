@@ -101,8 +101,8 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
       messages must haveTranslationFor("declaration.address.country.empty")
       messages must haveTranslationFor("declaration.address.country.error")
       messages must haveTranslationFor("site.save_and_continue")
-      messages must haveTranslationFor("site.details.summary_text_this")
-      messages must haveTranslationFor("declaration.carrierAddress.help-item1")
+      messages must haveTranslationFor("tariff.expander.title.clearance")
+      messages must haveTranslationFor("tariff.declaration.carrierAddress.clearance.text")
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>

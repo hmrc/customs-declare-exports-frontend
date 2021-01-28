@@ -23,21 +23,21 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukRadios: GovukRadios,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[NatureOfTransaction])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.natureOfTransaction.help.bodyText", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.natureOfTransaction.title", "declaration.section.4"),
@@ -123,9 +123,8 @@
             errorMessage = form("natureType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffDetails(messages("site.details.summary_text_these"), HtmlContent(tariffBody))
+        @tariffExpander(NatureOfTransaction, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }
-
 }

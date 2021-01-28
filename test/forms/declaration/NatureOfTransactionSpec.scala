@@ -16,7 +16,14 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import play.api.libs.json.{JsObject, JsString, JsValue}
+
+class NatureOfTransactionSpec extends DeclarationPageBaseSpec {
+  "NatureOfTransaction" when {
+    testTariffContentKeysNoSpecialisation(NatureOfTransaction, "tariff.declaration.natureOfTransaction")
+  }
+}
 
 object NatureOfTransactionSpec {
   val correctNatureOfTransaction = NatureOfTransaction("1")

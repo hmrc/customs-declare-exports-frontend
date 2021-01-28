@@ -18,6 +18,7 @@
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer
 @import forms.declaration.ContainerFirst
+@import forms.declaration.ContainerAdd
 @import models.declaration.Container
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
@@ -27,6 +28,7 @@
 @import views.html.components.gds._
 @import scala.collection.immutable
 @import views.ErrorMapper.yesNoErrors
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -39,16 +41,13 @@
         govukTable: GovukTable,
         errorSummary: errorSummary,
         spanVisuallyHidden: spanVisuallyHidden,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[YesNoAnswer], containers: Seq[Container])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = {
-    @Html(messages("declaration.type.container.summary.help.text", components.details_content_link()))
-}
 
 @containersTable = {
     @if(containers.nonEmpty) {
@@ -129,7 +128,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 containersTable,
                 addContainerRadios,
-                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                tariffExpander(ContainerAdd, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

@@ -16,12 +16,12 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.CusCode._
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class CusCodeSpec extends WordSpec with MustMatchers {
+class CusCodeSpec extends DeclarationPageBaseSpec {
 
   def formData(hasCode: String, code: Option[String]) =
     JsObject(Map(hasCusCodeKey -> JsString(hasCode), cusCodeKey -> JsString(code.getOrElse(""))))
@@ -66,7 +66,10 @@ class CusCodeSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(false)
       }
-
     }
+  }
+
+  "CusCode" when {
+    testTariffContentKeysNoSpecialisation(CusCode, "tariff.declaration.item.cusCode")
   }
 }

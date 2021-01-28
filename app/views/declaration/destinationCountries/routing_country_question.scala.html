@@ -16,6 +16,7 @@
 
 @import controllers.navigation.Navigator
 @import forms.declaration.RoutingQuestionYesNo.{no, RoutingQuestionPage, yes}
+@import forms.declaration.countries.Countries._
 @import models.requests.JourneyRequest
 @import views.Title
 @import views.html.components.gds.gdsMainTemplate
@@ -30,6 +31,7 @@
 @import views.html.components.gds._
 @import views.BackButton
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -39,16 +41,14 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[Boolean], countryOfDestination: String)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
-
-@tariffBody = { @Html(messages("declaration.routingQuestion.help.bodyText", components.details_content_link())) }
-
-    @govukLayout(
+@govukLayout(
     title = Title("declaration.routingQuestion.title", "declaration.section.3", countryOfDestination),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingQuestionPage, mode)))){
 
@@ -81,7 +81,8 @@
             ),
             errorMessage = form("answer").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-        @components.details(messages("site.details.summary_text_this")) { @tariffBody }
+
+        @tariffExpander(FirstRoutingCountryPage, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

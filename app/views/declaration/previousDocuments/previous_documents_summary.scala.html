@@ -14,20 +14,22 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer
 @import forms.declaration.{Document, DocumentSummary}
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
 @import services.DocumentType
-@import views.components.gds.Styles._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
+@import views.components.gds.Styles._
 @import views.html.components.gds._
-@import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
 @import utils.ListItem._
 @import views.ErrorMapper.yesNoErrors
+
+@import scala.collection.immutable
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -40,11 +42,12 @@
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
         spanVisuallyHidden: spanVisuallyHidden,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         addAnotherQuestion: addAnotherQuestion,
         link: link,
         saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[YesNoAnswer], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
@@ -54,8 +57,6 @@
   if(documentsSize == 1) Text(messages("declaration.previousDocuments.summary.header.singular"))
   else Text(messages("declaration.previousDocuments.summary.header.plural", documentsSize))
 }
-
-@tariffBody = { @Html(messages("declaration.type.previousDocumentsSummaryText", components.details_content_link())) }
 
 @documentsTable = {
     @if(documents.nonEmpty) {
@@ -137,7 +138,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 documentsTable,
                 addAnotherQuestion("declaration.previousDocuments.addAnotherDocument", form),
-                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                tariffExpander(Document, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

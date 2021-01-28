@@ -20,6 +20,8 @@ import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers.yes
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.DeclarationType
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
@@ -41,4 +43,7 @@ object DeclarantIsExporter extends DeclarationPage {
     )(DeclarantIsExporter.apply)(DeclarantIsExporter.unapply)
 
   def form(): Form[DeclarantIsExporter] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.areYouTheExporter.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

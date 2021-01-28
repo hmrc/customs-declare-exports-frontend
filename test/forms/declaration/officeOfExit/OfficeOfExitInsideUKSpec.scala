@@ -16,10 +16,10 @@
 
 package forms.declaration.officeOfExit
 
-import org.scalatest.{MustMatchers, WordSpec}
+import forms.common.DeclarationPageBaseSpec
 import play.api.data.FormError
 
-class OfficeOfExitInsideUKSpec extends WordSpec with MustMatchers {
+class OfficeOfExitInsideUKSpec extends DeclarationPageBaseSpec {
 
   "Standard declaration mapping" should {
 
@@ -61,5 +61,9 @@ class OfficeOfExitInsideUKSpec extends WordSpec with MustMatchers {
         errors(0) must be(FormError("officeId", "declaration.officeOfExit.specialCharacters"))
       }
     }
+  }
+
+  "OfficeOfExitInsideUK" when {
+    testTariffContentKeys(OfficeOfExitInsideUK, "tariff.declaration.officeOfExit")
   }
 }

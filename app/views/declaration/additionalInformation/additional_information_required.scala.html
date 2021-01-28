@@ -27,19 +27,17 @@
 @import views.ErrorMapper.yesNoErrors
 
 @this(
-    govukLayout: gdsMainTemplate,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    appConfig: AppConfig,
-    yesNoRadios: yesNoRadios,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffExpander: tariffExpander,
+        appConfig: AppConfig,
+        yesNoRadios: yesNoRadios,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.additionalInformationRequired.hint.link")</a>}
 
 @govukLayout(
     title = Title("declaration.additionalInformationRequired.title", "declaration.section.5"),
@@ -60,7 +58,7 @@
               ))
         )
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.additionalInformationRequired.help.bodyText", components.details_content_link())))
+        @tariffExpander(AdditionalInformationRequired, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

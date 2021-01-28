@@ -16,6 +16,8 @@
 
 package forms.declaration
 import forms.DeclarationPage
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.DeclarationType
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -40,4 +42,7 @@ object TaricCode extends DeclarationPage {
     )(TaricCode.apply)(TaricCode.unapply)
 
   def form(): Form[TaricCode] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.item.additionalTaricCode.common"))
 }

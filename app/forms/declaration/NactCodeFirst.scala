@@ -20,6 +20,8 @@ import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.NactCode.{nactCodeKey, nactCodeLength}
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.DeclarationType
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -60,4 +62,7 @@ object NactCodeFirst extends DeclarationPage {
   )(form2Model)(model2Form)
 
   def form(): Form[NactCodeFirst] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.item.nationalAdditionalCode.common"))
 }

@@ -20,6 +20,7 @@ import forms.DeclarationPage
 import forms.declaration.EntityDetails
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsDeclaration
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
@@ -46,4 +47,7 @@ object ExporterDetails extends DeclarationPage {
         }
       case Some(_) => ExporterDetails(EntityDetails(exporterEoriNumber.eori, None))
     }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.exporterAddress.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

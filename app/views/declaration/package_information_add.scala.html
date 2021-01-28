@@ -16,42 +16,33 @@
 
 @import controllers.declaration.routes
 @import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
-@import controllers.navigation.Navigator
+@import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.PackageInformation
-@import uk.gov.hmrc.play.views.html._
-@import services.model.PackageType
-@import services.PackageTypes
 @import models.requests.JourneyRequest
-@import scala.collection.immutable
-
+@import services.PackageTypes
 @import services.view.AutoCompleteItem
-@import views.{BackButton, Title}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
 @import views.html.components.gds._
-@import views.components.fields.LabelledValue
-@import play.twirl.api.HtmlFormat
-@import controllers.navigation.ItemId
+@import config.AppConfig
 
 @this(
-  govukLayout: gdsMainTemplate,
-  govukButton: GovukButton,
-  formGroupWrapper: formGroupWrapper,
-  errorSummary: errorSummary,
-  sectionHeader: sectionHeader,
-  pageTitle: pageTitle,
-  exportsInputText: exportsInputText,
-  tariffDetails: tariffDetails,
-  addButton: addButton,
-  removeButton: removeButton,
-  saveButtons: saveButtons,
-  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        formGroupWrapper: formGroupWrapper,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        tariffExpander: tariffExpander,
+        addButton: addButton,
+        removeButton: removeButton,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
-
-@tariffBody = { @components.tariff_body_partial(messages("declaration.packageInformation.help-item1"), messages("declaration.packageInformation.help-item2"), messages("declaration.packageInformation.help-item3"))(tariffBodyDesc)}
 
 @backLink = @{
   if(packages.nonEmpty)
@@ -98,7 +89,7 @@
             )
         }
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(PackageInformation, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

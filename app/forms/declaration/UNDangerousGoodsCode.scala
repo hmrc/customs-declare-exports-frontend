@@ -17,8 +17,10 @@
 package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
-import play.api.data.Forms.text
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.text
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
@@ -68,4 +70,7 @@ object UNDangerousGoodsCode extends DeclarationPage {
     )(form2Model)(model2Form)
 
   def form(): Form[UNDangerousGoodsCode] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.item.unDangerousGoodsCode.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

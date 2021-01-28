@@ -63,7 +63,12 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with 
         messages must haveTranslationFor("declaration.exporterEori.title")
         messages must haveTranslationFor("declaration.exporterEori.eori.label")
         messages must haveTranslationFor("declaration.exporterEori.hasEori.empty")
-        messages must haveTranslationFor("declaration.exporterEori.help-item1")
+
+        val titleKey = request.declarationType match {
+          case CLEARANCE => "tariff.declaration.areYouTheExporter.clearance.text"
+          case _         => "tariff.declaration.areYouTheExporter.common.text"
+        }
+        messages must haveTranslationFor(titleKey)
       }
 
       "display page title" in {

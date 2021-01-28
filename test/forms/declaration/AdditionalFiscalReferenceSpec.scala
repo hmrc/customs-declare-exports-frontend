@@ -16,9 +16,9 @@
 
 package forms.declaration
 
-import org.scalatest.{MustMatchers, WordSpec}
+import forms.common.DeclarationPageBaseSpec
 
-class AdditionalFiscalReferenceSpec extends WordSpec with MustMatchers {
+class AdditionalFiscalReferenceSpec extends DeclarationPageBaseSpec {
   import AdditionalFiscalReferenceSpec._
 
   "Bound form with AdditionalFiscalReference mapping" should {
@@ -30,6 +30,7 @@ class AdditionalFiscalReferenceSpec extends WordSpec with MustMatchers {
         form.errors must be(empty)
       }
     }
+
     "contain errors" when {
       "country is incorrect" in {
         val form = AdditionalFiscalReference.form().bind(incorrectCountry)
@@ -44,6 +45,7 @@ class AdditionalFiscalReferenceSpec extends WordSpec with MustMatchers {
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.additionalFiscalReferences.reference.error")
       }
+
       "both country and reference are incorrect" in {
         val form = AdditionalFiscalReference.form().bind(incorrectCountryAndRef)
 
@@ -76,6 +78,10 @@ class AdditionalFiscalReferenceSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "AdditionalFiscalReferencesData" when {
+    testTariffContentKeys(AdditionalFiscalReference, "tariff.declaration.item.additionalFiscalReferences")
+  }
+
   "AdditionalFiscalReferencesData" should {
 
     "have correct formId" in {
@@ -85,9 +91,7 @@ class AdditionalFiscalReferenceSpec extends WordSpec with MustMatchers {
     "have correct limit" in {
       AdditionalFiscalReferencesData.limit must be(99)
     }
-
   }
-
 }
 
 object AdditionalFiscalReferenceSpec {

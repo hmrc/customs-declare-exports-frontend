@@ -32,15 +32,13 @@
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         pageTitle: pageTitle,
         appConfig: AppConfig,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[NactCode])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.nationalAdditionalCode.help.bodyText", components.details_content_link())) }
 
 @tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.tradeTariff.link")</a>}
 
@@ -49,21 +47,19 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCode, mode, ItemId(itemId))))) {
 
     @formHelper(action = NactCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-      @errorSummary(form.errors)
+        @sectionHeader(messages("declaration.section.5"))
 
-      @sectionHeader(messages("declaration.section.5"))
+        @exportsInputText(
+            field = form(nactCodeKey),
+            labelKey = "declaration.nationalAdditionalCode.addnext.header",
+            inputClasses = Some("govuk-input--width-10"),
+            isPageHeading = true
+        )
 
-      @exportsInputText(
-        field = form(nactCodeKey),
-        labelKey = "declaration.nationalAdditionalCode.addnext.header",
-        inputClasses = Some("govuk-input--width-10"),
-        isPageHeading = true
-      )
+        @tariffExpander(NactCode, request.declarationType)(messages, appConfig)
 
-      @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
-
-      @saveButtons()
-
+        @saveButtons()
     }
 }

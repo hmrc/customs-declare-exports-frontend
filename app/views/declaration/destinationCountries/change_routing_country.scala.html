@@ -26,29 +26,23 @@
 @import views.Title
 @import views.BackButton
 @import views.components.gds.Styles
-@import scala.collection.immutable
-@import play.twirl.api.HtmlFormat
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukRadios: GovukRadios,
-    govukDetails : GovukDetails,
-    govukFieldset: GovukFieldset,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        govukFieldset: GovukFieldset,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[Country], page: CountryPage, countryToChange: String)(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariff = {
-@components.details(messages("site.details.summary_text_this")) {
-    @Html(messages("declaration.routingQuestion.help.bodyText", components.details_content_link()))
-}
-}
 
 @govukLayout(
     title = Title(s"declaration.routingCountry.title", "declaration.section.3"),
@@ -68,8 +62,8 @@
             isPageHeading = true
         )
 
-        @tariff
-        @saveButtons()
+        @tariffExpander(page, request.declarationType)(messages, appConfig)
 
+        @saveButtons()
     }
 }

@@ -19,6 +19,7 @@ package forms.declaration.carrier
 import forms.DeclarationPage
 import forms.declaration.EntityDetails
 import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
@@ -46,4 +47,7 @@ object CarrierDetails extends DeclarationPage {
         }
       case Some(_) => CarrierDetails(EntityDetails(carrierEoriDetails.eori, None))
     }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.carrierAddress.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

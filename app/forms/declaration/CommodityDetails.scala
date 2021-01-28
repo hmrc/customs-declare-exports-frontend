@@ -17,9 +17,10 @@
 package forms.declaration
 import forms.DeclarationPage
 import models.DeclarationType
-import models.DeclarationType.DeclarationType
-import play.api.data.Forms.{mapping, optional, text}
+import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Mapping}
+import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -89,4 +90,19 @@ object CommodityDetails extends DeclarationPage {
     case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => Form(mappingOptionalCode)
     case _                                                       => Form(mappingRequiredCode)
   }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    decType match {
+      case CLEARANCE =>
+        Seq(
+          TariffContentKey("tariff.declaration.item.commodityDetails.1.clearance"),
+          TariffContentKey("tariff.declaration.item.commodityDetails.2.clearance"),
+          TariffContentKey("tariff.declaration.item.commodityDetails.3.clearance")
+        )
+      case _ =>
+        Seq(
+          TariffContentKey("tariff.declaration.item.commodityDetails.1.common"),
+          TariffContentKey("tariff.declaration.item.commodityDetails.2.common")
+        )
+    }
 }

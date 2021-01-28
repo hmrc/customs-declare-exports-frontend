@@ -25,7 +25,8 @@
 @this(
         govukLayout: gdsMainTemplate,
         editContent: additional_information_edit_content,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, itemId: String, form: Form[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 

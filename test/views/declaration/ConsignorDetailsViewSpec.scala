@@ -102,8 +102,8 @@ class ConsignorDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
       messages must haveTranslationFor("declaration.address.country.empty")
       messages must haveTranslationFor("declaration.address.country.error")
       messages must haveTranslationFor("site.save_and_continue")
-      messages must haveTranslationFor("site.details.summary_text_this")
-      messages must haveTranslationFor("declaration.consignorAddress.help-item1")
+      messages must haveTranslationFor("tariff.expander.title.clearance")
+      messages must haveTranslationFor("tariff.declaration.consignorAddress.clearance.text")
     }
 
     onJourney(CLEARANCE) { implicit request =>

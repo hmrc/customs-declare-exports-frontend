@@ -19,6 +19,8 @@ package forms.declaration.additionaldeclarationtype
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import utils.validators.forms.FieldValidator.isContainedIn
 
@@ -36,4 +38,11 @@ trait AdditionalDeclarationTypeTrait extends DeclarationPage {
   val formId = "AdditionalDeclarationType"
 
   def form(): Form[AdditionalDeclarationType] = Form(formMapping)
+}
+
+object AdditionalDeclarationTypePage extends AdditionalDeclarationTypeTrait {
+  override def allowedValues: Set[AdditionalDeclarationType] = Set.empty
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.type.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

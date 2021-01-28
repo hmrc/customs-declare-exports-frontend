@@ -17,8 +17,10 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import play.api.data.Forms.text
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.text
 import play.api.libs.json.Json
 import services.Countries.{allCountries, countryCodeMap}
 import utils.validators.forms.FieldValidator._
@@ -43,6 +45,9 @@ object AdditionalFiscalReference extends DeclarationPage {
   )(AdditionalFiscalReference.build)(AdditionalFiscalReference.unapply)
 
   def form(): Form[AdditionalFiscalReference] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.item.additionalFiscalReferences.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
 case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference]) {

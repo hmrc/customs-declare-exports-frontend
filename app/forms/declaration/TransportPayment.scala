@@ -16,8 +16,10 @@
 
 package forms.declaration
 import forms.DeclarationPage
-import play.api.data.Forms.{mapping, optional, text}
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Mapping}
+import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
@@ -46,4 +48,6 @@ object TransportPayment extends DeclarationPage {
 
   def form(): Form[TransportPayment] = Form(formMapping)
 
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.transportPayment.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

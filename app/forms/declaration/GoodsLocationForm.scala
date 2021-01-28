@@ -18,8 +18,10 @@ package forms.declaration
 
 import forms.DeclarationPage
 import models.declaration.GoodsLocation
-import play.api.data.Forms.text
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.text
 import play.api.libs.json.{Json, OFormat}
 import services.Countries.allCountries
 import utils.validators.forms.FieldValidator._
@@ -80,4 +82,7 @@ object GoodsLocationForm extends DeclarationPage {
   private def form2Data(code: String): GoodsLocationForm = GoodsLocationForm(code.toUpperCase)
 
   def form(): Form[GoodsLocationForm] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.locationOfGoods.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

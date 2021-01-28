@@ -16,12 +16,12 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.UNDangerousGoodsCode._
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class UnDangerousGoodsCodeSpec extends WordSpec with MustMatchers {
+class UnDangerousGoodsCodeSpec extends DeclarationPageBaseSpec {
 
   def formData(hasCode: String, code: Option[String]) =
     JsObject(Map(hasDangerousGoodsCodeKey -> JsString(hasCode), dangerousGoodsCodeKey -> JsString(code.getOrElse(""))))
@@ -66,7 +66,10 @@ class UnDangerousGoodsCodeSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(false)
       }
-
     }
+  }
+
+  "UNDangerousGoodsCode" when {
+    testTariffContentKeys(UNDangerousGoodsCode, "tariff.declaration.item.unDangerousGoodsCode")
   }
 }

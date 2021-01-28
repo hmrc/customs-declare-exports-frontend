@@ -16,12 +16,12 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.NactCode._
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class NactCodeSpec extends WordSpec with MustMatchers {
+class NactCodeSpec extends DeclarationPageBaseSpec {
 
   def formData(code: Option[String]) =
     JsObject(Map(nactCodeKey -> JsString(code.getOrElse(""))))
@@ -40,7 +40,6 @@ class NactCodeSpec extends WordSpec with MustMatchers {
 
         form.errors mustBe Seq(FormError(nactCodeKey, "declaration.nationalAdditionalCode.error.empty"))
       }
-
     }
 
     "return form without errors" when {
@@ -49,7 +48,10 @@ class NactCodeSpec extends WordSpec with MustMatchers {
 
         form.errors mustBe empty
       }
-
     }
+  }
+
+  "NactCode" when {
+    testTariffContentKeysNoSpecialisation(NactCode, "tariff.declaration.item.nationalAdditionalCode")
   }
 }

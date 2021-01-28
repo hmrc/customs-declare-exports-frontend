@@ -19,6 +19,8 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
@@ -48,4 +50,7 @@ object DispatchLocation extends DeclarationPage {
     val OutsideEU = "EX"
     val SpecialFiscalTerritory = "CO"
   }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.dispatchLocation.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

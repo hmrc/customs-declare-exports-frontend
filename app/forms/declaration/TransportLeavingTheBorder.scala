@@ -19,8 +19,9 @@ package forms.declaration
 import forms.DeclarationPage
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
-import play.api.data.Forms.{of, optional}
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
+import play.api.data.Forms.{of, optional}
 import play.api.libs.json._
 import utils.validators.forms.FieldValidator.isPresent
 
@@ -47,4 +48,7 @@ object TransportLeavingTheBorder extends DeclarationPage {
     case DeclarationType.CLEARANCE => Form(clearanceMapping)
     case _                         => Form(classicMapping)
   }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.transportLeavingTheBorder.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

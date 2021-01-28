@@ -18,8 +18,10 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.common.Eori
-import play.api.data.Forms.{optional, text}
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
+import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
 import services.HolderOfAuthorisationCode
 import utils.validators.forms.FieldValidator._
@@ -61,7 +63,14 @@ object DeclarationHolder extends DeclarationPage {
       case _ => DeclarationHolder(Some(dividedString(0).trim), Some(Eori(dividedString(1).trim)))
     }
   }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.addAuthorisationRequired.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
-object DeclarationHolderRequired extends DeclarationPage
+object DeclarationHolderRequired extends DeclarationPage {
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.isAuthorisationRequired.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
+}
+
 object DeclarationSummaryHolder extends DeclarationPage

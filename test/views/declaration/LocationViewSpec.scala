@@ -48,7 +48,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       messages must haveTranslationFor("declaration.goodsLocation.hint")
       messages must haveTranslationFor("declaration.goodsLocation.code.empty")
       messages must haveTranslationFor("declaration.goodsLocation.code.error")
-      messages must haveTranslationFor("declaration.goodsLocation.help.bodyText")
+      messages must haveTranslationFor("tariff.declaration.locationOfGoods.clearance.text")
     }
 
     val view = createView()

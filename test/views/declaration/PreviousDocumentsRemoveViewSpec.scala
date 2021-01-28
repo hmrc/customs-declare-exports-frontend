@@ -44,7 +44,7 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
   "Previous Documents Remove page" should {
 
     "have all messages defined" in {
-      messages must haveTranslationFor("declaration.type.previousDocumentsSummaryText")
+      messages must haveTranslationFor("tariff.declaration.addPreviousDocument.clearance.text")
       messages must haveTranslationFor("declaration.previousDocuments.documentType.label")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference.summary.label")
       messages must haveTranslationFor("declaration.previousDocuments.documentCategory.summary.label")

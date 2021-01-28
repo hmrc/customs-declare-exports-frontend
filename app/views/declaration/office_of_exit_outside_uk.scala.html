@@ -21,6 +21,7 @@
 @import models.requests.JourneyRequest
 @import views.Title
 @import views.BackButton
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -28,8 +29,9 @@
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[OfficeOfExitOutsideUK])(implicit request: JourneyRequest[_], messages: Messages)
@@ -52,9 +54,7 @@
             inputClasses = Some("govuk-input--width-10")
         )
 
-        @components.details(messages("site.details.summary_text_this")){
-            @Html(messages("declaration.officeOfExitOutsideUk.help-item1", components.details_content_link()))
-        }
+        @tariffExpander(OfficeOfExitOutsideUK, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

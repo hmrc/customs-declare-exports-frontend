@@ -18,6 +18,8 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
@@ -48,4 +50,7 @@ object NatureOfTransaction extends DeclarationPage {
   )(NatureOfTransaction.apply)(NatureOfTransaction.unapply)
 
   def form(): Form[NatureOfTransaction] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.natureOfTransaction.common"))
 }

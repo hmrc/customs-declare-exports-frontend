@@ -16,11 +16,11 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.RepresentativeStatus.StatusCodes.DirectRepresentative
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class RepresentativeStatusSpec extends WordSpec with MustMatchers {
+class RepresentativeStatusSpec extends DeclarationPageBaseSpec {
   import RepresentativeStatusSpec._
 
   "RepresentativeStatus mapping used for binding data" should {
@@ -50,11 +50,12 @@ class RepresentativeStatusSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(false)
       }
-
     }
-
   }
 
+  "RepresentativeStatus" when {
+    testTariffContentKeys(RepresentativeStatus, "tariff.declaration.representationTypeAgreed")
+  }
 }
 
 object RepresentativeStatusSpec {

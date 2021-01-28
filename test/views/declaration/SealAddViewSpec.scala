@@ -23,19 +23,20 @@ import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
+import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.seal_add
 import views.tags.ViewTest
 
 @ViewTest
-class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
+class SealAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
 
   val containerId = "867126538"
   private val form: Form[Seal] = Seal.form()
   private val page = instanceOf[seal_add]
 
-  private def createView(form: Form[Seal] = form): Document = page(Mode.Normal, form, containerId)
+  private def createView(form: Form[Seal] = form): Document = page(Mode.Normal, form, containerId)(journeyRequest(), messages)
 
   "Seal Add View" should {
     val view = createView()

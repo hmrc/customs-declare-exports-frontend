@@ -24,6 +24,7 @@
 @import views.Title
 @import views.BackButton
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -32,8 +33,9 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    tariffExpander: tariffExpander,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[ExporterEoriNumber])(implicit request: JourneyRequest[_], messages: Messages)
@@ -81,9 +83,7 @@
             errorMessage = form("hasEori").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @components.details(messages("site.details.summary_text_this")){
-            @Html(messages("declaration.exporterEori.help-item1", components.details_content_link()))
-        }
+        @tariffExpander(ExporterEoriNumber, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

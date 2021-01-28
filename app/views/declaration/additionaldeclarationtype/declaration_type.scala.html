@@ -15,12 +15,14 @@
  *@
 
 @import controllers.navigation.Navigator
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import views.html.components.gds._
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -33,8 +35,9 @@
         declarationTypeQuestionSimplified: declaration_type_question_simplified,
         declarationTypeQuestionClearance: declaration_type_question_clearance,
         declarationTypeQuestionOccasional: declaration_type_question_occasional,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
@@ -65,7 +68,7 @@
          }
         }
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.type.bodyText", components.gds.detailsContentLink())))
+        @tariffExpander(AdditionalDeclarationTypePage, request.declarationType)(messages, appConfig)
 
         @saveAndContinue("site.continue")
     }

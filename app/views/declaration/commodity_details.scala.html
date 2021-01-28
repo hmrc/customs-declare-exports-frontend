@@ -33,16 +33,12 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         appConfig: AppConfig,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(
-        mode: Mode,
-        itemId: String,
-        form: Form[CommodityDetails]
-)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[CommodityDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tradeTariffLink = {<a class="govuk-link govuk-link--no-visited-state" target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.commodityDetails.how.tradeTariff")</a>}
 @classificationTeamLink = {<a class="govuk-link govuk-link--no-visited-state" target="_blank" href=@appConfig.classificationHelpUrl>@messages("declaration.commodityDetails.how.classificationTeam")</a>}
@@ -51,10 +47,6 @@
     @Html(messages("declaration.commodityDetails.how.step1", tradeTariffLink))
     @Html(messages("declaration.commodityDetails.how.summary", classificationTeamLink))
 }
-
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
-
-@tariffBody = { @components.tariff_body_partial(messages("declaration.type.commodityDetailsListItemOne"), messages("declaration.type.commodityDetailsListItemTwo"))(tariffBodyDesc)}
 
 @govukLayout(
     title = Title("declaration.commodityDetails.title", "declaration.section.5"),
@@ -85,7 +77,7 @@
             maxLength = Some(CommodityDetails.descriptionOfGoodsMaxLength)
         )
 
-        @tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody))
+        @tariffExpander(CommodityDetails, request.declarationType)(messages, appConfig)
 
         @saveButtons()
 

@@ -153,4 +153,7 @@ class AppConfig @Inject()(
   lazy val allowListEnabled: Boolean = servicesConfig.getBoolean(allowListed)
 
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
+
+  def tariffGuideUrl(key: String): String =
+    runModeConfiguration.getOptional[String](key).getOrElse(throw new Exception(s"Missing tariff guide url key: $key"))
 }

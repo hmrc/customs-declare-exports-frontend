@@ -47,7 +47,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
       messages must haveTranslationFor("declaration.declarant.exporter.answer.yes")
       messages must haveTranslationFor("declaration.declarant.exporter.answer.no")
       messages must haveTranslationFor("declaration.declarant.exporter.error")
-      messages must haveTranslationFor("declaration.declarant.exporter.help-item")
+      messages must haveTranslationFor("tariff.declaration.areYouTheExporter.clearance.text")
     }
   }
 

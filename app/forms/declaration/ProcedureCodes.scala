@@ -17,8 +17,10 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import play.api.data.Forms.{optional, text}
+import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -52,4 +54,16 @@ object ProcedureCodes extends DeclarationPage {
   )(ProcedureCodes.apply)(ProcedureCodes.unapply)
 
   def form(): Form[ProcedureCodes] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    decType match {
+      case CLEARANCE =>
+        Seq(
+          TariffContentKey("tariff.declaration.item.procedureCodes.1.clearance"),
+          TariffContentKey("tariff.declaration.item.procedureCodes.2.clearance"),
+          TariffContentKey("tariff.declaration.item.procedureCodes.3.clearance")
+        )
+      case _ =>
+        Seq(TariffContentKey("tariff.declaration.item.procedureCodes.1.common"), TariffContentKey("tariff.declaration.item.procedureCodes.2.common"))
+    }
 }

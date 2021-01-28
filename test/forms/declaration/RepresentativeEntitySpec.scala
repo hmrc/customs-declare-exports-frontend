@@ -16,11 +16,11 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.EntityDetailsSpec._
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsValue}
 
-class RepresentativeEntitySpec extends WordSpec with MustMatchers {
+class RepresentativeEntitySpec extends DeclarationPageBaseSpec {
   import RepresentativeEntitySpec._
 
   "RepresentativeEntity mapping used for binding data" should {
@@ -51,9 +51,11 @@ class RepresentativeEntitySpec extends WordSpec with MustMatchers {
         form.hasErrors must be(false)
       }
     }
-
   }
 
+  "RepresentativeEntity" when {
+    testTariffContentKeys(RepresentativeEntity, "tariff.declaration.representativesEoriNumber")
+  }
 }
 
 object RepresentativeEntitySpec {

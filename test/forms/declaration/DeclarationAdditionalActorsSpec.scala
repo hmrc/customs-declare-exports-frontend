@@ -16,12 +16,11 @@
 
 package forms.declaration
 
-import forms.common.Eori
+import forms.common.{DeclarationPageBaseSpec, Eori}
 import forms.declaration.DeclarationAdditionalActors.PartyType.{Consolidator, FreightForwarder}
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
+class DeclarationAdditionalActorsSpec extends DeclarationPageBaseSpec {
   import DeclarationAdditionalActorsSpec._
 
   "DeclarationAdditionalActors mapping used for binding data" should {
@@ -79,6 +78,9 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "DeclarationAdditionalActors" when {
+    testTariffContentKeysNoSpecialisation(DeclarationAdditionalActors, "tariff.declaration.otherPartiesInvolved")
+  }
 }
 
 object DeclarationAdditionalActorsSpec {

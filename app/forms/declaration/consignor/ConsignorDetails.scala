@@ -18,6 +18,8 @@ package forms.declaration.consignor
 
 import forms.DeclarationPage
 import forms.declaration.EntityDetails
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.DeclarationType
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
@@ -41,4 +43,7 @@ object ConsignorDetails extends DeclarationPage {
         }
       case Some(_) => ConsignorDetails(EntityDetails(consignorEoriDetails.eori, None))
     }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.consignorEoriNumber.clearance"))
 }

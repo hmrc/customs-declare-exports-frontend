@@ -23,6 +23,7 @@
 @import views.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -34,13 +35,12 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[TransportPayment])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.transportInformation.transportPayment.paymentMethod.help.bodyText", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.transportInformation.transportPayment.paymentMethod", "declaration.section.6"),
@@ -110,7 +110,7 @@
             errorMessage = form("paymentMethod").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(TransportPayment, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

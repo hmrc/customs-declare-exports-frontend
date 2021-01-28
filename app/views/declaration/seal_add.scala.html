@@ -19,6 +19,8 @@
 @import views.{BackButton, Title}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
+@import config.AppConfig
+@import models.requests.JourneyRequest
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -27,14 +29,13 @@
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         pageTitle: pageTitle,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[Seal], containerId: String)(implicit request: Request[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.type.sealsSummaryText", components.details_content_link())) }
+@(mode: Mode, form: Form[Seal], containerId: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.seal.title", "declaration.section.6", containerId),
@@ -53,9 +54,8 @@
             sectionHeaderKey = Some("declaration.section.6")
         )
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(Seal, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }
-
 }

@@ -17,6 +17,8 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
@@ -36,4 +38,7 @@ object InlandModeOfTransportCode extends DeclarationPage {
     )(InlandModeOfTransportCode.apply)(InlandModeOfTransportCode.unapply)
 
   def form(): Form[InlandModeOfTransportCode] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.inlandTransportDetails.common"))
 }

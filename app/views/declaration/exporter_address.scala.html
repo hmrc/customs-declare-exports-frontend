@@ -26,6 +26,7 @@
 @import views.BackButton
 @import play.twirl.api.HtmlFormat
 @import views.ErrorMapper.eoriOrAddressErrors
+@import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -39,16 +40,12 @@
     group_address: group_address,
     exportsInputText: exportsInputText,
     pageTitle: pageTitle,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[ExporterDetails])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariff = {
-    @components.details(messages("site.details.summary_text_this")){
-        @Html(messages("declaration.exporter-address.help-item1", components.details_content_link()))
-    }
-}
 
 @pageHint = {
     <span class="govuk-hint">
@@ -85,7 +82,7 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 groupAddress,
-                tariff,
+                tariffExpander(ExporterDetails, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

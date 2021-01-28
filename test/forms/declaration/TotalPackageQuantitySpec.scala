@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@()(implicit messages: Messages)
+package forms.declaration
 
-<a class="govuk-link govuk-link--no-visited-state" target="_blank" href="https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds"> @messages("declaration.type.tariffUrlText")</a>
+import forms.common.DeclarationPageBaseSpec
+
+class TotalPackageQuantitySpec extends DeclarationPageBaseSpec {
+
+  "TotalPackageQuantity" when {
+    testTariffContentKeysNoSpecialisation(TotalPackageQuantity, "tariff.declaration.totalPackageQuantity")
+  }
+}

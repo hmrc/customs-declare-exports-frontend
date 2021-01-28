@@ -60,7 +60,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with S
         messages must haveTranslationFor("declaration.carrierEori.title")
         messages must haveTranslationFor("declaration.carrierEori.eori.label")
         messages must haveTranslationFor("declaration.carrierEori.hasEori.empty")
-        messages must haveTranslationFor("declaration.carrierEori.help-item1")
+        messages must haveTranslationFor("tariff.declaration.locationOfGoods.clearance.text")
       }
 
       "display page title" in {

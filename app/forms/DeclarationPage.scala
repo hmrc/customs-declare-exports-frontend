@@ -16,4 +16,16 @@
 
 package forms
 
-trait DeclarationPage
+import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.viewmodels.TariffContentKey
+
+trait DeclarationPage {
+  def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] = Seq.empty
+}
+
+object DeclarationPage {
+  def getJourneyTypeSpecialisation(decType: DeclarationType): String = decType match {
+    case CLEARANCE => "clearance"
+    case _         => "common"
+  }
+}

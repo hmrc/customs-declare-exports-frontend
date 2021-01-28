@@ -16,12 +16,11 @@
 
 package forms.declaration
 
-import forms.common.Eori
+import forms.common.{DeclarationPageBaseSpec, Eori}
 import models.declaration.ExportDeclarationTestData.correctDeclarationHolder
-import org.scalatest.{MustMatchers, WordSpec}
 import unit.base.JourneyTypeTestRunner
 
-class DeclarationHolderSpec extends WordSpec with MustMatchers with JourneyTypeTestRunner {
+class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 
   "DeclarationHolder mandatoryMapping" should {
 
@@ -190,5 +189,13 @@ class DeclarationHolderSpec extends WordSpec with MustMatchers with JourneyTypeT
         DeclarationHolder.fromId(input) mustBe expectedResult
       }
     }
+  }
+
+  "DeclarationHolder" when {
+    testTariffContentKeys(DeclarationHolder, "tariff.declaration.addAuthorisationRequired")
+  }
+
+  "DeclarationHolderRequired" when {
+    testTariffContentKeys(DeclarationHolderRequired, "tariff.declaration.isAuthorisationRequired")
   }
 }

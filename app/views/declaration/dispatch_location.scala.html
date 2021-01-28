@@ -24,6 +24,7 @@
 @import views.html.components.gds._
 @import views.{BackButton, Title}
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -33,8 +34,9 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveAndContinue: saveAndContinue,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[DispatchLocation])(implicit request: JourneyRequest[_], messages: Messages)
@@ -89,7 +91,7 @@
             content = HtmlContent(countriesDetails)
           ))
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.type.dispatchLocationSummaryText", components.gds.detailsContentLink())))
+        @tariffExpander(DispatchLocation, request.declarationType)(messages, appConfig)
 
         @saveAndContinue("site.continue")
     }

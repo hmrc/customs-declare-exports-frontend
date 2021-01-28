@@ -19,6 +19,8 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.TransportCodes._
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
@@ -150,4 +152,7 @@ object BorderTransport extends DeclarationPage {
     } else {
       None
     }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.borderTransport.1.common"), TariffContentKey("tariff.declaration.borderTransport.2.common"))
 }

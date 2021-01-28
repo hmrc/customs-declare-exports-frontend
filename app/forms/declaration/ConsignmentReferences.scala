@@ -17,6 +17,8 @@
 package forms.declaration
 
 import forms.{DeclarationPage, Ducr, Lrn}
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.{CLEARANCE, DeclarationType}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
@@ -32,4 +34,20 @@ object ConsignmentReferences extends DeclarationPage {
   implicit val format = Json.format[ConsignmentReferences]
 
   def form(): Form[ConsignmentReferences] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    decType match {
+      case CLEARANCE =>
+        Seq(
+          TariffContentKey("tariff.declaration.consignmentReferences.1.clearance"),
+          TariffContentKey("tariff.declaration.consignmentReferences.2.clearance"),
+          TariffContentKey("tariff.declaration.consignmentReferences.3.clearance")
+        )
+      case _ =>
+        Seq(
+          TariffContentKey("tariff.declaration.consignmentReferences.1.common"),
+          TariffContentKey("tariff.declaration.consignmentReferences.2.common"),
+          TariffContentKey("tariff.declaration.consignmentReferences.3.common")
+        )
+    }
 }

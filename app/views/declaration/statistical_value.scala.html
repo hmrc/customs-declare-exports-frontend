@@ -24,28 +24,24 @@
 @import views.html.components.gds._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcCurrencyInput
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.currencyinput.CurrencyInput
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukDetails : GovukDetails,
-    pageTitle: pageTitle,
-    hmrcCurrencyInput: HmrcCurrencyInput,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    headingContent: headingContent,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        pageTitle: pageTitle,
+        hmrcCurrencyInput: HmrcCurrencyInput,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        headingContent: headingContent,
+        saveButtons: saveButtons,
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
-@(
-    mode: Mode,
-    itemId: String,
-    form: Form[StatisticalValue]
-)(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.statisticalValue.help.bodyText", components.details_content_link())) }
+@(mode: Mode, itemId: String, form: Form[StatisticalValue])(implicit request: JourneyRequest[_], messages: Messages)
 
 @unitsHint = {
     <span class="govuk-visually-hidden" id="statisticalValue-units-hint" aria-hidden="true">@messages("declaration.statisticalValue.units.hint")</span>
@@ -83,7 +79,7 @@
             errorMessage = form("statisticalValue").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(StatisticalValue, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

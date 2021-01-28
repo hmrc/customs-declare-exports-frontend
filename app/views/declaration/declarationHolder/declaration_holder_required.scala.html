@@ -33,7 +33,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
+    tariffExpander: tariffExpander,
     appConfig: AppConfig,
     yesNoRadios: yesNoRadios,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -79,10 +79,7 @@
                 hintParagraph1,
                 hintParagraph2,
                 yesNoRadios(form),
-                tariffDetails(
-                  messages("site.details.summary_text_this"),
-                  HtmlContent(messages("declaration.declarationHolderRequired.help.bodyText", tradeTariffLink))
-                ),
+                tariffExpander(DeclarationHolderRequired, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

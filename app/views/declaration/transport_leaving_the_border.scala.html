@@ -24,25 +24,24 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukDetails : GovukDetails,
-    govukRadios: GovukRadios,
-    pageTitle: pageTitle,
-    exportsInputText: exportsInputText,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        govukRadios: GovukRadios,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(form: Form[TransportLeavingTheBorder], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.transport.leavingTheBorder.transportMode.help.bodyText", components.details_content_link())) }
-
 
 @govukLayout(
     title = Title("declaration.transport.leavingTheBorder.title", "declaration.section.6"),
@@ -121,7 +120,7 @@
             errorMessage = form("transportLeavingTheBorder").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(TransportLeavingTheBorder, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

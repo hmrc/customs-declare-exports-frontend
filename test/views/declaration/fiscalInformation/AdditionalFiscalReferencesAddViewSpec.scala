@@ -22,16 +22,17 @@ import forms.declaration.AdditionalFiscalReference
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
+import models.DeclarationType._
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportItemIdGeneratorService
+import services.cache.{ExportItemIdGeneratorService, ExportsTestData}
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.fiscalInformation.additional_fiscal_references_add
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesAddViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
+class AdditionalFiscalReferencesAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
   private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
 
@@ -76,7 +77,11 @@ class AdditionalFiscalReferencesAddViewSpec extends UnitViewSpec with Stubs with
 
       "display 'For more information about this' summary text" in {
         val detailsSummaryText = view.getElementsByClass("govuk-details__summary-text").first().text()
-        detailsSummaryText.text() mustBe messages("site.details.summary_text_this")
+        val titleKey = request.declarationType match {
+          case CLEARANCE => "tariff.expander.title.clearance"
+          case _         => "tariff.expander.title.common"
+        }
+        detailsSummaryText.text() mustBe messages(titleKey)
       }
 
       "display 'Save and continue' button" in {
