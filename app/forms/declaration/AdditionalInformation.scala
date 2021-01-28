@@ -29,19 +29,21 @@ case class AdditionalInformation(code: String, description: String) {
 object AdditionalInformation extends DeclarationPage {
   implicit val format = Json.format[AdditionalInformation]
 
-  val formId = "AdditionalInformation"
+  val codeKey = "code"
+  val descriptionKey = "description"
+  val descriptionMaxLength = 70
 
   val mapping = Forms.mapping(
-    "code" ->
+    codeKey ->
       text()
         .verifying("declaration.additionalInformation.code.empty", nonEmpty)
         .verifying("declaration.additionalInformation.code.error", isEmpty or (isAlphanumeric and hasSpecificLength(5))),
-    "description" ->
+    descriptionKey ->
       text()
         .verifying("declaration.additionalInformation.description.empty", nonEmpty)
         .verifying(
           "declaration.additionalInformation.description.error",
-          isEmpty or (noLongerThan(70) and isAlphanumericWithAllowedSpecialCharactersAndNewLine)
+          isEmpty or (noLongerThan(descriptionMaxLength) and isAlphanumericWithAllowedSpecialCharactersAndNewLine)
         )
   )(AdditionalInformation.apply)(AdditionalInformation.unapply)
 

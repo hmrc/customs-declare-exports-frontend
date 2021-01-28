@@ -33,7 +33,7 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import utils.ListItem
-import views.html.declaration.additionalInformtion.additional_information_change
+import views.html.declaration.additionalInformation.additional_information_change
 
 class AdditionalInformationChangeControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 

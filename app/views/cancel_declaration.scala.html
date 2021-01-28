@@ -26,14 +26,14 @@
 @import views.ErrorMapper.radioGroupErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: govukRadios,
-        errorSummary: errorSummary,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        exportsInputTextArea: exportsInputTextArea,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+  govukLayout: gdsMainTemplate,
+  govukButton: GovukButton,
+  govukRadios: govukRadios,
+  errorSummary: errorSummary,
+  pageTitle: pageTitle,
+  exportsInputText: exportsInputText,
+  characterCount: exportsInputCharacterCount,
+  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(form: Form[CancelDeclaration])(implicit request: Request[_], messages: Messages)
@@ -49,28 +49,29 @@
         @pageTitle(messages("cancellation.title"))
 
         @exportsInputText(
-            field = form("functionalReferenceId"),
+            field = form(CancelDeclaration.functionalReferenceIdKey),
             inputClasses = Some("govuk-!-width-two-thirds"),
             labelKey = "cancellation.functionalReferenceId",
             labelClasses = "govuk-label"
         )
 
         @exportsInputText(
-            field = form("mrn"),
+            field = form(CancelDeclaration.mrnKey),
             inputClasses = Some("govuk-!-width-two-thirds"),
             labelKey = "cancellation.mrn",
             labelClasses = "govuk-label"
         )
 
-        @exportsInputTextArea(
-            field = form("statementDescription"),
-            inputClasses = Some("govuk-!-width-two-thirds"),
+        @characterCount(
+            field = form(CancelDeclaration.statementDescriptionKey),
             labelKey = "cancellation.statementDescription",
+            maxLength = Some(CancelDeclaration.statementDescriptionMaxLength),
+            inputClasses = "govuk-!-width-two-thirds",
             labelClasses = "govuk-label"
         )
 
         @govukRadios(Radios(
-            name = "changeReason",
+            name = CancelDeclaration.changeReasonKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("cancellation.changeReason")),

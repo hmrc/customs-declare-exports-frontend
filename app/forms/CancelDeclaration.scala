@@ -17,29 +17,38 @@
 package forms
 
 import forms.Mapping.requiredRadio
-import forms.cancellation.CancellationChangeReason.{Duplication, NoLongerRequired, OtherReason}
+import forms.cancellation.CancellationChangeReason._
 import play.api.data.Forms._
-import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.data.{Form, Forms, Mapping}
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
 case class CancelDeclaration(functionalReferenceId: Lrn, mrn: String, statementDescription: String, changeReason: String)
 
 object CancelDeclaration {
-  implicit val format = Json.format[CancelDeclaration]
+  implicit val format: OFormat[CancelDeclaration] = Json.format[CancelDeclaration]
 
-  val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
+  val functionalReferenceIdKey = "functionalReferenceId"
+  val mrnKey = "mrn"
+  val statementDescriptionKey = "statementDescription"
+  val changeReasonKey = "changeReason"
 
-  val mapping = Forms.mapping(
-    "functionalReferenceId" -> Lrn.mapping("cancellation.functionalReferenceId"),
-    "mrn" -> text()
+  val mrnMaxLength = 70
+  val statementDescriptionMaxLength = 512
+
+  val mapping: Mapping[CancelDeclaration] = Forms.mapping(
+    functionalReferenceIdKey -> Lrn.mapping("cancellation.functionalReferenceId"),
+    mrnKey -> text()
       .verifying("cancellation.mrn.error.empty", nonEmpty)
-      .verifying("cancellation.mrn.error.tooLong", isEmpty or noLongerThan(70))
+      .verifying("cancellation.mrn.error.tooLong", isEmpty or noLongerThan(mrnMaxLength))
       .verifying("cancellation.mrn.error.wrongFormat", isEmpty or isAlphanumeric),
-    "statementDescription" -> text()
+    statementDescriptionKey -> text()
       .verifying("cancellation.statementDescription.error.empty", nonEmpty)
-      .verifying("cancellation.statementDescription.error.invalid", isEmpty or (noLongerThan(512) and isAlphanumericWithAllowedSpecialCharacters)),
-    "changeReason" ->
+      .verifying(
+        "cancellation.statementDescription.error.invalid",
+        isEmpty or (noLongerThan(statementDescriptionMaxLength) and isAlphanumericWithAllowedSpecialCharacters)
+      ),
+    changeReasonKey ->
       requiredRadio("cancellation.changeReason.error.wrongValue")
         .verifying(
           "cancellation.changeReason.error.wrongValue",

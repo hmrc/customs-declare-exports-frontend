@@ -28,7 +28,7 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.additionalInformtion.additional_information_required
+import views.html.declaration.additionalInformation.additional_information_required
 
 class AdditionalInformationRequiredControllerSpec extends ControllerSpec with OptionValues {
 
