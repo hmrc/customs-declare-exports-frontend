@@ -24,29 +24,28 @@
 @import views.html.components.gds._
 @import scala.collection.immutable
 @import views.ErrorMapper.yesNoErrors
+@import config.AppConfig
+@import models.requests.JourneyRequest
 
 @this(
-    govukLayout: gdsMainTemplate,
-    sectionHeader: sectionHeader,
-    headingContent: headingContent,
-    govukFieldset: GovukFieldset,
-    pageTitle: pageTitle,
-    changeLink: link,
-    govukButton: GovukButton,
-    govukTable: GovukTable,
-    errorSummary: errorSummary,
-    yesNoRadios: yesNoRadios,
-    tariffDetails: tariffDetails,
-    spanVisuallyHidden: spanVisuallyHidden,
-    saveButtons: saveButtons,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        sectionHeader: sectionHeader,
+        headingContent: headingContent,
+        govukFieldset: GovukFieldset,
+        pageTitle: pageTitle,
+        changeLink: link,
+        govukButton: GovukButton,
+        govukTable: GovukTable,
+        errorSummary: errorSummary,
+        yesNoRadios: yesNoRadios,
+        tariffExpander: tariffExpander,
+        spanVisuallyHidden: spanVisuallyHidden,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[YesNoAnswer], containerId: String, seals: Seq[Seal])(implicit request: Request[_], messages: Messages)
-
-@tariffBody = {
-    @Html(messages("declaration.type.sealsSummaryText", components.details_content_link()))
-}
+@(mode: Mode, form: Form[YesNoAnswer], containerId: String, seals: Seq[Seal])(implicit request: JourneyRequest[_], messages: Messages)
 
 @sealsTable = {
     @if(seals.nonEmpty) {
@@ -125,9 +124,10 @@
                     addSealRadios
                 ))
             ))
-      }
+        }
 
-      @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
-      @saveButtons()
+        @tariffExpander(Seal, request.declarationType)(messages, appConfig)
+
+        @saveButtons()
     }
 }

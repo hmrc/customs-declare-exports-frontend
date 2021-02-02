@@ -26,19 +26,22 @@
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
 @import views.ErrorMapper.yesNoErrors
+@import config.AppConfig
 
 @this(
-  govukLayout: gdsMainTemplate,
-  govukFieldset: GovukFieldset,
-  govukTable : GovukTable,
-  errorSummary: errorSummary,
-  sectionHeader: sectionHeader,
-  addAnotherQuestion: addAnotherQuestion,
-  spanVisuallyHidden: spanVisuallyHidden,
-  saveButtons: saveButtons,
-  removeButton: removeButton,
-  link: link,
-  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukTable : GovukTable,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        addAnotherQuestion: addAnotherQuestion,
+        spanVisuallyHidden: spanVisuallyHidden,
+        saveButtons: saveButtons,
+        removeButton: removeButton,
+        link: link,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        tariffExpander: tariffExpander,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[YesNoAnswer], items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
@@ -144,6 +147,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 itemsTable,
                 addAnotherQuestion("declaration.itemsSummary.addAnotherItem.question", form),
+                tariffExpander(ExportItem, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

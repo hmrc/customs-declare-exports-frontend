@@ -17,10 +17,10 @@
 package forms.declaration
 
 import forms.LightFormMatchers
+import forms.common.DeclarationPageBaseSpec
 import play.api.libs.json.{JsObject, JsString, JsValue}
-import unit.base.UnitSpec
 
-class SupervisingCustomsOfficeSpec extends UnitSpec with LightFormMatchers {
+class SupervisingCustomsOfficeSpec extends DeclarationPageBaseSpec with LightFormMatchers {
 
   import SupervisingCustomsOffice._
 
@@ -38,6 +38,10 @@ class SupervisingCustomsOfficeSpec extends UnitSpec with LightFormMatchers {
 
       form().bind(incorrectSupervisingCustomsOffice) mustBe errorless
     }
+  }
+
+  "SupervisingCustomsOffice" when {
+    testTariffContentKeys(SupervisingCustomsOffice, "tariff.declaration.supervisingCustomsOffice")
   }
 }
 

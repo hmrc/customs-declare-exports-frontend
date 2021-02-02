@@ -28,6 +28,7 @@
 @import scala.collection.immutable
 @import play.twirl.api.HtmlFormat
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -40,20 +41,12 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
-
-@tariffBody = {
-    @components.tariff_body_partial(
-        messages("declaration.transportInformation.active.help-item1"),
-        messages("declaration.transportInformation.active.help-item2")
-    )(tariffBodyDesc)
-}
 
 @inputField(transportType: String, labelKey: String) = @{Some(exportsInputText(
     field = form(s"borderTransportReference_$transportType"),
@@ -125,7 +118,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 borderTransportType,
                 borderTransportNationality,
-                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                tariffExpander(BorderTransport, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

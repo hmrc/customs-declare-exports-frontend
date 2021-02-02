@@ -16,11 +16,11 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.common.YesNoAnswer.YesNoAnswers.yes
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class RepresentativeAgentSpec extends WordSpec with MustMatchers {
+class RepresentativeAgentSpec extends DeclarationPageBaseSpec {
 
   import RepresentativeAgentSpec._
 
@@ -51,11 +51,12 @@ class RepresentativeAgentSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(false)
       }
-
     }
-
   }
 
+  "RepresentativeAgent" when {
+    testTariffContentKeysNoSpecialisation(RepresentativeAgent, "tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent")
+  }
 }
 
 object RepresentativeAgentSpec {

@@ -23,10 +23,10 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import views.html.components.gds._
-@import views.components.gds._
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
+@import config.AppConfig
 
 @this(govukLayout: gdsMainTemplate,
         govukFieldset: GovukFieldset,
@@ -37,9 +37,11 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
+)
 
 
 @(mode: Mode, form: Form[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
@@ -110,13 +112,6 @@
     }
 }
 
-@tariffBody = {
-    @tariffDetails(
-        messages("site.details.summary_text_this"),
-        HtmlContent(messages("declaration.type.additionalActorsSummaryText", components.gds.detailsContentLink())
-    ))
-}
-
 @govukLayout(
     title = Title("declaration.additionalActors.title",  "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationAdditionalActors, mode)))) {
@@ -135,7 +130,7 @@
             html = HtmlFormat.fill(immutable.Seq(
               pageHint,
               radios,
-              tariffBody,
+              tariffExpander(DeclarationAdditionalActors, request.declarationType)(messages, appConfig),
               saveButtons()
             ))
         ))

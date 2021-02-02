@@ -17,8 +17,10 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import play.api.data.Forms.{optional, text}
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -38,4 +40,7 @@ object SupervisingCustomsOffice extends DeclarationPage {
     )(SupervisingCustomsOffice.apply)(SupervisingCustomsOffice.unapply)
 
   def form(): Form[SupervisingCustomsOffice] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.supervisingCustomsOffice.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

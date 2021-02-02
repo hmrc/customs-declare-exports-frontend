@@ -19,9 +19,10 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.mappings.CrossFieldFormatter
 import models.DeclarationType
-import models.DeclarationType.DeclarationType
-import play.api.data.Forms.{of, optional, text}
+import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.{of, optional, text}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -108,4 +109,20 @@ object CommodityMeasure extends DeclarationPage {
     case _                         => Form(mappingDefault)
   }
 
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    decType match {
+      case CLEARANCE =>
+        Seq(
+          TariffContentKey("tariff.declaration.item.commodityMeasure.1.clearance"),
+          TariffContentKey("tariff.declaration.item.commodityMeasure.2.clearance"),
+          TariffContentKey("tariff.declaration.item.commodityMeasure.3.clearance"),
+          TariffContentKey("tariff.declaration.item.commodityMeasure.4.clearance")
+        )
+      case _ =>
+        Seq(
+          TariffContentKey("tariff.declaration.item.commodityMeasure.1.common"),
+          TariffContentKey("tariff.declaration.item.commodityMeasure.2.common"),
+          TariffContentKey("tariff.declaration.item.commodityMeasure.3.common")
+        )
+    }
 }

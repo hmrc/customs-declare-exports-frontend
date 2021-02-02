@@ -24,7 +24,7 @@ import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
 import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
 import forms.declaration.DispatchLocationSpec._
-import forms.declaration.ExporterDetailsSpec._
+import forms.declaration.exporter.ExporterDetailsSpec._
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.{DeclarationHolder, _}

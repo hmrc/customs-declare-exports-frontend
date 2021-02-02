@@ -19,10 +19,10 @@
 @import forms.declaration.ContainerAdd
 @import forms.declaration.ContainerAdd._
 @import models.requests.JourneyRequest
-@import views.Title
-@import views.{BackButton, Title}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
 @import views.html.components.gds._
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -31,14 +31,13 @@
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         pageTitle: pageTitle,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[ContainerAdd])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.type.container.summary.help.text", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.transportInformation.containers.add.title", "declaration.section.6"),
@@ -57,7 +56,7 @@
 
         )
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(ContainerAdd, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

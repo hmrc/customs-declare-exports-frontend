@@ -27,30 +27,28 @@
 @import scala.collection.immutable
 @import views.components.gds.Styles._
 @import views.ErrorMapper.yesNoErrors
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
-    govukButton: GovukButton,
-    govukTable : GovukTable,
-    govukRadios: GovukRadios,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    pageTitle: pageTitle,
-    exportsInputText: exportsInputText,
-    tariffDetails: tariffDetails,
-    addAnotherQuestion: addAnotherQuestion,
-    spanVisuallyHidden: spanVisuallyHidden,
-    link: link,
-    saveButtons: saveButtons,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukButton: GovukButton,
+        govukTable : GovukTable,
+        govukRadios: GovukRadios,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        tariffExpander: tariffExpander,
+        addAnotherQuestion: addAnotherQuestion,
+        spanVisuallyHidden: spanVisuallyHidden,
+        link: link,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
-
-@tariffBody = { @components.tariff_body_partial(messages("declaration.packageInformation.help-item1"), messages("declaration.packageInformation.help-item2"), messages("declaration.packageInformation.help-item3"))(tariffBodyDesc)}
 
 @title = @{
     if(packages.size == 1)
@@ -115,7 +113,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 packageInfoTable,
                 addAnotherQuestion("declaration.packageInformation.add.another", form),
-                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                tariffExpander(PackageInformation, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

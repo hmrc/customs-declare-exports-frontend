@@ -39,7 +39,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         messages must haveTranslationFor("declaration.totalPackageQuantity.empty")
         messages must haveTranslationFor("declaration.totalPackageQuantity.error")
         messages must haveTranslationFor("declaration.totalPackageQuantity.error.required")
-        messages must haveTranslationFor("site.details.summary_text_this")
+        messages must haveTranslationFor("tariff.expander.title.clearance")
       }
 
       onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
@@ -70,7 +70,13 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
 
         "display Tariff section text" in {
           val tariffText = view.getElementsByClass("govuk-details__summary-text").first()
-          tariffText must containMessage("site.details.summary_text_this")
+
+          val titleKey = request.declarationType match {
+            case CLEARANCE => "tariff.expander.title.clearance"
+            case _         => "tariff.expander.title.common"
+          }
+
+          tariffText must containMessage(titleKey)
         }
 
         "display 'Save and return' button on page" in {

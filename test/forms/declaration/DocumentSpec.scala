@@ -16,11 +16,11 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import models.declaration.DocumentCategory.RelatedDocument
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DocumentSpec extends WordSpec with MustMatchers {
+class DocumentSpec extends DeclarationPageBaseSpec {
 
   "Document mapping used for binding data" should {
 
@@ -83,6 +83,14 @@ class DocumentSpec extends WordSpec with MustMatchers {
         form.errors mustBe empty
       }
     }
+  }
+
+  "Document" when {
+    testTariffContentKeys(Document, "tariff.declaration.addPreviousDocument")
+  }
+
+  "DocumentChangeOrRemove" when {
+    testTariffContentKeysNoSpecialisation(DocumentChangeOrRemove, "tariff.declaration.previousDocuments.remove", getClearanceTariffKeys)
   }
 }
 

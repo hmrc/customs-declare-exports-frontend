@@ -45,7 +45,8 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
     "have all messages defined" in {
       messages must haveTranslationFor("declaration.previousDocuments.summary.header.singular")
       messages must haveTranslationFor("declaration.previousDocuments.summary.header.plural")
-      messages must haveTranslationFor("declaration.type.previousDocumentsSummaryText")
+      messages must haveTranslationFor("tariff.declaration.addPreviousDocument.common.text")
+      messages must haveTranslationFor("tariff.declaration.addPreviousDocument.common.linkText.0")
       messages must haveTranslationFor("declaration.previousDocuments.change.hint")
       messages must haveTranslationFor("declaration.previousDocuments.remove.hint")
       messages must haveTranslationFor("declaration.previousDocuments.documentType.label")
@@ -54,7 +55,7 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.label")
       messages must haveTranslationFor("declaration.previousDocuments.title")
       messages must haveTranslationFor("declaration.previousDocuments.addAnotherDocument")
-      messages must haveTranslationFor("site.details.summary_text_this")
+      messages must haveTranslationFor("tariff.expander.title.common")
     }
 
     onEveryDeclarationJourney() { implicit request =>

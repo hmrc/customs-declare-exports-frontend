@@ -16,12 +16,12 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantIsExporter.answerKey
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DeclarantIsExporterSpec extends WordSpec with MustMatchers {
+class DeclarantIsExporterSpec extends DeclarationPageBaseSpec {
 
   import DeclarantIsExporterSpec._
 
@@ -56,6 +56,9 @@ class DeclarantIsExporterSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "DeclarantIsExporter" when {
+    testTariffContentKeys(DeclarantIsExporter, "tariff.declaration.areYouTheExporter")
+  }
 }
 
 object DeclarantIsExporterSpec {

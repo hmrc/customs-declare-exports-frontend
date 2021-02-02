@@ -23,28 +23,28 @@
 @import views.html.components.gds._
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
+@import config.AppConfig
 
 @import scala.collection.immutable
 
-
 @this(
-    govukButton: GovukButton,
-    govukTable : GovukTable,
-    errorSummary: errorSummary,
-    formGroupWrapper: formGroupWrapper,
-    govukFieldset: govukFieldset,
-    sectionHeader: sectionHeader,
-    govukHint: govukHint,
-    pageTitle: pageTitle,
-    exportsInputText: exportsInputText,
-    tariffDetails: tariffDetails,
-    addButton: addButton,
-    removeButton: removeButton,
-    saveButtons: saveButtons
+        govukButton: GovukButton,
+        govukTable : GovukTable,
+        errorSummary: errorSummary,
+        formGroupWrapper: formGroupWrapper,
+        govukFieldset: govukFieldset,
+        sectionHeader: sectionHeader,
+        govukHint: govukHint,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        tariffExpander: tariffExpander,
+        addButton: addButton,
+        removeButton: removeButton,
+        saveButtons: saveButtons,
+        appConfig: AppConfig
 )
-@(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("declaration.type.holderOfAuthorisationSummaryText", components.details_content_link())) }
+@(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @pageFields = {
     @formGroupWrapper(field = form(DeclarationHolderFormGroupId)){
@@ -78,7 +78,7 @@
     html = HtmlFormat.fill(immutable.Seq(
         govukHint(Hint(content = Text(messages("declaration.declarationHolder.title.hint")))),
         pageFields,
-        tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+        tariffExpander(DeclarationHolder, request.declarationType)(messages, appConfig),
         saveButtons()
     ))
 ))

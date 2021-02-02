@@ -20,6 +20,7 @@ import forms.DeclarationPage
 import forms.declaration.TransportCodes._
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
@@ -149,6 +150,9 @@ object DepartureTransport extends DeclarationPage {
     case DeclarationType.CLEARANCE => Form(optionalMapping)
     case _                         => Form(requiredMapping)
   }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.departureTransport.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
 object TransportCodes {

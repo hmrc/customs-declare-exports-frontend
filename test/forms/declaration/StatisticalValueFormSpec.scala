@@ -16,12 +16,12 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.StatisticalValue._
 import forms.declaration.StatisticalValueFormSpec.correctStatisticalValueMap
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 
-class StatisticalValueFormSpec extends WordSpec with MustMatchers {
+class StatisticalValueFormSpec extends DeclarationPageBaseSpec {
 
   "Item Type form" should {
 
@@ -40,8 +40,11 @@ class StatisticalValueFormSpec extends WordSpec with MustMatchers {
 
         form.errors mustBe Seq(FormError("statisticalValue", "error.required"))
       }
-
     }
+  }
+
+  "StatisticalValue" when {
+    testTariffContentKeysNoSpecialisation(StatisticalValue, "tariff.declaration.item.statisticalValue")
   }
 }
 

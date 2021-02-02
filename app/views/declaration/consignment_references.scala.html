@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import views.html.components.gds._
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -31,15 +32,12 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.gds.detailsContentLink())) }
-
-@tariffBody = { @components.tariff_body_partial(messages("declaration.type.consignmentDescListItemOne"), messages("declaration.type.consignmentDescListItemTwo"))(tariffBodyDesc)}
 
 @govukLayout(
     title = Title("declaration.consignmentReferences.header", "declaration.section.1"),
@@ -65,7 +63,7 @@
             hintKey = Some("declaration.consignmentReferences.lrn.hint")
         )
 
-        @tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody))
+        @tariffExpander(ConsignmentReferences, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

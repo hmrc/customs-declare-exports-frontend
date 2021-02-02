@@ -25,20 +25,20 @@
 @import views.components.gds.Styles._
 @import views.BackButton
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    tariffDetails: tariffDetails,
+    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[RepresentativeAgent])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.representative-entity.help-item", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.representative.agent.title", "declaration.section.2"),
@@ -74,7 +74,7 @@
             errorMessage = form("representingAgent").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(RepresentativeAgent, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

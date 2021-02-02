@@ -16,12 +16,13 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.ContainerFirst._
-import org.scalatest.{MustMatchers, WordSpec}
+import models.viewmodels.TariffContentKey
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class ContainerFirstSpec extends WordSpec with MustMatchers {
+class ContainerFirstSpec extends DeclarationPageBaseSpec {
 
   def formData(hasContainer: String, containerId: Option[String]) =
     JsObject(Map(hasContainerKey -> JsString(hasContainer), containerIdKey -> JsString(containerId.getOrElse(""))))
@@ -74,5 +75,16 @@ class ContainerFirstSpec extends WordSpec with MustMatchers {
       }
 
     }
+  }
+
+  override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    Seq(
+      TariffContentKey(s"${messageKey}.1.clearance"),
+      TariffContentKey(s"${messageKey}.2.clearance"),
+      TariffContentKey(s"${messageKey}.3.clearance")
+    )
+
+  "ContainerFirst" when {
+    testTariffContentKeys(ContainerFirst, "tariff.declaration.container")
   }
 }

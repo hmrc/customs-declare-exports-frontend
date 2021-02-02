@@ -23,23 +23,22 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.BackButton
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    errorSummary: errorSummary,
-    exportsInputText: exportsInputText,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    pageTitle: pageTitle,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-    sectionHeader: sectionHeader
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        errorSummary: errorSummary,
+        exportsInputText: exportsInputText,
+        saveButtons: saveButtons,
+        tariffExpander: tariffExpander,
+        pageTitle: pageTitle,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        sectionHeader: sectionHeader,
+        appConfig: AppConfig
 )
 
-
 @(mode: Mode, form: Form[WarehouseIdentification])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.type.warehouseInformationSummaryText", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.warehouse.identification.required.title", "declaration.section.6"),
@@ -60,10 +59,9 @@
             sectionHeaderKey = None
         )
 
-
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(WarehouseIdentification, request.declarationType)(messages, appConfig)
 
         @saveButtons()
-}
+    }
 
 }

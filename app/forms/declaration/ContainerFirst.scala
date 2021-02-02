@@ -18,8 +18,10 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.ContainerAdd.maxContainerIdLength
-import play.api.data.Forms.text
+import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.text
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
@@ -66,4 +68,16 @@ object ContainerFirst extends DeclarationPage {
   )(form2Model)(model2Form)
 
   def form(): Form[ContainerFirst] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    decType match {
+      case CLEARANCE =>
+        Seq(
+          TariffContentKey("tariff.declaration.container.1.clearance"),
+          TariffContentKey("tariff.declaration.container.2.clearance"),
+          TariffContentKey("tariff.declaration.container.3.clearance")
+        )
+      case _ => Seq(TariffContentKey("tariff.declaration.container.common"))
+    }
+
 }

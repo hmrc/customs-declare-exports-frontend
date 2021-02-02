@@ -16,12 +16,12 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.TaricCode._
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class TaricCodeSpec extends WordSpec with MustMatchers {
+class TaricCodeSpec extends DeclarationPageBaseSpec {
 
   def formData(code: Option[String]) =
     JsObject(Map(taricCodeKey -> JsString(code.getOrElse(""))))
@@ -60,7 +60,10 @@ class TaricCodeSpec extends WordSpec with MustMatchers {
 
         form.errors mustBe empty
       }
-
     }
+  }
+
+  "TaricCode" when {
+    testTariffContentKeysNoSpecialisation(TaricCode, "tariff.declaration.item.additionalTaricCode")
   }
 }

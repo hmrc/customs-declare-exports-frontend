@@ -16,12 +16,13 @@
 
 package forms.declaration.countries
 
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.countries.Countries._
 import models.DeclarationType._
 import play.api.data.FormError
-import unit.base.{JourneyTypeTestRunner, UnitSpec}
+import unit.base.JourneyTypeTestRunner
 
-class DestinationCountriesSpec extends UnitSpec with JourneyTypeTestRunner {
+class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 
   "Destination Countries" should {
 
@@ -90,5 +91,9 @@ class DestinationCountriesSpec extends UnitSpec with JourneyTypeTestRunner {
         }
       }
     }
+  }
+
+  "DestinationCountryPage" when {
+    testTariffContentKeys(DestinationCountryPage, "tariff.declaration.destinationCountry")
   }
 }

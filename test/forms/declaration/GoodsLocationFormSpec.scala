@@ -16,10 +16,10 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import play.api.libs.json.{JsObject, JsString}
-import unit.base.UnitSpec
 
-class GoodsLocationFormSpec extends UnitSpec {
+class GoodsLocationFormSpec extends DeclarationPageBaseSpec {
 
   "GoodsLocation form" should {
 
@@ -32,6 +32,9 @@ class GoodsLocationFormSpec extends UnitSpec {
 
       form.value.map(_.code) must be(Some("PLAUCORRECT"))
     }
+  }
 
+  "GoodsLocationForm" when {
+    testTariffContentKeys(GoodsLocationForm, "tariff.declaration.locationOfGoods")
   }
 }

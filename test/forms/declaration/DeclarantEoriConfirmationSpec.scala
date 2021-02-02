@@ -16,12 +16,12 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DeclarantEoriConfirmationSpec extends WordSpec with MustMatchers {
+class DeclarantEoriConfirmationSpec extends DeclarationPageBaseSpec {
 
   import DeclarantEoriConfirmationSpec._
 
@@ -56,6 +56,9 @@ class DeclarantEoriConfirmationSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "DeclarantEoriConfirmation" when {
+    testTariffContentKeys(DeclarantEoriConfirmation, "tariff.declaration.declarantDetails")
+  }
 }
 
 object DeclarantEoriConfirmationSpec {

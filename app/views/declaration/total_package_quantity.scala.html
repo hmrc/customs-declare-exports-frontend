@@ -15,32 +15,29 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.declaration.TotalNumberOfItems
-@import uk.gov.hmrc.play.views.html._
-@import models.requests.JourneyRequest
-@import forms.declaration.TotalPackageQuantity
 @import controllers.navigation.Navigator
+@import forms.declaration.TotalPackageQuantity
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
-@import views.html.components.gds._
 @import views.components.gds.Styles._
+@import views.html.components.gds._
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    errorSummary: errorSummary,
-    pageTitle: pageTitle,
-    exportsInputText: exportsInputText,
-    tariffDetails: tariffDetails,
-    saveButtons: saveButtons,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-    sectionHeader: sectionHeader
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        errorSummary: errorSummary,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        tariffExpander: tariffExpander,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        sectionHeader: sectionHeader,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[TotalPackageQuantity])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.totalPackageQuantity.help.bodyText", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.totalPackageQuantity.title", "declaration.section.4"),
@@ -61,7 +58,7 @@
             sectionHeaderKey = None
         )
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(TotalPackageQuantity, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

@@ -26,7 +26,7 @@ import unit.base.JourneyTypeTestRunner
 
 class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatchers with JourneyTypeTestRunner {
 
-  import forms.declaration.ExporterDetailsSpec._
+  import forms.declaration.exporter.ExporterDetailsSpec._
 
   onEveryDeclarationJourney() { request =>
     s"Exporter Details form for ${request.declarationType}" should {

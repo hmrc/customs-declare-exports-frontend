@@ -54,8 +54,8 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
       messages must haveTranslationFor("declaration.routingCountry.empty")
       messages must haveTranslationFor("declaration.firstRoutingCountry.question")
       messages must haveTranslationFor("declaration.firstRoutingCountry.empty")
-      messages must haveTranslationFor("site.details.summary_text_this")
-      messages must haveTranslationFor("declaration.routingQuestion.help.bodyText")
+      messages must haveTranslationFor("tariff.expander.title.clearance")
+      messages must haveTranslationFor("tariff.declaration.countryOfRouting.common.text")
     }
   }
 

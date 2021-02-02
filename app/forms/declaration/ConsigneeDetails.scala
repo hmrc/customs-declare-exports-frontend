@@ -16,6 +16,8 @@
 
 package forms.declaration
 import forms.DeclarationPage
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
@@ -29,4 +31,7 @@ object ConsigneeDetails extends DeclarationPage {
   val mapping = Forms.mapping("details" -> EntityDetails.addressMapping)(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
 
   def form(): Form[ConsigneeDetails] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.consigneeDetails.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

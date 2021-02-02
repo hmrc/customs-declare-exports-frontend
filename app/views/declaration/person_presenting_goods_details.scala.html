@@ -14,30 +14,28 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
 @import forms.declaration.PersonPresentingGoodsDetails
 @import forms.declaration.PersonPresentingGoodsDetails._
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
 @import views.{BackButton, Title}
 @import views.html.components.gds._
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import views.components.gds.Styles._
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    exportsInputText: exportsInputText,
-    inputText: exportsInputText,
-    errorSummary: errorSummary,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-    sectionHeader: sectionHeader,
+        govukLayout: gdsMainTemplate,
+        exportsInputText: exportsInputText,
+        inputText: exportsInputText,
+        errorSummary: errorSummary,
+        saveButtons: saveButtons,
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        sectionHeader: sectionHeader,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[PersonPresentingGoodsDetails])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.personPresentingGoodsDetails.help-item", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.personPresentingGoodsDetails.title", "declaration.section.2"),
@@ -56,7 +54,7 @@
         sectionHeaderKey = None
         )
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(PersonPresentingGoodsDetails, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

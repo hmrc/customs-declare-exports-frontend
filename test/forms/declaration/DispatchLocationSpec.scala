@@ -16,11 +16,11 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DispatchLocationSpec extends WordSpec with MustMatchers {
+class DispatchLocationSpec extends DeclarationPageBaseSpec {
   import DispatchLocationSpec._
 
   "DispatchLocation mapping used for binding data" should {
@@ -52,6 +52,9 @@ class DispatchLocationSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "DispatchLocation" when {
+    testTariffContentKeys(DispatchLocation, "tariff.declaration.dispatchLocation")
+  }
 }
 
 object DispatchLocationSpec {

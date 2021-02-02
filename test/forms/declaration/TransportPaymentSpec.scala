@@ -16,11 +16,11 @@
 
 package forms.declaration
 
-import org.scalatest.{MustMatchers, WordSpec}
+import forms.common.DeclarationPageBaseSpec
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class TransportPaymentSpec extends WordSpec with MustMatchers {
+class TransportPaymentSpec extends DeclarationPageBaseSpec {
 
   def formData(paymentMethod: String) =
     JsObject(Map("paymentMethod" -> JsString(paymentMethod)))
@@ -33,7 +33,6 @@ class TransportPaymentSpec extends WordSpec with MustMatchers {
 
         form.errors mustBe Seq(FormError("paymentMethod", "standard.transportDetails.paymentMethod.error"))
       }
-
     }
 
     "return form without errors" when {
@@ -48,7 +47,10 @@ class TransportPaymentSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(false)
       }
-
     }
+  }
+
+  "TransportPayment" when {
+    testTariffContentKeys(TransportPayment, "tariff.declaration.transportPayment")
   }
 }

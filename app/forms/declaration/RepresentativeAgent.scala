@@ -19,6 +19,8 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.common.YesNoAnswer
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.isContainedIn
@@ -38,4 +40,6 @@ object RepresentativeAgent extends DeclarationPage {
 
   def form(): Form[RepresentativeAgent] = Form(mapping)
 
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent.common"))
 }

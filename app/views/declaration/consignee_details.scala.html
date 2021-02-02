@@ -39,15 +39,13 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         appConfig: AppConfig,
         group_address: group_address,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[ConsigneeDetails])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.consignee-details.help-item", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.consignee.title", "declaration.section.2"),
@@ -70,7 +68,7 @@
             ))
         ))
 
-        @tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody))
+        @tariffExpander(ConsigneeDetails, request.declarationType)(messages, appConfig)
 
         @saveButtons()
 

@@ -16,7 +16,19 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
+import models.viewmodels.TariffContentKey
 import play.api.libs.json.{JsObject, JsString, JsValue}
+
+class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
+
+  override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+
+  "TotalNumberOfItems" when {
+    testTariffContentKeysNoSpecialisation(TotalNumberOfItems, "tariff.declaration.totalNumbersOfItems")
+  }
+}
 
 object TotalNumberOfItemsSpec {
   val correctTotalNumberOfItemsDecimalValues =

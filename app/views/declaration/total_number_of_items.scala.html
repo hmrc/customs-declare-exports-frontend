@@ -15,15 +15,13 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.declaration.TotalNumberOfItems
-@import forms.DeclarationPage
-@import uk.gov.hmrc.play.views.html._
-@import views.Title
 @import controllers.navigation.Navigator
+@import forms.declaration.TotalNumberOfItems
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import views.html.components.gds._
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -34,17 +32,12 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
-
 @(mode: Mode, form: Form[TotalNumberOfItems])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
-
-@tariffBody = { @components.tariff_body_partial(messages("declaration.total-number-of-items.help-item1"), messages("declaration.total-number-of-items.help-item2"))(tariffBodyDesc)}
-
 
 @govukLayout(
     title = Title("declaration.invoice.details.title", "declaration.section.4"),
@@ -70,7 +63,7 @@
             inputClasses = Some("govuk-input--width-10")
         )
 
-        @tariffDetails(messages("site.details.summary_text_these"), HtmlContent(tariffBody))
+        @tariffExpander(TotalNumberOfItems, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

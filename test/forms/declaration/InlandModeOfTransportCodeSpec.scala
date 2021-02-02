@@ -17,10 +17,10 @@
 package forms.declaration
 
 import forms.LightFormMatchers
+import forms.common.DeclarationPageBaseSpec
 import play.api.libs.json.{JsObject, JsString, JsValue}
-import unit.base.UnitSpec
 
-class InlandModeOfTransportCodeSpec extends UnitSpec with LightFormMatchers {
+class InlandModeOfTransportCodeSpec extends DeclarationPageBaseSpec with LightFormMatchers {
 
   import InlandModeOfTransportCode._
 
@@ -38,6 +38,10 @@ class InlandModeOfTransportCodeSpec extends UnitSpec with LightFormMatchers {
 
       form().bind(incorrectTransportCode) mustBe errorless
     }
+  }
+
+  "InlandModeOfTransportCode" when {
+    testTariffContentKeysNoSpecialisation(InlandModeOfTransportCode, "tariff.declaration.inlandTransportDetails")
   }
 }
 

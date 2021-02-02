@@ -22,18 +22,20 @@
 @import controllers.navigation.Navigator
 @import views.html.components.gds._
 @import views.BackButton
+@import config.AppConfig
 
-@this(govukLayout: gdsMainTemplate,
-errorSummary: errorSummary,
-sectionHeader: sectionHeader,
-exportsInputText: exportsInputText,
-tariffDetails: tariffDetails,
-saveButtons: saveButtons,
-formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@this(
+        govukLayout: gdsMainTemplate,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        tariffExpander: tariffExpander,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
+)
 
 @(mode: Mode, form: Form[RepresentativeEntity])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.representative-entity.help-item", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.representative.entity.title", "declaration.section.2"),
@@ -50,7 +52,7 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
             isPageHeading = true
         )
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(RepresentativeEntity, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

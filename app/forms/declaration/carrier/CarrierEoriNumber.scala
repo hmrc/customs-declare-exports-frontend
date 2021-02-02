@@ -20,6 +20,8 @@ import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.common.{Eori, YesNoAnswer}
 import forms.common.YesNoAnswer.YesNoAnswers
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -46,4 +48,7 @@ object CarrierEoriNumber extends DeclarationPage {
       case Some(eori) => CarrierEoriNumber(Some(eori), YesNoAnswers.yes)
       case _          => CarrierEoriNumber(None, YesNoAnswers.no)
     }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.carrierEoriNumber.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

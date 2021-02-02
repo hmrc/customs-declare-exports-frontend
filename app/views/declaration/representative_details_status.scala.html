@@ -26,6 +26,7 @@
 @import views.components.gds.Styles._
 @import views.BackButton
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -36,14 +37,13 @@
     pageTitle: pageTitle,
     exportsInputText: exportsInputText,
     govukInput : GovukInput,
-    tariffDetails: tariffDetails,
+    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, navigationForm: DeclarationPage, form: Form[RepresentativeStatus])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.representative-status.help-item", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.representative.status.title", "declaration.section.2"),
@@ -85,7 +85,7 @@
             errorMessage = form("statusCode").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(RepresentativeStatus, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

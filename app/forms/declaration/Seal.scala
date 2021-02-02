@@ -15,14 +15,17 @@
  */
 
 package forms.declaration
-import play.api.data.Forms.text
+import forms.DeclarationPage
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.DeclarationType
 import play.api.data.{Form, Forms, Mapping}
+import play.api.data.Forms.text
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
 case class Seal(id: String)
 
-object Seal {
+object Seal extends DeclarationPage {
   implicit val format = Json.format[Seal]
 
   val formId = "Seal"
@@ -36,4 +39,7 @@ object Seal {
 
   def form(): Form[Seal] = Form(formMapping)
   val sealsAllowed = 9999
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.containers.seals.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

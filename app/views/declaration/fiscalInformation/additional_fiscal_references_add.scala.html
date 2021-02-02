@@ -27,19 +27,21 @@
 @import views.html.components.gds._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
-    govukButton: GovukButton,
-    formGroupWrapper: formGroupWrapper,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    pageTitle: pageTitle,
-    exportsInputText: exportsInputText,
-    tariffDetails: tariffDetails,
-    saveButtons: saveButtons,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukButton: GovukButton,
+        formGroupWrapper: formGroupWrapper,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        tariffExpander: tariffExpander,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
@@ -62,8 +64,6 @@
     }
 }
 
-@tariffBody = { @Html(messages("declaration.type.fiscalInformationSummaryText", components.details_content_link())) }
-
 @govukLayout(
     title = Title("declaration.additionalFiscalReferences.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalFiscalReference, mode, ItemId(itemId))))
@@ -82,7 +82,7 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 inputFields,
-                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                tariffExpander(AdditionalFiscalReference, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

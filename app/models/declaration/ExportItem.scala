@@ -21,6 +21,7 @@ import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import forms.declaration._
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.libs.json.Json
 
 case class ExportItem(
@@ -81,4 +82,6 @@ object ExportItem extends DeclarationPage {
 
   def containsAnswers(item: ExportItem): Boolean = item != ExportItem(id = item.id, sequenceId = item.sequenceId)
 
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.declarationItemsList.common"))
 }

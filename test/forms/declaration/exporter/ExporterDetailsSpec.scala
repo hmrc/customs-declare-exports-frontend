@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.declaration.exporter
 
-import forms.declaration.exporter.ExporterDetails
+import forms.common.DeclarationPageBaseSpec
+import forms.declaration.EntityDetailsSpec
 import play.api.libs.json.{JsObject, JsValue}
+import unit.base.JourneyTypeTestRunner
+
+class ExporterDetailsSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
+
+  "ExporterDetails" when {
+    testTariffContentKeys(ExporterDetails, "tariff.declaration.exporterAddress")
+  }
+}
 
 object ExporterDetailsSpec {
   import forms.declaration.EntityDetailsSpec._

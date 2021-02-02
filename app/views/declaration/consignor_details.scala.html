@@ -24,6 +24,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
 @import views.components.gds.Styles._
+@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -34,7 +35,9 @@
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
         group_address: group_address,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        tariffExpander: tariffExpander,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[ConsignorDetails])(implicit request: JourneyRequest[_], messages: Messages)
@@ -57,9 +60,7 @@
             html = group_address(form, "declaration.address", "details.address")
             ))
 
-        @components.details(messages("site.details.summary_text_this")) {
-            @Html(messages("declaration.consignorAddress.help-item1", components.details_content_link()))
-        }
+        @tariffExpander(ConsignorDetails, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

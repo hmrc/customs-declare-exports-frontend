@@ -30,20 +30,20 @@
 @import views.ErrorMapper.yesNoErrors
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
-    govukTable : GovukTable,
-    govukRadios: GovukRadios,
-    link: link,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    exportsInputText: exportsInputText,
-    spanVisuallyHidden: spanVisuallyHidden,
-    tariffDetails: tariffDetails,
-    addAnotherQuestion: addAnotherQuestion,
-    saveButtons: saveButtons,
-    appConfig: AppConfig,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukTable : GovukTable,
+        govukRadios: GovukRadios,
+        link: link,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        spanVisuallyHidden: spanVisuallyHidden,
+        tariffExpander: tariffExpander,
+        addAnotherQuestion: addAnotherQuestion,
+        saveButtons: saveButtons,
+        appConfig: AppConfig,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(
@@ -53,12 +53,10 @@
         nactCodes: Seq[NactCode] = Seq.empty
 )(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("declaration.nationalAdditionalCode.help.bodyText", components.details_content_link())) }
-
 @title = @{
-  if(nactCodes.size == 1)
+    if(nactCodes.size == 1)
         Title("declaration.nationalAdditionalCode.header.singular", "declaration.section.5")
-  else
+    else
         Title("declaration.nationalAdditionalCode.header.plural", "declaration.section.5", nactCodes.size.toString)
 }
 
@@ -117,7 +115,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 nactCodesTable,
                 addAnotherQuestion("declaration.nationalAdditionalCode.label", form),
-                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                tariffExpander(NactCode, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

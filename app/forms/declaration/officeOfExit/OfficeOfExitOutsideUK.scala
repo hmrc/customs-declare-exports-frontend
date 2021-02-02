@@ -17,6 +17,8 @@
 package forms.declaration.officeOfExit
 
 import forms.DeclarationPage
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.DeclarationType
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -43,4 +45,6 @@ object OfficeOfExitOutsideUK extends DeclarationPage {
       case Some(AllowedUKOfficeOfExitAnswers.no)  => OfficeOfExitOutsideUK(officeOfExit.officeId.getOrElse(""))
     }
 
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.officeOfExitOutsideUk.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

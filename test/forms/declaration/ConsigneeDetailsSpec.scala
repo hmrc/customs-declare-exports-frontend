@@ -16,7 +16,14 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import play.api.libs.json.{JsObject, JsValue}
+
+class ConsigneeDetailsSpec extends DeclarationPageBaseSpec {
+  "ConsigneeDetails" when {
+    testTariffContentKeys(ConsigneeDetails, "tariff.declaration.consigneeDetails")
+  }
+}
 
 object ConsigneeDetailsSpec {
   import forms.declaration.EntityDetailsSpec._

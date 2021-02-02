@@ -14,16 +14,15 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
 @import forms.declaration.GoodsLocationForm
 @import models.requests.JourneyRequest
-@import views.Title
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.{BackButton, Title}
-@import views.components.gds.Styles._
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -31,10 +30,11 @@
         errorSummary: errorSummary,
         exportsInputText: exportsInputText,
         saveButtons: saveButtons,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         pageTitle: pageTitle,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        sectionHeader: sectionHeader
+        sectionHeader: sectionHeader,
+        appConfig: AppConfig
 )
 
 
@@ -60,7 +60,7 @@
         )
 
 
-    @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.goodsLocation.help.bodyText", components.details_content_link())))
+        @tariffExpander(GoodsLocationForm, request.declarationType)(messages, appConfig)
 
     @saveButtons()
 }

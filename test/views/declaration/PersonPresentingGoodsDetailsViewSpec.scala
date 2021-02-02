@@ -57,8 +57,8 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
 
         val details = createView().getElementsByClass("govuk-details").first()
 
-        details must containMessage("declaration.personPresentingGoodsDetails.help-item", "")
-        details must containMessage("site.details.summary_text_this")
+        details must containMessage("tariff.declaration.personPresentingGoods.clearance.text", "")
+        details must containMessage("tariff.expander.title.clearance")
       }
 
       "display 'Back' button" in {

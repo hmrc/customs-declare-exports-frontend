@@ -19,6 +19,8 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping._
 import forms.common.Eori
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Format, JsValue, Json}
 import uk.gov.voa.play.form.ConditionalMappings._
@@ -83,6 +85,9 @@ object DeclarationAdditionalActors extends DeclarationPage {
     val FreightForwarder = "FW"
     val WarehouseKeeper = "WH"
   }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.otherPartiesInvolved.common"))
 }
 
 object AdditionalActorsSummary extends DeclarationPage

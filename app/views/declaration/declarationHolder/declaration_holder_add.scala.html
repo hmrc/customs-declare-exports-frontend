@@ -29,8 +29,6 @@
 
 @(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("declaration.type.holderOfAuthorisationSummaryText", components.details_content_link())) }
-
 @govukLayout(
     title = Title("declaration.declarationHolder.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolder, mode)))

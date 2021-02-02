@@ -16,13 +16,14 @@
 
 package forms.declaration
 
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.CommodityDetails._
 import models.DeclarationType
-import org.scalatest.{MustMatchers, WordSpec}
+import models.viewmodels.TariffContentKey
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class CommodityDetailsSpec extends WordSpec with MustMatchers {
+class CommodityDetailsSpec extends DeclarationPageBaseSpec {
   import CommodityDetailsSpec._
 
   "CommodityDetails mapping used for declarations where code required" should {
@@ -127,6 +128,20 @@ class CommodityDetailsSpec extends WordSpec with MustMatchers {
         }
       }
     }
+  }
+
+  override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+
+  override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    Seq(
+      TariffContentKey(s"${messageKey}.1.clearance"),
+      TariffContentKey(s"${messageKey}.2.clearance"),
+      TariffContentKey(s"${messageKey}.3.clearance")
+    )
+
+  "CommodityDetails" when {
+    testTariffContentKeys(CommodityDetails, "tariff.declaration.item.commodityDetails")
   }
 }
 

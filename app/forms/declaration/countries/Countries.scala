@@ -19,6 +19,7 @@ package forms.declaration.countries
 import forms.DeclarationPage
 import models.DeclarationType._
 import models.requests.JourneyRequest
+import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.{optional, text}
 import services.Countries.allCountries
@@ -31,18 +32,30 @@ object Countries {
 
   case object OriginationCountryPage extends CountryPage {
     override val id = "originationCountry"
+
+    override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+      Seq(TariffContentKey("tariff.declaration.originationCountry.common"))
   }
 
   case object DestinationCountryPage extends CountryPage {
     override val id = "destinationCountry"
+
+    override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+      Seq(TariffContentKey(s"tariff.declaration.destinationCountry.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
   }
 
   case object FirstRoutingCountryPage extends CountryPage {
     override val id = "firstRoutingCountry"
+
+    override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+      Seq(TariffContentKey("tariff.declaration.countryOfRouting.common"))
   }
 
   case object NextRoutingCountryPage extends CountryPage {
     override val id = "routingCountry"
+
+    override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+      Seq(TariffContentKey("tariff.declaration.countryOfRouting.common"))
   }
 
   private def mapping(page: CountryPage, cachedCountries: Seq[Country]): Mapping[String] =

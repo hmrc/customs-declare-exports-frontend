@@ -19,8 +19,10 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
-import play.api.data.Forms.text
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.DeclarationType
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.text
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
@@ -84,4 +86,7 @@ object WarehouseIdentification extends DeclarationPage {
     )(form2Model)(model2Form)
 
   def form(yesNo: Boolean): Form[WarehouseIdentification] = Form(if (yesNo) mappingYesNo else mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.warehouseIdentification.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

@@ -20,6 +20,8 @@ import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import models.declaration.DocumentCategory
 import models.declaration.DocumentCategory.{RelatedDocument, SimplifiedDeclaration}
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, FormError, Forms}
 import play.api.libs.json.{JsValue, Json}
@@ -80,6 +82,9 @@ object Document extends DeclarationPage {
     "documentType" -> text()
       .verifying("declaration.previousDocuments.documentType.empty", nonEmpty)
       .verifying("declaration.previousDocuments.documentType.error", isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code)))
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.addPreviousDocument.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
 case class PreviousDocumentsData(documents: Seq[Document])
@@ -92,6 +97,9 @@ object PreviousDocumentsData {
   val isScreenMandatory = false
 }
 
-object DocumentChangeOrRemove extends DeclarationPage
+object DocumentChangeOrRemove extends DeclarationPage {
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.previousDocuments.remove.clearance"))
+}
 
 object DocumentSummary extends DeclarationPage

@@ -19,6 +19,8 @@ package forms.declaration.additionaldocuments
 import forms.DeclarationPage
 import forms.common.Date
 import forms.declaration.additionaldocuments.DocumentWriteOff._
+import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.viewmodels.TariffContentKey
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{JsValue, Json}
@@ -108,6 +110,16 @@ object DocumentsProduced extends DeclarationPage {
     form.copy(errors = form.errors ++ form.value.map(globalValidate).getOrElse(Seq.empty))
   }
 
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    decType match {
+      case CLEARANCE =>
+        Seq(
+          TariffContentKey("tariff.declaration.item.additionalDocumentation.1.clearance"),
+          TariffContentKey("tariff.declaration.item.additionalDocumentation.2.clearance"),
+          TariffContentKey("tariff.declaration.item.additionalDocumentation.3.clearance")
+        )
+      case _ => Seq(TariffContentKey("tariff.declaration.item.additionalDocumentation.common"))
+    }
 }
 
 object DocumentsProducedSummary extends DeclarationPage

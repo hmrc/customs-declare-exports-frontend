@@ -27,25 +27,25 @@
 @import views.{BackButton, Title}
 @import scala.collection.immutable
 @import views.ErrorMapper.yesNoErrors
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    sectionHeader: sectionHeader,
-    govukFieldset: GovukFieldset,
-    pageTitle: pageTitle,
-    govukButton: GovukButton,
-    govukSummaryList: GovukSummaryList,
-    errorSummary: errorSummary,
-    tariffDetails: tariffDetails,
-    addAnotherQuestion: addAnotherQuestion,
-    saveButtons: saveButtons,
-    yesNoRadios: yesNoRadios,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        sectionHeader: sectionHeader,
+        govukFieldset: GovukFieldset,
+        pageTitle: pageTitle,
+        govukButton: GovukButton,
+        govukSummaryList: GovukSummaryList,
+        errorSummary: errorSummary,
+        tariffExpander: tariffExpander,
+        addAnotherQuestion: addAnotherQuestion,
+        saveButtons: saveButtons,
+        yesNoRadios: yesNoRadios,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, documentId: String, document: Document, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.type.previousDocumentsSummaryText", components.details_content_link())) }
 
 @documentTable = {
     @govukSummaryList(SummaryList(
@@ -91,7 +91,7 @@
             html = HtmlFormat.fill(immutable.Seq(
                 documentTable,
                 addAnotherQuestion("", form),
-                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                tariffExpander(DocumentChangeOrRemove, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

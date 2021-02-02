@@ -18,12 +18,12 @@ package forms.declaration
 
 import base.TestHelper.createRandomAlphanumericString
 import forms.LightFormMatchers
+import forms.common.DeclarationPageBaseSpec
 import forms.declaration.WarehouseIdentification.warehouseIdKey
 import forms.declaration.WarehouseIdentificationSpec._
 import play.api.libs.json.{JsObject, JsString}
-import unit.base.UnitSpec
 
-class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
+class WarehouseIdentificationSpec extends DeclarationPageBaseSpec with LightFormMatchers {
 
   private def form() = WarehouseIdentification.form(yesNo = false)
 
@@ -78,6 +78,10 @@ class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
 
       form().bind(correctWarehouseDetails) mustBe errorless
     }
+  }
+
+  "WarehouseIdentification" when {
+    testTariffContentKeys(WarehouseIdentification, "tariff.declaration.warehouseIdentification")
   }
 }
 

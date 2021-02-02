@@ -17,6 +17,8 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
@@ -46,4 +48,6 @@ object StatisticalValue extends DeclarationPage {
 
   def form(): Form[StatisticalValue] = Form(mapping)
 
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.item.statisticalValue.common"))
 }

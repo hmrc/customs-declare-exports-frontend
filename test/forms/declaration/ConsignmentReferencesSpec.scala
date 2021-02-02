@@ -17,10 +17,11 @@
 package forms.declaration
 
 import forms.{Ducr, Lrn}
-import org.scalatest.{MustMatchers, WordSpec}
+import forms.common.DeclarationPageBaseSpec
+import models.viewmodels.TariffContentKey
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
+class ConsignmentReferencesSpec extends DeclarationPageBaseSpec {
 
   import ConsignmentReferencesSpec._
 
@@ -64,6 +65,19 @@ class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
     }
   }
 
+  override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"), TariffContentKey(s"${messageKey}.3.common"))
+
+  override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    Seq(
+      TariffContentKey(s"${messageKey}.1.clearance"),
+      TariffContentKey(s"${messageKey}.2.clearance"),
+      TariffContentKey(s"${messageKey}.3.clearance")
+    )
+
+  "ConsignmentReferences" when {
+    testTariffContentKeys(ConsignmentReferences, "tariff.declaration.consignmentReferences")
+  }
 }
 
 object ConsignmentReferencesSpec {

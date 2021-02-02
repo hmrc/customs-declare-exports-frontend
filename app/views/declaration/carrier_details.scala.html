@@ -23,6 +23,7 @@
 @import views.html.components.gds._
 @import views.BackButton
 @import views.components.gds.Styles._
+@import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -33,7 +34,9 @@
     group_address: group_address,
     exportsInputText: exportsInputText,
     pageTitle: pageTitle,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[CarrierDetails])(implicit request: JourneyRequest[_], messages: Messages)
@@ -56,9 +59,7 @@
             html = group_address(form, "declaration.address", "details.address")
         ))
 
-        @components.details(messages("site.details.summary_text_this")) {
-            @Html(messages("declaration.carrierAddress.help-item1", components.details_content_link()))
-        }
+        @tariffExpander(CarrierDetails, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

@@ -35,7 +35,7 @@
         exportsInputText: exportsInputText,
         exportsInputTextArea: exportsInputTextArea,
         exportsDateInput: exportsDateInput,
-        tariffDetails: tariffDetails,
+        tariffExpander: tariffExpander,
         saveButtons: saveButtons,
         appConfig: AppConfig
 )
@@ -43,10 +43,6 @@
 @(mode: Mode, itemId: String, form: Form[DocumentsProduced])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.addDocument.hint.traderTariff.link")</a>}
-
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
-
-@tariffBody = { @components.tariff_body_partial(messages("declaration.type.documentProcudedListItemOne"), messages("declaration.type.documentProcudedListItemTwo"))(tariffBodyDesc)}
 
 @measurementInput(field: Field, labelKey: String, inputClasses: String) = {
     @govukInput(Input(
@@ -178,7 +174,7 @@
         html = HtmlFormat.fill(immutable.Seq(
             pageHint,
             pageFields,
-            tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+            tariffExpander(DocumentsProduced, request.declarationType)(messages, appConfig),
             saveButtons()
         ))
     ))

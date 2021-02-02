@@ -103,8 +103,8 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
       messages must haveTranslationFor("declaration.address.country.empty")
       messages must haveTranslationFor("declaration.address.country.error")
       messages must haveTranslationFor("site.save_and_continue")
-      messages must haveTranslationFor("declaration.type.consignmentTariffText")
-      messages must haveTranslationFor("declaration.consignee-details.help-item")
+      messages must haveTranslationFor("tariff.declaration.consignmentReferences.1.clearance.text")
+      messages must haveTranslationFor("tariff.declaration.consigneeDetails.clearance.text")
     }
 
     onEveryDeclarationJourney() { implicit request =>

@@ -18,31 +18,30 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.DepartureTransport
 @import forms.declaration.TransportCodes._
-@import models.declaration.Transport
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukDetails : GovukDetails,
-    govukRadios: GovukRadios,
-    pageTitle: pageTitle,
-    exportsInputText: exportsInputText,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        govukRadios: GovukRadios,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[DepartureTransport])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tariffBody = { @Html(messages("declaration.transportInformation.meansOfTransport.departure.help.bodyText", components.details_content_link())) }
 
 @inputField(transportType: String, labelKey: String) = @{Some(exportsInputText(
     field = form(s"meansOfTransportOnDepartureIDNumber_$transportType"),
@@ -136,7 +135,7 @@
             errorMessage = form("meansOfTransportOnDepartureType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+        @tariffExpander(DepartureTransport, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

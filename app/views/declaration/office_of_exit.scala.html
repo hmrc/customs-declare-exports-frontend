@@ -26,18 +26,20 @@
 @import views.Title
 @import views.BackButton
 @import views.ErrorMapper.radioGroupErrors
+@import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukDetails : GovukDetails,
-    govukRadios: GovukRadios,
-    govukFieldset: GovukFieldset,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        govukRadios: GovukRadios,
+        govukFieldset: GovukFieldset,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffExpander: tariffExpander,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[OfficeOfExitInsideUK])(implicit request: JourneyRequest[_], messages: Messages)
@@ -90,9 +92,7 @@
             errorMessage = form("isUkOfficeOfExit").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @components.details(messages("site.details.summary_text_this")){
-            @Html(messages("declaration.officeOfExit.help-item1", components.details_content_link()))
-        }
+        @tariffExpander(OfficeOfExitInsideUK, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

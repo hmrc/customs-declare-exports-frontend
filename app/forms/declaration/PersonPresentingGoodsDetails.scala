@@ -18,6 +18,8 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.common.Eori
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.DeclarationType
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
@@ -31,4 +33,7 @@ object PersonPresentingGoodsDetails extends DeclarationPage {
   private val mapping = Forms.mapping(fieldName -> Eori.mapping)(PersonPresentingGoodsDetails.apply)(PersonPresentingGoodsDetails.unapply)
 
   def form() = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.personPresentingGoods.clearance"))
 }

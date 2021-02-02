@@ -16,9 +16,9 @@
 
 package forms.declaration
 
-import unit.base.UnitSpec
+import forms.common.DeclarationPageBaseSpec
 
-class PersonPresentingGoodsDetailsSpec extends UnitSpec {
+class PersonPresentingGoodsDetailsSpec extends DeclarationPageBaseSpec {
 
   "PersonPresentingGoodsDetails form" when {
     "used for binding data" should {
@@ -72,4 +72,7 @@ class PersonPresentingGoodsDetailsSpec extends UnitSpec {
     }
   }
 
+  "PersonPresentingGoodsDetails" when {
+    testTariffContentKeysNoSpecialisation(PersonPresentingGoodsDetails, "tariff.declaration.personPresentingGoods", getClearanceTariffKeys)
+  }
 }

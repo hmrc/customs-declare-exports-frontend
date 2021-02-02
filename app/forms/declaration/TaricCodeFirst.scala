@@ -19,6 +19,8 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -61,4 +63,7 @@ object TaricCodeFirst extends DeclarationPage {
   )(form2Model)(model2Form)
 
   def form(): Form[TaricCodeFirst] = Form(mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.item.additionalTaricCode.common"))
 }

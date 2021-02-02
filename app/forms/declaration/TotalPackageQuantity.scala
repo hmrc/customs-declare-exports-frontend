@@ -18,6 +18,7 @@ package forms.declaration
 
 import forms.DeclarationPage
 import models.DeclarationType.{DeclarationType, _}
+import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
@@ -52,4 +53,7 @@ object TotalPackageQuantity extends DeclarationPage {
     case STANDARD | SUPPLEMENTARY => Form(requiredMapping)
     case CLEARANCE                => Form(optionalMapping)
   }
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.totalPackageQuantity.common"))
 }
