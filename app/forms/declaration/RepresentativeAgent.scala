@@ -41,5 +41,9 @@ object RepresentativeAgent extends DeclarationPage {
   def form(): Form[RepresentativeAgent] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent.common"))
+    Seq(
+      TariffContentKey(
+        s"tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"
+      )
+    )
 }

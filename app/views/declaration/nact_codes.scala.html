@@ -39,7 +39,6 @@
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
         spanVisuallyHidden: spanVisuallyHidden,
-        tariffExpander: tariffExpander,
         addAnotherQuestion: addAnotherQuestion,
         saveButtons: saveButtons,
         appConfig: AppConfig,
@@ -115,7 +114,6 @@
             html = HtmlFormat.fill(immutable.Seq(
                 nactCodesTable,
                 addAnotherQuestion("declaration.nationalAdditionalCode.label", form),
-                tariffExpander(NactCode, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))
