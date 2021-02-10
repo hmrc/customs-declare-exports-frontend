@@ -396,6 +396,15 @@ timeoutDialog.message = For your security, we will sign you out in
 timeoutDialog.keepAlive.text= Stay signed in
 timeoutDialog.signout.text= Sign out
 
+emailUnverified.heading=You need to verify your email address for the Customs Declaration Service
+emailUnverified.paragraph1=This will be the only email address we use for:
+emailUnverified.bullets.item1=urgent updates about goods in customs
+emailUnverified.bullets.item2=notifications about import and export declarations
+emailUnverified.bullets.item3=import VAT and duty deferment statements
+emailUnverified.bullets.item4=duty deferment Direct Debit notices
+emailUnverified.bullets.item5=updates about changes to the service
+emailUnverified.link=Verify your email address
+
 choicePage.input.error.empty = Select what you want to do.
 choicePage.input.error.incorrectValue = Select what you want to do.
 

@@ -16,7 +16,8 @@
 
 package controllers.declaration
 
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, VerifiedEmailAction}
+
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -25,16 +26,17 @@ import views.html.declaration.{draft_confirmation_page, submission_confirmation_
 
 class ConfirmationController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   mcc: MessagesControllerComponents,
   submissionConfirmationPage: submission_confirmation_page,
   draftConfirmationPage: draft_confirmation_page
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def displaySubmissionConfirmation(): Action[AnyContent] = authenticate { implicit request =>
+  def displaySubmissionConfirmation(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
     Ok(submissionConfirmationPage())
   }
 
-  def displayDraftConfirmation(): Action[AnyContent] = authenticate { implicit request =>
+  def displayDraftConfirmation(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
     Ok(draftConfirmationPage())
   }
 }

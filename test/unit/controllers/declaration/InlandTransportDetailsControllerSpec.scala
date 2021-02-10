@@ -39,6 +39,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
 
   private val controller = new InlandTransportDetailsController(
     authenticate = mockAuthAction,
+    verifyEmail = mockVerifiedEmailAction,
     journeyType = mockJourneyAction,
     navigator = navigator,
     exportsCacheService = mockExportsCacheService,

@@ -38,6 +38,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
 
   val controller = new RepresentativeEntityController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     mockExportsCacheService,

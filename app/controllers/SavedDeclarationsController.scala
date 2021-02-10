@@ -18,7 +18,8 @@ package controllers
 
 import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, VerifiedEmailAction}
+
 import javax.inject.Inject
 import models.requests.ExportsSessionKeys
 import models.{Mode, Page}
@@ -31,6 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SavedDeclarationsController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   savedDeclarationsPage: saved_declarations,
@@ -38,13 +40,13 @@ class SavedDeclarationsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayDeclarations(pageNumber: Int = 1): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayDeclarations(pageNumber: Int = 1): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findSavedDeclarations(Page(pageNumber, paginationConfig.itemsPerPage)).map { page =>
       Ok(savedDeclarationsPage(page))
     }
   }
 
-  def continueDeclaration(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+  def continueDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(_) =>
         Future.successful(
@@ -53,6 +55,5 @@ class SavedDeclarationsController @Inject()(
         )
       case None => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
     }
-
   }
 }

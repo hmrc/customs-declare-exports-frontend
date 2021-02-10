@@ -16,12 +16,13 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import controllers.util._
 import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
 import forms.declaration.Document._
 import forms.declaration.{Document, PreviousDocumentsData}
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PreviousDocumentsController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -43,11 +45,11 @@ class PreviousDocumentsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     Ok(previousDocumentsPage(mode, form()))
   }
 
-  def savePreviousDocuments(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def savePreviousDocuments(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     val boundForm = if (isFirstPreviousDocument) Document.treatLikeOptional(form().bindFromRequest()) else form().bindFromRequest()
 
     val cache = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty))

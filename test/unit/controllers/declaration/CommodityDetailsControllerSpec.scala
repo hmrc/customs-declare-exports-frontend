@@ -38,6 +38,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   val controller = new CommodityDetailsController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

@@ -16,9 +16,10 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.SupervisingCustomsOffice
+
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -33,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SupervisingCustomsOfficeController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
@@ -43,7 +45,7 @@ class SupervisingCustomsOfficeController @Inject()(
 
   import forms.declaration.SupervisingCustomsOffice._
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.locations.supervisingCustomsOffice match {
       case Some(data) => Ok(supervisingCustomsOfficePage(mode, frm.fill(data)))
@@ -51,7 +53,7 @@ class SupervisingCustomsOfficeController @Inject()(
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

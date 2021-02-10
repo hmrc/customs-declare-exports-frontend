@@ -17,9 +17,10 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import forms.declaration.LegalDeclaration
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import models.requests.ExportsSessionKeys
 import models.responses.FlashKeys
@@ -37,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
@@ -51,7 +53,7 @@ class SummaryController @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
       mode match {
         case Mode.Normal => Ok(normalSummaryPage(LegalDeclaration.form()))
@@ -67,7 +69,7 @@ class SummaryController @Inject()(
   private def containsMandatoryData(data: ExportsDeclaration, mode: Mode): Boolean =
     mode.equals(Mode.Draft) || data.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
-  def submitDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitDeclaration(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     LegalDeclaration
       .form()
       .bindFromRequest()

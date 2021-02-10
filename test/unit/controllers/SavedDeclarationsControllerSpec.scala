@@ -33,6 +33,7 @@ class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
   private val controller = new SavedDeclarationsController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
     savedDeclarationsPage,

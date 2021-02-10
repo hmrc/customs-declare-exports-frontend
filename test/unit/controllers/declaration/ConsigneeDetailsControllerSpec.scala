@@ -38,6 +38,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
   val controller = new ConsigneeDetailsController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

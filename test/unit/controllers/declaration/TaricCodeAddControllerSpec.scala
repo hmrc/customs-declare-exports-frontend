@@ -39,6 +39,7 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
   val controller =
     new TaricCodeAddController(
       mockAuthAction,
+      mockVerifiedEmailAction,
       mockJourneyAction,
       mockExportsCacheService,
       navigator,

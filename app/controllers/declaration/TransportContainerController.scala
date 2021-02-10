@@ -16,12 +16,13 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import controllers.util.{FormAction, Remove}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{ContainerAdd, ContainerFirst}
+
 import javax.inject.Inject
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
@@ -38,6 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TransportContainerController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
@@ -49,7 +51,7 @@ class TransportContainerController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayAddContainer(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayAddContainer(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (request.cacheModel.hasContainers) {
       Ok(addPage(mode, ContainerAdd.form().withSubmissionErrors()))
     } else {
@@ -57,7 +59,7 @@ class TransportContainerController @Inject()(
     }
   }
 
-  def submitAddContainer(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitAddContainer(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     if (request.cacheModel.hasContainers) {
       val boundForm = ContainerAdd.form().bindFromRequest()
       saveAdditionalContainer(mode, boundForm, maxNumberOfItems, request.cacheModel.containers)
@@ -72,7 +74,7 @@ class TransportContainerController @Inject()(
     }
   }
 
-  def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     request.cacheModel.containers match {
       case containers if containers.nonEmpty => Ok(summaryPage(mode, addAnotherContainerYesNoForm.withSubmissionErrors(), containers))
       case _ =>
@@ -80,7 +82,7 @@ class TransportContainerController @Inject()(
     }
   }
 
-  def submitSummaryAction(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitSummaryAction(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     FormAction.bindFromRequest() match {
       case Remove(values) =>
         Future.successful(navigator.continueTo(mode, routes.TransportContainerController.displayContainerRemove(_, containerId(values))))
@@ -89,7 +91,7 @@ class TransportContainerController @Inject()(
   }
 
   def displayContainerRemove(mode: Mode, containerId: String): Action[AnyContent] =
-    (authenticate andThen journeyType) { implicit request =>
+    (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
       request.cacheModel.containerBy(containerId) match {
         case Some(container) => Ok(removePage(mode, removeContainerYesNoForm, container))
         case _               => navigator.continueTo(mode, routes.TransportContainerController.displayContainerSummary)
@@ -97,7 +99,7 @@ class TransportContainerController @Inject()(
     }
 
   def submitContainerRemove(mode: Mode, containerId: String): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
+    (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
       removeContainerAnswer(mode, containerId)
     }
 

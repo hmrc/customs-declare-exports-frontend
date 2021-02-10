@@ -16,8 +16,9 @@
 
 package controllers.actions
 
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+import base.RequestBuilder
 import models.{IdentityData, SignedInUser}
+import models.requests.JourneyRequest
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
@@ -34,7 +35,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class JourneyActionSpec extends WordSpec with MustMatchers with MockitoSugar with BeforeAndAfterEach with ExportsDeclarationBuilder {
+class JourneyActionSpec
+    extends WordSpec with MustMatchers with MockitoSugar with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
 
   private val cache = mock[ExportsCacheService]
   private val block = mock[JourneyRequest[_] => Future[Result]]
@@ -42,10 +44,10 @@ class JourneyActionSpec extends WordSpec with MustMatchers with MockitoSugar wit
   private val declaration = aDeclaration()
   private val refiner = new JourneyAction(cache)
 
-  private def request(declarationId: Option[String]): AuthenticatedRequest[AnyContentAsEmpty.type] = declarationId match {
+  private def request(declarationId: Option[String]): FakeRequest[AnyContentAsEmpty.type] = declarationId match {
     case Some(id) =>
-      new AuthenticatedRequest(FakeRequest().withSession("declarationId" -> id), user)
-    case None => new AuthenticatedRequest(FakeRequest(), user)
+      FakeRequest().withSession("declarationId" -> id)
+    case None => FakeRequest()
   }
 
   override def afterEach(): Unit = {
@@ -58,7 +60,7 @@ class JourneyActionSpec extends WordSpec with MustMatchers with MockitoSugar wit
         given(block.apply(any())).willReturn(Future.successful(Results.Ok))
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
 
-        await(refiner.invokeBlock(request(Some("id")), block)) mustBe Results.Ok
+        await(refiner.invokeBlock(buildVerifiedEmailRequest(request(Some("id")), user), block)) mustBe Results.Ok
 
         val result = theRequestBuilt
         result.cacheModel mustBe declaration
@@ -75,11 +77,15 @@ class JourneyActionSpec extends WordSpec with MustMatchers with MockitoSugar wit
       "answers not found" in {
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(None))
 
-        await(refiner.invokeBlock(request(Some("id")), block)) mustBe Results.Redirect(controllers.routes.StartController.displayStartPage())
+        await(refiner.invokeBlock(buildVerifiedEmailRequest(request(Some("id")), user), block)) mustBe Results.Redirect(
+          controllers.routes.StartController.displayStartPage()
+        )
       }
 
       "id not found" in {
-        await(refiner.invokeBlock(request(None), block)) mustBe Results.Redirect(controllers.routes.StartController.displayStartPage())
+        await(refiner.invokeBlock(buildVerifiedEmailRequest(request(None), user), block)) mustBe Results.Redirect(
+          controllers.routes.StartController.displayStartPage()
+        )
       }
     }
   }

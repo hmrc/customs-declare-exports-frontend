@@ -40,6 +40,7 @@ class DocumentsProducedRemoveControllerSpec extends ControllerSpec with OptionVa
   val controller =
     new DocumentsProducedRemoveController(
       mockAuthAction,
+      mockVerifiedEmailAction,
       mockJourneyAction,
       mockExportsCacheService,
       navigator,

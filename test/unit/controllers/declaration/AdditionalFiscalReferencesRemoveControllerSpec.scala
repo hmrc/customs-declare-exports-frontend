@@ -39,6 +39,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
   val controller =
     new AdditionalFiscalReferencesRemoveController(
       mockAuthAction,
+      mockVerifiedEmailAction,
       mockJourneyAction,
       mockExportsCacheService,
       navigator,

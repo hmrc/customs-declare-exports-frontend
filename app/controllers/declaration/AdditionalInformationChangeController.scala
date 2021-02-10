@@ -16,12 +16,13 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.AdditionalInformationAddController.AdditionalInformationFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
 import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.form
+
 import javax.inject.Inject
 import models.declaration.AdditionalInformationData
 import models.declaration.AdditionalInformationData.maxNumberOfItems
@@ -39,6 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationChangeController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -47,23 +49,25 @@ class AdditionalInformationChangeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    findAdditionalInformation(itemId, id) match {
-      case Some(document) => Ok(changePage(mode, itemId, id, form().fill(document).withSubmissionErrors()))
-      case _              => returnToSummary(mode, itemId)
-    }
+  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
+    implicit request =>
+      findAdditionalInformation(itemId, id) match {
+        case Some(document) => Ok(changePage(mode, itemId, id, form().fill(document).withSubmissionErrors()))
+        case _              => returnToSummary(mode, itemId)
+      }
   }
 
-  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    findAdditionalInformation(itemId, id) match {
-      case Some(existingInformation) =>
-        val boundForm = form().bindFromRequest()
-        boundForm.fold(
-          formWithErrors => Future.successful(BadRequest(changePage(mode, itemId, id, formWithErrors))),
-          updatedInformation => changeInformation(mode, itemId, id, existingInformation, updatedInformation, boundForm)
-        )
-      case _ => Future.successful(returnToSummary(mode, itemId))
-    }
+  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
+    implicit request =>
+      findAdditionalInformation(itemId, id) match {
+        case Some(existingInformation) =>
+          val boundForm = form().bindFromRequest()
+          boundForm.fold(
+            formWithErrors => Future.successful(BadRequest(changePage(mode, itemId, id, formWithErrors))),
+            updatedInformation => changeInformation(mode, itemId, id, existingInformation, updatedInformation, boundForm)
+          )
+        case _ => Future.successful(returnToSummary(mode, itemId))
+      }
   }
 
   private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =

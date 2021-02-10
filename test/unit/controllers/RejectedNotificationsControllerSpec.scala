@@ -35,6 +35,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
 
   private val controller = new RejectedNotificationsController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
     mockRejectedReasons,

@@ -16,9 +16,10 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.CommodityMeasure
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -33,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CommodityMeasureController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -43,14 +45,14 @@ class CommodityMeasureController @Inject()(
 
   private def form()(implicit request: JourneyRequest[_]) = CommodityMeasure.form(request.declarationType).withSubmissionErrors()
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
       case Some(data) => Ok(commodityMeasurePage(mode, itemId, form().fill(data)))
       case _          => Ok(commodityMeasurePage(mode, itemId, form()))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

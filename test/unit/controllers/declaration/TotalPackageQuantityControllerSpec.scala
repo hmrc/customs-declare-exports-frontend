@@ -37,6 +37,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
 
   val controller = new TotalPackageQuantityController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     stubMessagesControllerComponents(),
     navigator,

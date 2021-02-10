@@ -64,6 +64,8 @@ class AppConfig @Inject()(
 
   lazy val customsDeclareExportsBaseUrl = servicesConfig.baseUrl("customs-declare-exports")
 
+  lazy val emailFrontendUrl: String = loadConfig("urls.emailFrontendUrl")
+
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   lazy val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
@@ -95,6 +97,11 @@ class AppConfig @Inject()(
   lazy val fetchMrnStatus = servicesConfig.getConfString(
     "customs-declare-exports.fetch-ead",
     throw new IllegalStateException("Missing configuration for Customs Declaration Export fetch mrn status URI")
+  )
+
+  lazy val fetchVerifiedEmail = servicesConfig.getConfString(
+    "customs-declare-exports.fetch-verified-email",
+    throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch verified email URI")
   )
 
   lazy val languageTranslationEnabled =

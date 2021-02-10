@@ -6,6 +6,10 @@ GET         /assets/*file                                  controllers.Assets.ve
 
 GET         /unauthorised                                  controllers.UnauthorisedController.onPageLoad
 
+# Unverified Email
+
+GET         /unverified-email                              controllers.UnverifiedEmailController.informUser
+
 # Notifications
 
 GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String)

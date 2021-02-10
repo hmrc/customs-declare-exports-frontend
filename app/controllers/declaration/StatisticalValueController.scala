@@ -16,11 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.StatisticalValue
 import forms.declaration.StatisticalValue.form
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class StatisticalValueController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
@@ -46,25 +48,27 @@ class StatisticalValueController @Inject()(
 
   val validTypes = Seq(DeclarationType.SUPPLEMENTARY, DeclarationType.STANDARD)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val frm = StatisticalValue.form().withSubmissionErrors()
-    request.cacheModel.itemBy(itemId).flatMap(_.statisticalValue) match {
-      case Some(itemType) => Ok(itemTypePage(mode, itemId, frm.fill(itemType)))
-      case _              => Ok(itemTypePage(mode, itemId, frm))
-    }
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)) {
+    implicit request =>
+      val frm = StatisticalValue.form().withSubmissionErrors()
+      request.cacheModel.itemBy(itemId).flatMap(_.statisticalValue) match {
+        case Some(itemType) => Ok(itemTypePage(mode, itemId, frm.fill(itemType)))
+        case _              => Ok(itemTypePage(mode, itemId, frm))
+      }
   }
 
-  def submitItemType(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(mode, itemId, formWithErrors))),
-        validForm =>
-          updateExportsCache(itemId, validForm).map { _ =>
-            navigator
-              .continueTo(mode, controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId))
-        }
-      )
+  def submitItemType(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(mode, itemId, formWithErrors))),
+          validForm =>
+            updateExportsCache(itemId, validForm).map { _ =>
+              navigator
+                .continueTo(mode, controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId))
+          }
+        )
   }
 
   private def updateExportsCache(itemId: String, updatedItem: StatisticalValue)(

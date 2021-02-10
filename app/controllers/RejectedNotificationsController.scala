@@ -17,7 +17,8 @@
 package controllers
 
 import connectors.CustomsDeclareExportsConnector
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, VerifiedEmailAction}
+
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,6 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RejectedNotificationsController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   rejectedReasons: RejectionReasons,
@@ -37,7 +39,7 @@ class RejectedNotificationsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>

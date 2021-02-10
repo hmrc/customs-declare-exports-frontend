@@ -16,10 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 import forms.declaration.RepresentativeAgent
+
 import javax.inject.Inject
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RepresentativeAgentController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
@@ -43,7 +45,7 @@ class RepresentativeAgentController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val frm = RepresentativeAgent.form().withSubmissionErrors()
     request.cacheModel.parties.representativeDetails.flatMap(_.representingOtherAgent) match {
       case Some(data) => Ok(representativeAgentPage(mode, frm.fill(RepresentativeAgent(data))))
@@ -51,7 +53,7 @@ class RepresentativeAgentController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     RepresentativeAgent
       .form()
       .bindFromRequest()

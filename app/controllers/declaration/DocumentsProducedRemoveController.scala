@@ -16,12 +16,13 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.additionaldocuments.DocumentsProduced
+
 import javax.inject.Inject
 import models.declaration.DocumentsProducedData
 import models.requests.JourneyRequest
@@ -38,6 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DocumentsProducedRemoveController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -46,33 +48,35 @@ class DocumentsProducedRemoveController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    findDocument(itemId, documentId) match {
-      case Some(document) => Ok(documentRemovePage(mode, itemId, documentId, document, removeYesNoForm.withSubmissionErrors()))
-      case _              => returnToSummary(mode, itemId)
-    }
+  def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
+    implicit request =>
+      findDocument(itemId, documentId) match {
+        case Some(document) => Ok(documentRemovePage(mode, itemId, documentId, document, removeYesNoForm.withSubmissionErrors()))
+        case _              => returnToSummary(mode, itemId)
+      }
   }
 
-  def submitForm(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    findDocument(itemId, documentId) match {
-      case Some(document) =>
-        removeYesNoForm
-          .bindFromRequest()
-          .fold(
-            (formWithErrors: Form[YesNoAnswer]) =>
-              Future.successful(BadRequest(documentRemovePage(mode, itemId, documentId, document, formWithErrors))),
-            formData => {
-              formData.answer match {
-                case YesNoAnswers.yes =>
-                  removeDocumentsProduced(itemId, document)
-                    .map(_ => returnToSummary(mode, itemId))
-                case YesNoAnswers.no =>
-                  Future.successful(returnToSummary(mode, itemId))
+  def submitForm(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
+    implicit request =>
+      findDocument(itemId, documentId) match {
+        case Some(document) =>
+          removeYesNoForm
+            .bindFromRequest()
+            .fold(
+              (formWithErrors: Form[YesNoAnswer]) =>
+                Future.successful(BadRequest(documentRemovePage(mode, itemId, documentId, document, formWithErrors))),
+              formData => {
+                formData.answer match {
+                  case YesNoAnswers.yes =>
+                    removeDocumentsProduced(itemId, document)
+                      .map(_ => returnToSummary(mode, itemId))
+                  case YesNoAnswers.no =>
+                    Future.successful(returnToSummary(mode, itemId))
+                }
               }
-            }
-          )
-      case _ => Future.successful(returnToSummary(mode, itemId))
-    }
+            )
+        case _ => Future.successful(returnToSummary(mode, itemId))
+      }
 
   }
 

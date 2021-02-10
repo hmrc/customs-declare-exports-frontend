@@ -16,11 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper.cachedHolders
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+
 import javax.inject.Inject
 import models.DeclarationType.{SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
@@ -34,6 +35,7 @@ import views.html.declaration.declarationHolder.declaration_holder_summary
 
 class DeclarationHolderController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -41,13 +43,13 @@ class DeclarationHolderController @Inject()(
   declarationHolderPage: declaration_holder_summary
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val holders = cachedHolders
     if (holders.isEmpty) navigator.continueTo(mode, nextPageWhenNoHolders)
     else Ok(declarationHolderPage(mode, addAnotherYesNoForm.withSubmissionErrors(), holders))
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val holders = cachedHolders
     addAnotherYesNoForm
       .bindFromRequest()

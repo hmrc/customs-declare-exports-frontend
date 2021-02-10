@@ -41,6 +41,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
 
   val controller = new CarrierEoriNumberController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     stubMessagesControllerComponents(),

@@ -16,12 +16,13 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -36,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PackageInformationAddController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -44,14 +46,15 @@ class PackageInformationAddController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val items = request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
     Ok(packageInformationPage(mode, itemId, form().withSubmissionErrors(), items))
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit authRequest =>
-    val boundForm = form().bindFromRequest()
-    saveInformation(mode, itemId, boundForm, authRequest.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(Seq.empty))
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
+    implicit authRequest =>
+      val boundForm = form().bindFromRequest()
+      saveInformation(mode, itemId, boundForm, authRequest.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(Seq.empty))
   }
 
   private def saveInformation(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
@@ -70,7 +73,6 @@ class PackageInformationAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedCache.toList))))
-
 }
 
 object PackageInformationAddController {

@@ -36,15 +36,15 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
 
   val mockAddPage = mock[declaration_holder_change]
 
-  val controller =
-    new DeclarationHolderChangeController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      mockAddPage
-    )(ec)
+  val controller = new DeclarationHolderChangeController(
+    mockAuthAction,
+    mockVerifiedEmailAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    mockAddPage
+  )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

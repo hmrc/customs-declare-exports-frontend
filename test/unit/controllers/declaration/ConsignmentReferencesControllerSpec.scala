@@ -38,6 +38,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
   val controller = new ConsignmentReferencesController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

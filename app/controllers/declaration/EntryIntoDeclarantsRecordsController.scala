@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -35,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EntryIntoDeclarantsRecordsController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -43,7 +44,7 @@ class EntryIntoDeclarantsRecordsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(CLEARANCE)) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.isEntryIntoDeclarantsRecords match {
       case Some(data) => Ok(entryIntoDeclarantsRecordsPage(mode, frm.fill(data)))
@@ -51,7 +52,7 @@ class EntryIntoDeclarantsRecordsController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(CLEARANCE)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
@@ -75,5 +76,4 @@ class EntryIntoDeclarantsRecordsController @Inject()(
       controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage
     else
       controllers.declaration.routes.DeclarantDetailsController.displayPage
-
 }

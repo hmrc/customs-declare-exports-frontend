@@ -61,6 +61,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
   val controller = new TotalNumberOfItemsController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     stubMessagesControllerComponents(),

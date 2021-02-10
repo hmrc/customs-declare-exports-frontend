@@ -41,6 +41,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
   private val controller = new PersonPresentingGoodsDetailsController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

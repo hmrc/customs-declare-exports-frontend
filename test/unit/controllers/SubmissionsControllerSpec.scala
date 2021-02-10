@@ -18,11 +18,11 @@ package unit.controllers
 
 import java.time.{Instant, LocalDate, ZoneOffset, ZonedDateTime}
 import java.util.UUID
-
 import akka.util.Timeout
 import config.PaginationConfig
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.SubmissionsController
+import controllers.actions.VerifiedEmailAction
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
@@ -59,6 +59,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
 
   val controller = new SubmissionsController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
     submissionsPage,

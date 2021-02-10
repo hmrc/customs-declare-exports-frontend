@@ -46,7 +46,9 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
   val choicePage = mock[declaration_choice]
 
   val controller =
-    new DeclarationChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
+    new DeclarationChoiceController(mockAuthAction, mockVerifiedEmailAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(
+      ec
+    )
 
   override def beforeEach(): Unit = {
     super.beforeEach()

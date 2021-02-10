@@ -38,6 +38,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
   val controller =
     new PackageInformationRemoveController(
       mockAuthAction,
+      mockVerifiedEmailAction,
       mockJourneyAction,
       mockExportsCacheService,
       navigator,

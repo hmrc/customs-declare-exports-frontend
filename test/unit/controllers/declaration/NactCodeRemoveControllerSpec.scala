@@ -38,6 +38,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
   val controller =
     new NactCodeRemoveController(
       mockAuthAction,
+      mockVerifiedEmailAction,
       mockJourneyAction,
       mockExportsCacheService,
       navigator,

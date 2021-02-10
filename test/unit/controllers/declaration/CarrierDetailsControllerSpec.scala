@@ -39,6 +39,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
   val controller = new CarrierDetailsController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

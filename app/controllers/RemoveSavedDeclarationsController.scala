@@ -18,8 +18,9 @@ package controllers
 
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.RemoveDraftDeclaration.form
+
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,6 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveSavedDeclarationsController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   removeDeclarationPage: remove_declaration,
@@ -37,14 +39,14 @@ class RemoveSavedDeclarationsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) => Future.successful(Ok(removeDeclarationPage(declaration, form)))
       case _                 => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
     }
   }
 
-  def removeDeclaration(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+  def removeDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     val removeAction = form.bindFromRequest()
 
     removeAction

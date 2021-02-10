@@ -42,6 +42,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
   val controller = new DepartureTransportController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

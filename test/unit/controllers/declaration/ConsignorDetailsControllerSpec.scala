@@ -39,6 +39,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
   val controller = new ConsignorDetailsController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

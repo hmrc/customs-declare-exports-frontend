@@ -16,12 +16,13 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import controllers.util._
 import controllers.util.DeclarationHolderHelper._
 import forms.declaration.DeclarationHolder
 import forms.declaration.DeclarationHolder.form
+
 import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
@@ -37,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationHolderAddController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -45,11 +47,11 @@ class DeclarationHolderAddController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     Ok(declarationHolderPage(mode, form.withSubmissionErrors()))
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest()
     boundForm.fold(formWithErrors => {
       Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors)))

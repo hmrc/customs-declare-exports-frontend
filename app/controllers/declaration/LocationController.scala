@@ -16,9 +16,10 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.GoodsLocationForm
+
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
@@ -32,6 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class LocationController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
   goodsLocationPage: goods_location,
@@ -41,7 +43,7 @@ class LocationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
   import forms.declaration.GoodsLocationForm._
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.locations.goodsLocation match {
       case Some(data) => Ok(goodsLocationPage(mode, frm.fill(data.toForm)))
@@ -49,7 +51,7 @@ class LocationController @Inject()(
     }
   }
 
-  def saveLocation(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveLocation(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

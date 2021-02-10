@@ -33,6 +33,7 @@ class RemoveSavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
     val controller = new RemoveSavedDeclarationsController(
       mockAuthAction,
+      mockVerifiedEmailAction,
       mockCustomsDeclareExportsConnector,
       stubMessagesControllerComponents(),
       removeDeclarationPage,

@@ -16,10 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
+
 import javax.inject.Inject
 import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CarrierEoriNumberController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -45,7 +47,7 @@ class CarrierEoriNumberController @Inject()(
 
   val validJourneys = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validJourneys)) { implicit request =>
     request.cacheModel.parties.carrierDetails match {
       case Some(data) => Ok(carrierEoriDetailsPage(mode, form().fill(CarrierEoriNumber(data))))
       case _          => Ok(carrierEoriDetailsPage(mode, form()))
@@ -54,7 +56,7 @@ class CarrierEoriNumberController @Inject()(
 
   private def form()(implicit request: JourneyRequest[_]) = CarrierEoriNumber.form().withSubmissionErrors()
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validJourneys)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

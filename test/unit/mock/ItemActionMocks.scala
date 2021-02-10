@@ -26,5 +26,5 @@ import scala.concurrent.ExecutionContext
 trait ItemActionMocks extends JourneyActionMocks with MockAuthAction {
   self: MockitoSugar with Suite with BeforeAndAfterEach =>
 
-  val mockItemAction = new ItemActionBuilder(mockAuthAction, mockJourneyAction)(ExecutionContext.global)
+  val mockItemAction = new ItemActionBuilder(mockAuthAction, mockVerifiedEmailAction, mockJourneyAction)(ExecutionContext.global)
 }
