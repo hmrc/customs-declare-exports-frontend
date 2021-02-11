@@ -39,7 +39,6 @@
         sectionHeader: sectionHeader,
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
-        tariffExpander: tariffExpander,
         addAnotherQuestion: addAnotherQuestion,
         spanVisuallyHidden: spanVisuallyHidden,
         link: link,
@@ -113,7 +112,6 @@
             html = HtmlFormat.fill(immutable.Seq(
                 packageInfoTable,
                 addAnotherQuestion("declaration.packageInformation.add.another", form),
-                tariffExpander(PackageInformation, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

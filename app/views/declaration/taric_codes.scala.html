@@ -40,7 +40,6 @@
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
         spanVisuallyHidden: spanVisuallyHidden,
-        tariffExpander: tariffExpander,
         addAnotherQuestion: addAnotherQuestion,
         saveButtons: saveButtons,
         appConfig: AppConfig,
@@ -111,7 +110,6 @@
             html = HtmlFormat.fill(immutable.Seq(
                 taricCodesTable,
                 addAnotherQuestion("declaration.taricAdditionalCodes.label", form),
-                tariffExpander(TaricCode, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

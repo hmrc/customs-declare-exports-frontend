@@ -41,7 +41,6 @@
         govukTable: GovukTable,
         errorSummary: errorSummary,
         spanVisuallyHidden: spanVisuallyHidden,
-        tariffExpander: tariffExpander,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
         appConfig: AppConfig
@@ -128,7 +127,6 @@
             html = HtmlFormat.fill(immutable.Seq(
                 containersTable,
                 addContainerRadios,
-                tariffExpander(ContainerAdd, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

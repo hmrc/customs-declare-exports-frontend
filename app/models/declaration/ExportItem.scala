@@ -83,5 +83,5 @@ object ExportItem extends DeclarationPage {
   def containsAnswers(item: ExportItem): Boolean = item != ExportItem(id = item.id, sequenceId = item.sequenceId)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.declarationItemsList.common"))
+    Seq(TariffContentKey(s"tariff.declaration.declarationItemsList.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

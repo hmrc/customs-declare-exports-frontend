@@ -55,7 +55,7 @@ class RepresentativeAgentSpec extends DeclarationPageBaseSpec {
   }
 
   "RepresentativeAgent" when {
-    testTariffContentKeysNoSpecialisation(RepresentativeAgent, "tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent")
+    testTariffContentKeys(RepresentativeAgent, "tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent")
   }
 }
 

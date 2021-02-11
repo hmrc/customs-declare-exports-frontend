@@ -107,6 +107,7 @@
 
         @if(seals.isEmpty){
             @addSealRadios
+            @tariffExpander(Seal, request.declarationType)(messages, appConfig)
         } else {
             @sectionHeader(messages("declaration.section.6"))
             @govukFieldset(Fieldset(
@@ -125,8 +126,6 @@
                 ))
             ))
         }
-
-        @tariffExpander(Seal, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }
