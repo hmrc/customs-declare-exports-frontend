@@ -21,6 +21,6 @@ import forms.common.DeclarationPageBaseSpec
 class ContainerAddSpec extends DeclarationPageBaseSpec {
 
   "ContainerAdd" when {
-    testTariffContentKeysNoSpecialisation(ContainerAdd, "tariff.declaration.container.change")
+    testTariffContentKeys(ContainerAdd, "tariff.declaration.container.change")
   }
 }

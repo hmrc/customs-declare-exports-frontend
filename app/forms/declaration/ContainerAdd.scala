@@ -42,5 +42,5 @@ object ContainerAdd extends DeclarationPage {
   def form(): Form[ContainerAdd] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.container.change.common"))
+    Seq(TariffContentKey(s"tariff.declaration.container.change.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
