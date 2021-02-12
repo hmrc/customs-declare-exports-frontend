@@ -39,6 +39,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
   val controller = new DestinationCountryController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

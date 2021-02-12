@@ -35,15 +35,15 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
   val transportPaymentPage = mock[transport_payment]
 
-  val controller =
-    new TransportPaymentController(
-      mockAuthAction,
-      mockJourneyAction,
-      navigator,
-      mockExportsCacheService,
-      stubMessagesControllerComponents(),
-      transportPaymentPage
-    )(ec)
+  val controller = new TransportPaymentController(
+    mockAuthAction,
+    mockVerifiedEmailAction,
+    mockJourneyAction,
+    navigator,
+    mockExportsCacheService,
+    stubMessagesControllerComponents(),
+    transportPaymentPage
+  )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

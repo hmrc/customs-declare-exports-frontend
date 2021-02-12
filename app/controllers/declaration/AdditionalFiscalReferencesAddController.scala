@@ -16,13 +16,14 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.AdditionalFiscalReferencesAddController.AdditionalFiscalReferencesFormGroupId
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.AdditionalFiscalReference.form
 import forms.declaration.AdditionalFiscalReferencesData._
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -37,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalFiscalReferencesAddController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -45,12 +47,12 @@ class AdditionalFiscalReferencesAddController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     Ok(additionalFiscalReferencesPage(mode, itemId, frm))
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
 
     boundForm.fold(

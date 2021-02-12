@@ -16,12 +16,13 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformation
+
 import javax.inject.Inject
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
@@ -38,6 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationRemoveController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -46,33 +48,34 @@ class AdditionalInformationRemoveController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    findAdditionalInformation(itemId, id) match {
-      case Some(information) => Ok(removePage(mode, itemId, id, information, removeYesNoForm.withSubmissionErrors()))
-      case _                 => returnToSummary(mode, itemId)
-    }
+  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
+    implicit request =>
+      findAdditionalInformation(itemId, id) match {
+        case Some(information) => Ok(removePage(mode, itemId, id, information, removeYesNoForm.withSubmissionErrors()))
+        case _                 => returnToSummary(mode, itemId)
+      }
   }
 
-  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    findAdditionalInformation(itemId, id) match {
-      case Some(information) =>
-        removeYesNoForm
-          .bindFromRequest()
-          .fold(
-            (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, itemId, id, information, formWithErrors))),
-            formData => {
-              formData.answer match {
-                case YesNoAnswers.yes =>
-                  removeAdditionalInformation(itemId, information)
-                    .map(declaration => afterRemove(mode, itemId, declaration))
-                case YesNoAnswers.no =>
-                  Future.successful(returnToSummary(mode, itemId))
+  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
+    implicit request =>
+      findAdditionalInformation(itemId, id) match {
+        case Some(information) =>
+          removeYesNoForm
+            .bindFromRequest()
+            .fold(
+              (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, itemId, id, information, formWithErrors))),
+              formData => {
+                formData.answer match {
+                  case YesNoAnswers.yes =>
+                    removeAdditionalInformation(itemId, information)
+                      .map(declaration => afterRemove(mode, itemId, declaration))
+                  case YesNoAnswers.no =>
+                    Future.successful(returnToSummary(mode, itemId))
+                }
               }
-            }
-          )
-      case _ => Future.successful(returnToSummary(mode, itemId))
-    }
-
+            )
+        case _ => Future.successful(returnToSummary(mode, itemId))
+      }
   }
 
   private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformation.remove.empty")
@@ -98,5 +101,4 @@ class AdditionalInformationRemoveController @Inject()(
       model.updatedItem(itemId, item => item.copy(additionalInformation = Some(updatedInformation)))
     })
   }
-
 }

@@ -38,6 +38,7 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
 
   val controller = new DocumentsProducedAddController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

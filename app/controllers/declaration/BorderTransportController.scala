@@ -16,10 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -34,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class BorderTransportController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
@@ -44,7 +46,7 @@ class BorderTransportController @Inject()(
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)) { implicit request =>
     val transport = request.cacheModel.transport
     val borderTransportData = (
       transport.meansOfTransportCrossingTheBorderType,
@@ -61,15 +63,14 @@ class BorderTransportController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] =
-    (authenticate andThen journeyType(validTypes)).async { implicit request =>
-      form()
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
-          borderTransport => updateCache(borderTransport).map(_ => nextPage(mode, borderTransport))
-        )
-    }
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)).async { implicit request =>
+    form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
+        borderTransport => updateCache(borderTransport).map(_ => nextPage(mode, borderTransport))
+      )
+  }
 
   private def nextPage(mode: Mode, borderTransport: BorderTransport)(implicit request: JourneyRequest[AnyContent]): Result =
     request.declarationType match {

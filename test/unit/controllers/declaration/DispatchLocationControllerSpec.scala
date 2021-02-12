@@ -38,6 +38,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
   val controller = new DispatchLocationController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

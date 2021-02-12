@@ -41,6 +41,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
 
   val controller = new ExporterEoriNumberController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     stubMessagesControllerComponents(),

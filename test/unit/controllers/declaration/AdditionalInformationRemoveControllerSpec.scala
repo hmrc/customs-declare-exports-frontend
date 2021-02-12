@@ -41,6 +41,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
   val controller =
     new AdditionalInformationRemoveController(
       mockAuthAction,
+      mockVerifiedEmailAction,
       mockJourneyAction,
       mockExportsCacheService,
       navigator,

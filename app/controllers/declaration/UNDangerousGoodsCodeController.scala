@@ -16,10 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.UNDangerousGoodsCode
 import forms.declaration.UNDangerousGoodsCode.form
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -34,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UNDangerousGoodsCodeController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -42,7 +44,7 @@ class UNDangerousGoodsCodeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.itemBy(itemId).flatMap(_.dangerousGoodsCode) match {
       case Some(dangerousGoodsCode) => Ok(unDangerousGoodsCodePage(mode, itemId, frm.fill(dangerousGoodsCode)))
@@ -50,7 +52,7 @@ class UNDangerousGoodsCodeController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(

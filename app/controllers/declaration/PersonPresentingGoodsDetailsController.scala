@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.PersonPresentingGoodsDetails
 import forms.declaration.PersonPresentingGoodsDetails.form
@@ -34,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PersonPresentingGoodsDetailsController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -42,7 +43,7 @@ class PersonPresentingGoodsDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(CLEARANCE)) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.personPresentingGoodsDetails match {
       case Some(data) => Ok(personPresentingGoodsDetailsPage(mode, frm.fill(data)))
@@ -50,7 +51,7 @@ class PersonPresentingGoodsDetailsController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(CLEARANCE)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
@@ -62,5 +63,4 @@ class PersonPresentingGoodsDetailsController @Inject()(
 
   private def updateCache(validData: PersonPresentingGoodsDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(parties = model.parties.copy(personPresentingGoodsDetails = Some(validData))))
-
 }

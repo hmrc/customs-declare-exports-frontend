@@ -16,10 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation._
+
 import javax.inject.Inject
 import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class FiscalInformationController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -43,45 +45,47 @@ class FiscalInformationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    def cacheContainsFiscalReferenceData = request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))
-    def cacheItemIneligibleForOSR =
-      request.cacheModel
-        .itemBy(itemId)
-        .flatMap(_.procedureCodes)
-        .flatMap(_.procedureCode)
-        .exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code))
+  def displayPage(mode: Mode, itemId: String, fastForward: Boolean): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
+    implicit request =>
+      def cacheContainsFiscalReferenceData = request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))
+      def cacheItemIneligibleForOSR =
+        request.cacheModel
+          .itemBy(itemId)
+          .flatMap(_.procedureCodes)
+          .flatMap(_.procedureCode)
+          .exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code))
 
-    def displayFiscalInformationPage() = {
-      val frm = form().withSubmissionErrors()
-      request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
-        case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, frm.fill(fiscalInformation)))
-        case _                       => Ok(fiscalInformationPage(mode, itemId, frm))
+      def displayFiscalInformationPage() = {
+        val frm = form().withSubmissionErrors()
+        request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
+          case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, frm.fill(fiscalInformation)))
+          case _                       => Ok(fiscalInformationPage(mode, itemId, frm))
+        }
       }
-    }
 
-    if (mode == Mode.Change) {
-      displayFiscalInformationPage()
-    } else if (fastForward && cacheContainsFiscalReferenceData) {
-      navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
-    } else if (fastForward && cacheItemIneligibleForOSR) {
-      navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId))
-    } else {
-      if (cacheContainsFiscalReferenceData) {
-        navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
-      } else {
+      if (mode == Mode.Change) {
         displayFiscalInformationPage()
+      } else if (fastForward && cacheContainsFiscalReferenceData) {
+        navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
+      } else if (fastForward && cacheItemIneligibleForOSR) {
+        navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId))
+      } else {
+        if (cacheContainsFiscalReferenceData) {
+          navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
+        } else {
+          displayFiscalInformationPage()
+        }
       }
-    }
   }
 
-  def saveFiscalInformation(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[FiscalInformation]) => Future.successful(BadRequest(fiscalInformationPage(mode, itemId, formWithErrors))),
-        formData => updateCache(itemId, formData).map(_ => redirectToNextPage(mode, itemId, formData))
-      )
+  def saveFiscalInformation(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
+    implicit request =>
+      form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[FiscalInformation]) => Future.successful(BadRequest(fiscalInformationPage(mode, itemId, formWithErrors))),
+          formData => updateCache(itemId, formData).map(_ => redirectToNextPage(mode, itemId, formData))
+        )
   }
 
   private def updateCache(itemId: String, updatedFiscalInformation: FiscalInformation)(

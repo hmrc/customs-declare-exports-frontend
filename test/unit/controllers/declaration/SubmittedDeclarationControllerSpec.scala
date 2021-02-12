@@ -39,6 +39,7 @@ class SubmittedDeclarationControllerSpec extends ControllerWithoutFormSpec with 
 
   private val controller = new SubmittedDeclarationController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),

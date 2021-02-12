@@ -38,7 +38,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   val choicePage = mock[choice_page]
   val controller =
-    new ChoiceController(mockAuthAction, stubMessagesControllerComponents(), choicePage)
+    new ChoiceController(mockAuthAction, mockVerifiedEmailAction, stubMessagesControllerComponents(), choicePage)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

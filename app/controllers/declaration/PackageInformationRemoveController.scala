@@ -16,11 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.PackageInformation
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PackageInformationRemoveController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -43,27 +45,29 @@ class PackageInformationRemoveController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(packageTypeRemove(mode, itemId, packageInformation(id, itemId), removeYesNoForm.withSubmissionErrors()))
+  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
+    implicit request =>
+      Ok(packageTypeRemove(mode, itemId, packageInformation(id, itemId), removeYesNoForm.withSubmissionErrors()))
   }
 
-  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val packageInformationToRemove = packageInformation(id, itemId)
-    removeYesNoForm
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[YesNoAnswer]) =>
-          Future.successful(BadRequest(packageTypeRemove(mode, itemId, packageInformationToRemove, formWithErrors))),
-        formData => {
-          formData.answer match {
-            case YesNoAnswers.yes =>
-              updateExportsCache(itemId, packageInformationToRemove)
-                .map(_ => navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId)))
-            case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId)))
+  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
+    implicit request =>
+      val packageInformationToRemove = packageInformation(id, itemId)
+      removeYesNoForm
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[YesNoAnswer]) =>
+            Future.successful(BadRequest(packageTypeRemove(mode, itemId, packageInformationToRemove, formWithErrors))),
+          formData => {
+            formData.answer match {
+              case YesNoAnswers.yes =>
+                updateExportsCache(itemId, packageInformationToRemove)
+                  .map(_ => navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId)))
+              case YesNoAnswers.no =>
+                Future.successful(navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId)))
+            }
           }
-        }
-      )
+        )
   }
 
   private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.packageInformation.remove.empty")

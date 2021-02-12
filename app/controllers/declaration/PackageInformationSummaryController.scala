@@ -16,10 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+
 import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
@@ -33,6 +34,7 @@ import views.html.declaration.package_information
 
 class PackageInformationSummaryController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -42,14 +44,14 @@ class PackageInformationSummaryController @Inject()(
 
   import PackageInformationSummaryController._
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.packageInformation) match {
       case Some(items) if items.nonEmpty => Ok(packageInformationPage(mode, itemId, anotherYesNoForm.withSubmissionErrors(), items))
       case _                             => navigator.continueTo(mode, routes.PackageInformationAddController.displayPage(_, itemId))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val items = request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
     anotherYesNoForm
       .bindFromRequest()

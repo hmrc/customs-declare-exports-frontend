@@ -16,10 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+
 import javax.inject.Inject
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationRequiredController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -43,14 +45,14 @@ class AdditionalInformationRequiredController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     cachedItems(itemId) match {
       case items if items.isEmpty => Ok(additionalInfoReq(mode, itemId, previousAnswer(itemId).withSubmissionErrors()))
       case _                      => navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
@@ -88,5 +90,4 @@ class AdditionalInformationRequiredController @Inject()(
       case YesNoAnswers.no =>
         controllers.declaration.routes.DocumentsProducedController.displayPage(_, itemId)
     }
-
 }

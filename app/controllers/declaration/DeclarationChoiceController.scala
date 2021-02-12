@@ -17,11 +17,11 @@
 package controllers.declaration
 
 import java.time.Instant
-
 import connectors.exchange.ExportsDeclarationExchange
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.declaration.DeclarationChoice
 import forms.declaration.DeclarationChoice._
+
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.ExportsSessionKeys
@@ -39,6 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationChoiceController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   choicePage: declaration_choice
@@ -47,7 +48,7 @@ class DeclarationChoiceController @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def displayPage(mode: Mode): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     request.declarationId match {
       case Some(id) =>
         exportsCacheService.get(id).map(_.map(_.`type`)).map {
@@ -56,10 +57,9 @@ class DeclarationChoiceController @Inject()(
         }
       case _ => Future.successful(Ok(choicePage(mode, form())))
     }
-
   }
 
-  def submitChoice(mode: Mode): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitChoice(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

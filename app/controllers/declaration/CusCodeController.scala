@@ -16,10 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.CusCode
 import forms.declaration.CusCode.form
+
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -34,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CusCodeController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -44,15 +46,16 @@ class CusCodeController @Inject()(
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val frm = form().withSubmissionErrors()
-    request.cacheModel.itemBy(itemId).flatMap(_.cusCode) match {
-      case Some(cusCode) => Ok(cusCodePage(mode, itemId, frm.fill(cusCode)))
-      case _             => Ok(cusCodePage(mode, itemId, frm))
-    }
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)) {
+    implicit request =>
+      val frm = form().withSubmissionErrors()
+      request.cacheModel.itemBy(itemId).flatMap(_.cusCode) match {
+        case Some(cusCode) => Ok(cusCodePage(mode, itemId, frm.fill(cusCode)))
+        case _             => Ok(cusCodePage(mode, itemId, frm))
+      }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(

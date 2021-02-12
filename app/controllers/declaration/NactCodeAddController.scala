@@ -16,11 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.NactCode.nactCodeLimit
 import forms.declaration.{NactCode, NactCodeFirst}
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class NactCodeAddController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -48,26 +50,28 @@ class NactCodeAddController @Inject()(
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
-      case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(mode, itemId, NactCode.form().withSubmissionErrors()))
-      case Some(_)                             => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form().fill(NactCodeFirst(None)).withSubmissionErrors()))
-      case _                                   => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form().withSubmissionErrors()))
-    }
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)) {
+    implicit request =>
+      request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
+        case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(mode, itemId, NactCode.form().withSubmissionErrors()))
+        case Some(_)                             => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form().fill(NactCodeFirst(None)).withSubmissionErrors()))
+        case _                                   => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form().withSubmissionErrors()))
+      }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
-      case Some(nactCodes) if nactCodes.nonEmpty => saveAdditionalNactCode(mode, itemId, NactCode.form().bindFromRequest(), nactCodes)
-      case _ =>
-        NactCodeFirst
-          .form()
-          .bindFromRequest()
-          .fold(
-            (formWithErrors: Form[NactCodeFirst]) => Future.successful(BadRequest(nactCodeAddFirstPage(mode, itemId, formWithErrors))),
-            validForm => saveFirstNactCode(mode, itemId, validForm.code)
-          )
-    }
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)).async {
+    implicit request =>
+      request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
+        case Some(nactCodes) if nactCodes.nonEmpty => saveAdditionalNactCode(mode, itemId, NactCode.form().bindFromRequest(), nactCodes)
+        case _ =>
+          NactCodeFirst
+            .form()
+            .bindFromRequest()
+            .fold(
+              (formWithErrors: Form[NactCodeFirst]) => Future.successful(BadRequest(nactCodeAddFirstPage(mode, itemId, formWithErrors))),
+              validForm => saveFirstNactCode(mode, itemId, validForm.code)
+            )
+      }
   }
 
   private def saveFirstNactCode(mode: Mode, itemId: String, maybeCode: Option[String])(implicit request: JourneyRequest[AnyContent]) =
@@ -94,5 +98,4 @@ class NactCodeAddController @Inject()(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCache.toList))))
-
 }

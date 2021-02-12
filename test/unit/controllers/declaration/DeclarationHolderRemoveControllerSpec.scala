@@ -36,15 +36,15 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
 
   val mockRemovePage = mock[declaration_holder_remove]
 
-  val controller =
-    new DeclarationHolderRemoveController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      mockRemovePage
-    )(ec)
+  val controller = new DeclarationHolderRemoveController(
+    mockAuthAction,
+    mockVerifiedEmailAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    mockRemovePage
+  )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

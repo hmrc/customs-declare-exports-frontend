@@ -29,7 +29,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
   val choicePage = instanceOf[choice_page]
 
   val controller =
-    new ChoiceController(mockAuthAction, stubMessagesControllerComponents(), choicePage)
+    new ChoiceController(mockAuthAction, mockVerifiedEmailAction, stubMessagesControllerComponents(), choicePage)
 
   "Auth Action" should {
 

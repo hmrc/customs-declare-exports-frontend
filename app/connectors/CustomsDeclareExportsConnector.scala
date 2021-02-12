@@ -21,7 +21,6 @@ import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import connectors.exchange.ExportsDeclarationExchange
 import forms.CancelDeclaration
-import javax.inject.{Inject, Singleton}
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
@@ -29,9 +28,10 @@ import models.dis.MrnStatus
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
@@ -153,4 +153,17 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       .filter(_.status == Status.OK)
       .map(_ => (): Unit)
   }
+
+  def getVerifiedEmailAddress(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[VerifiedEmailAddress]] =
+    httpClient
+      .GET[Option[VerifiedEmailAddress]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchVerifiedEmail}/${eori.value}")
+      .map { maybeVerifiedEmail =>
+        maybeVerifiedEmail match {
+          case Some(verifiedEmailAddress) =>
+            logger.debug(s"Found verified email for eori: $eori")
+          case None =>
+            logger.info(s"No verified email for eori: $eori")
+        }
+        maybeVerifiedEmail
+      }
 }

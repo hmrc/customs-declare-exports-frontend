@@ -32,7 +32,13 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with Injector
     val draftConfirmationPage = instanceOf[draft_confirmation_page]
 
     val controller =
-      new ConfirmationController(mockAuthAction, stubMessagesControllerComponents(), submissionConfirmationPage, draftConfirmationPage)
+      new ConfirmationController(
+        mockAuthAction,
+        mockVerifiedEmailAction,
+        stubMessagesControllerComponents(),
+        submissionConfirmationPage,
+        draftConfirmationPage
+      )
 
     authorizedUser()
   }

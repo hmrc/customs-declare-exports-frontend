@@ -16,11 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarationHolder
+
 import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
@@ -31,12 +32,13 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_remove
-import scala.concurrent.{ExecutionContext, Future}
 
+import scala.concurrent.{ExecutionContext, Future}
 import controllers.util.DeclarationHolderHelper
 
 class DeclarationHolderRemoveController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -45,12 +47,12 @@ class DeclarationHolderRemoveController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val holder = DeclarationHolder.fromId(id)
     Ok(holderRemovePage(mode, holder, removeYesNoForm.withSubmissionErrors()))
   }
 
-  def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     val holderToRemove = DeclarationHolder.fromId(id)
     removeYesNoForm
       .bindFromRequest()

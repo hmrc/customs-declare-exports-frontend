@@ -20,8 +20,8 @@ import base.Injector
 import com.codahale.metrics.Timer
 import com.kenshoo.play.metrics.Metrics
 import controllers.CancelDeclarationController
-import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import forms.{CancelDeclaration, Lrn}
+import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -43,6 +43,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
 
     val controller = new CancelDeclarationController(
       mockAuthAction,
+      mockVerifiedEmailAction,
       mockCustomsDeclareExportsConnector,
       mockErrorHandler,
       mockExportsMetrics,

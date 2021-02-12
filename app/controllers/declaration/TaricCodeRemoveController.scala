@@ -16,10 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -34,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TaricCodeRemoveController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -42,25 +44,27 @@ class TaricCodeRemoveController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(taricCodeRemove(mode, itemId, code, removeYesNoForm.withSubmissionErrors()))
+  def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
+    implicit request =>
+      Ok(taricCodeRemove(mode, itemId, code, removeYesNoForm.withSubmissionErrors()))
   }
 
-  def submitForm(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    removeYesNoForm
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(taricCodeRemove(mode, itemId, code, formWithErrors))),
-        formData => {
-          formData.answer match {
-            case YesNoAnswers.yes =>
-              updateExportsCache(itemId, code)
-                .map(_ => navigator.continueTo(mode, routes.TaricCodeSummaryController.displayPage(_, itemId)))
-            case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, routes.TaricCodeSummaryController.displayPage(_, itemId)))
+  def submitForm(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
+    implicit request =>
+      removeYesNoForm
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(taricCodeRemove(mode, itemId, code, formWithErrors))),
+          formData => {
+            formData.answer match {
+              case YesNoAnswers.yes =>
+                updateExportsCache(itemId, code)
+                  .map(_ => navigator.continueTo(mode, routes.TaricCodeSummaryController.displayPage(_, itemId)))
+              case YesNoAnswers.no =>
+                Future.successful(navigator.continueTo(mode, routes.TaricCodeSummaryController.displayPage(_, itemId)))
+            }
           }
-        }
-      )
+        )
   }
 
   private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.taricAdditionalCodes.remove.answer.empty")

@@ -46,6 +46,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
   private val controller = new SummaryController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockErrorHandler,
     mockExportsCacheService,

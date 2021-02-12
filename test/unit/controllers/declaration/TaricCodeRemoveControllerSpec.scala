@@ -38,6 +38,7 @@ class TaricCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
   val controller =
     new TaricCodeRemoveController(
       mockAuthAction,
+      mockVerifiedEmailAction,
       mockJourneyAction,
       mockExportsCacheService,
       navigator,

@@ -16,10 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -34,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class NatureOfTransactionController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -42,7 +44,7 @@ class NatureOfTransactionController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.natureOfTransaction match {
       case Some(data) => Ok(natureOfTransactionPage(mode, frm.fill(data)))
@@ -50,7 +52,7 @@ class NatureOfTransactionController @Inject()(
     }
   }
 
-  def saveTransactionType(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveTransactionType(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form().bindFromRequest
       .fold(
         (formWithErrors: Form[NatureOfTransaction]) => Future.successful(BadRequest(natureOfTransactionPage(mode, formWithErrors))),

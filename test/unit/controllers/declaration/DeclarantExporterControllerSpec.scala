@@ -37,6 +37,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
   val controller = new DeclarantExporterController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

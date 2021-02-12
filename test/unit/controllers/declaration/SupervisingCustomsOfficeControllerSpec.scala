@@ -37,6 +37,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
   private val controller = new SupervisingCustomsOfficeController(
     authenticate = mockAuthAction,
+    verifyEmail = mockVerifiedEmailAction,
     journeyType = mockJourneyAction,
     navigator = navigator,
     exportsCacheService = mockExportsCacheService,

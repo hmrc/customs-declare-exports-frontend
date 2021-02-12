@@ -16,11 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import controllers.util.{FormAction, SaveAndReturn}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+
 import javax.inject.Inject
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
@@ -36,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ItemsSummaryController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -50,14 +52,14 @@ class ItemsSummaryController @Inject()(
   private def itemSummaryForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsSummary.addAnotherItem.error.empty")
   private def removeItemForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsRemove.error.empty")
 
-  def displayAddItemPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayAddItemPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (request.cacheModel.items.isEmpty)
       Ok(addItemPage(mode))
     else
       navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage)
   }
 
-  def addFirstItem(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def addFirstItem(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     val actionTypeOpt = FormAction.bindFromRequest()
 
     actionTypeOpt match {
@@ -68,7 +70,7 @@ class ItemsSummaryController @Inject()(
     }
   }
 
-  def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     removeEmptyItems().map(updatedModel => {
       updatedModel.fold(navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage))(
         model =>
@@ -81,7 +83,7 @@ class ItemsSummaryController @Inject()(
   }
 
   //TODO Should we add validation for POST without items?
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     val incorrectItems: Seq[FormError] = buildIncorrectItemsErrors(request)
 
     itemSummaryForm
@@ -134,14 +136,15 @@ class ItemsSummaryController @Inject()(
     exportsCacheService.update(request.cacheModel.copy(items = itemsWithAnswers))
   }
 
-  def displayRemoveItemConfirmationPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId) match {
-      case Some(item) => Ok(removeItemPage(mode, removeItemForm, item))
-      case None       => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
-    }
+  def displayRemoveItemConfirmationPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
+    implicit request =>
+      request.cacheModel.itemBy(itemId) match {
+        case Some(item) => Ok(removeItemPage(mode, removeItemForm, item))
+        case None       => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
+      }
   }
 
-  def removeItem(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def removeItem(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     removeItemForm
       .bindFromRequest()
       .fold(

@@ -43,6 +43,7 @@ class AppConfigSpec extends UnitSpec {
         |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
         |urls.customsMovementsFrontend="http://url-to-movements-frontend/start"
         |urls.exitSurveyUrl="http://localhost:9514/feedback/customs-declare-exports-frontend"
+        |urls.emailFrontendUrl="http://localhost:9898/manage-email-cds/service/customs-declare-exports"
         |
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
@@ -134,6 +135,10 @@ class AppConfigSpec extends UnitSpec {
 
     "have exitSurvey URL" in {
       validAppConfig.exitSurveyUrl must be("http://localhost:9514/feedback/customs-declare-exports-frontend")
+    }
+
+    "have emailFrontendUrl URL" in {
+      validAppConfig.emailFrontendUrl must be("http://localhost:9898/manage-email-cds/service/customs-declare-exports")
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {

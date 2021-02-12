@@ -19,7 +19,7 @@ package base
 import base.ExportsTestData._
 import controllers.actions.{AuthActionImpl, EoriAllowList}
 import models.SignedInUser
-import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
+import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,12 +29,13 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
+import unit.mock.VerifiedEmailMocks
 import unit.tools.Stubs
 import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.Future
 
-trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
+trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with RequestBuilder with VerifiedEmailMocks {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
@@ -250,8 +251,8 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
       )
     )
 
-  def getAuthenticatedRequest(declarationId: String = "declarationId"): AuthenticatedRequest[AnyContentAsEmpty.type] =
-    new AuthenticatedRequest(FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, declarationId)).withCSRFToken, exampleUser)
+  def getAuthenticatedRequest(declarationId: String = "declarationId"): VerifiedEmailRequest[AnyContentAsEmpty.type] =
+    buildVerifiedEmailRequest(FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, declarationId)).withCSRFToken, exampleUser)
 
   def getRequest(): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, "declarationId")).withCSRFToken

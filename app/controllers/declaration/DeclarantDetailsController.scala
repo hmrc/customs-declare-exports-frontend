@@ -16,12 +16,13 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation.form
 import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation, EntityDetails}
+
 import javax.inject.Inject
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.{ExportsDeclaration, Mode}
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarantDetailsController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -43,7 +45,7 @@ class DeclarantDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.declarantDetails match {
       case Some(_) => Ok(declarantDetailsPage(mode, frm.fill(DeclarantEoriConfirmation(YesNoAnswers.yes))))
@@ -51,7 +53,7 @@ class DeclarantDetailsController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

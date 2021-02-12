@@ -16,8 +16,9 @@
 
 package controllers.actions
 
+import base.RequestBuilder
 import models.{DeclarationType, IdentityData, SignedInUser}
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.requests.JourneyRequest
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
@@ -34,17 +35,18 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class TypedJourneyActionTest extends WordSpec with MustMatchers with MockitoSugar with BeforeAndAfterEach with ExportsDeclarationBuilder {
+class TypedJourneyActionTest
+    extends WordSpec with MustMatchers with MockitoSugar with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
 
   private val cache = mock[ExportsCacheService]
   private val block = mock[JourneyRequest[_] => Future[Result]]
   private val user = SignedInUser("eori", Enrolments(Set.empty), IdentityData())
   private val declaration = aDeclaration(withType(DeclarationType.STANDARD))
 
-  private def request(declarationId: Option[String]): AuthenticatedRequest[AnyContentAsEmpty.type] = declarationId match {
+  private def request(declarationId: Option[String]): FakeRequest[AnyContentAsEmpty.type] = declarationId match {
     case Some(id) =>
-      new AuthenticatedRequest(FakeRequest().withSession("declarationId" -> id), user)
-    case None => new AuthenticatedRequest(FakeRequest(), user)
+      FakeRequest().withSession("declarationId" -> id)
+    case None => FakeRequest()
   }
 
   private val refiner = new JourneyAction(cache)
@@ -55,13 +57,15 @@ class TypedJourneyActionTest extends WordSpec with MustMatchers with MockitoSuga
   }
 
   "refine" should {
+    val verifiedEmailReq = buildVerifiedEmailRequest(request(Some("id")), user)
+
     "permit request" when {
       "answers found" when {
         "on unshared journey" in {
           given(block.apply(any())).willReturn(Future.successful(Results.Ok))
           given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
 
-          await(refiner(DeclarationType.STANDARD).invokeBlock(request(Some("id")), block)) mustBe Results.Ok
+          await(refiner(DeclarationType.STANDARD).invokeBlock(verifiedEmailReq, block)) mustBe Results.Ok
 
           val response = theRequestBuilt
           response.cacheModel mustBe declaration
@@ -71,7 +75,7 @@ class TypedJourneyActionTest extends WordSpec with MustMatchers with MockitoSuga
           given(block.apply(any())).willReturn(Future.successful(Results.Ok))
           given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
 
-          await(refiner(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY).invokeBlock(request(Some("id")), block)) mustBe Results.Ok
+          await(refiner(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY).invokeBlock(verifiedEmailReq, block)) mustBe Results.Ok
 
           val response = theRequestBuilt
           response.cacheModel mustBe declaration
@@ -87,7 +91,7 @@ class TypedJourneyActionTest extends WordSpec with MustMatchers with MockitoSuga
 
     "block request" when {
       "id not found" in {
-        await(refiner(DeclarationType.STANDARD).invokeBlock(request(None), block)) mustBe Results.Redirect(
+        await(refiner(DeclarationType.STANDARD).invokeBlock(buildVerifiedEmailRequest(request(None), user), block)) mustBe Results.Redirect(
           controllers.routes.StartController.displayStartPage()
         )
       }
@@ -95,7 +99,7 @@ class TypedJourneyActionTest extends WordSpec with MustMatchers with MockitoSuga
       "answers not found" in {
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(None))
 
-        await(refiner(DeclarationType.STANDARD).invokeBlock(request(Some("id")), block)) mustBe Results.Redirect(
+        await(refiner(DeclarationType.STANDARD).invokeBlock(verifiedEmailReq, block)) mustBe Results.Redirect(
           controllers.routes.StartController.displayStartPage()
         )
       }
@@ -103,11 +107,10 @@ class TypedJourneyActionTest extends WordSpec with MustMatchers with MockitoSuga
       "answers found of a different type" in {
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
 
-        await(refiner(DeclarationType.OCCASIONAL).invokeBlock(request(Some("id")), block)) mustBe Results.Redirect(
+        await(refiner(DeclarationType.OCCASIONAL).invokeBlock(verifiedEmailReq, block)) mustBe Results.Redirect(
           controllers.routes.StartController.displayStartPage()
         )
       }
     }
   }
-
 }

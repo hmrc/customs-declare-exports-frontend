@@ -39,6 +39,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
 
   val controller = new AdditionalActorsSummaryController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

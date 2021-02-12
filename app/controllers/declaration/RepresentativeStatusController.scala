@@ -16,11 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.DeclarationPage
 import forms.declaration.RepresentativeStatus.form
 import forms.declaration.{RepresentativeEntity, RepresentativeStatus}
+
 import javax.inject.Inject
 import models.DeclarationType._
 import models.declaration.RepresentativeDetails
@@ -37,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RepresentativeStatusController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
@@ -45,7 +47,7 @@ class RepresentativeStatusController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.representativeDetails.map(_.statusCode) match {
       case Some(data) => Ok(representativeStatusPage(mode, navigationForm, frm.fill(RepresentativeStatus(data))))
@@ -53,7 +55,7 @@ class RepresentativeStatusController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

@@ -16,11 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarationAdditionalActors
+
 import javax.inject.Inject
 import models.declaration.DeclarationAdditionalActorsData
 import models.requests.JourneyRequest
@@ -37,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalActorsRemoveController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -45,14 +47,14 @@ class AdditionalActorsRemoveController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     findActor(id) match {
       case Some(actor) => Ok(removePage(mode, id, actor, removeYesNoForm.withSubmissionErrors()))
       case _           => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage)
     }
   }
 
-  def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     findActor(id) match {
       case Some(actor) =>
         removeYesNoForm

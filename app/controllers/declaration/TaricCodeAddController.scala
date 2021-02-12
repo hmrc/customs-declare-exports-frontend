@@ -16,11 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.TaricCode.taricCodeLimit
 import forms.declaration.{TaricCode, TaricCodeFirst}
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TaricCodeAddController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -44,7 +46,7 @@ class TaricCodeAddController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
       case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodeAdd(mode, itemId, TaricCode.form().withSubmissionErrors()))
       case Some(_)                                 => Ok(taricCodeAddFirstPage(mode, itemId, TaricCodeFirst.form().fill(TaricCodeFirst(None)).withSubmissionErrors()))
@@ -52,7 +54,7 @@ class TaricCodeAddController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
       case Some(taricCodes) if taricCodes.nonEmpty => saveAdditionalTaricCode(mode, itemId, TaricCode.form().bindFromRequest(), taricCodes)
       case _ =>
@@ -92,5 +94,4 @@ class TaricCodeAddController @Inject()(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(taricCodes = Some(updatedCache.toList))))
-
 }

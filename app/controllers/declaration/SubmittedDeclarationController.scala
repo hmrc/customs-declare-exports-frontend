@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import connectors.CustomsDeclareExportsConnector
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -28,6 +28,7 @@ import scala.concurrent.ExecutionContext
 
 class SubmittedDeclarationController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
@@ -35,10 +36,9 @@ class SubmittedDeclarationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     customsDeclareExportsConnector.findNotifications(request.cacheModel.id).map { notifications =>
       Ok(view(notifications))
     }
   }
-
 }

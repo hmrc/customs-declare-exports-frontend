@@ -17,17 +17,18 @@
 package services.cache
 
 import base.ExportsTestData.newUser
+import base.RequestBuilder
 import forms.declaration._
 import forms.declaration.officeOfExit.AllowedUKOfficeOfExitAnswers
+import models.{DeclarationType, ExportsDeclaration}
 import models.DeclarationType.DeclarationType
 import models.declaration.Container
-import models.requests.{AuthenticatedRequest, JourneyRequest}
-import models.{DeclarationType, ExportsDeclaration}
+import models.requests.JourneyRequest
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.FakeRequestCSRFSupport._
 
-trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder {
+trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder with RequestBuilder {
 
   private def declaration(`type`: DeclarationType): ExportsDeclaration = aDeclaration(
     withType(`type`),
@@ -45,8 +46,8 @@ trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder 
   )
 
   protected def journeyRequest(`type`: DeclarationType = DeclarationType.STANDARD): JourneyRequest[AnyContent] =
-    new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration(`type`))
+    new JourneyRequest(buildVerifiedEmailRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration(`type`))
 
   protected def journeyRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContent] =
-    new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
+    new JourneyRequest(buildVerifiedEmailRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
 }

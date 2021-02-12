@@ -17,11 +17,10 @@
 package controllers
 
 import connectors.CustomsDeclareExportsConnector
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.CancelDeclaration
 import forms.CancelDeclaration._
 import handlers.ErrorHandler
-import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
 import models.requests.AuthenticatedRequest
@@ -29,16 +28,18 @@ import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes}
+import services.audit.EventData._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{cancel_declaration, cancellation_confirmation_page}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 class CancelDeclarationController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   errorHandler: ErrorHandler,
   exportsMetrics: ExportsMetrics,
@@ -51,11 +52,11 @@ class CancelDeclarationController @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def displayPage(): Action[AnyContent] = authenticate { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
     Ok(cancelDeclarationPage(CancelDeclaration.form))
   }
 
-  def onSubmit(): Action[AnyContent] = authenticate.async { implicit request =>
+  def onSubmit(): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     form
       .bindFromRequest()
       .fold(

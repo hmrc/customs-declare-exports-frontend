@@ -40,6 +40,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
   val controller = new StatisticalValueController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockErrorHandler,
     mockExportsCacheService,

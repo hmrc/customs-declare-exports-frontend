@@ -16,9 +16,10 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.TotalPackageQuantity
+
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -33,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TotalPackageQuantityController @Inject()(
   authorize: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   journey: JourneyAction,
   mcc: MessagesControllerComponents,
   navigator: Navigator,
@@ -43,20 +45,21 @@ class TotalPackageQuantityController @Inject()(
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authorize andThen journey(validTypes)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authorize andThen verifyEmail andThen journey(validTypes)) { implicit request =>
     val form = TotalPackageQuantity.form(request.declarationType).withSubmissionErrors()
     val data = request.cacheModel.totalPackageQuantity.fold(form)(form.fill)
     Ok(totalPackageQuantity(mode, data))
   }
 
-  def saveTotalPackageQuantity(mode: Mode): Action[AnyContent] = (authorize andThen journey(validTypes)).async { implicit request =>
-    TotalPackageQuantity
-      .form(request.declarationType)
-      .bindFromRequest()
-      .fold(
-        error => Future.successful(BadRequest(totalPackageQuantity(mode, error))),
-        form => updateCache(form).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
-      )
+  def saveTotalPackageQuantity(mode: Mode): Action[AnyContent] = (authorize andThen verifyEmail andThen journey(validTypes)).async {
+    implicit request =>
+      TotalPackageQuantity
+        .form(request.declarationType)
+        .bindFromRequest()
+        .fold(
+          error => Future.successful(BadRequest(totalPackageQuantity(mode, error))),
+          form => updateCache(form).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
+        )
   }
 
   private def nextPage(declarationType: DeclarationType): Mode => Call =

@@ -43,6 +43,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
   val controller = new TransportContainerController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     mockExportsCacheService,

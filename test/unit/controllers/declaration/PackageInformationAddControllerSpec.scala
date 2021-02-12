@@ -38,6 +38,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
   val controller =
     new PackageInformationAddController(
       mockAuthAction,
+      mockVerifiedEmailAction,
       mockJourneyAction,
       mockExportsCacheService,
       navigator,

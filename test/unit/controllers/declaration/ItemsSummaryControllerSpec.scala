@@ -50,6 +50,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
   private val controller = new ItemsSummaryController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

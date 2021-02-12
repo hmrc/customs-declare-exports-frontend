@@ -19,12 +19,11 @@ package controllers
 import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import connectors.exchange.ExportsDeclarationExchange
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.util.SubmissionDisplayHelper
-import javax.inject.Inject
-import models.Mode.ErrorFix
 import models._
-import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
+import models.Mode.ErrorFix
+import models.requests.ExportsSessionKeys
 import models.responses.FlashKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -32,10 +31,12 @@ import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{declaration_information, submissions}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionsController @Inject()(
   authenticate: AuthAction,
+  verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   submissionsPage: submissions,
@@ -44,7 +45,7 @@ class SubmissionsController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] =
-    authenticate.async { implicit request =>
+    (authenticate andThen verifyEmail).async { implicit request =>
       for {
         submissions <- customsDeclareExportsConnector.fetchSubmissions()
         notifications <- customsDeclareExportsConnector.fetchNotifications()
@@ -54,7 +55,7 @@ class SubmissionsController @Inject()(
       } yield Ok(submissionsPage(SubmissionsPagesElements(result, submissionsPages))).removingFromSession(ExportsSessionKeys.declarationId)
     }
 
-  def displayDeclarationWithNotifications(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayDeclarationWithNotifications(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findSubmission(id).flatMap {
       case Some(submission) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
@@ -64,7 +65,7 @@ class SubmissionsController @Inject()(
     }
   }
 
-  def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+  def amend(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     val redirect = Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
 
     val actualDeclaration: Future[Option[ExportsDeclaration]] = request.declarationId.map { decId =>
@@ -77,32 +78,33 @@ class SubmissionsController @Inject()(
     }
   }
 
-  def viewDeclaration(id: String): Action[AnyContent] = authenticate { implicit request =>
+  def viewDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
     Redirect(controllers.declaration.routes.SubmittedDeclarationController.displayPage()).addingToSession(ExportsSessionKeys.declarationId -> id)
   }
 
-  def amendErrors(id: String, redirectUrl: String, pattern: String, messageKey: String): Action[AnyContent] = authenticate.async { implicit request =>
-    val redirectUrlWithMode = redirectUrl + ErrorFix.queryParameter
-    val fieldName = FieldNamePointer.getFieldName(pattern)
-    val flashData = fieldName match {
-      case Some(name) if messageKey.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> messageKey)
-      case Some(name)                        => Map(FlashKeys.fieldName -> name)
-      case None if messageKey.nonEmpty       => Map(FlashKeys.errorMessage -> messageKey)
-      case _                                 => Map.empty[String, String]
+  def amendErrors(id: String, redirectUrl: String, pattern: String, messageKey: String): Action[AnyContent] =
+    (authenticate andThen verifyEmail).async { implicit request =>
+      val redirectUrlWithMode = redirectUrl + ErrorFix.queryParameter
+      val fieldName = FieldNamePointer.getFieldName(pattern)
+      val flashData = fieldName match {
+        case Some(name) if messageKey.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> messageKey)
+        case Some(name)                        => Map(FlashKeys.fieldName -> name)
+        case None if messageKey.nonEmpty       => Map(FlashKeys.errorMessage -> messageKey)
+        case _                                 => Map.empty[String, String]
+      }
+      val redirect = Redirect(redirectUrlWithMode).flashing(Flash(flashData))
+
+      val actualDeclaration: Future[Option[ExportsDeclaration]] = request.declarationId.map { decId =>
+        customsDeclareExportsConnector.findDeclaration(decId)
+      }.getOrElse(Future.successful(None))
+
+      actualDeclaration.flatMap {
+        case Some(dec) if dec.sourceId == Some(id) => Future.successful(redirect)
+        case _                                     => createNewDraftDec(id, redirect)
+      }
     }
-    val redirect = Redirect(redirectUrlWithMode).flashing(Flash(flashData))
 
-    val actualDeclaration: Future[Option[ExportsDeclaration]] = request.declarationId.map { decId =>
-      customsDeclareExportsConnector.findDeclaration(decId)
-    }.getOrElse(Future.successful(None))
-
-    actualDeclaration.flatMap {
-      case Some(dec) if dec.sourceId == Some(id) => Future.successful(redirect)
-      case _                                     => createNewDraftDec(id, redirect)
-    }
-  }
-
-  private def createNewDraftDec(id: String, redirect: Result)(implicit request: AuthenticatedRequest[AnyContent]) =
+  private def createNewDraftDec(id: String, redirect: Result)(implicit request: WrappedRequest[AnyContent]) =
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
         val amendedDeclaration = ExportsDeclarationExchange.withoutId(declaration.amend())

@@ -37,6 +37,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
 
   val controller = new RepresentativeAgentController(
     mockAuthAction,
+    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     mockExportsCacheService,
