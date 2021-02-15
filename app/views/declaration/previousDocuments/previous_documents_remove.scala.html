@@ -37,7 +37,6 @@
         govukButton: GovukButton,
         govukSummaryList: GovukSummaryList,
         errorSummary: errorSummary,
-        tariffExpander: tariffExpander,
         addAnotherQuestion: addAnotherQuestion,
         saveButtons: saveButtons,
         yesNoRadios: yesNoRadios,
@@ -91,7 +90,6 @@
             html = HtmlFormat.fill(immutable.Seq(
                 documentTable,
                 addAnotherQuestion("", form),
-                tariffExpander(DocumentChangeOrRemove, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))
