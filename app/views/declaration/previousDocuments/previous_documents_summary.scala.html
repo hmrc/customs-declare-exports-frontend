@@ -42,7 +42,6 @@
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
         spanVisuallyHidden: spanVisuallyHidden,
-        tariffExpander: tariffExpander,
         addAnotherQuestion: addAnotherQuestion,
         link: link,
         saveButtons: saveButtons,
@@ -138,7 +137,6 @@
             html = HtmlFormat.fill(immutable.Seq(
                 documentsTable,
                 addAnotherQuestion("declaration.previousDocuments.addAnotherDocument", form),
-                tariffExpander(Document, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))
