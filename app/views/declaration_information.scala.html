@@ -43,10 +43,9 @@
     }
 
     @if(status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED && sfusConfig.isSfusEnabled) {
-        @link(text = messages("submissions.sfus"), call = Call("GET", sfusConfig.sfusLink), target="_blank")
+        @link(text = messages("submissions.sfus"), call = Call("GET", s"${sfusConfig.sfusLink}/${submission.mrn.getOrElse("")}"), target="_blank")
     }
 }
-
 
 @renderDeclarationLinks = {
     <div class="govuk-list">

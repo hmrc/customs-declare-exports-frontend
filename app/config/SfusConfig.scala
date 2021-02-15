@@ -24,7 +24,9 @@ import play.api.Configuration
 class SfusConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
 
   val sfusLink: String =
-    config.getOptional[String]("urls.sfus").getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend start"))
+    config
+      .getOptional[String]("urls.sfus")
+      .getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend mrn page url"))
 
   val isSfusEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.sfus)
 }
