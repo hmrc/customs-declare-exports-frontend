@@ -41,9 +41,9 @@ GET         /saved-declarations/:id/remove                 controllers.RemoveSav
 
 POST        /saved-declarations/:id/remove                 controllers.RemoveSavedDeclarationsController.removeDeclaration(id: String)
 
-# Start Page
+# Root Url
 
-GET         /start                                         controllers.StartController.displayStartPage()
+GET         /                                              controllers.RootController.displayPage()
 
 # Choice Page
 

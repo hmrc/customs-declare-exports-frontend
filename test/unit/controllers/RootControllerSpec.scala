@@ -16,23 +16,23 @@
 
 package unit.controllers
 
-import controllers.StartController
+import controllers.RootController
 import play.api.test.Helpers._
 import unit.base.ControllerWithoutFormSpec
 
-class StartControllerSpec extends ControllerWithoutFormSpec {
+class RootControllerSpec extends ControllerWithoutFormSpec {
 
   val mcc = stubMessagesControllerComponents()
 
-  val controller = new StartController(mcc)
+  val controller = new RootController(mcc)
 
-  "Start Controller" should {
+  "Root Controller" should {
 
     "return 303" when {
 
       "display page method is invoked" in {
 
-        val result = controller.displayStartPage()(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.ChoiceController.displayPage().url)

@@ -42,7 +42,7 @@
   @paragraphBody(messages("userSignedOut.information"))
 
     <p class="govuk-body">
-    @link(text= messages("userSignedOut.startPageLink", request.host), call = controllers.routes.StartController.displayStartPage())
+    @link(text= messages("userSignedOut.rootPageLink", request.host), call = controllers.routes.RootController.displayPage())
   </p>
 
   @exitSurvey()

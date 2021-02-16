@@ -42,11 +42,11 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val ex
           case Some(declaration) if types.isEmpty || types.contains(declaration.`type`) =>
             Right(new JourneyRequest(request, declaration))
           case _ =>
-            Left(Results.Redirect(controllers.routes.StartController.displayStartPage()))
+            Left(Results.Redirect(controllers.routes.RootController.displayPage()))
         }
       case None =>
         logger.warn(s"Could not obtain journey type for declaration ${request.declarationId}")
-        Future.successful(Left(Results.Redirect(controllers.routes.StartController.displayStartPage())))
+        Future.successful(Left(Results.Redirect(controllers.routes.RootController.displayPage())))
     }
   }
   override def refine[A](request: VerifiedEmailRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
