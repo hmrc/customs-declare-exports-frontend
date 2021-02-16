@@ -40,13 +40,13 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     ConfigFactory.parseString("""
         |microservice.services.features.ead=enabled
         |microservice.services.features.sfus=enabled
-        |urls.sfus="http://localhost:6793/cds-file-upload-service/start"
+        |urls.sfus="http://localhost:6793/cds-file-upload-service/mrn-entry"
       """.stripMargin)
   private val configWithFeaturesDisabled: Config =
     ConfigFactory.parseString("""
         |microservice.services.features.ead=disabled
         |microservice.services.features.sfus=disabled
-        |urls.sfus="http://localhost:6793/cds-file-upload-service/start"
+        |urls.sfus="http://localhost:6793/cds-file-upload-service/mrn-entry"
       """.stripMargin)
 
   private val featureSwitchConfigEnabled = new FeatureSwitchConfig(Configuration(configWithFeaturesEnabled))
@@ -210,16 +210,24 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
     "contains SFUS link" when {
 
-      "feature flag is enabled" in {
+      "feature flag is enabled, status is ADDITIONAL_DOCUMENTS_REQUIRED and mrn is present" in {
 
         val sfusLink = viewWithFeatures.getElementById("notification_action_2")
 
         sfusLink must containMessage("submissions.sfus")
-        sfusLink.child(0) must haveHref("http://localhost:6793/cds-file-upload-service/start")
+        sfusLink.child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/mrn")
+      }
+
+      "feature flag is enabled, status is ADDITIONAL_DOCUMENTS_REQUIRED and mrn is not present" in {
+        val view = declarationInformationPageWithFeatures(submission(None), notifications)(request, messages)
+        val sfusLink = view.getElementById("notification_action_2")
+
+        sfusLink must containMessage("submissions.sfus")
+        sfusLink.child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/")
       }
     }
 
-    "doesn't contain SFUS link" when {
+    "not contain SFUS link" when {
 
       "feature flag is disabled" in {
 
@@ -228,6 +236,16 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         view.getElementById("notification_status_2").text() mustBe SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
         view.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00am"
         view.getElementById("notification_action_2").text() mustBe ""
+      }
+
+      "status is not ADDITIONAL_DOCUMENTS_REQUIRED" in {
+        val view = viewWithFeaturesNotAccepted
+
+        view.getElementById("notification_status_0").text() mustNot equal(SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED))
+        view.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00am"
+        view.getElementById("notification_action_0").text() mustBe "View errors"
+
+        Option(view.getElementById("notification_status_1")) mustBe None
       }
     }
 
@@ -253,7 +271,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       viewWithFeatures.getElementById("notification_status_2").text() mustBe SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
       viewWithFeatures.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00am"
       viewWithFeatures.getElementById("notification_action_2") must containMessage("submissions.sfus")
-      viewWithFeatures.getElementById("notification_action_2").child(0) must haveHref("http://localhost:6793/cds-file-upload-service/start")
+      viewWithFeatures.getElementById("notification_action_2").child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/mrn")
     }
 
     "contains back link which links to the submission list" in {
