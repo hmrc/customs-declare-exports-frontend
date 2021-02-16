@@ -98,7 +98,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         val response = controller.displayPage(Mode.Normal).apply(getRequest())
 
         status(response) must be(SEE_OTHER)
-        redirectLocation(response) mustBe Some(controllers.routes.StartController.displayStartPage().url)
+        redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
     }
 

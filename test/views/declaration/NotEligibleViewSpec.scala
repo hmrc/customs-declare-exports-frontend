@@ -70,7 +70,7 @@ class NotEligibleViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       val backButton = view.getElementById("back-link")
 
       backButton must containMessage("site.back")
-      backButton must haveHref(controllers.routes.StartController.displayStartPage())
+      backButton must haveHref(controllers.routes.RootController.displayPage())
     }
   }
 }

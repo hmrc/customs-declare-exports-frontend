@@ -140,7 +140,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
 
           verifyPageInvocations(0)
         }
@@ -154,7 +154,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
 
           verifyPageInvocations(0)
         }
@@ -218,7 +218,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
         }
       }
 

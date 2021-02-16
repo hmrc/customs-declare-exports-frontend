@@ -44,7 +44,7 @@ class SummaryPageNoDataViewSpec extends UnitViewSpec with Stubs with ExportsTest
       val backButton = view.getElementsByClass("govuk-button").first()
 
       backButton.text() mustBe messages("declaration.summary.noData.button")
-      backButton must haveHref(controllers.routes.StartController.displayStartPage)
+      backButton must haveHref(controllers.routes.RootController.displayPage)
     }
   }
 }

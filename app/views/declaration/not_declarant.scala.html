@@ -29,14 +29,14 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@paragraph1Link = {<a href=@controllers.routes.StartController.displayStartPage.url>@messages("notDeclarent.paragraph1Link")</a>}
+@paragraph1Link = {<a href=@controllers.routes.RootController.displayPage.url>@messages("notDeclarent.paragraph1Link")</a>}
 @paragraph2Link = {<a href="https://www.gov.uk/guidance/dispatching-your-goods-within-the-eu">@messages("notDeclarent.paragraph2Link")</a>}
 @supportPhone = {<b>0300 200 3700</b>}
 @enquiriesLink = {<a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries" target="_blank" rel="noopener noreferrer">@messages("general.inquiries.help.link")</a>}
 
 @govukLayout(
     title = Title("notDeclarent.title"),
-    backButton = Some(BackButton(messages("site.back"), controllers.routes.StartController.displayStartPage))){
+    backButton = Some(BackButton(messages("site.back"), controllers.routes.RootController.displayPage))){
 
 
 @pageTitle(messages("notDeclarent.title"))

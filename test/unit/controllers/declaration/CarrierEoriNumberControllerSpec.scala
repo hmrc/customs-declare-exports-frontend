@@ -143,7 +143,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
     }
   }
@@ -232,7 +232,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
     }
   }
