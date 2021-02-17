@@ -190,7 +190,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
         val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
     }
 
@@ -204,7 +204,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
         }
       }
     }

@@ -92,7 +92,7 @@ class TypedJourneyActionTest
     "block request" when {
       "id not found" in {
         await(refiner(DeclarationType.STANDARD).invokeBlock(buildVerifiedEmailRequest(request(None), user), block)) mustBe Results.Redirect(
-          controllers.routes.StartController.displayStartPage()
+          controllers.routes.RootController.displayPage()
         )
       }
 
@@ -100,7 +100,7 @@ class TypedJourneyActionTest
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(None))
 
         await(refiner(DeclarationType.STANDARD).invokeBlock(verifiedEmailReq, block)) mustBe Results.Redirect(
-          controllers.routes.StartController.displayStartPage()
+          controllers.routes.RootController.displayPage()
         )
       }
 
@@ -108,7 +108,7 @@ class TypedJourneyActionTest
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
 
         await(refiner(DeclarationType.OCCASIONAL).invokeBlock(verifiedEmailReq, block)) mustBe Results.Redirect(
-          controllers.routes.StartController.displayStartPage()
+          controllers.routes.RootController.displayPage()
         )
       }
     }

@@ -125,7 +125,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain(controllers.routes.StartController.displayStartPage().url)
+        redirectLocation(result) must contain(controllers.routes.RootController.displayPage().url)
       }
 
     }

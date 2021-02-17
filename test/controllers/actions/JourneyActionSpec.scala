@@ -78,13 +78,13 @@ class JourneyActionSpec
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(None))
 
         await(refiner.invokeBlock(buildVerifiedEmailRequest(request(Some("id")), user), block)) mustBe Results.Redirect(
-          controllers.routes.StartController.displayStartPage()
+          controllers.routes.RootController.displayPage()
         )
       }
 
       "id not found" in {
         await(refiner.invokeBlock(buildVerifiedEmailRequest(request(None), user), block)) mustBe Results.Redirect(
-          controllers.routes.StartController.displayStartPage()
+          controllers.routes.RootController.displayPage()
         )
       }
     }

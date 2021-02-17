@@ -21,9 +21,9 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-class StartController @Inject()(mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
+class RootController @Inject()(mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
 
-  def displayStartPage(): Action[AnyContent] = Action { implicit request =>
+  def displayPage(): Action[AnyContent] = Action { implicit request =>
     Redirect(controllers.routes.ChoiceController.displayPage())
   }
 }

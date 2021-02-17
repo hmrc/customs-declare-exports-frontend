@@ -48,7 +48,7 @@ class SessionTimedOutViewSpec extends UnitViewSpec with ExportsTestData with Stu
     "display sign-in button" in {
       val button = view.getElementsByClass("govuk-button").first()
       button.text() mustBe messages("sessionTimout.signin.button")
-      button.attr("href") mustBe controllers.routes.StartController.displayStartPage().url
+      button.attr("href") mustBe controllers.routes.RootController.displayPage().url
     }
 
     "display back to gov.uk link" in {

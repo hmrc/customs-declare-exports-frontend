@@ -135,7 +135,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must contain(controllers.routes.StartController.displayStartPage().url)
+          redirectLocation(result) must contain(controllers.routes.RootController.displayPage().url)
         }
       }
     }

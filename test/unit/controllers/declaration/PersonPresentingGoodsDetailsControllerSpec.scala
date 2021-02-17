@@ -129,7 +129,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage().url)
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
     }
   }
@@ -211,7 +211,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
-        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage().url)
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
     }
   }

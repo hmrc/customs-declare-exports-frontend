@@ -150,7 +150,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.displayPage(Mode.Normal, item.id, "VATX")(getRequest())
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
         }
 
         "user submits valid data" in {
@@ -161,7 +161,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submitForm(Mode.Normal, item.id, "VATX")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
         }
       }
     }
