@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     CDS Exports Authorisation
 // @namespace  http://tampermonkey.net/
-// @version   0.3
+// @version   0.4
 // @description Authenticates with CDS Declare
 // @author    You
 // @match     http*://*/auth-login-stub/gg-sign-in?continue=*customs-declare-exports*
@@ -12,7 +12,7 @@
 (function() {
     'use strict';
 
-    document.getElementsByName("redirectionUrl")[0].value = getBaseUrl() + "/customs-declare-exports/start";
+    document.getElementsByName("redirectionUrl")[0].value = getBaseUrl() + "/customs-declare-exports";
 
     document.getElementById("affinityGroupSelect").selectedIndex = 1;
 
