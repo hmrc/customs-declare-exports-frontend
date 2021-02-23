@@ -1572,8 +1572,6 @@ field.declaration.locations.warehouseIdentification.supervisingCustomsOffice = C
 field.declaration.consignmentReferences.ucr = Unique Consignment Reference (UCR)
 
 userSignedOut.title = We have saved your answers and signed you out
-userSignedOut.information = To continue the declaration later, save this link:
-userSignedOut.rootPageLink = {0}/customs-declare-exports/
 
 pdf.template.title = Export accompanying document (EAD)
 pdf.template.mrn = MRN
