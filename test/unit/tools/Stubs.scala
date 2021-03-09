@@ -17,7 +17,7 @@
 package unit.tools
 
 import com.typesafe.config.{Config, ConfigFactory}
-import config.{AppConfig, BetaBannerConfig, FeatureSwitchConfig, TimeoutDialogConfig}
+import config.{AppConfig, BetaBannerConfig, FeatureSwitchConfig}
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
@@ -26,11 +26,24 @@ import play.api.test.NoMaterializer
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.govukfrontend.views.html.components
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _, _}
-import uk.gov.hmrc.hmrcfrontend.views.html.helpers.hmrcStandardFooter
-import uk.gov.hmrc.hmrcfrontend.config.TrackingConsentConfig
-import uk.gov.hmrc.hmrcfrontend.views.html.components.{HmrcBanner, HmrcFooter, HmrcHeader, HmrcReportTechnicalIssue}
-import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcFooterItems, HmrcTrackingConsentSnippet}
-import uk.gov.hmrc.hmrcfrontend.config.AccessibilityStatementConfig
+import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{
+  hmrcStandardFooter,
+  HmrcFooterItems,
+  HmrcHead,
+  HmrcTimeoutDialogHelper,
+  HmrcTrackingConsentSnippet,
+  TimeoutDialogConfig
+}
+import uk.gov.hmrc.hmrcfrontend.config.{AccessibilityStatementConfig, AssetsConfig, TimeoutDialogConfig, TrackingConsentConfig}
+import uk.gov.hmrc.hmrcfrontend.views.html.components.{
+  hmrcTimeoutDialog,
+  HmrcBanner,
+  HmrcFooter,
+  HmrcHeader,
+  HmrcReportTechnicalIssue,
+  HmrcTimeoutDialog,
+  HmrcUserResearchBanner
+}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.html.components.gds._
 
@@ -85,7 +98,7 @@ trait Stubs {
 
   private def servicesConfig(conf: Configuration) = new ServicesConfig(conf)
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
-  private def timeoutDialogConfig() = new TimeoutDialogConfig(servicesConfig(minimalConfiguration))
+  private def timeoutDialogConfig() = new config.TimeoutDialogConfig(servicesConfig(minimalConfiguration))
   private def betaBannerConfig() = new BetaBannerConfig(new FeatureSwitchConfig(minimalConfiguration))
 
   val minimalAppConfig = appConfig(minimalConfiguration)
@@ -110,8 +123,9 @@ trait Stubs {
   val hmrcReportTechnicalIssue = new HmrcReportTechnicalIssue()
 
   val govukHeader = new GovukHeader()
-  val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner()))
   val pBanner = new phaseBanner(new GovukPhaseBanner(new govukTag()), minimalAppConfig)
+  val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner(), new HmrcUserResearchBanner(), new GovukPhaseBanner(new govukTag())))
+  val hmrcTimeoutDialogHelper = new HmrcTimeoutDialogHelper(new HmrcTimeoutDialog, new TimeoutDialogConfig(minimalConfiguration))
   val gdsMainTemplate = new gdsMainTemplate(
     govukHeader = govukHeader,
     govukLayout = gdsGovukLayout,
@@ -121,6 +135,8 @@ trait Stubs {
     phaseBanner = pBanner,
     timeoutDialogConfig = timeoutDialogConfig(),
     betaBannerConfig = betaBannerConfig(),
+    hmrcHead = new HmrcHead(hmrcTrackingConsentSnippet, new AssetsConfig),
+    hmrcTimeoutDialogHelper = hmrcTimeoutDialogHelper,
     hmrcTrackingConsentSnippet = hmrcTrackingConsentSnippet,
     hmrcReportTechnicalIssue = hmrcReportTechnicalIssue,
     hmrcFooter = hmrcFooter,
