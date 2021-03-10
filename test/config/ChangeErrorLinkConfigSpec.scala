@@ -45,14 +45,14 @@ class ChangeErrorLinkConfigSpec extends UnitSpec {
 
     "return false" when {
 
-      "ead document feature is diabled" in {
+      "change error link feature is disabled" in {
 
         val changeErrorLinkConfig = new ChangeErrorLinkConfig(featureSwitchConfig(Configuration(configWithChangeLinkDisabled)))
 
         changeErrorLinkConfig.isEnabled mustBe false
       }
 
-      "ead document feature config doesn't exist" in {
+      "change error link feature config doesn't exist" in {
 
         val changeErrorLinkConfig = new ChangeErrorLinkConfig(featureSwitchConfig(Configuration(emptyConfig)))
 
