@@ -31,12 +31,10 @@ import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{
   HmrcFooterItems,
   HmrcHead,
   HmrcTimeoutDialogHelper,
-  HmrcTrackingConsentSnippet,
-  TimeoutDialogConfig
+  HmrcTrackingConsentSnippet
 }
 import uk.gov.hmrc.hmrcfrontend.config.{AccessibilityStatementConfig, AssetsConfig, TimeoutDialogConfig, TrackingConsentConfig}
 import uk.gov.hmrc.hmrcfrontend.views.html.components.{
-  hmrcTimeoutDialog,
   HmrcBanner,
   HmrcFooter,
   HmrcHeader,
