@@ -40,13 +40,17 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     ConfigFactory.parseString("""
         |microservice.services.features.ead=enabled
         |microservice.services.features.sfus=enabled
-        |urls.sfus="http://localhost:6793/cds-file-upload-service/mrn-entry"
+        |microservice.services.features.sfusSecureMessaging=enabled
+        |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
+        |urls.sfusInbox="sfusInbox"
       """.stripMargin)
   private val configWithFeaturesDisabled: Config =
     ConfigFactory.parseString("""
         |microservice.services.features.ead=disabled
         |microservice.services.features.sfus=disabled
-        |urls.sfus="http://localhost:6793/cds-file-upload-service/mrn-entry"
+        |microservice.services.features.sfusSecureMessaging=enabled
+        |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
+        |urls.sfusInbox="sfusInbox"
       """.stripMargin)
 
   private val featureSwitchConfigEnabled = new FeatureSwitchConfig(Configuration(configWithFeaturesEnabled))

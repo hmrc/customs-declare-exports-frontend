@@ -16,6 +16,7 @@
 
 package unit.controllers
 
+import config.{AppConfig, SfusConfig}
 import controllers.ChoiceController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
@@ -32,22 +33,29 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerWithoutFormSpec
 import utils.FakeRequestCSRFSupport._
 import views.html.choice_page
+import base.ExportsTestData._
 
 class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
   import ChoiceControllerSpec._
 
   val choicePage = mock[choice_page]
+  val appConfig = mock[AppConfig]
+  val sfusConfig = mock[SfusConfig]
+
   val controller =
-    new ChoiceController(mockAuthAction, mockVerifiedEmailAction, stubMessagesControllerComponents(), choicePage)
+    new ChoiceController(mockAuthAction, mockVerifiedEmailAction, stubMessagesControllerComponents(), choicePage, appConfig, sfusConfig)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(choicePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(choicePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(appConfig.availableJourneys()).thenReturn(allJourneys)
+    when(sfusConfig.isSfusUploadEnabled).thenReturn(true)
+    when(sfusConfig.isSfusSecureMessagingEnabled).thenReturn(true)
   }
 
   override protected def afterEach(): Unit = {
-    reset(choicePage)
+    reset(choicePage, appConfig, sfusConfig)
     super.afterEach()
   }
 
@@ -59,7 +67,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
   private def existingDeclaration(choice: DeclarationType = DeclarationType.SUPPLEMENTARY) =
     aDeclaration(withId("existingDeclarationId"), withType(choice))
 
-  "Display" should {
+  "ChoiceController displayPage" should {
 
     "return 200 (OK)" when {
 
@@ -89,7 +97,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         val result = controller.displayPage(Some(Choice(CancelDec)))(request)
         val form = Choice.form().fill(Choice(CancelDec))
 
-        viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
       }
 
       "cache contains existing declaration" in {
@@ -99,7 +107,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         val result = controller.displayPage(Some(Choice(Submissions)))(request)
         val form = Choice.form().fill(Choice(Submissions))
 
-        viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
       }
     }
 
@@ -112,7 +120,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         val result = controller.displayPage(None)(request)
         val form = Choice.form()
 
-        viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
       }
     }
   }
@@ -120,9 +128,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
   "Submit" should {
 
     "return 400 (BAD_REQUEST)" when {
-
       "form is incorrect" in {
-
         val result = controller.submitChoice()(postChoiceRequest(incorrectChoice))
 
         status(result) must be(BAD_REQUEST)
@@ -131,22 +137,17 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
     }
 
     "redirect to Declaration choice page" when {
-
       "user chooses Create Dec " in {
-
         val result = controller.submitChoice()(postChoiceRequest(createChoice))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(controllers.declaration.routes.DeclarationChoiceController.displayPage().url))
         verifyTheCacheIsUnchanged()
       }
-
     }
 
     "redirect to Cancel Declaration page" when {
-
       "user chose Cancel Dec" in {
-
         val result = controller.submitChoice()(postChoiceRequest(cancelChoice))
 
         status(result) must be(SEE_OTHER)
@@ -156,9 +157,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
     }
 
     "redirect to Submissions page" when {
-
       "user chose submissions" in {
-
         val result = controller.submitChoice()(postChoiceRequest(submissionsChoice))
 
         status(result) must be(SEE_OTHER)
@@ -168,13 +167,35 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
     }
 
     "redirect to Saved Declarations page" when {
-
       "user chose continue a saved declaration" in {
-
         val result = controller.submitChoice()(postChoiceRequest(continueDeclarationChoice))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(controllers.routes.SavedDeclarationsController.displayDeclarations().url))
+        verifyTheCacheIsUnchanged()
+      }
+    }
+
+    "redirect to SFUS messages inbox page" when {
+      "user chose view messages" in {
+        val sfusLink = "/a/test/value"
+        when(sfusConfig.sfusInboxLink).thenReturn(sfusLink)
+        val result = controller.submitChoice()(postChoiceRequest(viewMessagesChoice))
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(sfusLink))
+        verifyTheCacheIsUnchanged()
+      }
+    }
+
+    "redirect to SFUS mrn entry page" when {
+      "user chose upload documents" in {
+        val sfusLink = "/a/test/value"
+        when(sfusConfig.sfusUploadLink).thenReturn(sfusLink)
+        val result = controller.submitChoice()(postChoiceRequest(uploadDocumentsChoice))
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(sfusLink))
         verifyTheCacheIsUnchanged()
       }
     }
@@ -187,4 +208,6 @@ object ChoiceControllerSpec {
   val cancelChoice: JsValue = Json.toJson(Choice(CancelDec))
   val submissionsChoice: JsValue = Json.toJson(Choice(Submissions))
   val continueDeclarationChoice: JsValue = Json.toJson(Choice(ContinueDec))
+  val viewMessagesChoice: JsValue = Json.toJson(Choice(ViewMessages))
+  val uploadDocumentsChoice: JsValue = Json.toJson(Choice(UploadDocuments))
 }

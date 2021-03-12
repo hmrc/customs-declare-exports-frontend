@@ -18,6 +18,7 @@ package base
 
 import forms.Choice
 import forms.Choice._
+import forms.Choice.AllowedChoiceValues._
 import models.{IdentityData, SignedInUser}
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
@@ -191,4 +192,6 @@ object ExportsTestData extends ExportsDeclarationBuilder {
   )
 
   val choiceForm = Json.toJson(Choice("EAL"))
+
+  val allJourneys = Seq(CreateDec, ContinueDec, CancelDec, Submissions, ViewMessages, UploadDocuments)
 }

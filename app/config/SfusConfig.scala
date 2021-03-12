@@ -23,10 +23,17 @@ import play.api.Configuration
 @Singleton
 class SfusConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
 
-  val sfusLink: String =
+  val sfusUploadLink: String =
     config
-      .getOptional[String]("urls.sfus")
+      .getOptional[String]("urls.sfusUpload")
       .getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend mrn page url"))
 
-  val isSfusEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.sfus)
+  val sfusInboxLink: String =
+    config
+      .getOptional[String]("urls.sfusInbox")
+      .getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend inbox page url"))
+
+  val isSfusUploadEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.sfus)
+
+  val isSfusSecureMessagingEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.sfusSecureMessaging)
 }

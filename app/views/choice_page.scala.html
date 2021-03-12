@@ -17,10 +17,8 @@
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.Choice.AllowedChoiceValues._
-@import config.AppConfig
 @import views.Title
 @import views.ErrorMapper.radioGroupErrors
-
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -28,11 +26,10 @@
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
     saveAndContinue: saveAndContinue,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-    appConfig: AppConfig
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], availableJourneys: Seq[String])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.choice.description"),
@@ -58,24 +55,36 @@
                     checked = form("value").value.contains(CreateDec)
                 ),
                 RadioItem(
-                    id = Some(Submissions),
-                    value = Some(Submissions),
-                    content = Text(messages(s"declaration.choice.$Submissions")),
-                    checked = form("value").value.contains(Submissions)
-                ),
-                RadioItem(
                     id = Some(ContinueDec),
                     value = Some(ContinueDec),
                     content = Text(messages(s"declaration.choice.$ContinueDec")),
                     checked = form("value").value.contains(ContinueDec)
                 ),
                 RadioItem(
+                    id = Some(Submissions),
+                    value = Some(Submissions),
+                    content = Text(messages(s"declaration.choice.$Submissions")),
+                    checked = form("value").value.contains(Submissions)
+                ),
+                RadioItem(
                     id = Some(CancelDec),
                     value = Some(CancelDec),
                     content = Text(messages(s"declaration.choice.$CancelDec")),
                     checked = form("value").value.contains(CancelDec)
+                ),
+                RadioItem(
+                    id = Some(ViewMessages),
+                    value = Some(ViewMessages),
+                    content = Text(messages(s"declaration.choice.$ViewMessages")),
+                    checked = form("value").value.contains(ViewMessages)
+                ),
+                RadioItem(
+                    id = Some(UploadDocuments),
+                    value = Some(UploadDocuments),
+                    content = Text(messages(s"declaration.choice.$UploadDocuments")),
+                    checked = form("value").value.contains(UploadDocuments)
                 )
-            ).filter(radioOption => appConfig.availableJourneys().contains(radioOption.value.get)),
+            ).filter(radioOption => availableJourneys.contains(radioOption.value.get)),
             errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
