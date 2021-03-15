@@ -16,17 +16,14 @@
 
 package unit.controllers
 
-import java.time.{Instant, LocalDate, ZoneOffset, ZonedDateTime}
-import java.util.UUID
 import akka.util.Timeout
 import config.PaginationConfig
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.SubmissionsController
-import controllers.actions.VerifiedEmailAction
 import models._
 import models.declaration.notifications.Notification
-import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
+import models.declaration.submissions.RequestType.SubmissionRequest
 import models.requests.ExportsSessionKeys
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
@@ -38,6 +35,8 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerWithoutFormSpec
 import views.html.{declaration_information, submissions}
 
+import java.time.{Instant, LocalDate, ZoneOffset, ZonedDateTime}
+import java.util.UUID
 import scala.concurrent.Future
 import scala.concurrent.duration._
 

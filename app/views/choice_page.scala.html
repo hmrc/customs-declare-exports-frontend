@@ -19,6 +19,7 @@
 @import forms.Choice.AllowedChoiceValues._
 @import views.Title
 @import views.ErrorMapper.radioGroupErrors
+@import config.SfusConfig
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -26,10 +27,12 @@
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
     saveAndContinue: saveAndContinue,
+    paragraphBody: paragraphBody,
+    link: link,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(form: Form[_], availableJourneys: Seq[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], availableJourneys: Seq[String], sfusConfig: SfusConfig)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.choice.description"),
@@ -71,23 +74,20 @@
                     value = Some(CancelDec),
                     content = Text(messages(s"declaration.choice.$CancelDec")),
                     checked = form("value").value.contains(CancelDec)
-                ),
-                RadioItem(
-                    id = Some(ViewMessages),
-                    value = Some(ViewMessages),
-                    content = Text(messages(s"declaration.choice.$ViewMessages")),
-                    checked = form("value").value.contains(ViewMessages)
-                ),
-                RadioItem(
-                    id = Some(UploadDocuments),
-                    value = Some(UploadDocuments),
-                    content = Text(messages(s"declaration.choice.$UploadDocuments")),
-                    checked = form("value").value.contains(UploadDocuments)
                 )
             ).filter(radioOption => availableJourneys.contains(radioOption.value.get)),
             errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @saveAndContinue("site.continue")
+
+        @if(sfusConfig.isSfusSecureMessagingEnabled) {
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2">
+            <h3>@messages("declaration.choice.linkDescription")</h3>
+
+            <p>@link(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = Call("GET", s"${sfusConfig.sfusUploadLink}"), target = "_blank")</p>
+            <p>@link(id = Some("sfusInboxLink"), text = messages("declaration.choice.link.sfusInbox.txt"), call = Call("GET", s"${sfusConfig.sfusInboxLink}"), target = "_blank")</p>
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2">
+        }
     }
 }

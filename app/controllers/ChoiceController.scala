@@ -38,12 +38,12 @@ class ChoiceController @Inject()(
   sfusConfig: SfusConfig
 ) extends FrontendController(mcc) with I18nSupport {
 
-  private lazy val availableJourneys = Choice.filterAvailableJourneys(appConfig.availableJourneys(), sfusConfig)
+  private lazy val availableJourneys = appConfig.availableJourneys()
 
   def displayPage(previousChoice: Option[Choice]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
     def pageForPreviousChoice(previousChoice: Option[Choice]) = {
       val form = Choice.form()
-      choicePage(previousChoice.fold(form)(form.fill), availableJourneys)
+      choicePage(previousChoice.fold(form)(form.fill), availableJourneys, sfusConfig)
     }
     Ok(pageForPreviousChoice(previousChoice))
   }
@@ -52,7 +52,7 @@ class ChoiceController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors, availableJourneys)),
+        (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors, availableJourneys, sfusConfig)),
         choice =>
           choice.value match {
             case CreateDec =>
@@ -63,10 +63,6 @@ class ChoiceController @Inject()(
               Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations())
             case Submissions =>
               Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
-            case ViewMessages =>
-              Redirect(Call("GET", sfusConfig.sfusInboxLink))
-            case UploadDocuments =>
-              Redirect(Call("GET", sfusConfig.sfusUploadLink))
         }
       )
   }

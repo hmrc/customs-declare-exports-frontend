@@ -48,7 +48,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
   override def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(choicePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(choicePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(appConfig.availableJourneys()).thenReturn(allJourneys)
     when(sfusConfig.isSfusUploadEnabled).thenReturn(true)
     when(sfusConfig.isSfusSecureMessagingEnabled).thenReturn(true)
@@ -97,7 +97,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         val result = controller.displayPage(Some(Choice(CancelDec)))(request)
         val form = Choice.form().fill(Choice(CancelDec))
 
-        viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(choicePage(form, allJourneys, sfusConfig)(request, controller.messagesApi.preferred(request)))
       }
 
       "cache contains existing declaration" in {
@@ -107,7 +107,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         val result = controller.displayPage(Some(Choice(Submissions)))(request)
         val form = Choice.form().fill(Choice(Submissions))
 
-        viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(choicePage(form, allJourneys, sfusConfig)(request, controller.messagesApi.preferred(request)))
       }
     }
 
@@ -120,7 +120,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         val result = controller.displayPage(None)(request)
         val form = Choice.form()
 
-        viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(choicePage(form, allJourneys, sfusConfig)(request, controller.messagesApi.preferred(request)))
       }
     }
   }
@@ -175,30 +175,6 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         verifyTheCacheIsUnchanged()
       }
     }
-
-    "redirect to SFUS messages inbox page" when {
-      "user chose view messages" in {
-        val sfusLink = "/a/test/value"
-        when(sfusConfig.sfusInboxLink).thenReturn(sfusLink)
-        val result = controller.submitChoice()(postChoiceRequest(viewMessagesChoice))
-
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(sfusLink))
-        verifyTheCacheIsUnchanged()
-      }
-    }
-
-    "redirect to SFUS mrn entry page" when {
-      "user chose upload documents" in {
-        val sfusLink = "/a/test/value"
-        when(sfusConfig.sfusUploadLink).thenReturn(sfusLink)
-        val result = controller.submitChoice()(postChoiceRequest(uploadDocumentsChoice))
-
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(sfusLink))
-        verifyTheCacheIsUnchanged()
-      }
-    }
   }
 }
 
@@ -208,6 +184,4 @@ object ChoiceControllerSpec {
   val cancelChoice: JsValue = Json.toJson(Choice(CancelDec))
   val submissionsChoice: JsValue = Json.toJson(Choice(Submissions))
   val continueDeclarationChoice: JsValue = Json.toJson(Choice(ContinueDec))
-  val viewMessagesChoice: JsValue = Json.toJson(Choice(ViewMessages))
-  val uploadDocumentsChoice: JsValue = Json.toJson(Choice(UploadDocuments))
 }

@@ -18,9 +18,10 @@ package views.components.gds
 
 import base.{Injector, MockAuthAction, OverridableInjector}
 import com.typesafe.config.ConfigFactory
-import config.TimeoutDialogConfig
+import config.{SfusConfig, TimeoutDialogConfig}
 import forms.Choice
 import helpers.views.declaration.CommonMessages
+import org.mockito.Mockito.when
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.inject.bind
@@ -45,7 +46,9 @@ class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAc
       val timeoutDialogConfig = new TimeoutDialogConfig(serviceConfig)
       val injector = new OverridableInjector(bind[TimeoutDialogConfig].toInstance(timeoutDialogConfig))
       val choicePage = injector.instanceOf[choice_page]
-      val view = choicePage(form)(getAuthenticatedRequest(), messages)
+      val sfusConfig = mock[SfusConfig]
+      when(sfusConfig.isSfusSecureMessagingEnabled).thenReturn(false)
+      val view = choicePage(form, Seq.empty[String], sfusConfig)(getAuthenticatedRequest(), messages)
       val metas = view.getElementsByTag("meta").iterator.asScala.toList.filter(_.attr("name") == "hmrc-timeout-dialog")
       assert(metas.nonEmpty)
       metas.head.dataset.get("sign-out-url") mustBe controllers.routes.SignOutController.signOut(models.SignOutReason.SessionTimeout).url

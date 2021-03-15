@@ -105,13 +105,13 @@ cancellation.reason.otherReason = Other reason
 cancellation.reason.noLongerRequired = No longer required
 
 declaration.choice.description = What do you want to do?
-
+declaration.choice.linkDescription = If you receive a notification to upload documents or respond to a query, you can use the CDS document uploads and secure messages service.
+declaration.choice.link.sfusInbox.txt = View messages (opens in new tab)
+declaration.choice.link.sfusUpload.txt = Upload documents (opens in new tab)
 declaration.choice.CRT = Create a declaration
 declaration.choice.CAN = Cancel a declaration
 declaration.choice.CON = Continue a declaration you saved
 declaration.choice.SUB = View and manage your submitted declarations
-declaration.choice.MSG = View messages
-declaration.choice.DOC = Upload documents
 
 declaration.section.1 = Section 1 of 6
 declaration.section.2 = Section 2 of 6

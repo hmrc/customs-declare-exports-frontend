@@ -16,7 +16,6 @@
 
 package forms
 
-import config.SfusConfig
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
@@ -31,7 +30,7 @@ object Choice {
   val choiceId = "Choice"
 
   import AllowedChoiceValues._
-  private val correctChoices = Set(CreateDec, ContinueDec, CancelDec, Submissions, ViewMessages, UploadDocuments)
+  private val correctChoices = Set(CreateDec, ContinueDec, CancelDec, Submissions)
 
   val choiceMapping: Mapping[Choice] = Forms.single(
     "value" -> optional(
@@ -48,14 +47,7 @@ object Choice {
     val ContinueDec = "CON"
     val CancelDec = "CAN"
     val Submissions = "SUB"
-    val ViewMessages = "MSG"
-    val UploadDocuments = "DOC"
   }
-
-  def filterAvailableJourneys(availableJourneys: Seq[String], sfusConfig: SfusConfig): Seq[String] =
-    availableJourneys
-      .filterNot(journeyKey => !sfusConfig.isSfusUploadEnabled && journeyKey == UploadDocuments)
-      .filterNot(journeyKey => !sfusConfig.isSfusSecureMessagingEnabled && journeyKey == ViewMessages)
 
   implicit val queryStringBindable: QueryStringBindable[Choice] = new QueryStringBindable[Choice] {
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Choice]] =
