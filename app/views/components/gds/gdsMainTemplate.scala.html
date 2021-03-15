@@ -15,14 +15,13 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTrackingConsentSnippet
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.hmrcStandardFooter
+@import views.html.components.gds.govukFlexibleLayout
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead, HmrcTimeoutDialogHelper, hmrcStandardFooter, HmrcTrackingConsentSnippet}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{En, Cy}
 @import views.BackButton
 @import views.Title
-@import views.html.components.gds.timeoutDialog
 @import config.TimeoutDialogConfig
 @import config.BetaBannerConfig
 @import models.requests.AuthenticatedRequest
@@ -37,6 +36,8 @@
   phaseBanner: components.gds.phaseBanner,
   timeoutDialogConfig: TimeoutDialogConfig,
   betaBannerConfig: BetaBannerConfig,
+        hmrcHead: HmrcHead,
+        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
   hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
   hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
   hmrcFooter: hmrcStandardFooter,
@@ -52,6 +53,17 @@
 @useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
 
 @head = {
+    @if(useTimeoutDialog) {
+        @hmrcHead(
+            headBlock = Some(hmrcTimeoutDialogHelper(
+                signOutUrl = controllers.routes.SignOutController.signOut(models.SignOutReason.SessionTimeout).url,
+                keepAliveUrl = Some(request.uri),
+                timeout = Some(timeoutDialogConfig.timeout.toSeconds.toInt),
+                countdown = Some(timeoutDialogConfig.countdown.toSeconds.toInt)
+            ))
+        )
+    }
+
     @hmrcTrackingConsentSnippet()
 
     <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
@@ -64,23 +76,15 @@
 @scripts = {
     <script src="@routes.Assets.versioned("javascripts/show-hide-content.js")" type="text/javascript"></script>
 
-    @if(useTimeoutDialog) {
-        <script src='@routes.Assets.versioned("javascripts/timeoutDialog.js")'> </script>
-    }
-
     <script src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
     <script src='@routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
     <script>window.HMRCFrontend.initAll();</script>
     <script>window.GOVUKFrontend.initAll();</script>
-}
+    }
 
 @beforeContentBlock = {
     @if(betaBannerConfig.isBetaBannerEnabled) {
       @phaseBanner("beta")
-    }
-
-    @if(useTimeoutDialog) {
-        @timeoutDialog(request.uri, timeoutDialogConfig.timeout, timeoutDialogConfig.countdown)
     }
 }
 
@@ -88,41 +92,41 @@
   <div class="govuk-back-link-div">
     @backButton.map(back =>
         govukBackLink(BackLink(
-        content = Text(back.title),
-        attributes = Map("id" -> "back-link"),
-        classes = "govuk-!-display-none-print",
-        href = back.call.url
+            content = Text(back.title),
+            attributes = Map("id" -> "back-link"),
+            classes = "govuk-!-display-none-print",
+            href = back.call.url
         ))
     )
-  </div>
-  @contentBlock
-    @hmrcReportTechnicalIssue(
-        ReportTechnicalIssue(
-            serviceCode = appConfig.appName,
-            language = if(messages.lang.code == "en") En else Cy)
-    )
-}
+    </div>
+@contentBlock
+@hmrcReportTechnicalIssue(
+    ReportTechnicalIssue(
+        serviceCode = appConfig.appName,
+        language = if(messages.lang.code == "en") En else Cy)
+)
+    }
 
 @if(useCustomContentWidth) {
-  @govukFlexibleLayout(
-    pageTitle = Some(title.toString),
-    headBlock = Some(head),
-    beforeContentBlock = Some(beforeContentBlock),
-    bodyEndBlock = None,
-    scriptsBlock = Some(scripts),
-    headerBlock = Some(siteHeader()),
-    footerBlock = Some(hmrcFooter())
-  )(content)
+    @govukFlexibleLayout(
+        pageTitle = Some(title.toString),
+        headBlock = Some(head),
+        beforeContentBlock = Some(beforeContentBlock),
+        bodyEndBlock = None,
+        scriptsBlock = Some(scripts),
+        headerBlock = Some(siteHeader()),
+        footerBlock = Some(hmrcFooter())
+    )(content)
 } else {
-  @govukLayout(
-    pageTitle = Some(title.toString),
-    headBlock = Some(head),
-    beforeContentBlock = Some(beforeContentBlock),
-    bodyEndBlock = None,
-    scriptsBlock = Some(scripts),
-    headerBlock = Some(siteHeader()),
-    footerBlock = Some(hmrcFooter())
-  )(content)
+    @govukLayout(
+        pageTitle = Some(title.toString),
+        headBlock = Some(head),
+        beforeContentBlock = Some(beforeContentBlock),
+        bodyEndBlock = None,
+        scriptsBlock = Some(scripts),
+        headerBlock = Some(siteHeader()),
+        footerBlock = Some(hmrcFooter())
+    )(content)
 }
 
 <script src='@routes.Assets.versioned("javascripts/preventMultipleFormSubmissions.js")'></script>
