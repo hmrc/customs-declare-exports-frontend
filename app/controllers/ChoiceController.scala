@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.{AppConfig, SfusConfig}
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
@@ -24,7 +25,7 @@ import forms.Choice._
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
 
@@ -32,13 +33,17 @@ class ChoiceController @Inject()(
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   mcc: MessagesControllerComponents,
-  choicePage: choice_page
+  choicePage: choice_page,
+  appConfig: AppConfig,
+  sfusConfig: SfusConfig
 ) extends FrontendController(mcc) with I18nSupport {
+
+  private lazy val availableJourneys = appConfig.availableJourneys()
 
   def displayPage(previousChoice: Option[Choice]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
     def pageForPreviousChoice(previousChoice: Option[Choice]) = {
       val form = Choice.form()
-      choicePage(previousChoice.fold(form)(form.fill))
+      choicePage(previousChoice.fold(form)(form.fill), availableJourneys, sfusConfig)
     }
     Ok(pageForPreviousChoice(previousChoice))
   }
@@ -47,10 +52,11 @@ class ChoiceController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors)),
+        (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors, availableJourneys, sfusConfig)),
         choice =>
           choice.value match {
-            case CreateDec => Redirect(controllers.declaration.routes.DeclarationChoiceController.displayPage())
+            case CreateDec =>
+              Redirect(controllers.declaration.routes.DeclarationChoiceController.displayPage())
             case CancelDec =>
               Redirect(controllers.routes.CancelDeclarationController.displayPage())
             case ContinueDec =>

@@ -17,6 +17,7 @@
 package unit.controllers.actions
 
 import base.Injector
+import config.{AppConfig, SfusConfig}
 import controllers.ChoiceController
 import controllers.actions.NoExternalId
 import play.api.test.Helpers._
@@ -27,9 +28,11 @@ import views.html.choice_page
 class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
 
   val choicePage = instanceOf[choice_page]
+  val appConfig = mock[AppConfig]
+  val sfusConfig = mock[SfusConfig]
 
   val controller =
-    new ChoiceController(mockAuthAction, mockVerifiedEmailAction, stubMessagesControllerComponents(), choicePage)
+    new ChoiceController(mockAuthAction, mockVerifiedEmailAction, stubMessagesControllerComponents(), choicePage, appConfig, sfusConfig)
 
   "Auth Action" should {
 

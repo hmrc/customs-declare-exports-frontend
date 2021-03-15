@@ -17,40 +17,60 @@
 package views
 
 import base.Injector
-import com.typesafe.config.{Config, ConfigFactory}
-import config.AppConfig
 import forms.Choice
+import forms.Choice.AllowedChoiceValues.CreateDec
 import helpers.views.declaration.CommonMessages
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.data.Form
-import play.api.{Configuration, Environment}
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.choice_page
-import views.html.components.gds.{errorSummary, saveAndContinue}
+import views.html.components.gds.{errorSummary, link, paragraphBody, saveAndContinue}
 import views.tags.ViewTest
+import base.ExportsTestData._
+import config.SfusConfig
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 
 @ViewTest
-class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with BeforeAndAfterEach {
 
   private val form: Form[Choice] = Choice.form()
   private val choicePage = instanceOf[choice_page]
+  private val sfusConfig = mock[SfusConfig]
   private def createView(form: Form[Choice] = form): Document =
-    choicePage(form)(request, messages)
+    choicePage(form, allJourneys, sfusConfig)(request, messages)
+
+  override def beforeEach(): Unit =
+    super.beforeEach()
+
+  override protected def afterEach(): Unit = {
+    reset(sfusConfig)
+    super.afterEach()
+  }
+
+  private val dummyUploadLink = "dummyUploadLink"
+  private val dummyInboxLink = "dummyInboxLink"
+
+  private def withSfusInboxEnabled(messaging: Boolean = true) = {
+    when(sfusConfig.isSfusSecureMessagingEnabled).thenReturn(messaging)
+    when(sfusConfig.sfusUploadLink).thenReturn(dummyUploadLink)
+    when(sfusConfig.sfusInboxLink).thenReturn(dummyInboxLink)
+  }
 
   "Choice View on empty page" should {
 
     "display same page title as header" in {
+      withSfusInboxEnabled()
       val viewWithMessage = createView()
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display radio buttons with description (not selected)" in {
-
+      withSfusInboxEnabled()
       val view = createView(Choice.form().fill(Choice("")))
       ensureAllLabelTextIsCorrect(view)
 
@@ -61,43 +81,33 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
     }
 
     "display only Create radio button with description" in {
-
-      val config: Config =
-        ConfigFactory.parseString("""
-                                    |list-of-available-journeys="CRT"
-                                    |google-analytics.token=N/A
-                                    |google-analytics.host=localhostGoogle
-                                  """.stripMargin)
-
-      val conf: Configuration = Configuration(config)
-      val servicesConfig = new ServicesConfig(conf)
-      val appConfig = new AppConfig(conf, Environment.simple(), servicesConfig, "AppName")
-
       val page = new choice_page(
         gdsMainTemplate,
         instanceOf[GovukButton],
         instanceOf[GovukRadios],
         instanceOf[errorSummary],
         instanceOf[saveAndContinue],
-        instanceOf[FormWithCSRF],
-        appConfig
+        instanceOf[paragraphBody],
+        instanceOf[link],
+        instanceOf[FormWithCSRF]
       )
 
-      val view = page(Choice.form().fill(Choice("CRT")))(request, messages)
+      withSfusInboxEnabled()
+      val view = page(Choice.form().fill(Choice("CRT")), Seq(CreateDec), sfusConfig)(request, messages)
       ensureCreateLabelIsCorrect(view)
 
       ensureRadioIsChecked(view, "CRT")
     }
 
     "not display 'Back' button" in {
-
+      withSfusInboxEnabled()
       val backButton = createView().getElementById("back-link")
 
       backButton mustBe null
     }
 
     "display 'Continue' button on page" in {
-
+      withSfusInboxEnabled()
       val view = createView()
 
       val saveButton = view.getElementsByClass("govuk-button")
@@ -105,10 +115,55 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
     }
   }
 
+  "Choice View" when {
+    "secure messaging flag is enabled" should {
+      "display SFUS link description text" in {
+        withSfusInboxEnabled()
+        val h3s = createView().getElementsByTag("h3")
+        h3s.size mustBe 1
+        h3s.first().text() mustBe messages("declaration.choice.linkDescription")
+      }
+
+      "display SFUS upload documents link" in {
+        withSfusInboxEnabled()
+        val link = createView().getElementById("sfusUploadLink")
+
+        link.text() mustBe messages("declaration.choice.link.sfusUpload.txt")
+        link.attr("href") mustBe dummyUploadLink
+      }
+
+      "display SFUS message inbox link" in {
+        withSfusInboxEnabled()
+        val link = createView().getElementById("sfusInboxLink")
+
+        link.text() mustBe messages("declaration.choice.link.sfusInbox.txt")
+        link.attr("href") mustBe dummyInboxLink
+      }
+    }
+
+    "secure messaging flag is disabled" should {
+      "not display SFUS link description text" in {
+        withSfusInboxEnabled(false)
+        val h3s = createView().getElementsByTag("h3")
+        h3s.size mustBe 0
+      }
+
+      "not display SFUS upload documents link" in {
+        withSfusInboxEnabled(false)
+        createView().getElementById("sfusUploadLink") mustBe null
+      }
+
+      "not display SFUS inbox link" in {
+        withSfusInboxEnabled(false)
+        createView().getElementById("sfusInboxLink") mustBe null
+      }
+    }
+  }
+
   "Choice View for invalid input" should {
 
     "display error when no choice is made" in {
-
+      withSfusInboxEnabled()
       val view = createView(Choice.form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
@@ -118,7 +173,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
     }
 
     "display error when choice is incorrect" in {
-
+      withSfusInboxEnabled()
       val view = createView(Choice.form().bind(Map("value" -> "incorrect")))
 
       view must haveGovukGlobalErrorSummary
@@ -131,6 +186,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
   "Choice View when filled" should {
 
     "display selected radio button - Create (CRT)" in {
+      withSfusInboxEnabled()
       val view = createView(Choice.form().fill(Choice("CRT")))
       ensureAllLabelTextIsCorrect(view)
 
@@ -140,7 +196,8 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
       ensureRadioIsUnChecked(view, "CON")
     }
 
-    "display selected radio button - CAN (CAN)" in {
+    "display selected radio button - Cancel a declaration (CAN)" in {
+      withSfusInboxEnabled()
       val view = createView(Choice.form().fill(Choice("CAN")))
       ensureAllLabelTextIsCorrect(view)
 
@@ -151,6 +208,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
     }
 
     "display selected radio button - View recent declarations (SUB)" in {
+      withSfusInboxEnabled()
       val view = createView(Choice.form().fill(Choice("SUB")))
 
       ensureAllLabelTextIsCorrect(view)
@@ -162,6 +220,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
     }
 
     "display selected radio button - Continue saved declaration (Con)" in {
+      withSfusInboxEnabled()
       val view = createView(Choice.form().fill(Choice("CON")))
 
       ensureAllLabelTextIsCorrect(view)
@@ -172,6 +231,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
       ensureRadioIsChecked(view, "CON")
     }
   }
+
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 4
     view.getElementsByAttributeValue("for", "CRT") must containMessageForElements("declaration.choice.CRT")

@@ -49,7 +49,8 @@ class FeatureSwitchConfig @Inject()(configuration: Configuration) {
   def featureStatus(feature: Feature): FeatureStatus =
     getFeatureStatusFromProperties(feature).getOrElse(getFeatureStatusFromConfig(feature))
 
-  def isFeatureOn(feature: Feature): Boolean = featureStatus(feature) == FeatureStatus.enabled
+  def isFeatureOn(feature: Feature): Boolean =
+    featureStatus(feature) == FeatureStatus.enabled
 
   def setFeatureStatus(feature: Feature, status: FeatureStatus): Unit =
     sys.props += (feature2Key(feature) -> status.toString)

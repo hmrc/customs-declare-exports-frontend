@@ -42,8 +42,8 @@
         @link(text = messages("submissions.viewErrors"), call = routes.RejectedNotificationsController.displayPage(declarationID))
     }
 
-    @if(status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED && sfusConfig.isSfusEnabled) {
-        @link(text = messages("submissions.sfus"), call = Call("GET", s"${sfusConfig.sfusLink}/${submission.mrn.getOrElse("")}"), target="_blank")
+    @if(status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED && sfusConfig.isSfusUploadEnabled) {
+        @link(text = messages("submissions.sfus"), call = Call("GET", s"${sfusConfig.sfusUploadLink}/${submission.mrn.getOrElse("")}"), target="_blank")
     }
 }
 

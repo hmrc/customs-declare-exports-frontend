@@ -16,72 +16,101 @@
 
 package config
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import unit.base.UnitSpec
 
 class SfusConfigSpec extends UnitSpec {
 
-  private val configWithSfusEnabled: Config =
-    ConfigFactory.parseString("""
-      |microservice.services.features.sfus=enabled
-      |urls.sfus=sfusLink
-    """.stripMargin)
-  private val configWithSfusDisabled: Config =
-    ConfigFactory.parseString("""
-      |microservice.services.features.sfus=disabled
-      |urls.sfus=sfusLink
-    """.stripMargin)
-  private val notDefinedFeatureFlag: Config =
-    ConfigFactory.parseString("""
-      |microservice.services.features.default=disabled
-      |urls.sfus=sfusLink
-    """.stripMargin)
-  private val emptyConfig: Config =
-    ConfigFactory.parseString("microservice.services.features.default=disabled")
+  private def asConfigVal(bool: Boolean) = if (bool) "enabled" else "disabled"
 
   def featureSwitchConfig(config: Configuration): FeatureSwitchConfig = new FeatureSwitchConfig(config)
 
-  "Change Error Link config" should {
+  private def generateFeaturesConfig(
+    sfusEnabled: Boolean = false,
+    sfusSecureMessagingEnabled: Boolean = false,
+    sfusKey: String = "sfus",
+    sfusSecureMessagingKey: String = "sfusSecureMessaging"
+  ) = {
+    val config = Configuration(ConfigFactory.parseString(s"""
+        |microservice.services.features.default=disabled
+        |microservice.services.features.${sfusKey}=${asConfigVal(sfusEnabled)}
+        |microservice.services.features.${sfusSecureMessagingKey}=${asConfigVal(sfusSecureMessagingEnabled)}
+        |urls.sfusUpload=sfusLink
+        |urls.sfusInbox=sfusLink
+      """.stripMargin))
 
-    "return true" when {
+    new SfusConfig(featureSwitchConfig(config), config)
+  }
 
-      "change error link feature is enabled" in {
+  private def generateUrlConfig(sfusUploadKey: String = "sfusUpload", sfusInboxKey: String = "sfusInbox") = {
+    val config = Configuration(ConfigFactory.parseString(s"""
+       |microservice.services.features.default=disabled
+       |urls.${sfusUploadKey}=sfusLink
+       |urls.${sfusInboxKey}=sfusLink
+      """.stripMargin))
 
-        val sfusConfig = new SfusConfig(featureSwitchConfig(Configuration(configWithSfusEnabled)), Configuration(configWithSfusEnabled))
+    new SfusConfig(featureSwitchConfig(config), config)
+  }
 
-        sfusConfig.isSfusEnabled mustBe true
+  "SFUS config" when {
+    "retrieving the value for sfus feature flag" should {
+      "return true" when {
+        "sfus feature is enabled" in {
+          generateFeaturesConfig(sfusEnabled = true).isSfusUploadEnabled mustBe true
+        }
+      }
+
+      "return false" when {
+        "sfus feature is disabled" in {
+          generateFeaturesConfig().isSfusUploadEnabled mustBe false
+        }
+
+        "sfus feature config key doesn't exist" in {
+          generateFeaturesConfig(sfusEnabled = true, sfusKey = "WRONG").isSfusUploadEnabled mustBe false
+        }
       }
     }
 
-    "return false" when {
-
-      "ead document feature is diabled" in {
-
-        val sfusConfig = new SfusConfig(featureSwitchConfig(Configuration(configWithSfusDisabled)), Configuration(configWithSfusDisabled))
-
-        sfusConfig.isSfusEnabled mustBe false
+    "retrieving the url for sfusUpload link it" should {
+      "return the correct sfusUpload url if present" in {
+        generateUrlConfig().sfusUploadLink mustBe "sfusLink"
       }
 
-      "ead document feature config doesn't exist" in {
-
-        val sfusConfig = new SfusConfig(featureSwitchConfig(Configuration(notDefinedFeatureFlag)), Configuration(notDefinedFeatureFlag))
-
-        sfusConfig.isSfusEnabled mustBe false
+      "throw an exception if url is missing" in {
+        intercept[IllegalStateException] {
+          generateUrlConfig(sfusUploadKey = "WRONG")
+        }
       }
     }
 
-    "contains correct sfus url" in {
+    "retrieving the value for sfusSecureMessaging feature flag" should {
+      "return true" when {
+        "sfus feature is enabled" in {
+          generateFeaturesConfig(sfusSecureMessagingEnabled = true).isSfusSecureMessagingEnabled mustBe true
+        }
+      }
 
-      val sfusConfig = new SfusConfig(featureSwitchConfig(Configuration(configWithSfusEnabled)), Configuration(configWithSfusEnabled))
+      "return false" when {
+        "sfus feature is disabled" in {
+          generateFeaturesConfig().isSfusSecureMessagingEnabled mustBe false
+        }
 
-      sfusConfig.sfusLink mustBe "sfusLink"
+        "sfus feature config key doesn't exist" in {
+          generateFeaturesConfig(sfusSecureMessagingEnabled = true, sfusSecureMessagingKey = "WRONG").isSfusSecureMessagingEnabled mustBe false
+        }
+      }
     }
 
-    "throw an exception when url is missing" in {
+    "retrieving the url for sfusInbox link it" should {
+      "return the correct sfusInbox url if present" in {
+        generateUrlConfig().sfusInboxLink mustBe "sfusLink"
+      }
 
-      intercept[IllegalStateException] {
-        new SfusConfig(featureSwitchConfig(Configuration(emptyConfig)), Configuration(emptyConfig))
+      "throw an exception if url is missing" in {
+        intercept[IllegalStateException] {
+          generateUrlConfig(sfusInboxKey = "WRONG")
+        }
       }
     }
   }

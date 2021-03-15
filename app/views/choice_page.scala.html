@@ -17,10 +17,9 @@
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.Choice.AllowedChoiceValues._
-@import config.AppConfig
 @import views.Title
 @import views.ErrorMapper.radioGroupErrors
-
+@import config.SfusConfig
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -28,11 +27,12 @@
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
     saveAndContinue: saveAndContinue,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-    appConfig: AppConfig
+    paragraphBody: paragraphBody,
+    link: link,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], availableJourneys: Seq[String], sfusConfig: SfusConfig)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.choice.description"),
@@ -58,16 +58,16 @@
                     checked = form("value").value.contains(CreateDec)
                 ),
                 RadioItem(
-                    id = Some(Submissions),
-                    value = Some(Submissions),
-                    content = Text(messages(s"declaration.choice.$Submissions")),
-                    checked = form("value").value.contains(Submissions)
-                ),
-                RadioItem(
                     id = Some(ContinueDec),
                     value = Some(ContinueDec),
                     content = Text(messages(s"declaration.choice.$ContinueDec")),
                     checked = form("value").value.contains(ContinueDec)
+                ),
+                RadioItem(
+                    id = Some(Submissions),
+                    value = Some(Submissions),
+                    content = Text(messages(s"declaration.choice.$Submissions")),
+                    checked = form("value").value.contains(Submissions)
                 ),
                 RadioItem(
                     id = Some(CancelDec),
@@ -75,10 +75,19 @@
                     content = Text(messages(s"declaration.choice.$CancelDec")),
                     checked = form("value").value.contains(CancelDec)
                 )
-            ).filter(radioOption => appConfig.availableJourneys().contains(radioOption.value.get)),
+            ).filter(radioOption => availableJourneys.contains(radioOption.value.get)),
             errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @saveAndContinue("site.continue")
+
+        @if(sfusConfig.isSfusSecureMessagingEnabled) {
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2">
+            <h3>@messages("declaration.choice.linkDescription")</h3>
+
+            <p>@link(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = Call("GET", s"${sfusConfig.sfusUploadLink}"), target = "_blank")</p>
+            <p>@link(id = Some("sfusInboxLink"), text = messages("declaration.choice.link.sfusInbox.txt"), call = Call("GET", s"${sfusConfig.sfusInboxLink}"), target = "_blank")</p>
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2">
+        }
     }
 }
