@@ -84,6 +84,9 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     payload = ""
   )
 
+  def submissions(notification: Notification = acceptedNotification) =
+    Paginated(Seq(submission -> Seq(notification)), Page(), 1)
+
   "Submission View" should {
 
     "have proper messages for labels" in {
@@ -97,33 +100,78 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "display same page title as header" in {
-      val viewWithMessage = createView()
-      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      val view = createView()
+      view.title must startWith(view.getElementsByTag("h1").text)
     }
 
-    "display single pagination summary" when {
-      "there are no submissions" in {
-
-        val noDeclarationText = s"${messages("site.pagination.showing.no")} ${messages("submissions.pagination.plural")}"
-        createView().getElementById("other-submissions").getElementsByClass("ceds-pagination__summary").text() mustBe noDeclarationText
+    "display the no-action-needed hint" when {
+      "there are no submissions requiring action" in {
+        createView().getElementsByClass("govuk-warning-text").text mustBe messages("submissions.hint.no.action.needed")
       }
     }
 
-    "display two pagination summaries" when {
+    "display the action-needed hint" when {
+      "there are submissions requiring action" in {
+        val warningText = s"""! ${messages("submissions.hint.action.needed.alt")} ${messages("submissions.hint.action.needed")}"""
+        val view = createView(actionSubmissions = submissions(actionNotification))
+        view.getElementsByClass("govuk-warning-text").text mustBe warningText
+      }
+    }
+
+    "display the expected tab title as a link" in {
+      val view = createView()
+
+      val testExpectedTabTitleAsLink =
+        (tab: String) => view.getElementsByAttributeValue("href", s"#${tab}-submissions").text == messages(s"submissions.${tab}.tab.title")
+
+      assert(List("rejected", "action", "other").forall(testExpectedTabTitleAsLink))
+    }
+
+    "display the expected tab heading" in {
+      val view = createView()
+
+      val testExpectedTabHeading =
+        (tab: String) => view.getElementById(s"${tab}-submissions").getElementsByTag("h2").text == messages(s"submissions.${tab}.content.title")
+
+      assert(List("rejected", "action", "other").forall(testExpectedTabHeading))
+    }
+
+    "display the expected tab hints" when {
       "there are submissions" in {
-        val view = createView(otherSubmissions = Paginated(Seq(submission -> Seq(acceptedNotification)), Page(), 1))
+        val view = createView(submissions(rejectedNotification), submissions(actionNotification), submissions(acceptedNotification))
 
-        val oneDeclarationText = s"${messages("site.pagination.showing")} 1 ${messages("submissions.pagination.singular")}"
+        val testExpectedTabHint = (tab: String) => view.getElementById(s"${tab}-content-hint").text == messages(s"submissions.${tab}.content.hint")
 
-        view
-          .getElementById("other-submissions")
-          .getElementsByClass("ceds-pagination__summary")
-          .text() mustBe s"$oneDeclarationText $oneDeclarationText"
+        assert(List("rejected", "action", "other").forall(testExpectedTabHint))
+      }
+    }
+
+    "display one pagination summary" when {
+      "there are submissions" in {
+        val view = createView(submissions(rejectedNotification), submissions(actionNotification), submissions(acceptedNotification))
+        val paginationText = s"${messages("site.pagination.showing")} 1 ${messages("submissions.pagination.singular")}"
+
+        val testPaginationSummary =
+          (tab: String) => paginationText == view.getElementById(s"${tab}-submissions").getElementsByClass("ceds-pagination__summary").text
+
+        assert(List("rejected", "action", "other").forall(testPaginationSummary))
+      }
+    }
+
+    "display no pagination summary" when {
+      "there are no submissions" in {
+        val view = createView()
+        val noDeclarations = messages("submissions.empty.tab")
+
+        val testNoPaginationSummary =
+          (tab: String) => noDeclarations == view.getElementById(s"${tab}-submissions").getElementsByClass("ceds-pagination__summary").text
+
+        assert(List("rejected", "action", "other").forall(testNoPaginationSummary))
       }
     }
 
     "display table headers" in {
-      val view = createView(otherSubmissions = Paginated(Seq(submission -> Seq(acceptedNotification)), Page(), 1))
+      val view = createView(otherSubmissions = submissions())
 
       tableHead(view)(0) must containMessage("submissions.ucr.header")
       tableHead(view)(1) must containMessage("submissions.lrn.header")
@@ -135,7 +183,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     "display page submissions" when {
 
       "all fields are populated with timestamp before BST" in {
-        val view = tab("other", createView(otherSubmissions = Paginated(Seq(submission -> Seq(acceptedNotification)), Page(), 1)))
+        val view = tab("other", createView(otherSubmissions = submissions()))
 
         tableCell(view)(1, 0).text() mustBe s"ducr ${messages("submissions.hidden.text", "ducr")}"
         tableCell(view)(1, 1).text() mustBe "lrn"
@@ -189,7 +237,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       }
 
       "submission has link when contains rejected notification" in {
-        val view = tab("rejected", createView(rejectedSubmissions = Paginated(Seq(submission -> Seq(rejectedNotification)), Page(), 1)))
+        val view = tab("rejected", createView(rejectedSubmissions = submissions(rejectedNotification)))
 
         tableCell(view)(1, 0).text() must include(submission.ducr.get)
         tableCell(view)(1, 0).toString must include(routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid).url)
