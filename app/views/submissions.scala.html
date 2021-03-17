@@ -27,6 +27,7 @@
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukWarningText: GovukWarningText,
     pageTitle: pageTitle,
     govukTabs: GovukTabs,
     govukTable: GovukTable,
@@ -54,19 +55,13 @@
   )
 }
 
-@tabTable(id: String, title: String, tabSubmissions: Paginated[(Submission, Seq[Notification])], onPageChange: Int => Call) = {
+@tabTable(id: String, tabSubmissions: Paginated[(Submission, Seq[Notification])], onPageChange: Int => Call) = {
 
-    <h2 class="govuk-heading-l">@messages(title)</h2>
+    <h2 class="govuk-heading-l">@messages(s"submissions.${id}.content.title")</h2>
 
     @if(tabSubmissions.nonEmpty) {
-        <div class="govuk-grid-row">
-        @pagination_summary(
-            singularName = messages("submissions.pagination.singular"),
-            pluralName = messages("submissions.pagination.plural"),
-            pager = tabSubmissions
-        )
-        </div>
 
+        <p id="@{s"${id}-content-hint"}" class="govuk-body">@messages(s"submissions.${id}.content.hint")</p>
 
         @govukTable(Table(
             attributes = Map("id" -> s"submissions-tab-$id"),
@@ -113,13 +108,19 @@
     }
 
     <div class="govuk-grid-row">
-        @pagination(
-            singularName = messages("submissions.pagination.singular"),
-            pluralName = messages("submissions.pagination.plural"),
-            pager = tabSubmissions,
-            onChange = onPageChange,
-            neighbourPagesAmount = 2
-        )
+        @if(tabSubmissions.nonEmpty) {
+            @pagination(
+                singularName = messages("submissions.pagination.singular"),
+                pluralName = messages("submissions.pagination.plural"),
+                pager = tabSubmissions,
+                onChange = onPageChange,
+                neighbourPagesAmount = 2
+            )
+        } else {
+            <div class="ceds-pagination__summary">
+                <p class="govuk-body">@{messages("submissions.empty.tab")}</p>
+            </div>
+        }
     </div>
 }
 
@@ -133,16 +134,24 @@
 
             @pageTitle(messages("submissions.title"))
 
+            @if(submissionsPagesElements.actionSubmissions.elementsTotal > 0) {
+                @govukWarningText(WarningText(
+                    iconFallbackText = messages("submissions.hint.action.needed.alt"),
+                    content = Text(messages("submissions.hint.action.needed"))
+                ))
+            } else {
+                <p class="govuk-body govuk-warning-text">@messages("submissions.hint.no.action.needed")</p>
+            }
+
             @govukTabs(Tabs(
                 items = Seq(
                     TabItem(
                         id = Some("rejected-submissions"),
-                        label = messages("submissions.tab.rejected.title"),
+                        label = messages("submissions.rejected.tab.title"),
                         panel = TabPanel(
                             content = HtmlContent(
                                 tabTable(
-                                    "rejected",
-                                    "submissions.tab.rejected.title",
+                                    id = "rejected",
                                     submissionsPagesElements.rejectedSubmissions,
                                     page => controllers.routes.SubmissionsController.displayListOfSubmissions(
                                         submissionsPages.changeRejectedPageNumber(page)
@@ -153,12 +162,11 @@
                     ),
                     TabItem(
                         id = Some("action-submissions"),
-                        label = messages("submissions.tab.action.title"),
+                        label = messages("submissions.action.tab.title"),
                         panel = TabPanel(
                             content = HtmlContent(
                                 tabTable(
-                                    "action",
-                                    "submissions.tab.action.title",
+                                    id = "action",
                                     submissionsPagesElements.actionSubmissions,
                                     page => controllers.routes.SubmissionsController.displayListOfSubmissions(
                                         submissionsPages.changeActionPageNumber(page)
@@ -169,12 +177,11 @@
                     ),
                     TabItem(
                         id = Some("other-submissions"),
-                        label = messages("submissions.tab.other.title"),
+                        label = messages("submissions.other.tab.title"),
                         panel = TabPanel(
                             content = HtmlContent(
                                 tabTable(
-                                    "other",
-                                    "submissions.tab.other.title",
+                                    id = "other",
                                     submissionsPagesElements.otherSubmissions,
                                     page => controllers.routes.SubmissionsController.displayListOfSubmissions(
                                         submissionsPages.changeOtherPageNumber(page)
