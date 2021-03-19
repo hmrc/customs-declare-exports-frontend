@@ -584,6 +584,24 @@ declaration.partyType.empty = Select a party type.
 declaration.partyType.error = Select an option from the list.
 declaration.partyType.remove.hint = Remove
 
+submission.status.PENDING                         = Pending
+submission.status.REQUESTED_CANCELLATION          = Cancellation Requested
+submission.status.ACCEPTED                        = Accepted
+submission.status.RECEIVED                        = Received
+submission.status.REJECTED                        = Rejected
+submission.status.UNDERGOING_PHYSICAL_CHECK       = Undergoing Physical Check
+submission.status.ADDITIONAL_DOCUMENTS_REQUIRED   = Documents Required
+submission.status.AMENDED                         = Amended
+submission.status.RELEASED                        = Released
+submission.status.CLEARED                         = Cleared
+submission.status.CANCELLED                       = Cancelled
+submission.status.CUSTOMS_POSITION_GRANTED        = Customs Position Granted
+submission.status.CUSTOMS_POSITION_DENIED         = Customs Position Denied
+submission.status.GOODS_HAVE_EXITED_THE_COMMUNITY = Goods Have Exited The Community
+submission.status.DECLARATION_HANDLED_EXTERNALLY  = Declaration Handled Externally
+submission.status.AWAITING_EXIT_RESULTS           = Awaiting Exit Results
+submission.status.UNKNOWN                         = Unknown status
+
 submissions.title = Your declarations
 submissions.hint.no.action.needed = Check the status of your submitted declarations.
 submissions.hint.action.needed = You have declarations that need you to take action.

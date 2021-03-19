@@ -27,32 +27,8 @@ object SubmissionStatus extends Enumeration {
   CLEARED, CANCELLED, CUSTOMS_POSITION_GRANTED, CUSTOMS_POSITION_DENIED, GOODS_HAVE_EXITED_THE_COMMUNITY, DECLARATION_HANDLED_EXTERNALLY,
   AWAITING_EXIT_RESULTS, UNKNOWN = Value
 
-  def format(status: SubmissionStatus): String = status match {
-    case PENDING                         => "Pending"
-    case REQUESTED_CANCELLATION          => "Cancellation Requested"
-    case ACCEPTED                        => "Accepted"
-    case RECEIVED                        => "Received"
-    case REJECTED                        => "Rejected"
-    case UNDERGOING_PHYSICAL_CHECK       => "Undergoing Physical Check"
-    case ADDITIONAL_DOCUMENTS_REQUIRED   => "Additional Documents Required"
-    case AMENDED                         => "Amended"
-    case RELEASED                        => "Released"
-    case CLEARED                         => "Cleared"
-    case CANCELLED                       => "Cancelled"
-    case CUSTOMS_POSITION_GRANTED        => "Customs Position Granted"
-    case CUSTOMS_POSITION_DENIED         => "Customs Position Denied"
-    case GOODS_HAVE_EXITED_THE_COMMUNITY => "Goods Have Exited The Community"
-    case DECLARATION_HANDLED_EXTERNALLY  => "Declaration Handled Externally"
-    case AWAITING_EXIT_RESULTS           => "Awaiting Exit Results"
-    case UNKNOWN                         => "Unknown status"
-  }
-
-  def formatOnDeclInfoPages(status: SubmissionStatus): String = status match {
-    case ADDITIONAL_DOCUMENTS_REQUIRED => "Documents Required"
-    case _                             => format(status)
-  }
-  val rejectedStatuses: Set[submissions.SubmissionStatus.Value] = Set(REJECTED)
-  val actionRequiredStatuses: Set[submissions.SubmissionStatus.Value] = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK)
-  val otherStatuses: Set[submissions.SubmissionStatus.Value] = values &~ rejectedStatuses &~ actionRequiredStatuses
-  val eadAcceptableStatuses: Set[submissions.SubmissionStatus.Value] = values &~ Set(PENDING, REJECTED, UNKNOWN)
+  lazy val rejectedStatuses: Set[submissions.SubmissionStatus.Value] = Set(REJECTED)
+  lazy val actionRequiredStatuses: Set[submissions.SubmissionStatus.Value] = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK)
+  lazy val otherStatuses: Set[submissions.SubmissionStatus.Value] = values &~ rejectedStatuses &~ actionRequiredStatuses
+  lazy val eadAcceptableStatuses: Set[submissions.SubmissionStatus.Value] = values &~ Set(PENDING, REJECTED, UNKNOWN)
 }

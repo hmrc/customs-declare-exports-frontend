@@ -19,6 +19,7 @@
 @import views.html.components.gds.summary_list
 @import models.declaration.notifications.Notification
 @import views.ViewDates
+@import views.helpers.StatusOfSubmission
 
 @this(govukSummaryList: GovukSummaryList)
 
@@ -37,9 +38,9 @@
         ))
         ++ notifications.map(notification =>
             SummaryListRow(
-                classes = s"${notification.displayStatus.toLowerCase}-row",
+                classes = s"${notification.status.toString.toLowerCase}-row",
                 key = Key(
-                    content = Text(notification.displayStatus)
+                    content = Text(StatusOfSubmission.asText(notification))
                 ),
                 value = Value(
                     content = Text(ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK))

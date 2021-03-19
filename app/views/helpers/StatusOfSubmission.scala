@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package views
+package views.helpers
 
-import java.time.LocalDateTime
+import models.declaration.notifications.Notification
+import models.declaration.submissions.SubmissionStatus.SubmissionStatus
+import play.api.i18n.Messages
 
-import org.scalatest.{MustMatchers, WordSpec}
+object StatusOfSubmission {
 
-class ViewDatesSpec extends WordSpec with MustMatchers {
+  def asText(status: SubmissionStatus)(implicit messages: Messages): String =
+    messages(s"submission.status.${status.toString}")
 
-  "ViewDates" should {
+  def asText(notification: Notification)(implicit messages: Messages): String =
+    asText(notification.status)
 
-    "format date at time correctly" in {
-
-      val date = LocalDateTime.of(2019, 8, 20, 13, 55, 15)
-      ViewDates.formatDateAtTime(date) must equal("20 August 2019 at 1:55pm")
-    }
-  }
+  def toLowerCase(notification: Notification)(implicit messages: Messages): String =
+    asText(notification).toLowerCase
 }

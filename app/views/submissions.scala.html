@@ -23,6 +23,7 @@
 @import models.declaration.submissions.{Submission, SubmissionStatus}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title, ViewDates}
+@import views.helpers.StatusOfSubmission
 @import views.html.components.gds._
 
 @this(
@@ -84,14 +85,16 @@
                     ),
                     TableRow(
                         content = Text(
-                            submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp.withZoneSameInstant(ZoneId.of("Europe/London"))).map(ViewDates.formatDateAtTime).getOrElse("")
+                          submission.actions
+                            .find(_.requestType == SubmissionRequest)
+                            .map(_.requestTimestamp.withZoneSameInstant(ZoneId.of("Europe/London")))
+                            .map(ViewDates.formatDateAtTime)
+                            .getOrElse("")
                         ),
                         attributes = Map("id" -> s"submission-tab-$id-row$index-dateAndTime")
                     ),
                     TableRow(
-                        content = Text(
-                            SubmissionStatus.formatOnDeclInfoPages(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))
-                        ),
+                        content = Text(StatusOfSubmission.asText(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))),
                         attributes = Map("id" -> s"submission-tab-$id-row$index-status")
                     )
                 )

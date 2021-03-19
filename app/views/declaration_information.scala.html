@@ -24,6 +24,7 @@
 @import views.Title
 @import views.ViewDates
 @import views.components.gds.Styles._
+@import views.helpers.StatusOfSubmission
 @import views.html.components.gds.link
 
 @this(
@@ -92,30 +93,18 @@
             @govukSummaryList(SummaryList(
                 rows = Seq(
                     SummaryListRow(
-                        key = Key(
-                            content = Text(messages("submissions.ucr"))
-                        ),
-                        value = Value(
-                            content = submission.ducr.map(HtmlContent(_)).getOrElse(Empty)
-                        ),
+                        key = Key(content = Text(messages("submissions.ucr"))),
+                        value = Value(content = submission.ducr.map(HtmlContent(_)).getOrElse(Empty)),
                         classes = "submission__ucr"
                     ),
                     SummaryListRow(
-                        key = Key(
-                            content = Text(messages("submissions.lrn"))
-                        ),
-                        value = Value(
-                            content = HtmlContent(submission.lrn)
-                        ),
+                        key = Key(content = Text(messages("submissions.lrn"))),
+                        value = Value(content = HtmlContent(submission.lrn)),
                         classes = "submission__lrn"
                     ),
                     SummaryListRow(
-                        key = Key(
-                            content = Text(messages("submissions.mrn"))
-                        ),
-                        value = Value(
-                            content = submission.mrn.map(HtmlContent(_)).getOrElse(Empty)
-                        ),
+                        key = Key(content = Text(messages("submissions.mrn"))),
+                        value = Value(content = submission.mrn.map(HtmlContent(_)).getOrElse(Empty)),
                         classes = "submission__mrn"
                     )
                 ).filterNot(_.value.content == Empty)
@@ -146,7 +135,7 @@
                             Seq(
                                 TableRow(
                                     attributes = Map("id" -> s"notification_status_$index"),
-                                    content = HtmlContent(SubmissionStatus.formatOnDeclInfoPages(notification.status))
+                                    content = HtmlContent(StatusOfSubmission.asText(notification))
                                 ),
                                 TableRow(
                                     attributes = Map("id" -> s"notification_date_time_$index"),

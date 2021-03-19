@@ -16,7 +16,7 @@
 
 package views
 
-import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
+import java.time.ZonedDateTime
 
 import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
@@ -26,6 +26,7 @@ import models.declaration.submissions.{Submission, SubmissionStatus}
 import play.api.Configuration
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukTable}
 import views.declaration.spec.UnitViewSpec
+import views.helpers.StatusOfSubmission
 import views.html.components.gds.{gdsMainTemplate, link}
 import views.html.declaration_information
 
@@ -67,11 +68,13 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
   private val submission: Submission = submission()
 
-  private val zone: ZoneId = ZoneId.of("Europe/London")
+  private val dateTimeIssued = ZonedDateTime.now
+  private val dateTimeAsText = ViewDates.formatDateAtTime(dateTimeIssued)
+
   private val acceptedNotification = Notification(
     actionId = "action-id",
     mrn = "mrn",
-    dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 0, 0, 0), zone),
+    dateTimeIssued = dateTimeIssued,
     status = SubmissionStatus.ACCEPTED,
     errors = Seq.empty,
     payload = "payload"
@@ -80,7 +83,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val rejectedNotification = Notification(
     actionId = "actionId",
     mrn = "mrn",
-    dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 2, 2, 10, 0, 0), zone),
+    dateTimeIssued = dateTimeIssued,
     status = SubmissionStatus.REJECTED,
     errors = Seq.empty,
     payload = ""
@@ -89,7 +92,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val clearedNotification = Notification(
     actionId = "actionId",
     mrn = "mrn",
-    dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 2, 2, 10, 0, 0), zone),
+    dateTimeIssued = dateTimeIssued,
     status = SubmissionStatus.CLEARED,
     errors = Seq.empty,
     payload = ""
@@ -98,7 +101,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val additionalDocumentsNotification = Notification(
     actionId = "actionId",
     mrn = "mrn",
-    dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2019, 3, 3, 10, 0, 0), zone),
+    dateTimeIssued = dateTimeIssued,
     status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED,
     errors = Seq.empty,
     payload = ""
@@ -217,7 +220,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       "feature flag is enabled, status is ADDITIONAL_DOCUMENTS_REQUIRED and mrn is present" in {
 
-        val sfusLink = viewWithFeatures.getElementById("notification_action_2")
+        val sfusLink = viewWithFeatures.getElementById("notification_action_0")
 
         sfusLink must containMessage("submissions.sfus.upload.files")
         sfusLink.child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/mrn")
@@ -225,7 +228,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       "feature flag is enabled, status is ADDITIONAL_DOCUMENTS_REQUIRED and mrn is not present" in {
         val view = declarationInformationPageWithFeatures(submission(None), notifications, true)(request, messages)
-        val sfusLink = view.getElementById("notification_action_2")
+        val sfusLink = view.getElementById("notification_action_0")
 
         sfusLink must containMessage("submissions.sfus.upload.files")
         sfusLink.child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/")
@@ -238,20 +241,20 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
         val view = declarationInformationPageWithoutFeatures(submission, notifications, true)(request, messages)
 
-        val documentsRequired = SubmissionStatus.formatOnDeclInfoPages(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
-        view.getElementById("notification_status_2").text() mustBe documentsRequired
+        val documentsRequired = StatusOfSubmission.asText(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
+        view.getElementById("notification_status_0").text() mustBe documentsRequired
 
-        view.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00am"
-        view.getElementById("notification_action_2").text() mustBe ""
+        view.getElementById("notification_date_time_0").text() mustBe dateTimeAsText
+        view.getElementById("notification_action_0").text() mustBe ""
       }
 
       "status is not ADDITIONAL_DOCUMENTS_REQUIRED" in {
         val view = viewWithFeaturesNotAccepted
 
-        val documentsRequired = SubmissionStatus.formatOnDeclInfoPages(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
+        val documentsRequired = StatusOfSubmission.asText(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
         view.getElementById("notification_status_0").text() mustNot equal(documentsRequired)
 
-        view.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00am"
+        view.getElementById("notification_date_time_0").text() mustBe dateTimeAsText
         view.getElementById("notification_action_0").text() mustBe "View errors"
 
         Option(view.getElementById("notification_status_1")) mustBe None
@@ -283,32 +286,32 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       }
     }
 
+    "contains additional documents acceptedNotification with redirect to SFUS link" in {
+
+      val documentsRequired = StatusOfSubmission.asText(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
+      viewWithFeatures.getElementById("notification_status_0").text() mustBe documentsRequired
+      viewWithFeatures.getElementById("notification_date_time_0").text() mustBe dateTimeAsText
+      viewWithFeatures.getElementById("notification_action_0") must containMessage("submissions.sfus.upload.files")
+      viewWithFeatures
+        .getElementById("notification_action_0")
+        .child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/mrn")
+    }
+
     "contains rejected acceptedNotification with correct data and view errors link" in {
 
-      viewWithFeatures.getElementById("notification_status_0").text() mustBe SubmissionStatus.format(SubmissionStatus.REJECTED)
-      viewWithFeatures.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00am"
-      viewWithFeatures.getElementById("notification_action_0") must containMessage("submissions.viewErrors")
-      viewWithFeatures.getElementById("notification_action_0").child(0) must haveHref(
+      viewWithFeatures.getElementById("notification_status_1").text() mustBe StatusOfSubmission.asText(SubmissionStatus.REJECTED)
+      viewWithFeatures.getElementById("notification_date_time_1").text() mustBe dateTimeAsText
+      viewWithFeatures.getElementById("notification_action_1") must containMessage("submissions.viewErrors")
+      viewWithFeatures.getElementById("notification_action_1").child(0) must haveHref(
         controllers.routes.RejectedNotificationsController.displayPage(submission.uuid)
       )
     }
 
     "contains accepted acceptedNotification with correct data" in {
 
-      viewWithFeatures.getElementById("notification_status_1").text() mustBe SubmissionStatus.format(SubmissionStatus.ACCEPTED)
-      viewWithFeatures.getElementById("notification_date_time_1").text() mustBe "1 January 2020 at 12:00am"
-      viewWithFeatures.getElementById("notification_action_1").text() mustBe empty
-    }
-
-    "contains additional documents acceptedNotification with redirect to SFUS link" in {
-
-      val documentsRequired = SubmissionStatus.formatOnDeclInfoPages(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
-      viewWithFeatures.getElementById("notification_status_2").text() mustBe documentsRequired
-      viewWithFeatures.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00am"
-      viewWithFeatures.getElementById("notification_action_2") must containMessage("submissions.sfus.upload.files")
-      viewWithFeatures
-        .getElementById("notification_action_2")
-        .child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/mrn")
+      viewWithFeatures.getElementById("notification_status_2").text() mustBe StatusOfSubmission.asText(SubmissionStatus.ACCEPTED)
+      viewWithFeatures.getElementById("notification_date_time_2").text() mustBe dateTimeAsText
+      viewWithFeatures.getElementById("notification_action_2").text() mustBe empty
     }
 
     "contains back link which links to the submission list" in {

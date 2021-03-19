@@ -36,9 +36,8 @@ case class Notification(
     else if (this.dateTimeIssued.isAfter(that.dateTimeIssued)) 1
     else -1
 
-  val displayStatus = SubmissionStatus.format(status)
-  val isStatusRejected: Boolean = status == SubmissionStatus.REJECTED
-  val dateTimeIssuedInUK: ZonedDateTime = dateTimeIssued.withZoneSameInstant(ZoneId.of("Europe/London"))
+  lazy val isStatusRejected: Boolean = status == SubmissionStatus.REJECTED
+  lazy val dateTimeIssuedInUK: ZonedDateTime = dateTimeIssued.withZoneSameInstant(ZoneId.of("Europe/London"))
 }
 
 object Notification {
