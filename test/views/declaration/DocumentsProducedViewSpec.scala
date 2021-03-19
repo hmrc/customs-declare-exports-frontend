@@ -22,7 +22,6 @@ import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.declaration.DocumentsProducedSpec._
 import forms.declaration.additionaldocuments.DocumentsProduced
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -31,6 +30,7 @@ import play.api.data.Form
 import unit.tools.Stubs
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.documentsProduced.documents_produced
 import views.tags.ViewTest
 

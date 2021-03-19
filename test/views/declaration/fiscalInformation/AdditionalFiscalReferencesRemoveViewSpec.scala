@@ -19,13 +19,13 @@ package views.declaration.fiscalInformation
 import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalFiscalReference
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.fiscalInformation.additional_fiscal_references_remove
 import views.tags.ViewTest
 

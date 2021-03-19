@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package views
+package views.helpers
 
-import java.time.LocalDateTime
+trait CommonMessages {
 
-import org.scalatest.{MustMatchers, WordSpec}
-
-class ViewDatesSpec extends WordSpec with MustMatchers {
-
-  "ViewDates" should {
-
-    "format date at time correctly" in {
-
-      val date = LocalDateTime.of(2019, 8, 20, 13, 55, 15)
-      ViewDates.formatDateAtTime(date) must equal("20 August 2019 at 1:55pm")
-    }
-  }
+  val backCaption: String = "site.back"
+  val backToSelectionCaption: String = "site.backToSelectionPage"
+  val removeCaption: String = "site.remove"
+  val addCaption: String = "site.add"
+  val continueCaption: String = "site.continue"
+  val saveAndContinueCaption: String = "site.save_and_continue"
+  val saveAndReturnCaption: String = "site.save_and_come_back_later"
 }

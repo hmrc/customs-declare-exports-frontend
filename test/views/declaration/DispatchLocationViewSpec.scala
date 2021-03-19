@@ -18,13 +18,13 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.DispatchLocation
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.dispatch_location
 import views.tags.ViewTest
 

@@ -14,18 +14,15 @@
  * limitations under the License.
  *@
 
+@import config.{AppConfig, BetaBannerConfig, TimeoutDialogConfig}
+@import models.requests.AuthenticatedRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.govukFlexibleLayout
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead, HmrcTimeoutDialogHelper, hmrcStandardFooter, HmrcTrackingConsentSnippet}
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{En, Cy}
-@import views.BackButton
-@import views.Title
-@import config.TimeoutDialogConfig
-@import config.BetaBannerConfig
-@import models.requests.AuthenticatedRequest
-@import config.AppConfig
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds.govukFlexibleLayout
 
 @this(
   govukHeader: GovukHeader,
@@ -36,8 +33,8 @@
   phaseBanner: components.gds.phaseBanner,
   timeoutDialogConfig: TimeoutDialogConfig,
   betaBannerConfig: BetaBannerConfig,
-        hmrcHead: HmrcHead,
-        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+  hmrcHead: HmrcHead,
+  hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
   hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
   hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
   hmrcFooter: hmrcStandardFooter,

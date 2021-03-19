@@ -21,7 +21,6 @@ import config.AppConfig
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -29,6 +28,7 @@ import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.declarationHolder.declaration_holder_required
 import views.tags.ViewTest
 

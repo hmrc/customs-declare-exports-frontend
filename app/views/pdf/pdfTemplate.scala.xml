@@ -1,6 +1,6 @@
 @import models.dis.MrnStatus
 @import views.pdf.DeclarationType
-@import views.ViewDates
+@import views.helpers.ViewDates
 
 @this()
 

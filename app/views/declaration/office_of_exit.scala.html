@@ -14,19 +14,18 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.navigation.Navigator
 @import forms.declaration.officeOfExit.OfficeOfExitInsideUK
 @import forms.common.YesNoAnswer.YesNoAnswers.{yes, no}
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds._
-@import views.components.gds.Styles._
 @import models.requests.JourneyRequest
 @import services.view.AutoCompleteItem
 @import services.OfficeOfExits
-@import views.Title
-@import views.BackButton
-@import views.ErrorMapper.radioGroupErrors
-@import config.AppConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
 
 @this(
         govukLayout: gdsMainTemplate,

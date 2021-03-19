@@ -14,18 +14,17 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes
 @import controllers.navigation.{Navigator, ItemId}
 @import forms.declaration.CusCode
 @import forms.declaration.CusCode._
 @import models.requests.JourneyRequest
-@import views.Title
-@import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.BackButton
 @import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
-@import views.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,

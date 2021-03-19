@@ -22,11 +22,11 @@ import controllers.routes
 import forms.Choice.AllowedChoiceValues.CancelDec
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import forms.{CancelDeclaration, Choice, Lrn}
-import helpers.views.declaration.CommonMessages
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.cancel_declaration
 import views.tags.ViewTest
 

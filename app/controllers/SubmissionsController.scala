@@ -60,8 +60,7 @@ class SubmissionsController @Inject()(
     customsDeclareExportsConnector.findSubmission(id).flatMap {
       case Some(submission) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
-          val hasDmsdocNotifications = notifications.exists(_.status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
-          Ok(declarationInformationPage(submission, notifications, hasDmsdocNotifications))
+          Ok(declarationInformationPage(submission, notifications))
         }
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }

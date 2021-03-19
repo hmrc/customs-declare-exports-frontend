@@ -16,15 +16,15 @@
 
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
+@import forms.declaration.DeclarationAdditionalActors
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.{BackButton, Title}
-@import views.components.gds.Styles._
-@import views.html.components.gds._
-@import scala.collection.immutable
-@import forms.declaration.DeclarationAdditionalActors
 @import utils.ListItem._
-@import views.ErrorMapper.yesNoErrors
+@import scala.collection.immutable
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
 
 @this(
         govukLayout: gdsMainTemplate,

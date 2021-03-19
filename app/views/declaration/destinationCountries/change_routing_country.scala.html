@@ -14,19 +14,18 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.navigation.Navigator
 @import forms.declaration.countries.Countries._
 @import forms.declaration.countries.Country
 @import forms.declaration.RoutingQuestionYesNo.ChangeCountryPage
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds._
 @import models.requests.JourneyRequest
 @import services.Countries
 @import services.view.AutoCompleteItem
-@import views.Title
-@import views.BackButton
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles
-@import config.AppConfig
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
 
 @this(
         govukLayout: gdsMainTemplate,

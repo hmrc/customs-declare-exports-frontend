@@ -20,7 +20,6 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import helpers.views.declaration.CommonMessages
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
@@ -30,6 +29,7 @@ import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.additionalInformation.additional_information_required
 import views.tags.ViewTest
 

@@ -15,17 +15,12 @@
  *@
 
 @import config.{EadConfig, SfusConfig}
-@import views.html.components.gds.gdsMainTemplate
 @import models.declaration.notifications.Notification
-@import models.declaration.submissions.Submission
-@import models.declaration.submissions.SubmissionStatus
+@import models.declaration.submissions.{Submission, SubmissionStatus}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.BackButton
-@import views.Title
-@import views.ViewDates
 @import views.components.gds.Styles._
-@import views.helpers.StatusOfSubmission
-@import views.html.components.gds.link
+@import views.helpers.{BackButton, StatusOfSubmission, Title, ViewDates}
+@import views.html.components.gds.{gdsMainTemplate, link}
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -36,7 +31,7 @@
     sfusConfig: SfusConfig
 )
 
-@(submission: Submission, notifications: Seq[Notification], hasDmsdocNotifications: Boolean = false)(implicit request: Request[_], messages: Messages)
+@(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
 
 @errorOrUploadFileLink(declarationID: String, status: SubmissionStatus.Value)= {
     @if(status == SubmissionStatus.REJECTED) {
@@ -118,7 +113,7 @@
             <div class="govuk-grid-column-full">
                 <h2 class="govuk-heading-m">@messages("submissions.timeline")</h2>
 
-                @if(hasDmsdocNotifications) {
+                @if(notifications.exists(_.status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)) {
                     <p id="content-on-dmsdoc" class="govuk-body">
                         @messages("submissions.content.on.dmsdoc")
                         @if(sfusConfig.isSfusSecureMessagingEnabled) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.helpers
 
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

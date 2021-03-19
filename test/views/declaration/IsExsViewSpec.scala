@@ -21,7 +21,6 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{DeclarantIsExporter, IsExs}
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.declaration.Parties
 import models.requests.JourneyRequest
@@ -30,6 +29,7 @@ import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.is_exs
 
 class IsExsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {

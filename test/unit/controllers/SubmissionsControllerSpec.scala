@@ -70,7 +70,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     super.beforeEach()
 
     authorizedUser()
-    when(declarationInformationPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(declarationInformationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(submissionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_SIZE)
   }
@@ -87,7 +87,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
   def declarationInformationPageCaptor: (Submission, Seq[Notification]) = {
     val submissionCaptor = ArgumentCaptor.forClass(classOf[Submission])
     val notificationsCaptor = ArgumentCaptor.forClass(classOf[Seq[Notification]])
-    verify(declarationInformationPage).apply(submissionCaptor.capture(), notificationsCaptor.capture(), any())(any(), any())
+    verify(declarationInformationPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
     (submissionCaptor.getValue, notificationsCaptor.getValue)
   }
 

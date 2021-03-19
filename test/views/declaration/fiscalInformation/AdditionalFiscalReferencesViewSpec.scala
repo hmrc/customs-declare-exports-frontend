@@ -20,7 +20,6 @@ import base.Injector
 import controllers.util.{SaveAndContinue, SaveAndReturn}
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalFiscalReference
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -29,6 +28,7 @@ import services.cache.ExportItemIdGeneratorService
 import unit.tools.Stubs
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.fiscalInformation.additional_fiscal_references
 import views.tags.ViewTest
 

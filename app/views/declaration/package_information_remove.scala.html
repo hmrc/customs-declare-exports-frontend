@@ -19,13 +19,13 @@
 @import forms.common.YesNoAnswer.YesNoAnswers._
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.{BackButton, Title}
+@import views.helpers.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import scala.collection.immutable
 @import forms.declaration.PackageInformation
 @import services.PackageTypes
-@import views.ErrorMapper.yesNoErrors
+@import views.helpers.ErrorMapper.yesNoErrors
 
 @this(
         govukLayout: gdsMainTemplate,

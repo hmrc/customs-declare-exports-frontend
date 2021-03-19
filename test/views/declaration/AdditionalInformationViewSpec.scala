@@ -21,7 +21,6 @@ import controllers.declaration.routes
 import controllers.util.{SaveAndContinue, SaveAndReturn}
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
-import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -30,6 +29,7 @@ import services.cache.ExportsTestData
 import unit.tools.Stubs
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.additionalInformation.additional_information
 import views.tags.ViewTest
 

@@ -21,11 +21,11 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.PersonPresentingGoodsDetails
-import helpers.views.declaration.CommonMessages
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.person_presenting_goods_details
 
 class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector with CommonMessages {

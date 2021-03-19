@@ -19,13 +19,13 @@ package views.declaration
 import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.package_information_remove
 import views.tags.ViewTest
 

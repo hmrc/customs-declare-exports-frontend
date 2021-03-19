@@ -19,7 +19,6 @@ package views.declaration.fiscalInformation
 import base.Injector
 import controllers.util.{SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalFiscalReference
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
 import models.DeclarationType._
@@ -28,6 +27,7 @@ import play.api.data.Form
 import services.cache.{ExportItemIdGeneratorService, ExportsTestData}
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.fiscalInformation.additional_fiscal_references_add
 import views.tags.ViewTest
 

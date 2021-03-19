@@ -20,7 +20,6 @@ import base.{Injector, MockAuthAction, OverridableInjector}
 import com.typesafe.config.ConfigFactory
 import config.{SfusConfig, TimeoutDialogConfig}
 import forms.Choice
-import helpers.views.declaration.CommonMessages
 import org.mockito.Mockito.when
 import org.scalatest.Matchers._
 import play.api.data.Form
@@ -29,8 +28,9 @@ import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.html.choice_page
-
 import scala.collection.JavaConverters.asScalaIteratorConverter
+
+import views.helpers.CommonMessages
 
 class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAction with Injector {
 

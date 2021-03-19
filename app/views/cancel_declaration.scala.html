@@ -19,11 +19,10 @@
 @import forms.cancellation.CancellationChangeReason.{NoLongerRequired, Duplication, OtherReason}
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.CancelDec
-@import views.Title
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.BackButton
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
-@import views.ErrorMapper.radioGroupErrors
 
 @this(
   govukLayout: gdsMainTemplate,

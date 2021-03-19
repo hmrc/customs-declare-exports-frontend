@@ -21,13 +21,13 @@
 @import forms.declaration.NactCode
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.{BackButton, Title}
+@import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import forms.common.YesNoAnswer
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
-@import views.ErrorMapper.yesNoErrors
+@import views.helpers.ErrorMapper.yesNoErrors
 
 @this(
         govukLayout: gdsMainTemplate,

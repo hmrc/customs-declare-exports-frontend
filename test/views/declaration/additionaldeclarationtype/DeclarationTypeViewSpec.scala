@@ -20,7 +20,6 @@ import base.Injector
 import controllers.declaration.routes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype._
-import helpers.views.declaration.CommonMessages
 import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -28,6 +27,7 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.additionaldeclarationtype.declaration_type
 import views.tags.ViewTest
 

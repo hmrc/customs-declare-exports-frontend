@@ -26,7 +26,7 @@ import models.declaration.submissions.{Submission, SubmissionStatus}
 import play.api.Configuration
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukTable}
 import views.declaration.spec.UnitViewSpec
-import views.helpers.StatusOfSubmission
+import views.helpers.{StatusOfSubmission, ViewDates}
 import views.html.components.gds.{gdsMainTemplate, link}
 import views.html.declaration_information
 
@@ -115,7 +115,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val declarationInformationPageWithoutFeatures =
     new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, link, eadConfigDisabled, sfusConfigDisabled)
 
-  private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications, true)(request, messages)
+  private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications)(request, messages)
 
   private val viewWithFeaturesNotAccepted =
     declarationInformationPageWithFeatures(submission, Seq(rejectedNotification))(request, messages)
@@ -167,14 +167,14 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       "there is no mrn" in {
 
-        val view = declarationInformationPageWithoutFeatures(submission(None), notifications, true)(request, messages)
+        val view = declarationInformationPageWithoutFeatures(submission(None), notifications)(request, messages)
 
         Option(view.getElementById("generate-ead")) mustBe None
       }
 
       "feature flag is disabled" in {
 
-        val view = declarationInformationPageWithoutFeatures(submission, notifications, true)(request, messages)
+        val view = declarationInformationPageWithoutFeatures(submission, notifications)(request, messages)
 
         Option(view.getElementById("generate-ead")) mustBe None
       }
@@ -227,7 +227,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       }
 
       "feature flag is enabled, status is ADDITIONAL_DOCUMENTS_REQUIRED and mrn is not present" in {
-        val view = declarationInformationPageWithFeatures(submission(None), notifications, true)(request, messages)
+        val view = declarationInformationPageWithFeatures(submission(None), notifications)(request, messages)
         val sfusLink = view.getElementById("notification_action_0")
 
         sfusLink must containMessage("submissions.sfus.upload.files")
@@ -239,7 +239,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       "feature flag is disabled" in {
 
-        val view = declarationInformationPageWithoutFeatures(submission, notifications, true)(request, messages)
+        val view = declarationInformationPageWithoutFeatures(submission, notifications)(request, messages)
 
         val documentsRequired = StatusOfSubmission.asText(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
         view.getElementById("notification_status_0").text() mustBe documentsRequired
@@ -281,7 +281,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
     "display the paragraph below Timeline, excluding the link to the SFUS Messaging Inbox" when {
       "additional documents are required but the 'SFUS Secure Messaging' flag is disabled" in {
-        val view = declarationInformationPageWithoutFeatures(submission, notifications, true)(request, messages)
+        val view = declarationInformationPageWithoutFeatures(submission, notifications)(request, messages)
         view.getElementById("content-on-dmsdoc").text mustBe messages("submissions.content.on.dmsdoc")
       }
     }

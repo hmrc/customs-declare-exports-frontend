@@ -17,9 +17,9 @@
 package views
 
 import base.Injector
-import helpers.views.declaration.CommonMessages
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.unverified_email
 
 import scala.collection.JavaConverters._

@@ -22,12 +22,12 @@
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.{BackButton, Title}
+@import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary.item_section
 @import views.components.gds.Styles._
 @import scala.collection.immutable
-@import views.ErrorMapper.yesNoErrors
+@import views.helpers.ErrorMapper.yesNoErrors
 
 @this(
   govukLayout: gdsMainTemplate,

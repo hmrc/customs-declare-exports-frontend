@@ -15,17 +15,15 @@
  *@
 
 @import controllers.declaration.routes._
-@import views.Title
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
 @import forms.declaration.exporter.ExporterDetails
-
 @import scala.collection.immutable
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
-@import views.BackButton
+@import views.helpers.{BackButton, Title}
 @import play.twirl.api.HtmlFormat
-@import views.ErrorMapper.eoriOrAddressErrors
+@import views.helpers.ErrorMapper.eoriOrAddressErrors
 @import config.AppConfig
 
 @this(
