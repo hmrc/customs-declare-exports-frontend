@@ -90,7 +90,7 @@
                     ),
                     TableRow(
                         content = Text(
-                            SubmissionStatus.format(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))
+                            SubmissionStatus.formatOnDeclInfoPages(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))
                         ),
                         attributes = Map("id" -> s"submission-tab-$id-row$index-status")
                     )

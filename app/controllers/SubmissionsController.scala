@@ -30,9 +30,10 @@ import play.api.mvc._
 import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{declaration_information, submissions}
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+
+import models.declaration.submissions.SubmissionStatus
 
 class SubmissionsController @Inject()(
   authenticate: AuthAction,
@@ -59,7 +60,8 @@ class SubmissionsController @Inject()(
     customsDeclareExportsConnector.findSubmission(id).flatMap {
       case Some(submission) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
-          Ok(declarationInformationPage(submission, notifications))
+          val hasDmsdocNotifications = notifications.exists(_.status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
+          Ok(declarationInformationPage(submission, notifications, hasDmsdocNotifications))
         }
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }

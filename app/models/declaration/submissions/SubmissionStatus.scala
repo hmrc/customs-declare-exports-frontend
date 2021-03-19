@@ -47,6 +47,10 @@ object SubmissionStatus extends Enumeration {
     case UNKNOWN                         => "Unknown status"
   }
 
+  def formatOnDeclInfoPages(status: SubmissionStatus): String = status match {
+    case ADDITIONAL_DOCUMENTS_REQUIRED => "Documents Required"
+    case _                             => format(status)
+  }
   val rejectedStatuses: Set[submissions.SubmissionStatus.Value] = Set(REJECTED)
   val actionRequiredStatuses: Set[submissions.SubmissionStatus.Value] = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK)
   val otherStatuses: Set[submissions.SubmissionStatus.Value] = values &~ rejectedStatuses &~ actionRequiredStatuses

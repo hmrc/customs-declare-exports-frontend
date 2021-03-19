@@ -35,7 +35,7 @@
     sfusConfig: SfusConfig
 )
 
-@(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
+@(submission: Submission, notifications: Seq[Notification], hasDmsdocNotifications: Boolean = false)(implicit request: Request[_], messages: Messages)
 
 @errorOrUploadFileLink(declarationID: String, status: SubmissionStatus.Value)= {
     @if(status == SubmissionStatus.REJECTED) {
@@ -43,7 +43,7 @@
     }
 
     @if(status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED && sfusConfig.isSfusUploadEnabled) {
-        @link(text = messages("submissions.sfus"), call = Call("GET", s"${sfusConfig.sfusUploadLink}/${submission.mrn.getOrElse("")}"), target="_blank")
+        @link(text = messages("submissions.sfus.upload.files"), call = Call("GET", s"${sfusConfig.sfusUploadLink}/${submission.mrn.getOrElse("")}"), target="_blank")
     }
 }
 
@@ -70,72 +70,98 @@
     </div>
 }
 
+@sfusInboxLink = {
+    <a id="has-dmsdoc-notification"
+       class="govuk-link govuk-link--no-visited-state"
+       href="@Call("GET", sfusConfig.sfusInboxLink)"
+       target="_blank">@messages("submissions.sfus.inbox.link")</a>.
+}
+
 @govukLayout(
     title = Title("submissions.declarationInformation"),
-    backButton = Some(BackButton(messages("site.backToDeclarations"), routes.SubmissionsController.displayListOfSubmissions()))
+    backButton = Some(BackButton(messages("site.backToDeclarations"), routes.SubmissionsController.displayListOfSubmissions())),
+    useCustomContentWidth = true
 ) {
-        <h1 class=@gdsPageHeading>@messages("submissions.declarationInformation")</h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
 
-        <h2 class="govuk-heading-m">@messages("submissions.references")</h2>
+            <h1 class=@gdsPageHeading>@messages("submissions.declarationInformation")</h1>
 
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("submissions.ucr"))
-                    ),
-                    value = Value(
-                        content = submission.ducr.map(HtmlContent(_)).getOrElse(Empty)
-                    ),
-                    classes = "submission__ucr"
-                ),
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("submissions.lrn"))
-                    ),
-                    value = Value(
-                        content = HtmlContent(submission.lrn)
-                    ),
-                    classes = "submission__lrn"
-                ),
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("submissions.mrn"))
-                    ),
-                    value = Value(
-                        content = submission.mrn.map(HtmlContent(_)).getOrElse(Empty)
-                    ),
-                    classes = "submission__mrn"
-                )
-            ).filterNot(_.value.content == Empty)
-        ))
+            <h2 class="govuk-heading-m">@messages("submissions.references")</h2>
 
-        @renderDeclarationLinks
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("submissions.ucr"))
+                        ),
+                        value = Value(
+                            content = submission.ducr.map(HtmlContent(_)).getOrElse(Empty)
+                        ),
+                        classes = "submission__ucr"
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("submissions.lrn"))
+                        ),
+                        value = Value(
+                            content = HtmlContent(submission.lrn)
+                        ),
+                        classes = "submission__lrn"
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("submissions.mrn"))
+                        ),
+                        value = Value(
+                            content = submission.mrn.map(HtmlContent(_)).getOrElse(Empty)
+                        ),
+                        classes = "submission__mrn"
+                    )
+                ).filterNot(_.value.content == Empty)
+            ))
+
+            @renderDeclarationLinks
+        </div>
 
         @if(notifications.nonEmpty) {
-            <div class="govuk-grid-column" id ="declarationHistory">
-                @govukTable(Table(
-                    rows = notifications.sorted.reverse.zipWithIndex.map { case (notification, index) =>
-                        Seq(
-                            TableRow(
-                                content = HtmlContent(SubmissionStatus.format(notification.status)),
-                                attributes = Map("id" -> s"notification_status_$index")
-                            ),
-                            TableRow(
-                                content = HtmlContent(ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK)),
-                                attributes = Map("id" -> s"notification_date_time_$index")
-                            ),
-                            TableRow(
-                                content = HtmlContent(errorOrUploadFileLink(submission.uuid, notification.status)),
-                                attributes = Map("id" -> s"notification_action_$index")
+
+            <div class="govuk-grid-column-full">
+                <h2 class="govuk-heading-m">@messages("submissions.timeline")</h2>
+
+                @if(hasDmsdocNotifications) {
+                    <p id="content-on-dmsdoc" class="govuk-body">
+                        @messages("submissions.content.on.dmsdoc")
+                        @if(sfusConfig.isSfusSecureMessagingEnabled) {
+                            @Html(messages("submissions.content.on.dmsdoc.sfus", sfusInboxLink))
+                        }
+                    </p>
+                }
+
+                <div class="govuk-grid-column">
+                    @govukTable(Table(
+                        classes = "govuk-table govuk-!-margin-bottom-9",
+                        firstCellIsHeader = true,
+                        rows = notifications.sorted.reverse.zipWithIndex.map { case (notification, index) =>
+                            Seq(
+                                TableRow(
+                                    attributes = Map("id" -> s"notification_status_$index"),
+                                    content = HtmlContent(SubmissionStatus.formatOnDeclInfoPages(notification.status))
+                                ),
+                                TableRow(
+                                    attributes = Map("id" -> s"notification_date_time_$index"),
+                                    content = HtmlContent(ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK))
+                                ),
+                                TableRow(
+                                    attributes = Map("id" -> s"notification_action_$index"),
+                                    content = HtmlContent(errorOrUploadFileLink(submission.uuid, notification.status)),
+                                    format = Some("numeric")
+                                )
                             )
-                        )
-                    },
-                    classes = "govuk-table govuk-!-margin-bottom-9",
-                    caption = Some(messages("submissions.history")),
-                    captionClasses = "govuk-table__caption govuk-heading-m",
-                    firstCellIsHeader = true
-                ))
+                        }
+                    ))
+                </div>
             </div>
         }
+    </div>
 }

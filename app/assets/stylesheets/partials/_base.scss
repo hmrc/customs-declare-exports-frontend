@@ -116,3 +116,12 @@ Styling for tables on "Check Your Answers Page"
 .legal-declaration-warning {
   margin-bottom: 40px;
 }
+
+/*
+=============================================
+Alignment for table cells with numeric values
+=============================================
+*/
+.govuk-table__cell--numeric {
+  text-align: right;
+}

@@ -42,15 +42,15 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         |microservice.services.features.sfus=enabled
         |microservice.services.features.sfusSecureMessaging=enabled
         |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
-        |urls.sfusInbox="sfusInbox"
+        |urls.sfusInbox="http://localhost:6793/cds-file-upload-service/exports-message-choice"
       """.stripMargin)
   private val configWithFeaturesDisabled: Config =
     ConfigFactory.parseString("""
         |microservice.services.features.ead=disabled
         |microservice.services.features.sfus=disabled
-        |microservice.services.features.sfusSecureMessaging=enabled
+        |microservice.services.features.sfusSecureMessaging=disabled
         |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
-        |urls.sfusInbox="sfusInbox"
+        |urls.sfusInbox="http://localhost:6793/cds-file-upload-service/exports-message-choice"
       """.stripMargin)
 
   private val featureSwitchConfigEnabled = new FeatureSwitchConfig(Configuration(configWithFeaturesEnabled))
@@ -112,7 +112,8 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val declarationInformationPageWithoutFeatures =
     new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, link, eadConfigDisabled, sfusConfigDisabled)
 
-  private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications)(request, messages)
+  private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications, true)(request, messages)
+
   private val viewWithFeaturesNotAccepted =
     declarationInformationPageWithFeatures(submission, Seq(rejectedNotification))(request, messages)
 
@@ -129,7 +130,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       messages must haveTranslationFor("submissions.ucr")
       messages must haveTranslationFor("submissions.lrn")
       messages must haveTranslationFor("submissions.mrn")
-      messages must haveTranslationFor("submissions.history")
+      messages must haveTranslationFor("submissions.timeline")
     }
 
     "contains page header" in {
@@ -163,23 +164,23 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       "there is no mrn" in {
 
-        val view = declarationInformationPageWithoutFeatures(submission(None), notifications)(request, messages)
+        val view = declarationInformationPageWithoutFeatures(submission(None), notifications, true)(request, messages)
 
-        view.getElementById("generate-ead") mustBe null
+        Option(view.getElementById("generate-ead")) mustBe None
       }
 
       "feature flag is disabled" in {
 
-        val view = declarationInformationPageWithoutFeatures(submission, notifications)(request, messages)
+        val view = declarationInformationPageWithoutFeatures(submission, notifications, true)(request, messages)
 
-        view.getElementById("generate-ead") mustBe null
+        Option(view.getElementById("generate-ead")) mustBe None
       }
 
       "declaration is not accepted" in {
 
         val view = viewWithFeaturesNotAccepted
 
-        view.getElementById("generate-ead") mustBe null
+        Option(view.getElementById("generate-ead")) mustBe None
       }
     }
 
@@ -218,15 +219,15 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
         val sfusLink = viewWithFeatures.getElementById("notification_action_2")
 
-        sfusLink must containMessage("submissions.sfus")
+        sfusLink must containMessage("submissions.sfus.upload.files")
         sfusLink.child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/mrn")
       }
 
       "feature flag is enabled, status is ADDITIONAL_DOCUMENTS_REQUIRED and mrn is not present" in {
-        val view = declarationInformationPageWithFeatures(submission(None), notifications)(request, messages)
+        val view = declarationInformationPageWithFeatures(submission(None), notifications, true)(request, messages)
         val sfusLink = view.getElementById("notification_action_2")
 
-        sfusLink must containMessage("submissions.sfus")
+        sfusLink must containMessage("submissions.sfus.upload.files")
         sfusLink.child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/")
       }
     }
@@ -235,9 +236,11 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       "feature flag is disabled" in {
 
-        val view = declarationInformationPageWithoutFeatures(submission, notifications)(request, messages)
+        val view = declarationInformationPageWithoutFeatures(submission, notifications, true)(request, messages)
 
-        view.getElementById("notification_status_2").text() mustBe SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
+        val documentsRequired = SubmissionStatus.formatOnDeclInfoPages(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
+        view.getElementById("notification_status_2").text() mustBe documentsRequired
+
         view.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00am"
         view.getElementById("notification_action_2").text() mustBe ""
       }
@@ -245,11 +248,38 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       "status is not ADDITIONAL_DOCUMENTS_REQUIRED" in {
         val view = viewWithFeaturesNotAccepted
 
-        view.getElementById("notification_status_0").text() mustNot equal(SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED))
+        val documentsRequired = SubmissionStatus.formatOnDeclInfoPages(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
+        view.getElementById("notification_status_0").text() mustNot equal(documentsRequired)
+
         view.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00am"
         view.getElementById("notification_action_0").text() mustBe "View errors"
 
         Option(view.getElementById("notification_status_1")) mustBe None
+      }
+    }
+
+    "not display the paragraph below Timeline" when {
+      "additional documents are not required" in {
+        Option(viewWithFeaturesNotAccepted.getElementById("content-on-dmsdoc")) mustBe None
+      }
+    }
+
+    "display the paragraph below Timeline, including the link to the SFUS Messaging Inbox" when {
+      "additional documents are required and the 'SFUS Secure Messaging' flag is enabled" in {
+        val link = messages("submissions.sfus.inbox.link")
+        val paragraph = s"${messages("submissions.content.on.dmsdoc")} ${messages("submissions.content.on.dmsdoc.sfus", link)}."
+        viewWithFeatures.getElementById("content-on-dmsdoc").text mustBe paragraph
+
+        val element = viewWithFeatures.getElementById("has-dmsdoc-notification")
+        element.tagName.toLowerCase mustBe "a"
+        element.attr("href") mustBe sfusConfigEnabled.sfusInboxLink
+      }
+    }
+
+    "display the paragraph below Timeline, excluding the link to the SFUS Messaging Inbox" when {
+      "additional documents are required but the 'SFUS Secure Messaging' flag is disabled" in {
+        val view = declarationInformationPageWithoutFeatures(submission, notifications, true)(request, messages)
+        view.getElementById("content-on-dmsdoc").text mustBe messages("submissions.content.on.dmsdoc")
       }
     }
 
@@ -272,10 +302,13 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
     "contains additional documents acceptedNotification with redirect to SFUS link" in {
 
-      viewWithFeatures.getElementById("notification_status_2").text() mustBe SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
+      val documentsRequired = SubmissionStatus.formatOnDeclInfoPages(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
+      viewWithFeatures.getElementById("notification_status_2").text() mustBe documentsRequired
       viewWithFeatures.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00am"
-      viewWithFeatures.getElementById("notification_action_2") must containMessage("submissions.sfus")
-      viewWithFeatures.getElementById("notification_action_2").child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/mrn")
+      viewWithFeatures.getElementById("notification_action_2") must containMessage("submissions.sfus.upload.files")
+      viewWithFeatures
+        .getElementById("notification_action_2")
+        .child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/mrn")
     }
 
     "contains back link which links to the submission list" in {
