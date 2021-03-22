@@ -18,15 +18,16 @@ package features
 
 import play.api.mvc.PathBindable
 
-object Feature extends Enumeration {
-  type Feature = Value
-  val betaBanner, changeErrorLink, default, ead, sfus, secureMessaging, googleFormFeedbackLink = Value
+object SecureMessagingFeatureStatus extends Enumeration {
+  type SecureMessagingFeatureStatus = Value
 
-  implicit object FeaturePathStringBinder
-      extends PathBindable.Parsing[Feature.Feature](
+  val disabled, sfus, exports = Value
+
+  implicit object SecureMessagingFeatureStatusPathStringBinder
+      extends PathBindable.Parsing[SecureMessagingFeatureStatus.SecureMessagingFeatureStatus](
         withName(_),
         _.toString,
-        (k: String, e: Exception) => "Cannot parse %s as Feature: %s".format(k, e.getMessage)
+        (k: String, e: Exception) => "Cannot parse %s as FeatureStatus: %s".format(k, e.getMessage)
       )
 
 }

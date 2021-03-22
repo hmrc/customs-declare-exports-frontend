@@ -17,7 +17,7 @@
 package unit.controllers.actions
 
 import base.Injector
-import config.{AppConfig, SecureMessagingConfig}
+import config.AppConfig
 import controllers.ChoiceController
 import controllers.actions.NoExternalId
 import play.api.test.Helpers._

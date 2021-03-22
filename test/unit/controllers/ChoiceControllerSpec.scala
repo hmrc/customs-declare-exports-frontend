@@ -16,7 +16,8 @@
 
 package unit.controllers
 
-import config.{AppConfig, SecureMessagingConfig}
+import base.ExportsTestData._
+import config.AppConfig
 import controllers.ChoiceController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
@@ -33,7 +34,6 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerWithoutFormSpec
 import utils.FakeRequestCSRFSupport._
 import views.html.choice_page
-import base.ExportsTestData._
 
 class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
   import ChoiceControllerSpec._

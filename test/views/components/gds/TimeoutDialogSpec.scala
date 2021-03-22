@@ -16,19 +16,20 @@
 
 package views.components.gds
 
-import base.{Injector, MockAuthAction, OverridableInjector}
+import base.{MockAuthAction, OverridableInjector}
 import com.typesafe.config.ConfigFactory
-import config.{SecureMessagingConfig, SfusConfig, TimeoutDialogConfig}
+import config.{SecureMessagingFeatureFlagConfig, TimeoutDialogConfig}
 import forms.Choice
-import views.helpers.CommonMessages
 import org.mockito.Mockito.when
 import org.scalatest.Matchers._
+import play.api.Configuration
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.choice_page
+
 import scala.collection.JavaConverters.asScalaIteratorConverter
 
 class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAction {
@@ -43,15 +44,15 @@ class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAc
           timeoutDialog.countdown="200 millis"
           """)))
       val timeoutDialogConfig = new TimeoutDialogConfig(serviceConfig)
-      val secureMessagingConfig = mock[SecureMessagingConfig]
+      val secureMessagingFeatureFlagConfig = mock[SecureMessagingFeatureFlagConfig]
 
       val injector = new OverridableInjector(
         bind[TimeoutDialogConfig].toInstance(timeoutDialogConfig),
-        bind[SecureMessagingConfig].toInstance(secureMessagingConfig)
+        bind[SecureMessagingFeatureFlagConfig].toInstance(secureMessagingFeatureFlagConfig)
       )
       val choicePage = injector.instanceOf[choice_page]
 
-      when(secureMessagingConfig.isSfusSecureMessagingEnabled).thenReturn(false)
+      when(secureMessagingFeatureFlagConfig.isSfusSecureMessagingEnabled).thenReturn(false)
       val view = choicePage(form, Seq.empty[String])(getAuthenticatedRequest(), messages)
 
       val metas = view.getElementsByTag("meta").iterator.asScala.toList.filter(_.attr("name") == "hmrc-timeout-dialog")
