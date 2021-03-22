@@ -122,29 +122,27 @@
                     </p>
                 }
 
-                <div class="govuk-grid-column">
-                    @govukTable(Table(
-                        classes = "govuk-table govuk-!-margin-bottom-9",
-                        firstCellIsHeader = true,
-                        rows = notifications.sorted.reverse.zipWithIndex.map { case (notification, index) =>
-                            Seq(
-                                TableRow(
-                                    attributes = Map("id" -> s"notification_status_$index"),
-                                    content = HtmlContent(StatusOfSubmission.asText(notification))
-                                ),
-                                TableRow(
-                                    attributes = Map("id" -> s"notification_date_time_$index"),
-                                    content = HtmlContent(ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK))
-                                ),
-                                TableRow(
-                                    attributes = Map("id" -> s"notification_action_$index"),
-                                    content = HtmlContent(errorOrUploadFileLink(submission.uuid, notification.status)),
-                                    format = Some("numeric")
-                                )
+                @govukTable(Table(
+                    classes = "govuk-table govuk-!-margin-bottom-9",
+                    firstCellIsHeader = true,
+                    rows = notifications.sorted.reverse.zipWithIndex.map { case (notification, index) =>
+                        Seq(
+                            TableRow(
+                                attributes = Map("id" -> s"notification_status_$index"),
+                                content = HtmlContent(StatusOfSubmission.asText(notification))
+                            ),
+                            TableRow(
+                                attributes = Map("id" -> s"notification_date_time_$index"),
+                                content = HtmlContent(ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK))
+                            ),
+                            TableRow(
+                                attributes = Map("id" -> s"notification_action_$index"),
+                                content = HtmlContent(errorOrUploadFileLink(submission.uuid, notification.status)),
+                                format = Some("numeric")
                             )
-                        }
-                    ))
-                </div>
+                        )
+                    }
+                ))
             </div>
         }
     </div>
