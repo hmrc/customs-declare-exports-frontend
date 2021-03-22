@@ -25,7 +25,6 @@ import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced._
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -35,6 +34,7 @@ import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.documentsProduced.documents_produced_change
 import views.tags.ViewTest
 

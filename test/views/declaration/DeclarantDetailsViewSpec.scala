@@ -21,7 +21,6 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
-import helpers.views.declaration.CommonMessages
 import models.DeclarationType.{DeclarationType, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
@@ -31,6 +30,7 @@ import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.declarant_details
 import views.tags.ViewTest
 

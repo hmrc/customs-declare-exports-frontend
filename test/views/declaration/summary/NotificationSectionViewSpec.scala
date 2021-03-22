@@ -16,22 +16,23 @@
 
 package views.declaration.summary
 
-import java.time.{ZoneOffset, ZonedDateTime}
+import java.time.ZonedDateTime
 
 import base.Injector
 import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus
 import services.cache.ExportsTestData
-import views.ViewDates
 import views.declaration.spec.UnitViewSpec
+import views.helpers.{StatusOfSubmission, ViewDates}
 import views.html.declaration.summary.notifications_section
 
 class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   private val acceptedNotification =
-    Notification("actionId", "SOME_MRN", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty, "payload")
+    Notification("actionId", "SOME_MRN", ZonedDateTime.now, SubmissionStatus.ACCEPTED, Seq.empty, "payload")
+
   private val clearedNotification =
-    Notification("actionId", "SOME_MRN", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.CLEARED, Seq.empty, "payload")
+    Notification("actionId", "SOME_MRN", ZonedDateTime.now, SubmissionStatus.CLEARED, Seq.empty, "payload")
 
   val section = instanceOf[notifications_section]
 
@@ -49,14 +50,14 @@ class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestData with
     "have Accepted" in {
 
       val row = view.getElementsByClass("accepted-row")
-      row must haveSummaryKey(acceptedNotification.displayStatus)
+      row must haveSummaryKey(StatusOfSubmission.asText(acceptedNotification))
       row must haveSummaryValue(ViewDates.formatDateAtTime(acceptedNotification.dateTimeIssuedInUK))
     }
 
     "have Cleared" in {
 
       val row = view.getElementsByClass("cleared-row")
-      row must haveSummaryKey(clearedNotification.displayStatus)
+      row must haveSummaryKey(StatusOfSubmission.asText(clearedNotification))
       row must haveSummaryValue(ViewDates.formatDateAtTime(clearedNotification.dateTimeIssuedInUK))
     }
   }

@@ -18,7 +18,6 @@ package views.declaration.commodityMeasure
 
 import base.Injector
 import forms.declaration.{CommodityMeasure, IsExs}
-import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
@@ -27,6 +26,7 @@ import play.api.data.Form
 import play.api.mvc.Call
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.commodityMeasure.commodity_measure
 import views.tags.ViewTest
 

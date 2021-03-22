@@ -18,7 +18,6 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.PackageInformation
-import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
@@ -28,6 +27,7 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.package_information_add
 import views.tags.ViewTest
 

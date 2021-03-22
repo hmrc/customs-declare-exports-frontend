@@ -22,7 +22,6 @@ import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails
-import helpers.views.declaration.CommonMessages
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.Mode
 import models.requests.JourneyRequest
@@ -31,6 +30,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.carrier_details
 import views.tags.ViewTest
 

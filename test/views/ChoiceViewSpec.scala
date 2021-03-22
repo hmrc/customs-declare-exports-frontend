@@ -16,24 +16,24 @@
 
 package views
 
+import base.ExportsTestData._
 import base.Injector
+import config.SfusConfig
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.CreateDec
-import helpers.views.declaration.CommonMessages
 import org.jsoup.nodes.Document
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
 import play.api.data.Form
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
 import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.choice_page
 import views.html.components.gds.{errorSummary, link, paragraphBody, saveAndContinue}
 import views.tags.ViewTest
-import base.ExportsTestData._
-import config.SfusConfig
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 
 @ViewTest
 class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with BeforeAndAfterEach {

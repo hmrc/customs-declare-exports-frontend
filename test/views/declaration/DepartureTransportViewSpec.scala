@@ -21,7 +21,6 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes._
-import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
@@ -30,6 +29,7 @@ import play.twirl.api.Html
 import unit.tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.departure_transport
 import views.tags.ViewTest
 

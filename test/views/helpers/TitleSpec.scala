@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.helpers
 
 import org.scalatest.MustMatchers
 import views.declaration.spec.UnitViewSpec

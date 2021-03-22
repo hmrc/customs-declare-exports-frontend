@@ -14,8 +14,20 @@
  * limitations under the License.
  */
 
-package views
+package views.helpers
 
-import play.api.mvc.Call
+import java.time.LocalDateTime
 
-case class BackButton(title: String, call: Call)
+import org.scalatest.{MustMatchers, WordSpec}
+
+class ViewDatesSpec extends WordSpec with MustMatchers {
+
+  "ViewDates" should {
+
+    "format date at time correctly" in {
+
+      val date = LocalDateTime.of(2019, 8, 20, 13, 55, 15)
+      ViewDates.formatDateAtTime(date) must equal("20 August 2019 at 1:55pm")
+    }
+  }
+}

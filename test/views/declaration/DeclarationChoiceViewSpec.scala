@@ -22,7 +22,6 @@ import config.AppConfig
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.CreateDec
 import forms.declaration.DeclarationChoice
-import helpers.views.declaration.CommonMessages
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
@@ -33,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.components.gds.{errorSummary, saveAndContinue}
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest

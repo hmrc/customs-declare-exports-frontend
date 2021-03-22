@@ -19,7 +19,6 @@ package views.declaration
 import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.declaration.Container
 import org.jsoup.nodes.Document
@@ -27,6 +26,7 @@ import org.scalatest.MustMatchers
 import play.api.data.Form
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.seal_remove
 import views.tags.ViewTest
 

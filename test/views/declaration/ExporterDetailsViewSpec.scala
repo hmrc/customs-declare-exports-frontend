@@ -22,7 +22,6 @@ import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.EntityDetails
 import forms.declaration.exporter.ExporterDetails
-import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
@@ -30,6 +29,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.exporter_address
 import views.tags.ViewTest
 

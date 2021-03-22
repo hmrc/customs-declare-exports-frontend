@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package helpers.views.declaration
+package views.helpers
 
-trait CommonMessages {
+import models.declaration.notifications.Notification
+import models.declaration.submissions.SubmissionStatus.SubmissionStatus
+import play.api.i18n.Messages
 
-  val backCaption: String = "site.back"
-  val backToSelectionCaption: String = "site.backToSelectionPage"
-  val removeCaption: String = "site.remove"
-  val addCaption: String = "site.add"
-  val continueCaption: String = "site.continue"
-  val saveAndContinueCaption: String = "site.save_and_continue"
-  val saveAndReturnCaption: String = "site.save_and_come_back_later"
+object StatusOfSubmission {
+
+  def asText(status: SubmissionStatus)(implicit messages: Messages): String =
+    messages(s"submission.status.${status.toString}")
+
+  def asText(notification: Notification)(implicit messages: Messages): String =
+    asText(notification.status)
+
+  def toLowerCase(notification: Notification)(implicit messages: Messages): String =
+    asText(notification).toLowerCase
 }

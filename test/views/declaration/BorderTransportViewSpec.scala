@@ -18,7 +18,6 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.BorderTransport
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -26,6 +25,7 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.border_transport
 import views.tags.ViewTest
 

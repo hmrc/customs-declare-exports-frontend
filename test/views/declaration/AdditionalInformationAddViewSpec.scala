@@ -20,7 +20,6 @@ import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.{SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalInformation
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -28,6 +27,7 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.additionalInformation.additional_information_add
 import views.tags.ViewTest
 

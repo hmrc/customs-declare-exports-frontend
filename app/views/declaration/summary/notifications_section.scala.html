@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
+@import models.declaration.notifications.Notification
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{StatusOfSubmission, ViewDates}
 @import views.html.components.gds.summary_list
-@import models.declaration.notifications.Notification
-@import views.ViewDates
 
 @this(govukSummaryList: GovukSummaryList)
 
@@ -37,9 +37,9 @@
         ))
         ++ notifications.map(notification =>
             SummaryListRow(
-                classes = s"${notification.displayStatus.toLowerCase}-row",
+                classes = s"${notification.status.toString.toLowerCase}-row",
                 key = Key(
-                    content = Text(notification.displayStatus)
+                    content = Text(StatusOfSubmission.asText(notification))
                 ),
                 value = Value(
                     content = Text(ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK))

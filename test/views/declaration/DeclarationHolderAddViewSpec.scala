@@ -21,7 +21,6 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
-import helpers.views.declaration.CommonMessages
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
@@ -29,6 +28,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.declarationHolder.declaration_holder_add
 import views.tags.ViewTest
 

@@ -22,7 +22,6 @@ import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration._
-import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
 import models.Mode
 import models.declaration.Parties
@@ -32,6 +31,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.consignee_details
 import views.tags.ViewTest
 

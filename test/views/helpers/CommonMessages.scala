@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package views
+package views.helpers
 
-import play.api.i18n.Messages
+trait CommonMessages {
 
-case class Title(headingKey: String, sectionKey: String = "", headingArg: String = "", headingArgs: Option[Seq[String]] = None) {
-
-  def toString(implicit messages: Messages): String = {
-    def args = headingArgs.getOrElse(Seq(headingArg))
-    if (sectionKey.isEmpty) {
-      messages("title.format", messages(headingKey, args: _*), messages("service.name"))
-    } else {
-      messages("title.withSection.format", messages(headingKey, args: _*), messages(sectionKey), messages("service.name"))
-    }
-  }
-
+  val backCaption: String = "site.back"
+  val backToSelectionCaption: String = "site.backToSelectionPage"
+  val removeCaption: String = "site.remove"
+  val addCaption: String = "site.add"
+  val continueCaption: String = "site.continue"
+  val saveAndContinueCaption: String = "site.save_and_continue"
+  val saveAndReturnCaption: String = "site.save_and_come_back_later"
 }

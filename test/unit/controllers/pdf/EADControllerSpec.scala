@@ -30,10 +30,10 @@ import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import services.ead.{BarcodeService, EADService}
 import unit.base.ControllerWithoutFormSpec
-import views.ViewDates
 import views.xml.pdf.pdfTemplate
-
 import scala.concurrent.Future
+
+import views.helpers.ViewDates
 
 class EADControllerSpec extends ControllerWithoutFormSpec with Injector {
 

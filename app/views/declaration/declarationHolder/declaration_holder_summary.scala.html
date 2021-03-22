@@ -20,14 +20,14 @@
 @import forms.declaration.DeclarationHolder
 @import forms.declaration.DeclarationSummaryHolder
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.{BackButton, Title}
+@import views.helpers.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import play.twirl.api.HtmlFormat
 
 @import scala.collection.immutable
 @import services.HolderOfAuthorisationCode
-@import views.ErrorMapper.yesNoErrors
+@import views.helpers.ErrorMapper.yesNoErrors
 
 @this(
   govukLayout: gdsMainTemplate,

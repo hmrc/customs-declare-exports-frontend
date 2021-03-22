@@ -32,10 +32,10 @@ import play.api.test.Helpers._
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.base.UnitSpec
-import views.ViewDates
 import views.xml.pdf.pdfTemplate
-
 import scala.concurrent.{ExecutionContext, Future}
+
+import views.helpers.ViewDates
 
 class EADServiceSpec
     extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector with SubmissionBuilder {

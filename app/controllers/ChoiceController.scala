@@ -21,11 +21,10 @@ import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
-
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
 

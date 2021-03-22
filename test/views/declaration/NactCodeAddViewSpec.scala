@@ -18,7 +18,6 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.NactCode
-import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
@@ -26,6 +25,7 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.declaration.nact_code_add
 import views.tags.ViewTest
 
