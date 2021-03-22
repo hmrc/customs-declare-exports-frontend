@@ -33,7 +33,9 @@ class ConnectorSpec extends WordSpec with GuiceOneAppPerSuite with WiremockTestS
     "microservice.services.customs-declare-exports.host" -> wireHost,
     "microservice.services.customs-declare-exports.port" -> exportsWirePort,
     "microservice.services.customs-declarations-information.host" -> wireHost,
-    "microservice.services.customs-declarations-information.port" -> disWirePort
+    "microservice.services.customs-declarations-information.port" -> disWirePort,
+    "microservice.services.secure-messaging.host" -> wireHost,
+    "microservice.services.secure-messaging.port" -> secureMessagingWirePort
   )
 
   /**

@@ -43,6 +43,7 @@ object ExportsTestData extends ExportsDeclarationBuilder {
   val nrsAffinityGroup = Some(Individual)
   val nrsCredentialStrength = Some("STRONG")
   val nrsDateOfBirth = Some(LocalDate.now().minusYears(25))
+  val eori = "GB123456789012000"
 
   val currentLoginTime: DateTime = new DateTime(1530442800000L, UTC)
   val previousLoginTime: DateTime = new DateTime(1530464400000L, UTC)

@@ -32,9 +32,15 @@ trait WiremockTestServer extends UnitSpec with BeforeAndAfterAll {
   val disWirePort = 20002
   val disWireMockServer = new WireMockServer(disWirePort)
 
+  val secureMessagingWirePort = 20003
+  val secureMessagingWireMockServer = new WireMockServer(secureMessagingWirePort)
+
   protected def stubForExports(mappingBuilder: MappingBuilder): StubMapping =
     exportsWireMockServer.stubFor(mappingBuilder)
 
   protected def stubForDis(mappingBuilder: MappingBuilder): StubMapping =
     disWireMockServer.stubFor(mappingBuilder)
+
+  protected def stubForSecureMessaging(mappingBuilder: MappingBuilder): StubMapping =
+    secureMessagingWireMockServer.stubFor(mappingBuilder)
 }
