@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.SfusConfig
-@import forms.Choice.AllowedChoiceValues._
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.Title
-@import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import forms.Choice.AllowedChoiceValues._
+@import views.Title
+@import views.ErrorMapper.radioGroupErrors
+@import config.{SecureMessagingConfig, SfusConfig}
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -29,10 +29,12 @@
     saveAndContinue: saveAndContinue,
     paragraphBody: paragraphBody,
     link: link,
+    sfusConfig: SfusConfig,
+    secureMessagingConfig: SecureMessagingConfig,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(form: Form[_], availableJourneys: Seq[String], sfusConfig: SfusConfig)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], availableJourneys: Seq[String])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.choice.description"),
@@ -81,12 +83,12 @@
 
         @saveAndContinue("site.continue")
 
-        @if(sfusConfig.isSfusSecureMessagingEnabled) {
+        @if(secureMessagingConfig.isSfusSecureMessagingEnabled) {
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2">
             <h3>@messages("declaration.choice.linkDescription")</h3>
 
             <p>@link(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = Call("GET", s"${sfusConfig.sfusUploadLink}"), target = "_blank")</p>
-            <p>@link(id = Some("sfusInboxLink"), text = messages("declaration.choice.link.sfusInbox.txt"), call = Call("GET", s"${sfusConfig.sfusInboxLink}"), target = "_blank")</p>
+            <p>@link(id = Some("sfusInboxLink"), text = messages("declaration.choice.link.sfusInbox.txt"), call = Call("GET", s"${secureMessagingConfig.sfusInboxLink}"), target = "_blank")</p>
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2">
         }
     }

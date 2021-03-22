@@ -20,7 +20,7 @@ import java.time.ZonedDateTime
 
 import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
-import config.{EadConfig, FeatureSwitchConfig, SfusConfig}
+import config.{EadConfig, FeatureSwitchConfig, SecureMessagingConfig, SfusConfig}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
 import play.api.Configuration

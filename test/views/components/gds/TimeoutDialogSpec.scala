@@ -18,8 +18,9 @@ package views.components.gds
 
 import base.{Injector, MockAuthAction, OverridableInjector}
 import com.typesafe.config.ConfigFactory
-import config.{SfusConfig, TimeoutDialogConfig}
+import config.{SecureMessagingConfig, SfusConfig, TimeoutDialogConfig}
 import forms.Choice
+import views.helpers.CommonMessages
 import org.mockito.Mockito.when
 import org.scalatest.Matchers._
 import play.api.data.Form
@@ -30,9 +31,7 @@ import views.declaration.spec.UnitViewSpec
 import views.html.choice_page
 import scala.collection.JavaConverters.asScalaIteratorConverter
 
-import views.helpers.CommonMessages
-
-class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAction with Injector {
+class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAction {
 
   "Timeout Dialog" should {
 
@@ -44,12 +43,19 @@ class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAc
           timeoutDialog.countdown="200 millis"
           """)))
       val timeoutDialogConfig = new TimeoutDialogConfig(serviceConfig)
-      val injector = new OverridableInjector(bind[TimeoutDialogConfig].toInstance(timeoutDialogConfig))
+      val secureMessagingConfig = mock[SecureMessagingConfig]
+
+      val injector = new OverridableInjector(
+        bind[TimeoutDialogConfig].toInstance(timeoutDialogConfig),
+        bind[SecureMessagingConfig].toInstance(secureMessagingConfig)
+      )
       val choicePage = injector.instanceOf[choice_page]
-      val sfusConfig = mock[SfusConfig]
-      when(sfusConfig.isSfusSecureMessagingEnabled).thenReturn(false)
-      val view = choicePage(form, Seq.empty[String], sfusConfig)(getAuthenticatedRequest(), messages)
+
+      when(secureMessagingConfig.isSfusSecureMessagingEnabled).thenReturn(false)
+      val view = choicePage(form, Seq.empty[String])(getAuthenticatedRequest(), messages)
+
       val metas = view.getElementsByTag("meta").iterator.asScala.toList.filter(_.attr("name") == "hmrc-timeout-dialog")
+
       assert(metas.nonEmpty)
       metas.head.dataset.get("sign-out-url") mustBe controllers.routes.SignOutController.signOut(models.SignOutReason.SessionTimeout).url
     }

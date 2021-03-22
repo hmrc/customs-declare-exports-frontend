@@ -16,7 +16,7 @@
 
 package unit.controllers
 
-import config.{AppConfig, SfusConfig}
+import config.{AppConfig, SecureMessagingConfig}
 import controllers.ChoiceController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
@@ -40,22 +40,19 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   val choicePage = mock[choice_page]
   val appConfig = mock[AppConfig]
-  val sfusConfig = mock[SfusConfig]
 
   val controller =
-    new ChoiceController(mockAuthAction, mockVerifiedEmailAction, stubMessagesControllerComponents(), choicePage, appConfig, sfusConfig)
+    new ChoiceController(mockAuthAction, mockVerifiedEmailAction, stubMessagesControllerComponents(), choicePage, appConfig)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(choicePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(choicePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(appConfig.availableJourneys()).thenReturn(allJourneys)
-    when(sfusConfig.isSfusUploadEnabled).thenReturn(true)
-    when(sfusConfig.isSfusSecureMessagingEnabled).thenReturn(true)
   }
 
   override protected def afterEach(): Unit = {
-    reset(choicePage, appConfig, sfusConfig)
+    reset(choicePage, appConfig)
     super.afterEach()
   }
 
@@ -97,7 +94,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         val result = controller.displayPage(Some(Choice(CancelDec)))(request)
         val form = Choice.form().fill(Choice(CancelDec))
 
-        viewOf(result) must be(choicePage(form, allJourneys, sfusConfig)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
       }
 
       "cache contains existing declaration" in {
@@ -107,7 +104,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         val result = controller.displayPage(Some(Choice(Submissions)))(request)
         val form = Choice.form().fill(Choice(Submissions))
 
-        viewOf(result) must be(choicePage(form, allJourneys, sfusConfig)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
       }
     }
 
@@ -120,7 +117,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         val result = controller.displayPage(None)(request)
         val form = Choice.form()
 
-        viewOf(result) must be(choicePage(form, allJourneys, sfusConfig)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(choicePage(form, allJourneys)(request, controller.messagesApi.preferred(request)))
       }
     }
   }

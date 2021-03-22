@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package config
+package features
 
-import features.Feature
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
+import play.api.mvc.PathBindable
 
-@Singleton
-class SfusConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
+object FeatureStatus extends Enumeration {
+  type FeatureStatus = Value
+  val enabled, disabled, suspended = Value
 
-  val sfusUploadLink: String =
-    config
-      .getOptional[String]("urls.sfusUpload")
-      .getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend mrn page url"))
+  implicit object FeatureStatusPathStringBinder
+    extends PathBindable.Parsing[FeatureStatus.FeatureStatus](
+      withName(_),
+      _.toString,
+      (k: String, e: Exception) => "Cannot parse %s as FeatureStatus: %s".format(k, e.getMessage)
+    )
 
-  val isSfusUploadEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.sfus)
 }
