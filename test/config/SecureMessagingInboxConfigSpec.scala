@@ -25,7 +25,7 @@ class SecureMessagingInboxConfigSpec extends PlaySpec {
 
   private def buildSecureMessagingConfig(
     secureMessaging: SecureMessagingFeatureStatus = disabled,
-    secureMessagingKey: String = "secureMessaging",
+    secureMessagingKey: String = "secureMessagingInbox",
     sfusInboxKey: String = "sfusInbox"
   ) = {
     val config = Configuration(ConfigFactory.parseString(s"""

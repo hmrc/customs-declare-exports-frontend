@@ -29,7 +29,7 @@ class SecureMessagingInboxConfig @Inject()(config: Configuration) {
       .getOptional[String]("urls.sfusInbox")
       .getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend inbox page url"))
 
-  val getSecureMessagingStatus: SecureMessagingFeatureStatus = featureStatus(Feature.secureMessaging)
+  val getSecureMessagingStatus: SecureMessagingFeatureStatus = featureStatus(Feature.secureMessagingInbox)
 
   val isSfusSecureMessagingEnabled: Boolean = getSecureMessagingStatus == SecureMessagingFeatureStatus.sfus
   val isExportsSecureMessagingEnabled: Boolean = getSecureMessagingStatus == SecureMessagingFeatureStatus.exports

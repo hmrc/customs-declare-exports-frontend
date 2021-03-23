@@ -41,7 +41,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     ConfigFactory.parseString("""
         |microservice.services.features.ead=enabled
         |microservice.services.features.sfus=enabled
-        |microservice.services.features.secureMessaging=sfus
+        |microservice.services.features.secureMessagingInbox=sfus
         |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
         |urls.sfusInbox="http://localhost:6793/cds-file-upload-service/exports-message-choice"
       """.stripMargin)
@@ -49,7 +49,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     ConfigFactory.parseString("""
         |microservice.services.features.ead=disabled
         |microservice.services.features.sfus=disabled
-        |microservice.services.features.secureMessaging=disabled
+        |microservice.services.features.secureMessagingInbox=disabled
         |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
         |urls.sfusInbox="http://localhost:6793/cds-file-upload-service/exports-message-choice"
       """.stripMargin)
