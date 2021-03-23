@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import config.{EadConfig, SfusConfig}
+@import config.{EadConfig, SecureMessagingInboxConfig, SfusConfig}
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.{Submission, SubmissionStatus}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -28,7 +28,8 @@
     govukTable: GovukTable,
     link: link,
     eadDocumentConfig: EadConfig,
-    sfusConfig: SfusConfig
+    sfusConfig: SfusConfig,
+    secureMessagingInboxConfig: SecureMessagingInboxConfig
 )
 
 @(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
@@ -69,7 +70,7 @@
 @sfusInboxLink = {
     <a id="has-dmsdoc-notification"
        class="govuk-link govuk-link--no-visited-state"
-       href="@Call("GET", sfusConfig.sfusInboxLink)"
+       href="@Call("GET", secureMessagingInboxConfig.sfusInboxLink)"
        target="_blank">@messages("submissions.sfus.inbox.link")</a>.
 }
 
@@ -116,7 +117,7 @@
                 @if(notifications.exists(_.status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)) {
                     <p id="content-on-dmsdoc" class="govuk-body">
                         @messages("submissions.content.on.dmsdoc")
-                        @if(sfusConfig.isSfusSecureMessagingEnabled) {
+                        @if(secureMessagingInboxConfig.isSfusSecureMessagingEnabled) {
                             @Html(messages("submissions.content.on.dmsdoc.sfus", sfusInboxLink))
                         }
                     </p>

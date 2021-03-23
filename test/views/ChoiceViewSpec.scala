@@ -17,8 +17,8 @@
 package views
 
 import base.ExportsTestData._
-import base.Injector
-import config.SfusConfig
+import base.OverridableInjector
+import config.{SecureMessagingInboxConfig, SfusConfig}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.CreateDec
 import org.jsoup.nodes.Document
@@ -26,39 +26,43 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
 import play.api.data.Form
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
-import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+import play.api.inject.bind
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.choice_page
-import views.html.components.gds.{errorSummary, link, paragraphBody, saveAndContinue}
 import views.tags.ViewTest
 
 @ViewTest
-class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with BeforeAndAfterEach {
+class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with BeforeAndAfterEach {
 
   private val form: Form[Choice] = Choice.form()
-  private val choicePage = instanceOf[choice_page]
   private val sfusConfig = mock[SfusConfig]
-  private def createView(form: Form[Choice] = form): Document =
-    choicePage(form, allJourneys, sfusConfig)(request, messages)
+  private val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
 
-  override def beforeEach(): Unit =
+  private val injector =
+    new OverridableInjector(bind[SfusConfig].toInstance(sfusConfig), bind[SecureMessagingInboxConfig].toInstance(secureMessagingInboxConfig))
+  private val choicePage = injector.instanceOf[choice_page]
+
+  private def createView(form: Form[Choice] = form): Document = choicePage(form, allJourneys)(request, messages)
+
+  override def beforeEach(): Unit = {
     super.beforeEach()
+    reset(sfusConfig, secureMessagingInboxConfig)
+  }
 
   override protected def afterEach(): Unit = {
-    reset(sfusConfig)
+    reset(sfusConfig, secureMessagingInboxConfig)
     super.afterEach()
   }
 
   private val dummyUploadLink = "dummyUploadLink"
   private val dummyInboxLink = "dummyInboxLink"
 
-  private def withSfusInboxEnabled(messaging: Boolean = true) = {
-    when(sfusConfig.isSfusSecureMessagingEnabled).thenReturn(messaging)
+  private def withSfusInboxEnabled(messaging: Boolean = true): Unit = {
     when(sfusConfig.sfusUploadLink).thenReturn(dummyUploadLink)
-    when(sfusConfig.sfusInboxLink).thenReturn(dummyInboxLink)
+    when(secureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(messaging)
+    when(secureMessagingInboxConfig.sfusInboxLink).thenReturn(dummyInboxLink)
   }
 
   "Choice View on empty page" should {
@@ -81,21 +85,11 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
     }
 
     "display only Create radio button with description" in {
-      val page = new choice_page(
-        gdsMainTemplate,
-        instanceOf[GovukButton],
-        instanceOf[GovukRadios],
-        instanceOf[errorSummary],
-        instanceOf[saveAndContinue],
-        instanceOf[paragraphBody],
-        instanceOf[link],
-        instanceOf[FormWithCSRF]
-      )
-
       withSfusInboxEnabled()
-      val view = page(Choice.form().fill(Choice("CRT")), Seq(CreateDec), sfusConfig)(request, messages)
-      ensureCreateLabelIsCorrect(view)
+      val form = Choice.form().fill(Choice("CRT"))
+      val view = choicePage(form, Seq(CreateDec))(request, messages)
 
+      ensureCreateLabelIsCorrect(view)
       ensureRadioIsChecked(view, "CRT")
     }
 
@@ -116,10 +110,12 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
   }
 
   "Choice View" when {
+
     "secure messaging flag is enabled" should {
       "display SFUS link description text" in {
         withSfusInboxEnabled()
         val h3s = createView().getElementsByTag("h3")
+
         h3s.size mustBe 1
         h3s.first().text() mustBe messages("declaration.choice.linkDescription")
       }

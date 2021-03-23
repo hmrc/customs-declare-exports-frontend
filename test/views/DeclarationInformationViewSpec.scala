@@ -20,7 +20,7 @@ import java.time.ZonedDateTime
 
 import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
-import config.{EadConfig, FeatureSwitchConfig, SfusConfig}
+import config.{EadConfig, FeatureSwitchConfig, SecureMessagingInboxConfig, SfusConfig}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
 import play.api.Configuration
@@ -41,7 +41,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     ConfigFactory.parseString("""
         |microservice.services.features.ead=enabled
         |microservice.services.features.sfus=enabled
-        |microservice.services.features.sfusSecureMessaging=enabled
+        |microservice.services.features.secureMessagingInbox=sfus
         |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
         |urls.sfusInbox="http://localhost:6793/cds-file-upload-service/exports-message-choice"
       """.stripMargin)
@@ -49,7 +49,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     ConfigFactory.parseString("""
         |microservice.services.features.ead=disabled
         |microservice.services.features.sfus=disabled
-        |microservice.services.features.sfusSecureMessaging=disabled
+        |microservice.services.features.secureMessagingInbox=disabled
         |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
         |urls.sfusInbox="http://localhost:6793/cds-file-upload-service/exports-message-choice"
       """.stripMargin)
@@ -62,6 +62,9 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
   private val sfusConfigEnabled = new SfusConfig(featureSwitchConfigEnabled, Configuration(configWithFeaturesEnabled))
   private val sfusConfigDisabled = new SfusConfig(featureSwitchConfigDisabled, Configuration(configWithFeaturesDisabled))
+
+  private val secureMessagingInboxConfigSfus = new SecureMessagingInboxConfig(Configuration(configWithFeaturesEnabled))
+  private val secureMessagingInboxConfigDisabled = new SecureMessagingInboxConfig(Configuration(configWithFeaturesDisabled))
 
   private def submission(mrn: Option[String] = Some("mrn")): Submission =
     Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = mrn, ducr = Some("ducr"), actions = Seq.empty)
@@ -110,10 +113,26 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val notifications = Seq(acceptedNotification, rejectedNotification, additionalDocumentsNotification)
 
   private val declarationInformationPageWithFeatures =
-    new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, link, eadConfigEnabled, sfusConfigEnabled)
+    new declaration_information(
+      gdsMainTemplate,
+      govukSummaryList,
+      govukTable,
+      link,
+      eadConfigEnabled,
+      sfusConfigEnabled,
+      secureMessagingInboxConfigSfus
+    )
 
   private val declarationInformationPageWithoutFeatures =
-    new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, link, eadConfigDisabled, sfusConfigDisabled)
+    new declaration_information(
+      gdsMainTemplate,
+      govukSummaryList,
+      govukTable,
+      link,
+      eadConfigDisabled,
+      sfusConfigDisabled,
+      secureMessagingInboxConfigDisabled
+    )
 
   private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications)(request, messages)
 
@@ -275,7 +294,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
         val element = viewWithFeatures.getElementById("has-dmsdoc-notification")
         element.tagName.toLowerCase mustBe "a"
-        element.attr("href") mustBe sfusConfigEnabled.sfusInboxLink
+        element.attr("href") mustBe secureMessagingInboxConfigSfus.sfusInboxLink
       }
     }
 

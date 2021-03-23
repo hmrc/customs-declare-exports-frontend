@@ -16,23 +16,23 @@
 
 package views.components.gds
 
-import base.{Injector, MockAuthAction, OverridableInjector}
+import base.{MockAuthAction, OverridableInjector}
 import com.typesafe.config.ConfigFactory
-import config.{SfusConfig, TimeoutDialogConfig}
+import config.{SecureMessagingInboxConfig, TimeoutDialogConfig}
 import forms.Choice
 import org.mockito.Mockito.when
 import org.scalatest.Matchers._
+import play.api.Configuration
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
+import views.helpers.CommonMessages
 import views.html.choice_page
+
 import scala.collection.JavaConverters.asScalaIteratorConverter
 
-import views.helpers.CommonMessages
-
-class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAction with Injector {
+class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAction {
 
   "Timeout Dialog" should {
 
@@ -44,12 +44,19 @@ class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAc
           timeoutDialog.countdown="200 millis"
           """)))
       val timeoutDialogConfig = new TimeoutDialogConfig(serviceConfig)
-      val injector = new OverridableInjector(bind[TimeoutDialogConfig].toInstance(timeoutDialogConfig))
+      val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
+
+      val injector = new OverridableInjector(
+        bind[TimeoutDialogConfig].toInstance(timeoutDialogConfig),
+        bind[SecureMessagingInboxConfig].toInstance(secureMessagingInboxConfig)
+      )
       val choicePage = injector.instanceOf[choice_page]
-      val sfusConfig = mock[SfusConfig]
-      when(sfusConfig.isSfusSecureMessagingEnabled).thenReturn(false)
-      val view = choicePage(form, Seq.empty[String], sfusConfig)(getAuthenticatedRequest(), messages)
+
+      when(secureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
+      val view = choicePage(form, Seq.empty[String])(getAuthenticatedRequest(), messages)
+
       val metas = view.getElementsByTag("meta").iterator.asScala.toList.filter(_.attr("name") == "hmrc-timeout-dialog")
+
       assert(metas.nonEmpty)
       metas.head.dataset.get("sign-out-url") mustBe controllers.routes.SignOutController.signOut(models.SignOutReason.SessionTimeout).url
     }

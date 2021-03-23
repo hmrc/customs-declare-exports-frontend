@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.{AppConfig, SfusConfig}
+import config.{AppConfig, SecureMessagingConfig}
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
@@ -33,8 +33,7 @@ class ChoiceController @Inject()(
   verifyEmail: VerifiedEmailAction,
   mcc: MessagesControllerComponents,
   choicePage: choice_page,
-  appConfig: AppConfig,
-  sfusConfig: SfusConfig
+  appConfig: AppConfig
 ) extends FrontendController(mcc) with I18nSupport {
 
   private lazy val availableJourneys = appConfig.availableJourneys()
@@ -42,7 +41,7 @@ class ChoiceController @Inject()(
   def displayPage(previousChoice: Option[Choice]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
     def pageForPreviousChoice(previousChoice: Option[Choice]) = {
       val form = Choice.form()
-      choicePage(previousChoice.fold(form)(form.fill), availableJourneys, sfusConfig)
+      choicePage(previousChoice.fold(form)(form.fill), availableJourneys)
     }
     Ok(pageForPreviousChoice(previousChoice))
   }
@@ -51,7 +50,7 @@ class ChoiceController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors, availableJourneys, sfusConfig)),
+        (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors, availableJourneys)),
         choice =>
           choice.value match {
             case CreateDec =>
