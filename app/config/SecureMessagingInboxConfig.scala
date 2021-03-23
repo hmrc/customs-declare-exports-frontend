@@ -22,7 +22,7 @@ import features.{Feature, SecureMessagingFeatureStatus}
 import javax.inject.Inject
 import play.api.Configuration
 
-class SecureMessagingFeatureFlagConfig @Inject()(config: Configuration) {
+class SecureMessagingInboxConfig @Inject()(config: Configuration) {
 
   val sfusInboxLink: String =
     config

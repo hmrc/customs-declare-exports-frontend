@@ -21,7 +21,7 @@ import features.SecureMessagingFeatureStatus.{disabled, exports, sfus, SecureMes
 import org.scalatestplus.play.PlaySpec
 import play.api.Configuration
 
-class SecureMessagingFeatureFlagConfigSpec extends PlaySpec {
+class SecureMessagingInboxConfigSpec extends PlaySpec {
 
   private def buildSecureMessagingConfig(
     secureMessaging: SecureMessagingFeatureStatus = disabled,
@@ -34,7 +34,7 @@ class SecureMessagingFeatureFlagConfigSpec extends PlaySpec {
         |urls.${sfusInboxKey}=${sfusInboxKey}
       """.stripMargin))
 
-    new SecureMessagingFeatureFlagConfig(config)
+    new SecureMessagingInboxConfig(config)
   }
 
   "SecureMessagingConfig on isSfusSecureMessagingEnabled" should {

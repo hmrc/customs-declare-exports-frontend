@@ -18,7 +18,7 @@ package views
 
 import base.ExportsTestData._
 import base.OverridableInjector
-import config.{SecureMessagingFeatureFlagConfig, SfusConfig}
+import config.{SecureMessagingInboxConfig, SfusConfig}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.CreateDec
 import org.jsoup.nodes.Document
@@ -38,24 +38,21 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
   private val form: Form[Choice] = Choice.form()
   private val sfusConfig = mock[SfusConfig]
-  private val secureMessagingFeatureFlagConfig = mock[SecureMessagingFeatureFlagConfig]
+  private val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
 
   private val injector =
-    new OverridableInjector(
-      bind[SfusConfig].toInstance(sfusConfig),
-      bind[SecureMessagingFeatureFlagConfig].toInstance(secureMessagingFeatureFlagConfig)
-    )
+    new OverridableInjector(bind[SfusConfig].toInstance(sfusConfig), bind[SecureMessagingInboxConfig].toInstance(secureMessagingInboxConfig))
   private val choicePage = injector.instanceOf[choice_page]
 
   private def createView(form: Form[Choice] = form): Document = choicePage(form, allJourneys)(request, messages)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(sfusConfig, secureMessagingFeatureFlagConfig)
+    reset(sfusConfig, secureMessagingInboxConfig)
   }
 
   override protected def afterEach(): Unit = {
-    reset(sfusConfig, secureMessagingFeatureFlagConfig)
+    reset(sfusConfig, secureMessagingInboxConfig)
     super.afterEach()
   }
 
@@ -64,8 +61,8 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
   private def withSfusInboxEnabled(messaging: Boolean = true): Unit = {
     when(sfusConfig.sfusUploadLink).thenReturn(dummyUploadLink)
-    when(secureMessagingFeatureFlagConfig.isSfusSecureMessagingEnabled).thenReturn(messaging)
-    when(secureMessagingFeatureFlagConfig.sfusInboxLink).thenReturn(dummyInboxLink)
+    when(secureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(messaging)
+    when(secureMessagingInboxConfig.sfusInboxLink).thenReturn(dummyInboxLink)
   }
 
   "Choice View on empty page" should {

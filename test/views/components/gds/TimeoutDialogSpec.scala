@@ -18,7 +18,7 @@ package views.components.gds
 
 import base.{MockAuthAction, OverridableInjector}
 import com.typesafe.config.ConfigFactory
-import config.{SecureMessagingFeatureFlagConfig, TimeoutDialogConfig}
+import config.{SecureMessagingInboxConfig, TimeoutDialogConfig}
 import forms.Choice
 import org.mockito.Mockito.when
 import org.scalatest.Matchers._
@@ -44,15 +44,15 @@ class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAc
           timeoutDialog.countdown="200 millis"
           """)))
       val timeoutDialogConfig = new TimeoutDialogConfig(serviceConfig)
-      val secureMessagingFeatureFlagConfig = mock[SecureMessagingFeatureFlagConfig]
+      val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
 
       val injector = new OverridableInjector(
         bind[TimeoutDialogConfig].toInstance(timeoutDialogConfig),
-        bind[SecureMessagingFeatureFlagConfig].toInstance(secureMessagingFeatureFlagConfig)
+        bind[SecureMessagingInboxConfig].toInstance(secureMessagingInboxConfig)
       )
       val choicePage = injector.instanceOf[choice_page]
 
-      when(secureMessagingFeatureFlagConfig.isSfusSecureMessagingEnabled).thenReturn(false)
+      when(secureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
       val view = choicePage(form, Seq.empty[String])(getAuthenticatedRequest(), messages)
 
       val metas = view.getElementsByTag("meta").iterator.asScala.toList.filter(_.attr("name") == "hmrc-timeout-dialog")

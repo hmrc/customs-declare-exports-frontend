@@ -20,7 +20,7 @@ import java.time.ZonedDateTime
 
 import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
-import config.{EadConfig, FeatureSwitchConfig, SecureMessagingFeatureFlagConfig, SfusConfig}
+import config.{EadConfig, FeatureSwitchConfig, SecureMessagingInboxConfig, SfusConfig}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
 import play.api.Configuration
@@ -63,8 +63,8 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val sfusConfigEnabled = new SfusConfig(featureSwitchConfigEnabled, Configuration(configWithFeaturesEnabled))
   private val sfusConfigDisabled = new SfusConfig(featureSwitchConfigDisabled, Configuration(configWithFeaturesDisabled))
 
-  private val secureMessagingFeatureFlagConfigSfus = new SecureMessagingFeatureFlagConfig(Configuration(configWithFeaturesEnabled))
-  private val secureMessagingFeatureFlagConfigDisabled = new SecureMessagingFeatureFlagConfig(Configuration(configWithFeaturesDisabled))
+  private val secureMessagingInboxConfigSfus = new SecureMessagingInboxConfig(Configuration(configWithFeaturesEnabled))
+  private val secureMessagingInboxConfigDisabled = new SecureMessagingInboxConfig(Configuration(configWithFeaturesDisabled))
 
   private def submission(mrn: Option[String] = Some("mrn")): Submission =
     Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = mrn, ducr = Some("ducr"), actions = Seq.empty)
@@ -120,7 +120,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       link,
       eadConfigEnabled,
       sfusConfigEnabled,
-      secureMessagingFeatureFlagConfigSfus
+      secureMessagingInboxConfigSfus
     )
 
   private val declarationInformationPageWithoutFeatures =
@@ -131,7 +131,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       link,
       eadConfigDisabled,
       sfusConfigDisabled,
-      secureMessagingFeatureFlagConfigDisabled
+      secureMessagingInboxConfigDisabled
     )
 
   private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications)(request, messages)
@@ -294,7 +294,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
         val element = viewWithFeatures.getElementById("has-dmsdoc-notification")
         element.tagName.toLowerCase mustBe "a"
-        element.attr("href") mustBe secureMessagingFeatureFlagConfigSfus.sfusInboxLink
+        element.attr("href") mustBe secureMessagingInboxConfigSfus.sfusInboxLink
       }
     }
 
