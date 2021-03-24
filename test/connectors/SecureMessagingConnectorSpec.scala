@@ -24,15 +24,15 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.mvc.Http.Status.{BAD_GATEWAY, BAD_REQUEST, OK}
 import uk.gov.hmrc.http._
 
-class SecureMessageFrontendConnectorSpec extends ConnectorSpec with Injector with ScalaFutures with IntegrationPatience {
-  val connector = app.injector.instanceOf[SecureMessageFrontendConnector]
+class SecureMessagingConnectorSpec extends ConnectorSpec with Injector with ScalaFutures with IntegrationPatience {
+  val connector = app.injector.instanceOf[SecureMessagingConnector]
   val clientId = "clientId"
   val conversationId = "conversationId"
   val partialContent = "<div>Some Content</div>"
-  val inboxUrl = "/secure-message-frontend/cds-file-upload-service/messages"
-  val conversationUrl = s"/secure-message-frontend/cds-file-upload-service/conversation/$clientId/$conversationId?showReplyForm=true"
-  val submitReplyUrl = s"/secure-message-frontend/cds-file-upload-service/conversation/$clientId/$conversationId"
-  val resultUrl = s"/secure-message-frontend/cds-file-upload-service/conversation/$clientId/$conversationId/result"
+  val inboxUrl = "/secure-message-frontend/customs-declare-exports/messages"
+  val conversationUrl = s"/secure-message-frontend/customs-declare-exports/conversation/$clientId/$conversationId?showReplyForm=true"
+  val submitReplyUrl = s"/secure-message-frontend/customs-declare-exports/conversation/$clientId/$conversationId"
+  val resultUrl = s"/secure-message-frontend/customs-declare-exports/conversation/$clientId/$conversationId/result"
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()

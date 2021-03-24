@@ -29,13 +29,12 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
-import unit.mock.VerifiedEmailMocks
 import unit.tools.Stubs
 import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.Future
 
-trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with RequestBuilder with VerifiedEmailMocks {
+trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with RequestBuilder {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
 

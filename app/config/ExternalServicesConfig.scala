@@ -23,7 +23,7 @@ import play.api.Configuration
 class ExternalServicesConfig @Inject()(val configuration: Configuration) {
 
   private def loadUrl(key: String): String =
-    configuration.getOptional[String](s"urls.$key").getOrElse(throw new Exception(s"Missing configuration key: urls.$key"))
+    configuration.getOptional[String](s"urls.$key").getOrElse(throw new IllegalStateException(s"Missing configuration key: urls.$key"))
 
   val commodityCodesUrl: String = loadUrl("commodityCodes")
   val nactCodesUrl: String = loadUrl("nactCodes")

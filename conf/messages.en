@@ -56,7 +56,6 @@ site.pagination.showing = Showing
 site.pagination.showing.no = Showing no
 site.pagination.of = of
 
-
 general.inquiries.help.link = General enquires help
 
 unauthorised.heading = To continue, you need to get access to the Customs Declaration Service (CDS)
@@ -415,6 +414,10 @@ emailUnverified.link=Verify your email address
 
 choicePage.input.error.empty = Select what you want to do.
 choicePage.input.error.incorrectValue = Select what you want to do.
+
+## Secure Messaging Inbox pages
+
+inbox.heading = Conversation Inbox
 
 
 declaration.dispatchLocation.header = Are the goods being sent outside the EU?

@@ -10,6 +10,9 @@ GET         /unauthorised                                  controllers.Unauthori
 
 GET         /unverified-email                              controllers.UnverifiedEmailController.informUser
 
+# Secure Messaging
+GET         /conversations                                 controllers.SecureMessagingController.displayInbox
+
 # Notifications
 
 GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String)

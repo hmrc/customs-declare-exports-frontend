@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package unit.mock
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.Title
+@import views.html.components.gds.gdsMainTemplate
 
-import base.MockAuthAction
-import controllers.actions.ItemActionBuilder
-import org.scalatest.{BeforeAndAfterEach, Suite}
-import org.scalatestplus.mockito.MockitoSugar
+@this(govukLayout: gdsMainTemplate, govukAccordion : GovukAccordion)
 
-import scala.concurrent.ExecutionContext
+@(partial: HtmlFormat.Appendable)(implicit request: Request[_], messages: Messages)
 
-trait ItemActionMocks extends JourneyActionMocks with MockAuthAction with VerifiedEmailMocks {
-  self: MockitoSugar with Suite with BeforeAndAfterEach =>
+@govukLayout(
+    title = Title("inbox.heading"),
+    useCustomContentWidth = true
+) {
 
-  val mockItemAction = new ItemActionBuilder(mockAuthAction, mockVerifiedEmailAction, mockJourneyAction)(ExecutionContext.global)
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            @partial
+        </div>
+    </div>
 }

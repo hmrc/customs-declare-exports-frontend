@@ -16,20 +16,21 @@
 
 package config
 
-import play.api.Configuration
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-
 import javax.inject.{Inject, Singleton}
 
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
 @Singleton
-class SecureMessagingConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
+class SecureMessagingConfig @Inject()(servicesConfig: ServicesConfig, secureMessagingInboxConfig: SecureMessagingInboxConfig) {
 
-  lazy val baseUrl = servicesConfig.baseUrl("secure-messaging")
+  lazy val isSecureMessagingEnabled: Boolean = secureMessagingInboxConfig.isExportsSecureMessagingEnabled
 
-  lazy val fetchInbox: String = getValue("microservice.services.secure-messaging.fetch-inbox")
-  lazy val fetchMessage: String = getValue("microservice.services.secure-messaging.fetch-message")
-  lazy val submitReply: String = getValue("microservice.services.secure-messaging.submit-reply")
-  lazy val replyResult: String = getValue("microservice.services.secure-messaging.reply-result")
+  val baseUrl = servicesConfig.baseUrl("secure-messaging")
+
+  val fetchInbox: String = servicesConfig.getString("microservice.services.secure-messaging.fetch-inbox")
+  val fetchMessage: String = servicesConfig.getString("microservice.services.secure-messaging.fetch-message")
+  val submitReply: String = servicesConfig.getString("microservice.services.secure-messaging.submit-reply")
+  val replyResult: String = servicesConfig.getString("microservice.services.secure-messaging.reply-result")
 
   lazy val fetchInboxEndpoint: String = s"${baseUrl}$fetchInbox"
 
@@ -42,9 +43,4 @@ class SecureMessagingConfig @Inject()(config: Configuration, servicesConfig: Ser
   def replyResultEndpoint(client: String, conversationId: String): String =
     s"${baseUrl}$replyResult"
       .replace("CLIENT_ID/CONVERSATION_ID", s"$client/$conversationId")
-
-  private def getValue(path: String) =
-    config
-      .getOptional[String](path)
-      .getOrElse(throw new IllegalStateException(s"Customs Declaration Export frontend, missing configuration key for $path"))
 }

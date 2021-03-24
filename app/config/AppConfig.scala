@@ -38,7 +38,7 @@ class AppConfig @Inject()(
 ) {
 
   private def loadConfig(key: String): String =
-    runModeConfiguration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+    runModeConfiguration.getOptional[String](key).getOrElse(throw new IllegalStateException(s"Missing configuration key: $key"))
 
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
   lazy val analyticsHost = loadConfig(s"google-analytics.host")
@@ -162,5 +162,5 @@ class AppConfig @Inject()(
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
 
   def tariffGuideUrl(key: String): String =
-    runModeConfiguration.getOptional[String](key).getOrElse(throw new Exception(s"Missing tariff guide url key: $key"))
+    runModeConfiguration.getOptional[String](key).getOrElse(throw new IllegalStateException(s"Missing tariff guide url key: $key"))
 }

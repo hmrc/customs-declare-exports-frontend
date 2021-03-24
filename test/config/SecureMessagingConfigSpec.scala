@@ -17,25 +17,30 @@
 package config
 
 import com.typesafe.config.ConfigFactory
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class SecureMessagingConfigSpec extends PlaySpec {
+class SecureMessagingConfigSpec extends PlaySpec with MockitoSugar {
 
-  private def generateConfig(obfusticateKey: String = "") = {
+  private def generateConfig(obfuscated: String = "", secureMessagingEnabled: Boolean = true) = {
     val config = Configuration(ConfigFactory.parseString(s"""microservice.services.secure-messaging {
         |      protocol = http
         |      host = localhost
         |      port = 9055
-        |      fetch-inbox${obfusticateKey} = /secure-message-frontend/cds-file-upload-service/messages
-        |      fetch-message${obfusticateKey} = /secure-message-frontend/cds-file-upload-service/conversation
-        |      submit-reply${obfusticateKey} = /secure-message-frontend/cds-file-upload-service/conversation
-        |      reply-result${obfusticateKey} = /secure-message-frontend/cds-file-upload-service/conversation/CLIENT_ID/CONVERSATION_ID/result
+        |      fetch-inbox${obfuscated} = /secure-message-frontend/customs-declare-exports/messages
+        |      fetch-message${obfuscated} = /secure-message-frontend/customs-declare-exports/conversation
+        |      submit-reply${obfuscated} = /secure-message-frontend/customs-declare-exports/conversation
+        |      reply-result${obfuscated} = /secure-message-frontend/customs-declare-exports/conversation/CLIENT_ID/CONVERSATION_ID/result
         |}
       """.stripMargin))
 
-    new SecureMessagingConfig(config, new ServicesConfig(config))
+    val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
+    when(secureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(secureMessagingEnabled)
+
+    new SecureMessagingConfig(new ServicesConfig(config), secureMessagingInboxConfig)
   }
 
   "SecureMessagingConfig" when {
@@ -43,13 +48,14 @@ class SecureMessagingConfigSpec extends PlaySpec {
     "fetchInboxEndpoint val is referenced" which {
       "has a value defined in the config" should {
         "return the correct value" in {
-          generateConfig().fetchInboxEndpoint mustBe "http://localhost:9055/secure-message-frontend/cds-file-upload-service/messages"
+          generateConfig().fetchInboxEndpoint mustBe
+            "http://localhost:9055/secure-message-frontend/customs-declare-exports/messages"
         }
       }
 
       "has no value defined in the config" should {
         "throw an exception" in {
-          assertThrows[IllegalStateException] {
+          assertThrows[RuntimeException] {
             generateConfig("wrong").fetchInboxEndpoint
           }
         }
@@ -59,15 +65,15 @@ class SecureMessagingConfigSpec extends PlaySpec {
     "fetchMessageEndpoint is called" which {
       "has a value defined in the config" should {
         "return the correct value" in {
-          generateConfig()
-            .fetchMessageEndpoint("client", "converationId") mustBe "http://localhost:9055/secure-message-frontend/cds-file-upload-service/conversation/client/converationId"
+          generateConfig().fetchMessageEndpoint("client", "conversationId") mustBe
+            "http://localhost:9055/secure-message-frontend/customs-declare-exports/conversation/client/conversationId"
         }
       }
 
       "has no value defined in the config" should {
         "throw an exception" in {
-          assertThrows[IllegalStateException] {
-            generateConfig("wrong").fetchMessageEndpoint("client", "converationId")
+          assertThrows[RuntimeException] {
+            generateConfig("wrong").fetchMessageEndpoint("client", "conversationId")
           }
         }
       }
@@ -76,15 +82,15 @@ class SecureMessagingConfigSpec extends PlaySpec {
     "submitReplyEndpoint is called" which {
       "has a value defined in the config" should {
         "return the correct value" in {
-          generateConfig()
-            .submitReplyEndpoint("client", "converationId") mustBe "http://localhost:9055/secure-message-frontend/cds-file-upload-service/conversation/client/converationId"
+          generateConfig().submitReplyEndpoint("client", "conversationId") mustBe
+            "http://localhost:9055/secure-message-frontend/customs-declare-exports/conversation/client/conversationId"
         }
       }
 
       "has no value defined in the config" should {
         "throw an exception" in {
-          assertThrows[IllegalStateException] {
-            generateConfig("wrong").submitReplyEndpoint("client", "converationId")
+          assertThrows[RuntimeException] {
+            generateConfig("wrong").submitReplyEndpoint("client", "conversationId")
           }
         }
       }
@@ -93,14 +99,14 @@ class SecureMessagingConfigSpec extends PlaySpec {
     "replyResultEndpoint is called" which {
       "has a value defined in the config" should {
         "return the correct value" in {
-          generateConfig()
-            .replyResultEndpoint("client", "converationId") mustBe "http://localhost:9055/secure-message-frontend/cds-file-upload-service/conversation/client/converationId/result"
+          generateConfig().replyResultEndpoint("client", "conversationId") mustBe
+            "http://localhost:9055/secure-message-frontend/customs-declare-exports/conversation/client/conversationId/result"
         }
       }
 
       "has no value defined in the config" should {
         "throw an exception" in {
-          assertThrows[IllegalStateException] {
+          assertThrows[RuntimeException] {
             generateConfig("wrong").replyResultEndpoint("client", "converationId")
           }
         }
