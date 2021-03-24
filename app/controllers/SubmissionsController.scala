@@ -16,6 +16,10 @@
 
 package controllers
 
+import javax.inject.Inject
+
+import scala.concurrent.{ExecutionContext, Future}
+
 import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import connectors.exchange.ExportsDeclarationExchange
@@ -30,10 +34,6 @@ import play.api.mvc._
 import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{declaration_information, submissions}
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-
-import models.declaration.submissions.SubmissionStatus
 
 class SubmissionsController @Inject()(
   authenticate: AuthAction,

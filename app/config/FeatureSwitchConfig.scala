@@ -26,7 +26,7 @@ import play.api.Configuration
 class FeatureSwitchConfig @Inject()(configuration: Configuration) {
 
   private def loadConfig(key: String): String =
-    configuration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+    configuration.getOptional[String](key).getOrElse(throw new IllegalStateException(s"Missing configuration key: $key"))
 
   private def feature2Key(feature: Feature): String = s"microservice.services.features.$feature"
 

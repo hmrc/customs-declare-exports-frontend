@@ -16,12 +16,14 @@
 
 package config
 
+import javax.inject.{Inject, Singleton}
+
 import features.Feature.Feature
 import features.SecureMessagingFeatureStatus.SecureMessagingFeatureStatus
 import features.{Feature, SecureMessagingFeatureStatus}
-import javax.inject.Inject
 import play.api.Configuration
 
+@Singleton
 class SecureMessagingInboxConfig @Inject()(config: Configuration) {
 
   val sfusInboxLink: String =
@@ -56,6 +58,6 @@ class SecureMessagingInboxConfig @Inject()(config: Configuration) {
     SecureMessagingFeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
 
   private def loadConfig(key: String): String =
-    config.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+    config.getOptional[String](key).getOrElse(throw new IllegalStateException(s"Missing configuration key: $key"))
 
 }

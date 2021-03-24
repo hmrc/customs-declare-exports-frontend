@@ -30,10 +30,9 @@ import play.api.test.Helpers.contentAsString
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import play.twirl.api.Html
 import services.cache.ExportsItemBuilder
-import unit.mock.JourneyActionMocks
+import unit.mock.{JourneyActionMocks, VerifiedEmailMocks}
 import unit.tools.Stubs
 import utils.FakeRequestCSRFSupport._
-
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ControllerWithoutFormSpec extends ControllerSpec {
@@ -43,7 +42,7 @@ trait ControllerWithoutFormSpec extends ControllerSpec {
 
 trait ControllerSpec
     extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockExportCacheService with MockNavigator with JourneyTypeTestRunner
-    with ExportsItemBuilder with JourneyActionMocks with DefaultAwaitTimeout {
+    with ExportsItemBuilder with JourneyActionMocks with DefaultAwaitTimeout with VerifiedEmailMocks {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
