@@ -17,7 +17,7 @@
 package unit.controllers
 
 import base.ExportsTestData._
-import config.AppConfig
+import config.{AppConfig, SecureMessagingInboxConfig}
 import controllers.ChoiceController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
@@ -40,9 +40,17 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   val choicePage = mock[choice_page]
   val appConfig = mock[AppConfig]
+  val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
 
   val controller =
-    new ChoiceController(mockAuthAction, mockVerifiedEmailAction, stubMessagesControllerComponents(), choicePage, appConfig)
+    new ChoiceController(
+      mockAuthAction,
+      mockVerifiedEmailAction,
+      stubMessagesControllerComponents(),
+      secureMessagingInboxConfig,
+      choicePage,
+      appConfig
+    )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -52,7 +60,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
   }
 
   override protected def afterEach(): Unit = {
-    reset(choicePage, appConfig)
+    reset(choicePage, appConfig, secureMessagingInboxConfig)
     super.afterEach()
   }
 
@@ -122,7 +130,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
     }
   }
 
-  "Submit" should {
+  "ChoiceController submitChoice" should {
 
     "return 400 (BAD_REQUEST)" when {
       "form is incorrect" in {
@@ -172,6 +180,48 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         verifyTheCacheIsUnchanged()
       }
     }
+
+    "redirect to Exports secure messaging inbox page" when {
+      "user chose view messages" in {
+        val result = controller.submitChoice()(postChoiceRequest(inboxChoice))
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.routes.SecureMessagingController.displayInbox().url))
+        verifyTheCacheIsUnchanged()
+      }
+    }
+  }
+
+  "ChoiceController availableJourneys" should {
+    "contain all journey types when isExportsSecureMessagingEnabled returns true" in {
+      when(secureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(true)
+
+      val choiceCtrl = new ChoiceController(
+        mockAuthAction,
+        mockVerifiedEmailAction,
+        stubMessagesControllerComponents(),
+        secureMessagingInboxConfig,
+        choicePage,
+        appConfig
+      )
+      allJourneys.diff(choiceCtrl.availableJourneys).size mustBe 0
+    }
+
+    "contain all journey types apart from 'Inbox' when isExportsSecureMessagingEnabled returns false" in {
+      when(secureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(false)
+
+      val choiceCtrl = new ChoiceController(
+        mockAuthAction,
+        mockVerifiedEmailAction,
+        stubMessagesControllerComponents(),
+        secureMessagingInboxConfig,
+        choicePage,
+        appConfig
+      )
+      val missingJourneyTypes = allJourneys.diff(choiceCtrl.availableJourneys)
+      missingJourneyTypes.size mustBe 1
+      missingJourneyTypes must contain(Inbox)
+    }
   }
 }
 
@@ -181,4 +231,5 @@ object ChoiceControllerSpec {
   val cancelChoice: JsValue = Json.toJson(Choice(CancelDec))
   val submissionsChoice: JsValue = Json.toJson(Choice(Submissions))
   val continueDeclarationChoice: JsValue = Json.toJson(Choice(ContinueDec))
+  val inboxChoice: JsValue = Json.toJson(Choice(Inbox))
 }

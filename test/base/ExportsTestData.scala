@@ -194,5 +194,5 @@ object ExportsTestData extends ExportsDeclarationBuilder {
 
   val choiceForm = Json.toJson(Choice("EAL"))
 
-  val allJourneys = Seq(CreateDec, ContinueDec, CancelDec, Submissions)
+  val allJourneys = Seq(CreateDec, ContinueDec, CancelDec, Submissions, Inbox)
 }

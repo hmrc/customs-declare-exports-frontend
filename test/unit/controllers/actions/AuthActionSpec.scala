@@ -17,7 +17,7 @@
 package unit.controllers.actions
 
 import base.Injector
-import config.AppConfig
+import config.{AppConfig, SecureMessagingInboxConfig}
 import controllers.ChoiceController
 import controllers.actions.NoExternalId
 import play.api.test.Helpers._
@@ -29,9 +29,17 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
 
   val choicePage = instanceOf[choice_page]
   val appConfig = mock[AppConfig]
+  val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
 
   val controller =
-    new ChoiceController(mockAuthAction, mockVerifiedEmailAction, stubMessagesControllerComponents(), choicePage, appConfig)
+    new ChoiceController(
+      mockAuthAction,
+      mockVerifiedEmailAction,
+      stubMessagesControllerComponents(),
+      secureMessagingInboxConfig,
+      choicePage,
+      appConfig
+    )
 
   "Auth Action" should {
 

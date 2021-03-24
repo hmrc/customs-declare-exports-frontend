@@ -30,7 +30,7 @@ object Choice {
   val choiceId = "Choice"
 
   import AllowedChoiceValues._
-  private val correctChoices = Set(CreateDec, ContinueDec, CancelDec, Submissions)
+  private val correctChoices = Set(CreateDec, ContinueDec, CancelDec, Submissions, Inbox)
 
   val choiceMapping: Mapping[Choice] = Forms.single(
     "value" -> optional(
@@ -47,6 +47,7 @@ object Choice {
     val ContinueDec = "CON"
     val CancelDec = "CAN"
     val Submissions = "SUB"
+    val Inbox = "MSG"
   }
 
   implicit val queryStringBindable: QueryStringBindable[Choice] = new QueryStringBindable[Choice] {
