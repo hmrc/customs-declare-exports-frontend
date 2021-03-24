@@ -24,8 +24,8 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.mvc.Http.Status.{BAD_GATEWAY, BAD_REQUEST, OK}
 import uk.gov.hmrc.http._
 
-class SecureMessagingConnectorSpec extends ConnectorSpec with Injector with ScalaFutures with IntegrationPatience {
-  val connector = app.injector.instanceOf[SecureMessagingConnector]
+class SecureMessagingFrontendConnectorSpec extends ConnectorSpec with Injector with ScalaFutures with IntegrationPatience {
+  val connector = app.injector.instanceOf[SecureMessagingFrontendConnector]
   val clientId = "clientId"
   val conversationId = "conversationId"
   val partialContent = "<div>Some Content</div>"

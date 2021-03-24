@@ -26,7 +26,7 @@ import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SecureMessagingConnector @Inject()(httpClient: HttpClient, config: SecureMessagingConfig)(implicit ec: ExecutionContext)
+class SecureMessagingFrontendConnector @Inject()(httpClient: HttpClient, config: SecureMessagingConfig)(implicit ec: ExecutionContext)
     extends Logging with Status {
 
   def retrieveInboxPartial(eori: String)(implicit hc: HeaderCarrier): Future[InboxPartial] =

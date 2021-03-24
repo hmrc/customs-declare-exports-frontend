@@ -19,7 +19,7 @@ package unit.controllers
 import scala.concurrent.Future
 
 import config.SecureMessagingConfig
-import connectors.SecureMessagingConnector
+import connectors.SecureMessagingFrontendConnector
 import controllers.SecureMessagingController
 import controllers.actions.SecureMessagingAction
 import models.messaging.InboxPartial
@@ -38,7 +38,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
   val secureMessagingConfig = mock[SecureMessagingConfig]
   val secureMessagingAction = new SecureMessagingAction(secureMessagingConfig)
 
-  val secureMessagingConnector = mock[SecureMessagingConnector]
+  val secureMessagingFrontendConnector = mock[SecureMessagingFrontendConnector]
 
   val inboxWrapperPage = mock[inbox_wrapper]
 
@@ -47,7 +47,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
       mockAuthAction,
       mockVerifiedEmailAction,
       secureMessagingAction,
-      secureMessagingConnector,
+      secureMessagingFrontendConnector,
       stubMessagesControllerComponents(),
       inboxWrapperPage
     )
@@ -61,7 +61,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
   }
 
   override def afterEach(): Unit =
-    reset(inboxWrapperPage, secureMessagingConfig, secureMessagingConnector)
+    reset(inboxWrapperPage, secureMessagingConfig, secureMessagingFrontendConnector)
 
   "SecureMessagingController displayInbox" when {
 
@@ -78,7 +78,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
     "the SecureMessaging flag is is enabled" should {
 
       "add the conversation inbox, returned from the secure-message service, to the inbox_wrapper" in {
-        when(secureMessagingConnector.retrieveInboxPartial(any[String])(any[HeaderCarrier]))
+        when(secureMessagingFrontendConnector.retrieveInboxPartial(any[String])(any[HeaderCarrier]))
           .thenReturn(Future.successful(InboxPartial("Some Content")))
 
         val result = controller.displayInbox()(getRequest())
@@ -89,7 +89,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
 
       "throw an exception" when {
         "the secure-message service returns a failed Future" in {
-          when(secureMessagingConnector.retrieveInboxPartial(any[String])(any[HeaderCarrier]))
+          when(secureMessagingFrontendConnector.retrieveInboxPartial(any[String])(any[HeaderCarrier]))
             .thenReturn(Future.failed(new Exception("A message error")))
 
           an[Exception] mustBe thrownBy {
