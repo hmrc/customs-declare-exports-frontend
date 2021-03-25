@@ -76,6 +76,12 @@
                     value = Some(CancelDec),
                     content = Text(messages(s"declaration.choice.$CancelDec")),
                     checked = form("value").value.contains(CancelDec)
+                ),
+                RadioItem(
+                    id = Some(Inbox),
+                    value = Some(Inbox),
+                    content = Text(messages(s"declaration.choice.$Inbox")),
+                    checked = form("value").value.contains(Inbox)
                 )
             ).filter(radioOption => availableJourneys.contains(radioOption.value.get)),
             errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
@@ -84,12 +90,18 @@
         @saveAndContinue("site.continue")
 
         @if(secureMessagingInboxConfig.isSfusSecureMessagingEnabled) {
-            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2">
-            <h3>@messages("declaration.choice.linkDescription")</h3>
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
+            <h3>@messages("declaration.choice.link.sfus.description")</h3>
 
             <p>@link(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = Call("GET", s"${sfusConfig.sfusUploadLink}"), target = "_blank")</p>
             <p>@link(id = Some("sfusInboxLink"), text = messages("declaration.choice.link.sfusInbox.txt"), call = Call("GET", s"${secureMessagingInboxConfig.sfusInboxLink}"), target = "_blank")</p>
-            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2">
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
+        }
+        @if(secureMessagingInboxConfig.isExportsSecureMessagingEnabled) {
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
+            <h3>@messages("declaration.choice.link.exports.description")</h3>
+            <p>@link(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = Call("GET", s"${sfusConfig.sfusUploadLink}"), target = "_blank")</p>
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
         }
     }
 }

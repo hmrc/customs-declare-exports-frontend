@@ -16,28 +16,33 @@
 
 package controllers
 
-import javax.inject.Inject
-
-import config.AppConfig
+import config.{AppConfig, SecureMessagingInboxConfig}
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.Choice
-import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
+import forms.Choice.AllowedChoiceValues._
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
 
+import javax.inject.Inject
+
 class ChoiceController @Inject()(
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   mcc: MessagesControllerComponents,
+  secureMessagingInboxConfig: SecureMessagingInboxConfig,
   choicePage: choice_page,
   appConfig: AppConfig
 ) extends FrontendController(mcc) with I18nSupport {
 
-  private lazy val availableJourneys = appConfig.availableJourneys()
+  lazy val availableJourneys =
+    if (secureMessagingInboxConfig.isExportsSecureMessagingEnabled)
+      appConfig.availableJourneys()
+    else
+      appConfig.availableJourneys().filterNot(_.equals(Inbox))
 
   def displayPage(previousChoice: Option[Choice]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
     def pageForPreviousChoice(previousChoice: Option[Choice]) = {
@@ -62,6 +67,8 @@ class ChoiceController @Inject()(
               Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations())
             case Submissions =>
               Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
+            case Inbox =>
+              Redirect(controllers.routes.SecureMessagingController.displayInbox())
         }
       )
   }
