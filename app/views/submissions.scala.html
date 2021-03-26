@@ -22,7 +22,7 @@
 @import models.declaration.submissions.RequestType.SubmissionRequest
 @import models.declaration.submissions.{Submission, SubmissionStatus}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, StatusOfSubmission, Title, ViewDates}
+@import views.helpers.{BackButton, PageWithNavigation, StatusOfSubmission, Title, ViewDates}
 @import views.html.components.gds._
 
 @this(
@@ -129,7 +129,9 @@
 @govukLayout(
     title = Title("submissions.title"),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), routes.ChoiceController.displayPage(Some(Choice(Submissions))))),
-    useCustomContentWidth = true) {
+    useCustomContentWidth = true,
+    pageWithNavigation = PageWithNavigation.OnDashboardPage
+) {
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">

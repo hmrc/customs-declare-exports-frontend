@@ -377,6 +377,13 @@ choicePage.input.error.incorrectValue = Select what you want to do
 
 inbox.heading = Conversation Inbox
 
+## Navigation links
+
+navigation.link.declarations = Your declarations
+navigation.link.messages = Messages
+
+## Declaration pages
+
 declaration.dispatchLocation.header = Are the goods being sent outside the EU?
 declaration.dispatchLocation.inputText.outsideEU = Yes
 declaration.dispatchLocation.inputText.outsideEU.hint = This is also known as an EX declaration type.

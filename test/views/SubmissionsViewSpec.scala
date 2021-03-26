@@ -18,7 +18,10 @@ package views
 
 import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 
-import base.Injector
+import scala.collection.JavaConverters.asScalaIteratorConverter
+
+import base.{Injector, OverridableInjector}
+import config.{PaginationConfig, SecureMessagingConfig}
 import controllers.routes
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.Submissions
@@ -27,6 +30,8 @@ import models.declaration.submissions.RequestType.{CancellationRequest, Submissi
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.{Page, Paginated, SubmissionsPagesElements}
 import org.jsoup.nodes.Element
+import org.mockito.Mockito.when
+import play.api.inject.bind
 import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -97,6 +102,33 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       messages must haveTranslationFor("submissions.mrn.header")
       messages must haveTranslationFor("submissions.dateAndTime.header")
       messages must haveTranslationFor("submissions.status.header")
+    }
+
+    "contain the navigation banner" when {
+      "the Secure Messaging flag is set to 'exports'" in {
+        val secureMessagingConfig = mock[SecureMessagingConfig]
+        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+
+        val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(secureMessagingConfig))
+        val page = injector.instanceOf[submissions]
+        val view = page(SubmissionsPagesElements(Seq.empty)(mock[PaginationConfig]))(request, messages)
+
+        val banner = view.getElementById("navigation-banner")
+        assert(Option(banner).isDefined && banner.childrenSize == 2)
+
+        val elements = banner.children.iterator.asScala.toList
+
+        assert(elements.head.tagName.toLowerCase == "span")
+
+        assert(elements.last.tagName.toLowerCase == "a")
+        elements.last must haveHref(routes.SecureMessagingController.displayInbox)
+      }
+    }
+
+    "not contain the navigation banner" when {
+      "the Secure Messaging flag is not set to 'exports'" in {
+        Option(createView().getElementById("navigation-banner")) mustBe None
+      }
     }
 
     "display same page title as header" in {

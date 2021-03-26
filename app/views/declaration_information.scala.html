@@ -19,7 +19,7 @@
 @import models.declaration.submissions.{Submission, SubmissionStatus}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.{BackButton, StatusOfSubmission, Title, ViewDates}
+@import views.helpers.{BackButton, PageWithNavigation, StatusOfSubmission, Title, ViewDates}
 @import views.html.components.gds.{gdsMainTemplate, link}
 
 @this(
@@ -77,7 +77,8 @@
 @govukLayout(
     title = Title("submissions.declarationInformation"),
     backButton = Some(BackButton(messages("site.backToDeclarations"), routes.SubmissionsController.displayListOfSubmissions())),
-    useCustomContentWidth = true
+    useCustomContentWidth = true,
+    pageWithNavigation = PageWithNavigation.OnPageWithNavigation
 ) {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
