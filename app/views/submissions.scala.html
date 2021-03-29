@@ -16,13 +16,14 @@
 
 @import java.time.ZoneId
 
+@import config.SecureMessagingConfig
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.Submissions
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.RequestType.SubmissionRequest
 @import models.declaration.submissions.{Submission, SubmissionStatus}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, PageWithNavigation, StatusOfSubmission, Title, ViewDates}
+@import views.helpers.{BackButton, StatusOfSubmission, Title, ViewDates}
 @import views.html.components.gds._
 
 @this(
@@ -32,10 +33,18 @@
     govukTabs: GovukTabs,
     govukTable: GovukTable,
     link: link,
-    linkButton: linkButton
+    linkButton: linkButton,
+    navigationBanner: navigationBanner,
+    secureMessagingConfig: SecureMessagingConfig
 )
 
 @(submissionsPagesElements: SubmissionsPagesElements)(implicit request: Request[_], messages: Messages)
+
+@navBanner = {
+    @if(secureMessagingConfig.isSecureMessagingEnabled) {
+        @navigationBanner(withLinkToSubmissions = false)
+    }
+}
 
 @submissionsPages = @{
     SubmissionsPages(
@@ -130,7 +139,7 @@
     title = Title("submissions.title"),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), routes.ChoiceController.displayPage(Some(Choice(Submissions))))),
     useCustomContentWidth = true,
-    pageWithNavigation = Some(PageWithNavigation.OnDashboardPage)
+    navigationBanner = navBanner
 ) {
 
     <div class="govuk-grid-row">

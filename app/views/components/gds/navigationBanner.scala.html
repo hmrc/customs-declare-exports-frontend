@@ -14,22 +14,26 @@
  * limitations under the License.
  *@
 
-@import views.helpers.PageWithNavigation
+@this()
 
-@this(navigationLink: components.gds.navigationLink)
-
-@(pageWithNavigation: PageWithNavigation.Value)(implicit request: Request[_], messages: Messages)
+@(withLinkToSubmissions: Boolean = true, withLinkToMessageInbox: Boolean = true)(implicit request: Request[_], messages: Messages)
 
 <div id="navigation-banner" class="govuk-navigation-banner">
-  @navigationLink(
-    pageWithNavigation == PageWithNavigation.OnDashboardPage, 
-    routes.SubmissionsController.displayListOfSubmissions(),
-    messages("navigation.link.declarations")
-  )
+    @if(withLinkToSubmissions) {
+        <a class="govuk-link govuk-link--no-visited-state"
+           href="@routes.SubmissionsController.displayListOfSubmissions()"
+           target="_self">@messages("navigation.link.declarations")
+        </a>
+    } else {
+        <span class="navigation-non-link">@messages("navigation.link.declarations")</span>
+    }
 
-  @navigationLink(
-    pageWithNavigation == PageWithNavigation.OnMessageInboxPage,
-    routes.SecureMessagingController.displayInbox,
-    messages("navigation.link.messages")
-  )
+    @if(withLinkToMessageInbox) {
+        <a class="govuk-link govuk-link--no-visited-state"
+           href="@routes.SecureMessagingController.displayInbox"
+           target="_self">@messages("navigation.link.messages")
+        </a>
+    } else {
+        <span class="navigation-non-link">@messages("navigation.link.messages")</span>
+    }
 </div>

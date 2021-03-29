@@ -19,7 +19,7 @@ package unit.tools
 import scala.concurrent.ExecutionContext
 
 import com.typesafe.config.{Config, ConfigFactory}
-import config.{AppConfig, BetaBannerConfig, FeatureSwitchConfig, SecureMessagingConfig, SecureMessagingInboxConfig}
+import config.{AppConfig, BetaBannerConfig, FeatureSwitchConfig}
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
@@ -28,7 +28,7 @@ import play.api.test.NoMaterializer
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.govukfrontend.views.html.components
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _, _}
-import uk.gov.hmrc.hmrcfrontend.config.{AccessibilityStatementConfig, AssetsConfig, TimeoutDialogConfig, TrackingConsentConfig}
+import uk.gov.hmrc.hmrcfrontend.config._
 import uk.gov.hmrc.hmrcfrontend.views.html.components._
 import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -54,8 +54,7 @@ trait Stubs {
       executionContext
     )
 
-  private val minimalConfig: Config = ConfigFactory.parseString(
-    """
+  private val minimalConfig: Config = ConfigFactory.parseString("""
       |assets.url="localhost"
       |assets.version="version"
       |google-analytics.token=N/A
@@ -76,15 +75,7 @@ trait Stubs {
       |urls.tradeTariff=tradeTariff
       |urls.classificationHelp=classificationHelp
       |urls.ecicsTool=ecicsTool
-      |urls.sfusInbox="http://localhost:6793/cds-file-upload-service/exports-message-choice"
-      |microservice.services.secure-messaging.host=localhost
-      |microservice.services.secure-messaging.port=9055
-      |microservice.services.secure-messaging.fetch-inbox="/secure-message-frontend/customs-declare-exports/messages"
-      |microservice.services.secure-messaging.fetch-message="/secure-message-frontend/customs-declare-exports/conversation"
-      |microservice.services.secure-messaging.submit-reply="/secure-message-frontend/customs-declare-exports/conversation"
-      |microservice.services.secure-messaging.reply-result="/secure-message-frontend/customs-declare-exports/conversation/CLIENT_ID/CONVERSATION_ID/result"
-    """.stripMargin
-  )
+    """.stripMargin)
 
   val minimalConfiguration = Configuration(minimalConfig)
 
@@ -94,8 +85,6 @@ trait Stubs {
   private val appConfig = new AppConfig(minimalConfiguration, environment, servicesConfig, "AppName")
   private val timeoutDialogConfig = new config.TimeoutDialogConfig(servicesConfig)
   private val betaBannerConfig = new BetaBannerConfig(new FeatureSwitchConfig(minimalConfiguration))
-  private val secureMessagingInboxConfig = new SecureMessagingInboxConfig(minimalConfiguration)
-  private val secureMessagingConfig = new SecureMessagingConfig(servicesConfig, secureMessagingInboxConfig)
 
   val minimalAppConfig = appConfig
 
@@ -119,7 +108,6 @@ trait Stubs {
   val hmrcReportTechnicalIssue = new HmrcReportTechnicalIssue()
 
   val govukHeader = new GovukHeader()
-  val nBanner = new navigationBanner(new navigationLink())
   val pBanner = new phaseBanner(new GovukPhaseBanner(new govukTag()), minimalAppConfig)
   val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner(), new HmrcUserResearchBanner(), new GovukPhaseBanner(new govukTag())))
   val hmrcTimeoutDialogHelper = new HmrcTimeoutDialogHelper(new HmrcTimeoutDialog, new TimeoutDialogConfig(minimalConfiguration))
@@ -130,7 +118,6 @@ trait Stubs {
     govukBackLink = new components.GovukBackLink(),
     siteHeader = sHeader,
     phaseBanner = pBanner,
-    navigationBanner = nBanner,
     timeoutDialogConfig = timeoutDialogConfig,
     betaBannerConfig = betaBannerConfig,
     hmrcHead = new HmrcHead(hmrcTrackingConsentSnippet, new AssetsConfig),
@@ -138,7 +125,6 @@ trait Stubs {
     hmrcTrackingConsentSnippet = hmrcTrackingConsentSnippet,
     hmrcReportTechnicalIssue = hmrcReportTechnicalIssue,
     hmrcFooter = hmrcFooter,
-    appConfig = minimalAppConfig,
-    secureMessagingConfig = secureMessagingConfig
+    appConfig = minimalAppConfig
   )
 }

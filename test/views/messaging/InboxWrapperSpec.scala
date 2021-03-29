@@ -43,6 +43,7 @@ class InboxWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
     super.beforeEach
     when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
   }
+
   "Inbox Wrapper page" should {
 
     "display page title" in {

@@ -14,14 +14,15 @@
  * limitations under the License.
  *@
 
-@import config.{AppConfig, BetaBannerConfig, SecureMessagingConfig, TimeoutDialogConfig}
+@import config.{AppConfig, BetaBannerConfig, TimeoutDialogConfig}
 @import models.requests.AuthenticatedRequest
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{En, Cy}
-@import views.helpers.{BackButton, PageWithNavigation, Title}
+@import views.helpers.{BackButton, Title}
 
 @this(
   govukHeader: GovukHeader,
@@ -30,7 +31,6 @@
   govukBackLink: GovukBackLink,
   siteHeader: components.gds.siteHeader,
   phaseBanner: components.gds.phaseBanner,
-  navigationBanner: components.gds.navigationBanner,
   timeoutDialogConfig: TimeoutDialogConfig,
   betaBannerConfig: BetaBannerConfig,
   hmrcHead: HmrcHead,
@@ -38,15 +38,14 @@
   hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
   hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
   hmrcFooter: hmrcStandardFooter,
-  appConfig: AppConfig,
-  secureMessagingConfig: SecureMessagingConfig
+  appConfig: AppConfig
 )
 
 @(
   title: Title,
   backButton: Option[BackButton] = None,
   useCustomContentWidth: Boolean = false,
-  pageWithNavigation: Option[PageWithNavigation.Value] = None
+  navigationBanner: Html = HtmlFormat.empty
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
@@ -86,9 +85,7 @@
       @phaseBanner("beta")
     }
 
-    @if(secureMessagingConfig.isSecureMessagingEnabled) {
-        @pageWithNavigation.map(navigationBanner(_))
-    }
+    @navigationBanner
 }
 
 @content = {

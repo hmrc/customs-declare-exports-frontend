@@ -32,7 +32,7 @@ import play.api.inject.bind
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukTable}
 import views.declaration.spec.UnitViewSpec
 import views.helpers.{StatusOfSubmission, ViewDates}
-import views.html.components.gds.{gdsMainTemplate, link}
+import views.html.components.gds.{gdsMainTemplate, link, navigationBanner}
 import views.html.declaration_information
 
 class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
@@ -41,6 +41,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val govukSummaryList = instanceOf[GovukSummaryList]
   private val govukTable = instanceOf[GovukTable]
   private val link = instanceOf[link]
+  private val navigationBanner = instanceOf[navigationBanner]
 
   private val configWithFeaturesEnabled: Config =
     ConfigFactory.parseString("""
@@ -71,6 +72,8 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
   private val secureMessagingInboxConfigSfus = new SecureMessagingInboxConfig(Configuration(configWithFeaturesEnabled))
   private val secureMessagingInboxConfigDisabled = new SecureMessagingInboxConfig(Configuration(configWithFeaturesDisabled))
+
+  private val secureMessagingConfig = mock[SecureMessagingConfig]
 
   private def submission(mrn: Option[String] = Some("mrn")): Submission =
     Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = mrn, ducr = Some("ducr"), actions = Seq.empty)
@@ -124,9 +127,11 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       govukSummaryList,
       govukTable,
       link,
+      navigationBanner,
       eadConfigEnabled,
       sfusConfigEnabled,
-      secureMessagingInboxConfigSfus
+      secureMessagingInboxConfigSfus,
+      secureMessagingConfig
     )
 
   private val declarationInformationPageWithoutFeatures =
@@ -135,9 +140,11 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       govukSummaryList,
       govukTable,
       link,
+      navigationBanner,
       eadConfigDisabled,
       sfusConfigDisabled,
-      secureMessagingInboxConfigDisabled
+      secureMessagingInboxConfigDisabled,
+      secureMessagingConfig
     )
 
   private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications)(request, messages)
@@ -163,9 +170,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
     "contain the navigation banner" when {
       "the Secure Messaging flag is set to 'exports'" in {
-        val secureMessagingConfig = mock[SecureMessagingConfig]
         when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
-
         val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(secureMessagingConfig))
         val page = injector.instanceOf[declaration_information]
         val view = page(submission, notifications)(request, messages)
@@ -182,6 +187,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
     "not contain the navigation banner" when {
       "the Secure Messaging flag is not set to 'exports'" in {
+        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
         Option(viewWithFeatures.getElementById("navigation-banner")) mustBe None
       }
     }
