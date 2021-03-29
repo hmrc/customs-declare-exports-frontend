@@ -22,6 +22,7 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class EntityDetailsSpec extends WordSpec with MustMatchers {
   import EntityDetailsSpec._
+  import AddressSpec._
 
   "Bound form with NamedEntityDetails mapping" should {
 
@@ -82,7 +83,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
     "contain errors for Address only" when {
       "EORI is empty & Address has error in a single field" in {
         val address =
-          Address(fullName = "!@#$%^&*", addressLine = "Address Line", townOrCity = "City", postCode = "AB12 CD3", country = "United Kingdom")
+          Address(fullName = seventyOneChars, addressLine = "Address Line", townOrCity = "City", postCode = "AB12 CD3", country = "United Kingdom")
         val input = buildEntityInputMap(address = address)
 
         val form = EntityDetails.form().bind(input)
@@ -96,10 +97,10 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
       "EORI is empty & Address has errors in all fields" in {
         val address = Address(
-          fullName = "!@#$%^&*",
-          addressLine = "",
-          townOrCity = "City!@$",
-          postCode = "AB12 CD34 1235 1346",
+          fullName = seventyOneChars,
+          addressLine = seventyOneChars,
+          townOrCity = thirtySixChars,
+          postCode = tenChars,
           country = "Any Country you can imagine"
         )
         val input = buildEntityInputMap(address = address)
@@ -110,7 +111,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         val addressErrors = form.errors.filter(_.key.contains("address."))
         addressErrors.size must equal(5)
         addressErrors.map(_.message) must contain("declaration.address.fullName.error")
-        addressErrors.map(_.message) must contain("declaration.address.addressLine.empty")
+        addressErrors.map(_.message) must contain("declaration.address.addressLine.error")
         addressErrors.map(_.message) must contain("declaration.address.townOrCity.error")
         addressErrors.map(_.message) must contain("declaration.address.postCode.error")
         addressErrors.map(_.message) must contain("declaration.address.country.error")
@@ -119,10 +120,10 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
       "EORI is correct but Address has errors" in {
         val eori = "9GB1234567ABCDEF"
         val address = Address(
-          fullName = "!@#$%^&*",
-          addressLine = "",
-          townOrCity = "City!@$",
-          postCode = "AB12 CD34 1235 1346",
+          fullName = seventyOneChars,
+          addressLine = seventyOneChars,
+          townOrCity = thirtySixChars,
+          postCode = tenChars,
           country = "Any Country you can imagine"
         )
         val input = buildEntityInputMap(eori, address)
@@ -133,7 +134,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         val addressErrors = form.errors.filter(_.key.contains("address."))
         addressErrors.size must equal(5)
         addressErrors.map(_.message) must contain("declaration.address.fullName.error")
-        addressErrors.map(_.message) must contain("declaration.address.addressLine.empty")
+        addressErrors.map(_.message) must contain("declaration.address.addressLine.error")
         addressErrors.map(_.message) must contain("declaration.address.townOrCity.error")
         addressErrors.map(_.message) must contain("declaration.address.postCode.error")
         addressErrors.map(_.message) must contain("declaration.address.country.error")
@@ -144,10 +145,10 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
       "both EORI & Address elements are wrong" in {
         val eori = "9GB!@#$%^&*"
         val address = Address(
-          fullName = "!@#$%^&*",
-          addressLine = "",
-          townOrCity = "City!@$",
-          postCode = "AB12 CD34 1235 1346",
+          fullName = seventyOneChars,
+          addressLine = seventyOneChars,
+          townOrCity = thirtySixChars,
+          postCode = tenChars,
           country = "Any Country you can imagine"
         )
         val input = buildEntityInputMap(eori, address)
@@ -163,7 +164,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         val addressErrors = form.errors.filter(_.key.contains("address."))
         addressErrors.size must equal(5)
         addressErrors.map(_.message) must contain("declaration.address.fullName.error")
-        addressErrors.map(_.message) must contain("declaration.address.addressLine.empty")
+        addressErrors.map(_.message) must contain("declaration.address.addressLine.error")
         addressErrors.map(_.message) must contain("declaration.address.townOrCity.error")
         addressErrors.map(_.message) must contain("declaration.address.postCode.error")
         addressErrors.map(_.message) must contain("declaration.address.country.error")

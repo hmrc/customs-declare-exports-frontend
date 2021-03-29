@@ -36,22 +36,19 @@ case class Address(
 object Address {
   implicit val format = Json.format[Address]
 
-  private val validateAddressField: Int => String => Boolean =
-    (length: Int) => (input: String) => noLongerThan(length)(input) and isAlphanumeric(input.replaceAll(" ", ""))
-
   val mapping = Forms.mapping(
     "fullName" -> text()
       .verifying("declaration.address.fullName.empty", nonEmpty)
-      .verifying("declaration.address.fullName.error", isEmpty or (isValidName and noLongerThan(70))),
+      .verifying("declaration.address.fullName.error", isEmpty or noLongerThan(70)),
     "addressLine" -> text()
       .verifying("declaration.address.addressLine.empty", nonEmpty)
-      .verifying("declaration.address.addressLine.error", validateAddressField(70)),
+      .verifying("declaration.address.addressLine.error", noLongerThan(70)),
     "townOrCity" -> text()
       .verifying("declaration.address.townOrCity.empty", nonEmpty)
-      .verifying("declaration.address.townOrCity.error", validateAddressField(35)),
+      .verifying("declaration.address.townOrCity.error", noLongerThan(35)),
     "postCode" -> text()
       .verifying("declaration.address.postCode.empty", nonEmpty)
-      .verifying("declaration.address.postCode.error", validateAddressField(9)),
+      .verifying("declaration.address.postCode.error", noLongerThan(9)),
     "country" -> text()
       .verifying("declaration.address.country.empty", nonEmpty)
       .verifying(
