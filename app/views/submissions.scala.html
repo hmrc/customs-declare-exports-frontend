@@ -130,7 +130,7 @@
     title = Title("submissions.title"),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), routes.ChoiceController.displayPage(Some(Choice(Submissions))))),
     useCustomContentWidth = true,
-    pageWithNavigation = PageWithNavigation.OnDashboardPage
+    pageWithNavigation = Some(PageWithNavigation.OnDashboardPage)
 ) {
 
     <div class="govuk-grid-row">

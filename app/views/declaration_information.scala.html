@@ -78,7 +78,7 @@
     title = Title("submissions.declarationInformation"),
     backButton = Some(BackButton(messages("site.backToDeclarations"), routes.SubmissionsController.displayListOfSubmissions())),
     useCustomContentWidth = true,
-    pageWithNavigation = PageWithNavigation.OnPageWithNavigation
+    pageWithNavigation = Some(PageWithNavigation.OnOtherPagesWithNavigation)
 ) {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">

@@ -21,6 +21,5 @@ object PageWithNavigation extends Enumeration {
 
   val OnDashboardPage = Value("onDashboardPage")
   val OnMessageInboxPage = Value("onMessageInboxPage")
-  val OnPageWithNavigation = Value("onPageWithNavigation")
-  val OnPageWithoutNavigation = Value("onPageWithoutNavigation")
+  val OnOtherPagesWithNavigation = Value("onOtherPagesWithNavigation")
 }

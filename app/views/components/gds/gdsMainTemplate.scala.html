@@ -46,7 +46,7 @@
   title: Title,
   backButton: Option[BackButton] = None,
   useCustomContentWidth: Boolean = false,
-  pageWithNavigation: PageWithNavigation.Value = PageWithNavigation.OnPageWithoutNavigation
+  pageWithNavigation: Option[PageWithNavigation.Value] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
@@ -86,8 +86,8 @@
       @phaseBanner("beta")
     }
 
-    @if(secureMessagingConfig.isSecureMessagingEnabled && pageWithNavigation != PageWithNavigation.OnPageWithoutNavigation) {
-        @navigationBanner(pageWithNavigation)
+    @if(secureMessagingConfig.isSecureMessagingEnabled) {
+        @pageWithNavigation.map(navigationBanner(_))
     }
 }
 
