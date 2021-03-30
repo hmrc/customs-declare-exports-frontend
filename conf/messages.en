@@ -498,11 +498,11 @@ declaration.representative.representationType.indirect = Indirect representative
 declaration.representative.representationType.indirect.hint = The representative is sharing legal responsibility with the exporter.
 
 declaration.address.fullName = Full name
-declaration.address.fullName.error = Enter a name, up to 35 characters
-declaration.address.fullName.empty = Enter a name, up to 35 characters
+declaration.address.fullName.error = Enter a name, up to 70 characters.
+declaration.address.fullName.empty = Enter a name, up to 70 characters.
 declaration.address.addressLine = Address line 1
-declaration.address.addressLine.error = Enter an address line 1, up to 35 characters
-declaration.address.addressLine.empty = Enter an address line 1, up to 35 characters
+declaration.address.addressLine.error = Enter an address line 1, up to 70 characters.
+declaration.address.addressLine.empty = Enter an address line 1, up to 70 characters.
 declaration.address.townOrCity = Town or city
 declaration.address.townOrCity.error = Enter a town or city, up to 35 characters
 declaration.address.townOrCity.empty = Enter a town or city, up to 35 characters

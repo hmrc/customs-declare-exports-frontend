@@ -30,22 +30,29 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
 
   onEveryDeclarationJourney() { request =>
     s"Exporter Details form for ${request.declarationType}" should {
+
       val outcomeFromIncorrectForm = ExporterDetails.form(request.declarationType).bind(incorrectExporterDetailsJSON)
+
       "validate eori and address" in {
         outcomeFromIncorrectForm.error("details.eori") must haveMessage("declaration.eori.error.format")
       }
+
       "validate address fullname" in {
         outcomeFromIncorrectForm.error("details.address.fullName") must haveMessage("declaration.address.fullName.error")
       }
+
       "validate address addresline" in {
         outcomeFromIncorrectForm.error("details.address.addressLine") must haveMessage("declaration.address.addressLine.error")
       }
+
       "validate town or city" in {
         outcomeFromIncorrectForm.error("details.address.townOrCity") must haveMessage("declaration.address.townOrCity.error")
       }
+
       "validate post code" in {
         outcomeFromIncorrectForm.error("details.address.postCode") must haveMessage("declaration.address.postCode.error")
       }
+
       "validate country" in {
         outcomeFromIncorrectForm.error("details.address.country") must haveMessage("declaration.address.country.error")
       }

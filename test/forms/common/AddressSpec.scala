@@ -45,15 +45,6 @@ class AddressSpec extends WordSpec with MustMatchers {
         fullNameError must be(defined)
         fullNameError.get.message must equal("declaration.address.fullName.error")
       }
-
-      "provided with input containing special characters" in {
-        val input = buildAddressInputMap(fullName = "FullName!@#")
-        val form = Address.form().bind(input)
-
-        val fullNameError = form.errors.find(_.key == "fullName")
-        fullNameError must be(defined)
-        fullNameError.get.message must equal("declaration.address.fullName.error")
-      }
     }
 
     "contain errors for addressLine" when {
@@ -68,15 +59,6 @@ class AddressSpec extends WordSpec with MustMatchers {
 
       "provided with input longer than 70 characters" in {
         val input = buildAddressInputMap(addressLine = createRandomAlphanumericString(71))
-        val form = Address.form().bind(input)
-
-        val addressLineError = form.errors.find(_.key == "addressLine")
-        addressLineError must be(defined)
-        addressLineError.get.message must equal("declaration.address.addressLine.error")
-      }
-
-      "provided with input containing special characters" in {
-        val input = buildAddressInputMap(addressLine = "Address!@#")
         val form = Address.form().bind(input)
 
         val addressLineError = form.errors.find(_.key == "addressLine")
@@ -103,15 +85,6 @@ class AddressSpec extends WordSpec with MustMatchers {
         townOrCityError must be(defined)
         townOrCityError.get.message must equal("declaration.address.townOrCity.error")
       }
-
-      "provided with input containing special characters" in {
-        val input = buildAddressInputMap(townOrCity = "City%$#")
-        val form = Address.form().bind(input)
-
-        val townOrCityError = form.errors.find(_.key == "townOrCity")
-        townOrCityError must be(defined)
-        townOrCityError.get.message must equal("declaration.address.townOrCity.error")
-      }
     }
 
     "contain errors for postCode" when {
@@ -126,15 +99,6 @@ class AddressSpec extends WordSpec with MustMatchers {
 
       "provided with input in wrong format" in {
         val input = buildAddressInputMap(postCode = "AB 12 CD 345")
-        val form = Address.form().bind(input)
-
-        val postCodeError = form.errors.find(_.key == "postCode")
-        postCodeError must be(defined)
-        postCodeError.get.message must equal("declaration.address.postCode.error")
-      }
-
-      "provided with input containing special characters" in {
-        val input = buildAddressInputMap(postCode = "AB*^ $%7")
         val form = Address.form().bind(input)
 
         val postCodeError = form.errors.find(_.key == "postCode")
@@ -203,16 +167,21 @@ object AddressSpec {
 
   import play.api.libs.json._
 
-  val correctAddress =
-    Address(fullName = "Full Name", addressLine = "Address Line", townOrCity = "Town or City", postCode = "AB12 34CD", country = "Poland")
+  val seventyOneChars = "01234567890123456789012345678901234567890123456789012345678901234567890"
+  val thirtySixChars = "0123456789012345678901234567890123456"
+  val tenChars = "01234567890"
 
-  val incorrectAddress = Address(
-    fullName = "nX9KuS2J6Ee1ATbgbcZFaFOCHI1t8RJnNfbU0dbPQAK4w0q6PdzuZIyxcXziSbUBzizlmi1",
-    addressLine = "nX9KuS2J6Ee1ATbgbcZFaFOCHI1t8RJnNfbU0dbPQAK4w0q6PdzuZIyxcXziSbUBzizlmi1",
-    townOrCity = "gDsSwbyP6cPkpgRZSHoH3JtEj8grDfjsVCmq",
-    postCode = "TN0EHF96qN",
-    country = "abc"
-  )
+  val correctAddress =
+    Address(
+      fullName = "Full Name abcABC123¬!\"£$%^&*()_+=-`|\\<,>?:;@'~#{}[]Ħ",
+      addressLine = "Address Line abcABC123¬!\"£$%^&*()_+=-`|\\<,>?:;@'~#{}[]Ħ",
+      townOrCity = "Town¬!\"£$%^&*()_+=-`|\\<,>?:;@'~#Ħ",
+      postCode = "AB12 34CĦ",
+      country = "Poland"
+    )
+
+  val incorrectAddress =
+    Address(fullName = seventyOneChars, addressLine = seventyOneChars, townOrCity = thirtySixChars, postCode = tenChars, country = "abc")
 
   val addressWithEmptyFullname =
     Address(fullName = "", addressLine = "Address Line", townOrCity = "Town or City", postCode = "AB12 34CD", country = "Poland")
