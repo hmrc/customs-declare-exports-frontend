@@ -16,13 +16,13 @@
 
 @import config.{AppConfig, BetaBannerConfig, TimeoutDialogConfig}
 @import models.requests.AuthenticatedRequest
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{En, Cy}
 @import views.helpers.{BackButton, Title}
-@import views.html.components.gds.govukFlexibleLayout
 
 @this(
   govukHeader: GovukHeader,
@@ -44,7 +44,8 @@
 @(
   title: Title,
   backButton: Option[BackButton] = None,
-  useCustomContentWidth: Boolean = false
+  useCustomContentWidth: Boolean = false,
+  navigationBanner: Html = HtmlFormat.empty
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
@@ -83,6 +84,8 @@
     @if(betaBannerConfig.isBetaBannerEnabled) {
       @phaseBanner("beta")
     }
+
+    @navigationBanner
 }
 
 @content = {

@@ -18,16 +18,21 @@ package views
 
 import java.time.ZonedDateTime
 
-import base.Injector
+import scala.collection.JavaConverters.asScalaIteratorConverter
+
+import base.{Injector, OverridableInjector}
 import com.typesafe.config.{Config, ConfigFactory}
-import config.{EadConfig, FeatureSwitchConfig, SecureMessagingInboxConfig, SfusConfig}
+import config._
+import controllers.routes
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
+import org.mockito.Mockito.when
 import play.api.Configuration
+import play.api.inject.bind
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukTable}
 import views.declaration.spec.UnitViewSpec
 import views.helpers.{StatusOfSubmission, ViewDates}
-import views.html.components.gds.{gdsMainTemplate, link}
+import views.html.components.gds.{gdsMainTemplate, link, navigationBanner}
 import views.html.declaration_information
 
 class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
@@ -36,23 +41,25 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val govukSummaryList = instanceOf[GovukSummaryList]
   private val govukTable = instanceOf[GovukTable]
   private val link = instanceOf[link]
+  private val navigationBanner = instanceOf[navigationBanner]
 
   private val configWithFeaturesEnabled: Config =
     ConfigFactory.parseString("""
-        |microservice.services.features.ead=enabled
-        |microservice.services.features.sfus=enabled
-        |microservice.services.features.secureMessagingInbox=sfus
-        |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
-        |urls.sfusInbox="http://localhost:6793/cds-file-upload-service/exports-message-choice"
-      """.stripMargin)
+      |microservice.services.features.ead=enabled
+      |microservice.services.features.sfus=enabled
+      |microservice.services.features.secureMessagingInbox=sfus
+      |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
+      |urls.sfusInbox="http://localhost:6793/cds-file-upload-service/exports-message-choice"
+    """.stripMargin)
+
   private val configWithFeaturesDisabled: Config =
     ConfigFactory.parseString("""
-        |microservice.services.features.ead=disabled
-        |microservice.services.features.sfus=disabled
-        |microservice.services.features.secureMessagingInbox=disabled
-        |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
-        |urls.sfusInbox="http://localhost:6793/cds-file-upload-service/exports-message-choice"
-      """.stripMargin)
+      |microservice.services.features.ead=disabled
+      |microservice.services.features.sfus=disabled
+      |microservice.services.features.secureMessagingInbox=disabled
+      |urls.sfusUpload="http://localhost:6793/cds-file-upload-service/mrn-entry"
+      |urls.sfusInbox="http://localhost:6793/cds-file-upload-service/exports-message-choice"
+    """.stripMargin)
 
   private val featureSwitchConfigEnabled = new FeatureSwitchConfig(Configuration(configWithFeaturesEnabled))
   private val featureSwitchConfigDisabled = new FeatureSwitchConfig(Configuration(configWithFeaturesDisabled))
@@ -65,6 +72,8 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
   private val secureMessagingInboxConfigSfus = new SecureMessagingInboxConfig(Configuration(configWithFeaturesEnabled))
   private val secureMessagingInboxConfigDisabled = new SecureMessagingInboxConfig(Configuration(configWithFeaturesDisabled))
+
+  private val secureMessagingConfig = mock[SecureMessagingConfig]
 
   private def submission(mrn: Option[String] = Some("mrn")): Submission =
     Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = mrn, ducr = Some("ducr"), actions = Seq.empty)
@@ -118,9 +127,11 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       govukSummaryList,
       govukTable,
       link,
+      navigationBanner,
       eadConfigEnabled,
       sfusConfigEnabled,
-      secureMessagingInboxConfigSfus
+      secureMessagingInboxConfigSfus,
+      secureMessagingConfig
     )
 
   private val declarationInformationPageWithoutFeatures =
@@ -129,9 +140,11 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       govukSummaryList,
       govukTable,
       link,
+      navigationBanner,
       eadConfigDisabled,
       sfusConfigDisabled,
-      secureMessagingInboxConfigDisabled
+      secureMessagingInboxConfigDisabled,
+      secureMessagingConfig
     )
 
   private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications)(request, messages)
@@ -155,12 +168,36 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       messages must haveTranslationFor("submissions.timeline")
     }
 
-    "contains page header" in {
+    "contain the navigation banner" when {
+      "the Secure Messaging flag is set to 'true'" in {
+        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+        val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(secureMessagingConfig))
+        val page = injector.instanceOf[declaration_information]
+        val view = page(submission, notifications)(request, messages)
+
+        val banner = view.getElementById("navigation-banner")
+        assert(Option(banner).isDefined && banner.childrenSize == 2)
+
+        val elements = banner.children.iterator.asScala.toList
+        assert(elements.forall(_.tagName.toLowerCase == "a"))
+        elements.head must haveHref(routes.SubmissionsController.displayListOfSubmissions())
+        elements.last must haveHref(routes.SecureMessagingController.displayInbox)
+      }
+    }
+
+    "not contain the navigation banner" when {
+      "the Secure Messaging flag is set to 'false'" in {
+        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
+        Option(viewWithFeatures.getElementById("navigation-banner")) mustBe None
+      }
+    }
+
+    "contain page header" in {
 
       viewWithFeatures.getElementsByTag("h1") must containMessageForElements("submissions.declarationInformation")
     }
 
-    "contains references table with correct labels" in {
+    "contain references table with correct labels" in {
 
       viewWithFeatures.getElementsByTag("h2").first() must containMessage("submissions.references")
       viewWithFeatures.select(".submission__ucr .govuk-summary-list__key").first() must containMessage("submissions.ucr")
@@ -171,7 +208,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       viewWithFeatures.select(".submission__mrn .govuk-summary-list__value").first().text() mustBe submission.mrn.get
     }
 
-    "contains create EAD link" when {
+    "contain create EAD link" when {
 
       "feature flag is enabled" in {
 
@@ -206,7 +243,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       }
     }
 
-    "contains view declaration link" when {
+    "contain view declaration link" when {
 
       "declaration is accepted" in {
 
@@ -235,7 +272,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       }
     }
 
-    "contains SFUS link" when {
+    "contain SFUS link" when {
 
       "feature flag is enabled, status is ADDITIONAL_DOCUMENTS_REQUIRED and mrn is present" in {
 
@@ -305,7 +342,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       }
     }
 
-    "contains additional documents acceptedNotification with redirect to SFUS link" in {
+    "contain additional documents acceptedNotification with redirect to SFUS link" in {
 
       val documentsRequired = StatusOfSubmission.asText(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
       viewWithFeatures.getElementById("notification_status_0").text() mustBe documentsRequired
@@ -316,7 +353,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         .child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/mrn")
     }
 
-    "contains rejected acceptedNotification with correct data and view errors link" in {
+    "contain rejected acceptedNotification with correct data and view errors link" in {
 
       viewWithFeatures.getElementById("notification_status_1").text() mustBe StatusOfSubmission.asText(SubmissionStatus.REJECTED)
       viewWithFeatures.getElementById("notification_date_time_1").text() mustBe dateTimeAsText
@@ -326,14 +363,14 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       )
     }
 
-    "contains accepted acceptedNotification with correct data" in {
+    "contain accepted acceptedNotification with correct data" in {
 
       viewWithFeatures.getElementById("notification_status_2").text() mustBe StatusOfSubmission.asText(SubmissionStatus.ACCEPTED)
       viewWithFeatures.getElementById("notification_date_time_2").text() mustBe dateTimeAsText
       viewWithFeatures.getElementById("notification_action_2").text() mustBe empty
     }
 
-    "contains back link which links to the submission list" in {
+    "contain back link which links to the submission list" in {
 
       val backButton = viewWithFeatures.getElementById("back-link")
 

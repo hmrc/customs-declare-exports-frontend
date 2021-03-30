@@ -14,25 +14,33 @@
  * limitations under the License.
  *@
 
-@import config.{EadConfig, SecureMessagingInboxConfig, SfusConfig}
+@import config.{EadConfig, SecureMessagingConfig, SecureMessagingInboxConfig, SfusConfig}
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.{Submission, SubmissionStatus}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, StatusOfSubmission, Title, ViewDates}
-@import views.html.components.gds.{gdsMainTemplate, link}
+@import views.html.components.gds.{gdsMainTemplate, link, navigationBanner}
 
 @this(
     govukLayout: gdsMainTemplate,
     govukSummaryList: GovukSummaryList,
     govukTable: GovukTable,
     link: link,
+    navigationBanner: navigationBanner,
     eadDocumentConfig: EadConfig,
     sfusConfig: SfusConfig,
-    secureMessagingInboxConfig: SecureMessagingInboxConfig
+    secureMessagingInboxConfig: SecureMessagingInboxConfig,
+    secureMessagingConfig: SecureMessagingConfig
 )
 
 @(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
+
+@navBanner = {
+  @if(secureMessagingConfig.isSecureMessagingEnabled) {
+    @navigationBanner()
+  }
+}
 
 @errorOrUploadFileLink(declarationID: String, status: SubmissionStatus.Value)= {
     @if(status == SubmissionStatus.REJECTED) {
@@ -77,7 +85,8 @@
 @govukLayout(
     title = Title("submissions.declarationInformation"),
     backButton = Some(BackButton(messages("site.backToDeclarations"), routes.SubmissionsController.displayListOfSubmissions())),
-    useCustomContentWidth = true
+    useCustomContentWidth = true,
+    navigationBanner = navBanner
 ) {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">

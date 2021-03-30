@@ -16,6 +16,7 @@
 
 @import java.time.ZoneId
 
+@import config.SecureMessagingConfig
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.Submissions
 @import models.declaration.notifications.Notification
@@ -32,10 +33,18 @@
     govukTabs: GovukTabs,
     govukTable: GovukTable,
     link: link,
-    linkButton: linkButton
+    linkButton: linkButton,
+    navigationBanner: navigationBanner,
+    secureMessagingConfig: SecureMessagingConfig
 )
 
 @(submissionsPagesElements: SubmissionsPagesElements)(implicit request: Request[_], messages: Messages)
+
+@navBanner = {
+    @if(secureMessagingConfig.isSecureMessagingEnabled) {
+        @navigationBanner(withLinkToSubmissions = false)
+    }
+}
 
 @submissionsPages = @{
     SubmissionsPages(
@@ -129,7 +138,9 @@
 @govukLayout(
     title = Title("submissions.title"),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), routes.ChoiceController.displayPage(Some(Choice(Submissions))))),
-    useCustomContentWidth = true) {
+    useCustomContentWidth = true,
+    navigationBanner = navBanner
+) {
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">

@@ -14,20 +14,32 @@
  * limitations under the License.
  *@
 
+@import config.SecureMessagingConfig
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.Title
-@import views.html.components.gds.gdsMainTemplate
+@import views.html.components.gds.{gdsMainTemplate, navigationBanner}
 
-@this(govukLayout: gdsMainTemplate, govukAccordion : GovukAccordion)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukAccordion : GovukAccordion,
+    navigationBanner: navigationBanner,
+    secureMessagingConfig: SecureMessagingConfig
+)
 
 @(partial: HtmlFormat.Appendable)(implicit request: Request[_], messages: Messages)
 
+@navBanner = {
+    @if(secureMessagingConfig.isSecureMessagingEnabled) {
+        @navigationBanner(withLinkToMessageInbox = false)
+    }
+}
+
 @govukLayout(
     title = Title("inbox.heading"),
-    useCustomContentWidth = true
+    useCustomContentWidth = true,
+    navigationBanner = navBanner
 ) {
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             @partial
