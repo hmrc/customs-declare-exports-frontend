@@ -169,7 +169,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     }
 
     "contain the navigation banner" when {
-      "the Secure Messaging flag is set to 'exports'" in {
+      "the Secure Messaging flag is set to 'true'" in {
         when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
         val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(secureMessagingConfig))
         val page = injector.instanceOf[declaration_information]
@@ -186,7 +186,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     }
 
     "not contain the navigation banner" when {
-      "the Secure Messaging flag is not set to 'exports'" in {
+      "the Secure Messaging flag is set to 'false'" in {
         when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
         Option(viewWithFeatures.getElementById("navigation-banner")) mustBe None
       }

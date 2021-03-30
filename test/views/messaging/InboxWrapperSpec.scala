@@ -51,7 +51,7 @@ class InboxWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "contain the navigation banner" when {
-      "the Secure Messaging flag is set to 'exports'" in {
+      "the Secure Messaging flag is set to 'true'" in {
         when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
         val view = inboxWrapperPage(HtmlFormat.raw(partialContent))(FakeRequest(), messages)
         val banner = view.getElementById("navigation-banner")
@@ -67,7 +67,7 @@ class InboxWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "not contain the navigation banner" when {
-      "the Secure Messaging flag is not set to 'exports'" in {
+      "the Secure Messaging flag is set to 'false'" in {
         Option(view.getElementById("navigation-banner")) mustBe None
       }
     }

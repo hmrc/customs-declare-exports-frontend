@@ -18,8 +18,6 @@ package views
 
 import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
-
 import base.{Injector, OverridableInjector}
 import config.{PaginationConfig, SecureMessagingConfig}
 import controllers.routes
@@ -116,7 +114,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "contain the navigation banner" when {
-      "the Secure Messaging flag is set to 'exports'" in {
+      "the Secure Messaging flag is set to 'true'" in {
         val view = createViewForNavigationBannerTest(true)
 
         val navigationBanner = view.getElementById("navigation-banner")
@@ -132,7 +130,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "not contain the navigation banner" when {
-      "the Secure Messaging flag is not set to 'exports'" in {
+      "the Secure Messaging flag is set to 'false'" in {
         val view = createViewForNavigationBannerTest(false)
         Option(view.getElementById("navigation-banner")) mustBe None
       }
