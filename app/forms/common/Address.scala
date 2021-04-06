@@ -23,15 +23,12 @@ import services.Countries.allCountries
 import utils.validators.forms.FieldValidator._
 
 case class Address(
-  fullName: String, // alphanumeric length 1 - 70
-  addressLine: String, // alphanumeric length 1 - 70
+  fullName: String, // alphanumeric length 1 - 35
+  addressLine: String, // alphanumeric length 1 - 35
   townOrCity: String, // alphanumeric length 1 - 35
   postCode: String, // alphanumeric length 1 - 9
   country: String // full country name, convert to 2 upper case alphabetic characters for backend
-) {
-  def isDefined(): Boolean =
-    fullName.nonEmpty || addressLine.nonEmpty || townOrCity.nonEmpty || postCode.nonEmpty || country.nonEmpty
-}
+)
 
 object Address {
   implicit val format = Json.format[Address]
@@ -39,16 +36,20 @@ object Address {
   val mapping = Forms.mapping(
     "fullName" -> text()
       .verifying("declaration.address.fullName.empty", nonEmpty)
-      .verifying("declaration.address.fullName.error", isEmpty or noLongerThan(70)),
+      .verifying("declaration.address.fullName.error", isValidAddressField)
+      .verifying("declaration.address.fullName.length", noLongerThan(35)),
     "addressLine" -> text()
       .verifying("declaration.address.addressLine.empty", nonEmpty)
-      .verifying("declaration.address.addressLine.error", noLongerThan(70)),
+      .verifying("declaration.address.addressLine.error", isValidAddressField)
+      .verifying("declaration.address.addressLine.length", noLongerThan(35)),
     "townOrCity" -> text()
       .verifying("declaration.address.townOrCity.empty", nonEmpty)
-      .verifying("declaration.address.townOrCity.error", noLongerThan(35)),
+      .verifying("declaration.address.townOrCity.error", isValidAddressField)
+      .verifying("declaration.address.townOrCity.length", noLongerThan(35)),
     "postCode" -> text()
       .verifying("declaration.address.postCode.empty", nonEmpty)
-      .verifying("declaration.address.postCode.error", noLongerThan(9)),
+      .verifying("declaration.address.postCode.error", isAlphanumericWithSpace)
+      .verifying("declaration.address.postCode.length", noLongerThan(9)),
     "country" -> text()
       .verifying("declaration.address.country.empty", nonEmpty)
       .verifying(

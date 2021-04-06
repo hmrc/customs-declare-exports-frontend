@@ -56,7 +56,7 @@ class ConsignorEoriNumberSpec extends FormSpec {
 
         val result = form.bind(incorrectData)
 
-        result.errors mustBe Seq(FormError("eori", "declaration.eori.empty"))
+        result.errors mustBe Seq(FormError("eori", "declaration.consignorEori.eori.empty"))
       }
 
       "there is no answer on the question" in {

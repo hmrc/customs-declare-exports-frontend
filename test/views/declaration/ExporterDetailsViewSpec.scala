@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.{Injector, TestHelper}
+import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Address
@@ -26,19 +26,20 @@ import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import play.api.data.Form
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.AddressViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.exporter_address
 import views.tags.ViewTest
 
 @ViewTest
-class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class ExporterDetailsViewSpec extends AddressViewSpec with CommonMessages with Stubs with Injector {
 
   private val exporterDetailsPage = instanceOf[exporter_address]
 
-  private def form(journeyType: DeclarationType): Form[ExporterDetails] = ExporterDetails.form(journeyType)
+  private def form()(implicit request: JourneyRequest[_]): Form[ExporterDetails] = ExporterDetails.form(request.declarationType)
 
   private def createView(form: Form[ExporterDetails])(implicit request: JourneyRequest[_]): Document =
     exporterDetailsPage(Mode.Normal, form)(request, messages)
@@ -47,18 +48,18 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
     onEveryDeclarationJourney() { implicit request =>
       "display same page title as header" in {
-        val viewWithMessage = createView(form(request.declarationType))
+        val viewWithMessage = createView(form())
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "display section header" in {
 
-        createView(form(request.declarationType)).getElementById("section-header").text() must include(messages("declaration.section.2"))
+        createView(form()).getElementById("section-header").text() must include(messages("declaration.section.2"))
       }
 
       "display empty input with label for Full name" in {
 
-        val view = createView(form(request.declarationType))
+        val view = createView(form())
 
         view.getElementsByAttributeValue("for", "details_address_fullName").text() mustBe messages("declaration.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
@@ -66,21 +67,21 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display empty input with label for Address" in {
 
-        val view = createView(form(request.declarationType))
+        val view = createView(form())
         view.getElementsByAttributeValue("for", "details_address_addressLine").text() mustBe messages("declaration.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
       "display empty input with label for Town or City" in {
 
-        val view = createView(form(request.declarationType))
+        val view = createView(form())
         view.getElementsByAttributeValue("for", "details_address_townOrCity").text() mustBe messages("declaration.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
       }
 
       "display empty input with label for Postcode" in {
 
-        val view = createView(form(request.declarationType))
+        val view = createView(form())
         view.getElementsByAttributeValue("for", "details_address_postCode").text() mustBe messages("declaration.address.postCode")
 
         view.getElementById("details_address_postCode").attr("value") mustBe empty
@@ -88,7 +89,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display empty input with label for Country" in {
 
-        val view = createView(form(request.declarationType))
+        val view = createView(form())
 
         view.getElementsByAttributeValue("for", "details_address_country").text() mustBe messages("declaration.address.country")
 
@@ -96,12 +97,12 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       }
 
       "display 'Save and continue' button" in {
-        val saveButton = createView(form(request.declarationType)).getElementById("submit")
+        val saveButton = createView(form()).getElementById("submit")
         saveButton.text() mustBe messages(saveAndContinueCaption)
       }
 
       "display 'Save and return' button" in {
-        val saveButton = createView(form(request.declarationType)).getElementById("submit_and_return")
+        val saveButton = createView(form()).getElementById("submit_and_return")
         saveButton.text() mustBe messages(saveAndReturnCaption)
         saveButton.attr("name") mustBe SaveAndReturn.toString
       }
@@ -110,7 +111,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
     onEveryDeclarationJourney() { implicit request =>
       "display 'Back' button that links to 'Exporter Eori Number' page" in {
 
-        val backButton = createView(form(request.declarationType)).getElementById("back-link")
+        val backButton = createView(form()).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.ExporterEoriNumberController.displayPage().url
@@ -121,255 +122,76 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
   "Exporter Details View for invalid input" should {
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display error when both EORI and business details are empty" in {
-
-        val view = createView(form(request.declarationType).bind(Map[String, String]()))
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_eori")
-        view.getElementsByClass("govuk-list govuk-error-summary__list").attr("value") mustBe empty
-
+      "display error for empty fullName" in {
+        assertIncorrectView(validAddress.copy(fullName = ""), "fullName", "empty")
       }
 
-      "display error for empty Full name" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England")))))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
-        view.getElementById("details_address_fullName-error") must containMessage("declaration.address.fullName.empty")
-
+      "display error for incorrect fullName" in {
+        assertIncorrectView(validAddress.copy(fullName = illegalField), "fullName", "error")
       }
 
-      "display error for incorrect Full name" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(
-              ExporterDetails(
-                EntityDetails(None, Some(Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")))
-              )
-            )
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
-        view.getElementById("details_address_fullName-error") must containMessage("declaration.address.fullName.error")
+      "display error for fullName too long" in {
+        assertIncorrectView(validAddress.copy(fullName = fieldWithIllegalLength), "fullName", "length")
       }
 
-      "display error for empty Address" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England")))))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error").attr("value") mustBe empty
-
+      "display error for empty addressLine" in {
+        assertIncorrectView(validAddress.copy(addressLine = ""), "addressLine", "empty")
       }
 
-      "display error for incorrect Address" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(
-              ExporterDetails(
-                EntityDetails(None, Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England")))
-              )
-            )
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("declaration.address.addressLine.error")
+      "display error for incorrect addressLine" in {
+        assertIncorrectView(validAddress.copy(addressLine = illegalField), "addressLine", "error")
       }
 
-      "display error for empty Town or city" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England")))))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.empty")
+      "display error for addressLine too long" in {
+        assertIncorrectView(validAddress.copy(addressLine = fieldWithIllegalLength), "addressLine", "length")
       }
 
-      "display error for incorrect Town or city" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(
-              ExporterDetails(
-                EntityDetails(None, Some(Address("Marco Polo", "Test Street", TestHelper.createRandomAlphanumericString(71), "LS18BN", "England")))
-              )
-            )
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.error")
+      "display error for empty townOrCity" in {
+        assertIncorrectView(validAddress.copy(townOrCity = ""), "townOrCity", "empty")
       }
 
-      "display error for empty Postcode" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England")))))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.empty")
+      "display error for incorrect townOrCity" in {
+        assertIncorrectView(validAddress.copy(townOrCity = illegalField), "townOrCity", "error")
       }
 
-      "display error for incorrect Postcode" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(
-              ExporterDetails(
-                EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomAlphanumericString(71), "England")))
-              )
-            )
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.error")
+      "display error for townOrCity too long" in {
+        assertIncorrectView(validAddress.copy(townOrCity = fieldWithIllegalLength), "townOrCity", "length")
       }
 
-      "display error for empty Country" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "")))))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_country")
-        view.getElementById("error-message-details.address.country-input") must containMessage("declaration.address.country.empty")
+      "display error for empty postCode" in {
+        assertIncorrectView(validAddress.copy(postCode = ""), "postCode", "empty")
       }
 
-      "display error for incorrect Country" in {
+      "display error for incorrect postCode" in {
+        assertIncorrectView(validAddress.copy(postCode = illegalField), "postCode", "error")
+      }
 
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))))
-        )
+      "display error for postCode too long" in {
+        assertIncorrectView(validAddress.copy(postCode = fieldWithIllegalLength), "postCode", "length")
+      }
 
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_country")
-        view.getElementById("error-message-details.address.country-input") must containMessage("declaration.address.country.error")
+      "display error for empty country" in {
+        assertIncorrectView(validAddress.copy(country = ""), "country", "empty")
+      }
+
+      "display error for incorrect country" in {
+        assertIncorrectView(validAddress.copy(country = "Barcelona"), "country", "error")
       }
 
       "display errors when everything except Full name is empty" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "", "", "", "")))))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("declaration.address.addressLine.empty")
-        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.empty")
-        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.empty")
-        view must containErrorElementWithTagAndHref("a", "#details_address_country")
-        view.getElementById("error-message-details.address.country-input") must containMessage("declaration.address.country.empty")
-
+        assertIncorrectElements(Address("Marco Polo", "", "", "", ""), List("addressLine", "townOrCity", "postCode", "country"), "empty")
       }
 
-      "display errors when everything except Country is empty" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("", "", "", "", "Ukraine")))))
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
-        view.getElementById("details_address_fullName-error") must containMessage("declaration.address.fullName.empty")
-        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("declaration.address.addressLine.empty")
-        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.empty")
-        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.empty")
-
+      "display errors when everything is empty" in {
+        assertIncorrectElements(emptyAddress, List("fullName", "addressLine", "townOrCity", "postCode", "country"), "empty")
       }
 
-      "display errors when everything except Full name is incorrect" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(
-              ExporterDetails(
-                EntityDetails(
-                  None,
-                  Some(
-                    Address(
-                      "Marco Polo",
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71)
-                    )
-                  )
-                )
-              )
-            )
-        )
-
-        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("declaration.address.addressLine.error")
-        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.error")
-        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.error")
-        view must containErrorElementWithTagAndHref("a", "#details_address_country")
-        view.getElementById("error-message-details.address.country-input") must containMessage("declaration.address.country.error")
+      "display errors when everything except country has illegal length" in {
+        assertIncorrectElements(addressWithIllegalLengths, List("fullName", "addressLine", "townOrCity", "postCode"), "length")
       }
 
-      "display errors when everything except Country is incorrect" in {
-
-        val view = createView(
-          form(request.declarationType)
-            .fillAndValidate(
-              ExporterDetails(
-                EntityDetails(
-                  None,
-                  Some(
-                    Address(
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71),
-                      "Ukraine"
-                    )
-                  )
-                )
-              )
-            )
-        )
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
-        view.getElementById("details_address_fullName-error") must containMessage("declaration.address.fullName.error")
-        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("declaration.address.addressLine.error")
-        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
-        view.getElementById("details_address_townOrCity-error") must containMessage("declaration.address.townOrCity.error")
-        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
-        view.getElementById("details_address_postCode-error") must containMessage("declaration.address.postCode.error")
+      "display errors when everything is incorrect" in {
+        assertIncorrectElements(invalidAddress, List("fullName", "addressLine", "townOrCity", "postCode", "country"), "error")
       }
     }
   }
@@ -380,7 +202,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display data in Business address inputs" in {
 
         val view = createView(
-          form(request.declarationType)
+          form()
             .fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
         )
 
@@ -391,5 +213,15 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
         view.getElementById("details_address_country").attr("value") mustBe "test4"
       }
     }
+  }
+
+  private def assertIncorrectView(address: Address, field: String, errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
+    val view = createView(form().fillAndValidate(ExporterDetails(EntityDetails(None, Some(address)))))
+    assertIncorrectElement(view, field, errorKey)
+  }
+
+  private def assertIncorrectElements(address: Address, fields: List[String], errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
+    val view = createView(form().fillAndValidate(ExporterDetails(EntityDetails(None, Some(address)))))
+    assertIncorrectElements(view, fields, errorKey)
   }
 }

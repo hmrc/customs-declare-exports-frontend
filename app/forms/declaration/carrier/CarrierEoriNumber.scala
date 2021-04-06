@@ -37,7 +37,7 @@ object CarrierEoriNumber extends DeclarationPage {
   val formId = "CarrierEoriDetails"
 
   val mapping: Mapping[CarrierEoriNumber] = Forms.mapping(
-    eori -> mandatoryIfEqual(hasEori, YesNoAnswers.yes, Eori.mapping),
+    eori -> mandatoryIfEqual(hasEori, YesNoAnswers.yes, Eori.mapping("declaration.carrierEori.eori.empty")),
     hasEori -> requiredRadio("declaration.carrierEori.hasEori.empty", YesNoAnswer.allowedValues)
   )(CarrierEoriNumber.apply)(CarrierEoriNumber.unapply)
 

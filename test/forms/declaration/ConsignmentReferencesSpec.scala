@@ -44,8 +44,9 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec {
         val form = ConsignmentReferences.form().bind(correctConsignmentReferencesNoDucrJSON)
 
         form.hasErrors mustBe true
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("error.ducr")
+        form.errors.length must equal(2)
+        form.errors.head.message must equal("error.ducr.empty")
+        form.errors.last.message must equal("error.ducr")
       }
 
       "provided with valid input" in {

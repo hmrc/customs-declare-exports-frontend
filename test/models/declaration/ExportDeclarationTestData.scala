@@ -21,10 +21,8 @@ import java.util.UUID
 
 import forms.common.{Date, Eori}
 import forms.declaration.ConsignmentReferencesSpec._
-import forms.declaration.DeclarantDetailsSpec._
 import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
 import forms.declaration.DispatchLocationSpec._
-import forms.declaration.exporter.ExporterDetailsSpec._
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.{DeclarationHolder, _}
@@ -34,6 +32,7 @@ import forms.declaration.countries.Country
 import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.{CancelDeclaration, Lrn}
 import forms.declaration.carrier.CarrierDetails
+import forms.declaration.exporter.ExporterDetails
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DocumentCategory.RelatedDocument
 import models.declaration.governmentagencygoodsitem.Formats._
@@ -54,6 +53,10 @@ object ExportDeclarationTestData {
 
   val correctDeclarationHolder = DeclarationHolder(authorisationTypeCode = Some("ACE"), eori = Some(Eori("PL213472539481923")))
   val correctDeclarationHoldersData = DeclarationHoldersData(Seq(correctDeclarationHolder))
+
+  val correctExporterDetails = ExporterDetails(details = EntityDetailsSpec.correctEntityDetails)
+
+  val correctDeclarantDetailsEORIOnly: DeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
 
   lazy val allRecords = declaration.copy(
     dispatchLocation = Some(correctDispatchLocation),

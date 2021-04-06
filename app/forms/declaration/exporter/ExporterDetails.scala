@@ -29,9 +29,9 @@ case class ExporterDetails(details: EntityDetails)
 object ExporterDetails extends DeclarationPage {
   implicit val format = Json.format[ExporterDetails]
 
-  val defaultMapping = Forms.mapping("details" -> EntityDetails.defaultMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
+  val defaultMapping = Forms.mapping("details" -> EntityDetails.addressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 
-  val optionalMapping = Forms.mapping("details" -> EntityDetails.optionalMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
+  val optionalMapping = Forms.mapping("details" -> EntityDetails.optionalAddressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 
   def form(declarationType: DeclarationType, cachedModel: Option[ExportsDeclaration] = None): Form[ExporterDetails] = declarationType match {
     case CLEARANCE if cachedModel.exists(_.isNotEntryIntoDeclarantsRecords) => Form(optionalMapping)

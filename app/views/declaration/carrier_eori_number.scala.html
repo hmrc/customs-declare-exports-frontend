@@ -19,6 +19,8 @@
 @import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 @import forms.declaration.carrier.CarrierEoriNumber
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
@@ -27,6 +29,7 @@
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
     govukRadios: GovukRadios,
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
@@ -38,6 +41,9 @@
 )
 
 @(mode: Mode, form: Form[CarrierEoriNumber])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hintParagraph1 = { <span class="govuk-hint">@messages("declaration.carrierEori.hint.1")</span> }
+@hintParagraph2 = { <span class="govuk-hint">@messages("declaration.carrierEori.hint.2")</span> }
 
 @eoriInput = {
     @exportsInputText(
@@ -55,35 +61,38 @@
 
         @sectionHeader(messages("declaration.section.2"))
 
-        @govukRadios(Radios(
-            name = "hasEori",
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.carrierEori.title")),
-                    classes = gdsPageLegend
-                ))
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.carrierEori.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
             )),
-            items = Seq(
-                RadioItem(
-                    id = Some("Yes"),
-                    value = Some(yes),
-                    content = Text(messages("site.yes")),
-                    conditionalHtml = Some(eoriInput),
-                    checked = form("hasEori").value.contains("Yes")
-                ),
-                RadioItem(
-                    id = Some("No"),
-                    value = Some(no),
-                    content = Text(messages("site.no")),
-                    checked = form("hasEori").value.contains("No")
-                )
-            ),
-            attributes = Map("id" -> "hasEori"),
-            errorMessage = form("hasEori").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            html = HtmlFormat.fill(immutable.Seq(
+                hintParagraph1,
+                hintParagraph2,
+                govukRadios(Radios(
+                    name = "hasEori",
+                    items = Seq(
+                        RadioItem(
+                            id = Some("Yes"),
+                            value = Some(yes),
+                            content = Text(messages("site.yes")),
+                            conditionalHtml = Some(eoriInput),
+                            checked = form("hasEori").value.contains("Yes")
+                        ),
+                        RadioItem(
+                            id = Some("No"),
+                            value = Some(no),
+                            content = Text(messages("site.no")),
+                            checked = form("hasEori").value.contains("No")
+                        )
+                    ),
+                    attributes = Map("id" -> "hasEori"),
+                    errorMessage = form("hasEori").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+                )),
+                tariffExpander(CarrierEoriNumber, request.declarationType)(messages, appConfig),
+                saveButtons()
+            ))
         ))
-
-        @tariffExpander(CarrierEoriNumber, request.declarationType)(messages, appConfig)
-
-        @saveButtons()
     }
 }

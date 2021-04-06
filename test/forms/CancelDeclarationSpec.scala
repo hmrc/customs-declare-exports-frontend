@@ -21,9 +21,7 @@ import play.api.libs.json.{JsObject, JsString}
 
 class CancelDeclarationSpec extends WordSpec with MustMatchers {
 
-  val cancelDeclaration = CancelDeclaration(Lrn("lrn"), "mrn", "description", "reason")
-
-  def formData(lrn: String = "lrn", mrn: String = "mrn", description: String = "description", reason: String = "1") =
+  def formData(lrn: String = "lrn", mrn: String = "123456789012345678", description: String = "description", reason: String = "1") =
     JsObject(
       Map(
         "functionalReferenceId" -> JsString(lrn),
@@ -64,20 +62,20 @@ class CancelDeclarationSpec extends WordSpec with MustMatchers {
         val form = CancelDeclaration.form.bind(formData(mrn = ""))
 
         form.hasErrors must be(true)
-        form.errors.length must equal(1)
+        form.errors.length must equal(2)
         form.errors.head.message must equal("cancellation.mrn.error.empty")
       }
 
       "provided with too long mrn" in {
-        val form = CancelDeclaration.form.bind(formData(mrn = "1234567890" * 8))
+        val form = CancelDeclaration.form.bind(formData(mrn = "1234567890123456789"))
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("cancellation.mrn.error.tooLong")
+        form.errors.head.message must equal("cancellation.mrn.error.length")
       }
 
       "provided with invalid mrn" in {
-        val form = CancelDeclaration.form.bind(formData(mrn = "inv@l!d"))
+        val form = CancelDeclaration.form.bind(formData(mrn = "12345678901234567~"))
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -92,8 +90,16 @@ class CancelDeclarationSpec extends WordSpec with MustMatchers {
         form.errors.head.message must equal("cancellation.statementDescription.error.empty")
       }
 
-      "provided with too long description that is invalid" in {
-        val form = CancelDeclaration.form.bind(formData(description = "!23456789@" * 60))
+      "provided with too long description" in {
+        val form = CancelDeclaration.form.bind(formData(description = "A23456789B" * 60))
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("cancellation.statementDescription.error.length")
+      }
+
+      "provided with invalid description" in {
+        val form = CancelDeclaration.form.bind(formData(description = "~23456789@"))
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)

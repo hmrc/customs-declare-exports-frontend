@@ -18,8 +18,8 @@ package forms
 
 import forms.Mapping.requiredRadio
 import forms.cancellation.CancellationChangeReason._
-import play.api.data.Forms._
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
@@ -33,21 +33,19 @@ object CancelDeclaration {
   val statementDescriptionKey = "statementDescription"
   val changeReasonKey = "changeReason"
 
-  val mrnMaxLength = 70
+  val mrnLength = 18
   val statementDescriptionMaxLength = 512
 
-  val mapping: Mapping[CancelDeclaration] = Forms.mapping(
+  val mapping = Forms.mapping(
     functionalReferenceIdKey -> Lrn.mapping("cancellation.functionalReferenceId"),
     mrnKey -> text()
       .verifying("cancellation.mrn.error.empty", nonEmpty)
-      .verifying("cancellation.mrn.error.tooLong", isEmpty or noLongerThan(mrnMaxLength))
-      .verifying("cancellation.mrn.error.wrongFormat", isEmpty or isAlphanumeric),
+      .verifying("cancellation.mrn.error.length", hasSpecificLength(mrnLength))
+      .verifying("cancellation.mrn.error.wrongFormat", isAlphanumeric),
     statementDescriptionKey -> text()
       .verifying("cancellation.statementDescription.error.empty", nonEmpty)
-      .verifying(
-        "cancellation.statementDescription.error.invalid",
-        isEmpty or (noLongerThan(statementDescriptionMaxLength) and isAlphanumericWithAllowedSpecialCharacters)
-      ),
+      .verifying("cancellation.statementDescription.error.length", noLongerThan(statementDescriptionMaxLength))
+      .verifying("cancellation.statementDescription.error.invalid", isAlphanumericWithAllowedSpecialCharacters),
     changeReasonKey ->
       requiredRadio("cancellation.changeReason.error.wrongValue")
         .verifying(

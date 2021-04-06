@@ -18,60 +18,24 @@ package unit.forms.declaration
 
 import forms.LightFormMatchers
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.EntityDetailsSpec
+import forms.declaration.EntityDetailsSpec.emptyEntityDetailsJSON
 import forms.declaration.exporter.ExporterDetails
-import models.DeclarationType._
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.data.Form
+import play.api.libs.json.{JsObject, JsValue}
 import unit.base.JourneyTypeTestRunner
 
 class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatchers with JourneyTypeTestRunner {
 
-  import forms.declaration.exporter.ExporterDetailsSpec._
+  val emptyExporterDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 
-  onEveryDeclarationJourney() { request =>
-    s"Exporter Details form for ${request.declarationType}" should {
+  private def form(model: Option[ExportsDeclaration] = None)(implicit request: JourneyRequest[_]): Form[ExporterDetails] =
+    ExporterDetails.form(request.declarationType, model)
 
-      val outcomeFromIncorrectForm = ExporterDetails.form(request.declarationType).bind(incorrectExporterDetailsJSON)
-
-      "validate eori and address" in {
-        outcomeFromIncorrectForm.error("details.eori") must haveMessage("declaration.eori.error.format")
-      }
-
-      "validate address fullname" in {
-        outcomeFromIncorrectForm.error("details.address.fullName") must haveMessage("declaration.address.fullName.error")
-      }
-
-      "validate address addresline" in {
-        outcomeFromIncorrectForm.error("details.address.addressLine") must haveMessage("declaration.address.addressLine.error")
-      }
-
-      "validate town or city" in {
-        outcomeFromIncorrectForm.error("details.address.townOrCity") must haveMessage("declaration.address.townOrCity.error")
-      }
-
-      "validate post code" in {
-        outcomeFromIncorrectForm.error("details.address.postCode") must haveMessage("declaration.address.postCode.error")
-      }
-
-      "validate country" in {
-        outcomeFromIncorrectForm.error("details.address.country") must haveMessage("declaration.address.country.error")
-      }
-
-      "bind correctly to EORI only request" in {
-        ExporterDetails.form(request.declarationType).bind(correctExporterDetailsEORIOnlyJSON) mustBe errorless
-      }
-
-      "bind correctly to address only data" in {
-        ExporterDetails.form(request.declarationType).bind(correctExporterDetailsAddressOnlyJSON) mustBe errorless
-      }
-
-      "bind correctly to EORI and address data at once" in {
-        ExporterDetails.form(request.declarationType).bind(correctExporterDetailsJSON) mustBe errorless
-      }
-    }
-  }
-
-  onClearance { request =>
+  onClearance { implicit request =>
     s"Exporter Details form for ${request.declarationType}" when {
 
       "it is EIDR" should {
@@ -79,9 +43,8 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
 
           val cachedModel: ExportsDeclaration = aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.yes))
 
-          ExporterDetails.form(request.declarationType, Some(cachedModel)).bind(emptyExporterDetailsJSON).error("details") must haveMessage(
-            "declaration.namedEntityDetails.error"
-          )
+          val errors = form(Some(cachedModel)).bind(emptyExporterDetailsJSON).errors
+          EntityDetailsSpec.assertEmptyDetails(errors)
         }
       }
 
@@ -90,19 +53,9 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
 
           val cachedModel = aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.no))
 
-          ExporterDetails.form(request.declarationType, Some(cachedModel)).bind(emptyExporterDetailsJSON) mustBe errorless
+          val result = form(Some(cachedModel)).bind(emptyExporterDetailsJSON)
+          result mustBe errorless
         }
-      }
-    }
-  }
-
-  onJourney(SUPPLEMENTARY, STANDARD, OCCASIONAL, SIMPLIFIED) { request =>
-    s"Exporter Details form for ${request.declarationType}" should {
-      "validate is eori and address is non empty" in {
-
-        ExporterDetails.form(request.declarationType).bind(emptyExporterDetailsJSON).error("details") must haveMessage(
-          "declaration.namedEntityDetails.error"
-        )
       }
     }
   }

@@ -32,7 +32,7 @@ class RepresentativeEntitySpec extends DeclarationPageBaseSpec {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.eori.empty")
+        form.errors.head.message must equal("declaration.representative.entity.eori.empty")
       }
 
       "provided with invalid eori" in {
@@ -59,11 +59,6 @@ class RepresentativeEntitySpec extends DeclarationPageBaseSpec {
 }
 
 object RepresentativeEntitySpec {
-  val correctRepresentativeEntity =
-    RepresentativeEntity(details = EntityDetailsSpec.correctEntityDetails)
-
-  val correctRepresentativeEntityJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
-
   val correctRepresentativeEntityEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
   val invalidRepresentativeEntityInvalidEORIJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
   val invalidRepresentativeEntityAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))

@@ -18,8 +18,8 @@ package views
 
 import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 
-import base.{Injector, OverridableInjector}
-import config.{PaginationConfig, SecureMessagingConfig}
+import base.OverridableInjector
+import config.SecureMessagingConfig
 import controllers.routes
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.Submissions
@@ -29,8 +29,9 @@ import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.{Page, Paginated, SubmissionsPagesElements}
 import org.jsoup.nodes.Element
 import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -38,9 +39,12 @@ import views.html.submissions
 import views.tags.ViewTest
 
 @ViewTest
-class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with ExportsTestData with Stubs {
 
-  private val page = instanceOf[submissions]
+  private val secureMessagingConfig = mock[SecureMessagingConfig]
+  private val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(secureMessagingConfig))
+
+  private val page = injector.instanceOf[submissions]
 
   private def createView(
     rejectedSubmissions: Paginated[(Submission, Seq[Notification])] = Paginated(Seq.empty, Page(), 0),
@@ -49,13 +53,9 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
   ): Html =
     page(SubmissionsPagesElements(rejectedSubmissions, actionSubmissions, otherSubmissions))(request, messages)
 
-  private def createViewForNavigationBannerTest(enableSecureMessaging: Boolean): HtmlFormat.Appendable = {
-    val secureMessagingConfig = mock[SecureMessagingConfig]
-    when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(enableSecureMessaging)
-
-    val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(secureMessagingConfig))
-    val page = injector.instanceOf[submissions]
-    page(SubmissionsPagesElements(Seq.empty)(mock[PaginationConfig]))(request, messages)
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
   }
 
   private val zone: ZoneId = ZoneId.of("UTC")
@@ -115,7 +115,8 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
     "contain the navigation banner" when {
       "the Secure Messaging flag is set to 'true'" in {
-        val view = createViewForNavigationBannerTest(true)
+        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+        val view = createView()
 
         val navigationBanner = view.getElementById("navigation-banner")
         assert(Option(navigationBanner).isDefined && navigationBanner.childrenSize == 2)
@@ -131,8 +132,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
     "not contain the navigation banner" when {
       "the Secure Messaging flag is set to 'false'" in {
-        val view = createViewForNavigationBannerTest(false)
-        Option(view.getElementById("navigation-banner")) mustBe None
+        Option(createView().getElementById("navigation-banner")) mustBe None
       }
     }
 

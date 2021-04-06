@@ -40,7 +40,7 @@ class InboxWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
   private val view: Document = inboxWrapperPage(HtmlFormat.raw(partialContent))(FakeRequest(), messages)
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
   }
 
