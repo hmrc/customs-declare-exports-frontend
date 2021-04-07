@@ -17,24 +17,10 @@
 package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
-import play.api.libs.json.{JsObject, JsValue}
 
 class ConsigneeDetailsSpec extends DeclarationPageBaseSpec {
+
   "ConsigneeDetails" when {
     testTariffContentKeys(ConsigneeDetails, "tariff.declaration.consigneeDetails")
   }
-}
-
-object ConsigneeDetailsSpec {
-  import forms.declaration.EntityDetailsSpec._
-
-  val correctConsigneeDetailsEORIOnly = ConsigneeDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
-  val correctConsigneeDetailsAddressOnly = ConsigneeDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly)
-  val correctConsigneeDetailsFull = ConsigneeDetails(details = EntityDetailsSpec.correctEntityDetails)
-
-  val correctConsigneeDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
-  val correctConsigneeDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
-  val correctConsigneeDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
-  val emptyConsigneeDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
-
 }

@@ -36,9 +36,9 @@ object Eori {
     override def reads(json: JsValue): JsResult[Eori] = mappedReads.reads(json)
   }
 
-  def mapping: Mapping[Eori] =
+  def mapping(messageKeyWhenEmpty: String = "declaration.eori.empty"): Mapping[Eori] =
     text()
-      .verifying("declaration.eori.empty", nonEmpty)
+      .verifying(messageKeyWhenEmpty, nonEmpty)
       .verifying("declaration.eori.error.format", isEmpty or isValidEori)
       .transform(build, _.value)
 }

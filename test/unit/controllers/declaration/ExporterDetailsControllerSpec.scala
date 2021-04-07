@@ -16,8 +16,11 @@
 
 package unit.controllers.declaration
 
+import scala.concurrent.ExecutionContext
+
 import controllers.declaration.ExporterDetailsController
 import forms.common.{Address, Eori}
+import forms.declaration.EntityDetails
 import forms.declaration.exporter.ExporterDetails
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -32,8 +35,6 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.exporter_address
 
-import scala.concurrent.ExecutionContext
-
 class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   val exporter_address = mock[exporter_address]
@@ -47,6 +48,9 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
     stubMessagesControllerComponents(),
     exporter_address
   )(ExecutionContext.global)
+
+  val address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "United Kingdom, Great Britain, Northern Ireland"))
+  val eori = Some(Eori("GB213472539481923"))
 
   def theResponseForm: Form[ExporterDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ExporterDetails]])
@@ -74,18 +78,15 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
   "Exporter Details Controller" should {
     onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { request =>
       "return 200 OK" when {
+
         "details are empty" in {
           withNewCaching(request.cacheModel)
           val response = controller.displayPage(Mode.Normal)(getRequest())
           status(response) mustBe OK
         }
+
         "details are filled" in {
-          withNewCaching(
-            aDeclarationAfter(
-              request.cacheModel,
-              withExporterDetails(eori = Some(Eori("99980")), address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal")))
-            )
-          )
+          withNewCaching(aDeclarationAfter(request.cacheModel, withExporterDetails(eori = eori, address = address)))
           val response = controller.displayPage(Mode.Normal)(getRequest())
           status(response) mustBe OK
           val details = theResponseForm.value.value.details
@@ -94,6 +95,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
         }
 
       }
+
       "return 400 bad request" when {
         "form contains errors" in {
           withNewCaching(request.cacheModel)
@@ -102,13 +104,15 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           status(response) mustBe BAD_REQUEST
         }
       }
+
       "return 303 (SEE_OTHER) and redirect to representative details page" when {
         "correct form is submitted" in {
           withNewCaching(request.cacheModel)
-          val body = Json.obj("details" -> Json.obj("eori" -> "GB213472539481923"))
-          val response = controller.saveAddress(Mode.Normal)(postRequest(body))
+          val exporterDetails = ExporterDetails(EntityDetails(eori, address))
+          val body = Json.toJson(exporterDetails)
+          val response = await(controller.saveAddress(Mode.Normal)(postRequest(body)))
 
-          await(response) mustBe aRedirectToTheNextPage
+          response mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
         }
       }
@@ -119,9 +123,9 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
         "correct form is submitted" in {
           withNewCaching(request.cacheModel)
           val body = Json.obj("details" -> Json.obj("eori" -> "GB213472539481923"))
-          val response = controller.saveAddress(Mode.Normal)(postRequest(body))
+          val response = await(controller.saveAddress(Mode.Normal)(postRequest(body)))
 
-          await(response) mustBe aRedirectToTheNextPage
+          response mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.IsExsController.displayPage()
         }
       }

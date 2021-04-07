@@ -35,7 +35,8 @@ object ContainerAdd extends DeclarationPage {
   val mapping = Forms.mapping(
     "id" -> optional(
       text()
-        .verifying("declaration.transportInformation.containerId.error.invalid", isEmpty or (isAlphanumeric and noLongerThan(maxContainerIdLength)))
+        .verifying("declaration.transportInformation.containerId.error.invalid", isAlphanumeric)
+        .verifying("declaration.transportInformation.containerId.error.length", noLongerThan(maxContainerIdLength))
     ).verifying("declaration.transportInformation.containerId.empty", isPresent(_))
   )(ContainerAdd.apply)(ContainerAdd.unapply)
 

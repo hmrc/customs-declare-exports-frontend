@@ -16,66 +16,31 @@
 
 package views.declaration
 
-import base.{Injector, TestHelper}
+import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.common.Address
+import forms.common.{Address, AddressSpec}
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.AddressViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.carrier_details
 import views.tags.ViewTest
 
 @ViewTest
-class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with Stubs with Injector {
 
-  val carrierDetailsPage = instanceOf[carrier_details]
-  val allFields = Seq("fullName", "addressLine", "townOrCity", "addressLine", "postCode", "country")
-  val validAddress = Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "England")
-  val emptyAddress = Address("", "", "", "", "")
-  val randomAddress = Address(
-    TestHelper.createRandomAlphanumericString(71),
-    TestHelper.createRandomAlphanumericString(71),
-    TestHelper.createRandomAlphanumericString(71),
-    TestHelper.createRandomAlphanumericString(71),
-    TestHelper.createRandomAlphanumericString(71)
-  )
+  private val carrierDetailsPage = instanceOf[carrier_details]
 
-  def assertAllAddressValidation(errorKey: String, fieldName: String, address: Address, fields: Seq[String] = allFields)(
-    implicit request: JourneyRequest[_]
-  ): Unit = {
-
-    val view = createViewWithAddressError(address)
-    fields.filterNot(_ == fieldName).foreach { key =>
-      view must containErrorElementWithTagAndHref("a", s"#details_address_$key")
-      view must containErrorElementWithMessageKey(s"declaration.address.$key.$errorKey")
-    }
-  }
-
-  def assertAddressValidation(errorKey: String, fieldName: String, address: Address)(implicit request: JourneyRequest[_]): Unit = {
-
-    val view = createViewWithAddressError(address)
-    view must containErrorElementWithTagAndHref("a", s"#details_address_$fieldName")
-    view must containErrorElementWithMessageKey(s"declaration.address.$fieldName.$errorKey")
-  }
-
-  def createViewWithAddressError(address: Address)(implicit request: JourneyRequest[_]): Document = {
-    val view = createView(
-      CarrierDetails
-        .form(request.declarationType)
-        .fillAndValidate(CarrierDetails(EntityDetails(None, Some(address))))
-    )
-    view must haveGovukGlobalErrorSummary
-    view
-  }
+  private def form()(implicit request: JourneyRequest[_]): Form[CarrierDetails] = CarrierDetails.form(request.declarationType)
 
   private def createView(form: Form[CarrierDetails])(implicit request: JourneyRequest[_]): Document =
     carrierDetailsPage(Mode.Normal, form)(request, messages)
@@ -156,94 +121,80 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
   "Carrier Details View with invalid input" should {
 
+    import AddressSpec._
+
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
-      "display error for empty Full name" in {
-
-        val emptyFullNameAddress = validAddress.copy(fullName = "")
-        assertAddressValidation("empty", "fullName", emptyFullNameAddress)
+      "display error for empty fullName" in {
+        assertIncorrectView(validAddress.copy(fullName = ""), "fullName", "empty")
       }
 
-      "display error for incorrect Full name" in {
-
-        val invalidFullNameAddress = validAddress.copy(fullName = TestHelper.createRandomAlphanumericString(71))
-        assertAddressValidation("error", "fullName", invalidFullNameAddress)
+      "display error for incorrect fullName" in {
+        assertIncorrectView(validAddress.copy(fullName = illegalField), "fullName", "error")
       }
 
-      "display error for empty Address Line" in {
-
-        val emptyAddressLineAddress = validAddress.copy(addressLine = "")
-        assertAddressValidation("empty", "addressLine", emptyAddressLineAddress)
+      "display error for fullName too long" in {
+        assertIncorrectView(validAddress.copy(fullName = fieldWithLengthOver70), "fullName", "length")
       }
 
-      "display error for incorrect Address Line" in {
-
-        val invalidAddressLineAddress = validAddress.copy(addressLine = TestHelper.createRandomAlphanumericString(71))
-        assertAddressValidation("error", "addressLine", invalidAddressLineAddress)
+      "display error for empty addressLine" in {
+        assertIncorrectView(validAddress.copy(addressLine = ""), "addressLine", "empty")
       }
 
-      "display error for empty Town or city" in {
-
-        val emptyTownOrCityAddress = validAddress.copy(townOrCity = "")
-        assertAddressValidation("empty", "townOrCity", emptyTownOrCityAddress)
+      "display error for incorrect addressLine" in {
+        assertIncorrectView(validAddress.copy(addressLine = illegalField), "addressLine", "error")
       }
 
-      "display error for incorrect Town or city" in {
-
-        val invalidTownOrCityAddress = validAddress.copy(townOrCity = TestHelper.createRandomAlphanumericString(71))
-        assertAddressValidation("error", "townOrCity", invalidTownOrCityAddress)
+      "display error for addressLine too long" in {
+        assertIncorrectView(validAddress.copy(addressLine = fieldWithLengthOver70), "addressLine", "length")
       }
 
-      "display error for empty Postcode" in {
-
-        val emptyPostCodeAddress = validAddress.copy(postCode = "")
-        assertAddressValidation("empty", "postCode", emptyPostCodeAddress)
+      "display error for empty townOrCity" in {
+        assertIncorrectView(validAddress.copy(townOrCity = ""), "townOrCity", "empty")
       }
 
-      "display error for incorrect Postcode" in {
-
-        val invalidPostCodeAddress = validAddress.copy(postCode = TestHelper.createRandomAlphanumericString(71))
-        assertAddressValidation("error", "postCode", invalidPostCodeAddress)
+      "display error for incorrect townOrCity" in {
+        assertIncorrectView(validAddress.copy(townOrCity = illegalField), "townOrCity", "error")
       }
 
-      "display error for empty Country" in {
-
-        val emptyCountryAddress = validAddress.copy(country = "")
-        assertAddressValidation("empty", "country", emptyCountryAddress)
+      "display error for townOrCity too long" in {
+        assertIncorrectView(validAddress.copy(townOrCity = fieldWithLengthOver35), "townOrCity", "length")
       }
 
-      "display error for incorrect Country" in {
-
-        val invalidCountryAddress = validAddress.copy(country = TestHelper.createRandomAlphanumericString(71))
-        assertAddressValidation("error", "country", invalidCountryAddress)
+      "display error for empty postCode" in {
+        assertIncorrectView(validAddress.copy(postCode = ""), "postCode", "empty")
       }
 
-      "display errors" when {
-
-        "everything except Full name is empty" in {
-
-          val fullNameOnlyAddress = emptyAddress.copy(fullName = "Marco polo")
-          assertAllAddressValidation("empty", "fullName", fullNameOnlyAddress)
-        }
-
-        "everything except Country is empty" in {
-
-          val countryOnlyAddress = emptyAddress.copy(country = "Ukraine")
-          assertAllAddressValidation("empty", "country", countryOnlyAddress)
-        }
-
-        "everything except Full name is incorrect" in {
-
-          val fullNameOnlyAddress = randomAddress.copy(fullName = "Marco polo")
-          assertAllAddressValidation("error", "fullName", fullNameOnlyAddress)
-        }
-
-        "everything except Country is incorrect" in {
-
-          val countryOnlyAddress = randomAddress.copy(country = "Ukraine")
-          assertAllAddressValidation("error", "country", countryOnlyAddress)
-        }
+      "display error for incorrect postCode" in {
+        assertIncorrectView(validAddress.copy(postCode = illegalField), "postCode", "error")
       }
 
+      "display error for postCode too long" in {
+        assertIncorrectView(validAddress.copy(postCode = fieldWithLengthOver35), "postCode", "length")
+      }
+
+      "display error for empty country" in {
+        assertIncorrectView(validAddress.copy(country = ""), "country", "empty")
+      }
+
+      "display error for incorrect country" in {
+        assertIncorrectView(validAddress.copy(country = "Barcelona"), "country", "error")
+      }
+
+      "display errors when everything except Full name is empty" in {
+        assertIncorrectElements(Address("Marco Polo", "", "", "", ""), List("addressLine", "townOrCity", "postCode", "country"), "empty")
+      }
+
+      "display errors when everything is empty" in {
+        assertIncorrectElements(emptyAddress, List("fullName", "addressLine", "townOrCity", "postCode", "country"), "empty")
+      }
+
+      "display errors when everything except country has illegal length" in {
+        assertIncorrectElements(addressWithIllegalLengths, List("fullName", "addressLine", "townOrCity", "postCode"), "length")
+      }
+
+      "display errors when everything is incorrect" in {
+        assertIncorrectElements(invalidAddress, List("fullName", "addressLine", "townOrCity", "postCode", "country"), "error")
+      }
     }
   }
 
@@ -277,5 +228,15 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         backButton.attr("href") mustBe routes.CarrierEoriNumberController.displayPage().url
       }
     }
+  }
+
+  private def assertIncorrectView(address: Address, field: String, errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
+    val view = createView(form.fillAndValidate(CarrierDetails(EntityDetails(None, Some(address)))))
+    assertIncorrectElement(view, field, errorKey)
+  }
+
+  private def assertIncorrectElements(address: Address, fields: List[String], errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
+    val view = createView(form.fillAndValidate(CarrierDetails(EntityDetails(None, Some(address)))))
+    assertIncorrectElements(view, fields, errorKey)
   }
 }

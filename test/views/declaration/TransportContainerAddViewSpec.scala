@@ -80,6 +80,15 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
     }
 
     "display error if incorrect containerId is entered" in {
+      val view = createView(ContainerAdd.form().fillAndValidate(ContainerAdd(Some("abc123@#"))))
+
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#id")
+
+      view must containErrorElementWithMessageKey("declaration.transportInformation.containerId.error.invalid")
+    }
+
+    "display error if containerId is too long" in {
       val view = createView(ContainerAdd.form().fillAndValidate(ContainerAdd(Some("12345678901234567890"))))
 
       view must haveGovukGlobalErrorSummary
@@ -87,7 +96,6 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
       view must containErrorElementWithMessageKey("declaration.transportInformation.containerId.error.length")
     }
-
   }
 
   "Transport Containers Add View when filled" should {

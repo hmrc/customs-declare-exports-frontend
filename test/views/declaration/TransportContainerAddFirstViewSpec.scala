@@ -67,17 +67,25 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
     }
   }
 
-  "Transport Containers Add View for invalid input" should {
+  "Transport Containers Add View" should {
 
-    "display errors" in {
-      val view = createView(ContainerFirst.form().fillAndValidate(ContainerFirst(Some("12345678901234567890"))))
+    "display errors for invalid input" in {
+      val view = createView(ContainerFirst.form().fillAndValidate(ContainerFirst(Some("abc123@#"))))
+
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#id")
+
+      view must containErrorElementWithMessageKey("declaration.transportInformation.containerId.error.invalid")
+    }
+
+    "display errors for invalid length" in {
+      val view = createView(ContainerFirst.form().fillAndValidate(ContainerFirst(Some("123456789012345678"))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
 
       view must containErrorElementWithMessageKey("declaration.transportInformation.containerId.error.length")
     }
-
   }
 
   "Transport Containers Add View when filled" should {

@@ -16,8 +16,8 @@
 
 package forms.common
 
-import base.TestHelper._
-import org.scalatest.{MustMatchers, WordSpec}
+import base.TestHelper
+import org.scalatest.{Assertion, MustMatchers, WordSpec}
 
 class AddressSpec extends WordSpec with MustMatchers {
   import AddressSpec._
@@ -25,96 +25,68 @@ class AddressSpec extends WordSpec with MustMatchers {
   "Bound Form with Address mapping" should {
 
     "contain errors for fullName" when {
-
       "provided with empty input" in {
-
-        val input = buildAddressInputMap()
-        val form = Address.form().bind(input)
-
-        val fullNameError = form.errors.find(_.key == "fullName")
-        fullNameError must be(defined)
-        fullNameError.get.message must equal("declaration.address.fullName.empty")
+        verifyError(buildAddressInputMap(), "fullName", "empty")
       }
 
       "provided with input longer than 70 characters" in {
+        verifyError(buildAddressInputMap(fullName = fieldWithLengthOver70), "fullName", "length")
+      }
 
-        val input = buildAddressInputMap(fullName = createRandomAlphanumericString(71))
-        val form = Address.form().bind(input)
-
-        val fullNameError = form.errors.find(_.key == "fullName")
-        fullNameError must be(defined)
-        fullNameError.get.message must equal("declaration.address.fullName.error")
+      "contains non-allowed characters" in {
+        verifyError(buildAddressInputMap(fullName = illegalField), "fullName", "error")
       }
     }
 
     "contain errors for addressLine" when {
       "provided with empty input" in {
-        val input = buildAddressInputMap()
-        val form = Address.form().bind(input)
-
-        val addressLineError = form.errors.find(_.key == "addressLine")
-        addressLineError must be(defined)
-        addressLineError.get.message must equal("declaration.address.addressLine.empty")
+        verifyError(buildAddressInputMap(), "addressLine", "empty")
       }
 
       "provided with input longer than 70 characters" in {
-        val input = buildAddressInputMap(addressLine = createRandomAlphanumericString(71))
-        val form = Address.form().bind(input)
+        verifyError(buildAddressInputMap(addressLine = fieldWithLengthOver70), "addressLine", "length")
+      }
 
-        val addressLineError = form.errors.find(_.key == "addressLine")
-        addressLineError must be(defined)
-        addressLineError.get.message must equal("declaration.address.addressLine.error")
+      "contains non-allowed characters" in {
+        verifyError(buildAddressInputMap(addressLine = illegalField), "addressLine", "error")
       }
     }
 
     "contain errors for townOrCity" when {
       "provided with empty input" in {
-        val input = buildAddressInputMap()
-        val form = Address.form().bind(input)
-
-        val townOrCityError = form.errors.find(_.key == "townOrCity")
-        townOrCityError must be(defined)
-        townOrCityError.get.message must equal("declaration.address.townOrCity.empty")
+        verifyError(buildAddressInputMap(), "townOrCity", "empty")
       }
 
       "provided with input longer than 35 characters" in {
-        val input = buildAddressInputMap(townOrCity = createRandomAlphanumericString(36))
-        val form = Address.form().bind(input)
+        verifyError(buildAddressInputMap(townOrCity = fieldWithLengthOver35), "townOrCity", "length")
+      }
 
-        val townOrCityError = form.errors.find(_.key == "townOrCity")
-        townOrCityError must be(defined)
-        townOrCityError.get.message must equal("declaration.address.townOrCity.error")
+      "contains non-allowed characters" in {
+        verifyError(buildAddressInputMap(townOrCity = illegalField), "townOrCity", "error")
       }
     }
 
     "contain errors for postCode" when {
       "provided with empty input" in {
-        val input = buildAddressInputMap()
-        val form = Address.form().bind(input)
-
-        val postCodeError = form.errors.find(_.key == "postCode")
-        postCodeError must be(defined)
-        postCodeError.get.message must equal("declaration.address.postCode.empty")
+        verifyError(buildAddressInputMap(), "postCode", "empty")
       }
 
-      "provided with input in wrong format" in {
-        val input = buildAddressInputMap(postCode = "AB 12 CD 345")
-        val form = Address.form().bind(input)
+      "provided with input longer than 9 characters" in {
+        verifyError(buildAddressInputMap(postCode = fieldWithLengthOver35), "postCode", "length")
+      }
 
-        val postCodeError = form.errors.find(_.key == "postCode")
-        postCodeError must be(defined)
-        postCodeError.get.message must equal("declaration.address.postCode.error")
+      "contains non-allowed characters" in {
+        verifyError(buildAddressInputMap(postCode = illegalField), "postCode", "error")
       }
     }
 
     "contain errors for country" when {
       "provided with empty input" in {
-        val input = buildAddressInputMap()
-        val form = Address.form().bind(input)
+        verifyError(buildAddressInputMap(), "country", "empty")
+      }
 
-        val countryError = form.errors.find(_.key == "country")
-        countryError must be(defined)
-        countryError.get.message must equal("declaration.address.country.empty")
+      "provided with input containing special characters" in {
+        verifyError(buildAddressInputMap(country = illegalField), "country", "error")
       }
 
       "provided with non-existing country name" in {
@@ -125,21 +97,12 @@ class AddressSpec extends WordSpec with MustMatchers {
         countryError must be(defined)
         countryError.get.message must equal("declaration.address.country.error")
       }
-
-      "provided with input containing special characters" in {
-        val input = buildAddressInputMap(country = "United King@#$")
-        val form = Address.form().bind(input)
-
-        val countryError = form.errors.find(_.key == "country")
-        countryError must be(defined)
-        countryError.get.message must equal("declaration.address.country.error")
-      }
     }
 
     "contain all the data with no errors" when {
+
       "provided with full input" in {
-        //val input = buildAddressInputMap(correctAddress)
-        val expectedAddress = correctAddress
+        val expectedAddress = validAddress
 
         val form = Address.form().bind(correctAddressJSON)
 
@@ -149,8 +112,8 @@ class AddressSpec extends WordSpec with MustMatchers {
       }
 
       "provided with full input, containing spaces in fields" in {
-        val input = buildAddressInputMap(correctAddress)
-        val expectedAddress = correctAddress
+        val input: Map[String, String] = buildAddressInputMap(validAddress)
+        val expectedAddress = validAddress
 
         val form = Address.form().bind(input)
 
@@ -161,45 +124,57 @@ class AddressSpec extends WordSpec with MustMatchers {
     }
   }
 
+  private def verifyError(input: Map[String, String], field: String, errorKey: String): Assertion = {
+    val form = Address.form().bind(input)
+    val fullNameError = form.errors.find(_.key == field)
+    fullNameError must be(defined)
+    fullNameError.get.message must equal(s"declaration.address.$field.$errorKey")
+  }
 }
 
 object AddressSpec {
 
   import play.api.libs.json._
 
-  val seventyOneChars = "01234567890123456789012345678901234567890123456789012345678901234567890"
-  val thirtySixChars = "0123456789012345678901234567890123456"
-  val tenChars = "01234567890"
+  val illegalField = "abcd#@"
+  val fieldWithLengthOver35 = TestHelper.createRandomAlphanumericString(36)
+  val fieldWithLengthOver70 = TestHelper.createRandomAlphanumericString(71)
 
-  val correctAddress =
+  val validAddress = Address(
+    fullName = "Some Name,'-",
+    addressLine = "Test Street,'-",
+    townOrCity = "Leeds,'-",
+    postCode = "LS18 BN",
+    country = "United Kingdom, Great Britain, Northern Ireland"
+  )
+
+  val invalidAddress =
+    Address(fullName = illegalField, addressLine = illegalField, townOrCity = illegalField, postCode = illegalField, country = "Barcelona")
+
+  val addressWithIllegalLengths =
     Address(
-      fullName = "Full Name abcABC123¬!\"£$%^&*()_+=-`|\\<,>?:;@'~#{}[]Ħ",
-      addressLine = "Address Line abcABC123¬!\"£$%^&*()_+=-`|\\<,>?:;@'~#{}[]Ħ",
-      townOrCity = "Town¬!\"£$%^&*()_+=-`|\\<,>?:;@'~#Ħ",
-      postCode = "AB12 34CĦ",
-      country = "Poland"
+      fullName = fieldWithLengthOver70,
+      addressLine = fieldWithLengthOver70,
+      townOrCity = fieldWithLengthOver35,
+      postCode = fieldWithLengthOver35,
+      country = "United Kingdom"
     )
-
-  val incorrectAddress =
-    Address(fullName = seventyOneChars, addressLine = seventyOneChars, townOrCity = thirtySixChars, postCode = tenChars, country = "abc")
-
-  val addressWithEmptyFullname =
-    Address(fullName = "", addressLine = "Address Line", townOrCity = "Town or City", postCode = "AB12 34CD", country = "Poland")
 
   val emptyAddress = Address("", "", "", "", "")
 
-  val correctAddressJSON: JsValue = Json.toJson(correctAddress)
-  val incorrectAddressJSON: JsValue = Json.toJson(incorrectAddress)
+  val correctAddressJSON: JsValue = Json.toJson(validAddress)
+  val wrongLengthAddressJSON: JsValue = Json.toJson(addressWithIllegalLengths)
+  val incorrectAddressJSON: JsValue = Json.toJson(invalidAddress)
   val emptyAddressJSON: JsValue = Json.toJson(emptyAddress)
-  val addressWithEmptyFullnameJSON: JsValue = Json.toJson(addressWithEmptyFullname)
 
-  def buildAddressInputMap(address: Address): Map[String, String] = buildAddressInputMap(
-    fullName = address.fullName,
-    addressLine = address.addressLine,
-    townOrCity = address.townOrCity,
-    postCode = address.postCode,
-    country = address.country
-  )
+  def buildAddressInputMap(address: Address): Map[String, String] =
+    buildAddressInputMap(
+      fullName = address.fullName,
+      addressLine = address.addressLine,
+      townOrCity = address.townOrCity,
+      postCode = address.postCode,
+      country = address.country
+    )
 
   def buildAddressInputMap(
     fullName: String = "",

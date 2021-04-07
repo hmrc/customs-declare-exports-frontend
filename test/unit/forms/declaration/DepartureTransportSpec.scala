@@ -36,7 +36,7 @@ class DepartureTransportSpec extends FormSpec {
       errors must be(empty)
     }
 
-    "has no errors" when {
+    "have no errors" when {
 
       "user filled all mandatory fields with correct data" in {
 
@@ -48,7 +48,7 @@ class DepartureTransportSpec extends FormSpec {
       }
     }
 
-    "has errors" when {
+    "have errors" when {
 
       val transportTypeField = DepartureTransport.meansOfTransportOnDepartureTypeKey
       val idNumberField = s"meansOfTransportOnDepartureIDNumber_$IMOShipIDNumber"
@@ -97,12 +97,12 @@ class DepartureTransportSpec extends FormSpec {
 
         val result = form.bind(incorrectForm)
 
-        result.errors.length must be(1)
+        result.errors.length must be(2)
 
         val error = result.errors.head
 
         error.key must be(idNumberField)
-        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.invalid")
+        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.length")
       }
 
       "means of transport on departure id number contains invalid special characters" in {
@@ -125,12 +125,12 @@ class DepartureTransportSpec extends FormSpec {
 
         val result = form.bind(incorrectForm)
 
-        result.errors.length must be(1)
+        result.errors.length must be(2)
 
         val error = result.errors.head
 
         error.key must be(idNumberField)
-        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.invalid")
+        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.length")
       }
     }
   }
@@ -147,7 +147,7 @@ class DepartureTransportSpec extends FormSpec {
       errors must be(empty)
     }
 
-    "has no errors" when {
+    "have no errors" when {
 
       "user filled all mandatory fields with correct data" in {
 
@@ -168,7 +168,7 @@ class DepartureTransportSpec extends FormSpec {
       }
     }
 
-    "has errors" when {
+    "have errors" when {
 
       val transportTypeField = DepartureTransport.meansOfTransportOnDepartureTypeKey
       val idNumberField = s"meansOfTransportOnDepartureIDNumber_$IATAFlightNumber"
@@ -217,12 +217,12 @@ class DepartureTransportSpec extends FormSpec {
 
         val result = form.bind(incorrectForm)
 
-        result.errors.length must be(1)
+        result.errors.length must be(2)
 
         val error = result.errors.head
 
         error.key must be(idNumberField)
-        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.invalid")
+        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.length")
       }
 
       "means of transport on departure id number contains invalid special characters" in {

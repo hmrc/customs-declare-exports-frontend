@@ -63,7 +63,8 @@ object ContainerFirst extends DeclarationPage {
       yes,
       text()
         .verifying("declaration.transportInformation.containerId.empty", nonEmpty)
-        .verifying("declaration.transportInformation.containerId.error.invalid", isEmpty or (isAlphanumeric and noLongerThan(maxContainerIdLength)))
+        .verifying("declaration.transportInformation.containerId.error.invalid", isAlphanumeric)
+        .verifying("declaration.transportInformation.containerId.error.length", noLongerThan(maxContainerIdLength))
     )
   )(form2Model)(model2Form)
 

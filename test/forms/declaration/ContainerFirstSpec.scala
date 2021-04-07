@@ -30,11 +30,6 @@ class ContainerFirstSpec extends DeclarationPageBaseSpec {
   "ContainerYesNo mapping" should {
 
     "return form with errors" when {
-      "provided with id too long" in {
-        val form = ContainerFirst.form.bind(formData("Yes", Some("123456789012345678")))
-
-        form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInformation.containerId.error.invalid"))
-      }
 
       "provided with non-alphanumeric id" in {
         val form = ContainerFirst.form.bind(formData("Yes", Some("!2345678")))
@@ -42,10 +37,10 @@ class ContainerFirstSpec extends DeclarationPageBaseSpec {
         form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInformation.containerId.error.invalid"))
       }
 
-      "provided with id too long and invalid" in {
-        val form = ContainerFirst.form.bind(formData("Yes", Some("123456789012345678!!!")))
+      "provided with id too long" in {
+        val form = ContainerFirst.form.bind(formData("Yes", Some("123456789012345678")))
 
-        form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInformation.containerId.error.invalid"))
+        form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInformation.containerId.error.length"))
       }
 
       "provided with no id when user said yes" in {

@@ -17,8 +17,6 @@
 package forms.declaration.exporter
 
 import forms.common.DeclarationPageBaseSpec
-import forms.declaration.EntityDetailsSpec
-import play.api.libs.json.{JsObject, JsValue}
 import unit.base.JourneyTypeTestRunner
 
 class ExporterDetailsSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
@@ -26,18 +24,4 @@ class ExporterDetailsSpec extends DeclarationPageBaseSpec with JourneyTypeTestRu
   "ExporterDetails" when {
     testTariffContentKeys(ExporterDetails, "tariff.declaration.exporterAddress")
   }
-}
-
-object ExporterDetailsSpec {
-  import forms.declaration.EntityDetailsSpec._
-
-  val correctExporterDetails = ExporterDetails(details = EntityDetailsSpec.correctEntityDetails)
-  val correctExporterDetailsEORIOnly = ExporterDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
-  val correctExporterDetailsAddressOnly = ExporterDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly)
-
-  val correctExporterDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
-  val correctExporterDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
-  val correctExporterDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
-  val incorrectExporterDetailsJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
-  val emptyExporterDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 }

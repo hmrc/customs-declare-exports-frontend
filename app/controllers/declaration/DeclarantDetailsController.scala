@@ -16,14 +16,14 @@
 
 package controllers.declaration
 
+import javax.inject.Inject
+
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation.form
 import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation, EntityDetails}
-
-import javax.inject.Inject
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
