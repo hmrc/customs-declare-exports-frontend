@@ -23,7 +23,7 @@ import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 object EntityDetailsSpec {
-  val correctEntityDetails = EntityDetails(eori = Some(Eori("GB12345678912345")), address = Some(AddressSpec.correctAddress))
+  val correctEntityDetails = EntityDetails(eori = Some(Eori("GB12345678912345")), address = Some(AddressSpec.validAddress))
   val correctEntityDetailsEORIOnly = EntityDetails(eori = Some(Eori("GB12345678912345")), address = None)
 
   val correctEntityDetailsEORIOnlyJSON: JsValue = JsObject(Map("eori" -> JsString("GB12345678912345"), "address" -> AddressSpec.emptyAddressJSON))

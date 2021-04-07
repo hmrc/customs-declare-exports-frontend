@@ -19,7 +19,7 @@ package views.declaration
 import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.common.Address
+import forms.common.{Address, AddressSpec}
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
@@ -121,6 +121,8 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
 
   "Carrier Details View with invalid input" should {
 
+    import AddressSpec._
+
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       "display error for empty fullName" in {
         assertIncorrectView(validAddress.copy(fullName = ""), "fullName", "empty")
@@ -131,7 +133,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
       }
 
       "display error for fullName too long" in {
-        assertIncorrectView(validAddress.copy(fullName = fieldWithIllegalLength), "fullName", "length")
+        assertIncorrectView(validAddress.copy(fullName = fieldWithLengthOver70), "fullName", "length")
       }
 
       "display error for empty addressLine" in {
@@ -143,7 +145,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
       }
 
       "display error for addressLine too long" in {
-        assertIncorrectView(validAddress.copy(addressLine = fieldWithIllegalLength), "addressLine", "length")
+        assertIncorrectView(validAddress.copy(addressLine = fieldWithLengthOver70), "addressLine", "length")
       }
 
       "display error for empty townOrCity" in {
@@ -155,7 +157,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
       }
 
       "display error for townOrCity too long" in {
-        assertIncorrectView(validAddress.copy(townOrCity = fieldWithIllegalLength), "townOrCity", "length")
+        assertIncorrectView(validAddress.copy(townOrCity = fieldWithLengthOver35), "townOrCity", "length")
       }
 
       "display error for empty postCode" in {
@@ -167,7 +169,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
       }
 
       "display error for postCode too long" in {
-        assertIncorrectView(validAddress.copy(postCode = fieldWithIllegalLength), "postCode", "length")
+        assertIncorrectView(validAddress.copy(postCode = fieldWithLengthOver35), "postCode", "length")
       }
 
       "display error for empty country" in {

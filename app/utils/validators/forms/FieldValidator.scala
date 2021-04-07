@@ -49,12 +49,6 @@ object FieldValidator {
   private val allowedNewLineChars = Set('\r', '\n')
   private val allowedHyphenChar = Set('-')
 
-  def when[T](condition: Boolean)(constraint: T => Boolean): T => Boolean =
-    value =>
-      if (condition) {
-        constraint(value)
-      } else true
-
   val isPresent: Option[_] => Boolean = _.nonEmpty
 
   val isEmpty: String => Boolean = (input: String) => input.isEmpty
@@ -83,7 +77,7 @@ object FieldValidator {
 
   val isAlphanumericWithSpace: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' '))(input)
 
-  val isValidAddressField: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' ', '-', '\''))(input)
+  val isValidAddressField: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' ', '\'', ',', '-'))(input)
 
   val isAlphanumericWithSpecialCharacters: Set[Char] => String => Boolean = (allowedChars: Set[Char]) =>
     (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedChars)

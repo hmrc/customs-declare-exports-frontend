@@ -23,8 +23,8 @@ import services.Countries.allCountries
 import utils.validators.forms.FieldValidator._
 
 case class Address(
-  fullName: String, // alphanumeric length 1 - 35
-  addressLine: String, // alphanumeric length 1 - 35
+  fullName: String, // alphanumeric length 1 - 70
+  addressLine: String, // alphanumeric length 1 - 70
   townOrCity: String, // alphanumeric length 1 - 35
   postCode: String, // alphanumeric length 1 - 9
   country: String // full country name, convert to 2 upper case alphabetic characters for backend
@@ -37,11 +37,11 @@ object Address {
     "fullName" -> text()
       .verifying("declaration.address.fullName.empty", nonEmpty)
       .verifying("declaration.address.fullName.error", isValidAddressField)
-      .verifying("declaration.address.fullName.length", noLongerThan(35)),
+      .verifying("declaration.address.fullName.length", noLongerThan(70)),
     "addressLine" -> text()
       .verifying("declaration.address.addressLine.empty", nonEmpty)
       .verifying("declaration.address.addressLine.error", isValidAddressField)
-      .verifying("declaration.address.addressLine.length", noLongerThan(35)),
+      .verifying("declaration.address.addressLine.length", noLongerThan(70)),
     "townOrCity" -> text()
       .verifying("declaration.address.townOrCity.empty", nonEmpty)
       .verifying("declaration.address.townOrCity.error", isValidAddressField)

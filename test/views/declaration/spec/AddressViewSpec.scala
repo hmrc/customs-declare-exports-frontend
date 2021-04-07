@@ -16,22 +16,12 @@
 
 package views.declaration.spec
 
-import base.TestHelper
-import forms.common.Address
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.Inspectors.forAll
 
 trait AddressViewSpec extends UnitViewSpec {
-
-  val illegalField = "abcd#@"
-  val fieldWithIllegalLength = TestHelper.createRandomAlphanumericString(36)
-
-  val validAddress = Address("Some Name", "Test Street", "Leeds", "LS18BN", "England")
-  val invalidAddress = Address("abc*", "abc*", "abc#*", "#+@", "Barcelona")
-  val emptyAddress = Address("", "", "", "", "")
-  val addressWithIllegalLengths = Address(fieldWithIllegalLength, fieldWithIllegalLength, fieldWithIllegalLength, fieldWithIllegalLength, "England")
 
   def assertIncorrectView(document: Document, field: String, errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
     document must haveGovukGlobalErrorSummary
