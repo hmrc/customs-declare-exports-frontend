@@ -12,6 +12,10 @@ GET         /unverified-email                              controllers.Unverifie
 
 # Secure Messaging
 GET         /conversations                                 controllers.SecureMessagingController.displayInbox
+GET         /conversation/:client/:conversationId          controllers.SecureMessagingController.displayConversation(client, conversationId)
++ nocsrf
+POST        /conversation/:client/:conversationId           controllers.SecureMessagingController.submitReply(client, conversationId)
+GET         /conversation/:client/:conversationId/result    controllers.SecureMessagingController.displayReplyResult(client, conversationId)
 
 # Notifications
 

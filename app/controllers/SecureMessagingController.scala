@@ -16,8 +16,9 @@
 
 package controllers
 
-import scala.concurrent.ExecutionContext
+import java.net.URLEncoder.encode
 
+import scala.concurrent.ExecutionContext
 import connectors.SecureMessagingFrontendConnector
 import controllers.actions.{AuthAction, SecureMessagingAction, VerifiedEmailAction}
 import javax.inject.{Inject, Singleton}
@@ -25,7 +26,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.messaging.inbox_wrapper
+import views.html.messaging.{inbox_wrapper, partial_wrapper}
 
 @Singleton
 class SecureMessagingController @Inject()(
@@ -34,7 +35,8 @@ class SecureMessagingController @Inject()(
   secureMessagingAction: SecureMessagingAction,
   secureMessagingFrontendConnector: SecureMessagingFrontendConnector,
   mcc: MessagesControllerComponents,
-  inbox_wrapper: inbox_wrapper
+  inbox_wrapper: inbox_wrapper,
+  partial_wrapper: partial_wrapper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -46,5 +48,62 @@ class SecureMessagingController @Inject()(
       .map { partial =>
         Ok(inbox_wrapper(HtmlFormat.raw(partial.body)))
       }
+  }
+
+  def displayConversation(client: String, conversationId: String): Action[AnyContent] = actions.async { implicit request =>
+    secureMessagingFrontendConnector
+      .retrieveConversationPartial(client, conversationId)
+      .map(
+        partial =>
+          Ok(
+            partial_wrapper(
+              HtmlFormat.raw(partial.body),
+              "conversation.heading",
+              defineUploadLink(routes.SecureMessagingController.displayConversation(client, conversationId).url),
+              Some(routes.SecureMessagingController.displayInbox)
+            )
+        )
+      )
+  }
+
+  def displayReplyResult(client: String, conversationId: String): Action[AnyContent] = actions.async { implicit request =>
+    secureMessagingFrontendConnector
+      .retrieveReplyResult(client, conversationId)
+      .map(
+        partial =>
+          Ok(
+            partial_wrapper(
+              HtmlFormat.raw(partial.body),
+              "replyResult.heading",
+              defineUploadLink(routes.SecureMessagingController.displayReplyResult(client, conversationId).url)
+            )
+        )
+      )
+  }
+
+  def submitReply(client: String, conversationId: String): Action[AnyContent] = actions.async { implicit request =>
+    val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+
+    secureMessagingFrontendConnector
+      .submitReply(client, conversationId, formData)
+      .map { maybeErrorPartial =>
+        maybeErrorPartial match {
+          case None => Redirect(routes.SecureMessagingController.displayReplyResult(client, conversationId))
+          case Some(partial) =>
+            Ok(
+              partial_wrapper(
+                HtmlFormat.raw(partial.body),
+                "replyResult.heading",
+                defineUploadLink(routes.SecureMessagingController.displayConversation(client, conversationId).url),
+                Some(routes.SecureMessagingController.displayInbox)
+              )
+            )
+        }
+      }
+  }
+
+  private def defineUploadLink(refererUrl: String) = {
+    val encodedRefererUrl = encode(refererUrl, "UTF-8")
+    s"${routes.SubmissionsController.displayDeclarationWithNotifications(encodedRefererUrl).url}#action-submissions"
   }
 }
