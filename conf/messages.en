@@ -378,6 +378,21 @@ choicePage.input.error.incorrectValue = Select what you want to do
 
 inbox.heading = Conversation Inbox
 
+## Secure Messaging Read Conversation page
+
+conversation.heading = View conversation
+
+## Secure Messaging Reply Result page
+
+replyResult.heading = Reply result
+
+## Secure Messaging. Right grey box in "Conversation" and "Reply Result" pages
+
+greyBox.heading = Upload requested documents
+greyBox.paragraph.1 = Open your declaration and attach documents using the Upload documents link.
+greyBox.paragraph.2 = Upload the documents then reply to the message to let us know they are ready to be checked.
+greyBox.uploadFiles = Go to my declarations
+
 ## Navigation links
 
 navigation.link.declarations = Your declarations
