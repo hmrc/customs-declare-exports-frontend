@@ -959,20 +959,18 @@ declaration.exchangeRate.error = Enter an exchange rate in numbers only
 declaration.exchangeRate = Contractually agreed fixed rate of exchange
 declaration.exchangeRate.hint = This is the agreed contract rate of exchange between buyer and seller. If you need to declare this, you must enter document code 9WKS in the item’s documents page. If one wasn’t agreed, leave this question blank and continue.
 
-declaration.commodityDetails.title = Commodity details
-declaration.commodityDetails.combinedNomenclatureCode.header = What is the commodity code?
-declaration.commodityDetails.combinedNomenclatureCode.header.hint = A commodity code is an eight digit number specifically allocated to goods to classify them when moved outside the EU.  For example, 12345678.
-declaration.commodityDetails.combinedNomenclatureCode.error.empty = Enter a commodity code
+declaration.commodityDetails.title = Commodity code and item details
+declaration.commodityDetails.combinedNomenclatureCode.header = What is the commodity code for this item?
+declaration.commodityDetails.combinedNomenclatureCode.header.hint = The commodity code stems from the HS (Harmonized System) code that identifies goods for customs. For exports, you need to enter the first 8 digits of the code listed in the Tariff.
+declaration.commodityDetails.combinedNomenclatureCode.error.empty = Enter a commodity code in the correct format
 declaration.commodityDetails.combinedNomenclatureCode.error.invalid = Enter a commodity code in the correct format
 declaration.commodityDetails.description.header = Describe the goods
-declaration.commodityDetails.description.header.hint = Try to be as specific as you can. For example, 'Copper pipe 15mm x 3m'.
+declaration.commodityDetails.description.header.hint = Be as specific as you can. For example, copper pipe 15mm x 3mm.
 declaration.commodityDetails.description.error.empty = Enter a description
 declaration.commodityDetails.description.error.length = Description must contain 280 characters or fewer
-declaration.commodityDetails.how.header = How do I find a commodity code?
-declaration.commodityDetails.how.step1 = Go to the UK {0}.
-declaration.commodityDetails.how.tradeTariff = Trade Tariff
-declaration.commodityDetails.how.summary = It is important to get it right. If you need help confirming your commodity code, you can contact the {0}.
-declaration.commodityDetails.how.classificationTeam = classification team
+declaration.commodityDetails.inset.text = Find out {0}.
+declaration.commodityDetails.inset.linkText = how to get the right commodity code to classify your goods (opens in new tab)
+
 
 declaration.unDangerousGoodsCode.header = Does the item have a UN dangerous goods code?
 declaration.unDangerousGoodsCode.header.hint = You can find this in ‘Export measures and restrictions’ tab of the commodity code in the {0}.
