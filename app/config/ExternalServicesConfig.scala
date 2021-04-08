@@ -33,7 +33,6 @@ class ExternalServicesConfig @Inject()(val configuration: Configuration) {
 
   val govUkUrl: String = loadUrl("govUk")
   val tradeTariffUrl: String = loadUrl("tradeTariff")
-  val classificationHelpUrl: String = loadUrl("commodityCodeHelp")
   val ecicsToolUrl: String = loadUrl("ecicsTool")
 
   val eoriService: String = loadUrl("eoriService")

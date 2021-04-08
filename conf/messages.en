@@ -951,8 +951,8 @@ declaration.commodityDetails.combinedNomenclatureCode.error.empty = Enter a comm
 declaration.commodityDetails.combinedNomenclatureCode.error.invalid = Enter a commodity code in the correct format
 declaration.commodityDetails.description.header = Describe the goods
 declaration.commodityDetails.description.header.hint = Be as specific as you can. For example, copper pipe 15mm x 3mm.
-declaration.commodityDetails.description.error.empty = Enter a description up to 280 characters
-declaration.commodityDetails.description.error.length = Enter a description up to 280 characters
+declaration.commodityDetails.description.error.empty = Enter a description
+declaration.commodityDetails.description.error.length = Description must contain 280 characters or fewer
 declaration.commodityDetails.inset.text = Find out {0}.
 declaration.commodityDetails.inset.linkText = how to get the right commodity code to classify your goods (opens in new tab)
 
