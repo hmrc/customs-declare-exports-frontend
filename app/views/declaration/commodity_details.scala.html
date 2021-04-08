@@ -29,6 +29,7 @@
         govukDetails : GovukDetails,
         pageTitle: pageTitle,
         inputText: exportsInputText,
+        insetText: exportsInsetText,
         characterCount: exportsInputCharacterCount,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
@@ -40,13 +41,7 @@
 
 @(mode: Mode, itemId: String, form: Form[CommodityDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tradeTariffLink = {<a class="govuk-link govuk-link--no-visited-state" target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.commodityDetails.how.tradeTariff")</a>}
-@classificationTeamLink = {<a class="govuk-link govuk-link--no-visited-state" target="_blank" href=@appConfig.classificationHelpUrl>@messages("declaration.commodityDetails.how.classificationTeam")</a>}
-
-@commodityDetailsInformation = {
-    @Html(messages("declaration.commodityDetails.how.step1", tradeTariffLink))
-    @Html(messages("declaration.commodityDetails.how.summary", classificationTeamLink))
-}
+@commodityCodeHelpLink = {<a class="govuk-link govuk-link--no-visited-state" target="_blank" href=@appConfig.commodityCodeHelpUrl>@messages("declaration.commodityDetails.inset.linkText")</a>}
 
 @govukLayout(
     title = Title("declaration.commodityDetails.title", "declaration.section.5"),
@@ -65,10 +60,9 @@
             inputClasses = Some("govuk-input--width-10")
         )
 
-        @govukDetails(Details(
-            summary = Text(messages("declaration.commodityDetails.how.header")),
-            content = HtmlContent(commodityDetailsInformation)
-        ))
+        @insetText(
+            content = HtmlContent(messages("declaration.commodityDetails.inset.text", commodityCodeHelpLink))
+        )
 
         @characterCount(
             field = form(CommodityDetails.descriptionOfGoodsKey),
