@@ -74,7 +74,8 @@ object GoodsLocationForm extends DeclarationPage {
       .verifying(
         "declaration.goodsLocation.code.error",
         isEmpty or (
-          validateCountry and validateLocationType and validateQualifierCode and noShorterThan(10) and noLongerThan(17)
+          validateCountry and validateLocationType and validateQualifierCode and
+            noShorterThan(10) and noLongerThan(39) and isAlphanumeric
         )
       )
   )(form2Data)(GoodsLocationForm.unapply)

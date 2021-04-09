@@ -16,11 +16,12 @@
 
 package views.declaration
 
-import base.Injector
+import base.{Injector, TestHelper}
 import forms.declaration.GoodsLocationForm
 import models.DeclarationType._
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.mvc.Call
 import services.cache.ExportsTestData
@@ -41,7 +42,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     declarationType: DeclarationType = DeclarationType.STANDARD
   ): Document = page(mode, form)(journeyRequest(declarationType), messages)
 
-  "Location View on empty page" should {
+  "Goods Location View on empty page" should {
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.goodsLocation.title")
@@ -85,61 +86,34 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     }
   }
 
-  "Location View for invalid input" should {
+  "Goods Location View for invalid input" should {
 
     "display error for empty Goods Location code" in {
-
-      val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm(""))
-      val view = createView(form = form)
-
-      view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#code")
-
-      view must containErrorElementWithMessageKey("declaration.goodsLocation.code.empty")
+      verifyError("", "empty")
     }
 
     "display error for incorrect country in the Goods Location code" in {
-
-      val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm("XXAU1234567"))
-      val view = createView(form = form)
-
-      view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#code")
-
-      view must containErrorElementWithMessageKey("declaration.goodsLocation.code.error")
+      verifyError("XXAU1234567")
     }
 
     "display error for incorrect type of location in the Goods Location code" in {
-
-      val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm("GBXU12345678"))
-      val view = createView(form = form)
-
-      view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#code")
-
-      view must containErrorElementWithMessageKey("declaration.goodsLocation.code.error")
+      verifyError("GBXU12345678")
     }
 
     "display error for incorrect qualifier of identification in the Goods Location code" in {
-
-      val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm("PLAX12345678"))
-      val view = createView(form = form)
-
-      view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#code")
-
-      view must containErrorElementWithMessageKey("declaration.goodsLocation.code.error")
+      verifyError("PLAX12345678")
     }
 
     "display error for too short code" in {
+      verifyError("PLAU123")
+    }
 
-      val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm("PLAU123"))
-      val view = createView(form = form)
+    "display error for too long code" in {
+      verifyError(s"PLAU${TestHelper.createRandomAlphanumericString(36)}")
+    }
 
-      view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#code")
-
-      view must containErrorElementWithMessageKey("declaration.goodsLocation.code.error")
+    "display error for non-alphanumeric code" in {
+      verifyError("PLAX12345678-#@")
     }
   }
 
@@ -166,5 +140,15 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
           backButton.getElementById("back-link") must haveHref(redirect)
         }
       }
+  }
+
+  private def verifyError(code: String, errorKey: String = "error"): Assertion = {
+    val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm(code))
+    val view = createView(form = form)
+
+    view must haveGovukGlobalErrorSummary
+    view must containErrorElementWithTagAndHref("a", "#code")
+
+    view must containErrorElementWithMessageKey(s"declaration.goodsLocation.code.$errorKey")
   }
 }
