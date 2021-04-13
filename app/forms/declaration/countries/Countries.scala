@@ -58,12 +58,20 @@ object Countries {
       Seq(TariffContentKey("tariff.declaration.countryOfRouting.common"))
   }
 
-  private def mapping(page: CountryPage, cachedCountries: Seq[Country]): Mapping[String] =
-    text()
+  private val invalidDestinationCountry = "GB"
+
+  private def mapping(page: CountryPage, cachedCountries: Seq[Country]): Mapping[String] = {
+    val standardMapping = text()
       .verifying(s"declaration.${page.id}.empty", _.trim.nonEmpty)
       .verifying(s"declaration.${page.id}.error", emptyOrValidCountry)
       .verifying(s"declaration.routingCountries.duplication", !cachedCountries.flatMap(_.code).contains(_))
       .verifying(s"declaration.routingCountries.limit", _ => cachedCountries.length < limit)
+
+    page match {
+      case DestinationCountryPage => standardMapping.verifying("declaration.destinationCountry.error.uk", _ != invalidDestinationCountry)
+      case _                      => standardMapping
+    }
+  }
 
   private def mandatoryMapping(page: CountryPage, cachedCountries: Seq[Country]): Mapping[Country] =
     Forms.mapping("countryCode" -> mapping(page, cachedCountries))(country => if (country.nonEmpty) Country(Some(country)) else Country(None))(

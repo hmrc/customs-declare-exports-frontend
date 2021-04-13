@@ -45,6 +45,13 @@ class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeT
         result.errors mustBe Seq(FormError("countryCode", "declaration.originationCountry.error"))
       }
 
+      s"validate form with invalid selection of GB for ${request.declarationType}" in {
+
+        val result = Countries.form(DestinationCountryPage)(request).fillAndValidate(Country(Some("GB")))
+
+        result.errors mustBe Seq(FormError("countryCode", "declaration.destinationCountry.error.uk"))
+      }
+
       s"check if the country is duplicated for ${request.declarationType}" in {
 
         val cachedCountries = Seq(Country(Some("PL")))
