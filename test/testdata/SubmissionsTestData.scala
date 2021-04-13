@@ -78,28 +78,10 @@ object SubmissionsTestData {
   val payload_2 = createRandomAlphanumericString(payloadExemplaryLength)
   val payload_3 = createRandomAlphanumericString(payloadExemplaryLength)
 
-  val notification = Notification(
-    actionId = conversationId,
-    mrn = mrn,
-    dateTimeIssued = dateTimeIssued,
-    status = SubmissionStatus.ACCEPTED,
-    errors = errors,
-    payload = payload
-  )
-  val notification_2 = Notification(
-    actionId = conversationId,
-    mrn = mrn,
-    dateTimeIssued = dateTimeIssued_2,
-    status = SubmissionStatus.REJECTED,
-    errors = errors,
-    payload = payload_2
-  )
-  val notification_3 = Notification(
-    actionId = conversationId_2,
-    mrn = mrn,
-    dateTimeIssued = dateTimeIssued_3,
-    status = SubmissionStatus.ACCEPTED,
-    errors = Seq.empty,
-    payload = payload_3
-  )
+  val notification =
+    Notification(actionId = conversationId, mrn = mrn, dateTimeIssued = dateTimeIssued, status = SubmissionStatus.ACCEPTED, errors = errors)
+  val notification_2 =
+    Notification(actionId = conversationId, mrn = mrn, dateTimeIssued = dateTimeIssued_2, status = SubmissionStatus.REJECTED, errors = errors)
+  val notification_3 =
+    Notification(actionId = conversationId_2, mrn = mrn, dateTimeIssued = dateTimeIssued_3, status = SubmissionStatus.ACCEPTED, errors = Seq.empty)
 }

@@ -44,7 +44,7 @@ import views.html.{declaration_information, submissions}
 class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach {
 
   private val notification =
-    Notification("conversationID", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty, "payload")
+    Notification("conversationID", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
   private val submission = Submission(
     uuid = UUID.randomUUID().toString,
     eori = "eori",

@@ -29,10 +29,10 @@ import views.html.declaration.summary.notifications_section
 class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   private val acceptedNotification =
-    Notification("actionId", "SOME_MRN", ZonedDateTime.now, SubmissionStatus.ACCEPTED, Seq.empty, "payload")
+    Notification("actionId", "SOME_MRN", ZonedDateTime.now, SubmissionStatus.ACCEPTED, Seq.empty)
 
   private val clearedNotification =
-    Notification("actionId", "SOME_MRN", ZonedDateTime.now, SubmissionStatus.CLEARED, Seq.empty, "payload")
+    Notification("actionId", "SOME_MRN", ZonedDateTime.now, SubmissionStatus.CLEARED, Seq.empty)
 
   val section = instanceOf[notifications_section]
 

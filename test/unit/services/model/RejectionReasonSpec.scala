@@ -104,7 +104,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData with JourneyType
 
     "map to Rejected Reason" when {
       val acceptedNotification =
-        Notification("convId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty, "")
+        Notification("convId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty)
 
       "list is empty" in {
         reasons.fromNotifications(Seq.empty)(messages) mustBe Seq.empty
@@ -120,7 +120,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData with JourneyType
           given(messages.isDefinedAt("field.x.$.z")).willReturn(true)
           val error = NotificationError("CDS12016", Some(Pointer("x.#0.z")), None)
           val notification =
-            Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error), "")
+            Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error))
 
           reasons.fromNotifications(Seq(notification))(messages) mustBe Seq(
             RejectionReason(
@@ -137,7 +137,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData with JourneyType
           given(messages.isDefinedAt(anyString())).willReturn(false)
           val error = NotificationError("CDS12016", Some(Pointer("x.#0.z")), None)
           val notification =
-            Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error), "")
+            Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error))
 
           reasons.fromNotifications(Seq(notification))(messages) mustBe Seq(
             RejectionReason(
@@ -153,7 +153,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData with JourneyType
         "pointer is empty" in {
           val error = NotificationError("CDS12016", None, None)
           val notification =
-            Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error), "")
+            Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error))
 
           reasons.fromNotifications(Seq(notification))(messages) mustBe Seq(
             RejectionReason(

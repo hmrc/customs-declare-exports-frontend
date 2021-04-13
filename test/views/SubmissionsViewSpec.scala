@@ -76,8 +76,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
     mrn = "mrn",
     dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 12, 30, 0), zone),
     status = SubmissionStatus.ACCEPTED,
-    errors = Seq.empty,
-    payload = "payload"
+    errors = Seq.empty
   )
 
   val rejectedNotification = Notification(
@@ -85,8 +84,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
     mrn = "mrn",
     dateTimeIssued = ZonedDateTime.now(ZoneId.of("UTC")),
     status = SubmissionStatus.REJECTED,
-    errors = Seq.empty,
-    payload = ""
+    errors = Seq.empty
   )
 
   val actionNotification = Notification(
@@ -94,8 +92,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
     mrn = "mrn",
     dateTimeIssued = ZonedDateTime.now(ZoneId.of("UTC")),
     status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED,
-    errors = Seq.empty,
-    payload = ""
+    errors = Seq.empty
   )
 
   def submissions(notification: Notification = acceptedNotification) =

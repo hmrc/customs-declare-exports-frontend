@@ -44,8 +44,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
   private val existingDeclarationExchange = ExportsDeclarationExchange(existingDeclaration)
   private val action = Action(UUID.randomUUID().toString, SubmissionRequest)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, Seq(action))
-  private val notification =
-    Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty, "payload")
+  private val notification = Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
   private val connector = app.injector.instanceOf[CustomsDeclareExportsConnector]
 
   implicit val defaultPatience: PatienceConfig =

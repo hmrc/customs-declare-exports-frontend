@@ -28,9 +28,9 @@ class NotificationSpec extends WordSpec with MustMatchers {
   private val laterDate = ZonedDateTime.of(LocalDateTime.of(2019, 6, 15, 10, 10), zone)
   private val latestDate = ZonedDateTime.of(LocalDateTime.of(2019, 6, 20, 10, 10), zone)
 
-  val firstNotification = Notification("convId", "mrn", earlierDate, SubmissionStatus.UNKNOWN, Seq.empty, "payload")
-  val secondNotification = Notification("convId", "mrn", laterDate, SubmissionStatus.UNKNOWN, Seq.empty, "payload")
-  val thirdNotification = Notification("convId", "mrn", latestDate, SubmissionStatus.UNKNOWN, Seq.empty, "payload")
+  val firstNotification = Notification("convId", "mrn", earlierDate, SubmissionStatus.UNKNOWN, Seq.empty)
+  val secondNotification = Notification("convId", "mrn", laterDate, SubmissionStatus.UNKNOWN, Seq.empty)
+  val thirdNotification = Notification("convId", "mrn", latestDate, SubmissionStatus.UNKNOWN, Seq.empty)
 
   "Notification compare method" should {
 
