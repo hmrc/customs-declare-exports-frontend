@@ -677,6 +677,7 @@ declaration.originationCountry.error = Select a country of dispatch
 declaration.destinationCountry.title = What is the final country the goods are destined for?
 declaration.destinationCountry.empty = Select a country of destination
 declaration.destinationCountry.error = Select a country of destination
+declaration.destinationCountry.error.uk = Select a final country the goods are destined for that is outside the UK
 
 declaration.routingQuestion.title = Will the goods pass through any other non-EU countries before arriving in {0}?
 declaration.routingQuestion.empty = Select yes if the goods will pass through any non-EU countries
