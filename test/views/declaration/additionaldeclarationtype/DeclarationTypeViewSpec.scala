@@ -73,13 +73,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
       }
     }
 
-    "display 'Back' button that links to 'Dispatch Location' page" when {
+    "display 'Back' button that links to 'Declaration Choice' page" when {
 
       "used for Standard Declaration journey" in {
         val backButton = createView(formStandard, DeclarationType.STANDARD).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
+        backButton.attr("href") mustBe routes.DeclarationChoiceController.displayPage().url
       }
 
       "used for Supplementary Declaration journey" in {
@@ -87,28 +87,28 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val backButton = createView(formSupplementary, DeclarationType.SUPPLEMENTARY).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
+        backButton.attr("href") mustBe routes.DeclarationChoiceController.displayPage().url
       }
 
       "used for Simplified Declaration journey" in {
         val backButton = createView(formSimplified, DeclarationType.SIMPLIFIED).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
+        backButton.attr("href") mustBe routes.DeclarationChoiceController.displayPage().url
       }
 
       "used for Occasional Declaration journey" in {
         val backButton = createView(formOccasional, DeclarationType.OCCASIONAL).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
+        backButton.attr("href") mustBe routes.DeclarationChoiceController.displayPage().url
       }
 
       "used for Clearance Request journey" in {
         val backButton = createView(formClearance, DeclarationType.CLEARANCE).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
+        backButton.attr("href") mustBe routes.DeclarationChoiceController.displayPage().url
       }
     }
 
