@@ -22,14 +22,8 @@ import models.declaration.submissions.SubmissionStatus
 import models.declaration.submissions.SubmissionStatus.SubmissionStatus
 import play.api.libs.json.Json
 
-case class Notification(
-  actionId: String,
-  mrn: String,
-  dateTimeIssued: ZonedDateTime,
-  status: SubmissionStatus,
-  errors: Seq[NotificationError],
-  payload: String
-) extends Ordered[Notification] {
+case class Notification(actionId: String, mrn: String, dateTimeIssued: ZonedDateTime, status: SubmissionStatus, errors: Seq[NotificationError])
+    extends Ordered[Notification] {
 
   def compare(that: Notification): Int =
     if (this.dateTimeIssued == that.dateTimeIssued) 0

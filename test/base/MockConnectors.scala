@@ -53,9 +53,7 @@ trait MockConnectors extends MockitoSugar {
   def listOfNotifications(): OngoingStubbing[Future[Seq[Notification]]] =
     when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
       .thenReturn(
-        Future.successful(
-          Seq(Notification("actionId", "123456789012345678", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty, "payload"))
-        )
+        Future.successful(Seq(Notification("actionId", "123456789012345678", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)))
       )
 
   def listOfSubmissions(): OngoingStubbing[Future[Seq[Submission]]] =

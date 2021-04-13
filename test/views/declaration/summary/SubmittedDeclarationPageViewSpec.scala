@@ -33,7 +33,7 @@ import views.html.declaration.summary.submitted_declaration_page
 
 class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
-  private val notification = Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty, "payload")
+  private val notification = Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty)
 
   val declarationPage = instanceOf[submitted_declaration_page]
   def createView(declaration: ExportsDeclaration = aDeclaration()): Document =

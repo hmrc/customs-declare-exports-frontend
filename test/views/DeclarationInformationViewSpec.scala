@@ -83,40 +83,21 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val dateTimeIssued = ZonedDateTime.now
   private val dateTimeAsText = ViewDates.formatDateAtTime(dateTimeIssued)
 
-  private val acceptedNotification = Notification(
-    actionId = "action-id",
-    mrn = "mrn",
-    dateTimeIssued = dateTimeIssued,
-    status = SubmissionStatus.ACCEPTED,
-    errors = Seq.empty,
-    payload = "payload"
-  )
+  private val acceptedNotification =
+    Notification(actionId = "action-id", mrn = "mrn", dateTimeIssued = dateTimeIssued, status = SubmissionStatus.ACCEPTED, errors = Seq.empty)
 
-  private val rejectedNotification = Notification(
-    actionId = "actionId",
-    mrn = "mrn",
-    dateTimeIssued = dateTimeIssued,
-    status = SubmissionStatus.REJECTED,
-    errors = Seq.empty,
-    payload = ""
-  )
+  private val rejectedNotification =
+    Notification(actionId = "actionId", mrn = "mrn", dateTimeIssued = dateTimeIssued, status = SubmissionStatus.REJECTED, errors = Seq.empty)
 
-  private val clearedNotification = Notification(
-    actionId = "actionId",
-    mrn = "mrn",
-    dateTimeIssued = dateTimeIssued,
-    status = SubmissionStatus.CLEARED,
-    errors = Seq.empty,
-    payload = ""
-  )
+  private val clearedNotification =
+    Notification(actionId = "actionId", mrn = "mrn", dateTimeIssued = dateTimeIssued, status = SubmissionStatus.CLEARED, errors = Seq.empty)
 
   private val additionalDocumentsNotification = Notification(
     actionId = "actionId",
     mrn = "mrn",
     dateTimeIssued = dateTimeIssued,
     status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED,
-    errors = Seq.empty,
-    payload = ""
+    errors = Seq.empty
   )
 
   private val notifications = Seq(acceptedNotification, rejectedNotification, additionalDocumentsNotification)
@@ -181,7 +162,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         val elements = banner.children.iterator.asScala.toList
         assert(elements.forall(_.tagName.toLowerCase == "a"))
         elements.head must haveHref(routes.SubmissionsController.displayListOfSubmissions())
-        elements.last must haveHref(routes.SecureMessagingController.displayInbox)
+        elements.last must haveHref(routes.SecureMessagingController.displayInbox())
       }
     }
 

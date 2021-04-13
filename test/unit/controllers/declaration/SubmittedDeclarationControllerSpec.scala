@@ -58,7 +58,7 @@ class SubmittedDeclarationControllerSpec extends ControllerWithoutFormSpec with 
   }
 
   private def notification(status: SubmissionStatus) =
-    Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), status, Seq.empty, "payload")
+    Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), status, Seq.empty)
 
   "Display" should {
 
