@@ -70,11 +70,11 @@ class DeclarationChoiceController @Inject()(
           request.declarationId match {
             case Some(id) =>
               updateDeclarationType(id, declarationType).map { _ =>
-                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(mode))
+                Redirect(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode))
               }
             case _ =>
               create(declarationType) map { created =>
-                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(mode))
+                Redirect(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode))
                   .addingToSession(ExportsSessionKeys.declarationId -> created.id)
               }
           }

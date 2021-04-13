@@ -255,7 +255,7 @@ object Navigator {
     case RepresentativeStatus                 => routes.RepresentativeEntityController.displayPage
     case OfficeOfExitInsideUK                 => routes.LocationController.displayPage
     case OfficeOfExitOutsideUK                => routes.OfficeOfExitController.displayPage
-    case AdditionalDeclarationTypeStandardDec => routes.DispatchLocationController.displayPage
+    case AdditionalDeclarationTypeStandardDec => routes.DeclarationChoiceController.displayPage
     case NatureOfTransaction                  => routes.TotalPackageQuantityController.displayPage
     case ProcedureCodes                       => routes.ItemsSummaryController.displayItemsSummaryPage
     case ExportItem                           => routes.PreviousDocumentsSummaryController.displayPage
