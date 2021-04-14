@@ -40,7 +40,7 @@
     title = Title(titleKey),
     useCustomContentWidth = true,
     navigationBanner = navBanner,
-    backButton = Some(BackButton(messages("site.back"), backLinkUrl.get))
+    backButton = backLinkUrl.map(backLink => BackButton(messages("site.back"), backLink))
 ) {
 
     <div class="govuk-grid-row">
