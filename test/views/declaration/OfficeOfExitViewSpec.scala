@@ -17,8 +17,7 @@
 package views.declaration
 
 import base.Injector
-import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.officeOfExit.OfficeOfExitInsideUK
+import forms.declaration.officeOfExit.OfficeOfExit
 import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
@@ -35,42 +34,30 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
   private val page: office_of_exit = instanceOf[office_of_exit]
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitInsideUK] = OfficeOfExitInsideUK.form()): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExit] = OfficeOfExit.form()): Document =
     page(mode, form)(journeyRequest(), messages)
 
   "Office of Exit View" should {
     val view = createView()
     onEveryDeclarationJourney() { implicit request =>
-      "display answer input" in {
-        val officeOfExit = OfficeOfExitInsideUK.form().fill(OfficeOfExitInsideUK(Some("officeId"), YesNoAnswers.yes))
-        val view = createView(form = officeOfExit)
+      "display section header" in {
+        view.getElementById("section-header") must containMessage("declaration.section.3")
+      }
 
-        view
-          .getElementById("Yes")
-          .getElementsByAttribute("checked")
-          .attr("value") mustBe YesNoAnswers.yes
+      "display page title" in {
+        view.getElementsByClass(Styles.gdsPageLabel) must containMessageForElements("declaration.officeOfExit.title")
       }
 
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.officeOfExit.title")
-        messages must haveTranslationFor("declaration.officeOfExit")
         messages must haveTranslationFor("declaration.officeOfExit.hint")
         messages must haveTranslationFor("declaration.officeOfExit.empty")
         messages must haveTranslationFor("declaration.officeOfExit.length")
         messages must haveTranslationFor("declaration.officeOfExit.specialCharacters")
       }
 
-      "display page title" in {
-        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.officeOfExit.title")
-      }
-
-      "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.section.3")
-      }
-
       "display office of exit question" in {
-        view.getElementById("officeId-label") must containMessage("declaration.officeOfExit")
-        view.getElementById("isUkOfficeOfExit-hint") must containMessage("declaration.officeOfExit.hint")
+        view.getElementById("officeId-hint") must containMessage("declaration.officeOfExit.hint")
         view.getElementById("officeId").attr("value") mustBe empty
       }
 
@@ -94,20 +81,9 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
       "handle invalid input" should {
 
-        "display errors when all inputs are empty" in {
-          val data = OfficeOfExitInsideUK(None, "")
-          val view = createView(form = OfficeOfExitInsideUK.form().fillAndValidate(data))
-
-          view.getElementById("error-summary-title") must containMessage("error.summary.title")
-
-          view must haveGovukGlobalErrorSummary
-          view must containErrorElementWithTagAndHref("a", "#Yes")
-          view must containErrorElementWithMessageKey("declaration.officeOfExit.isUkOfficeOfExit.empty")
-        }
-
         "display errors when all inputs are incorrect" in {
-          val data = OfficeOfExitInsideUK(Some("123456"), "Yes")
-          val form = OfficeOfExitInsideUK.form().fillAndValidate(data)
+          val data = OfficeOfExit("123456")
+          val form = OfficeOfExit.form().fillAndValidate(data)
           val view = createView(form = form)
 
           view.getElementById("error-summary-title") must containMessage("error.summary.title")
@@ -121,8 +97,8 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
         }
 
         "display errors when office of exit contains special characters" in {
-          val data = OfficeOfExitInsideUK(Some("12#$%^78"), "Yes")
-          val form = OfficeOfExitInsideUK.form().fillAndValidate(data)
+          val data = OfficeOfExit("12#$%^78")
+          val form = OfficeOfExit.form().fillAndValidate(data)
           val view = createView(form = form)
 
           view.getElementById("error-summary-title") must containMessage("error.summary.title")

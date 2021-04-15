@@ -16,7 +16,7 @@
 
 package views.declaration
 import base.Injector
-import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
+import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.{Document, PreviousDocumentsData}
 import models.declaration.DocumentCategory.{RelatedDocument, SimplifiedDeclaration}
 import models.declaration.Locations
@@ -112,24 +112,9 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
       }
 
       onJourney(DeclarationType.CLEARANCE, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
-        "with Office Of Exit outside UK" in {
-
-          val officeOfExitOutsideUK = Locations(officeOfExit = Some(OfficeOfExit(Some("id"), Some(AllowedUKOfficeOfExitAnswers.no))))
-          val requestWithOfficeOfExitOutsideUK = journeyRequest(request.cacheModel.copy(locations = officeOfExitOutsideUK))
-
-          val backButton = createView()(requestWithOfficeOfExitOutsideUK).getElementById("back-link")
-
-          backButton must containMessage("site.back")
-          backButton.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage(Mode.Normal)
-          )
-        }
-      }
-
-      onJourney(DeclarationType.CLEARANCE, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
         " with Office Of Exit Inside UK" in {
 
-          val officeOfExitInsideUK = Locations(officeOfExit = Some(OfficeOfExit(Some("id"), Some(AllowedUKOfficeOfExitAnswers.yes))))
+          val officeOfExitInsideUK = Locations(officeOfExit = Some(OfficeOfExit("id")))
           val requestWithOfficeOfExitInsideUK = journeyRequest(request.cacheModel.copy(locations = officeOfExitInsideUK))
 
           val backButton = createView()(requestWithOfficeOfExitInsideUK).getElementById("back-link")

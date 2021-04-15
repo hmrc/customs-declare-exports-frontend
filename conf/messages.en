@@ -727,9 +727,8 @@ declaration.procedureCodes.additionalProcedureCode.duplication = You have alread
 declaration.procedureCodes.additionalProcedureCode.remove.hint = Remove additional code {0}.
 declaration.procedureCodes.additionalProcedureCode.add.hint = Add additional code.
 
-declaration.officeOfExit.title = Is the customs office of exit in the UK?
-declaration.officeOfExit = Where is the office of exit?
-declaration.officeOfExit.hint = This is the office where goods are officially recorded as having left the EU.
+declaration.officeOfExit.title = Where is the customs office of exit?
+declaration.officeOfExit.hint = This is the office where goods are officially recorded as having left the UK.
 declaration.officeOfExit.empty = Select an office of exit from the list
 declaration.officeOfExit.length = Select an office of exit from the list
 declaration.officeOfExit.specialCharacters = Select an office of exit from the list

@@ -28,7 +28,7 @@ import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
 import forms.declaration.exporter.ExporterDetails
-import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
+import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
@@ -354,17 +354,8 @@ trait ExportsDeclarationBuilder {
   def withoutOfficeOfExit(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
 
-  def withOfficeOfExit(officeId: String = "", isUkOfficeOfExit: String = AllowedUKOfficeOfExitAnswers.yes): ExportsDeclarationModifier =
-    withOptionalOfficeOfExit(Some(officeId), Some(isUkOfficeOfExit))
-
-  def withOptionalOfficeOfExit(
-    officeId: Option[String] = None,
-    isUkOfficeOfExit: Option[String] = Some(AllowedUKOfficeOfExitAnswers.yes)
-  ): ExportsDeclarationModifier =
-    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, isUkOfficeOfExit))))
-
-  def withOfficeOfExitOutsideUK(officeId: String = ""): ExportsDeclarationModifier =
-    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(Some(officeId), Some(AllowedUKOfficeOfExitAnswers.no)))))
+  def withOfficeOfExit(officeId: String = ""): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId))))
 
   def withTransportPayment(data: Option[TransportPayment]): ExportsDeclarationModifier =
     cache => {

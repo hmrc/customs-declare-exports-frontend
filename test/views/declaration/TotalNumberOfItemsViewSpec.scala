@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.TotalNumberOfItems
-import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
+import forms.declaration.officeOfExit.OfficeOfExit
 import models.Mode
 import models.declaration.Locations
 import models.requests.JourneyRequest
@@ -80,20 +80,9 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
         view.getElementById("exchangeRate").attr("value") mustBe empty
       }
 
-      "display 'Back' button that links to 'Office of Exit Outside UK' page" in {
-
-        val officeOfExitOutsideUK = Locations(officeOfExit = Some(OfficeOfExit(Some("id"), Some(AllowedUKOfficeOfExitAnswers.no))))
-        val requestWithOfficeOfExitOutsideUK = journeyRequest(request.cacheModel.copy(locations = officeOfExitOutsideUK))
-
-        val backButton = createView()(requestWithOfficeOfExitOutsideUK).getElementById("back-link")
-
-        backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage(Mode.Normal))
-      }
-
       "display 'Back' button that links to 'Office of Exit' page" in {
 
-        val officeOfExitInsideUK = Locations(officeOfExit = Some(OfficeOfExit(Some("id"), Some(AllowedUKOfficeOfExitAnswers.yes))))
+        val officeOfExitInsideUK = Locations(officeOfExit = Some(OfficeOfExit("id")))
         val requestWithOfficeOfExitInsideUK = journeyRequest(request.cacheModel.copy(locations = officeOfExitInsideUK))
 
         val backButton = createView()(requestWithOfficeOfExitInsideUK).getElementById("back-link")

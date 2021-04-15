@@ -19,7 +19,6 @@ package services.cache
 import base.ExportsTestData.newUser
 import base.RequestBuilder
 import forms.declaration._
-import forms.declaration.officeOfExit.AllowedUKOfficeOfExitAnswers
 import models.{DeclarationType, ExportsDeclaration}
 import models.DeclarationType.DeclarationType
 import models.declaration.Container
@@ -38,7 +37,7 @@ trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder 
     withWarehouseIdentification(Some(WarehouseIdentification(Some("a")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("b")))),
     withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCode.Rail)))),
-    withOfficeOfExit("id", AllowedUKOfficeOfExitAnswers.yes),
+    withOfficeOfExit("id"),
     withContainerData(Container("id", Seq.empty)),
     withTotalNumberOfItems(Some("123"), Some("123")),
     withNatureOfTransaction("nature"),

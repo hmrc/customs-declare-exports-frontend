@@ -20,7 +20,6 @@ import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.function.Predicate
 
 import base.Injector
-import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.declaration.{CommodityDetails, WarehouseIdentification}
 import models.ExportsDeclaration
 import models.declaration.notifications.Notification
@@ -104,15 +103,8 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "have locations section with UK office of exit" in {
 
-      val view = createView(declaration = aDeclaration(withOfficeOfExit(officeId = "office-Id", isUkOfficeOfExit = yes)))
+      val view = createView(declaration = aDeclaration(withOfficeOfExit(officeId = "office-Id")))
       view.getElementById("declaration-locations-summary").text() must include("office-Id")
-      links(view) mustBe empty
-    }
-
-    "have locations section with office of exit outside UK" in {
-
-      val view = createView(declaration = aDeclaration(withOfficeOfExit(), withOfficeOfExitOutsideUK("office-id-outside-uk")))
-      view.getElementById("declaration-locations-summary").text() must include("office-id-outside-uk")
       links(view) mustBe empty
     }
 

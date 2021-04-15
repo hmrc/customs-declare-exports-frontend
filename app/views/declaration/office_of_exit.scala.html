@@ -16,8 +16,7 @@
 
 @import config.AppConfig
 @import controllers.navigation.Navigator
-@import forms.declaration.officeOfExit.OfficeOfExitInsideUK
-@import forms.common.YesNoAnswer.YesNoAnswers.{yes, no}
+@import forms.declaration.officeOfExit.OfficeOfExit
 @import models.requests.JourneyRequest
 @import services.view.AutoCompleteItem
 @import services.OfficeOfExits
@@ -30,9 +29,6 @@
 @this(
         govukLayout: gdsMainTemplate,
         govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        govukRadios: GovukRadios,
-        govukFieldset: GovukFieldset,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
@@ -41,57 +37,29 @@
         appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[OfficeOfExitInsideUK])(implicit request: JourneyRequest[_], messages: Messages)
-
-@autocomplete = {
-    @components.fields.field_accessible_autocomplete(
-        field = form("officeId"),
-        label = "declaration.officeOfExit",
-        labelClass = Some("form-label-bold"),
-        hintText = None,
-        messages("declaration.officeOfExit.empty"),
-        AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
-    )
-}
+@(mode: Mode, form: Form[OfficeOfExit])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.officeOfExit.title", "declaration.section.3"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExitInsideUK, mode)))){
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExit, mode)))){
 
     @formHelper(action = controllers.declaration.routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("isUkOfficeOfExit", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.3"))
 
-        @govukRadios(Radios(
-            name = "isUkOfficeOfExit",
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.officeOfExit.title")),
-                    classes = gdsPageLegend
-                ))
-            )),
-            hint = Some(Hint(content = Text(messages("declaration.officeOfExit.hint")))),
-            items = Seq(
-                RadioItem(
-                    id = Some("Yes"),
-                    value = Some(yes),
-                    content = Text(messages("site.yes")),
-                    conditionalHtml = Some(autocomplete),
-                    checked = form("isUkOfficeOfExit").value.contains("Yes")
-                ),
-                RadioItem(
-                    id = Some("No"),
-                    value = Some(no),
-                    content = Text(messages("site.no")),
-                    checked = form("isUkOfficeOfExit").value.contains("No")
-                )
-            ),
-            attributes = Map("id" -> "isUkOfficeOfExit"),
-            errorMessage = form("isUkOfficeOfExit").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-        ))
+        @components.fields.field_accessible_autocomplete_with_header(
+            field = form("officeId"),
+            label = "declaration.officeOfExit.title",
+            labelClass = Some(gdsPageLabel),
+            section = None,
+            hintText = Some(messages("declaration.officeOfExit.hint")),
+            messages("declaration.officeOfExit.empty"),
+            AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all),
+            isPageHeading = true
+        )
 
-        @tariffExpander(OfficeOfExitInsideUK, request.declarationType)(messages, appConfig)
+        @tariffExpander(OfficeOfExit, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }
