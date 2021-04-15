@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
-import forms.declaration.RoutingQuestionYesNo._
+import forms.declaration.RoutingCountryQuestionYesNo._
 import forms.declaration.countries.Countries
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 

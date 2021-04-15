@@ -36,11 +36,13 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
 
   private def firstRoutingForm(request: JourneyRequest[_]): Form[Country] =
     Countries.form(FirstRoutingCountryPage)(request)
+
   private def nextRoutingForm(request: JourneyRequest[_]): Form[Country] =
     Countries.form(NextRoutingCountryPage)(request)
 
   private def firstRoutingView(implicit request: JourneyRequest[_]): Html =
     countryOfRoutingPage(Mode.Normal, firstRoutingForm(request), FirstRoutingCountryPage)(request, messages)
+
   private def nextRoutingView(implicit request: JourneyRequest[_]): Html =
     countryOfRoutingPage(Mode.Normal, nextRoutingForm(request), NextRoutingCountryPage)(request, messages)
 

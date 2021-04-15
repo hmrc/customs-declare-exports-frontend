@@ -18,32 +18,34 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.countries.{Countries, Country}
 import play.api.data.{Form, Forms}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-object RoutingQuestionYesNo {
+object RoutingCountryQuestionYesNo {
 
-  case object RoutingQuestionPage extends DeclarationPage
+  case object RoutingCountryQuestionPage extends DeclarationPage
 
   case object RemoveCountryPage extends DeclarationPage
 
   case object ChangeCountryPage extends DeclarationPage
 
-  val yes = "Yes"
-  val no = "No"
+  def formFirst(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] =
+    form("declaration.routingCountryQuestion.empty", cachedCountries)
 
-  val allowedValues: Seq[String] = Seq(yes, no)
+  def formAdd(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] =
+    form("declaration.routingCountryQuestion.add.empty", cachedCountries)
 
-  def formFirst(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] = form("declaration.routingQuestion.empty", cachedCountries)
-  def formAdd(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] = form("declaration.routingQuestion.add.empty", cachedCountries)
-  def formRemove(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] = form("declaration.routingQuestion.remove.empty", cachedCountries)
+  def formRemove(cachedCountries: Seq[Country] = Seq.empty): Form[Boolean] =
+    form("declaration.routingCountryQuestion.remove.empty", cachedCountries)
 
   private def form(errorMessage: String, cachedCountries: Seq[Country]): Form[Boolean] = Form(
     Forms.mapping(
       "answer" -> requiredRadio(errorMessage)
-        .verifying("declaration.routingQuestion.error", isContainedIn(allowedValues))
-        .verifying(s"declaration.routingCountries.limit", answer => answer == no || cachedCountries.length < Countries.limit)
-    )(answer => if (answer == yes) true else false)(answer => if (answer) Some(yes) else Some(no))
+        .verifying("declaration.routingCountryQuestion.empty", isContainedIn(YesNoAnswer.allowedValues))
+        .verifying(s"declaration.routingCountries.limit", answer => answer == YesNoAnswers.no || cachedCountries.length < Countries.limit)
+    )(answer => answer == YesNoAnswers.yes)(answer => if (answer) Some(YesNoAnswers.yes) else Some(YesNoAnswers.no))
   )
 }

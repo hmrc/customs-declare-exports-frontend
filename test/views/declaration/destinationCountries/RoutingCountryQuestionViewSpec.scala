@@ -18,7 +18,7 @@ package views.declaration.destinationCountries
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.RoutingQuestionYesNo
+import forms.declaration.RoutingCountryQuestionYesNo
 import models.Mode
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -30,7 +30,7 @@ import views.html.declaration.destinationCountries.routing_country_question
 class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val countryOfDestination = "Poland"
-  val form: Form[Boolean] = RoutingQuestionYesNo.formAdd()
+  val form: Form[Boolean] = RoutingCountryQuestionYesNo.formAdd()
   val routingQuestionPage = instanceOf[routing_country_question]
   val view = routingQuestionPage(Mode.Normal, form, countryOfDestination)(journeyRequest(), messages)
 
@@ -38,29 +38,34 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
     "have defined translation for used labels" in {
 
-      messages must haveTranslationFor("declaration.routingQuestion.title")
-      messages must haveTranslationFor("declaration.routingQuestion.empty")
+      messages must haveTranslationFor("declaration.routingCountryQuestion.title")
+      messages must haveTranslationFor("declaration.routingCountryQuestion.hint")
+      messages must haveTranslationFor("declaration.routingCountryQuestion.empty")
       messages must haveTranslationFor("tariff.expander.title.clearance")
     }
 
-    "have section header" in {
+    "display the section header" in {
 
-      view.getElementById("section-header").text() must include(messages("declaration.section.3"))
+      view.getElementById("section-header").text must include(messages("declaration.section.3"))
     }
 
-    "have page question" in {
+    "display the page question" in {
 
-      view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingQuestion.title", countryOfDestination)
+      view.getElementsByClass(Styles.gdsPageLegend).text mustBe messages("declaration.routingCountryQuestion.title", countryOfDestination)
     }
 
-    "have Yes/No answers" in {
+    "display the page hint" in {
+      view.getElementById("answer-hint").text mustBe messages("declaration.routingCountryQuestion.hint")
+    }
 
-      view.getElementsByAttributeValue("for", "Yes").text().text() mustBe messages("site.yes")
-      view.getElementsByAttributeValue("for", "No").text() mustBe messages("site.no")
+    "display Yes/No answers" in {
+
+      view.getElementsByAttributeValue("for", "Yes").text.text() mustBe messages("site.yes")
+      view.getElementsByAttributeValue("for", "No").text mustBe messages("site.no")
     }
 
     "display Tariff section text" in {
-      val tariffText = view.getElementsByClass("govuk-details__summary-text").first().text()
+      val tariffText = view.getElementsByClass("govuk-details__summary-text").first.text
       tariffText.text() mustBe messages("tariff.expander.title.common")
     }
 
@@ -68,18 +73,18 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
       val backButton = view.getElementById("back-link")
 
-      backButton.text() mustBe messages("site.back")
+      backButton.text mustBe messages("site.back")
       backButton must haveHref(routes.DestinationCountryController.displayPage())
     }
 
     "display 'Save and continue' button" in {
 
-      view.getElementById("submit").text() mustBe messages("site.save_and_continue")
+      view.getElementById("submit").text mustBe messages("site.save_and_continue")
     }
 
     "display 'Save and return' button" in {
 
-      view.getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
+      view.getElementById("submit_and_return").text mustBe messages("site.save_and_come_back_later")
     }
   }
 }

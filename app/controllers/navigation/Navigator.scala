@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import controllers.util.{Add, FormAction, Remove, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues
 import forms.declaration._
-import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingQuestionPage}
+import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
 import forms.declaration.additionaldocuments.{DocumentsProduced, DocumentsProducedSummary}
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
@@ -90,7 +90,7 @@ object Navigator {
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case OriginationCountryPage      => routes.DeclarationHolderController.displayPage
     case DestinationCountryPage      => routes.OriginationCountryController.displayPage
-    case RoutingQuestionPage         => routes.DestinationCountryController.displayPage
+    case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
@@ -124,7 +124,7 @@ object Navigator {
     case ContainerFirst               => routes.TransportPaymentController.displayPage
     case ContainerAdd                 => routes.TransportContainerController.displayContainerSummary
     case DestinationCountryPage       => routes.DeclarationHolderController.displayPage
-    case RoutingQuestionPage          => routes.DestinationCountryController.displayPage
+    case RoutingCountryQuestionPage   => routes.DestinationCountryController.displayPage
     case RemoveCountryPage            => routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage            => routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm            => routes.DestinationCountryController.displayPage
@@ -188,7 +188,7 @@ object Navigator {
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case OfficeOfExitOutsideUK       => routes.OfficeOfExitController.displayPage
     case DestinationCountryPage      => routes.DeclarationHolderController.displayPage
-    case RoutingQuestionPage         => routes.DestinationCountryController.displayPage
+    case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm           => routes.RoutingCountriesSummaryController.displayPage
@@ -220,7 +220,7 @@ object Navigator {
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case OfficeOfExitOutsideUK       => routes.OfficeOfExitController.displayPage
     case DestinationCountryPage      => routes.DeclarationHolderController.displayPage
-    case RoutingQuestionPage         => routes.DestinationCountryController.displayPage
+    case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm           => routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
