@@ -15,7 +15,8 @@
  *@
 
 @import controllers.navigation.Navigator
-@import forms.declaration.RoutingQuestionYesNo.{no, RoutingQuestionPage, yes}
+@import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
+@import forms.declaration.RoutingCountryQuestionYesNo.RoutingCountryQuestionPage
 @import forms.declaration.countries.Countries._
 @import models.requests.JourneyRequest
 @import views.html.components.gds.gdsMainTemplate
@@ -48,8 +49,8 @@
 @(mode: Mode, form: Form[Boolean], countryOfDestination: String)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.routingQuestion.title", "declaration.section.3", countryOfDestination),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingQuestionPage, mode)))){
+    title = Title("declaration.routingCountryQuestion.title", "declaration.section.3", countryOfDestination),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingCountryQuestionPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingAnswer(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("answer", "Yes", form.errors))
@@ -60,10 +61,11 @@
             name = "answer",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.routingQuestion.title", countryOfDestination)),
+                    content = Text(messages("declaration.routingCountryQuestion.title", countryOfDestination)),
                     classes = gdsPageLegend
                 ))
             )),
+            hint = Some(Hint(content = Text(messages("declaration.routingCountryQuestion.hint")))),
             items = Seq(
                 RadioItem(
                     id = Some("Yes"),

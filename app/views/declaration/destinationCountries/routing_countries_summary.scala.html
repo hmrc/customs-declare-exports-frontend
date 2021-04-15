@@ -16,7 +16,8 @@
 
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
-@import forms.declaration.RoutingQuestionYesNo.{no, RoutingQuestionPage, yes}
+@import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
+@import forms.declaration.RoutingCountryQuestionYesNo.RoutingCountryQuestionPage
 @import models.requests.JourneyRequest
 @import services.model.Country
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -139,7 +140,7 @@
 
 @govukLayout(
     title = Title("declaration.routingCountries.summary.title", "declaration.section.3"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingQuestionPage, mode)))){
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingCountryQuestionPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submit(mode), 'autoComplete -> "off") {
 

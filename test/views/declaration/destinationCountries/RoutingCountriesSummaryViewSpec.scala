@@ -18,7 +18,7 @@ package views.declaration.destinationCountries
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.RoutingQuestionYesNo
+import forms.declaration.RoutingCountryQuestionYesNo
 import models.Mode
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -31,7 +31,7 @@ import views.html.declaration.destinationCountries.routing_countries_summary
 class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val countries = Seq(Country("France", "FR"), Country("Poland", "PL"))
-  val form: Form[Boolean] = RoutingQuestionYesNo.formAdd()
+  val form: Form[Boolean] = RoutingCountryQuestionYesNo.formAdd()
 
   val routingCountriesSummaryPage = instanceOf[routing_countries_summary]
   val view = routingCountriesSummaryPage(Mode.Normal, form, countries)(journeyRequest(), messages)

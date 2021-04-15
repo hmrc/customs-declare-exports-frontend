@@ -679,10 +679,11 @@ declaration.destinationCountry.empty = Select a country of destination
 declaration.destinationCountry.error = Select a country of destination
 declaration.destinationCountry.error.uk = Select a final country the goods are destined for that is outside the UK
 
-declaration.routingQuestion.title = Will the goods pass through any other non-EU countries before arriving in {0}?
-declaration.routingQuestion.empty = Select yes if the goods will pass through any non-EU countries
-declaration.routingQuestion.add.empty = Select yes if you need to add another country
-declaration.routingQuestion.remove.empty = Select yes if you want to remove this routing country
+declaration.routingCountryQuestion.title = Will the goods pass through any other countries before arriving in {0}?
+declaration.routingCountryQuestion.hint = You must enter all the countries where there are stop-overs or dockings that you are aware of. If goods are going by road or rail, enter the countries on the planned route in order.
+declaration.routingCountryQuestion.empty = Select yes if the goods will pass through any other countries
+declaration.routingCountryQuestion.add.empty = Select yes if you need to add another country
+declaration.routingCountryQuestion.remove.empty = Select yes if you want to remove this routing country
 
 declaration.routingCountry.title = Routing country
 declaration.routingCountry.question = Where will the goods be sent through next?

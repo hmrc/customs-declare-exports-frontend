@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
-import forms.declaration.RoutingQuestionYesNo
+import forms.declaration.RoutingCountryQuestionYesNo
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import forms.declaration.countries.{Countries, Country}
 
@@ -52,7 +52,7 @@ class RoutingCountriesSummaryController @Inject()(
     val countries = findByCodes(countryCodes)
 
     if (countries.nonEmpty) {
-      Ok(routingCountriesSummaryPage(mode, RoutingQuestionYesNo.formAdd().withSubmissionErrors(), countries))
+      Ok(routingCountriesSummaryPage(mode, RoutingCountryQuestionYesNo.formAdd().withSubmissionErrors(), countries))
     } else {
       navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_))
     }
@@ -62,7 +62,7 @@ class RoutingCountriesSummaryController @Inject()(
     val countryCodes = request.cacheModel.locations.routingCountries
     val countries = findByCodes(countryCodes.flatMap(_.code))
 
-    RoutingQuestionYesNo
+    RoutingCountryQuestionYesNo
       .formAdd(countryCodes)
       .bindFromRequest()
       .fold(
@@ -81,7 +81,7 @@ class RoutingCountriesSummaryController @Inject()(
       val isCountryPresentedInCache = request.cacheModel.locations.routingCountries.flatMap(_.code).contains(countryCode)
       val country = services.Countries.countryCodeMap(countryCode)
 
-      if (isCountryPresentedInCache) Ok(removeRoutingCountryPage(mode, RoutingQuestionYesNo.formRemove(), country))
+      if (isCountryPresentedInCache) Ok(removeRoutingCountryPage(mode, RoutingCountryQuestionYesNo.formRemove(), country))
       else navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
   }
 
@@ -89,7 +89,7 @@ class RoutingCountriesSummaryController @Inject()(
     implicit request =>
       val country = services.Countries.countryCodeMap(countryCode)
 
-      RoutingQuestionYesNo
+      RoutingCountryQuestionYesNo
         .formRemove()
         .bindFromRequest()
         .fold(

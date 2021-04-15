@@ -16,22 +16,18 @@
 
 package forms.declaration
 
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.data.FormError
 import unit.base.UnitSpec
 
-class RoutingQuestionYesNoSpec extends UnitSpec {
+class RoutingCountryQuestionYesNoSpec extends UnitSpec {
 
   "Routing Country model" should {
 
-    "should have defined two options for form" in {
-
-      RoutingQuestionYesNo.yes mustBe "Yes"
-      RoutingQuestionYesNo.no mustBe "No"
-    }
-
     "contains correct list of allowedValues" in {
 
-      RoutingQuestionYesNo.allowedValues mustBe Seq(RoutingQuestionYesNo.yes, RoutingQuestionYesNo.no)
+      YesNoAnswer.allowedValues mustBe Seq(YesNoAnswers.yes, YesNoAnswers.no)
     }
 
     "contains errors after form validation" when {
@@ -40,40 +36,40 @@ class RoutingQuestionYesNoSpec extends UnitSpec {
 
         val incorrectForm = Map("answer" -> "")
 
-        val result = RoutingQuestionYesNo.formAdd().bind(incorrectForm)
+        val result = RoutingCountryQuestionYesNo.formAdd().bind(incorrectForm)
 
         result.errors.length mustBe 1
-        result.errors.head mustBe FormError("answer", "declaration.routingQuestion.add.empty")
+        result.errors.head mustBe FormError("answer", "declaration.routingCountryQuestion.add.empty")
       }
 
       "input is empty for remove" in {
 
         val incorrectForm = Map("answer" -> "")
 
-        val result = RoutingQuestionYesNo.formRemove().bind(incorrectForm)
+        val result = RoutingCountryQuestionYesNo.formRemove().bind(incorrectForm)
 
         result.errors.length mustBe 1
-        result.errors.head mustBe FormError("answer", "declaration.routingQuestion.remove.empty")
+        result.errors.head mustBe FormError("answer", "declaration.routingCountryQuestion.remove.empty")
       }
 
       "input is empty for first" in {
 
         val incorrectForm = Map("answer" -> "")
 
-        val result = RoutingQuestionYesNo.formFirst().bind(incorrectForm)
+        val result = RoutingCountryQuestionYesNo.formFirst().bind(incorrectForm)
 
         result.errors.length mustBe 1
-        result.errors.head mustBe FormError("answer", "declaration.routingQuestion.empty")
+        result.errors.head mustBe FormError("answer", "declaration.routingCountryQuestion.empty")
       }
 
       "input is incorrect" in {
 
         val incorrectForm = Map("answer" -> "incorrect")
 
-        val result = RoutingQuestionYesNo.formFirst().bind(incorrectForm)
+        val result = RoutingCountryQuestionYesNo.formFirst().bind(incorrectForm)
 
         result.errors.length mustBe 1
-        result.errors.head mustBe FormError("answer", "declaration.routingQuestion.error")
+        result.errors.head mustBe FormError("answer", "declaration.routingCountryQuestion.empty")
       }
     }
 
@@ -81,7 +77,7 @@ class RoutingQuestionYesNoSpec extends UnitSpec {
 
       val correctForm = Map("answer" -> "Yes")
 
-      val result = RoutingQuestionYesNo.formRemove().bind(correctForm)
+      val result = RoutingCountryQuestionYesNo.formRemove().bind(correctForm)
 
       result.errors mustBe empty
     }

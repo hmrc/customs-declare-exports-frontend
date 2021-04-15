@@ -37,7 +37,10 @@ object YesNoAnswer {
   val allowedValues: Seq[String] = Seq(yes, no)
 
   private def mapping(fieldName: String, errorKey: String): Mapping[YesNoAnswer] =
-    Forms.mapping(fieldName -> requiredRadio(errorKey).verifying(errorKey, isContainedIn(allowedValues)))(YesNoAnswer.apply)(YesNoAnswer.unapply)
+    Forms.mapping(
+      fieldName -> requiredRadio(errorKey)
+        .verifying(errorKey, isContainedIn(allowedValues))
+    )(YesNoAnswer.apply)(YesNoAnswer.unapply)
 
   val formId = "YesNo"
 
