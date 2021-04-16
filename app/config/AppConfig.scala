@@ -66,6 +66,8 @@ class AppConfig @Inject()(
 
   lazy val emailFrontendUrl: String = loadConfig("urls.emailFrontendUrl")
 
+  lazy val govUkPageForTypeCO = loadConfig("urls.govUkPageForTypeCO")
+
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   lazy val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")

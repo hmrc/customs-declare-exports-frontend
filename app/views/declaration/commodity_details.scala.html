@@ -24,19 +24,19 @@
 @import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        pageTitle: pageTitle,
-        inputText: exportsInputText,
-        insetText: exportsInsetText,
-        characterCount: exportsInputCharacterCount,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        appConfig: AppConfig,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukDetails : GovukDetails,
+    pageTitle: pageTitle,
+    inputText: exportsInputText,
+    insetText: exportsInsetText,
+    characterCount: exportsInputCharacterCount,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[CommodityDetails])(implicit request: JourneyRequest[_], messages: Messages)
