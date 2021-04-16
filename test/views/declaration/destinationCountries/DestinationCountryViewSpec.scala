@@ -17,6 +17,7 @@
 package views.declaration.destinationCountries
 
 import base.Injector
+import config.AppConfig
 import controllers.declaration.routes
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}
@@ -42,6 +43,8 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     "have defined translation for used labels" in {
 
       messages must haveTranslationFor("declaration.destinationCountry.title")
+      messages must haveTranslationFor("declaration.destinationCountry.inset.text")
+      messages must haveTranslationFor("declaration.destinationCountry.inset.link")
       messages must haveTranslationFor("declaration.destinationCountry.empty")
       messages must haveTranslationFor("declaration.destinationCountry.error")
     }
@@ -58,6 +61,15 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
       s"display page heading for ${request.declarationType}" in {
 
         view(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
+      }
+
+      s"display page inset for ${request.declarationType}" in {
+        val insetElement = view(request).getElementsByClass("govuk-inset-text").first()
+
+        insetElement.childNodeSize() mustBe 3
+
+        val govUkPageForTypeCO = instanceOf[AppConfig].govUkPageForTypeCO
+        insetElement.child(0) must haveHref(govUkPageForTypeCO)
       }
 
       s"display 'Save and continue' button for ${request.declarationType}" in {

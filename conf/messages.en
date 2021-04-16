@@ -675,6 +675,8 @@ declaration.originationCountry.empty = Select a country of dispatch
 declaration.originationCountry.error = Select a country of dispatch
 
 declaration.destinationCountry.title = What is the final country the goods are destined for?
+declaration.destinationCountry.inset.text = If you select 'Jersey' or 'Guernsey', your declaration will be updated to {0}.
+declaration.destinationCountry.inset.link = type CO in CDS data element 1/1 (opens in new tab)
 declaration.destinationCountry.empty = Select a country of destination
 declaration.destinationCountry.error = Select a country of destination
 declaration.destinationCountry.error.uk = Select a final country the goods are destined for that is outside the UK

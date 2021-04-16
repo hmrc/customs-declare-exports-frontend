@@ -18,29 +18,36 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.countries.Countries.DestinationCountryPage
 @import forms.declaration.countries.Country
-@import views.html.components.gds._
 @import models.requests.JourneyRequest
 @import services.Countries
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        govukFieldset: GovukFieldset,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    govukFieldset: GovukFieldset,
+    insetText: exportsInsetText,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
+
+@insetLink = {
+    <a class="govuk-link govuk-link--no-visited-state" target="_blank" href=@appConfig.govUkPageForTypeCO>
+        @messages("declaration.destinationCountry.inset.link")
+    </a>
+}
 
 @govukLayout(
     title = Title("declaration.destinationCountry.title", "declaration.section.3"),
@@ -61,6 +68,8 @@
             AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
             isPageHeading = true
         )
+
+        @insetText(content = HtmlContent(messages("declaration.destinationCountry.inset.text", insetLink)))
 
         @tariffExpander(DestinationCountryPage, request.declarationType)(messages, appConfig)
         @saveButtons()
