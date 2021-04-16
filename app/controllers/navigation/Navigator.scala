@@ -28,7 +28,7 @@ import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
-import forms.declaration.officeOfExit.{OfficeOfExitInsideUK, OfficeOfExitOutsideUK}
+import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.removals.RemoveItem
 import forms.{Choice, DeclarationPage}
 import javax.inject.Inject
@@ -132,10 +132,10 @@ object Navigator {
     case DeclarationSummaryHolder     => routes.ConsigneeDetailsController.displayPage
     case ConsignorEoriNumber          => routes.IsExsController.displayPage
     case ConsignorDetails             => routes.ConsignorEoriNumberController.displayPage
-    case OfficeOfExitInsideUK         => routes.LocationController.displayPage
-    case OfficeOfExitOutsideUK        => routes.OfficeOfExitController.displayPage
+    case OfficeOfExit                 => routes.LocationController.displayPage
     case DepartureTransport           => routes.SupervisingCustomsOfficeController.displayPage
     case TotalPackageQuantity         => routes.OfficeOfExitController.displayPage
+    case DocumentSummary              => routes.OfficeOfExitController.displayPage
     case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
@@ -156,8 +156,7 @@ object Navigator {
     case DestinationCountryPage      => routes.OriginationCountryController.displayPage
     case GoodsLocationForm           => routes.DestinationCountryController.displayPage
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
-    case OfficeOfExitInsideUK        => routes.LocationController.displayPage
-    case OfficeOfExitOutsideUK       => routes.OfficeOfExitController.displayPage
+    case OfficeOfExit                => routes.LocationController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DeclarationHolderRequired   => routes.AdditionalActorsSummaryController.displayPage
     case DeclarationSummaryHolder    => routes.AdditionalActorsSummaryController.displayPage
@@ -186,7 +185,6 @@ object Navigator {
     case TransportPayment            => routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => routes.TransportPaymentController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
-    case OfficeOfExitOutsideUK       => routes.OfficeOfExitController.displayPage
     case DestinationCountryPage      => routes.DeclarationHolderController.displayPage
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
@@ -197,6 +195,7 @@ object Navigator {
     case InlandModeOfTransportCode   => routes.SupervisingCustomsOfficeController.displayPage
     case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
     case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
+    case DocumentSummary             => routes.OfficeOfExitController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -218,7 +217,6 @@ object Navigator {
     case TransportPayment            => routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => routes.TransportPaymentController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
-    case OfficeOfExitOutsideUK       => routes.OfficeOfExitController.displayPage
     case DestinationCountryPage      => routes.DeclarationHolderController.displayPage
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
@@ -230,6 +228,7 @@ object Navigator {
     case InlandModeOfTransportCode   => routes.SupervisingCustomsOfficeController.displayPage
     case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
     case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
+    case DocumentSummary             => routes.OfficeOfExitController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
@@ -253,8 +252,7 @@ object Navigator {
     case DeclarantIsExporter                  => routes.DeclarantDetailsController.displayPage
     case RepresentativeEntity                 => routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => routes.RepresentativeEntityController.displayPage
-    case OfficeOfExitInsideUK                 => routes.LocationController.displayPage
-    case OfficeOfExitOutsideUK                => routes.OfficeOfExitController.displayPage
+    case OfficeOfExit                         => routes.LocationController.displayPage
     case AdditionalDeclarationTypeStandardDec => routes.DispatchLocationController.displayPage
     case NatureOfTransaction                  => routes.TotalPackageQuantityController.displayPage
     case ProcedureCodes                       => routes.ItemsSummaryController.displayItemsSummaryPage
@@ -263,6 +261,7 @@ object Navigator {
     case DocumentChangeOrRemove               => routes.PreviousDocumentsSummaryController.displayPage
     case TransportLeavingTheBorder            => routes.ItemsSummaryController.displayItemsSummaryPage
     case CarrierDetails                       => routes.CarrierEoriNumberController.displayPage
+    case TotalNumberOfItems                   => routes.OfficeOfExitController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -276,7 +275,6 @@ object Navigator {
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case TotalNumberOfItems        => totalNumberOfItemsPreviousPage
     case DeclarationHolderRequired => declarationHolderRequiredPreviousPage
     case DeclarationHolder         => declarationHolderPreviousPage
     case SupervisingCustomsOffice  => supervisingCustomsOfficePreviousPage
@@ -310,7 +308,6 @@ object Navigator {
   val simplifiedCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case CarrierEoriNumber   => carrierEoriNumberPreviousPage
     case Document            => previousDocumentsPreviousPage
-    case DocumentSummary     => previousDocumentsSummaryPreviousPage
     case ConsigneeDetails    => consigneeDetailsPreviousPage
     case RepresentativeAgent => representativeAgentPreviousPage
   }
@@ -320,7 +317,6 @@ object Navigator {
   val occasionalCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case CarrierEoriNumber   => carrierEoriNumberPreviousPage
     case Document            => previousDocumentsPreviousPage
-    case DocumentSummary     => previousDocumentsSummaryPreviousPage
     case ConsigneeDetails    => consigneeDetailsPreviousPage
     case RepresentativeAgent => representativeAgentPreviousPage
   }
@@ -334,7 +330,6 @@ object Navigator {
     case RepresentativeAgent => representativeAgentClearancePreviousPage
     case IsExs               => isExsClearancePreviousPage
     case Document            => previousDocumentsPreviousPage
-    case DocumentSummary     => previousDocumentsSummaryPreviousPage
   }
 
   val clearanceCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -395,14 +390,8 @@ object Navigator {
   private def previousDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.hasPreviousDocuments)
       routes.PreviousDocumentsSummaryController.displayPage(mode)
-    else if (cacheModel.locations.isOfficeOfExitInUk)
+    else
       routes.OfficeOfExitController.displayPage(mode)
-    else routes.OfficeOfExitOutsideUkController.displayPage(mode)
-
-  private def previousDocumentsSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.locations.isOfficeOfExitInUk)
-      routes.OfficeOfExitController.displayPage(mode)
-    else routes.OfficeOfExitOutsideUkController.displayPage(mode)
 
   private def exporterEoriNumberClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords)
@@ -458,12 +447,6 @@ object Navigator {
     else if (cacheModel.parties.exporterDetails.flatMap(_.details.eori).isDefined)
       routes.ExporterEoriNumberController.displayPage(mode)
     else routes.ExporterDetailsController.displayPage(mode)
-
-  private def totalNumberOfItemsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.locations.isOfficeOfExitInUk)
-      routes.OfficeOfExitController.displayPage(mode)
-    else
-      routes.OfficeOfExitOutsideUkController.displayPage(mode)
 
   private def declarationHolderRequiredPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.`type` == CLEARANCE) routes.ConsigneeDetailsController.displayPage(mode)

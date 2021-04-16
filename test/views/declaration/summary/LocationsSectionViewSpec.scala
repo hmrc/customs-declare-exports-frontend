@@ -18,7 +18,6 @@ package views.declaration.summary
 
 import base.Injector
 import forms.declaration.GoodsLocationForm
-import forms.declaration.officeOfExit.AllowedUKOfficeOfExitAnswers
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -26,7 +25,7 @@ import views.html.declaration.summary.locations_section
 
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
-  val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123", AllowedUKOfficeOfExitAnswers.yes))
+  val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123"))
 
   val section = instanceOf[locations_section]
 
@@ -69,38 +68,6 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       val view = section(Mode.Normal, aDeclarationAfter(data, withoutOfficeOfExit()))(messages, journeyRequest())
 
       view.getElementsByClass("location-officeOfExit-row") mustBe empty
-    }
-
-    "have answers when office of exit not answered" in {
-      val view =
-        section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some(AllowedUKOfficeOfExitAnswers.no))))(
-          messages,
-          journeyRequest()
-        )
-      val row = view.getElementsByClass("location-officeOfExit-row")
-
-      row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
-      row must haveSummaryValue("")
-
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.locations.officeOfExit.change")
-
-      row must haveSummaryActionsHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
-    }
-
-    "not have answers when office of exit not answered" in {
-      val view =
-        section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some(AllowedUKOfficeOfExitAnswers.no))))(
-          messages,
-          journeyRequest()
-        )
-
-      val row = view.getElementsByClass("location-officeOfExit-row")
-      row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
-      row must haveSummaryValue("")
-
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.locations.officeOfExit.change")
-
-      row must haveSummaryActionsHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
     }
   }
 }

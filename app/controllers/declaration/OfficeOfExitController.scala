@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
-import forms.declaration.officeOfExit.OfficeOfExitInsideUK.form
-import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit, OfficeOfExitInsideUK}
+import forms.declaration.officeOfExit.OfficeOfExit.form
+import forms.declaration.officeOfExit.OfficeOfExit
 
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
@@ -49,7 +49,7 @@ class OfficeOfExitController @Inject()(
     val frm = form().withSubmissionErrors()
     request.cacheModel.locations.officeOfExit match {
       case Some(data) =>
-        Ok(officeOfExitPage(mode, frm.fill(OfficeOfExitInsideUK(data))))
+        Ok(officeOfExitPage(mode, frm.fill(data)))
       case _ => Ok(officeOfExitPage(mode, frm))
     }
   }
@@ -58,33 +58,27 @@ class OfficeOfExitController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[OfficeOfExitInsideUK]) => {
+        (formWithErrors: Form[OfficeOfExit]) => {
           val formWithAdjustedErrors = formWithErrors
 
           Future.successful(BadRequest(officeOfExitPage(mode, formWithAdjustedErrors)))
         },
         form =>
           updateCache(form, request.cacheModel.locations.officeOfExit)
-            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType, form.isUkOfficeOfExit)))
+            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
       )
   }
 
-  private def nextPage(declarationType: DeclarationType, answer: String): Mode => Call =
-    if (answer == AllowedUKOfficeOfExitAnswers.no) {
-      controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage
-    } else {
-      declarationType match {
-        case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
-          controllers.declaration.routes.TotalNumberOfItemsController.displayPage
-        case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
-          controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage
-      }
+  private def nextPage(declarationType: DeclarationType): Mode => Call =
+    declarationType match {
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+        controllers.declaration.routes.TotalNumberOfItemsController.displayPage
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
+        controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage
     }
 
-  private def updateCache(formData: OfficeOfExitInsideUK, officeOfExit: Option[OfficeOfExit])(
+  private def updateCache(formData: OfficeOfExit, officeOfExit: Option[OfficeOfExit])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData, officeOfExit))))
-    )
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(formData))))
 }

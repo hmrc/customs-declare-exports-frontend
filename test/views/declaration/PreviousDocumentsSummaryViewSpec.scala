@@ -146,28 +146,13 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
     }
 
     onJourney(DeclarationType.CLEARANCE, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
-      "display 'Back' link to 'Office of Exit' page" when {
+      "display 'Back' link to 'Office of Exit' page" in {
 
-        "Office of exit has answer Yes" in {
+        val specificRequest = journeyRequest(aDeclaration(withType(request.declarationType), withOfficeOfExit("officeId")))
+        val backButton = createView()(specificRequest).getElementById("back-link")
 
-          val specificRequest = journeyRequest(aDeclaration(withType(request.declarationType), withOfficeOfExit("officeId", "Yes")))
-          val backButton = createView()(specificRequest).getElementById("back-link")
-
-          backButton must containMessage("site.back")
-          backButton must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
-        }
-      }
-
-      "display 'Back' link to 'Office of Exit Outside UK' page" when {
-
-        "Office of exit has answer No" in {
-
-          val specificRequest = journeyRequest(aDeclaration(withType(request.declarationType), withOfficeOfExit("", "No")))
-          val backButton = createView()(specificRequest).getElementById("back-link")
-
-          backButton must containMessage("site.back")
-          backButton must haveHref(controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage(Mode.Normal))
-        }
+        backButton must containMessage("site.back")
+        backButton must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
       }
     }
   }

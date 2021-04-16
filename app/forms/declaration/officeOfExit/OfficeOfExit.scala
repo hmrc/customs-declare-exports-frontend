@@ -15,29 +15,33 @@
  */
 
 package forms.declaration.officeOfExit
+import forms.DeclarationPage
+import models.viewmodels.TariffContentKey
+import models.DeclarationType.DeclarationType
+import play.api.data.{Form, Forms, Mapping}
+import play.api.data.Forms.text
 import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.{hasSpecificLength, isEmpty, nonEmpty}
 
-case class OfficeOfExit(officeId: Option[String], isUkOfficeOfExit: Option[String])
+case class OfficeOfExit(officeId: String)
 
-object OfficeOfExit {
+object OfficeOfExit extends DeclarationPage {
   implicit val format = Json.format[OfficeOfExit]
 
-  def from(officeOfExitOutsideUK: OfficeOfExitOutsideUK): OfficeOfExit =
-    OfficeOfExit(Some(officeOfExitOutsideUK.officeId.toUpperCase), Some(AllowedUKOfficeOfExitAnswers.no))
+  private val officeId = "officeId"
 
-  def from(officeOfExitInsideUK: OfficeOfExitInsideUK, existingValue: Option[OfficeOfExit]): OfficeOfExit =
-    officeOfExitInsideUK.isUkOfficeOfExit match {
-      case AllowedUKOfficeOfExitAnswers.yes => OfficeOfExit(officeOfExitInsideUK.officeId, Some(officeOfExitInsideUK.isUkOfficeOfExit))
-      case AllowedUKOfficeOfExitAnswers.no =>
-        existingValue.flatMap(_.isUkOfficeOfExit) match {
-          case Some(AllowedUKOfficeOfExitAnswers.no) => OfficeOfExit(existingValue.flatMap(_.officeId), Some(AllowedUKOfficeOfExitAnswers.no))
-          case _                                     => OfficeOfExit(None, Some(AllowedUKOfficeOfExitAnswers.no))
-        }
-    }
-}
-object AllowedUKOfficeOfExitAnswers {
-  val yes = "Yes"
-  val no = "No"
+  val formId = "OfficeOfExit"
 
-  val allowedCodes = Seq(yes, no)
+  val mapping: Mapping[OfficeOfExit] = Forms.mapping(
+    officeId -> text()
+      .verifying("declaration.officeOfExit.empty", nonEmpty)
+      .verifying("declaration.officeOfExit.length", isEmpty or hasSpecificLength(8))
+      .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric)
+  )(OfficeOfExit.apply)(OfficeOfExit.unapply)
+
+  def form(): Form[OfficeOfExit] = Form(OfficeOfExit.mapping)
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"tariff.declaration.officeOfExit.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
