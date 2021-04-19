@@ -40,12 +40,12 @@ object CancelDeclaration {
     functionalReferenceIdKey -> Lrn.mapping("cancellation.functionalReferenceId"),
     mrnKey -> text()
       .verifying("cancellation.mrn.error.empty", nonEmpty)
-      .verifying("cancellation.mrn.error.length", hasSpecificLength(mrnLength))
-      .verifying("cancellation.mrn.error.wrongFormat", isAlphanumeric),
+      .verifying("cancellation.mrn.error.length", isEmpty or hasSpecificLength(mrnLength))
+      .verifying("cancellation.mrn.error.wrongFormat", isEmpty or isAlphanumeric),
     statementDescriptionKey -> text()
       .verifying("cancellation.statementDescription.error.empty", nonEmpty)
-      .verifying("cancellation.statementDescription.error.length", noLongerThan(statementDescriptionMaxLength))
-      .verifying("cancellation.statementDescription.error.invalid", isAlphanumericWithAllowedSpecialCharacters),
+      .verifying("cancellation.statementDescription.error.length", isEmpty or noLongerThan(statementDescriptionMaxLength))
+      .verifying("cancellation.statementDescription.error.invalid", isEmpty or isAlphanumericWithAllowedSpecialCharacters),
     changeReasonKey ->
       requiredRadio("cancellation.changeReason.error.wrongValue")
         .verifying(

@@ -62,7 +62,7 @@ class CancelDeclarationSpec extends WordSpec with MustMatchers {
         val form = CancelDeclaration.form.bind(formData(mrn = ""))
 
         form.hasErrors must be(true)
-        form.errors.length must equal(2)
+        form.errors.length must equal(1)
         form.errors.head.message must equal("cancellation.mrn.error.empty")
       }
 
