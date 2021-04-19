@@ -48,26 +48,6 @@
                 )
             ))
         )),
-        declarationData.dispatchLocation.map(dispatchLocation =>
-            SummaryListRow(
-                classes = "location-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.references.location"))
-                ),
-                value = Value(
-                    content = Text(if(dispatchLocation.isOutsideEU) messages("declaration.summary.references.dispatchlocation.outsideEu") else messages("site.no"))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionItem(
-                            href = controllers.declaration.routes.DispatchLocationController.displayPage(mode).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.references.location.change"))
-                        )
-                    )
-                ))
-            )
-        ),
         declarationData.additionalDeclarationType.map(decType =>
             SummaryListRow(
                 classes = "additionalType-row",
