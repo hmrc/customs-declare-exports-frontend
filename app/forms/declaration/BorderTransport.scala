@@ -26,7 +26,7 @@ import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.Countries.allCountries
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
-import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
+import utils.validators.forms.FieldValidator._
 
 case class BorderTransport(
   meansOfTransportCrossingTheBorderNationality: Option[String],
@@ -38,17 +38,18 @@ object BorderTransport extends DeclarationPage {
 
   implicit val formats: OFormat[BorderTransport] = Json.format[BorderTransport]
 
-  def transportReferenceMapping(id: String, transportType: String) = s"borderTransportReference_$id" -> mandatoryIfEqual(
-    "borderTransportType",
-    transportType,
-    text()
-      .verifying("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty", nonEmpty)
-      .verifying("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.length", noLongerThan(35))
-      .verifying(
-        "declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid",
-        isAlphanumericWithAllowedSpecialCharacters
-      )
-  )
+  def transportReferenceMapping(id: String, transportType: String): (String, Mapping[Option[String]]) =
+    s"borderTransportReference_$id" -> mandatoryIfEqual(
+      "borderTransportType",
+      transportType,
+      text()
+        .verifying("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty", nonEmpty)
+        .verifying("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.length", isEmpty or noLongerThan(35))
+        .verifying(
+          "declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid",
+          isAlphanumericWithAllowedSpecialCharacters
+        )
+    )
 
   val formMapping: Mapping[BorderTransport] = mapping(
     "borderTransportNationality" -> optional(

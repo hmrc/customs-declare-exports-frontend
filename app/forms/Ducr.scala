@@ -18,7 +18,7 @@ package forms
 
 import play.api.data.Forms.{mapping, text}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isValidDucr, nonEmpty}
+import utils.validators.forms.FieldValidator._
 
 case class Ducr(ducr: String)
 
@@ -32,6 +32,6 @@ object Ducr {
       "ducr" ->
         text()
           .verifying("error.ducr.empty", nonEmpty)
-          .verifying("error.ducr", isValidDucr)
+          .verifying("error.ducr", isEmpty or isValidDucr)
     )(form2Data)(Ducr.unapply)
 }

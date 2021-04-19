@@ -18,7 +18,7 @@ package forms
 
 import play.api.data.Forms._
 import play.api.libs.json.{Format, JsString, Reads, Writes}
-import utils.validators.forms.FieldValidator.{isAlphanumeric, noLongerThan}
+import utils.validators.forms.FieldValidator._
 
 case class Lrn(value: String) {
   def isEmpty: Boolean = value.isEmpty
@@ -34,7 +34,7 @@ object Lrn {
   def mapping(prefix: String) =
     text()
       .verifying(s"$prefix.error.empty", _.trim.nonEmpty)
-      .verifying(s"$prefix.error.length", noLongerThan(lrnMaxLength))
-      .verifying(s"$prefix.error.specialCharacter", isAlphanumeric)
+      .verifying(s"$prefix.error.length", isEmpty or noLongerThan(lrnMaxLength))
+      .verifying(s"$prefix.error.specialCharacter", isEmpty or isAlphanumeric)
       .transform[Lrn](Lrn.apply, _.value)
 }
