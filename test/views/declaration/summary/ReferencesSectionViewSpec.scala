@@ -50,17 +50,6 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
       row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
     }
 
-    "have dispatch location with change button" in {
-
-      val row = view.getElementsByClass("location-row")
-      row must haveSummaryKey(messages("declaration.summary.references.location"))
-      row must haveSummaryValue(messages("declaration.summary.references.dispatchlocation.outsideEu"))
-
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.location.change")
-
-      row must haveSummaryActionsHref(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Change))
-    }
-
     "have additional declaration type with change button" in {
 
       val row = view.getElementsByClass("additionalType-row")
