@@ -16,12 +16,14 @@
 
 package services.audit
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import com.google.inject.Inject
-import config.AppConfig
+import config.{AppConfig, SecureMessagingConfig}
 import forms.CancelDeclaration
 import models.ExportsDeclaration
-import play.api.Logger
-import play.api.libs.json.{JsObject, Json}
+import play.api.Logging
+import play.api.libs.json.{JsObject, JsValue, Json}
 import services.audit.AuditTypes.Audit
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
@@ -29,11 +31,9 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Suc
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
-import scala.concurrent.{ExecutionContext, Future}
-
-class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) {
-
-  private val logger = Logger(this.getClass)
+class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig, secureMessagingConfig: SecureMessagingConfig)(
+  implicit ec: ExecutionContext
+) extends Logging {
 
   def audit(audit: Audit, auditData: Map[String, String])(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val event = createAuditEvent(audit: Audit, auditData: Map[String, String])
@@ -69,33 +69,56 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
   }
 
-  private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier) =
+  def auditMessageInboxPartialRetrieved(eori: String)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+    val auditType = AuditTypes.NavigateToMessages.toString
+    val extendedEvent = ExtendedDataEvent(
+      auditSource = appConfig.appName,
+      auditType = auditType,
+      detail = detailsForMessageInboxPartialRetrieved(eori),
+      tags = tagsForMessageInboxPartialRetrieved
+    )
+
+    connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
+  }
+
+  private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier): Map[String, String] =
     AuditExtensions
       .auditHeaderCarrier(hc)
       .toAuditTags(transactionName = s"export-declaration-${transactionName.toLowerCase}", path = s"customs-declare-exports/${path}")
 
-  private def handleResponse(result: AuditResult, auditType: String) = result match {
+  private def handleResponse(result: AuditResult, auditType: String): AuditResult = result match {
     case Success =>
       logger.debug(s"Exports ${auditType} audit successful")
       Success
+
     case Failure(err, _) =>
       logger.warn(s"Exports ${auditType} Audit Error, message: $err")
       Failure(err)
+
     case Disabled =>
       logger.warn(s"Auditing Disabled")
       Disabled
   }
 
-  private def getAuditDetails(userInput: JsObject)(implicit hc: HeaderCarrier) = {
+  private def getAuditDetails(userInput: JsObject)(implicit hc: HeaderCarrier): JsObject = {
     val hcAuditDetails = Json.toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()).as[JsObject]
     hcAuditDetails.deepMerge(userInput)
   }
+
+  private def detailsForMessageInboxPartialRetrieved(eori: String): JsValue =
+    Json.obj("enrolment" -> "HMRC-CUS-ORG", "eoriNumber" -> eori, "tags" -> Json.obj("notificationType" -> "CDS-EXPORTS"))
+
+  private def tagsForMessageInboxPartialRetrieved(implicit hc: HeaderCarrier): Map[String, String] =
+    AuditExtensions
+      .auditHeaderCarrier(hc)
+      .toAuditTags(transactionName = "callExportPartial", path = secureMessagingConfig.fetchInbox)
 }
 
 object AuditTypes extends Enumeration {
   type Audit = Value
-  val Submission, SaveAndReturnSubmission, SubmissionPayload, Cancellation, SubmissionSuccess, SubmissionFailure = Value
+  val Submission, SaveAndReturnSubmission, SubmissionPayload, Cancellation, SubmissionSuccess, SubmissionFailure, NavigateToMessages = Value
 }
+
 object EventData extends Enumeration {
   type Data = Value
   val eori, lrn, mrn, ducr, decType, changeReason, changeDescription, fullName, jobRole, email, confirmed, submissionResult, Success, Failure = Value
