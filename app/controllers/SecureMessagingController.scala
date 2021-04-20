@@ -26,7 +26,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
-import services.audit.AuditService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.messaging.{inbox_wrapper, partial_wrapper}
 
@@ -35,7 +34,6 @@ class SecureMessagingController @Inject()(
   authenticate: AuthAction,
   verifiedEmail: VerifiedEmailAction,
   secureMessagingAction: SecureMessagingAction,
-  auditService: AuditService,
   secureMessagingFrontendConnector: SecureMessagingFrontendConnector,
   mcc: MessagesControllerComponents,
   inbox_wrapper: inbox_wrapper,
@@ -49,7 +47,6 @@ class SecureMessagingController @Inject()(
     secureMessagingFrontendConnector
       .retrieveInboxPartial(request.user.eori)
       .map { partial =>
-        auditService.auditMessageInboxPartialRetrieved(request.user.eori)
         Ok(inbox_wrapper(HtmlFormat.raw(partial.body)))
       }
   }

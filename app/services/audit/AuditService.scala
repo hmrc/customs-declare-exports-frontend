@@ -19,8 +19,9 @@ package services.audit
 import scala.concurrent.{ExecutionContext, Future}
 
 import com.google.inject.Inject
-import config.{AppConfig, SecureMessagingConfig}
+import config.AppConfig
 import forms.CancelDeclaration
+import models.AuthKey.enrolment
 import models.ExportsDeclaration
 import play.api.Logging
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -31,9 +32,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Suc
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
-class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig, secureMessagingConfig: SecureMessagingConfig)(
-  implicit ec: ExecutionContext
-) extends Logging {
+class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) extends Logging {
 
   def audit(audit: Audit, auditData: Map[String, String])(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val event = createAuditEvent(audit: Audit, auditData: Map[String, String])
@@ -69,13 +68,13 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig, se
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
   }
 
-  def auditMessageInboxPartialRetrieved(eori: String)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+  def auditMessageInboxPartialRetrieved(eori: String, notificationType: String, path: String)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val auditType = AuditTypes.NavigateToMessages.toString
     val extendedEvent = ExtendedDataEvent(
       auditSource = appConfig.appName,
       auditType = auditType,
-      detail = detailsForMessageInboxPartialRetrieved(eori),
-      tags = tagsForMessageInboxPartialRetrieved
+      detail = detailsForMessageInboxPartialRetrieved(eori, notificationType),
+      tags = tagsForMessageInboxPartialRetrieved(path)
     )
 
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
@@ -105,13 +104,11 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig, se
     hcAuditDetails.deepMerge(userInput)
   }
 
-  private def detailsForMessageInboxPartialRetrieved(eori: String): JsValue =
-    Json.obj("enrolment" -> "HMRC-CUS-ORG", "eoriNumber" -> eori, "tags" -> Json.obj("notificationType" -> "CDS-EXPORTS"))
+  private def detailsForMessageInboxPartialRetrieved(eori: String, notificationType: String): JsValue =
+    Json.obj("enrolment" -> enrolment, "eoriNumber" -> eori, "tags" -> Json.obj("notificationType" -> notificationType))
 
-  private def tagsForMessageInboxPartialRetrieved(implicit hc: HeaderCarrier): Map[String, String] =
-    AuditExtensions
-      .auditHeaderCarrier(hc)
-      .toAuditTags(transactionName = "callExportPartial", path = secureMessagingConfig.fetchInbox)
+  private def tagsForMessageInboxPartialRetrieved(path: String)(implicit hc: HeaderCarrier): Map[String, String] =
+    AuditExtensions.auditHeaderCarrier(hc).toAuditTags(transactionName = "callExportPartial", path = path)
 }
 
 object AuditTypes extends Enumeration {

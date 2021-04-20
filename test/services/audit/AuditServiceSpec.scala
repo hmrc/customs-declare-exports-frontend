@@ -21,6 +21,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import base.{ExportsTestData, Injector, TestHelper}
 import config.{AppConfig, SecureMessagingConfig}
+import models.AuthKey.enrolment
 import models.declaration.ExportDeclarationTestData.{allRecordsXmlMarshallingTest, cancellationDeclarationTest}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -67,7 +68,9 @@ class AuditServiceSpec extends AuditTestSupport with BeforeAndAfterEach with Mus
 
     "audit the successful retrieval of the message inbox partial" in {
       mockExtendedDataEvent
-      auditService.auditMessageInboxPartialRetrieved(ExportsTestData.eori)(hc)
+      auditService.auditMessageInboxPartialRetrieved(ExportsTestData.eori, secureMessagingConfig.notificationType, secureMessagingConfig.fetchInbox)(
+        hc
+      )
       verifyExtendedDataEvent(eventForMessageInboxPartialRetrieved)
     }
 
@@ -163,12 +166,16 @@ trait AuditTestSupport extends UnitSpec with ExportsDeclarationBuilder with Scal
     tags = AuditExtensions
       .auditHeaderCarrier(hc)
       .toAuditTags(transactionName = "callExportPartial", path = secureMessagingConfig.fetchInbox),
-    detail = Json.obj("enrolment" -> "HMRC-CUS-ORG", "eoriNumber" -> ExportsTestData.eori, "tags" -> Json.obj("notificationType" -> "CDS-EXPORTS"))
+    detail = Json.obj(
+      "enrolment" -> enrolment,
+      "eoriNumber" -> ExportsTestData.eori,
+      "tags" -> Json.obj("notificationType" -> secureMessagingConfig.notificationType)
+    )
   )
 
   val auditFailure = Failure("Event sending failed")
 
-  val auditService = new AuditService(auditConnector, appConfig, secureMessagingConfig)(global)
+  val auditService = new AuditService(auditConnector, appConfig)(global)
 
   def mockDataEvent(result: AuditResult = Success): OngoingStubbing[Future[AuditResult]] =
     when(auditConnector.sendEvent(any[DataEvent])(any[HeaderCarrier], any[ExecutionContext]))

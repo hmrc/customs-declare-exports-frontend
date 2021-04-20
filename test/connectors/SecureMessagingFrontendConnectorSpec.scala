@@ -19,13 +19,18 @@ package connectors
 import base.{ExportsTestData, Injector}
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{verify, _}
+import config.SecureMessagingConfig
+import models.AuthKey.enrolment
 import models.messaging._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.mvc.Http.Status.{BAD_GATEWAY, BAD_REQUEST, OK}
 import uk.gov.hmrc.http._
 
-class SecureMessagingFrontendConnectorSpec extends ConnectorSpec with Injector with ScalaFutures with IntegrationPatience {
+class SecureMessagingFrontendConnectorSpec extends ConnectorSpec with Injector with IntegrationPatience with ScalaFutures {
+
+  val secureMessagingConfig = app.injector.instanceOf[SecureMessagingConfig]
   val connector = app.injector.instanceOf[SecureMessagingFrontendConnector]
+
   val clientId = "clientId"
   val conversationId = "conversationId"
   val partialContent = "<div>Some Content</div>"
@@ -34,82 +39,75 @@ class SecureMessagingFrontendConnectorSpec extends ConnectorSpec with Injector w
   val submitReplyUrl = s"/secure-message-frontend/customs-declare-exports/conversation/$clientId/$conversationId"
   val resultUrl = s"/secure-message-frontend/customs-declare-exports/conversation/$clientId/$conversationId/result"
 
-  override protected def beforeAll(): Unit = {
-    super.beforeAll()
-    secureMessagingWireMockServer.start()
+  override def beforeAll(): Unit = {
+    super.beforeAll
+    auditingWireMockServer.start
+    secureMessagingWireMockServer.start
     WireMock.configureFor(wireHost, secureMessagingWirePort)
   }
 
-  override protected def afterAll(): Unit = {
-    secureMessagingWireMockServer.stop()
-    super.afterAll()
+  override def beforeEach(): Unit = {
+    super.beforeEach
+    auditingWireMockServer.resetRequests
+  }
+
+  override def afterAll(): Unit = {
+    auditingWireMockServer.stop
+    secureMessagingWireMockServer.stop
+    super.afterAll
   }
 
   private def constructQueryParams(eori: String): String =
-    s"?enrolment=HMRC-CUS-ORG%7EEoriNumber%7E${eori}&tag=notificationType%7ECDS-EXPORTS"
+    s"?enrolment=${enrolment}%7EEoriNumber%7E${eori}&tag=notificationType%7E${secureMessagingConfig.notificationType}"
 
   "SecureMessageFrontend" when {
     "retrieveInboxPartial is called" which {
+
+      val url = s"${inboxUrl}${constructQueryParams(ExportsTestData.eori)}"
+
       "receives a 200 response" should {
         "return a populated InboxPartial" in {
-          stubForSecureMessaging(
-            get(s"${inboxUrl}${constructQueryParams(ExportsTestData.eori)}")
-              .willReturn(
-                aResponse()
-                  .withStatus(OK)
-                  .withBody(partialContent)
-              )
-          )
+          val response = aResponse.withStatus(OK).withBody(partialContent)
+          stubForSecureMessaging(get(url).willReturn(response))
 
           val result = connector.retrieveInboxPartial(ExportsTestData.eori).futureValue
           result mustBe InboxPartial(partialContent)
+
+          verifyForAuditing()
         }
       }
 
       "receives a non 200 response" should {
         "return a failed Future" in {
-          stubForSecureMessaging(
-            get(s"${inboxUrl}${constructQueryParams(ExportsTestData.eori)}")
-              .willReturn(
-                aResponse()
-                  .withStatus(BAD_REQUEST)
-              )
-          )
+          val response = aResponse().withStatus(BAD_REQUEST)
+          stubForSecureMessaging(get(url).willReturn(response))
 
           val result = connector.retrieveInboxPartial(ExportsTestData.eori)
           assert(result.failed.futureValue.isInstanceOf[UpstreamErrorResponse])
+
+          verifyForAuditing(0)
         }
       }
 
       "is passed the user's eori number" should {
         "include the Enrolment tag as a query string parameter with the correct eori value" in {
-          val url = s"${inboxUrl}${constructQueryParams(ExportsTestData.eori)}"
-          stubForSecureMessaging(
-            get(url)
-              .willReturn(
-                aResponse()
-                  .withStatus(OK)
-                  .withBody(partialContent)
-              )
-          )
+          val response = aResponse().withStatus(OK).withBody(partialContent)
+          stubForSecureMessaging(get(url).willReturn(response))
+
           connector.retrieveInboxPartial(ExportsTestData.eori).futureValue
 
           verify(getRequestedFor(urlEqualTo(url)))
+          verifyForAuditing()
         }
 
         "include the ExportMessages tag as a query string parameter" in {
-          val url = s"${inboxUrl}${constructQueryParams(ExportsTestData.eori)}"
-          stubForSecureMessaging(
-            get(url)
-              .willReturn(
-                aResponse()
-                  .withStatus(OK)
-                  .withBody(partialContent)
-              )
-          )
+          val response = aResponse().withStatus(OK).withBody(partialContent)
+          stubForSecureMessaging(get(url).willReturn(response))
+
           connector.retrieveInboxPartial(ExportsTestData.eori).futureValue
 
           verify(getRequestedFor(urlEqualTo(url)))
+          verifyForAuditing()
         }
       }
     }

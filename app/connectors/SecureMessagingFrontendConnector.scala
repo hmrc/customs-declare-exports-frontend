@@ -23,15 +23,20 @@ import play.api.Logging
 import play.api.http.Status
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
-
 import scala.concurrent.{ExecutionContext, Future}
 
-class SecureMessagingFrontendConnector @Inject()(httpClient: HttpClient, config: SecureMessagingConfig)(implicit ec: ExecutionContext)
-    extends Logging with Status {
+import models.AuthKey.enrolment
+import services.audit.AuditService
+
+class SecureMessagingFrontendConnector @Inject()(httpClient: HttpClient, config: SecureMessagingConfig, auditService: AuditService)(
+  implicit ec: ExecutionContext
+) extends Logging with Status {
 
   def retrieveInboxPartial(eori: String)(implicit hc: HeaderCarrier): Future[InboxPartial] =
-    fetchPartial(config.fetchInboxEndpoint, "the user's inbox", constructInboxEndpointQueryParams(eori))
-      .map(response => InboxPartial(response.body))
+    fetchPartial(config.fetchInboxEndpoint, "the user's inbox", constructInboxEndpointQueryParams(eori)).map { response =>
+      auditService.auditMessageInboxPartialRetrieved(eori, config.notificationType, config.fetchInbox)
+      InboxPartial(response.body)
+    }
 
   def retrieveConversationPartial(client: String, conversationId: String)(implicit hc: HeaderCarrier): Future[ConversationPartial] =
     fetchPartial(config.fetchMessageEndpoint(client, conversationId), s"the '$client/$conversationId' conversation", conversationEndpointQueryParams)
@@ -81,8 +86,8 @@ class SecureMessagingFrontendConnector @Inject()(httpClient: HttpClient, config:
       }
 
   private def constructInboxEndpointQueryParams(eori: String): Seq[(String, String)] = {
-    val enrolmentParameter = ("enrolment", s"HMRC-CUS-ORG~EoriNumber~$eori")
-    val filterParameter = ("tag", s"notificationType~CDS-EXPORTS")
+    val enrolmentParameter = ("enrolment", s"${enrolment}~EoriNumber~$eori")
+    val filterParameter = ("tag", s"notificationType~${config.notificationType}")
 
     Seq(enrolmentParameter, filterParameter)
   }

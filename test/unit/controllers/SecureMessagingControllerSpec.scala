@@ -17,14 +17,13 @@
 package unit.controllers
 
 import scala.concurrent.Future
-
 import config.SecureMessagingConfig
 import connectors.SecureMessagingFrontendConnector
 import controllers.{routes, SecureMessagingController}
 import controllers.actions.SecureMessagingAction
 import models.messaging.{ConversationPartial, InboxPartial, ReplyResultPartial}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{never, reset, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
@@ -32,7 +31,6 @@ import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.Helpers._
 import unit.base.ControllerWithoutFormSpec
 import play.twirl.api.HtmlFormat
-import services.audit.AuditService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.messaging.{inbox_wrapper, partial_wrapper}
 
@@ -40,8 +38,6 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
 
   val secureMessagingConfig = mock[SecureMessagingConfig]
   val secureMessagingAction = new SecureMessagingAction(secureMessagingConfig)
-
-  val auditService = mock[AuditService]
 
   val secureMessagingFrontendConnector = mock[SecureMessagingFrontendConnector]
 
@@ -53,7 +49,6 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
       mockAuthAction,
       mockVerifiedEmailAction,
       secureMessagingAction,
-      auditService,
       secureMessagingFrontendConnector,
       stubMessagesControllerComponents(),
       inboxWrapperPage,
@@ -65,7 +60,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
 
     authorizedUser()
 
-    reset(auditService, inboxWrapperPage, partialWrapperPage, secureMessagingFrontendConnector)
+    reset(inboxWrapperPage, partialWrapperPage, secureMessagingFrontendConnector)
 
     when(inboxWrapperPage.apply(any[HtmlFormat.Appendable])(any[Request[_]], any[Messages])).thenReturn(HtmlFormat.empty)
     when(partialWrapperPage.apply(any[HtmlFormat.Appendable], any[String], any[String], any[Option[Call]])(any[Request[_]], any[Messages]))
@@ -98,7 +93,6 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
 
         status(result) mustBe OK
         verify(inboxWrapperPage).apply(any[HtmlFormat.Appendable])(any(), any())
-        verify(auditService).auditMessageInboxPartialRetrieved(any[String])(any[HeaderCarrier])
       }
 
       "throw an exception" when {
@@ -109,8 +103,6 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
           an[Exception] mustBe thrownBy {
             await(controller.displayInbox()(getRequest()))
           }
-
-          verify(auditService, never()).auditMessageInboxPartialRetrieved(any[String])(any[HeaderCarrier])
         }
       }
     }

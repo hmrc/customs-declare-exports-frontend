@@ -18,29 +18,39 @@ package connectors
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.MappingBuilder
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, postRequestedFor, urlEqualTo}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.BeforeAndAfterAll
+import play.api.http.Status._
 import unit.base.UnitSpec
 
 trait WiremockTestServer extends UnitSpec with BeforeAndAfterAll {
 
   val wireHost = "localhost"
 
-  val exportsWirePort = 20001
-  val exportsWireMockServer = new WireMockServer(exportsWirePort)
+  val auditingPort = 20001
+  val auditingWireMockServer = new WireMockServer(auditingPort)
 
   val disWirePort = 20002
   val disWireMockServer = new WireMockServer(disWirePort)
 
-  val secureMessagingWirePort = 20003
+  val exportsWirePort = 20003
+  val exportsWireMockServer = new WireMockServer(exportsWirePort)
+
+  val secureMessagingWirePort = 20004
   val secureMessagingWireMockServer = new WireMockServer(secureMessagingWirePort)
+
+  protected def stubForAuditing(): StubMapping = {
+    val url = "/write/audit"
+    auditingWireMockServer.stubFor(post(url).willReturn(aResponse.withStatus(NO_CONTENT)))
+  }
 
   protected def stubForExports(mappingBuilder: MappingBuilder): StubMapping =
     exportsWireMockServer.stubFor(mappingBuilder)
 
-  protected def stubForDis(mappingBuilder: MappingBuilder): StubMapping =
-    disWireMockServer.stubFor(mappingBuilder)
-
   protected def stubForSecureMessaging(mappingBuilder: MappingBuilder): StubMapping =
     secureMessagingWireMockServer.stubFor(mappingBuilder)
+
+  protected def verifyForAuditing(count: Int = 1): Unit =
+    auditingWireMockServer.verify(count, postRequestedFor(urlEqualTo("/write/audit")))
 }
