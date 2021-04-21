@@ -25,6 +25,8 @@ class SecureMessagingConfig @Inject()(servicesConfig: ServicesConfig, secureMess
 
   lazy val isSecureMessagingEnabled: Boolean = secureMessagingInboxConfig.isExportsSecureMessagingEnabled
 
+  val notificationType = "CDS-EXPORTS"
+
   val baseUrl = servicesConfig.baseUrl("secure-messaging")
 
   val fetchInbox: String = servicesConfig.getString("microservice.services.secure-messaging.fetch-inbox")

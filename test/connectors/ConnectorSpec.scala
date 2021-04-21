@@ -30,6 +30,9 @@ import scala.concurrent.ExecutionContext
 class ConnectorSpec extends WordSpec with GuiceOneAppPerSuite with WiremockTestServer with MockitoSugar with BeforeAndAfterEach {
 
   def overrideConfig: Map[String, Any] = Map(
+    "auditing.enabled" -> true,
+    "auditing.consumer.baseUri.host" -> wireHost,
+    "auditing.consumer.baseUri.port" -> auditingPort,
     "microservice.services.customs-declare-exports.host" -> wireHost,
     "microservice.services.customs-declare-exports.port" -> exportsWirePort,
     "microservice.services.customs-declarations-information.host" -> wireHost,

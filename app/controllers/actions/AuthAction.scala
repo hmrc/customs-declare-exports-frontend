@@ -16,21 +16,23 @@
 
 package controllers.actions
 
+import javax.inject.Provider
+
+import scala.concurrent.{ExecutionContext, Future}
+
 import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
 import com.kenshoo.play.metrics.Metrics
 import controllers.routes
-import javax.inject.Provider
+import models.AuthKey.{enrolment, identifierKey}
 import models.requests.AuthenticatedRequest
 import models.{IdentityData, SignedInUser}
-import play.api.{Configuration, Logger}
 import play.api.mvc._
+import play.api.{Configuration, Logger}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{agentCode, _}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
-
-import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionImpl @Inject()(
   override val authConnector: AuthConnector,
@@ -55,7 +57,7 @@ class AuthActionImpl @Inject()(
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     val authorisation = authTimer.time()
-    authorised(Enrolment("HMRC-CUS-ORG"))
+    authorised(Enrolment(enrolment))
       .retrieve(authData) {
         case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments ~ agentCode ~
               confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
@@ -100,7 +102,7 @@ class AuthActionImpl @Inject()(
   }
 
   private def getEoriFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
-    enrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber"))
+    enrolments.getEnrolment(enrolment).flatMap(_.getIdentifier(identifierKey))
 
   private def validateEnrollments(eori: Option[EnrolmentIdentifier], externalId: Option[String]): Unit = {
     if (eori.isEmpty) {

@@ -21,6 +21,7 @@ import java.net.URLEncoder
 import base.Injector
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
+import models.AuthKey.enrolment
 import org.scalatest.OptionValues
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -70,16 +71,18 @@ class ErrorHandlerSpec extends UnitSpec with Stubs with OptionValues with Inject
 
       val error = new NoActiveSession("A user is not logged in") {}
       val result = Future.successful(errorHandler.resolveError(request, error))
+
+      status(result) mustBe Status.SEE_OTHER
+
       val expectedLocation =
         s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode("http://localhost:6791/customs-declare-exports/start")}"
 
-      status(result) mustBe Status.SEE_OTHER
       redirectLocation(result) mustBe Some(expectedLocation)
     }
 
     "handle insufficient enrolments authorisation exception" in {
 
-      val error = InsufficientEnrolments("HMRC-CUS-ORG")
+      val error = InsufficientEnrolments(enrolment)
       val result = Future.successful(errorHandler.resolveError(request, error))
 
       status(result) mustBe Status.SEE_OTHER

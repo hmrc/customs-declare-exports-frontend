@@ -19,6 +19,7 @@ package controllers
 import java.net.URLEncoder.encode
 
 import scala.concurrent.ExecutionContext
+
 import connectors.SecureMessagingFrontendConnector
 import controllers.actions.{AuthAction, SecureMessagingAction, VerifiedEmailAction}
 import javax.inject.{Inject, Singleton}

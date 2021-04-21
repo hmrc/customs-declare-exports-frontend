@@ -19,6 +19,7 @@ package base
 import forms.Choice
 import forms.Choice._
 import forms.Choice.AllowedChoiceValues._
+import models.AuthKey.{enrolment, identifierKey}
 import models.{IdentityData, SignedInUser}
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
@@ -54,7 +55,7 @@ object ExportsTestData extends ExportsDeclarationBuilder {
   def newUser(eori: String, externalId: String): SignedInUser =
     SignedInUser(
       eori,
-      Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))),
+      Enrolments(Set(Enrolment(enrolment).withIdentifier(identifierKey, eori))),
       IdentityData(
         Some("Int-ba17b467-90f3-42b6-9570-73be7b78eb2b"),
         Some(externalId),
