@@ -22,7 +22,6 @@ import java.util.UUID
 import forms.common.{Date, Eori}
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
-import forms.declaration.DispatchLocationSpec._
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.{DeclarationHolder, _}
@@ -59,7 +58,6 @@ object ExportDeclarationTestData {
   val correctDeclarantDetailsEORIOnly: DeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
 
   lazy val allRecords = declaration.copy(
-    dispatchLocation = Some(correctDispatchLocation),
     additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
     consignmentReferences = Some(correctConsignmentReferences),
     natureOfTransaction = Some(correctNatureOfTransaction),

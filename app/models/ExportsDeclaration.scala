@@ -34,7 +34,6 @@ case class ExportsDeclaration(
   updatedDateTime: Instant,
   sourceId: Option[String],
   `type`: DeclarationType,
-  dispatchLocation: Option[DispatchLocation] = None,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
   transport: Transport = Transport(),

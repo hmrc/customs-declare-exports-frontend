@@ -16,15 +16,14 @@
 
 package models.declaration.dectype
 
-import forms.declaration.DispatchLocation
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.ExportsDeclaration
 
-case class DeclarationTypeSupplementary(dispatchLocation: Option[DispatchLocation], additionalDeclarationType: Option[AdditionalDeclarationType])
+case class DeclarationTypeSupplementary(additionalDeclarationType: Option[AdditionalDeclarationType])
 
 object DeclarationTypeSupplementary {
   val id = "DeclarationType"
 
   def apply(cacheData: ExportsDeclaration): DeclarationTypeSupplementary =
-    DeclarationTypeSupplementary(dispatchLocation = cacheData.dispatchLocation, additionalDeclarationType = cacheData.additionalDeclarationType)
+    DeclarationTypeSupplementary(additionalDeclarationType = cacheData.additionalDeclarationType)
 }

@@ -27,7 +27,6 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
 
   val data = aDeclaration(
     withType(DeclarationType.STANDARD),
-    withDispatchLocation(),
     withAdditionalDeclarationType(AdditionalDeclarationType.STANDARD_FRONTIER),
     withConsignmentReferences(ducr = "DUCR", lrn = "LRN")
   )
@@ -91,11 +90,6 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
       val row = viewNoAnswers.getElementsByClass("declarationType-row")
       row must haveSummaryKey(messages("declaration.summary.references.type"))
       row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
-    }
-
-    "not have dispatch location" in {
-
-      viewNoAnswers.getElementsByClass("location-row") mustBe empty
     }
 
     "not have additional declaration type" in {
