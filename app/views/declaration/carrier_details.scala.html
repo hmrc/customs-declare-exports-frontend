@@ -19,10 +19,13 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.carrier.CarrierDetails
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
+
+@import scala.collection.immutable
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -30,6 +33,8 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
+    govukHint: govukHint,
+    link: link,
     group_address: group_address,
     exportsInputText: exportsInputText,
     pageTitle: pageTitle,
@@ -39,6 +44,10 @@
 )
 
 @(mode: Mode, form: Form[CarrierDetails])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hintLink = {
+  @link(text = messages("declaration.carrierAddress.hint.2.link"), call = Call("GET", appConfig.companyInformationRegister))
+}
 
 @govukLayout(
     title = Title("declaration.carrierAddress.title", "declaration.section.2"),
@@ -55,7 +64,11 @@
                 classes = gdsPageLabel,
                 isPageHeading = true
             )),
-            html = group_address(form, "declaration.address", "details.address")
+            html = HtmlFormat.fill(immutable.Seq(
+              govukHint(Hint(content = Text(messages("declaration.carrierAddress.hint.1")))),
+              govukHint(Hint(content = HtmlContent(messages("declaration.carrierAddress.hint.2", hintLink)))),
+              group_address(form, "declaration.address", "details.address")
+            ))
         ))
 
         @tariffExpander(CarrierDetails, request.declarationType)(messages, appConfig)

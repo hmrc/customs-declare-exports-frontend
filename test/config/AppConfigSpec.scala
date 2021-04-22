@@ -46,6 +46,7 @@ class AppConfigSpec extends UnitSpec {
         |urls.emailFrontendUrl="http://localhost:9898/manage-email-cds/service/customs-declare-exports"
         |urls.tradeTariff="https://www.gov.uk/trade-tariff"
         |urls.tariffCommodities="https://www.trade-tariff.service.gov.uk/commodities/"
+        |urls.companyInformationRegister="http://companyInformationRegister"
         |
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
@@ -149,6 +150,10 @@ class AppConfigSpec extends UnitSpec {
 
     "have tariffCommodities URL" in {
       validAppConfig.tariffCommoditiesUrl must be("https://www.trade-tariff.service.gov.uk/commodities/")
+    }
+
+    "have companyInformationRegister URL" in {
+      validAppConfig.companyInformationRegister must be("http://companyInformationRegister")
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {

@@ -512,7 +512,10 @@ declaration.carrierEori.eori.label = Carrier’s EORI number
 declaration.carrierEori.eori.empty = Enter the carrier's EORI number
 declaration.carrierEori.hasEori.empty = Select yes if you know the EORI number of your carrier
 
-declaration.carrierAddress.title = What is the carrier’s name and business address?
+declaration.carrierAddress.title = What is the registered name and business address of the carrier?
+declaration.carrierAddress.hint.1 = The carrier is the operator of the ship, airline or Roll-on Roll-off (RORO) ferry or tunnel that carries the goods from the UK.
+declaration.carrierAddress.hint.2 = You can {0} for UK-registered companies, or look on the company website.
+declaration.carrierAddress.hint.2.link = look up the registered business address (opens in new tab)
 
 declaration.representative.agent.title = Are you completing this declaration on behalf of another agent?
 declaration.representative.agent.error = Select yes if you are completing this declaration on behalf of another agent
