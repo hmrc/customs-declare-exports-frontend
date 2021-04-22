@@ -57,6 +57,7 @@ class AppConfig @Inject()(
 
   lazy val govUkUrl = loadConfig("urls.govUk")
   lazy val tradeTariffUrl = loadConfig("urls.tradeTariff")
+  lazy val tariffCommoditiesUrl = loadConfig("urls.tariffCommodities")
   lazy val previousProcedureCodesUrl = loadConfig("urls.previousProcedureCodes")
   lazy val tradeTariffVol3ForCds2Url = loadConfig("urls.tradeTariffVol3ForCds2")
   lazy val commodityCodeHelpUrl = loadConfig("urls.commodityCodeHelp")
