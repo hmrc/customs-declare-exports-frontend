@@ -44,6 +44,8 @@ class AppConfigSpec extends UnitSpec {
         |urls.customsMovementsFrontend="http://url-to-movements-frontend/start"
         |urls.exitSurveyUrl="http://localhost:9514/feedback/customs-declare-exports-frontend"
         |urls.emailFrontendUrl="http://localhost:9898/manage-email-cds/service/customs-declare-exports"
+        |urls.tradeTariff="https://www.gov.uk/trade-tariff"
+        |urls.tariffCommodities="https://www.trade-tariff.service.gov.uk/commodities/"
         |
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
@@ -139,6 +141,14 @@ class AppConfigSpec extends UnitSpec {
 
     "have emailFrontendUrl URL" in {
       validAppConfig.emailFrontendUrl must be("http://localhost:9898/manage-email-cds/service/customs-declare-exports")
+    }
+
+    "have tradeTariff URL" in {
+      validAppConfig.tradeTariffUrl must be("https://www.gov.uk/trade-tariff")
+    }
+
+    "have tariffCommodities URL" in {
+      validAppConfig.tariffCommoditiesUrl must be("https://www.trade-tariff.service.gov.uk/commodities/")
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {

@@ -998,7 +998,7 @@ declaration.cusCode.error.length = CUS code must be exactly 8 characters
 declaration.cusCode.error.specialCharacters = CUS code must contain only letters and numbers
 
 declaration.taricAdditionalCodes.addfirst.header = Is there an additional code?
-declaration.taricAdditionalCodes.addfirst.label = Additional code
+declaration.taricAdditionalCodes.addfirst.label = TARIC additional code
 declaration.taricAdditionalCodes.addnext.header = What is the next additional code?
 declaration.taricAdditionalCodes.remove.header = Are you sure you want to remove this additional code?
 
@@ -1016,15 +1016,17 @@ declaration.taricAdditionalCodes.error.duplicate = Additional code already added
 declaration.taricAdditionalCodes.table.header = Additional code
 declaration.taricAdditionalCodes.remove.hint = Remove additional code {0}.
 
-declaration.nationalAdditionalCode.addfirst.header = Do these goods require a national additional code?
+declaration.nationalAdditionalCode.addfirst.header = Is there a national additional code?
 declaration.nationalAdditionalCode.addfirst.label = National additional code
 declaration.nationalAdditionalCode.addnext.header = What is the next national additional code?
 declaration.nationalAdditionalCode.remove.header = Are you sure you want to remove this national additional code?
 
 declaration.nationalAdditionalCode.header.singular = You have added 1 national additional code
 declaration.nationalAdditionalCode.header.plural = You have added {0} national additional codes
-declaration.nationalAdditionalCode.header.hint = This is a 4-digit code that should only be completed if a national additional code applies to the commodity code being declared for this item. It can be found in the {0} under the ‘Export measures and restrictions’ tab of your commodity code.
-declaration.nationalAdditionalCode.header.tradeTariff.link = UK Trade Tariff
+declaration.nationalAdditionalCode.header.hint.withCommodity = The {0} will list a national additional code if exemptions or reduced rates of taxes may be applicable. It will be a code of one letter (X or V) and 3 numbers or letters, shown in the 'Exports' tab under the heading ''Measure''.
+declaration.nationalAdditionalCode.header.hint.withCommodity.link = Tariff entry for {0}, the code you entered (opens in new tab)
+declaration.nationalAdditionalCode.header.hint.withoutCommodity = The {0} will list a national additional code if exemptions or reduced rates of taxes may be applicable. It will be a code of one letter (X or V) and 3 numbers or letters, shown in the 'Exports' tab under the heading ''Measure''.
+declaration.nationalAdditionalCode.header.hint.withoutCommodity.link = Tariff entry for your commodity (opens in new tab)
 declaration.nationalAdditionalCode.label = Do you need to add another national additional code?
 declaration.nationalAdditionalCode.answer.empty = Select yes if there is a national additional code
 declaration.nationalAdditionalCode.add.answer.empty = Select yes if you need to add another national additional code

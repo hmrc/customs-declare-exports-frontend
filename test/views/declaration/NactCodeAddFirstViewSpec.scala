@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import config.AppConfig
 import forms.declaration.NactCodeFirst
 import models.Mode
 import org.jsoup.nodes.Document
@@ -36,9 +37,10 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
   private val itemId = "item1"
   private val form: Form[NactCodeFirst] = NactCodeFirst.form()
   private val page = instanceOf[nact_code_add_first]
+  private val appConfig = instanceOf[AppConfig]
 
-  private def createView(form: Form[NactCodeFirst] = form): Document =
-    page(Mode.Normal, itemId, form)(journeyRequest(), messages)
+  private def createView(form: Form[NactCodeFirst] = form, maybeCombinedNomenclatureCode: Option[String] = None): Document =
+    page(Mode.Normal, itemId, form, maybeCombinedNomenclatureCode)(journeyRequest(), messages)
 
   "Nact Code Add First View" should {
     val view = createView()
@@ -53,6 +55,31 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
       backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
       )
+    }
+
+    "display the correct 'Tariff entry for' link" when {
+      "a commodity details has already been specified" in {
+        val commodityCode = "18062010"
+        val view = createView(maybeCombinedNomenclatureCode = Some(commodityCode))
+
+        val hintElement = view.getElementById("hasNact-hint")
+
+        val expectedLink = messages("declaration.nationalAdditionalCode.header.hint.withCommodity.link", commodityCode)
+        hintElement must containMessage("declaration.nationalAdditionalCode.header.hint.withCommodity", expectedLink)
+
+        val tariffLink = hintElement.getElementsByTag("a").first()
+        tariffLink.attr("href") mustBe s"${appConfig.tariffCommoditiesUrl}${commodityCode}00#export"
+      }
+
+      "a commodity details has not already been specified" in {
+        val hintElement = view.getElementById("hasNact-hint")
+
+        val expectedLink = messages("declaration.nationalAdditionalCode.header.hint.withoutCommodity.link")
+        hintElement must containMessage("declaration.nationalAdditionalCode.header.hint.withoutCommodity", expectedLink)
+
+        val tariffLink = hintElement.getElementsByTag("a").first()
+        tariffLink.attr("href") mustBe appConfig.tradeTariffUrl
+      }
     }
 
     "display 'Save and continue' button on page" in {

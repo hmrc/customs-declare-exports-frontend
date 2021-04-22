@@ -45,9 +45,21 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[NactCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[NactCodeFirst], maybeCombinedNomenclatureCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.tradeTariff.link")</a>}
+@hintContent = @{maybeCombinedNomenclatureCode.map { combinedNomenclatureCode =>
+    val tariffCommoditiesUrl = s"${appConfig.tariffCommoditiesUrl}${combinedNomenclatureCode}00#export"
+
+    HtmlContent(messages(
+        "declaration.nationalAdditionalCode.header.hint.withCommodity",
+        <a target="_blank" class="govuk-link" href={tariffCommoditiesUrl}>{messages("declaration.nationalAdditionalCode.header.hint.withCommodity.link", combinedNomenclatureCode)}</a>
+    ))
+}.getOrElse{
+    HtmlContent(messages(
+        "declaration.nationalAdditionalCode.header.hint.withoutCommodity",
+        <a target="_blank" class="govuk-link" href={appConfig.tradeTariffUrl}>{messages("declaration.nationalAdditionalCode.header.hint.withoutCommodity.link")}</a>
+    ))
+}}
 
 @govukLayout(
     title = Title("declaration.nationalAdditionalCode.addfirst.header", "declaration.section.5"),
@@ -66,7 +78,7 @@
                     classes = gdsPageLegend
                 ))
             )),
-            hint = Some(Hint(content = HtmlContent(messages("declaration.nationalAdditionalCode.header.hint", tradeTariffLink)))),
+            hint = Some(Hint(content = hintContent)),
             items = Seq(
                 RadioItem(
                     id = Some("code_yes"),

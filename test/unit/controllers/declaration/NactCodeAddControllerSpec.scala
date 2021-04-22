@@ -51,7 +51,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockAddFirstPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAddFirstPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -74,13 +74,13 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
   def theNactCodeFirst: Form[NactCodeFirst] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[NactCodeFirst]])
-    verify(mockAddFirstPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockAddFirstPage).apply(any(), any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   private def verifyAddPageInvoked(numberOfTimes: Int = 1) = verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
   private def verifyAddPageFirstInvoked(numberOfTimes: Int = 1) =
-    verify(mockAddFirstPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockAddFirstPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val item = anItem()
 
