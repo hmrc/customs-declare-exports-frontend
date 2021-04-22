@@ -14,40 +14,52 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes._
-@import controllers.navigation.Navigator
+@import controllers.navigation.{ItemId, Navigator}
+@import forms.common.YesNoAnswer.YesNoAnswers
 @import forms.declaration.TaricCodeFirst
 @import forms.declaration.TaricCodeFirst._
 @import forms.declaration.TaricCode._
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
 @import views.components.gds.Styles._
-@import views.html.components.gds._
-@import config.AppConfig
-@import forms.common.YesNoAnswer.YesNoAnswers
-@import controllers.navigation.ItemId
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        body: paragraphBody,
-        pageTitle: pageTitle,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        appConfig: AppConfig,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    body: paragraphBody,
+    pageTitle: pageTitle,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[TaricCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, maybeCommodityCode: Option[String], form: Form[TaricCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.taricAdditionalCodes.header.tradeTariff.link")</a>}
+@tradeTariffLink = {
+    @maybeCommodityCode.fold {
+        <a href=@appConfig.tradeTariffUrl
+           id="link-no-commodity-code" class="govuk-link govuk-link--no-visited-state" target="_blank">
+            @messages("declaration.taricAdditionalCodes.addfirst.altlink")
+        </a>
+    } { commodityCode =>
+        <a href=@appConfig.commodityCodeForTaricPageUrl.replace("NNNNNNNN", commodityCode)
+           id="link-for-commodity-code" class="govuk-link govuk-link--no-visited-state" target="_blank">
+            @messages("declaration.taricAdditionalCodes.addfirst.link", commodityCode)
+        </a>
+    }
+}
 
 @govukLayout(
     title = Title("declaration.taricAdditionalCodes.addfirst.header", "declaration.section.5"),
@@ -66,7 +78,7 @@
                     classes = gdsPageLegend
                 ))
             )),
-            hint = Some(Hint(content = HtmlContent(messages("declaration.taricAdditionalCodes.header.hint", tradeTariffLink)))),
+            hint = Some(Hint(content = HtmlContent(messages("declaration.taricAdditionalCodes.addfirst.hint", tradeTariffLink)))),
             items = Seq(
                 RadioItem(
                     id = Some("code_yes"),

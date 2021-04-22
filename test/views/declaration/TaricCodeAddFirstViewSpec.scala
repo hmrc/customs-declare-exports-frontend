@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import config.AppConfig
 import forms.declaration.TaricCodeFirst
 import models.Mode
 import org.jsoup.nodes.Document
@@ -37,8 +38,8 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
   private val form: Form[TaricCodeFirst] = TaricCodeFirst.form()
   private val page = instanceOf[taric_code_add_first]
 
-  private def createView(form: Form[TaricCodeFirst] = form): Document =
-    page(Mode.Normal, itemId, form)(journeyRequest(), messages)
+  private def createView(form: Form[TaricCodeFirst] = form, commodityCode: Option[String] = None): Document =
+    page(Mode.Normal, itemId, commodityCode, form)(journeyRequest(), messages)
 
   "Taric Code Add First View" should {
     val view = createView()
@@ -61,6 +62,31 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton must containMessage(saveAndReturnCaption)
+    }
+
+    "display the expected hint" when {
+
+      val appConfig = instanceOf[AppConfig]
+
+      "a commodity code has been entered" in {
+        val commodityCode = "46021910"
+        val hint = createView(commodityCode = Some(commodityCode)).getElementById("hasTaric-hint")
+
+        hint must containMessage(
+          "declaration.taricAdditionalCodes.addfirst.hint",
+          messages("declaration.taricAdditionalCodes.addfirst.link", commodityCode)
+        )
+
+        hint.child(0) must haveHref(appConfig.commodityCodeForTaricPageUrl.replace("NNNNNNNN", commodityCode))
+      }
+
+      "a commodity code has not been entered" in {
+        val hint = createView().getElementById("hasTaric-hint")
+
+        hint must containMessage("declaration.taricAdditionalCodes.addfirst.hint", messages("declaration.taricAdditionalCodes.addfirst.altlink"))
+
+        hint.child(0) must haveHref(appConfig.tradeTariffUrl)
+      }
     }
   }
 

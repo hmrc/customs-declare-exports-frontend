@@ -35,12 +35,13 @@ object TaricCodeFirst extends DeclarationPage {
   implicit val format = Json.format[TaricCodeFirst]
 
   val hasTaricCodeKey = "hasTaric"
+  val none = TaricCodeFirst(None)
 
   private def form2Model: (String, Option[String]) => TaricCodeFirst = {
     case (hasNactCode, code) =>
       hasNactCode match {
         case YesNoAnswers.yes => TaricCodeFirst(code)
-        case YesNoAnswers.no  => TaricCodeFirst(None)
+        case YesNoAnswers.no  => none
       }
   }
 
