@@ -48,6 +48,7 @@ class AppConfig @Inject()(
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
 
   lazy val customsDeclarationsGoodsTakenOutOfEuUrl = loadConfig("urls.customsDeclarationsGoodsTakenOutOfEu")
+  lazy val commodityCodeForTaricPageUrl = loadConfig("urls.commodityCodeForTaricPage")
   lazy val commodityCodesUrl = loadConfig("urls.commodityCodes")
   lazy val nactCodesUrl = loadConfig("urls.nactCodes")
   lazy val relevantLicensesUrl = loadConfig("urls.relevantLicenses")

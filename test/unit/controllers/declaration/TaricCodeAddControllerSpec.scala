@@ -51,7 +51,7 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockAddFirstPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAddFirstPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -74,13 +74,15 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
   def theTaricCodeFirst: Form[TaricCodeFirst] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[TaricCodeFirst]])
-    verify(mockAddFirstPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockAddFirstPage).apply(any(), any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
-  private def verifyAddPageInvoked(numberOfTimes: Int = 1) = verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
-  private def verifyAddPageFirstInvoked(numberOfTimes: Int = 1) =
-    verify(mockAddFirstPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+  private def verifyAddPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+
+  private def verifyAddPageFirstInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(mockAddFirstPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val item = anItem()
 
@@ -112,7 +114,7 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
           verifyAddPageFirstInvoked()
           verifyAddPageInvoked(0)
 
-          theTaricCodeFirst.value mustBe Some(TaricCodeFirst(None))
+          theTaricCodeFirst.value mustBe Some(TaricCodeFirst.none)
         }
 
         "display page method is invoked and cache contains data" in {
