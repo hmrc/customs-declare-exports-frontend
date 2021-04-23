@@ -49,9 +49,6 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-
-      messages must haveTranslationFor("declaration.carrierAddress.hint.2")
-      messages must haveTranslationFor("declaration.carrierAddress.hint.2.link")
       messages must haveTranslationFor("declaration.carrierAddress.title")
       messages must haveTranslationFor("declaration.address.fullName")
       messages must haveTranslationFor("declaration.address.fullName.empty")
@@ -83,13 +80,6 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
 
       "display section header" in {
         view.getElementById("section-header").text() must include(messages("declaration.section.2"))
-      }
-
-      "display page hint" in {
-        val hints = view.getElementsByClass("govuk-hint")
-
-        hints.first() must containMessage("declaration.carrierAddress.hint.1")
-        hints.get(1).getElementsByClass("govuk-link").first() must haveHref("https://find-and-update.company-information.service.gov.uk")
       }
 
       "display empty input with label for Full name" in {
