@@ -17,26 +17,17 @@
 package services
 
 import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.Inspectors.forAll
 import services.DocumentType.allDocuments
 
 class DocumentTypeSpec extends WordSpec with MustMatchers {
 
   "Document Type" should {
 
-    "return document type in correct order" in {
-
-      val threeTypes =
-        allDocuments.filter(
-          d =>
-            d.description == "Master Unique Consignment Reference (MUCR) (Including any inventory reference where applicable)" || d.description == "Information Sheet INF3" || d.description == "Other"
-        )
-      val expectedResult =
-        List(
-          DocumentType("Information Sheet INF3", "IF3"),
-          DocumentType("Master Unique Consignment Reference (MUCR) (Including any inventory reference where applicable)", "MCR"),
-          DocumentType("Other", "ZZZ")
-        )
-      threeTypes must be(expectedResult)
+    "return document type in the expected order (no-order, as loaded)" in {
+      val ixs = List(0, 1, 2, 3, 4, 25, 26, 33, 34, allDocuments.size - 1)
+      val codes = List("235", "270", "271", "325", "337", "955", "CLE", "SDE", "CSE", "CPD")
+      forAll(ixs zip codes)(t => allDocuments(t._1).code mustBe t._2)
     }
 
     "return correct text for asText method" in {
