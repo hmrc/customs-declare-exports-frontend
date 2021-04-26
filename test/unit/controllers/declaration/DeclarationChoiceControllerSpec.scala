@@ -122,7 +122,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
         val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(correctChoiceJSON))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
+        redirectLocation(result) must be(Some(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage().url))
         session(result).get(ExportsSessionKeys.declarationId).value mustEqual newDeclaration.id
         val created = theCacheModelCreated
         created.id mustBe None

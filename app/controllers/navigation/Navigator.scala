@@ -247,13 +247,12 @@ object Navigator {
     case DeclarationChoice =>
       _ =>
         controllers.routes.ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
-    case DispatchLocation                     => routes.DeclarationChoiceController.displayPage
     case ConsignmentReferences                => routes.AdditionalDeclarationTypeController.displayPage
     case DeclarantIsExporter                  => routes.DeclarantDetailsController.displayPage
     case RepresentativeEntity                 => routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => routes.RepresentativeEntityController.displayPage
     case OfficeOfExit                         => routes.LocationController.displayPage
-    case AdditionalDeclarationTypeStandardDec => routes.DispatchLocationController.displayPage
+    case AdditionalDeclarationTypeStandardDec => routes.DeclarationChoiceController.displayPage
     case NatureOfTransaction                  => routes.TotalPackageQuantityController.displayPage
     case ProcedureCodes                       => routes.ItemsSummaryController.displayItemsSummaryPage
     case ExportItem                           => routes.PreviousDocumentsSummaryController.displayPage

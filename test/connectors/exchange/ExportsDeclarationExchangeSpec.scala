@@ -36,7 +36,6 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
   private val `type` = DeclarationType.STANDARD
   private val createdDate = Instant.MIN
   private val updatedDate = Instant.MAX
-  private val dispatchLocation = mock[DispatchLocation]
   private val additionalDeclarationType = mock[AdditionalDeclarationType]
 
   private val consignmentReferences = ConsignmentReferences(Ducr(""), Lrn(""))
@@ -57,7 +56,6 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     updatedDateTime = updatedDate,
     sourceId = Some(sourceId),
     `type` = `type`,
-    dispatchLocation = Some(dispatchLocation),
     additionalDeclarationType = Some(additionalDeclarationType),
     consignmentReferences = Some(consignmentReferences),
     transport = transport,
@@ -76,7 +74,6 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     updatedDateTime = updatedDate,
     sourceId = Some(sourceId),
     `type` = `type`,
-    dispatchLocation = Some(dispatchLocation),
     additionalDeclarationType = Some(additionalDeclarationType),
     consignmentReferences = Some(consignmentReferences),
     transport = transport,
@@ -121,9 +118,6 @@ object ExportsDeclarationExchangeSpec {
       |  "createdDateTime": "2019-12-10T15:52:32.681Z",
       |  "updatedDateTime": "2019-12-10T15:53:13.697Z",
       |  "type": "STANDARD",
-      |  "dispatchLocation": {
-      |    "dispatchLocation": "EX"
-      |  },
       |  "additionalDeclarationType": "D",
       |  "consignmentReferences": {
       |    "ducr": {

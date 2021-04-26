@@ -16,20 +16,16 @@
 
 package models.declaration.dectype
 
-import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
-import forms.declaration.DispatchLocationSpec._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes.Simplified
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 object DeclarationTypeSupplementarySpec {
   val correctDeclarationType =
-    DeclarationTypeSupplementary(Some(correctDispatchLocation), Some(correctAdditionalDeclarationTypeSupplementaryDec))
+    DeclarationTypeSupplementary(Some(correctAdditionalDeclarationTypeSupplementaryDec))
   val emptyDeclarationType =
-    DeclarationTypeSupplementary(Some(correctDispatchLocation), Some(correctAdditionalDeclarationTypeSupplementaryDec))
+    DeclarationTypeSupplementary(Some(correctAdditionalDeclarationTypeSupplementaryDec))
 
-  val correctDeclarationTypeJSON: JsValue = JsObject(
-    Map("dispatchLocation" -> JsString(OutsideEU), "additionalDeclarationType" -> JsString(Simplified))
-  )
-  val emptyDeclarationTypeJSON: JsValue = JsObject(Map("dispatchLocation" -> JsString(""), "additionalDeclarationType" -> JsString("")))
+  val correctDeclarationTypeJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString(Simplified)))
+  val emptyDeclarationTypeJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString("")))
 }

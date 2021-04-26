@@ -20,7 +20,6 @@ import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import java.util.UUID
 
 import forms.common.{Address, Eori, YesNoAnswer}
-import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.declaration.{DeclarationHolder, _}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
@@ -99,9 +98,6 @@ trait ExportsDeclarationBuilder {
 
   def withAdditionalDeclarationType(decType: AdditionalDeclarationType = AdditionalDeclarationType.STANDARD_FRONTIER): ExportsDeclarationModifier =
     _.copy(additionalDeclarationType = Some(decType))
-
-  def withDispatchLocation(location: String = OutsideEU): ExportsDeclarationModifier =
-    _.copy(dispatchLocation = Some(DispatchLocation(location)))
 
   def withGoodsLocation(goodsLocationForm: GoodsLocationForm): ExportsDeclarationModifier = { model =>
     model.copy(locations = model.locations.copy(goodsLocation = Some(goodsLocationForm.toModel())))

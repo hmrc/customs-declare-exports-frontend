@@ -27,7 +27,6 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
 
   val data = aDeclaration(
     withType(DeclarationType.STANDARD),
-    withDispatchLocation(),
     withAdditionalDeclarationType(AdditionalDeclarationType.STANDARD_FRONTIER),
     withConsignmentReferences(ducr = "DUCR", lrn = "LRN")
   )
@@ -48,17 +47,6 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
       row must haveSummaryActionsTexts("site.change", "declaration.summary.references.type.change")
 
       row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
-    }
-
-    "have dispatch location with change button" in {
-
-      val row = view.getElementsByClass("location-row")
-      row must haveSummaryKey(messages("declaration.summary.references.location"))
-      row must haveSummaryValue(messages("declaration.summary.references.dispatchlocation.outsideEu"))
-
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.location.change")
-
-      row must haveSummaryActionsHref(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Change))
     }
 
     "have additional declaration type with change button" in {
@@ -102,11 +90,6 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
       val row = viewNoAnswers.getElementsByClass("declarationType-row")
       row must haveSummaryKey(messages("declaration.summary.references.type"))
       row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
-    }
-
-    "not have dispatch location" in {
-
-      viewNoAnswers.getElementsByClass("location-row") mustBe empty
     }
 
     "not have additional declaration type" in {
