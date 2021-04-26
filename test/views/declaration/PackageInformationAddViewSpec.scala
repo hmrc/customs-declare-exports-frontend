@@ -22,6 +22,7 @@ import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.scalatest.Inspectors.forAll
 import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -60,6 +61,18 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
         backLinkContainer.getElementById("back-link") must haveHref(
           controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
         )
+      }
+
+      "display the expected hint paragraphs" in {
+        val indexedListOfMessages = List(
+          "declaration.packageInformation.hint",
+          "declaration.packageInformation.typesOfPackages.hint.1",
+          "declaration.packageInformation.typesOfPackages.hint.2",
+          "declaration.packageInformation.shippingMarks.hint"
+        ).zipWithIndex
+
+        val hints = view.getElementsByClass("govuk-hint")
+        forAll(indexedListOfMessages)(t => hints.get(t._2) must containMessage(t._1))
       }
 
       "display 'Save and continue' button on page" in {

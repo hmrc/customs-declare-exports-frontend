@@ -27,14 +27,14 @@
 @import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[OfficeOfExit])(implicit request: JourneyRequest[_], messages: Messages)
@@ -52,10 +52,9 @@
             field = form("officeId"),
             label = "declaration.officeOfExit.title",
             labelClass = Some(gdsPageLabel),
-            section = None,
-            hintText = Some(messages("declaration.officeOfExit.hint")),
-            messages("declaration.officeOfExit.empty"),
-            AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all),
+            hintParagraphs = List(messages("declaration.officeOfExit.hint")),
+            emptySelectValue = messages("declaration.officeOfExit.empty"),
+            items = AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all),
             isPageHeading = true
         )
 

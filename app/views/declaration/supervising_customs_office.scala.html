@@ -25,12 +25,12 @@
 @import views.components.gds.Styles._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        errorSummary: errorSummary,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[SupervisingCustomsOffice])(implicit request: JourneyRequest[_], messages: Messages)
@@ -43,13 +43,13 @@
         @errorSummary(form.errors)
 
         @components.fields.field_accessible_autocomplete_with_header(
-            form("supervisingCustomsOffice"),
-            "declaration.warehouse.supervisingCustomsOffice.title",
-            Some(gdsPageLabel),
-            Some("declaration.section.6"),
-            Some(messages("declaration.warehouse.supervisingCustomsOffice.hint")),
-            messages("declaration.warehouse.supervisingCustomsOffice.label"),
-            AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all),
+            field = form("supervisingCustomsOffice"),
+            label = "declaration.warehouse.supervisingCustomsOffice.title",
+            labelClass = Some(gdsPageLabel),
+            section = Some("declaration.section.6"),
+            hintParagraphs = List(messages("declaration.warehouse.supervisingCustomsOffice.hint")),
+            emptySelectValue = messages("declaration.warehouse.supervisingCustomsOffice.label"),
+            items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all),
             isPageHeading = true
         )
 
