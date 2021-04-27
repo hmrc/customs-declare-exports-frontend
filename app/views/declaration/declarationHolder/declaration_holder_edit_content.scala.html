@@ -28,20 +28,20 @@
 @import scala.collection.immutable
 
 @this(
-        govukButton: GovukButton,
-        govukTable : GovukTable,
-        errorSummary: errorSummary,
-        formGroupWrapper: formGroupWrapper,
-        govukFieldset: govukFieldset,
-        sectionHeader: sectionHeader,
-        govukHint: govukHint,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        tariffExpander: tariffExpander,
-        addButton: addButton,
-        removeButton: removeButton,
-        saveButtons: saveButtons,
-        appConfig: AppConfig
+    govukButton: GovukButton,
+    govukTable : GovukTable,
+    errorSummary: errorSummary,
+    formGroupWrapper: formGroupWrapper,
+    govukFieldset: govukFieldset,
+    sectionHeader: sectionHeader,
+    govukHint: govukHint,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    tariffExpander: tariffExpander,
+    addButton: addButton,
+    removeButton: removeButton,
+    saveButtons: saveButtons,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
@@ -52,7 +52,6 @@
             field = form("authorisationTypeCode"),
             label = "declaration.declarationHolder.authorisationCode",
             labelClass = Some("govuk-label--m"),
-            hintText = None,
             emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
             items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
         )

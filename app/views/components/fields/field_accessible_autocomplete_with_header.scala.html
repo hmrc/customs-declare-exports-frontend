@@ -18,7 +18,16 @@
 @import views.html.helper._
 @import views.html.components.inputs.input_accessible_autocomplete
 
-@(field: Field, label: String, labelClass: Option[String], section: Option[String], hintText: Option[String], emptySelectValue: String, items: List[AutoCompleteItem], isPageHeading: Boolean, args: (Symbol, Any)*)(implicit messages: Messages)
+@(field: Field,
+  label: String,
+  labelClass: Option[String],
+  section: Option[String] = None,
+  hintParagraphs: List[String] = List.empty,
+  emptySelectValue: String,
+  items: List[AutoCompleteItem],
+  isPageHeading: Boolean,
+  args: List[(Symbol, Any)] = List.empty
+)(implicit messages: Messages)
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
 JQuery treats [] as element's attribute and tried evaluated this.
@@ -53,8 +62,8 @@ To avoid problems, we need to remove [] from field.
 
     @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@error</span> }
 
-    @hintText.map { ht =>
-        <span class="govuk-hint" id="@(fieldNameWithoutBrackets)-hint">@ht</span>
+    @hintParagraphs.map { hint =>
+        <p class="govuk-hint" id="@(fieldNameWithoutBrackets)-hint">@hint</p>
     }
 
     @input_accessible_autocomplete(

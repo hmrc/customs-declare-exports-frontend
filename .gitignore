@@ -35,3 +35,5 @@ bin
 .floo
 .flooignore
 tariff-codes-parser/node_modules
+.metals
+.vscode

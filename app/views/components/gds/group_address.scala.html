@@ -17,9 +17,8 @@
 @import services.Countries
 @import services.view.AutoCompleteItem
 
-@this(
-        exportsInputText: exportsInputText
-)
+@this(exportsInputText: exportsInputText)
+
 @(form: Form[_], labelPrefix: String = "", addressPrefix: String = "")(implicit request: Request[_], messages: Messages)
 
 @exportsInputText(
@@ -53,8 +52,6 @@
 @components.fields.field_accessible_autocomplete(
     field = form(s"${addressPrefix}.country"),
     label = s"$labelPrefix.country",
-    labelClass = None,
-    hintText = None,
     emptySelectValue = messages("declaration.address.country.empty"),
     items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryName)
 )

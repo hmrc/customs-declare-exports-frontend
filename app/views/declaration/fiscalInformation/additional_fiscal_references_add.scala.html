@@ -30,18 +30,18 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukButton: GovukButton,
-        formGroupWrapper: formGroupWrapper,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        tariffExpander: tariffExpander,
-        saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukButton: GovukButton,
+    formGroupWrapper: formGroupWrapper,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    tariffExpander: tariffExpander,
+    saveButtons: saveButtons,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
@@ -52,7 +52,6 @@
             field = form("country"),
             label = "declaration.additionalFiscalReferences.country",
             labelClass = Some("govuk-label--m"),
-            hintText = None,
             emptySelectValue = messages("declaration.additionalFiscalReferences.country.empty"),
             items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
         )

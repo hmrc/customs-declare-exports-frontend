@@ -31,19 +31,19 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        govukRadios: GovukRadios,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukButton: GovukButton,
+    govukDetails : GovukDetails,
+    govukRadios: GovukRadios,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
@@ -91,12 +91,10 @@
 
 @borderTransportNationality = {
     @components.fields.field_accessible_autocomplete(
-        form("borderTransportNationality"),
-        "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header",
-        None,
-        None,
-        messages("declaration.address.country.empty"),
-        AutoCompleteItem.fromCountry(Countries.allCountries)
+        field = form("borderTransportNationality"),
+        label = "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header",
+        emptySelectValue = messages("declaration.address.country.empty"),
+        items = AutoCompleteItem.fromCountry(Countries.allCountries)
     )
 }
 

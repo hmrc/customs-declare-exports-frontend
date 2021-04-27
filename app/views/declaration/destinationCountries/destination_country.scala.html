@@ -59,13 +59,11 @@
         @sectionHeader(messages("declaration.section.3"))
 
         @components.fields.field_accessible_autocomplete_with_header(
-            form("countryCode"),
-            "declaration.destinationCountry.title",
-            Some(gdsPageLabel),
-            None,
-            None,
-            messages("declaration.destinationCountry.empty"),
-            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            field = form("countryCode"),
+            label = "declaration.destinationCountry.title",
+            labelClass = Some(gdsPageLabel),
+            emptySelectValue = messages("declaration.destinationCountry.empty"),
+            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
             isPageHeading = true
         )
 

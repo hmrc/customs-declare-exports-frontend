@@ -28,17 +28,17 @@
 @import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        govukFieldset: GovukFieldset,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    govukFieldset: GovukFieldset,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[Country], page: CountryPage, countryToChange: String)(implicit request: JourneyRequest[_], messages: Messages)
@@ -51,13 +51,12 @@
         @errorSummary(form.errors)
 
         @components.fields.field_accessible_autocomplete_with_header(
-            form("countryCode"),
-            s"declaration.${page.id}.question",
-            Some(Styles.gdsPageLabel),
-            Some("declaration.section.3"),
-            None,
-            messages("declaration.routingCountry.empty"),
-            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            field = form("countryCode"),
+            label = s"declaration.${page.id}.question",
+            labelClass = Some(Styles.gdsPageLabel),
+            section = Some("declaration.section.3"),
+            emptySelectValue = messages("declaration.routingCountry.empty"),
+            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
             isPageHeading = true
         )
 

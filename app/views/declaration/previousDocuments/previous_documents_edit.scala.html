@@ -29,19 +29,19 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        formGroupWrapper: formGroupWrapper,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        tariffExpander: tariffExpander,
-        saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    formGroupWrapper: formGroupWrapper,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    tariffExpander: tariffExpander,
+    saveButtons: saveButtons,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
@@ -85,7 +85,6 @@
         field = form("documentType"),
         label = "declaration.previousDocuments.documentType",
         labelClass = Some("govuk-label--m"),
-        hintText = None,
         emptySelectValue = messages("declaration.previousDocuments.documentType.empty"),
         items = AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
     )
