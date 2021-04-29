@@ -65,9 +65,9 @@ class RepresentativeAgentController @Inject()(
   }
 
   private def nextPage(formData: RepresentativeAgent): Mode => Call =
-    if (formData.representingAgent == yes) controllers.declaration.routes.RepresentativeEntityController.displayPage
+    if (formData.representingAgent == yes) controllers.declaration.routes.RepresentativeStatusController.displayPage
     else
-      controllers.declaration.routes.RepresentativeStatusController.displayPage
+      controllers.declaration.routes.RepresentativeEntityController.displayPage
 
   private def updateCache(formData: RepresentativeAgent)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
