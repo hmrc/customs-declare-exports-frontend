@@ -16,8 +16,8 @@
 
 package services
 
+import base.UnitSpec
 import services.model.PackageType
-import unit.base.UnitSpec
 
 class PackageTypesSpec extends UnitSpec {
 

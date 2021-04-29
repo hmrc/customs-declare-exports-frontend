@@ -26,7 +26,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.mvc.Call
 import services.cache.ExportsTestData
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.package_information
 import views.tags.ViewTest

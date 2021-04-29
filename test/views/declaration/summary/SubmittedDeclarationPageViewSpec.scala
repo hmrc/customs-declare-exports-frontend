@@ -16,9 +16,6 @@
 
 package views.declaration.summary
 
-import java.time.{ZoneOffset, ZonedDateTime}
-import java.util.function.Predicate
-
 import base.Injector
 import forms.declaration.{CommodityDetails, WarehouseIdentification}
 import models.ExportsDeclaration
@@ -26,9 +23,12 @@ import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus
 import org.jsoup.nodes.{Document, Element}
 import services.cache.ExportsTestData
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.submitted_declaration_page
+
+import java.time.{ZoneOffset, ZonedDateTime}
+import java.util.function.Predicate
 
 class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 

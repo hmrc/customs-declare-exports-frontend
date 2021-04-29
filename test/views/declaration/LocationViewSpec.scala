@@ -25,7 +25,7 @@ import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.mvc.Call
 import services.cache.ExportsTestData
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.goods_location
 import views.tags.ViewTest

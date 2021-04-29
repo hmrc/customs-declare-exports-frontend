@@ -16,10 +16,10 @@
 
 package config
 
+import base.UnitSpec
 import com.typesafe.config.ConfigFactory
 import features.Feature
 import play.api.Configuration
-import unit.base.UnitSpec
 
 class SfusConfigSpec extends UnitSpec {
 

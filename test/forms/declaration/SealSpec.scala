@@ -16,9 +16,89 @@
 
 package forms.declaration
 
+import base.TestHelper
 import forms.common.DeclarationPageBaseSpec
+import org.scalatest.{MustMatchers, WordSpec}
 
-class SealSpec extends DeclarationPageBaseSpec {
+class SealSpec extends WordSpec with MustMatchers with DeclarationPageBaseSpec {
+
+  val form = Seal.form
+
+  "Seal object" should {
+
+    "has correct form id" in {
+
+      Seal.formId must be("Seal")
+    }
+
+    "has 9999 limit" in {
+
+      Seal.sealsAllowed must be(9999)
+    }
+  }
+
+  "Seal form" should {
+
+    "has no errors" when {
+
+      "id field contains correct value" in {
+
+        val correctForm = Seal("12345")
+
+        val result = form.fill(correctForm)
+
+        result.errors must be(empty)
+      }
+    }
+
+    "has errors" when {
+
+      "id field is empty" in {
+
+        val emptyForm = Map("id" -> "")
+
+        val result = form.bind(emptyForm)
+        val error = result.errors.head
+
+        result.errors.length must be(1)
+        error.key must be("id")
+        error.message must be("declaration.transport.sealId.empty.error")
+      }
+
+      "id field is not alphanumeric" in {
+
+        val emptyForm = Map("id" -> "!@#$")
+
+        val result = form.bind(emptyForm)
+        val error = result.errors.head
+
+        error.key must be("id")
+        error.message must be("declaration.transport.sealId.error.invalid")
+      }
+
+      "id field is longer than 20 characters" in {
+
+        val emptyForm = Map("id" -> TestHelper.createRandomAlphanumericString(21))
+
+        val result = form.bind(emptyForm)
+        val error = result.errors.head
+
+        error.key must be("id")
+        error.message must be("declaration.transport.sealId.error.invalid")
+      }
+
+      "id field is longer than 20 characters with invalid charaters" in {
+
+        val emptyForm = Map("id" -> (TestHelper.createRandomAlphanumericString(21) + "!@#$"))
+
+        val result = form.bind(emptyForm)
+        val error = result.errors.head
+
+        error.key must be("id")
+        error.message must be("declaration.transport.sealId.error.invalid")
+      }
+    }
+  }
 
   "Seal" when {
     testTariffContentKeys(Seal, "tariff.declaration.containers.seals")

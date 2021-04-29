@@ -16,9 +16,9 @@
 
 package forms.declaration
 
+import base.JourneyTypeTestRunner
 import forms.common.{DeclarationPageBaseSpec, Eori}
 import models.declaration.ExportDeclarationTestData.correctDeclarationHolder
-import unit.base.JourneyTypeTestRunner
 
 class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 

@@ -19,8 +19,8 @@ package views.declaration
 import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.common.{Address, AddressSpec}
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.{Address, AddressSpec}
 import forms.declaration._
 import models.DeclarationType._
 import models.Mode
@@ -30,7 +30,7 @@ import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.AddressViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.consignee_details

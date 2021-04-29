@@ -16,10 +16,10 @@
 
 package services.cache
 
+import base.UnitSpec
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation}
 import models.DeclarationType
-import unit.base.UnitSpec
 
 class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
 

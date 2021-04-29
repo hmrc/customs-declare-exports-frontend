@@ -27,10 +27,10 @@ import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.{Configuration, Environment}
+import tools.Stubs
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
-import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.components.gds.{errorSummary, saveAndContinue}

@@ -28,7 +28,7 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.data.Form
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.AddressViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.exporter_address

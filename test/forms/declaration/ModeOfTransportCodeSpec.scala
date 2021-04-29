@@ -16,7 +16,7 @@
 
 package forms.declaration
 
-import unit.base.UnitSpec
+import base.UnitSpec
 
 class ModeOfTransportCodeSpec extends UnitSpec {
 

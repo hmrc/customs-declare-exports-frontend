@@ -16,8 +16,6 @@
 
 package views
 
-import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
-
 import base.OverridableInjector
 import config.SecureMessagingConfig
 import controllers.routes
@@ -33,10 +31,12 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.twirl.api.Html
 import services.cache.ExportsTestData
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.submissions
 import views.tags.ViewTest
+
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 
 @ViewTest
 class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with ExportsTestData with Stubs {

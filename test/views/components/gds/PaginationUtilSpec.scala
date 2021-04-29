@@ -16,7 +16,7 @@
 
 package views.components.gds
 
-import unit.base.UnitSpec
+import base.UnitSpec
 import views.components.gds.PaginationUtil.PaginationItem
 import views.components.gds.PaginationUtil.PaginationItem._
 

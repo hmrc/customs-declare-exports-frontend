@@ -16,9 +16,9 @@
 
 package config
 
+import base.UnitSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import play.api.Configuration
-import unit.base.UnitSpec
 
 class ChangeErrorLinkConfigSpec extends UnitSpec {
 

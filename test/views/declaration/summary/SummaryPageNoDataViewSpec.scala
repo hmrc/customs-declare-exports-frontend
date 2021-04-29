@@ -18,7 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import services.cache.ExportsTestData
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.summary_page_no_data
 

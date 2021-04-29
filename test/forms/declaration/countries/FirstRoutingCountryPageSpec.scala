@@ -16,9 +16,9 @@
 
 package forms.declaration.countries
 
+import base.JourneyTypeTestRunner
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.countries.Countries._
-import unit.base.JourneyTypeTestRunner
 
 class FirstRoutingCountryPageSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 

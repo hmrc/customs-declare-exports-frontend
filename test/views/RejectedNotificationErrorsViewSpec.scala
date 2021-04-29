@@ -24,7 +24,7 @@ import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import services.model.RejectionReason
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.rejected_notification_errors
 

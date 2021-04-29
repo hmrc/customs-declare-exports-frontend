@@ -16,7 +16,7 @@
 
 package services
 
-import base.{Injector, MockConnectors, MockExportCacheService}
+import base.{Injector, MockConnectors, MockExportCacheService, UnitSpec}
 import com.kenshoo.play.metrics.Metrics
 import connectors.CustomsDeclareExportsConnector
 import forms.declaration.LegalDeclaration
@@ -30,7 +30,6 @@ import org.scalatest.concurrent.ScalaFutures
 import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
-import unit.base.UnitSpec
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future

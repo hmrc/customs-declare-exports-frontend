@@ -16,19 +16,19 @@
 
 package views
 
-import java.time.{LocalDateTime, ZoneOffset}
-
 import base.{ExportsTestData, Injector}
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn, RemoveDraftDeclaration}
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.Form
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.remove_declaration
 import views.tags.ViewTest
+
+import java.time.{LocalDateTime, ZoneOffset}
 
 @ViewTest
 class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {

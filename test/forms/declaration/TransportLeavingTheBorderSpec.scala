@@ -16,9 +16,9 @@
 
 package forms.declaration
 
+import base.JourneyTypeTestRunner
 import forms.common.DeclarationPageBaseSpec
 import models.DeclarationType._
-import unit.base.JourneyTypeTestRunner
 
 class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 

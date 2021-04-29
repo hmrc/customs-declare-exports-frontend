@@ -24,7 +24,7 @@ import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import forms.{CancelDeclaration, Choice, Lrn}
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.cancel_declaration
