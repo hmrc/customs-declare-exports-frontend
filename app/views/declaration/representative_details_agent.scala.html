@@ -67,6 +67,7 @@
                     id = Some("agent_no"),
                     value = Some(YesNoAnswers.no),
                     content = Text(messages("site.no")),
+                    hint = Some(Hint(content = Text(messages("declaration.representative.agent.no.hint")))),
                     checked = form("representingAgent").value.contains(YesNoAnswers.no)
                 )
             ),
