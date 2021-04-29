@@ -16,22 +16,26 @@
 
 package unit.controllers.actions
 
-import controllers.actions.{EoriAllowList, EoriAllowListProvider}
-import play.api.Configuration
+import controllers.actions.EoriAllowList
 import unit.base.UnitSpec
 
-class EoriAllowListProviderTest extends UnitSpec {
+class EoriAllowListSpec extends UnitSpec {
 
-  "EoriAllowListProvider" should {
-    "reload correctly from configuration" in {
-      val config = Configuration("allowList.eori.0" -> "1234")
-      val provider = new EoriAllowListProvider(config)
-      provider.get() mustBe a[EoriAllowList]
+  "Eori allow list" when {
+    "has empty" should {
+      "allow everyone" in {
+        val allowList = new EoriAllowList(Seq.empty)
+        allowList.allows("12345") mustBe true
+        allowList.allows("0987") mustBe true
+      }
     }
-    "throw exception when there is not configuration key" in {
-      val provider = new EoriAllowListProvider(Configuration.empty)
-      an[Exception] mustBe thrownBy {
-        provider.get()
+    "has elements" should {
+      val allowList = new EoriAllowList(Seq("12345"))
+      "allow listed eori" in {
+        allowList.allows("12345") mustBe true
+      }
+      "disallow not listed eori" in {
+        allowList.allows("0987") mustBe false
       }
     }
   }
