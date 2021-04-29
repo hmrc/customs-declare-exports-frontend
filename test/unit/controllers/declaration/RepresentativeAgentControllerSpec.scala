@@ -127,7 +127,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeEntityController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeStatusController.displayPage()
 
         verifyPage(0)
       }
@@ -141,7 +141,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeStatusController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeEntityController.displayPage()
 
         verifyPage(0)
       }
