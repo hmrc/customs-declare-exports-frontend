@@ -74,9 +74,9 @@ object PackageInformation extends DeclarationPage {
       ).verifying("declaration.packageInformation.numberOfPackages.error", isPresent),
       "shippingMarks" -> optional(
         text()
-          .verifying("declaration.packageInformation.shippingMarks.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
-          .verifying("declaration.packageInformation.shippingMarks.lengthError", isEmpty or noLongerThan(42))
-      ).verifying("declaration.packageInformation.shippingMarks.empty", isPresent)
+          .verifying("declaration.packageInformation.shippingMark.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
+          .verifying("declaration.packageInformation.shippingMark.lengthError", isEmpty or noLongerThan(42))
+      ).verifying("declaration.packageInformation.shippingMark.empty", isPresent)
     )(form2Data)(data2Form)
 
   def form(): Form[PackageInformation] = Form(mapping)

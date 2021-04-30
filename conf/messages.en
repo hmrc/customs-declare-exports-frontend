@@ -1158,11 +1158,11 @@ declaration.packageInformation.typesOfPackages.error = Select a package type fro
 declaration.packageInformation.typesOfPackages.empty = Select a package type
 declaration.packageInformation.numberOfPackages = Number of this package type
 declaration.packageInformation.numberOfPackages.error = Enter the number of this package type
-declaration.packageInformation.shippingMarks = Shipping marks
-declaration.packageInformation.shippingMarks.hint = This is any mark or number on the packages or container, or on the transport documents, that identifies the goods.
-declaration.packageInformation.shippingMarks.lengthError = Shipping mark must be 42 characters or fewer
-declaration.packageInformation.shippingMarks.characterError = Shipping mark must contain only letters, numbers, hyphen and backslash
-declaration.packageInformation.shippingMarks.empty = Enter shipping marks
+declaration.packageInformation.shippingMark = Shipping mark
+declaration.packageInformation.shippingMark.hint = This is any mark or number on the packages or container, or on the transport documents, that identifies the goods.
+declaration.packageInformation.shippingMark.lengthError = Shipping mark must be 42 characters or fewer
+declaration.packageInformation.shippingMark.characterError = Shipping mark must contain only letters, numbers, hyphen and backslash
+declaration.packageInformation.shippingMark.empty = Enter the shipping mark
 declaration.packageInformation.empty = Enter at least one value
 declaration.packageInformation.error.duplicate = Package type already added
 
