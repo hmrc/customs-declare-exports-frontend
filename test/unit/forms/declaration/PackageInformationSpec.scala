@@ -100,7 +100,7 @@ class PackageInformationSpec extends UnitSpec with JourneyTypeTestRunner {
           List(
             "declaration.packageInformation.typesOfPackages.empty",
             "declaration.packageInformation.numberOfPackages.error",
-            "declaration.packageInformation.shippingMarks.empty"
+            "declaration.packageInformation.shippingMark.empty"
           )
         )
       }
@@ -122,7 +122,7 @@ class PackageInformationSpec extends UnitSpec with JourneyTypeTestRunner {
           List(
             "declaration.packageInformation.typesOfPackages.error",
             "declaration.packageInformation.numberOfPackages.error",
-            "declaration.packageInformation.shippingMarks.lengthError"
+            "declaration.packageInformation.shippingMark.lengthError"
           )
         )
       }

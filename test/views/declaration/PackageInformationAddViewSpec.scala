@@ -68,7 +68,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
           "declaration.packageInformation.hint",
           "declaration.packageInformation.typesOfPackages.hint.1",
           "declaration.packageInformation.typesOfPackages.hint.2",
-          "declaration.packageInformation.shippingMarks.hint"
+          "declaration.packageInformation.shippingMark.hint"
         ).zipWithIndex
 
         val hints = view.getElementsByClass("govuk-hint")
@@ -131,7 +131,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
         view must containErrorElementWithMessageKey("declaration.packageInformation.typesOfPackages.empty")
         view must containErrorElementWithMessageKey("declaration.packageInformation.numberOfPackages.error")
-        view must containErrorElementWithMessageKey("declaration.packageInformation.shippingMarks.empty")
+        view must containErrorElementWithMessageKey("declaration.packageInformation.shippingMark.empty")
       }
 
       "display error if incorrect PackageInformation is entered" in {
@@ -142,7 +142,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
         view must containErrorElementWithTagAndHref("a", "#shippingMarks")
 
         view must containErrorElementWithMessageKey("declaration.packageInformation.typesOfPackages.error")
-        view must containErrorElementWithMessageKey("declaration.packageInformation.shippingMarks.characterError")
+        view must containErrorElementWithMessageKey("declaration.packageInformation.shippingMark.characterError")
       }
     }
   }
