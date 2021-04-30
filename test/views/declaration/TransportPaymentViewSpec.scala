@@ -23,7 +23,7 @@ import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.transport_payment

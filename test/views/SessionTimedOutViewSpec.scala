@@ -19,7 +19,7 @@ package views
 import base.Injector
 import play.twirl.api.Html
 import services.cache.ExportsTestData
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.session_timed_out
 import views.tags.ViewTest

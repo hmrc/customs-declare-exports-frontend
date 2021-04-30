@@ -16,7 +16,7 @@
 
 package services.ead
 
-import base.{Injector, MockConnectors, MockExportCacheService}
+import base.{Injector, MockConnectors, MockExportCacheService, UnitSpec}
 import com.dmanchester.playfop.sapi.PlayFop
 import connectors.CustomsDeclareExportsConnector
 import models.dis.MrnStatusSpec
@@ -31,10 +31,9 @@ import play.api.test.Helpers
 import play.api.test.Helpers._
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
-import unit.base.UnitSpec
 import views.xml.pdf.pdfTemplate
-import scala.concurrent.{ExecutionContext, Future}
 
+import scala.concurrent.{ExecutionContext, Future}
 import views.helpers.ViewDates
 
 class EADServiceSpec

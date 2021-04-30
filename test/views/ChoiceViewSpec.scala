@@ -28,7 +28,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.inject.bind
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.choice_page

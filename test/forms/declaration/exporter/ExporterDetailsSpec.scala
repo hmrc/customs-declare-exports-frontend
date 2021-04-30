@@ -16,10 +16,49 @@
 
 package forms.declaration.exporter
 
+import base.JourneyTypeTestRunner
+import forms.LightFormMatchers
 import forms.common.DeclarationPageBaseSpec
-import unit.base.JourneyTypeTestRunner
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.EntityDetailsSpec
+import forms.declaration.EntityDetailsSpec.emptyEntityDetailsJSON
+import models.ExportsDeclaration
+import models.requests.JourneyRequest
+import org.scalatest.{MustMatchers, WordSpec}
+import play.api.data.Form
+import play.api.libs.json.{JsObject, JsValue}
 
-class ExporterDetailsSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
+class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatchers with JourneyTypeTestRunner with DeclarationPageBaseSpec {
+
+  val emptyExporterDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
+
+  private def form(model: Option[ExportsDeclaration] = None)(implicit request: JourneyRequest[_]): Form[ExporterDetails] =
+    ExporterDetails.form(request.declarationType, model)
+
+  onClearance { implicit request =>
+    s"Exporter Details form for ${request.declarationType}" when {
+
+      "it is EIDR" should {
+        "validate is eori and address is non empty" in {
+
+          val cachedModel: ExportsDeclaration = aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.yes))
+
+          val errors = form(Some(cachedModel)).bind(emptyExporterDetailsJSON).errors
+          EntityDetailsSpec.assertEmptyDetails(errors)
+        }
+      }
+
+      "it is not EIDR" should {
+        "allow an empty eori and empty address" in {
+
+          val cachedModel = aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.no))
+
+          val result = form(Some(cachedModel)).bind(emptyExporterDetailsJSON)
+          result mustBe errorless
+        }
+      }
+    }
+  }
 
   "ExporterDetails" when {
     testTariffContentKeys(ExporterDetails, "tariff.declaration.exporterAddress")

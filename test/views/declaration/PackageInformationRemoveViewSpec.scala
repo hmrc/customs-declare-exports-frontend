@@ -23,7 +23,7 @@ import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.package_information_remove

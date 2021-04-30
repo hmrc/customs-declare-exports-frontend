@@ -16,14 +16,14 @@
 
 package config
 
-import java.util.concurrent.TimeUnit
+import base.UnitSpec
 
+import java.util.concurrent.TimeUnit
 import com.typesafe.config.{Config, ConfigFactory}
 import forms.Choice
 import models.DeclarationType
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import unit.base.UnitSpec
 
 import scala.concurrent.duration.FiniteDuration
 

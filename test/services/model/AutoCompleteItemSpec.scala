@@ -16,9 +16,9 @@
 
 package services.model
 
+import base.UnitSpec
 import services.view.AutoCompleteItem
 import services.{DocumentType, HolderOfAuthorisationCode}
-import unit.base.UnitSpec
 
 class AutoCompleteItemSpec extends UnitSpec {
 

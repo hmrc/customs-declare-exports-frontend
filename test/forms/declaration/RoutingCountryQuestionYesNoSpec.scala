@@ -16,10 +16,10 @@
 
 package forms.declaration
 
+import base.UnitSpec
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.data.FormError
-import unit.base.UnitSpec
 
 class RoutingCountryQuestionYesNoSpec extends UnitSpec {
 

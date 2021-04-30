@@ -16,9 +16,58 @@
 
 package forms.declaration.consignor
 
-import forms.common.DeclarationPageBaseSpec
+import base.FormSpec
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.{DeclarationPageBaseSpec, Eori}
+import forms.declaration.consignor.ConsignorEoriNumber.form
+import play.api.data.FormError
 
-class ConsignorEoriNumberSpec extends DeclarationPageBaseSpec {
+class ConsignorEoriNumberSpec extends FormSpec with DeclarationPageBaseSpec {
+
+  "Consignor Eori Number form" should {
+
+    "has no errors" when {
+
+      "the answer is 'No'" in {
+
+        val correctModel = ConsignorEoriNumber(None, YesNoAnswers.no)
+
+        val result = form.fillAndValidate(correctModel)
+
+        result.errors mustBe empty
+      }
+
+      "the answer is 'Yes' and EORI is provided" in {
+
+        val correctModel = ConsignorEoriNumber(Some(Eori("GB1234567890123")), YesNoAnswers.yes)
+
+        val result = form.fillAndValidate(correctModel)
+
+        result.errors mustBe empty
+      }
+    }
+
+    "has errors" when {
+
+      "the answer is 'Yes' and EORI is not provided" in {
+
+        val incorrectData = Map("eori" -> "", "hasEori" -> "Yes")
+
+        val result = form.bind(incorrectData)
+
+        result.errors mustBe Seq(FormError("eori", "declaration.consignorEori.eori.empty"))
+      }
+
+      "there is no answer on the question" in {
+
+        val incorrectData = Map.empty[String, String]
+
+        val result = form.bind(incorrectData)
+
+        result.errors mustBe Seq(FormError("hasEori", "declaration.consignorEori.hasEori.empty"))
+      }
+    }
+  }
 
   "ConsignorEoriNumber" when {
     testTariffContentKeysNoSpecialisation(ConsignorEoriNumber, "tariff.declaration.consignorEoriNumber", getClearanceTariffKeys)

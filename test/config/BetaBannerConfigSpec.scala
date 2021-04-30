@@ -16,9 +16,9 @@
 
 package config
 
+import base.UnitSpec
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
-import unit.base.UnitSpec
 
 class BetaBannerConfigSpec extends UnitSpec {
 

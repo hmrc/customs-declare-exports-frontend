@@ -16,13 +16,13 @@
 
 package models
 
+import base.UnitSpec
 import config.PaginationConfig
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import testdata.SubmissionsTestData._
-import unit.base.UnitSpec
 
 class SubmissionsPagesElementsSpec extends UnitSpec with BeforeAndAfterEach {
 

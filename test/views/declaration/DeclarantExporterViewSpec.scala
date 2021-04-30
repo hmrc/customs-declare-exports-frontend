@@ -26,7 +26,7 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
-import unit.tools.Stubs
+import tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages

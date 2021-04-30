@@ -16,11 +16,11 @@
 
 package forms.declaration.countries
 
+import base.JourneyTypeTestRunner
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.countries.Countries._
 import models.DeclarationType._
 import play.api.data.FormError
-import unit.base.JourneyTypeTestRunner
 
 class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 

@@ -17,12 +17,12 @@
 package forms.declaration
 
 import base.TestHelper.createRandomAlphanumericString
+import base.UnitSpec
 import forms.LightFormMatchers
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.WarehouseIdentification._
 import forms.declaration.WarehouseIdentificationYesNoSpec._
 import play.api.libs.json.{JsObject, JsString}
-import unit.base.UnitSpec
 
 class WarehouseIdentificationYesNoSpec extends UnitSpec with LightFormMatchers {
 

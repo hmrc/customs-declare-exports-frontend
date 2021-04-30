@@ -24,7 +24,7 @@ import models.Mode._
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
 import services.cache.ExportsTestData
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary._
 

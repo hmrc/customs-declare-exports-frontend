@@ -32,7 +32,7 @@ import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.documentsProduced.documents_produced_change

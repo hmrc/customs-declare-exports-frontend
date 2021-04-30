@@ -16,7 +16,7 @@
 
 package models
 
-import unit.base.UnitSpec
+import base.UnitSpec
 
 class SubmissionsPagesSpec extends UnitSpec {
 

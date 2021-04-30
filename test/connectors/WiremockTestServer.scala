@@ -16,13 +16,13 @@
 
 package connectors
 
+import base.UnitSpec
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, postRequestedFor, urlEqualTo}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.BeforeAndAfterAll
 import play.api.http.Status._
-import unit.base.UnitSpec
 
 trait WiremockTestServer extends UnitSpec with BeforeAndAfterAll {
 

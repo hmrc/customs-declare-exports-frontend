@@ -18,7 +18,7 @@ package views
 
 import base.Injector
 import play.twirl.api.Html
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.unauthorised
 import views.tags.ViewTest

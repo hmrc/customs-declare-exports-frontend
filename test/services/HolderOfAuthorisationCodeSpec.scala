@@ -16,7 +16,7 @@
 
 package services
 
-import unit.base.UnitSpec
+import base.UnitSpec
 
 class HolderOfAuthorisationCodeSpec extends UnitSpec {
 

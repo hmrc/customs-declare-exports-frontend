@@ -17,7 +17,7 @@
 package views
 
 import base.Injector
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.unverified_email

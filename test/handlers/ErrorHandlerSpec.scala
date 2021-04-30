@@ -16,9 +16,7 @@
 
 package handlers
 
-import java.net.URLEncoder
-
-import base.Injector
+import base.{Injector, UnitSpec}
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import models.AuthKey.enrolment
@@ -27,11 +25,11 @@ import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import tools.Stubs
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
-import unit.base.UnitSpec
-import unit.tools.Stubs
 import views.html.error_template
 
+import java.net.URLEncoder
 import scala.concurrent.Future
 
 class ErrorHandlerSpec extends UnitSpec with Stubs with OptionValues with Injector {

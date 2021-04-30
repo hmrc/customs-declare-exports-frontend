@@ -17,11 +17,9 @@
 package models.requests
 
 import java.util.UUID
-
-import base.MockAuthAction
+import base.{MockAuthAction, UnitSpec}
 import models.DeclarationType
 import services.cache.ExportsDeclarationBuilder
-import unit.base.UnitSpec
 
 class JourneyRequestSpec extends UnitSpec with ExportsDeclarationBuilder with MockAuthAction {
 

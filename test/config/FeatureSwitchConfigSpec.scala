@@ -16,10 +16,10 @@
 
 package config
 
+import base.UnitSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
 import play.api.Configuration
-import unit.base.UnitSpec
 
 class FeatureSwitchConfigSpec extends UnitSpec {
 

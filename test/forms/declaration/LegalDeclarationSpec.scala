@@ -16,9 +16,8 @@
 
 package forms.declaration
 
-import base.TestHelper
+import base.{TestHelper, UnitSpec}
 import play.api.libs.json._
-import unit.base.UnitSpec
 
 class LegalDeclarationSpec extends UnitSpec {
 

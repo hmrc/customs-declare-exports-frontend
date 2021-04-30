@@ -16,10 +16,58 @@
 
 package forms.declaration.exporter
 
-import forms.common.DeclarationPageBaseSpec
-import unit.base.JourneyTypeTestRunner
+import base.FormSpec
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.{DeclarationPageBaseSpec, Eori}
+import forms.declaration.exporter.ExporterEoriNumber.form
+import play.api.data.FormError
 
-class ExporterEoriNumberSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
+class ExporterEoriNumberSpec extends FormSpec with DeclarationPageBaseSpec {
+
+  "Exporter Eori Number form" should {
+
+    "has no errors" when {
+
+      "the answer is 'No'" in {
+
+        val correctModel = ExporterEoriNumber(None, YesNoAnswers.no)
+
+        val result = form.fillAndValidate(correctModel)
+
+        result.errors mustBe empty
+      }
+
+      "the answer is 'Yes' and EORI is provided" in {
+
+        val correctModel = ExporterEoriNumber(Some(Eori("GB1234567890123")), YesNoAnswers.yes)
+
+        val result = form.fillAndValidate(correctModel)
+
+        result.errors mustBe empty
+      }
+    }
+
+    "has errors" when {
+
+      "the answer is 'Yes' and EORI is not provided" in {
+
+        val incorrectData = Map("eori" -> "", "hasEori" -> "Yes")
+
+        val result = form.bind(incorrectData)
+
+        result.errors mustBe Seq(FormError("eori", "declaration.exporterEori.eori.empty"))
+      }
+
+      "there is no answer on the question" in {
+
+        val incorrectData = Map.empty[String, String]
+
+        val result = form.bind(incorrectData)
+
+        result.errors mustBe Seq(FormError("hasEori", "declaration.exporterEori.hasEori.empty"))
+      }
+    }
+  }
 
   "ExporterEoriNumber" when {
     testTariffContentKeys(ExporterEoriNumber, "tariff.declaration.exporterEoriNumber")

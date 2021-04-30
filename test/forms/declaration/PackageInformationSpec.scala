@@ -16,10 +16,138 @@
 
 package forms.declaration
 
+import base.{JourneyTypeTestRunner, TestHelper, UnitSpec}
 import forms.common.DeclarationPageBaseSpec
 import models.viewmodels.TariffContentKey
 
-class PackageInformationSpec extends DeclarationPageBaseSpec {
+class PackageInformationSpec extends UnitSpec with JourneyTypeTestRunner with DeclarationPageBaseSpec {
+
+  private def formAllFieldsMandatory = PackageInformation.form()
+
+  "Package Information" should {
+
+    "has correct form id" in {
+
+      PackageInformation.formId must be("PackageInformation")
+    }
+
+    "has limit equal to 99" in {
+
+      PackageInformation.limit must be(99)
+    }
+
+    "has correct type of package text" in {
+      val model = PackageInformation("id", Some("PK"), Some(10), Some("marks"))
+
+      model.typesOfPackagesText mustBe Some("Package (PK)")
+    }
+  }
+
+  "Package Information form" when {
+
+    onEveryDeclarationJourney() { _ =>
+      "return form with mappingAllFieldsMandatory" in {
+
+        val form = PackageInformation.form()
+        form.mapping mustBe PackageInformation.mapping
+      }
+    }
+
+  }
+
+  "Package Information form with mappingAllFieldsMandatory" should {
+
+    "have no errors" when {
+
+      "correct data is provided" in {
+
+        val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "123", "shippingMarks" -> "correct")
+
+        val result = formAllFieldsMandatory.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+
+      "number of packages is 0" in {
+
+        val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "0", "shippingMarks" -> "correct")
+
+        val result = formAllFieldsMandatory.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+
+      "number of packages is 99999" in {
+
+        val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "99999", "shippingMarks" -> "correct")
+
+        val result = formAllFieldsMandatory.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+    }
+
+    "have errors" when {
+
+      "all inputs are empty" in {
+
+        val incorrectForm = Map("typesOfPackages" -> "", "numberOfPackages" -> "", "shippingMarks" -> "")
+
+        val result = formAllFieldsMandatory.bind(incorrectForm)
+        val errorMessages = result.errors.map(_.message)
+
+        errorMessages must be(
+          List(
+            "declaration.packageInformation.typesOfPackages.empty",
+            "declaration.packageInformation.numberOfPackages.error",
+            "declaration.packageInformation.shippingMark.empty"
+          )
+        )
+      }
+
+      "inputs are incorrect" in {
+
+        val incorrectForm = Map(
+          "typesOfPackages" -> "incorrect Type",
+          "numberOfPackages" -> "1000000",
+          "shippingMarks" -> TestHelper.createRandomAlphanumericString(43)
+        )
+
+        val result = formAllFieldsMandatory.bind(incorrectForm)
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+
+        errorKeys must be(List("typesOfPackages", "numberOfPackages", "shippingMarks"))
+        errorMessages must be(
+          List(
+            "declaration.packageInformation.typesOfPackages.error",
+            "declaration.packageInformation.numberOfPackages.error",
+            "declaration.packageInformation.shippingMark.lengthError"
+          )
+        )
+      }
+
+      "number of packages is -1" in {
+
+        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "-1", "shippingMarks" -> "correct")
+
+        val result = formAllFieldsMandatory.bind(incorrectForm)
+
+        val errorMessages = result.errors.map(_.message)
+        errorMessages mustBe List("declaration.packageInformation.numberOfPackages.error")
+      }
+
+      "number of packages is 100000" in {
+
+        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "100000", "shippingMarks" -> "correct")
+
+        val result = formAllFieldsMandatory.bind(incorrectForm)
+
+        val errorMessages = result.errors.map(_.message)
+        errorMessages mustBe List("declaration.packageInformation.numberOfPackages.error")
+      }
+    }
+  }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"), TariffContentKey(s"${messageKey}.3.common"))

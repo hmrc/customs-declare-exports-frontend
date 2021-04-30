@@ -25,7 +25,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
-import unit.tools.Stubs
+import tools.Stubs
 import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.fiscalInformation.fiscal_information

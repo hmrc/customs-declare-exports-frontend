@@ -16,17 +16,17 @@
 
 package views.declaration
 
-import java.time.{LocalDateTime, ZoneOffset}
-
 import base.Injector
 import models.responses.FlashKeys
 import play.api.mvc.Flash
 import play.twirl.api.Html
-import unit.tools.Stubs
+import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.draft_confirmation_page
 import views.tags.ViewTest
+
+import java.time.{LocalDateTime, ZoneOffset}
 
 @ViewTest
 class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
