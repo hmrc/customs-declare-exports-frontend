@@ -93,13 +93,13 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'Consignment References' page" in {
+      "display 'Back' button that links to 'Additional Declaration Type' page" in {
 
         val view = declarantDetailsPage(Mode.Normal, form(request.declarationType))(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton.attr("href") mustBe routes.ConsignmentReferencesController.displayPage().url
+        backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage().url)
       }
     }
 
@@ -110,7 +110,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton.attr("href") mustBe routes.EntryIntoDeclarantsRecordsController.displayPage().url
+        backButton must haveHref(routes.EntryIntoDeclarantsRecordsController.displayPage().url)
       }
     }
   }

@@ -71,7 +71,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
     captor.getValue
   }
 
-  "Consignment References controller" should {
+  "ConsignmentReferencesController on displayPage" should {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
@@ -94,7 +94,12 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
           status(result) must be(OK)
         }
       }
+    }
+  }
 
+  "ConsignmentReferencesController on displayPage" should {
+
+    onEveryDeclarationJourney() { request =>
       "return 400 (BAD_REQUEST)" in {
 
         withNewCaching(request.cacheModel)
@@ -107,7 +112,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      "return 303 (SEE_OTHER) and redirect to declarant details page" in {
+      "return 303 (SEE_OTHER) and redirect to Declarant Exporter page" in {
 
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
@@ -115,7 +120,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
         val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantExporterController.displayPage()
       }
     }
 

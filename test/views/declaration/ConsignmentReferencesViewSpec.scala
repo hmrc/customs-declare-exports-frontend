@@ -21,6 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn}
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -88,14 +89,6 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view.getElementById("lrn").attr("value") mustBe empty
       }
 
-      "display 'Back' button that links to 'Declaration Type' page" in {
-
-        val backButton = createView().getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.AdditionalDeclarationTypeController.displayPage().url
-      }
-
       "display 'Save and continue' button on page" in {
         val view = createView()
         val saveButton = view.getElementById("submit")
@@ -107,6 +100,26 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         val saveButton = view.getElementById("submit_and_return")
         saveButton.text() mustBe messages(saveAndReturnCaption)
         saveButton.attr("name") mustBe SaveAndReturn.toString
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      "display 'Back' button that links to 'Declarant Details' page" in {
+
+        val backButton = createView().getElementById("back-link")
+
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.DeclarantDetailsController.displayPage().url)
+      }
+    }
+
+    onClearance { implicit request =>
+      "display 'Back' button that links to 'Declaration Type' page" in {
+
+        val backButton = createView().getElementById("back-link")
+
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage().url)
       }
     }
   }

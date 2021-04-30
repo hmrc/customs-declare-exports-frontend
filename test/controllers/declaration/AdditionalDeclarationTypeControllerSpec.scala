@@ -20,8 +20,8 @@ import base.ControllerSpec
 import controllers.declaration.AdditionalDeclarationTypeController
 import controllers.util.SaveAndContinue
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import models.DeclarationType.DeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{apply => _, values => _, _}
+import models.DeclarationType._
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -72,10 +72,18 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
+  private val additionalDeclarationTypeMapping = Map(
+    STANDARD -> STANDARD_PRE_LODGED,
+    SUPPLEMENTARY -> SUPPLEMENTARY_EIDR,
+    SIMPLIFIED -> SIMPLIFIED_FRONTIER,
+    OCCASIONAL -> OCCASIONAL_FRONTIER,
+    CLEARANCE -> CLEARANCE_FRONTIER
+  )
+
   "Display Page" should {
     "return 200 (OK)" when {
       "cache is empty" when {
-        for (decType: DeclarationType <- DeclarationType.values) {
+        for (decType: DeclarationType <- values) {
           s"during $decType journey" in {
             withNewCaching(aDeclaration(withType(decType)))
 
@@ -87,50 +95,24 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       }
 
       "cache is populated" when {
+
+        onEveryDeclarationJourney() { request =>
+          s"during ${request.declarationType} journey" in {
+            withNewCaching(
+              aDeclaration(
+                withType(request.declarationType),
+                withAdditionalDeclarationType(additionalDeclarationTypeMapping(request.declarationType))
+              )
+            )
+
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+
+            status(result) must be(OK)
+          }
+        }
+
         "during supplementary journey" in {
-          withNewCaching(
-            aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withAdditionalDeclarationType(AdditionalDeclarationType.SUPPLEMENTARY_EIDR))
-          )
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) must be(OK)
-        }
-
-        "during standard journey" in {
-          withNewCaching(
-            aDeclaration(withType(DeclarationType.STANDARD), withAdditionalDeclarationType(AdditionalDeclarationType.STANDARD_PRE_LODGED))
-          )
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) must be(OK)
-        }
-
-        "during simplified journey" in {
-          withNewCaching(
-            aDeclaration(withType(DeclarationType.SIMPLIFIED), withAdditionalDeclarationType(AdditionalDeclarationType.SIMPLIFIED_FRONTIER))
-          )
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) must be(OK)
-        }
-
-        "during occasional journey" in {
-          withNewCaching(
-            aDeclaration(withType(DeclarationType.OCCASIONAL), withAdditionalDeclarationType(AdditionalDeclarationType.OCCASIONAL_FRONTIER))
-          )
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) must be(OK)
-        }
-
-        "during clearance request" in {
-          withNewCaching(
-            aDeclaration(withType(DeclarationType.CLEARANCE), withAdditionalDeclarationType(AdditionalDeclarationType.CLEARANCE_FRONTIER))
-          )
+          withNewCaching(aDeclaration(withType(SUPPLEMENTARY), withAdditionalDeclarationType(SUPPLEMENTARY_EIDR)))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -141,10 +123,14 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
   }
 
   "Submit" should {
+
     "return 400 (BAD_REQUEST) for is invalid" when {
-      for (decType: DeclarationType <- DeclarationType.values) {
+
+      onEveryDeclarationJourney() { request =>
+        val decType = request.declarationType
+
         s"during $decType journey" in {
-          withNewCaching(aDeclaration(withType(decType)))
+          withNewCaching(request.cacheModel)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(JsString("x")))
 
@@ -154,54 +140,31 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     }
 
     "Continue to the next page" when {
-      "during supplementary journey" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
-        val correctForm = Seq("additionalDeclarationType" -> "Z", SaveAndContinue.toString -> "")
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+        s"during ${request.declarationType} journey" in {
+          withNewCaching(request.cacheModel)
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
+          val additionalDeclarationType = additionalDeclarationTypeMapping(request.declarationType)
+          val correctForm = Seq("additionalDeclarationType" -> additionalDeclarationType.toString, SaveAndContinue.toString -> "")
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayPage()
+        }
       }
 
-      "during standard journey" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+      onClearance { request =>
+        s"during ${request.declarationType} journey" in {
+          withNewCaching(request.cacheModel)
 
-        val correctForm = Seq("additionalDeclarationType" -> "D", SaveAndContinue.toString -> "")
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+          val additionalDeclarationType = additionalDeclarationTypeMapping(request.declarationType)
+          val correctForm = Seq("additionalDeclarationType" -> additionalDeclarationType.toString, SaveAndContinue.toString -> "")
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
-      }
-
-      "during simplified journey" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
-
-        val correctForm = Seq("additionalDeclarationType" -> "F", SaveAndContinue.toString -> "")
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
-      }
-
-      "during occasional journey" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.OCCASIONAL)))
-
-        val correctForm = Seq("additionalDeclarationType" -> "B", SaveAndContinue.toString -> "")
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
-      }
-
-      "during clearance request" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
-
-        val correctForm = Seq("additionalDeclarationType" -> "K", SaveAndContinue.toString -> "")
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
+        }
       }
     }
   }

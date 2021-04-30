@@ -21,6 +21,7 @@ import controllers.declaration.DeclarantDetailsController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.ExportsSessionKeys
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -70,7 +71,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
-  "Declarant Details Controller" should {
+  "DeclarantDetailsController on displayPage" should {
 
     "return 200 (OK)" when {
 
@@ -90,10 +91,13 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
         status(result) must be(OK)
       }
     }
+  }
 
-    "return 400 (BAD_REQUEST)" when {
+  "DeclarantDetailsController on submitForm" when {
 
-      "form contains incorrect values" in {
+    "form contains incorrect values" should {
+
+      "return 400 (BAD_REQUEST)" in {
 
         val incorrectForm = JsObject(Map(isEoriKey -> JsString("wrong")))
 
@@ -103,28 +107,47 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to is declarant exporter details page" when {
+    "answer is yes" should {
 
-      "answer is yes" in {
+      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+        "return 303 (SEE_OTHER) and redirect to Consignment References details page" in {
 
-        val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
+          withNewCaching(request.cacheModel)
+          val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantExporterController.displayPage()
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
+        }
+      }
+
+      onClearance { request =>
+        "return 303 (SEE_OTHER) and redirect to Declarant Exporter page" in {
+
+          withNewCaching(request.cacheModel)
+          val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantExporterController.displayPage()
+        }
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to Not Eligible page" when {
+    "answer is no" should {
 
-      "answer is no" in {
+      onEveryDeclarationJourney() { request =>
+        "return 303 (SEE_OTHER) and redirect to Not Eligible page" in {
+          withNewCaching(request.cacheModel)
 
-        val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.no)))
+          val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.no)))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
-        session(result).get(ExportsSessionKeys.declarationId) must be(None)
+          session(result).get(ExportsSessionKeys.declarationId) must be(None)
+        }
       }
     }
   }

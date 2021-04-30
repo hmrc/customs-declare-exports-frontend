@@ -23,17 +23,17 @@ GET         /declarant-details                   controllers.declaration.Declara
 
 POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
-# Declarant is exporter
-
-GET         /are-you-the-exporter                controllers.declaration.DeclarantExporterController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /are-you-the-exporter                controllers.declaration.DeclarantExporterController.submitForm(mode: models.Mode ?= models.Mode.Normal)
-
 # Consignment references
 
 GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences(mode: models.Mode ?= models.Mode.Normal)
+
+# Declarant is exporter
+
+GET         /are-you-the-exporter                controllers.declaration.DeclarantExporterController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /are-you-the-exporter                controllers.declaration.DeclarantExporterController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 # Entry into Declarant records
 
