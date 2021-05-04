@@ -27,24 +27,36 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        pageTitle: pageTitle,
-        hmrcCurrencyInput: HmrcCurrencyInput,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        headingContent: headingContent,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukDetails : GovukDetails,
+    pageTitle: pageTitle,
+    hmrcCurrencyInput: HmrcCurrencyInput,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    headingContent: headingContent,
+    legend: legend,
+    bulletList: bulletList,
+    insetText: exportsInsetText,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, itemId: String, form: Form[StatisticalValue])(implicit request: JourneyRequest[_], messages: Messages)
 
-@unitsHint = {
-    <span class="govuk-visually-hidden" id="statisticalValue-units-hint" aria-hidden="true">@messages("declaration.statisticalValue.units.hint")</span>
+@hintSection = {
+    @bulletList(
+        title = Some(messages("declaration.statisticalValue.header.hint")),
+        titleClasses = "govuk-body govuk-hint",
+        additionalListClasses = Some("govuk-hint"),
+        items = Seq(
+            Html(messages("declaration.statisticalValue.header.hint.i1")),
+            Html(messages("declaration.statisticalValue.header.hint.i2")),
+            Html(messages("declaration.statisticalValue.header.hint.i3"))
+        )
+    )
 }
 
 @govukLayout(
@@ -56,25 +68,17 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
-        @unitsHint
+        @legend(content = Text(messages("declaration.statisticalValue.header")), classes = gdsPageLegend)
+
+        @hintSection
+
+        @insetText(content = HtmlContent(messages("declaration.statisticalValue.inset.text")))
 
         @hmrcCurrencyInput(CurrencyInput(
             id = "statisticalValue",
             name = "statisticalValue",
             describedBy = Some("statisticalValue-units-hint"),
             value = form("statisticalValue").value,
-            label = Label(
-                content = HtmlContent(
-                    headingContent(
-                        messages("declaration.statisticalValue.header"),
-                        None,
-                        classes = "govuk-label--xl"
-                    )
-                )
-            ),
-            hint = Some(Hint(
-                content = Text(messages("declaration.statisticalValue.header.hint"))
-            )),
             classes = "govuk-input--width-10",
             errorMessage = form("statisticalValue").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))

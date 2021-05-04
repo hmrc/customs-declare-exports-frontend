@@ -17,11 +17,10 @@
 package models.viewmodels
 
 import config.AppConfig
-import models.DeclarationType.DeclarationType
 import play.api.i18n.Messages
 
 case class TariffContentKey(key: String) {
   def getTextKey(): String = s"$key.text"
   def getLinkText(idx: Int)(implicit messages: Messages): String = messages(s"$key.linkText.${idx}")
-  def getUrl(idx: Int)(implicit appConfig: AppConfig) = appConfig.tariffGuideUrl(s"urls.$key.${idx}")
+  def getUrl(idx: Int)(implicit appConfig: AppConfig): String = appConfig.tariffGuideUrl(s"urls.$key.${idx}")
 }

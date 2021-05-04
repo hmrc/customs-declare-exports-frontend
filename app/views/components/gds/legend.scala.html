@@ -14,23 +14,18 @@
  * limitations under the License.
  *@
 
-@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(paragraphBody: paragraphBody)
+@this()
 
-@(title: Option[String] = None,
-  titleClasses: String = "govuk-body",
-  additionalListClasses: Option[String] = None,
-  items: Seq[Html]
-)(implicit messages: Messages)
+@(content: Content, classes: String = "", isPageHeading: Boolean = true)
 
-<nav>
-    @title.map(paragraphBody(_, titleClasses))
-    <ul class='govuk-list govuk-list--bullet@additionalListClasses.map(cls => s" ${cls}").getOrElse("")'>
-        @items.map { item =>
-            <li class="dashed-list-item">
-                @item
-            </li>
-        }
-    </ul>
-</nav>
+<legend class='@toClasses("govuk-fieldset__legend", classes)'>
+    @if(isPageHeading) {
+        <h1 class="govuk-fieldset__heading">
+            @content.asHtml
+        </h1>
+    } else {
+        @content.asHtml
+    }
+</legend>

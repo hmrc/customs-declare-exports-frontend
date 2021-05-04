@@ -32,8 +32,7 @@
 @howToSection = {
   <p class="govuk-body">@messages("unauthorised.paragraph.1")</p>
   @bulletList(
-    title = None,
-    elements = Seq(
+    items = Seq(
       Html(messages("unauthorised.paragraph.1.bullet.1", link(
         id = Some("get_eori_link"),
         text = messages("unauthorised.paragraph.1.bullet.1.link"),
