@@ -18,14 +18,18 @@
 
 @this(paragraphBody: paragraphBody)
 
-@(title: Option[String] = None, elements: Seq[Html])(implicit messages: Messages)
+@(title: Option[String] = None,
+  titleClasses: String = "govuk-body",
+  additionalListClasses: Option[String] = None,
+  items: Seq[Html]
+)(implicit messages: Messages)
 
 <nav>
-    @title.map(paragraphBody(_, "govuk-body"))
-    <ul class="govuk-list govuk-list--bullet">
-        @elements.map { element =>
+    @title.map(paragraphBody(_, titleClasses))
+    <ul class='govuk-list govuk-list--bullet@additionalListClasses.fold("")(cls => s" ${cls}")'>
+        @items.map { item =>
             <li class="dashed-list-item">
-                @element
+                @item
             </li>
         }
     </ul>

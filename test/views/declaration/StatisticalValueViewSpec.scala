@@ -21,6 +21,7 @@ import forms.declaration.StatisticalValue
 import models.Mode
 import models.declaration.ExportItem
 import org.jsoup.nodes.Document
+import org.scalatest.Inspectors.forAll
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -40,181 +41,84 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
   ): Document =
     page(mode, item.id, form)(journeyRequest(), messages)
 
-  "Item Type View on empty page" when {
+  "Item Type View on empty page" should {
+
+    val view: Document = createView()
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.statisticalValue.header")
       messages must haveTranslationFor("declaration.statisticalValue.header.hint")
+      messages must haveTranslationFor("declaration.statisticalValue.header.hint.i1")
+      messages must haveTranslationFor("declaration.statisticalValue.header.hint.i2")
+      messages must haveTranslationFor("declaration.statisticalValue.header.hint.i3")
+      messages must haveTranslationFor("declaration.statisticalValue.inset.text")
+      messages must haveTranslationFor("tariff.declaration.item.statisticalValue.common.text")
+      messages must haveTranslationFor("tariff.declaration.item.statisticalValue.common.linkText.0")
     }
 
-    val view = createView()
-
-    "used for Standard Declaration journey" should {
-
-      "display same page title as header" in {
-        val viewWithMessage = createView()
-        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
-      }
-
-      "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.section.5")
-      }
-
-      "display empty input with label for Statistical Value" in {
-        view.getElementById("statisticalValue-hint") must containMessage("declaration.statisticalValue.header.hint")
-        view.getElementById("statisticalValue").attr("value") mustBe empty
-      }
-
-      "display 'Back' button that links to 'TARIC Codes' page" in {
-
-        val backButton = createView().getElementById("back-link")
-
-        backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId = "itemId")
-        )
-      }
-
-      "display 'Save and continue' button" in {
-        val view = createView()
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button" in {
-        val view = createView()
-        val saveButton = view.getElementById("submit_and_return")
-        saveButton must containMessage("site.save_and_come_back_later")
-      }
+    "display same page title as header" in {
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
-    "used for Simplified Declaration journey" should {
-
-      "display same page title as header" in {
-        val viewWithMessage = createView()
-        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
-      }
-
-      val view = createView()
-
-      "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.section.5")
-      }
-
-      "display empty input with label for Statistical Value" in {
-        view.getElementById("statisticalValue-hint") must containMessage("declaration.statisticalValue.header.hint")
-        view.getElementById("statisticalValue").attr("value") mustBe empty
-      }
-
-      "display 'Back' button that links to 'TARIC Codes' page" in {
-
-        val backButton = createView().getElementById("back-link")
-
-        backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId = "itemId")
-        )
-      }
-
-      "display 'Save and continue' button" in {
-        val view = createView()
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button" in {
-        val view = createView()
-        val saveButton = view.getElementById("submit_and_return")
-        saveButton must containMessage("site.save_and_come_back_later")
-      }
+    "display section header" in {
+      view.getElementById("section-header") must containMessage("declaration.section.5")
     }
 
-    "used for Supplementary Declaration journey" should {
+    "display page title" in {
+      view.getElementsByTag("h1") must containMessageForElements("declaration.statisticalValue.header")
+    }
 
-      "display page title" in {
+    "display the expected hint paragraphs" in {
+      val hints = view.getElementsByClass("govuk-hint")
+      hints.get(0) must containMessage("declaration.statisticalValue.header.hint")
 
-        createView()
-          .getElementsByTag("h1") must containMessageForElements("declaration.statisticalValue.header")
-      }
+      val indexedListOfMessages = List(
+        "declaration.statisticalValue.header.hint.i1",
+        "declaration.statisticalValue.header.hint.i2",
+        "declaration.statisticalValue.header.hint.i3"
+      ).zipWithIndex
 
-      "display empty input with label for Statistical Value" in {
+      val bulletPoints = hints.get(1).children
+      forAll(indexedListOfMessages)(t => bulletPoints.get(t._2) must containMessage(t._1))
+    }
 
-        val view = createView()
+    "display the expected inset paragraph" in {
+      val insetElement = view.getElementsByClass("govuk-inset-text").first
+      insetElement must containMessage("declaration.statisticalValue.inset.text")
+    }
 
-        view.getElementById("statisticalValue-hint") must containMessage("declaration.statisticalValue.header.hint")
-        view.getElementById("statisticalValue-units-hint") must containMessage("declaration.statisticalValue.units.hint")
-        view.getElementById("statisticalValue").attr("value") mustBe empty
-      }
+    "display empty input for Statistical Value" in {
+      view.getElementById("statisticalValue").attr("value") mustBe empty
+    }
 
-      "display 'Back' button that links to 'TARIC Codes' page" in {
+    "display 'Back' button that links to 'TARIC Codes' page" in {
+      val backButton = view.getElementById("back-link")
+      backButton must containMessage("site.back")
+      backButton.getElementById("back-link") must haveHref(
+        controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId = "itemId")
+      )
+    }
 
-        val backButton =
-          createView().getElementById("back-link")
+    "display 'Save and continue' button" in {
+      val saveButton = view.getElementById("submit")
+      saveButton must containMessage("site.save_and_continue")
+    }
 
-        backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId = "itemId")
-        )
-      }
-
-      "display 'Save and continue' button" in {
-        val view = createView()
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
-
-      "display 'Save and return' button" in {
-        val view = createView()
-        val saveButton = view.getElementById("submit_and_return")
-        saveButton must containMessage("site.save_and_come_back_later")
-      }
+    "display 'Save and return' button" in {
+      val saveButton = view.getElementById("submit_and_return")
+      saveButton must containMessage("site.save_and_come_back_later")
     }
   }
 
   "Item Type View with entered data" should {
+    "display data in Statistical Value input" in {
+      val itemType = StatisticalValue("12345")
+      val view = createView(form = StatisticalValue.form().fill(itemType))
 
-    "used for Standard Declaration journey" should {
-
-      "display data in Statistical Value input" in {
-
-        val itemType = StatisticalValue("12345")
-        val view = createView(form = StatisticalValue.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
-      def assertViewDataEntered(view: Document, itemType: StatisticalValue): Unit =
-        view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
+      assertViewDataEntered(view, itemType)
     }
-
-    "used for Simplified Declaration journey" should {
-
-      "display data in Statistical Value input" in {
-
-        val itemType = StatisticalValue("12345")
-        val view = createView(form = StatisticalValue.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
-      def assertViewDataEntered(view: Document, itemType: StatisticalValue): Unit =
-        view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
-    }
-
-    "used for Supplementary Declaration journey" should {
-
-      "display data in Statistical Value input" in {
-
-        val itemType = StatisticalValue("12345")
-        val view = createView(form = StatisticalValue.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
-      def assertViewDataEntered(view: Document, itemType: StatisticalValue): Unit =
-        view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
-    }
-
   }
 
+  def assertViewDataEntered(view: Document, itemType: StatisticalValue): Unit =
+    view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
 }

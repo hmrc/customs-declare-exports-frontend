@@ -27,7 +27,7 @@
 @htmlElements = @{
     page.defineTariffContentKeys(journey).map { key =>
         val linkCount = """\{[0-9]*\}""".r.findAllIn( messages(key.getTextKey()) ).length
-        val links = (0 until linkCount).map{ idx =>
+        val links = (0 until linkCount).map { idx =>
             components.gds.tariffLink(key.getLinkText(idx), key.getUrl(idx))
         }
 

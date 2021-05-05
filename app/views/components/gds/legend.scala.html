@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.viewmodels
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-import config.AppConfig
-import play.api.i18n.Messages
+@this()
 
-case class TariffContentKey(key: String) {
-  def getTextKey(): String = s"$key.text"
-  def getLinkText(idx: Int)(implicit messages: Messages): String = messages(s"$key.linkText.${idx}")
-  def getUrl(idx: Int)(implicit appConfig: AppConfig): String = appConfig.tariffGuideUrl(s"urls.$key.${idx}")
-}
+@(content: Content, classes: String = "", isPageHeading: Boolean = true)
+
+<legend class='@toClasses("govuk-fieldset__legend", classes)'>
+    @if(isPageHeading) {
+        <h1 class="govuk-fieldset__heading">
+            @content.asHtml
+        </h1>
+    } else {
+        @content.asHtml
+    }
+</legend>
