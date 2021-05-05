@@ -21,6 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantIsExporter
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -69,18 +70,11 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         view.getElementById("answer_yes").attr("value") mustBe YesNoAnswers.yes
         view.getElementsByAttributeValue("for", "answer_yes") must containMessageForElements("declaration.declarant.exporter.answer.yes")
       }
+
       "display radio button with No option" in {
         val view = createView()
         view.getElementById("answer_no").attr("value") mustBe YesNoAnswers.no
         view.getElementsByAttributeValue("for", "answer_no") must containMessageForElements("declaration.declarant.exporter.answer.no")
-      }
-
-      "display 'Back' button that links to 'Declarant Details' page" in {
-
-        val backButton = createView().getElementById("back-link")
-
-        backButton must containMessage(backCaption)
-        backButton must haveHref(routes.DeclarantDetailsController.displayPage().url)
       }
 
       "display 'Save and continue' button on page" in {
@@ -92,6 +86,26 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         val saveButton = createView().getElementById("submit_and_return")
         saveButton must containMessage(saveAndReturnCaption)
         saveButton.attr("name") mustBe SaveAndReturn.toString
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      "display 'Back' button that links to 'Consignment References' page" in {
+
+        val backButton = createView().getElementById("back-link")
+
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.ConsignmentReferencesController.displayPage().url)
+      }
+    }
+
+    onClearance { implicit request =>
+      "display 'Back' button that links to 'Declarant Details' page" in {
+
+        val backButton = createView().getElementById("back-link")
+
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.DeclarantDetailsController.displayPage().url)
       }
     }
   }

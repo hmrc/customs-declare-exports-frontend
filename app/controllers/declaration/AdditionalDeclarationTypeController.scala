@@ -20,16 +20,15 @@ import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype._
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionaldeclarationtype.declaration_type
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalDeclarationTypeController @Inject()(
@@ -57,10 +56,7 @@ class AdditionalDeclarationTypeController @Inject()(
     decType
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationTypePage(mode, formWithErrors))),
-        validAdditionalDeclarationType =>
-          updateCache(validAdditionalDeclarationType).map { _ =>
-            navigator.continueTo(mode, controllers.declaration.routes.ConsignmentReferencesController.displayPage)
-        }
+        validAdditionalDeclarationType => updateCache(validAdditionalDeclarationType).map(_ => navigator.continueTo(mode, nextPage))
       )
   }
 
@@ -77,5 +73,10 @@ class AdditionalDeclarationTypeController @Inject()(
     updateExportsDeclarationSyncDirect(model => {
       model.copy(additionalDeclarationType = Some(formData))
     })
+
+  private def nextPage(implicit request: JourneyRequest[_]): Mode => Call = request.declarationType match {
+    case DeclarationType.CLEARANCE => controllers.declaration.routes.ConsignmentReferencesController.displayPage
+    case _                         => controllers.declaration.routes.DeclarantDetailsController.displayPage
+  }
 
 }

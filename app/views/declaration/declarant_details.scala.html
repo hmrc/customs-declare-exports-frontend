@@ -34,6 +34,7 @@
     exportsInputText: exportsInputText,
     govukDetails : GovukDetails,
     saveButtons: saveButtons,
+    saveAndContinue: saveAndContinue,
     tariffExpander: tariffExpander,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
     appConfig: AppConfig
@@ -41,14 +42,28 @@
 
 @(mode: Mode, form: Form[DeclarantEoriConfirmation])(implicit request: JourneyRequest[_], messages: Messages)
 
+@sectionMessagesKey = @{
+  request.declarationType match {
+    case DeclarationType.CLEARANCE => "declaration.section.2"
+    case _                         => "declaration.section.1"
+  }
+}
+
+@buttons = @{
+  request.declarationType match {
+    case DeclarationType.CLEARANCE => saveButtons()
+    case _                         => saveAndContinue()
+  }
+}
+
 @govukLayout(
-    title = Title("declaration.declarant.title", "declaration.section.2"),
+    title = Title("declaration.declarant.title", sectionMessagesKey),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantDetails, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(isEoriKey, "code_yes", form.errors))
 
-        @sectionHeader(messages("declaration.section.2"))
+        @sectionHeader(messages(sectionMessagesKey))
 
         @govukRadios(Radios(
             name = isEoriKey,
@@ -78,6 +93,6 @@
 
         @tariffExpander(DeclarantEoriConfirmation, request.declarationType)(messages, appConfig)
 
-        @saveButtons()
+        @buttons
     }
 }

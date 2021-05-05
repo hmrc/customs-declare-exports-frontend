@@ -26,7 +26,7 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.consignment_references
@@ -59,13 +59,7 @@ class ConsignmentReferencesController @Inject()(
         (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
         validConsignmentReferences =>
           updateCache(validConsignmentReferences)
-            .map(
-              _ =>
-                navigator.continueTo(mode, request.declarationType match {
-                  case DeclarationType.CLEARANCE => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
-                  case _                         => controllers.declaration.routes.DeclarantDetailsController.displayPage
-                })
-          )
+            .map(_ => navigator.continueTo(mode, nextPage))
       )
   }
 
@@ -73,4 +67,9 @@ class ConsignmentReferencesController @Inject()(
     updateExportsDeclarationSyncDirect(model => {
       model.copy(consignmentReferences = Some(formData))
     })
+
+  private def nextPage(implicit request: JourneyRequest[_]): Mode => Call = request.declarationType match {
+    case DeclarationType.CLEARANCE => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
+    case _                         => controllers.declaration.routes.DeclarantExporterController.displayPage
+  }
 }

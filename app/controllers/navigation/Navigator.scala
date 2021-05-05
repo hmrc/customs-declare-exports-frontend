@@ -81,7 +81,9 @@ case class ItemId(id: String)
 object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
-    case DeclarantDetails            => routes.ConsignmentReferencesController.displayPage
+    case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
+    case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
+    case DeclarantIsExporter         => routes.ConsignmentReferencesController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
@@ -116,10 +118,12 @@ object Navigator {
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
+    case ConsignmentReferences        => routes.AdditionalDeclarationTypeController.displayPage
     case EntryIntoDeclarantsRecords   => routes.ConsignmentReferencesController.displayPage
     case ExporterDetails              => routes.ExporterEoriNumberController.displayPage
     case DeclarantDetails             => routes.EntryIntoDeclarantsRecordsController.displayPage
     case PersonPresentingGoodsDetails => routes.EntryIntoDeclarantsRecordsController.displayPage
+    case DeclarantIsExporter          => routes.DeclarantDetailsController.displayPage
     case TransportPayment             => routes.DepartureTransportController.displayPage
     case ContainerFirst               => routes.TransportPaymentController.displayPage
     case ContainerAdd                 => routes.TransportContainerController.displayContainerSummary
@@ -146,7 +150,9 @@ object Navigator {
   }
 
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
-    case DeclarantDetails            => routes.ConsignmentReferencesController.displayPage
+    case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
+    case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
+    case DeclarantIsExporter         => routes.ConsignmentReferencesController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
@@ -178,7 +184,9 @@ object Navigator {
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
-    case DeclarantDetails            => routes.ConsignmentReferencesController.displayPage
+    case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
+    case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
+    case DeclarantIsExporter         => routes.ConsignmentReferencesController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
@@ -210,7 +218,9 @@ object Navigator {
   }
 
   val occasional: PartialFunction[DeclarationPage, Mode => Call] = {
-    case DeclarantDetails            => routes.ConsignmentReferencesController.displayPage
+    case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
+    case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
+    case DeclarantIsExporter         => routes.ConsignmentReferencesController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
@@ -247,8 +257,6 @@ object Navigator {
     case DeclarationChoice =>
       _ =>
         controllers.routes.ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
-    case ConsignmentReferences                => routes.AdditionalDeclarationTypeController.displayPage
-    case DeclarantIsExporter                  => routes.DeclarantDetailsController.displayPage
     case RepresentativeEntity                 => routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => routes.RepresentativeEntityController.displayPage
     case OfficeOfExit                         => routes.LocationController.displayPage

@@ -21,7 +21,8 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
-import models.DeclarationType.{DeclarationType, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import forms.declaration.DeclarantEoriConfirmation.form
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -37,7 +38,6 @@ import views.tags.ViewTest
 @ViewTest
 class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
-  private def form(journeyType: DeclarationType): Form[DeclarantEoriConfirmation] = DeclarantEoriConfirmation.form()
   private val declarantDetailsPage = instanceOf[declarant_details]
   private def createView(form: Form[DeclarantEoriConfirmation])(implicit request: JourneyRequest[_]): Document =
     declarantDetailsPage(Mode.Normal, form)(request, messages)
@@ -56,61 +56,71 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
-        createView(form(request.declarationType))
+        createView(form())
           .getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.declarant.titleQuestion", request.eori)
-      }
-
-      "display section header" in {
-
-        createView(form(request.declarationType)).getElementById("section-header") must containMessage("declaration.section.2")
       }
 
       "display radio button with Yes option" in {
 
-        val view = createView(form(request.declarationType))
+        val view = createView(form())
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
         view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
       }
       "display radio button with No option" in {
 
-        val view = createView(form(request.declarationType))
+        val view = createView(form())
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
       "display 'Save and continue' button on page" in {
 
-        val saveButton = createView(form(request.declarationType)).getElementById("submit")
+        val saveButton = createView(form()).getElementById("submit")
         saveButton must containMessage(saveAndContinueCaption)
-      }
-
-      "display 'Save and return' button on page" in {
-
-        val saveButton = createView(form(request.declarationType)).getElementById("submit_and_return")
-        saveButton must containMessage(saveAndReturnCaption)
-        saveButton.attr("name") mustBe SaveAndReturn.toString
       }
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'Consignment References' page" in {
+      "display section header" in {
 
-        val view = declarantDetailsPage(Mode.Normal, form(request.declarationType))(request, messages)
+        createView(form()).getElementById("section-header") must containMessage("declaration.section.1")
+      }
+
+      "display 'Back' button that links to 'Additional Declaration Type' page" in {
+
+        val view = declarantDetailsPage(Mode.Normal, form())(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton.attr("href") mustBe routes.ConsignmentReferencesController.displayPage().url
+        backButton must haveHref(routes.AdditionalDeclarationTypeController.displayPage().url)
+      }
+
+      "not display 'Save and return' button on page" in {
+
+        createView(form()).getElementById("submit_and_return") mustBe null
       }
     }
 
     onClearance { implicit request =>
+      "display section header" in {
+
+        createView(form()).getElementById("section-header") must containMessage("declaration.section.2")
+      }
+
       "display 'Back' button that links to 'Entry into Declarant's Records' page" in {
 
-        val view = declarantDetailsPage(Mode.Normal, form(request.declarationType))(request, messages)
+        val view = declarantDetailsPage(Mode.Normal, form())(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton.attr("href") mustBe routes.EntryIntoDeclarantsRecordsController.displayPage().url
+        backButton must haveHref(routes.EntryIntoDeclarantsRecordsController.displayPage().url)
+      }
+
+      "display 'Save and return' button on page" in {
+
+        val saveButton = createView(form()).getElementById("submit_and_return")
+        saveButton must containMessage(saveAndReturnCaption)
+        saveButton.attr("name") mustBe SaveAndReturn.toString
       }
     }
   }
@@ -120,7 +130,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
     onEveryDeclarationJourney() { implicit request =>
       "display error when answer is empty" in {
 
-        val view = createView(form(request.declarationType).fillAndValidate(DeclarantEoriConfirmation("")))
+        val view = createView(form().fillAndValidate(DeclarantEoriConfirmation("")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#code_yes")
@@ -131,7 +141,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       "display error when EORI is provided, but is incorrect" in {
 
         val view = createView(
-          form(request.declarationType)
+          form()
             .fillAndValidate(DeclarantEoriConfirmation("wrong"))
         )
 

@@ -16,8 +16,6 @@
 
 package controllers.declaration
 
-import javax.inject.Inject
-
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.navigation.Navigator
 import forms.common.Eori
@@ -25,13 +23,14 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation.form
 import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation, EntityDetails}
 import models.requests.{ExportsSessionKeys, JourneyRequest}
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarant_details
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarantDetailsController @Inject()(
@@ -61,7 +60,7 @@ class DeclarantDetailsController @Inject()(
         validForm =>
           if (validForm.answer == YesNoAnswers.yes)
             updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None)))
-              .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarantExporterController.displayPage))
+              .map(_ => navigator.continueTo(mode, nextPage))
           else
             Future(
               Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant())
@@ -74,4 +73,9 @@ class DeclarantDetailsController @Inject()(
     updateExportsDeclarationSyncDirect(model => {
       model.copy(parties = model.parties.copy(declarantDetails = Some(declarant)))
     })
+
+  private def nextPage(implicit request: JourneyRequest[_]): Mode => Call = request.declarationType match {
+    case DeclarationType.CLEARANCE => controllers.declaration.routes.DeclarantExporterController.displayPage
+    case _                         => controllers.declaration.routes.ConsignmentReferencesController.displayPage
+  }
 }
