@@ -26,7 +26,7 @@
 
 <nav>
     @title.map(paragraphBody(_, titleClasses))
-    <ul class='govuk-list govuk-list--bullet@additionalListClasses.map(cls => s" ${cls}").getOrElse("")'>
+    <ul class='govuk-list govuk-list--bullet@additionalListClasses.fold("")(cls => s" ${cls}")'>
         @items.map { item =>
             <li class="dashed-list-item">
                 @item
