@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.DeclarantDetailsController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.isEoriKey
@@ -28,7 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -99,7 +98,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
       "return 400 (BAD_REQUEST)" in {
 
-        val incorrectForm = JsObject(Map(isEoriKey -> JsString("wrong")))
+        val incorrectForm = Json.obj(isEoriKey -> "wrong")
 
         val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
@@ -113,7 +112,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
         "return 303 (SEE_OTHER) and redirect to Consignment References details page" in {
 
           withNewCaching(request.cacheModel)
-          val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
+          val correctForm = Json.obj(isEoriKey -> YesNoAnswers.yes)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -126,7 +125,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
         "return 303 (SEE_OTHER) and redirect to Declarant Exporter page" in {
 
           withNewCaching(request.cacheModel)
-          val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
+          val correctForm = Json.obj(isEoriKey -> YesNoAnswers.yes)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -142,7 +141,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
         "return 303 (SEE_OTHER) and redirect to Not Eligible page" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.no)))
+          val correctForm = Json.obj(isEoriKey -> YesNoAnswers.no)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 

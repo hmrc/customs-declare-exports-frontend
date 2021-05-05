@@ -97,8 +97,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
       "not display 'Save and return' button on page" in {
 
-        val saveButton = createView(form()).getElementById("submit_and_return")
-        saveButton mustBe null
+        createView(form()).getElementById("submit_and_return") mustBe null
       }
     }
 
