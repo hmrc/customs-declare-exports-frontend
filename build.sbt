@@ -25,7 +25,6 @@ lazy val microservice = Project(appName, file("."))
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(integrationTestSettings())
-  .settings(resolvers ++= Seq(Resolver.bintrayRepo("hmrc", "releases"), Resolver.jcenterRepo, Resolver.bintrayRepo("emueller", "maven")))
   .settings(publishingSettings: _*)
   .settings(
     // prevent removal of unused code which generates warning errors due to use of third-party libs

@@ -15,7 +15,6 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "play-frontend-hmrc"            % "0.49.0-play-27",
     "uk.gov.hmrc"          %% "auth-client"                   % "3.2.0-play-27",
     "uk.gov.hmrc"          %% "play-whitelist-filter"         % "3.4.0-play-27",
-    "org.webjars.npm"      %  "hmrc-frontend"                 % "1.23.1",
     "org.webjars.npm"      %  "govuk-frontend"                % "3.10.2",
     "org.webjars.npm"      %  "accessible-autocomplete"       % "2.0.3",
     "ai.x"                 %% "play-json-extensions"          % "0.42.0",
