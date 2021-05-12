@@ -16,11 +16,9 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.WarehouseIdentification
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -30,11 +28,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{warehouse_identification, warehouse_identification_yesno}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class WarehouseIdentificationController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
@@ -44,7 +42,7 @@ class WarehouseIdentificationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.locations.warehouseIdentification match {
       case Some(data) => Ok(page(mode, frm.fill(data)))
@@ -52,7 +50,7 @@ class WarehouseIdentificationController @Inject()(
     }
   }
 
-  def saveIdentificationNumber(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def saveIdentificationNumber(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

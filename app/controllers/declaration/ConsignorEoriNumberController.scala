@@ -16,13 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.consignor.ConsignorEoriNumber.form
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -32,11 +30,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.consignor_eori_number
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorEoriNumberController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -47,7 +45,7 @@ class ConsignorEoriNumberController @Inject()(
 
   val validJourneys = Seq(DeclarationType.CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.consignorDetails match {
       case Some(data) => Ok(consignorEoriDetailsPage(mode, frm.fill(ConsignorEoriNumber(data))))
@@ -55,7 +53,7 @@ class ConsignorEoriNumberController @Inject()(
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validJourneys)).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

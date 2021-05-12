@@ -16,11 +16,10 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.PersonPresentingGoodsDetails
 import forms.declaration.PersonPresentingGoodsDetails.form
-import javax.inject.Inject
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -30,11 +29,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.person_presenting_goods_details
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PersonPresentingGoodsDetailsController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -43,7 +42,7 @@ class PersonPresentingGoodsDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(CLEARANCE)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.parties.personPresentingGoodsDetails match {
       case Some(data) => Ok(personPresentingGoodsDetailsPage(mode, frm.fill(data)))
@@ -51,7 +50,7 @@ class PersonPresentingGoodsDetailsController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(CLEARANCE)).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

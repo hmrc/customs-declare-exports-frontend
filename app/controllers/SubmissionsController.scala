@@ -100,8 +100,8 @@ class SubmissionsController @Inject()(
       }.getOrElse(Future.successful(None))
 
       actualDeclaration.flatMap {
-        case Some(dec) if dec.sourceId == Some(id) => Future.successful(redirect)
-        case _                                     => createNewDraftDec(id, redirect)
+        case Some(dec) if dec.sourceId.contains(id) => Future.successful(redirect)
+        case _                                      => createNewDraftDec(id, redirect)
       }
     }
 

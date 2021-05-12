@@ -16,14 +16,11 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.TaricCode.taricCodeLimit
 import forms.declaration.{TaricCode, TaricCodeFirst}
-import javax.inject.Inject
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -34,9 +31,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{taric_code_add, taric_code_add_first}
 
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
+
 class TaricCodeAddController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -46,7 +45,7 @@ class TaricCodeAddController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val exportItem = request.cacheModel.itemBy(itemId)
     exportItem.flatMap(_.taricCodes) match {
       case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodeAdd(mode, itemId, TaricCode.form().withSubmissionErrors()))
@@ -61,7 +60,7 @@ class TaricCodeAddController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val exportItem = request.cacheModel.itemBy(itemId)
     exportItem.flatMap(_.taricCodes) match {
       case Some(taricCodes) if taricCodes.nonEmpty =>

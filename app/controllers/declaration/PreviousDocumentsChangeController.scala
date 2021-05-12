@@ -16,13 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.{Document, PreviousDocumentsData}
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -32,11 +30,11 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.previousDocuments.previous_documents_change
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PreviousDocumentsChangeController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -45,14 +43,14 @@ class PreviousDocumentsChangeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findDocument(id) match {
       case Some(document) => Ok(changePage(mode, id, Document.form().fill(document).withSubmissionErrors()))
       case _              => returnToSummary(mode)
     }
   }
 
-  def submit(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def submit(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findDocument(id) match {
       case Some(existingDocument) =>
         val boundForm = Document.form().bindFromRequest()

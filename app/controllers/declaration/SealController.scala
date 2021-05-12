@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.saveAndContinue
 import controllers.util.{FormAction, Remove}
@@ -24,8 +24,6 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.Seal
 import handlers.ErrorHandler
-
-import javax.inject.Inject
 import models.Mode
 import models.declaration.Container
 import models.requests.JourneyRequest
@@ -36,11 +34,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{seal_add, seal_remove, seal_summary}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SealController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   errorHandler: ErrorHandler,
@@ -52,34 +50,31 @@ class SealController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayAddSeal(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
-    implicit request =>
-      Ok(addPage(mode, Seal.form().withSubmissionErrors(), containerId))
+  def displayAddSeal(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(addPage(mode, Seal.form().withSubmissionErrors(), containerId))
   }
 
-  def submitAddSeal(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
-    implicit request =>
-      Seal
-        .form()
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[Seal]) => Future.successful(BadRequest(addPage(mode, formWithErrors, containerId))),
-          validSeal =>
-            request.cacheModel.containerBy(containerId) match {
-              case Some(container) =>
-                saveSeal(mode, Seal.form.fill(validSeal), container)
-              case _ => errorHandler.displayErrorPage()
-          }
-        )
+  def submitAddSeal(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    Seal
+      .form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[Seal]) => Future.successful(BadRequest(addPage(mode, formWithErrors, containerId))),
+        validSeal =>
+          request.cacheModel.containerBy(containerId) match {
+            case Some(container) =>
+              saveSeal(mode, Seal.form.fill(validSeal), container)
+            case _ => errorHandler.displayErrorPage()
+        }
+      )
   }
 
-  def displaySealSummary(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
-    implicit request =>
-      Ok(summaryPage(mode, addSealYesNoForm(containerId).withSubmissionErrors(), containerId, seals(containerId)))
+  def displaySealSummary(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(summaryPage(mode, addSealYesNoForm(containerId).withSubmissionErrors(), containerId, seals(containerId)))
   }
 
   def submitSummaryAction(mode: Mode, containerId: String): Action[AnyContent] =
-    (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+    (authenticate andThen journeyType).async { implicit request =>
       FormAction.bindFromRequest() match {
         case Remove(values) => confirmRemoveSeal(containerId, sealId(values), mode)
         case _              => addSealAnswer(mode, containerId)
@@ -87,12 +82,12 @@ class SealController @Inject()(
     }
 
   def displaySealRemove(mode: Mode, containerId: String, sealId: String): Action[AnyContent] =
-    (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+    (authenticate andThen journeyType) { implicit request =>
       Ok(removePage(mode, removeSealYesNoForm, containerId, sealId))
     }
 
   def submitSealRemove(mode: Mode, containerId: String, sealId: String): Action[AnyContent] =
-    (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+    (authenticate andThen journeyType).async { implicit request =>
       removeSealAnswer(mode, containerId, sealId)
     }
 

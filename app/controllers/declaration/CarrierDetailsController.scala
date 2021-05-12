@@ -16,11 +16,9 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.carrier.CarrierDetails
-
-import javax.inject.Inject
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
@@ -31,11 +29,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.carrier_details
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CarrierDetailsController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -47,7 +45,7 @@ class CarrierDetailsController @Inject()(
   private val validTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] =
-    (authenticate andThen verifyEmail andThen journeyType(validTypes)) { implicit request =>
+    (authenticate andThen journeyType(validTypes)) { implicit request =>
       request.cacheModel.parties.carrierDetails match {
         case Some(data) => Ok(carrierDetailsPage(mode, form().fill(data)))
         case _          => Ok(carrierDetailsPage(mode, form()))
@@ -57,7 +55,7 @@ class CarrierDetailsController @Inject()(
   private def form()(implicit request: JourneyRequest[_]) = CarrierDetails.form(request.declarationType).withSubmissionErrors()
 
   def saveAddress(mode: Mode): Action[AnyContent] =
-    (authenticate andThen verifyEmail andThen journeyType(validTypes)).async { implicit request =>
+    (authenticate andThen journeyType(validTypes)).async { implicit request =>
       form()
         .bindFromRequest()
         .fold(

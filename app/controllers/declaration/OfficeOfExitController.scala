@@ -16,12 +16,10 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.officeOfExit.OfficeOfExit.form
 import forms.declaration.officeOfExit.OfficeOfExit
-
-import javax.inject.Inject
+import forms.declaration.officeOfExit.OfficeOfExit.form
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -32,11 +30,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.office_of_exit
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class OfficeOfExitController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -45,7 +43,7 @@ class OfficeOfExitController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.locations.officeOfExit match {
       case Some(data) =>
@@ -54,7 +52,7 @@ class OfficeOfExitController @Inject()(
     }
   }
 
-  def saveOffice(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def saveOffice(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

@@ -37,7 +37,6 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
   val controller = new LocationController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     stubMessagesControllerComponents(),
     mockGoodsLocationPage,

@@ -16,11 +16,9 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.TransportLeavingTheBorder
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import play.api.i18n.I18nSupport
@@ -29,11 +27,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.transport_leaving_the_border
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportLeavingTheBorderController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -44,7 +42,7 @@ class TransportLeavingTheBorderController @Inject()(
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val form = TransportLeavingTheBorder.form(request.declarationType).withSubmissionErrors()
     request.cacheModel.transport.borderModeOfTransportCode match {
       case Some(data) => Ok(transportAtBorder(form.fill(data), mode))
@@ -52,7 +50,7 @@ class TransportLeavingTheBorderController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     TransportLeavingTheBorder
       .form(request.declarationType)
       .bindFromRequest()

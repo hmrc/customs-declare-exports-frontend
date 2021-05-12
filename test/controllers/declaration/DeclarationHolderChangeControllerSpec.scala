@@ -38,7 +38,6 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
 
   val controller = new DeclarationHolderChangeController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

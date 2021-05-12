@@ -16,11 +16,9 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.DepartureTransport
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -30,11 +28,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.departure_transport
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureTransportController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -48,7 +46,7 @@ class DepartureTransportController @Inject()(
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] =
-    (authenticate andThen verifyEmail andThen journeyType(validTypes)) { implicit request =>
+    (authenticate andThen journeyType(validTypes)) { implicit request =>
       val frm = form().withSubmissionErrors()
       val transport = request.cacheModel.transport
       val formData = DepartureTransport(transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber)
@@ -57,7 +55,7 @@ class DepartureTransportController @Inject()(
     }
 
   def submitForm(mode: Mode): Action[AnyContent] =
-    (authenticate andThen verifyEmail andThen journeyType(validTypes)).async { implicit request =>
+    (authenticate andThen journeyType(validTypes)).async { implicit request =>
       form()
         .bindFromRequest()
         .fold(

@@ -38,7 +38,6 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
   val controller = new FiscalInformationController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

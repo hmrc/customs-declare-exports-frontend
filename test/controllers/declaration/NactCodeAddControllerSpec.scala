@@ -38,7 +38,6 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
   val controller =
     new NactCodeAddController(
       mockAuthAction,
-      mockVerifiedEmailAction,
       mockJourneyAction,
       mockExportsCacheService,
       navigator,

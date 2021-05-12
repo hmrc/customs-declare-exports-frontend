@@ -16,14 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.Document
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -34,11 +32,11 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.previousDocuments.previous_documents_remove
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PreviousDocumentsRemoveController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -47,14 +45,14 @@ class PreviousDocumentsRemoveController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findDocument(id) match {
       case Some(document) => Ok(removePage(mode, id, document, removeYesNoForm))
       case _              => returnToSummary(mode)
     }
   }
 
-  def submit(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def submit(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findDocument(id) match {
       case Some(document) =>
         removeYesNoForm

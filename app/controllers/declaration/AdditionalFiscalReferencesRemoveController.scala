@@ -16,14 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -34,11 +32,11 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.fiscalInformation.additional_fiscal_references_remove
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalFiscalReferencesRemoveController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -47,34 +45,32 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
-    implicit request =>
-      findAdditionalFiscalReference(itemId, id) match {
-        case Some(reference) => Ok(removePage(mode, itemId, id, reference, removalYesNoForm.withSubmissionErrors()))
-        case _               => returnToSummary(mode, itemId)
-      }
+  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    findAdditionalFiscalReference(itemId, id) match {
+      case Some(reference) => Ok(removePage(mode, itemId, id, reference, removalYesNoForm.withSubmissionErrors()))
+      case _               => returnToSummary(mode, itemId)
+    }
   }
 
-  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
-    implicit request =>
-      findAdditionalFiscalReference(itemId, id) match {
-        case Some(reference) =>
-          removalYesNoForm
-            .bindFromRequest()
-            .fold(
-              (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, itemId, id, reference, formWithErrors))),
-              formData => {
-                formData.answer match {
-                  case YesNoAnswers.yes =>
-                    removeAdditionalFiscalReference(itemId, reference)
-                      .map(declaration => redirectAfterRemove(mode, itemId, declaration))
-                  case YesNoAnswers.no =>
-                    Future.successful(returnToSummary(mode, itemId))
-                }
+  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    findAdditionalFiscalReference(itemId, id) match {
+      case Some(reference) =>
+        removalYesNoForm
+          .bindFromRequest()
+          .fold(
+            (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, itemId, id, reference, formWithErrors))),
+            formData => {
+              formData.answer match {
+                case YesNoAnswers.yes =>
+                  removeAdditionalFiscalReference(itemId, reference)
+                    .map(declaration => redirectAfterRemove(mode, itemId, declaration))
+                case YesNoAnswers.no =>
+                  Future.successful(returnToSummary(mode, itemId))
               }
-            )
-        case _ => Future.successful(returnToSummary(mode, itemId))
-      }
+            }
+          )
+      case _ => Future.successful(returnToSummary(mode, itemId))
+    }
   }
 
   private def removalYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalFiscalReferences.remove.empty")

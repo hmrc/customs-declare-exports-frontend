@@ -38,7 +38,6 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
 
   val controller = new DeclarationHolderRemoveController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

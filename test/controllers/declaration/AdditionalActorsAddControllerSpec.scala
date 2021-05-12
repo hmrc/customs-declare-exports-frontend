@@ -37,7 +37,6 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
 
   val controller = new AdditionalActorsAddController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

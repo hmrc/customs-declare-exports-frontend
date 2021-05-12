@@ -41,7 +41,6 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   val controller = new ExporterDetailsController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

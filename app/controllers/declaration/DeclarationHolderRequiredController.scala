@@ -16,14 +16,11 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper.cachedHolders
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-
-import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
@@ -35,9 +32,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_required
 
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
+
 class DeclarationHolderRequiredController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -48,13 +47,13 @@ class DeclarationHolderRequiredController @Inject()(
 
   private val validJourneys = Seq(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val holders = cachedHolders
     if (holders.isEmpty) Ok(declarationHolderRequired(mode, formWithPreviousAnswer.withSubmissionErrors()))
     else navigator.continueTo(mode, routes.DeclarationHolderController.displayPage(_))
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validJourneys)).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     form
       .bindFromRequest()
       .fold(

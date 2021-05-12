@@ -41,7 +41,6 @@ class CancelDeclarationController @Inject()(
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
-  errorHandler: ErrorHandler,
   exportsMetrics: ExportsMetrics,
   mcc: MessagesControllerComponents,
   auditService: AuditService,

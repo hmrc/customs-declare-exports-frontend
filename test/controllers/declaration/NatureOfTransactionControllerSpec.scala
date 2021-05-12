@@ -38,7 +38,6 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
   val controller = new NatureOfTransactionController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     stubMessagesControllerComponents(),

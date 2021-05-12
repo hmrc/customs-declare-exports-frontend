@@ -21,12 +21,13 @@ import models.ExportsDeclaration
 import models.responses.FlashKeys
 import play.api.data.FormError
 
-class JourneyRequest[+A](val verifiedEmailRequest: VerifiedEmailRequest[A], val cacheModel: ExportsDeclaration)
-    extends AuthenticatedRequest[A](verifiedEmailRequest, verifiedEmailRequest.user) {
+class JourneyRequest[+A](val authenticatedRequest: AuthenticatedRequest[A], val cacheModel: ExportsDeclaration)
+    extends AuthenticatedRequest[A](authenticatedRequest, authenticatedRequest.user) {
+
   val declarationType: DeclarationType = cacheModel.`type`
   val sourceDecId: Option[String] = cacheModel.sourceId
   def isType(`type`: DeclarationType*): Boolean = `type`.contains(declarationType)
-  def eori: String = verifiedEmailRequest.user.eori
+  def eori: String = authenticatedRequest.user.eori
   def submissionErrors: Seq[FormError] = {
     val fieldName = flash.get(FlashKeys.fieldName)
     val errorMessage = flash.get(FlashKeys.errorMessage)

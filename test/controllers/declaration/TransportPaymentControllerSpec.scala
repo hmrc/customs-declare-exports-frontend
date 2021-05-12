@@ -37,7 +37,6 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
   val controller = new TransportPaymentController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     mockExportsCacheService,

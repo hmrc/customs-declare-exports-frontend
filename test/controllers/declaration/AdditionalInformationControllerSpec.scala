@@ -37,7 +37,6 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
   val controller = new AdditionalInformationController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

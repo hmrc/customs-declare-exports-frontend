@@ -16,12 +16,10 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import play.api.data.Form
@@ -31,9 +29,10 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.nact_codes
 
+import javax.inject.Inject
+
 class NactCodeSummaryController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -45,27 +44,25 @@ class NactCodeSummaryController @Inject()(
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)) {
-    implicit request =>
-      request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
-        case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodesPage(mode, itemId, anotherYesNoForm.withSubmissionErrors(), nactCodes))
-        case _                                     => navigator.continueTo(mode, routes.NactCodeAddController.displayPage(_, itemId))
-      }
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
+      case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodesPage(mode, itemId, anotherYesNoForm.withSubmissionErrors(), nactCodes))
+      case _                                     => navigator.continueTo(mode, routes.NactCodeAddController.displayPage(_, itemId))
+    }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)) {
-    implicit request =>
-      val nactCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(List.empty)
-      anotherYesNoForm
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[YesNoAnswer]) => BadRequest(nactCodesPage(mode, itemId, formWithErrors, nactCodes)),
-          validYesNo =>
-            validYesNo.answer match {
-              case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.NactCodeAddController.displayPage(_, itemId))
-              case YesNoAnswers.no  => navigator.continueTo(mode, nextPage(itemId))
-          }
-        )
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    val nactCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(List.empty)
+    anotherYesNoForm
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[YesNoAnswer]) => BadRequest(nactCodesPage(mode, itemId, formWithErrors, nactCodes)),
+        validYesNo =>
+          validYesNo.answer match {
+            case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.NactCodeAddController.displayPage(_, itemId))
+            case YesNoAnswers.no  => navigator.continueTo(mode, nextPage(itemId))
+        }
+      )
   }
 
   private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.nationalAdditionalCode.add.answer.empty")

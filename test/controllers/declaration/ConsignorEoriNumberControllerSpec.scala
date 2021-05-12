@@ -41,7 +41,6 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
   val controller = new ConsignorEoriNumberController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     stubMessagesControllerComponents(),

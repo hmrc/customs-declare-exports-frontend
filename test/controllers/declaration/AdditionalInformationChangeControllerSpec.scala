@@ -40,7 +40,6 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
   val controller = new AdditionalInformationChangeController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

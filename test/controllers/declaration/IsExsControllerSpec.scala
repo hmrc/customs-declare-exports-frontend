@@ -38,15 +38,8 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
   private val isExsPage = mock[is_exs]
 
-  private val controller = new IsExsController(
-    mockAuthAction,
-    mockVerifiedEmailAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    isExsPage
-  )(ec)
+  private val controller =
+    new IsExsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), isExsPage)(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

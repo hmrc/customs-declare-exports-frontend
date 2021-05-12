@@ -38,7 +38,6 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
 
   val controller = new AdditionalFiscalReferencesAddController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

@@ -36,7 +36,6 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
   val controller = new PreviousDocumentsController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     stubMessagesControllerComponents(),

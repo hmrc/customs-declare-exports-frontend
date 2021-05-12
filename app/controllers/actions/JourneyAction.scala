@@ -18,7 +18,7 @@ package controllers.actions
 
 import com.google.inject.Inject
 import models.DeclarationType.DeclarationType
-import models.requests.{JourneyRequest, VerifiedEmailRequest}
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.Logger
 import play.api.mvc.{ActionRefiner, Result, Results}
 import services.cache.ExportsCacheService
@@ -28,13 +28,13 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import scala.concurrent.{ExecutionContext, Future}
 
 class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val exc: ExecutionContext)
-    extends ActionRefiner[VerifiedEmailRequest, JourneyRequest] {
+    extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
 
   private val logger = Logger(this.getClass)
 
   override protected def executionContext: ExecutionContext = exc
 
-  private def refiner[A](request: VerifiedEmailRequest[A], types: Seq[DeclarationType]): Future[Either[Result, JourneyRequest[A]]] = {
+  private def refiner[A](request: AuthenticatedRequest[A], types: Seq[DeclarationType]): Future[Either[Result, JourneyRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     request.declarationId match {
       case Some(id) =>
@@ -49,14 +49,14 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val ex
         Future.successful(Left(Results.Redirect(controllers.routes.RootController.displayPage())))
     }
   }
-  override def refine[A](request: VerifiedEmailRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
+  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
     refiner(request, Seq.empty[DeclarationType])
 
-  def apply(type1: DeclarationType, others: DeclarationType*): ActionRefiner[VerifiedEmailRequest, JourneyRequest] = apply(others.toSeq.+:(type1))
+  def apply(type1: DeclarationType, others: DeclarationType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] = apply(others.toSeq.+:(type1))
 
-  def apply(types: Seq[DeclarationType]): ActionRefiner[VerifiedEmailRequest, JourneyRequest] =
-    new ActionRefiner[VerifiedEmailRequest, JourneyRequest] {
-      override protected def refine[A](request: VerifiedEmailRequest[A]): Future[Either[Result, JourneyRequest[A]]] = refiner(request, types)
+  def apply(types: Seq[DeclarationType]): ActionRefiner[AuthenticatedRequest, JourneyRequest] =
+    new ActionRefiner[AuthenticatedRequest, JourneyRequest] {
+      override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = refiner(request, types)
       override protected def executionContext: ExecutionContext = exc
     }
 }

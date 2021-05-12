@@ -38,7 +38,6 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
   val controller = new WarehouseIdentificationController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     mockExportsCacheService,

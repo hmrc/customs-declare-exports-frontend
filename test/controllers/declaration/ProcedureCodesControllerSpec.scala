@@ -40,7 +40,6 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
   val controller = new ProcedureCodesController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     mockExportsCacheService,

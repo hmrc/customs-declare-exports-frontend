@@ -40,7 +40,6 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
   val controller =
     new AdditionalActorsRemoveController(
       mockAuthAction,
-      mockVerifiedEmailAction,
       mockJourneyAction,
       mockExportsCacheService,
       navigator,

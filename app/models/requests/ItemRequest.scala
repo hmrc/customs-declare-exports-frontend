@@ -18,4 +18,4 @@ package models.requests
 import models.declaration.ExportItem
 
 class ItemRequest[A](val item: ExportItem, journeyRequest: JourneyRequest[A])
-    extends JourneyRequest[A](journeyRequest.verifiedEmailRequest, journeyRequest.cacheModel) {}
+    extends JourneyRequest[A](journeyRequest.authenticatedRequest, journeyRequest.cacheModel) {}

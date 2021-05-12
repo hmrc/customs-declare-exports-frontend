@@ -16,11 +16,9 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.InlandModeOfTransportCode
-
-import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -30,11 +28,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.inland_transport_details
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class InlandTransportDetailsController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
@@ -47,7 +45,7 @@ class InlandTransportDetailsController @Inject()(
 
   private val validJourneys = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.locations.inlandModeOfTransportCode match {
       case Some(data) => Ok(inlandTransportDetailsPage(mode, frm.fill(data)))
@@ -55,7 +53,7 @@ class InlandTransportDetailsController @Inject()(
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     InlandModeOfTransportCode
       .form()
       .bindFromRequest()

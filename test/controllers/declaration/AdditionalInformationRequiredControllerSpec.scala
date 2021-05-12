@@ -36,7 +36,6 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
   val controller = new AdditionalInformationRequiredController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

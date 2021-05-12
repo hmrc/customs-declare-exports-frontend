@@ -39,7 +39,6 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
   val controller = new RepresentativeStatusController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     mockExportsCacheService,

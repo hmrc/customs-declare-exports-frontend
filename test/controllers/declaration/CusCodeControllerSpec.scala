@@ -37,15 +37,7 @@ class CusCodeControllerSpec extends ControllerSpec {
   val mockPage = mock[cus_code]
 
   val controller =
-    new CusCodeController(
-      mockAuthAction,
-      mockVerifiedEmailAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      mockPage
-    )(ec)
+    new CusCodeController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), mockPage)(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

@@ -43,7 +43,6 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       mockAuthAction,
       mockVerifiedEmailAction,
       mockCustomsDeclareExportsConnector,
-      mockErrorHandler,
       mockExportsMetrics,
       stubMessagesControllerComponents(),
       mockAuditService,
