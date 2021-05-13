@@ -38,7 +38,6 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
   private val controller = new PreviousDocumentsSummaryController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     mockExportsCacheService,

@@ -16,14 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.ProcedureCodes
 import forms.declaration.ProcedureCodes.form
-
-import javax.inject.Inject
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData._
 import models.requests.JourneyRequest
@@ -36,11 +34,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.procedure_codes
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ProcedureCodesController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
@@ -49,7 +47,7 @@ class ProcedureCodesController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.itemBy(itemId) match {
       case Some(exportItem) =>
@@ -61,20 +59,19 @@ class ProcedureCodesController @Inject()(
     }
   }
 
-  def submitProcedureCodes(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
-    implicit request =>
-      val boundForm = form().bindFromRequest()
-      val actionTypeOpt = FormAction.bindFromRequest()
+  def submitProcedureCodes(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val boundForm = form().bindFromRequest()
+    val actionTypeOpt = FormAction.bindFromRequest()
 
-      val cache = request.cacheModel.itemBy(itemId).flatMap(_.procedureCodes).getOrElse(ProcedureCodesData(None, Seq()))
-      actionTypeOpt match {
-        case Add if !boundForm.hasErrors => addAnotherCodeHandler(mode, itemId, boundForm.get, cache)
-        case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
-          saveAndContinueHandler(mode, itemId, boundForm.get, cache)
-        case Remove(values) => removeCodeHandler(mode, itemId, retrieveProcedureCode(values), boundForm, cache)
-        case _ =>
-          Future.successful(BadRequest(procedureCodesPage(mode, itemId, boundForm, cache.additionalProcedureCodes)))
-      }
+    val cache = request.cacheModel.itemBy(itemId).flatMap(_.procedureCodes).getOrElse(ProcedureCodesData(None, Seq()))
+    actionTypeOpt match {
+      case Add if !boundForm.hasErrors => addAnotherCodeHandler(mode, itemId, boundForm.get, cache)
+      case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
+        saveAndContinueHandler(mode, itemId, boundForm.get, cache)
+      case Remove(values) => removeCodeHandler(mode, itemId, retrieveProcedureCode(values), boundForm, cache)
+      case _ =>
+        Future.successful(BadRequest(procedureCodesPage(mode, itemId, boundForm, cache.additionalProcedureCodes)))
+    }
   }
 
   private def addAnotherCodeHandler(mode: Mode, itemId: String, userInput: ProcedureCodes, cachedData: ProcedureCodesData)(

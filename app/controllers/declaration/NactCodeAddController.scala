@@ -16,16 +16,14 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.NactCode.nactCodeLimit
 import forms.declaration.{NactCode, NactCodeFirst}
-
-import javax.inject.Inject
+import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
-import models.declaration.ExportItem
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -33,11 +31,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{nact_code_add, nact_code_add_first}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NactCodeAddController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -51,39 +49,37 @@ class NactCodeAddController @Inject()(
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)) {
-    implicit request =>
-      val maybeItem = request.cacheModel.itemBy(itemId)
-      maybeItem.flatMap(_.nactCodes) match {
-        case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(mode, itemId, NactCode.form().withSubmissionErrors()))
-        case Some(_) =>
-          Ok(
-            nactCodeAddFirstPage(
-              mode,
-              itemId,
-              NactCodeFirst.form().fill(NactCodeFirst(None)).withSubmissionErrors(),
-              getCombinedNomenclatureCode(maybeItem)
-            )
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    val maybeItem = request.cacheModel.itemBy(itemId)
+    maybeItem.flatMap(_.nactCodes) match {
+      case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(mode, itemId, NactCode.form().withSubmissionErrors()))
+      case Some(_) =>
+        Ok(
+          nactCodeAddFirstPage(
+            mode,
+            itemId,
+            NactCodeFirst.form().fill(NactCodeFirst(None)).withSubmissionErrors(),
+            getCombinedNomenclatureCode(maybeItem)
           )
-        case _ => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form().withSubmissionErrors(), getCombinedNomenclatureCode(maybeItem)))
-      }
+        )
+      case _ => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form().withSubmissionErrors(), getCombinedNomenclatureCode(maybeItem)))
+    }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)).async {
-    implicit request =>
-      val maybeItem = request.cacheModel.itemBy(itemId)
-      maybeItem.flatMap(_.nactCodes) match {
-        case Some(nactCodes) if nactCodes.nonEmpty => saveAdditionalNactCode(mode, itemId, NactCode.form().bindFromRequest(), nactCodes)
-        case _ =>
-          NactCodeFirst
-            .form()
-            .bindFromRequest()
-            .fold(
-              (formWithErrors: Form[NactCodeFirst]) =>
-                Future.successful(BadRequest(nactCodeAddFirstPage(mode, itemId, formWithErrors, getCombinedNomenclatureCode(maybeItem)))),
-              validForm => saveFirstNactCode(mode, itemId, validForm.code)
-            )
-      }
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    val maybeItem = request.cacheModel.itemBy(itemId)
+    maybeItem.flatMap(_.nactCodes) match {
+      case Some(nactCodes) if nactCodes.nonEmpty => saveAdditionalNactCode(mode, itemId, NactCode.form().bindFromRequest(), nactCodes)
+      case _ =>
+        NactCodeFirst
+          .form()
+          .bindFromRequest()
+          .fold(
+            (formWithErrors: Form[NactCodeFirst]) =>
+              Future.successful(BadRequest(nactCodeAddFirstPage(mode, itemId, formWithErrors, getCombinedNomenclatureCode(maybeItem)))),
+            validForm => saveFirstNactCode(mode, itemId, validForm.code)
+          )
+    }
   }
 
   private def getCombinedNomenclatureCode(maybeItem: Option[ExportItem]): Option[String] =

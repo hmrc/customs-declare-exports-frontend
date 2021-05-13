@@ -36,7 +36,6 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
   private val controller = new PreviousDocumentsRemoveController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

@@ -38,7 +38,6 @@ class DocumentsProducedChangeControllerSpec extends ControllerSpec with ErrorHan
 
   val controller = new DocumentsProducedChangeController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

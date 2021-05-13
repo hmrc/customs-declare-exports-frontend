@@ -16,12 +16,10 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-
-import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -30,9 +28,10 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.taric_codes
 
+import javax.inject.Inject
+
 class TaricCodeSummaryController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -40,14 +39,14 @@ class TaricCodeSummaryController @Inject()(
   taricCodesPage: taric_codes
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
       case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodesPage(mode, itemId, addYesNoForm.withSubmissionErrors(), taricCodes))
       case _                                       => navigator.continueTo(mode, routes.TaricCodeAddController.displayPage(_, itemId))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val taricCodes = request.cacheModel.itemBy(itemId).flatMap(_.taricCodes).getOrElse(List.empty)
     addYesNoForm
       .bindFromRequest()

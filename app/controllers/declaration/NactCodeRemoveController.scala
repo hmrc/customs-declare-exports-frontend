@@ -16,12 +16,10 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -31,11 +29,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.nact_code_remove
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NactCodeRemoveController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -46,13 +44,12 @@ class NactCodeRemoveController @Inject()(
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)) {
-    implicit request =>
-      Ok(nactCodeRemove(mode, itemId, code, removeYesNoForm.withSubmissionErrors()))
+  def displayPage(mode: Mode, itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    Ok(nactCodeRemove(mode, itemId, code, removeYesNoForm.withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, itemId: String, code: String): Action[AnyContent] =
-    (authenticate andThen verifyEmail andThen journeyType(validTypes)).async { implicit request =>
+    (authenticate andThen journeyType(validTypes)).async { implicit request =>
       removeYesNoForm
         .bindFromRequest()
         .fold(

@@ -39,7 +39,6 @@ class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
 
   val controller = new DeclarationHolderController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

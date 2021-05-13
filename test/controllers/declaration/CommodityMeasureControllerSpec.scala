@@ -37,7 +37,6 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
   val controller = new CommodityMeasureController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

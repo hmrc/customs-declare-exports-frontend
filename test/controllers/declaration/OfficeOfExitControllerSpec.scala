@@ -37,7 +37,6 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
   val controller = new OfficeOfExitController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     stubMessagesControllerComponents(),

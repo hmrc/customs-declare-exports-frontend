@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.BorderTransportController
 import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.IMOShipIDNumber
 import models.DeclarationType._
@@ -38,7 +37,6 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
   val controller = new BorderTransportController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     mockExportsCacheService,

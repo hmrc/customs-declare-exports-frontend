@@ -16,11 +16,9 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.TotalNumberOfItems
-
-import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
@@ -31,11 +29,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.total_number_of_items
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TotalNumberOfItemsController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -47,7 +45,7 @@ class TotalNumberOfItemsController @Inject()(
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val frm = form().withSubmissionErrors()
     request.cacheModel.totalNumberOfItems match {
       case Some(data) => Ok(totalNumberOfItemsPage(mode, frm.fill(data)))
@@ -55,7 +53,7 @@ class TotalNumberOfItemsController @Inject()(
     }
   }
 
-  def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validTypes)).async { implicit request =>
+  def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

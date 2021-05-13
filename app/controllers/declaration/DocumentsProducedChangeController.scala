@@ -16,14 +16,12 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.DocumentsProducedAddController.DocumentsProducedFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.{form, globalErrors}
-
-import javax.inject.Inject
 import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.maxNumberOfItems
 import models.requests.JourneyRequest
@@ -36,11 +34,11 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.documentsProduced.documents_produced_change
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DocumentsProducedChangeController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -49,32 +47,30 @@ class DocumentsProducedChangeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
-    implicit request =>
-      findDocument(itemId, documentId) match {
-        case Some(document) => Ok(documentProducedPage(mode, itemId, documentId, form().fill(document).withSubmissionErrors()))
-        case _              => returnToSummary(mode, itemId)
-      }
+  def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    findDocument(itemId, documentId) match {
+      case Some(document) => Ok(documentProducedPage(mode, itemId, documentId, form().fill(document).withSubmissionErrors()))
+      case _              => returnToSummary(mode, itemId)
+    }
   }
 
-  def submitForm(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async {
-    implicit request =>
-      findDocument(itemId, documentId) match {
-        case Some(existingDocument) =>
-          val boundForm = globalErrors(form().bindFromRequest())
-          boundForm.fold(
-            formWithErrors => {
-              Future.successful(BadRequest(documentProducedPage(mode, itemId, documentId, formWithErrors)))
-            },
-            updatedDocument => {
-              if (updatedDocument.isDefined)
-                changeDocument(mode, itemId, documentId, existingDocument, updatedDocument, boundForm)
-              else
-                Future.successful(returnToSummary(mode, itemId))
-            }
-          )
-        case _ => Future.successful(returnToSummary(mode, itemId))
-      }
+  def submitForm(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    findDocument(itemId, documentId) match {
+      case Some(existingDocument) =>
+        val boundForm = globalErrors(form().bindFromRequest())
+        boundForm.fold(
+          formWithErrors => {
+            Future.successful(BadRequest(documentProducedPage(mode, itemId, documentId, formWithErrors)))
+          },
+          updatedDocument => {
+            if (updatedDocument.isDefined)
+              changeDocument(mode, itemId, documentId, existingDocument, updatedDocument, boundForm)
+            else
+              Future.successful(returnToSummary(mode, itemId))
+          }
+        )
+      case _ => Future.successful(returnToSummary(mode, itemId))
+    }
   }
 
   private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =

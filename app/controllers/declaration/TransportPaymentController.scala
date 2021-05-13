@@ -16,12 +16,10 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.TransportPayment
 import forms.declaration.TransportPayment._
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -30,11 +28,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.transport_payment
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportPaymentController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
@@ -46,7 +44,7 @@ class TransportPaymentController @Inject()(
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] =
-    (authenticate andThen verifyEmail andThen journeyType(validTypes)) { implicit request =>
+    (authenticate andThen journeyType(validTypes)) { implicit request =>
       val frm = form().withSubmissionErrors()
       request.cacheModel.transport.transportPayment match {
         case Some(data) => Ok(transportPayment(mode, frm.fill(data)))
@@ -55,7 +53,7 @@ class TransportPaymentController @Inject()(
     }
 
   def submitForm(mode: Mode): Action[AnyContent] =
-    (authenticate andThen verifyEmail andThen journeyType(validTypes)).async { implicit request =>
+    (authenticate andThen journeyType(validTypes)).async { implicit request =>
       form()
         .bindFromRequest()
         .fold(

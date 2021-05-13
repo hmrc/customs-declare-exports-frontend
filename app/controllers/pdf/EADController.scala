@@ -16,23 +16,21 @@
 
 package controllers.pdf
 
-import java.time.LocalDate
-import controllers.actions.{AuthAction, VerifiedEmailAction}
-
-import javax.inject.Inject
+import controllers.actions.AuthAction
 import org.apache.xmlgraphics.util.MimeConstants
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ead.EADService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import java.time.LocalDate
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EADController @Inject()(authenticate: AuthAction, verifyEmail: VerifiedEmailAction, mcc: MessagesControllerComponents, eadService: EADService)(
-  implicit ec: ExecutionContext
-) extends FrontendController(mcc) with I18nSupport {
+class EADController @Inject()(authenticate: AuthAction, mcc: MessagesControllerComponents, eadService: EADService)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
-  def generatePdf(mrn: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def generatePdf(mrn: String): Action[AnyContent] = authenticate.async { implicit request =>
     val fileName = s"EAD-${mrn}-${LocalDate.now}.pdf"
 
     eadService.generatePdf(mrn).map { pdf =>

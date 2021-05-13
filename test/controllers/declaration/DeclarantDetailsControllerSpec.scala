@@ -39,7 +39,6 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
   val controller = new DeclarantDetailsController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

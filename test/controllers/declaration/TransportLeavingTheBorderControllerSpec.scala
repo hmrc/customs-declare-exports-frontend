@@ -37,7 +37,6 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
 
   val controller = new TransportLeavingTheBorderController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

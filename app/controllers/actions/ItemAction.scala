@@ -16,10 +16,10 @@
 
 package controllers.actions
 
-import javax.inject.Inject
 import models.requests.{ItemRequest, JourneyRequest}
 import play.api.mvc.{ActionRefiner, Result}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 case class ItemAction(itemId: String)(implicit val executionContext: ExecutionContext) extends ActionRefiner[JourneyRequest, ItemRequest] {
@@ -37,9 +37,7 @@ case class ItemAction(itemId: String)(implicit val executionContext: ExecutionCo
     }
 }
 
-class ItemActionBuilder @Inject()(authorized: AuthAction, verifyEmail: VerifiedEmailAction, journeyAction: JourneyAction)(
-  implicit val executionContext: ExecutionContext
-) {
+class ItemActionBuilder @Inject()(authorized: AuthAction, journeyAction: JourneyAction)(implicit val executionContext: ExecutionContext) {
 
-  def apply(itemId: String) = authorized andThen verifyEmail andThen journeyAction andThen ItemAction(itemId)
+  def apply(itemId: String) = authorized andThen journeyAction andThen ItemAction(itemId)
 }

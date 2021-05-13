@@ -39,7 +39,6 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
   val controller = new AdditionalDeclarationTypeController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

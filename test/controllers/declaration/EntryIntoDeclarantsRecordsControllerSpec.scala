@@ -40,7 +40,6 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
   private val controller = new EntryIntoDeclarantsRecordsController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

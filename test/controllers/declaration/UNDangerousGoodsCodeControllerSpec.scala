@@ -39,7 +39,6 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
   val controller = new UNDangerousGoodsCodeController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,

@@ -35,8 +35,7 @@ class RemoveSavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
       mockVerifiedEmailAction,
       mockCustomsDeclareExportsConnector,
       stubMessagesControllerComponents(),
-      removeDeclarationPage,
-      config
+      removeDeclarationPage
     )(ec)
 
     authorizedUser()

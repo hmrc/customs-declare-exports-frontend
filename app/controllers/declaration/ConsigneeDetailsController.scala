@@ -16,11 +16,9 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ConsigneeDetails
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -30,6 +28,7 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.consignee_details
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
@@ -37,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class ConsigneeDetailsController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -46,7 +44,7 @@ class ConsigneeDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = ConsigneeDetails.form().withSubmissionErrors()
     request.cacheModel.parties.consigneeDetails match {
       case Some(data) => Ok(consigneeDetailsPage(mode, frm.fill(data)))
@@ -54,7 +52,7 @@ class ConsigneeDetailsController @Inject()(
     }
   }
 
-  def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     ConsigneeDetails
       .form()
       .bindFromRequest()

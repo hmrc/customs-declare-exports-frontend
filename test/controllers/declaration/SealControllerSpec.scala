@@ -43,7 +43,6 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   val controller = new SealController(
     mockAuthAction,
-    mockVerifiedEmailAction,
     mockJourneyAction,
     navigator,
     mockErrorHandler,

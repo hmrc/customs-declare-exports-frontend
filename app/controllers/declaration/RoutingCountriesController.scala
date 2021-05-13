@@ -16,13 +16,11 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingCountryQuestionYesNo._
 import forms.declaration.countries.Countries
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
-
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -32,11 +30,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RoutingCountriesController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -46,23 +44,22 @@ class RoutingCountriesController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) {
-    implicit request =>
-      if (fastForward && request.cacheModel.containRoutingCountries()) {
-        navigator.continueTo(mode, routes.RoutingCountriesSummaryController.displayPage)
-      } else {
-        val destinationCountryCode = request.cacheModel.locations.destinationCountry.flatMap(_.code)
-        val destinationCountryName = destinationCountryCode.map(findByCode(_)).map(_.asString()).getOrElse("")
+  def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    if (fastForward && request.cacheModel.containRoutingCountries()) {
+      navigator.continueTo(mode, routes.RoutingCountriesSummaryController.displayPage)
+    } else {
+      val destinationCountryCode = request.cacheModel.locations.destinationCountry.flatMap(_.code)
+      val destinationCountryName = destinationCountryCode.map(findByCode(_)).map(_.asString()).getOrElse("")
 
-        val frm = formFirst().withSubmissionErrors()
-        request.cacheModel.locations.hasRoutingCountries match {
-          case Some(answer) => Ok(routingQuestionPage(mode, frm.fill(answer), destinationCountryName))
-          case None         => Ok(routingQuestionPage(mode, frm, destinationCountryName))
-        }
+      val frm = formFirst().withSubmissionErrors()
+      request.cacheModel.locations.hasRoutingCountries match {
+        case Some(answer) => Ok(routingQuestionPage(mode, frm.fill(answer), destinationCountryName))
+        case None         => Ok(routingQuestionPage(mode, frm, destinationCountryName))
       }
+    }
   }
 
-  def submitRoutingAnswer(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def submitRoutingAnswer(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val destinationCountry = request.cacheModel.locations.destinationCountry.flatMap(_.code).getOrElse("-")
     val cachedCountries = request.cacheModel.locations.routingCountries
 
@@ -87,7 +84,7 @@ class RoutingCountriesController @Inject()(
     else
       navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
 
-  def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+  def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val routingAnswer = request.cacheModel.locations.hasRoutingCountries
     val page = if (request.cacheModel.locations.routingCountries.nonEmpty) NextRoutingCountryPage else FirstRoutingCountryPage
 
@@ -98,7 +95,7 @@ class RoutingCountriesController @Inject()(
     }
   }
 
-  def submitRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def submitRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val hasCountriesAdded = request.cacheModel.locations.routingCountries.nonEmpty
     val cachedCountries = request.cacheModel.locations.routingCountries
     val page = if (hasCountriesAdded) NextRoutingCountryPage else FirstRoutingCountryPage

@@ -16,15 +16,13 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
-
-import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
-import models.requests.JourneyRequest
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -32,11 +30,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.carrier_eori_number
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CarrierEoriNumberController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -47,7 +45,7 @@ class CarrierEoriNumberController @Inject()(
 
   val validJourneys = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     request.cacheModel.parties.carrierDetails match {
       case Some(data) => Ok(carrierEoriDetailsPage(mode, form().fill(CarrierEoriNumber(data))))
       case _          => Ok(carrierEoriDetailsPage(mode, form()))
@@ -56,7 +54,7 @@ class CarrierEoriNumberController @Inject()(
 
   private def form()(implicit request: JourneyRequest[_]) = CarrierEoriNumber.form().withSubmissionErrors()
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(validJourneys)).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

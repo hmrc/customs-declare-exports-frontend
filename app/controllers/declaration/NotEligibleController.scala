@@ -16,27 +16,26 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, VerifiedEmailAction}
-
-import javax.inject.Inject
+import controllers.actions.AuthAction
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{not_declarant, not_eligible}
 
+import javax.inject.Inject
+
 class NotEligibleController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   mcc: MessagesControllerComponents,
   notEligiblePage: not_eligible,
   notDeclarantPage: not_declarant
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def displayNotEligible(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
+  def displayNotEligible(): Action[AnyContent] = authenticate { implicit request =>
     Ok(notEligiblePage())
   }
 
-  def displayNotDeclarant(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
+  def displayNotDeclarant(): Action[AnyContent] = authenticate { implicit request =>
     Ok(notDeclarantPage())
   }
 

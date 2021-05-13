@@ -37,7 +37,7 @@ class VerifiedEmailActionImpl @Inject()(backendConnector: CustomsDeclareExportsC
     extends VerifiedEmailAction {
 
   implicit val executionContext: ExecutionContext = mcc.executionContext
-  private lazy val onError = Redirect(routes.UnverifiedEmailController.informUser)
+  private lazy val onError = Redirect(routes.UnverifiedEmailController.informUser())
 
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, VerifiedEmailRequest[A]]] = {
 

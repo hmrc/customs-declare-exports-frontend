@@ -16,12 +16,10 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{IsExs, UNDangerousGoodsCode}
-
-import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.declaration.{ExportItem, Parties}
 import models.requests.JourneyRequest
@@ -32,11 +30,11 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.is_exs
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IsExsController @Inject()(
   authenticate: AuthAction,
-  verifyEmail: VerifiedEmailAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
@@ -47,7 +45,7 @@ class IsExsController @Inject()(
 
   private val allowedJourney: DeclarationType = CLEARANCE
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(allowedJourney)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(allowedJourney)) { implicit request =>
     val frm = IsExs.form.withSubmissionErrors()
     request.cacheModel.parties.isExs match {
       case Some(data) => Ok(isExsPage(mode, frm.fill(data)))
@@ -55,7 +53,7 @@ class IsExsController @Inject()(
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType(allowedJourney)).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(allowedJourney)).async { implicit request =>
     IsExs.form
       .bindFromRequest()
       .fold(

@@ -16,13 +16,10 @@
 
 package controllers.declaration
 
-import java.time.Instant
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.declaration.DeclarationChoice
 import forms.declaration.DeclarationChoice._
-
-import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, Mode}
@@ -35,6 +32,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declaration_choice
 
+import java.time.Instant
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationChoiceController @Inject()(
