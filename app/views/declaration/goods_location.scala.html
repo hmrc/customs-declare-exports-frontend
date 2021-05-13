@@ -23,6 +23,7 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.helpers.{BackButton, Title}
+@import views.html.components.goodsLocationExpander
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -30,13 +31,13 @@
         errorSummary: errorSummary,
         exportsInputText: exportsInputText,
         saveButtons: saveButtons,
+        goodsLocationExpander: goodsLocationExpander,
         tariffExpander: tariffExpander,
         pageTitle: pageTitle,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
         sectionHeader: sectionHeader,
         appConfig: AppConfig
 )
-
 
 @(mode: Mode, form: Form[GoodsLocationForm])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -59,10 +60,10 @@
             sectionHeaderKey = None
         )
 
+        @goodsLocationExpander()
 
         @tariffExpander(GoodsLocationForm, request.declarationType)(messages, appConfig)
 
-    @saveButtons()
-}
-
+        @saveButtons()
+    }
 }
