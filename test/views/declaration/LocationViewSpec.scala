@@ -55,31 +55,34 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     val view = createView()
 
     "display same page title as header" in {
-
       val viewWithMessage = createView()
 
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display section header" in {
-
       view.getElementById("section-header") must containMessage("declaration.section.3")
     }
 
     "display header" in {
-
       view.getElementsByTag("h1") must containMessageForElements("declaration.goodsLocation.title")
     }
 
-    "display 'Save and continue' button" in {
+    "display goods location expander" in {
+      view.getElementsByClass("govuk-details__summary-text").first() must containHtml(messages("declaration.goodsLocation.expander.title"))
+    }
 
+    "display tariff expander" in {
+      view.getElementsByClass("govuk-details__summary-text").get(1) must containHtml(messages("tariff.expander.title.common"))
+    }
+
+    "display 'Save and continue' button" in {
       val saveButton = view.getElementById("submit")
 
       saveButton must containMessage("site.save_and_continue")
     }
 
     "display 'Save and return' button" in {
-
       val saveButton = view.getElementById("submit_and_return")
 
       saveButton must containMessage("site.save_and_come_back_later")

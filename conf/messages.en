@@ -713,10 +713,35 @@ declaration.routingCountries.remove.countryHeader = Country
 declaration.routingCountries.duplication = Routing country already added
 declaration.routingCountries.limit = Maximum number of routing countries added
 
-declaration.goodsLocation.title = What is the code for the location of the goods when they are declared?
-declaration.goodsLocation.hint = This is usually the port they are leaving from and is officially known as the Goods Location Code. For example, if they were at Felixstowe, it would be GBAUFXTFXTFXT.
+declaration.goodsLocation.title = What is the goods location code?
+declaration.goodsLocation.hint = <p>This is a code for the location where goods are presented to customs.</p> <p>If necessary the goods location code must be updated by the approved loader as part of the arrival process, when the goods arrive at that location.</p><p>Most goods location codes contain just letters. For example, for goods leaving from Felixstowe, it would be GBAUFXTFXTFXT.</p>
 declaration.goodsLocation.code.empty = Enter a goods location code
 declaration.goodsLocation.code.error = Goods location code must be in the correct format
+
+declaration.goodsLocation.expander.title=Find the goods location code (CDS data element 5/23)
+declaration.goodsLocation.expander.intro=Select the location type, and then look up the code (links open in a new tab).
+declaration.goodsLocation.expander.paragraph1.title=RoRo ports for road transport
+declaration.goodsLocation.expander.paragraph1.text={0}<br/>Download the Tariff supplement and search for appendix 16R.
+declaration.goodsLocation.expander.paragraph1.link1.text=RoRo ports location codes, including all trucks and containers using Eurotunnel
+declaration.goodsLocation.expander.paragraph2.title=Terminals for rail transport
+declaration.goodsLocation.expander.paragraph2.text={0}<br/>Download the Tariff supplement and search for appendix 16M.
+declaration.goodsLocation.expander.paragraph2.link1.text=Rail terminal location codes
+declaration.goodsLocation.expander.paragraph3.title=Airports
+declaration.goodsLocation.expander.paragraph3.link1.text=Airport location codes
+declaration.goodsLocation.expander.paragraph4.title=Certificate of Agreement airports
+declaration.goodsLocation.expander.paragraph4.link1.text=Certificate of agreement airports location codes
+declaration.goodsLocation.expander.paragraph5.title=Maritime ports and wharves
+declaration.goodsLocation.expander.paragraph5.link1.text=Maritime ports and wharves location codes
+declaration.goodsLocation.expander.paragraph6.title=Internal temporary storage facilities (ITSFs)
+declaration.goodsLocation.expander.paragraph6.link1.text=Internal temporary storage facilities (ITSFs) location codes
+declaration.goodsLocation.expander.paragraph7.title=Designated Export Places (DEPs)
+declaration.goodsLocation.expander.paragraph7.link1.text=Designated Export Places location codes
+declaration.goodsLocation.expander.paragraph8.title=Customs Supervised Export (CSE) premises
+declaration.goodsLocation.expander.paragraph8.text={0}<br/>Where CSE is not being used, enter the location details as given under the ‘Location of goods’ entry in DE 1/10: Requested and Previous Procedure Codes.
+declaration.goodsLocation.expander.paragraph8.link1.text=Customs Supervised Export (CSE) premises location codes
+declaration.goodsLocation.expander.paragraph9.text=If your goods location is not covered by the above guidance, refer to the codes for {0}, or check the latest additions to the CDS location codes in the {1}.
+declaration.goodsLocation.expander.paragraph9.link1.text=data element 5/23 of the Customs Declaration Service (CDS) (Appendix 16)
+declaration.goodsLocation.expander.paragraph9.link2.text=Tariff Volume 3 Great Britain Supplement CDS and CHIEF
 
 declaration.procedureCodes.title = Procedure codes
 declaration.procedureCodes.procedureCode.header = Enter the first 4 digits of the procedure code

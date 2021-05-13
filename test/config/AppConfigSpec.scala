@@ -47,6 +47,15 @@ class AppConfigSpec extends UnitSpec {
         |urls.tradeTariff="https://www.gov.uk/trade-tariff"
         |urls.tariffCommodities="https://www.trade-tariff.service.gov.uk/commodities/"
         |urls.companyInformationRegister="http://companyInformationRegister"
+        |urls.customsDecCompletionRequirements="http://customsDecCompletionRequirements"
+        |urls.locationCodeForAirports="http://locationCodeForAirports"
+        |urls.certificateOfAgreementAirports="http://certificateOfAgreementAirports"
+        |urls.locationCodeForMaritimePorts="http://locationCodeForMaritimePorts"
+        |urls.locationCodeForTempStorage="http://locationCodeForTempStorage"
+        |urls.designatedExportPlaceCodes="http://designatedExportPlaceCodes"
+        |urls.locationCodesForCsePremises="http://locationCodesForCsePremises"
+        |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
+        |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
         |
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
@@ -154,6 +163,42 @@ class AppConfigSpec extends UnitSpec {
 
     "have companyInformationRegister URL" in {
       validAppConfig.companyInformationRegister must be("http://companyInformationRegister")
+    }
+
+    "have customsDecCompletionRequirements URL" in {
+      validAppConfig.customsDecCompletionRequirements must be("http://customsDecCompletionRequirements")
+    }
+
+    "have locationCodeForAirports URL" in {
+      validAppConfig.locationCodeForAirports must be("http://locationCodeForAirports")
+    }
+
+    "have certificateOfAgreementAirports URL" in {
+      validAppConfig.certificateOfAgreementAirports must be("http://certificateOfAgreementAirports")
+    }
+
+    "have locationCodeForMaritimePorts URL" in {
+      validAppConfig.locationCodeForMaritimePorts must be("http://locationCodeForMaritimePorts")
+    }
+
+    "have locationCodeForTempStorage URL" in {
+      validAppConfig.locationCodeForTempStorage must be("http://locationCodeForTempStorage")
+    }
+
+    "have designatedExportPlaceCodes URL" in {
+      validAppConfig.designatedExportPlaceCodes must be("http://designatedExportPlaceCodes")
+    }
+
+    "have locationCodesForCsePremises URL" in {
+      validAppConfig.locationCodesForCsePremises must be("http://locationCodesForCsePremises")
+    }
+
+    "have goodsLocationCodesForDataElement URL" in {
+      validAppConfig.goodsLocationCodesForDataElement must be("http://goodsLocationCodesForDataElement")
+    }
+
+    "have tariffCdsChiefSupplement URL" in {
+      validAppConfig.tariffCdsChiefSupplement must be("http://tariffCdsChiefSupplement")
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {

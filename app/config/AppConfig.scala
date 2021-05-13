@@ -71,6 +71,16 @@ class AppConfig @Inject()(
 
   lazy val govUkPageForTypeCO = loadConfig("urls.govUkPageForTypeCO")
 
+  lazy val customsDecCompletionRequirements = loadConfig("urls.customsDecCompletionRequirements")
+  lazy val locationCodeForAirports = loadConfig("urls.locationCodeForAirports")
+  lazy val certificateOfAgreementAirports = loadConfig("urls.certificateOfAgreementAirports")
+  lazy val locationCodeForMaritimePorts = loadConfig("urls.locationCodeForMaritimePorts")
+  lazy val locationCodeForTempStorage = loadConfig("urls.locationCodeForTempStorage")
+  lazy val designatedExportPlaceCodes = loadConfig("urls.designatedExportPlaceCodes")
+  lazy val locationCodesForCsePremises = loadConfig("urls.locationCodesForCsePremises")
+  lazy val goodsLocationCodesForDataElement = loadConfig("urls.goodsLocationCodesForDataElement")
+  lazy val tariffCdsChiefSupplement = loadConfig("urls.tariffCdsChiefSupplement")
+
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   lazy val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
