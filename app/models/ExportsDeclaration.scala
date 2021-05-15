@@ -18,6 +18,7 @@ package models
 
 import java.time.{Clock, Instant}
 
+import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
@@ -36,6 +37,8 @@ case class ExportsDeclaration(
   `type`: DeclarationType,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
+  linkDucrToMucr: Option[YesNoAnswer] = None,
+  mucr: Option[Mucr] = None,
   transport: Transport = Transport(),
   parties: Parties = Parties(),
   locations: Locations = Locations(),

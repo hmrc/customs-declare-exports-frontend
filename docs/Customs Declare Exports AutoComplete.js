@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.66
+// @version      1.67
 // @description  decs supported: (Std-Arrived A), (Occ-Arrived B), (Smp-Arrived C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Arrived J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -238,6 +238,20 @@ function consignmentReferences(){
         document.getElementById('lrn').value = 'QSLRN' + Math.floor(Math.random() * 8999) + 100;
         document.getElementById('ducr_ducr').value = '8GB123456' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1';
         document.getElementById('submit').click()
+    }
+}
+
+function linkDucrToMucr() {
+    if (currentPageIs('/customs-declare-exports/declaration/link-to-mucr')) {
+        document.getElementById('code_yes').checked = 'checked';
+        document.getElementById('submit').click();
+    }
+}
+
+function enterMucr() {
+    if (currentPageIs('/customs-declare-exports/declaration/enter-a-mucr')) {
+        document.getElementById('MUCR').value = 'CZYX123A';
+        document.getElementById('submit').click();
     }
 }
 
@@ -1147,6 +1161,8 @@ function completeJourney() {
     dispatchLocation();
     additionalDeclarationType();
     consignmentReferences();
+    linkDucrToMucr();
+    enterMucr();
 
     // parties
     isEntryIntoDeclarantsRecords();

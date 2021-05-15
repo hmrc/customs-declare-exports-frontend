@@ -38,6 +38,8 @@ trait ViewMatchers {
   implicit protected def htmlBodyOf(page: String): Document = Jsoup.parse(page)
   implicit protected def htmlBodyOf(result: Future[Result]): Document = htmlBodyOf(contentAsString(result))
 
+  def removeBlanksIfAnyBeforeDot(s: String): String = s.replace(" .", ".")
+
   implicit class PageComplexChecks(document: Document) extends MustMatchers {
     def checkErrorsSummary(): Unit = {
       document.getElementById("error-summary-heading").text() mustBe "error.summary.title"

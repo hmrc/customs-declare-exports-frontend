@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.{routes, DeclarationHolderRequiredController}
+import controllers.declaration.{DeclarationHolderRequiredController}
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.DeclarationHolder
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}

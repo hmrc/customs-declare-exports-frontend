@@ -18,17 +18,15 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.common.YesNoAnswer.YesNoAnswers._
 
-@this(
-        govukFieldset: GovukFieldset,
-        govukRadios: GovukRadios
-)
+@this(govukRadios: GovukRadios)
 
-@(form: Form[_], heading: Option[Fieldset] = None)(implicit messages: Messages)
+@(form: Form[_], heading: Option[Fieldset] = None, hint: Option[Hint] = None)(implicit messages: Messages)
 
 
 @govukRadios(Radios(
     name = "yesNo",
     fieldset = heading,
+    hint = hint,
     items = Seq(
         RadioItem(
             id = Some("code_yes"),

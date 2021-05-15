@@ -56,6 +56,9 @@ class AppConfig @Inject()(
   lazy val customsMovementsFrontendUrl = loadConfig("urls.customsMovementsFrontend")
   lazy val exitSurveyUrl = loadConfig("urls.exitSurveyUrl")
 
+  lazy val ducrToMucrHint1Url = loadConfig("urls.ducrToMucrHint1")
+  lazy val ducrToMucrHint2Url = loadConfig("urls.ducrToMucrHint2")
+
   lazy val govUkUrl = loadConfig("urls.govUk")
   lazy val tradeTariffUrl = loadConfig("urls.tradeTariff")
   lazy val tariffCommoditiesUrl = loadConfig("urls.tariffCommodities")

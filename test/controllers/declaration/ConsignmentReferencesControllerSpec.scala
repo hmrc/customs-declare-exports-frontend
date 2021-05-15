@@ -100,7 +100,6 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
     onEveryDeclarationJourney() { request =>
       "return 400 (BAD_REQUEST)" in {
-
         withNewCaching(request.cacheModel)
         val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Lrn("")))
 
@@ -108,31 +107,15 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
         status(result) must be(BAD_REQUEST)
       }
-    }
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      "return 303 (SEE_OTHER) and redirect to Declarant Exporter page" in {
-
+      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" in {
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
 
         val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantExporterController.displayPage()
-      }
-    }
-
-    onClearance { request =>
-      "return 303 (SEE_OTHER) and redirect to Entry into Declarant's Records page" in {
-
-        withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
-
-        val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage()
+        thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage()
       }
     }
   }

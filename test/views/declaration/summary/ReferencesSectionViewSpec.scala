@@ -17,6 +17,8 @@
 package views.declaration.summary
 
 import base.Injector
+import controllers.declaration.routes
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
@@ -28,7 +30,9 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
   val data = aDeclaration(
     withType(DeclarationType.STANDARD),
     withAdditionalDeclarationType(AdditionalDeclarationType.STANDARD_FRONTIER),
-    withConsignmentReferences(ducr = "DUCR", lrn = "LRN")
+    withConsignmentReferences(ducr = "DUCR", lrn = "LRN"),
+    withLinkDucrToMucr(),
+    withMucr()
   )
 
   val section = instanceOf[references_section]
@@ -46,7 +50,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.references.type.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(routes.DeclarationChoiceController.displayPage(Mode.Change))
     }
 
     "have additional declaration type with change button" in {
@@ -57,10 +61,10 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.references.additionalType.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(routes.AdditionalDeclarationTypeController.displayPage(Mode.Change))
     }
 
-    "have ducr with change button" in {
+    "have DUCR with change button" in {
 
       val row = view.getElementsByClass("ducr-row")
       row must haveSummaryKey(messages("declaration.summary.references.ducr"))
@@ -68,10 +72,10 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.references.ducr.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(routes.ConsignmentReferencesController.displayPage(Mode.Change))
     }
 
-    "have lrn with change button" in {
+    "have LRN with change button" in {
 
       val row = view.getElementsByClass("lrn-row")
       row must haveSummaryKey(messages("declaration.summary.references.lrn"))
@@ -79,7 +83,29 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(routes.ConsignmentReferencesController.displayPage(Mode.Change))
+    }
+
+    "have 'Link to a MUCR' with change button" in {
+
+      val row = view.getElementsByClass("linkDucrToMucr-row")
+      row must haveSummaryKey(messages("declaration.summary.references.linkDucrToMucr"))
+      row must haveSummaryValue(YesNoAnswers.yes)
+
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.linkDucrToMucr.change")
+
+      row must haveSummaryActionsHref(routes.LinkDucrToMucrController.displayPage(Mode.Change))
+    }
+
+    "have MUCR with change button" in {
+
+      val row = view.getElementsByClass("mucr-row")
+      row must haveSummaryKey(messages("declaration.summary.references.mucr"))
+      row must haveSummaryValue(MUCR.mucr)
+
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.mucr.change")
+
+      row must haveSummaryActionsHref(routes.MucrController.displayPage(Mode.Change))
     }
   }
 
@@ -89,7 +115,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
 
       val row = viewNoAnswers.getElementsByClass("declarationType-row")
       row must haveSummaryKey(messages("declaration.summary.references.type"))
-      row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(routes.DeclarationChoiceController.displayPage(Mode.Change))
     }
 
     "not have additional declaration type" in {

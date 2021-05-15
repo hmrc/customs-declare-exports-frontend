@@ -57,12 +57,12 @@
 
 @sectionRequired(parties: Parties) = @{
     parties.exporterDetails.isDefined ||
-            parties.consigneeDetails.isDefined ||
-            parties.declarantDetails.isDefined ||
-            parties.representativeDetails.isDefined ||
-            parties.declarationAdditionalActorsData.isDefined ||
-            parties.declarationHoldersData.isDefined ||
-            parties.carrierDetails.isDefined
+    parties.consigneeDetails.isDefined ||
+    parties.declarantDetails.isDefined ||
+    parties.representativeDetails.isDefined ||
+    parties.declarationAdditionalActorsData.isDefined ||
+    parties.declarationHoldersData.isDefined ||
+    parties.carrierDetails.isDefined
 }
 
 @extractAddress(address: Address) = @{

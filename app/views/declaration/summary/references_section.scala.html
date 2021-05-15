@@ -107,6 +107,46 @@
                     )
                 ))
             )
+        ),
+        declarationData.linkDucrToMucr.map(refs =>
+            SummaryListRow(
+                classes = "linkDucrToMucr-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.references.linkDucrToMucr"))
+                ),
+                value = Value(
+                    content = Text(refs.answer)
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionItem(
+                            href = controllers.declaration.routes.LinkDucrToMucrController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.references.linkDucrToMucr.change"))
+                        )
+                    )
+                ))
+            )
+        ),
+        declarationData.mucr.map(refs =>
+            SummaryListRow(
+                classes = "mucr-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.references.mucr"))
+                ),
+                value = Value(
+                    content = Text(refs.mucr)
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionItem(
+                            href = controllers.declaration.routes.MucrController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.references.mucr.change"))
+                        )
+                    )
+                ))
+            )
         )
     )
 )
