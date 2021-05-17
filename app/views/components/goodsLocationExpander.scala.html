@@ -94,10 +94,17 @@
 
     @paragraph(messages("declaration.goodsLocation.expander.paragraph8.title"), "bold")
     @govukHint(Hint(
-        content = HtmlContent(link(
-            text = messages("declaration.goodsLocation.expander.paragraph8.link1.text"),
-            call = Call("GET", appConfig.locationCodesForCsePremises),
-            target = "_blank"
+        content = HtmlContent(messages("declaration.goodsLocation.expander.paragraph8.text",
+            link(
+                text = messages("declaration.goodsLocation.expander.paragraph8.link1.text"),
+                call = Call("GET", appConfig.locationCodesForCsePremises),
+                target = "_blank"
+            ),
+            link(
+                text = messages("declaration.goodsLocation.expander.paragraph8.link2.text"),
+                call = Call("GET", appConfig.previousProcedureCodesUrl),
+                target = "_blank"
+            )
         ))
     ))
 
