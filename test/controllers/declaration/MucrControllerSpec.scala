@@ -16,7 +16,8 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.TestHelper._
+import base.{ControllerSpec, TestHelper}
 import forms.declaration.Mucr
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
@@ -119,7 +120,7 @@ class MucrControllerSpec extends ControllerSpec {
       }
 
       "data entered is too long" in {
-        val incorrectForm = Json.obj(Mucr.MUCR -> 'C'.toString.repeat(36))
+        val incorrectForm = Json.obj(Mucr.MUCR -> createRandomAlphanumericString(36))
 
         val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)

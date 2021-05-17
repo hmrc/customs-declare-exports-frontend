@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import base.TestHelper.createRandomAlphanumericString
 import forms.common.DeclarationPageBaseSpec
 import org.scalatest.Assertion
 import play.api.data.{Form, FormError}
@@ -47,7 +48,7 @@ class MucrSpec extends DeclarationPageBaseSpec {
     }
 
     "return error for too long MUCR" in {
-      invalidMucr('C'.toString.repeat(36), "declaration.mucr.error.length")
+      invalidMucr(createRandomAlphanumericString(36), "declaration.mucr.error.length")
     }
 
     "return error for MUCR with non-allowed characters" in {

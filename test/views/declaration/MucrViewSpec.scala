@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import base.TestHelper.createRandomAlphanumericString
 import config.AppConfig
 import controllers.declaration.routes
 import forms.declaration.Mucr
@@ -40,6 +41,8 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
 
   private def createView(mode: Mode = Mode.Normal, form: Form[Mucr] = form)(implicit request: JourneyRequest[_]): Document =
     page(mode, form)(request, messages)
+
+  private val tooLongMucr = createRandomAlphanumericString(36)
 
   "'Enter the MUCR' view" should {
 
@@ -78,7 +81,7 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
       }
 
       "display error for MUCR too long" in {
-        verifyError('C'.toString.repeat(36), "length")
+        verifyError(tooLongMucr, "length")
       }
 
       "display error for MUCR containing non-allowed characters" in {
