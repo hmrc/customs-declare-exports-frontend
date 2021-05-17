@@ -84,8 +84,6 @@ object Navigator {
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
-    case LinkDucrToMucr              => routes.ConsignmentReferencesController.displayPage
-    case Mucr                        => routes.LinkDucrToMucrController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
@@ -121,8 +119,6 @@ object Navigator {
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
     case ConsignmentReferences        => routes.AdditionalDeclarationTypeController.displayPage
-    case LinkDucrToMucr               => routes.ConsignmentReferencesController.displayPage
-    case Mucr                         => routes.LinkDucrToMucrController.displayPage
     case ExporterDetails              => routes.ExporterEoriNumberController.displayPage
     case DeclarantDetails             => routes.EntryIntoDeclarantsRecordsController.displayPage
     case PersonPresentingGoodsDetails => routes.EntryIntoDeclarantsRecordsController.displayPage
@@ -155,8 +151,6 @@ object Navigator {
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
-    case LinkDucrToMucr              => routes.ConsignmentReferencesController.displayPage
-    case Mucr                        => routes.LinkDucrToMucrController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
@@ -190,8 +184,6 @@ object Navigator {
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
-    case LinkDucrToMucr              => routes.ConsignmentReferencesController.displayPage
-    case Mucr                        => routes.LinkDucrToMucrController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
@@ -225,8 +217,6 @@ object Navigator {
   val occasional: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
-    case LinkDucrToMucr              => routes.ConsignmentReferencesController.displayPage
-    case Mucr                        => routes.LinkDucrToMucrController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
@@ -263,6 +253,8 @@ object Navigator {
     case DeclarationChoice =>
       _ =>
         controllers.routes.ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
+    case LinkDucrToMucr                       => routes.ConsignmentReferencesController.displayPage
+    case Mucr                                 => routes.LinkDucrToMucrController.displayPage
     case RepresentativeEntity                 => routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => routes.RepresentativeEntityController.displayPage
     case OfficeOfExit                         => routes.LocationController.displayPage

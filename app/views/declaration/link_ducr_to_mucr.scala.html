@@ -37,7 +37,6 @@
     paragraph: paragraphBody,
     link: link,
     saveButtons: saveButtons,
-    saveAndContinue: saveAndContinue,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
 )
@@ -62,13 +61,6 @@
             target = "_blank"
         ))
     )
-}
-
-@buttons = @{
-  request.declarationType match {
-    case DeclarationType.CLEARANCE => saveButtons()
-    case _                         => saveAndContinue()
-  }
 }
 
 @govukLayout(
@@ -97,6 +89,6 @@
             content = HtmlContent(mucrDetails)
         ))
 
-        @buttons
+        @saveButtons()
     }
 }

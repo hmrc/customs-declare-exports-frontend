@@ -506,8 +506,7 @@ declaration.mucr.title = Enter the MUCR
 declaration.mucr.hint = To check the correct format, see the 'Notes' section on {0}.
 declaration.mucr.hint.link = data element 2/1 Previous Documents (opens in new tab)
 declaration.mucr.error.empty = Enter a MUCR
-declaration.mucr.error.invalid = MUCR must contain only letters, numbers, hyphens and backslash
-declaration.mucr.error.length = MUCR must be 35 characters or fewer
+declaration.mucr.error.invalid = MUCR must be 35 characters or fewer and contain only letters, numbers, hyphens and backslash
 
 declaration.declarant.exporter.title = Are you the exporter?
 declaration.declarant.exporter.answer.yes = Yes

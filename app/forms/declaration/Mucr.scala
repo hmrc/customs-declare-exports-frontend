@@ -38,7 +38,6 @@ object Mucr extends DeclarationPage {
     MUCR -> text()
       .verifying("declaration.mucr.error.empty", nonEmpty)
       .verifying("declaration.mucr.error.invalid", isEmpty or isValidMucr)
-      .verifying("declaration.mucr.error.length", isEmpty or noLongerThan(35))
   )(form2Data)(Mucr.unapply)
 
   def form: Form[Mucr] = Form(mapping)
