@@ -91,7 +91,7 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
         detailsTitle mustBe messages("declaration.linkDucrToMucr.details")
 
         val detailsHint1 = view.getElementById("link-ducr-to-mucr-hint1")
-        detailsHint1.child(0) must haveHref(appConfig.ducrToMucrHint1Url)
+        detailsHint1.child(0) must haveHref(appConfig.notesForMucrConsolidation)
 
         removeBlanksIfAnyBeforeDot(detailsHint1.text) mustBe messages(
           "declaration.linkDucrToMucr.details.hint1",
@@ -99,7 +99,7 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
         )
 
         val detailsHint2 = view.getElementById("link-ducr-to-mucr-hint2")
-        detailsHint2.child(0) must haveHref(appConfig.ducrToMucrHint2Url)
+        detailsHint2.child(0) must haveHref(appConfig.arriveOrDepartExportsService)
 
         removeBlanksIfAnyBeforeDot(detailsHint2.text) mustBe messages(
           "declaration.linkDucrToMucr.details.hint2",
