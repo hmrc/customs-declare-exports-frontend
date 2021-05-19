@@ -30,7 +30,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     withDepartureTransport(ModeOfTransportCode.Maritime, "10", "identifier"),
     withBorderTransport(Some("United Kingdom"), "11", "borderId"),
     withContainerData(Seq.empty),
-    withTransportPayment(Some(TransportPayment(Some("A"))))
+    withTransportPayment(Some(TransportPayment("A")))
   )
 
   val section = instanceOf[transport_section]
