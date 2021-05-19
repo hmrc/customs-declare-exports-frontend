@@ -79,8 +79,7 @@ object FieldValidator {
 
   val isValidAddressField: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' ', '\'', ',', '-'))(input)
 
-  val isValidMucr: String => Boolean = (input: String) =>
-    input.toUpperCase.matches("""GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28}|GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23}|A[0-9A-Z]{3}[0-9]{8}|C[A-Z]{3}[0-9A-Z]{3,30}""")
+  val isValidMucr: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set('\\', '-'))(input)
 
   val isAlphanumericWithSpecialCharacters: Set[Char] => String => Boolean = (allowedChars: Set[Char]) =>
     (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedChars)
