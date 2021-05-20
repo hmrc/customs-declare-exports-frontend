@@ -26,7 +26,7 @@ class MucrSpec extends DeclarationPageBaseSpec {
   "Mucr" should {
 
     "correctly convert a MUCR to upper case characters" in {
-      Mucr.form2Data("cxyz123d") mustBe Mucr("CXYZ123D")
+      Mucr.form2Data("c:xyz1-23d") mustBe Mucr("C:XYZ1-23D")
     }
 
     "have specific tariff keys" when {
@@ -37,7 +37,7 @@ class MucrSpec extends DeclarationPageBaseSpec {
   "Mucr mapping" should {
 
     "report no errors for valid MUCRs" in {
-      val validMucr = Mucr("CXYZ123D")
+      val validMucr = Mucr("C:XYZ-123D/")
       val filledForm = Form(Mucr.mapping).fillAndValidate(validMucr)
 
       filledForm.errors mustBe empty
