@@ -39,14 +39,14 @@
 }
 
 @summaryList(s"declaration-items-summary-${item.sequenceId}", Some(messages("declaration.summary.items.item.sequenceId", item.sequenceId)), Seq(
-    item.procedureCodes.map(data =>
+    item.procedureCodes.flatMap(_.procedureCode).map(data =>
         SummaryListRow(
             classes = s"item-${item.sequenceId}-procedureCode-row",
             key = Key(
                 content = Text(messages("declaration.summary.items.item.procedureCode"))
             ),
             value = Value(
-                content = Text(data.procedureCode.fold("")(code => (Seq(code) ++ data.additionalProcedureCodes).mkString(" ")))
+                content = Text(data)
             ),
             actions = actions(Actions(
                 items = Seq(
@@ -54,6 +54,26 @@
                         href = controllers.declaration.routes.ProcedureCodesController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.procedureCode.change", item.sequenceId))
+                    )
+                )
+            ))
+        )
+    ),
+    item.procedureCodes.map(data =>
+        SummaryListRow(
+            classes = s"item-${item.sequenceId}-additionalProcedureCodes-row",
+            key = Key(
+                content = Text(messages("declaration.summary.items.item.additionalProcedureCodes"))
+            ),
+            value = Value(
+                content = Text(data.additionalProcedureCodes.mkString(" "))
+            ),
+            actions = actions(Actions(
+                items = Seq(
+                    actionItem(
+                        href = controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(mode, item.id).url,
+                        content = HtmlContent(linkContent(messages("site.change"))),
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalProcedureCodes.change", item.sequenceId))
                     )
                 )
             ))

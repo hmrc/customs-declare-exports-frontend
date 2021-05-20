@@ -20,7 +20,6 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.CancelDeclaration
 import forms.CancelDeclaration._
-import handlers.ErrorHandler
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
 import models.requests.AuthenticatedRequest
@@ -28,8 +27,8 @@ import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.audit.{AuditService, AuditTypes}
 import services.audit.EventData._
+import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{cancel_declaration, cancellation_confirmation_page}
 

@@ -16,12 +16,12 @@
 
 package models.declaration
 
-import forms.declaration.ProcedureCodes
+import forms.declaration.procedurecodes.ProcedureCode
 import play.api.libs.json.Json
 
 case class ProcedureCodesData(procedureCode: Option[String], additionalProcedureCodes: Seq[String]) {
 
-  def toProcedureCode(): ProcedureCodes = ProcedureCodes(procedureCode, None)
+  def toProcedureCode(): ProcedureCode = ProcedureCode(procedureCode.getOrElse(""))
 
   def containsAdditionalCode(code: String): Boolean = additionalProcedureCodes.contains(code)
 }

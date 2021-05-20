@@ -29,6 +29,12 @@ class TaricCodeSpec extends DeclarationPageBaseSpec {
   "TaricCode mapping" should {
 
     "return form with errors" when {
+      "provided with empty code" in {
+        val form = TaricCode.form.bind(JsObject(Map(taricCodeKey -> JsString(""))))
+
+        form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.empty"))
+      }
+
       "provided with code too long" in {
         val form = TaricCode.form.bind(formData(Some("12345")))
 

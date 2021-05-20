@@ -86,13 +86,13 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
         optionTwoLabel must containMessageForElements("site.no")
       }
 
-      "display 'Back' button that links to 'Warehouse' page" in {
+      "display 'Back' button that links to 'Additional Procedure Codes' page" in {
 
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, "itemId")
+          controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, "itemId")
         )
       }
 
