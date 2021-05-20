@@ -16,14 +16,16 @@
 
 package forms.declaration
 import forms.DeclarationPage
+import forms.Mapping.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Mapping}
 import play.api.data.Forms.{mapping, optional, text}
+import play.api.data.validation.Constraints
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class TransportPayment(paymentMethod: Option[String] = None)
+case class TransportPayment(paymentMethod: String)
 
 object TransportPayment extends DeclarationPage {
 
@@ -36,14 +38,14 @@ object TransportPayment extends DeclarationPage {
   val eFunds = "H"
   val accHolder = "Y"
   val notPrePaid = "Z"
+  val notAvailable = "_"
 
-  val validPaymentMethods = Set(cash, creditCard, cheque, other, eFunds, accHolder, notPrePaid)
+  val validPaymentMethods = Set(cash, creditCard, cheque, other, eFunds, accHolder, notPrePaid, notAvailable)
 
   val formMapping: Mapping[TransportPayment] = mapping(
-    "paymentMethod" -> optional(
-      text()
-        .verifying("standard.transportDetails.paymentMethod.error", isContainedIn(validPaymentMethods))
-    )
+    "paymentMethod" ->
+      requiredRadio("declaration.transportInformation.transportPayment.paymentMethod.error.empty")
+        .verifying("declaration.transportInformation.transportPayment.paymentMethod.error.empty", isContainedIn(validPaymentMethods))
   )(TransportPayment.apply)(TransportPayment.unapply)
 
   def form(): Form[TransportPayment] = Form(formMapping)

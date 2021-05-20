@@ -85,7 +85,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
         "display page method is invoked and cache is not empty" in {
 
-          val payment = TransportPayment(Some(TransportPayment.cash))
+          val payment = TransportPayment(TransportPayment.cash)
           withNewCaching(aDeclarationAfter(request.cacheModel, withTransportPayment(Some(payment))))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -101,7 +101,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
           withNewCaching(request.cacheModel)
 
-          val incorrectForm = Json.toJson(TransportPayment(Some("incorrect")))
+          val incorrectForm = Json.toJson(TransportPayment("incorrect"))
 
           val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 

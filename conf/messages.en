@@ -918,6 +918,8 @@ declaration.transportInformation.transportPayment.paymentMethod.other = Other (e
 declaration.transportInformation.transportPayment.paymentMethod.eFunds = Electronic funds transfer
 declaration.transportInformation.transportPayment.paymentMethod.accHolder = Account holder with carrier
 declaration.transportInformation.transportPayment.paymentMethod.notPrePaid = Not pre-paid
+declaration.transportInformation.transportPayment.paymentMethod.notAvailable = Payment information is not available
+declaration.transportInformation.transportPayment.paymentMethod.error.empty = Select how you paid for the express transport
 
 declaration.transportInformation.meansOfTransport.departure.title = What are the details for the transport the goods are physically loaded on for departure?
 declaration.transportInformation.meansOfTransport.departure.error.empty = Select the transport identifier
@@ -1442,6 +1444,7 @@ declaration.summary.transport.payment.D = Other (e.g. Direct debit to cash accou
 declaration.summary.transport.payment.H = Electronic funds transfer
 declaration.summary.transport.payment.Y = Account holder with carrier
 declaration.summary.transport.payment.Z = Not pre-paid
+declaration.summary.transport.payment._ = Payment information is not available
 declaration.summary.transport.containers = Goods in a container
 declaration.summary.transport.containers.change = Change goods in a container
 declaration.summary.container = Container information

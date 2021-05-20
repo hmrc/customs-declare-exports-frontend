@@ -105,6 +105,12 @@
                     value = Some(notPrePaid),
                     content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod.notPrePaid")),
                     checked = form("paymentMethod").value.contains(notPrePaid)
+                ),
+                RadioItem(
+                    id = Some("notAvailable"),
+                    value = Some(notAvailable),
+                    content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod.notAvailable")),
+                    checked = form("paymentMethod").value.contains(notAvailable)
                 )
             ),
             errorMessage = form("paymentMethod").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))

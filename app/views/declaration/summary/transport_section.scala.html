@@ -154,7 +154,7 @@
                     content = Text(messages("declaration.summary.transport.payment"))
                 ),
                 value = Value(
-                    content = Text(transportPayment.paymentMethod.map(code => messages(s"declaration.summary.transport.payment.$code")).getOrElse(""))
+                    content = Text(messages(s"declaration.summary.transport.payment.${transportPayment.paymentMethod}"))
                 ),
                 actions = actions(Actions(
                     items = Seq(

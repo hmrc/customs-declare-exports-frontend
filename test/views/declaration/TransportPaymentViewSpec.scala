@@ -58,6 +58,7 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with St
         choices must containMessage("declaration.transportInformation.transportPayment.paymentMethod.eFunds")
         choices must containMessage("declaration.transportInformation.transportPayment.paymentMethod.accHolder")
         choices must containMessage("declaration.transportInformation.transportPayment.paymentMethod.notPrePaid")
+        choices must containMessage("declaration.transportInformation.transportPayment.paymentMethod.notAvailable")
       }
 
       "display 'Save and continue' button on page" in {

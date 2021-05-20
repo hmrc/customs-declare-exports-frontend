@@ -31,19 +31,19 @@ class TransportPaymentSpec extends DeclarationPageBaseSpec {
       "provided with invalid payment method" in {
         val form = TransportPayment.form().bind(formData("invalid"))
 
-        form.errors mustBe Seq(FormError("paymentMethod", "standard.transportDetails.paymentMethod.error"))
+        form.errors mustBe Seq(FormError("paymentMethod", "declaration.transportInformation.transportPayment.paymentMethod.error.empty"))
+      }
+
+      "provided with no input for required question" in {
+        val form = TransportPayment.form().bind(formData(""))
+
+        form.errors mustBe Seq(FormError("paymentMethod", "declaration.transportInformation.transportPayment.paymentMethod.error.empty"))
       }
     }
 
     "return form without errors" when {
       "provided with valid input" in {
         val form = TransportPayment.form().bind(formData(TransportPayment.cash))
-
-        form.hasErrors must be(false)
-      }
-
-      "provided with no input for optional question" in {
-        val form = TransportPayment.form().bind(formData(""))
 
         form.hasErrors must be(false)
       }
