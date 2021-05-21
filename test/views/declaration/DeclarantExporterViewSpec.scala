@@ -90,12 +90,12 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'Consignment References' page" in {
+      "display 'Back' button that links to 'Link DUCR to a MUCR' page" in {
 
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.ConsignmentReferencesController.displayPage().url)
+        backButton must haveHref(routes.LinkDucrToMucrController.displayPage().url)
       }
     }
 

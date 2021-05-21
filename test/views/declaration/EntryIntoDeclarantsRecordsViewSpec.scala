@@ -63,7 +63,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.ConsignmentReferencesController.displayPage().url)
+        backButton must haveHref(routes.LinkDucrToMucrController.displayPage().url)
       }
 
       "display 'Save and continue' button" in {

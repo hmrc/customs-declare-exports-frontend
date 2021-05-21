@@ -29,6 +29,16 @@ GET         /consignment-references              controllers.declaration.Consign
 
 POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences(mode: models.Mode ?= models.Mode.Normal)
 
+# MUCR
+
+GET         /link-to-mucr                        controllers.declaration.LinkDucrToMucrController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /link-to-mucr                        controllers.declaration.LinkDucrToMucrController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /enter-a-mucr                        controllers.declaration.MucrController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /enter-a-mucr                        controllers.declaration.MucrController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
 # Declarant is exporter
 
 GET         /are-you-the-exporter                controllers.declaration.DeclarantExporterController.displayPage(mode: models.Mode ?= models.Mode.Normal)

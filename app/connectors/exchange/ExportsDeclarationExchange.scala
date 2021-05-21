@@ -18,6 +18,7 @@ package connectors.exchange
 
 import java.time.Instant
 
+import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationStatus.DeclarationStatus
@@ -41,6 +42,8 @@ case class ExportsDeclarationExchange(
   `type`: DeclarationType,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
+  linkDucrToMucr: Option[YesNoAnswer] = None,
+  mucr: Option[Mucr] = None,
   transport: Transport = Transport(),
   parties: Parties = Parties(),
   locations: Locations = Locations(),
@@ -58,6 +61,8 @@ case class ExportsDeclarationExchange(
     `type` = this.`type`,
     additionalDeclarationType = this.additionalDeclarationType,
     consignmentReferences = this.consignmentReferences,
+    linkDucrToMucr = this.linkDucrToMucr,
+    mucr = this.mucr,
     transport = this.transport,
     parties = this.parties,
     locations = this.locations,
@@ -90,6 +95,8 @@ object ExportsDeclarationExchange {
       `type` = declaration.`type`,
       additionalDeclarationType = declaration.additionalDeclarationType,
       consignmentReferences = declaration.consignmentReferences,
+      linkDucrToMucr = declaration.linkDucrToMucr,
+      mucr = declaration.mucr,
       transport = declaration.transport,
       parties = declaration.parties,
       locations = declaration.locations,

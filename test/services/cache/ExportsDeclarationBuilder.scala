@@ -19,6 +19,7 @@ package services.cache
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import java.util.UUID
 
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration.{DeclarationHolder, _}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
@@ -40,6 +41,7 @@ trait ExportsDeclarationBuilder {
   protected type ExportsDeclarationModifier = ExportsDeclaration => ExportsDeclaration
   protected val DUCR = "5GB123456789000-123ABC456DEFIIIII"
   protected val LRN = Lrn("FG7676767889")
+  protected val MUCR = Mucr("CZYX123A")
   private val modelWithDefaults: ExportsDeclaration = ExportsDeclaration(
     uuid,
     status = DeclarationStatus.COMPLETE,
@@ -214,6 +216,11 @@ trait ExportsDeclarationBuilder {
 
   def withConsignmentReferences(consignmentReferences: ConsignmentReferences): ExportsDeclarationModifier =
     _.copy(consignmentReferences = Some(consignmentReferences))
+
+  def withLinkDucrToMucr(linkDucrToMucr: String = YesNoAnswers.yes): ExportsDeclarationModifier =
+    _.copy(linkDucrToMucr = Some(YesNoAnswer(linkDucrToMucr)))
+
+  def withMucr(mucr: Mucr = MUCR): ExportsDeclarationModifier = _.copy(mucr = Some(mucr))
 
   def withoutConsignmentReference(): ExportsDeclarationModifier = _.copy(consignmentReferences = None)
 

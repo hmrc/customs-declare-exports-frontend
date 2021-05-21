@@ -17,51 +17,54 @@
 package controllers.declaration
 
 import javax.inject.Inject
-
 import scala.concurrent.{ExecutionContext, Future}
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.ConsignmentReferences
-import forms.declaration.ConsignmentReferences.form
-import models.{ExportsDeclaration, Mode}
+import forms.declaration.Mucr
+import forms.declaration.Mucr._
 import models.requests.JourneyRequest
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.consignment_references
+import views.html.declaration.mucr_code
 
-class ConsignmentReferencesController @Inject()(
+class MucrController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  consignmentReferencesPage: consignment_references
+  mucrPage: mucr_code
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
-    request.cacheModel.consignmentReferences match {
-      case Some(data) => Ok(consignmentReferencesPage(mode, frm.fill(data)))
-      case _          => Ok(consignmentReferencesPage(mode, frm))
+    val frm = form.withSubmissionErrors()
+    request.cacheModel.mucr match {
+      case Some(mucr) => Ok(mucrPage(mode, frm.fill(mucr)))
+      case _          => Ok(mucrPage(mode, frm))
     }
   }
 
-  def submitConsignmentReferences(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
-        validConsignmentReferences =>
-          updateCache(validConsignmentReferences)
-            .map(_ => navigator.continueTo(mode, routes.LinkDucrToMucrController.displayPage))
+        (formWithErrors: Form[Mucr]) => Future.successful(BadRequest(mucrPage(mode, formWithErrors))),
+        mucr => updateCache(mucr).map(_ => navigator.continueTo(mode, nextPage))
       )
   }
 
-  private def updateCache(formData: ConsignmentReferences)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.copy(consignmentReferences = Some(formData)))
+  private def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
+    request.declarationType match {
+      case DeclarationType.CLEARANCE => routes.EntryIntoDeclarantsRecordsController.displayPage
+      case _                         => routes.DeclarantExporterController.displayPage
+    }
+
+  private def updateCache(mucr: Mucr)(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(_.copy(mucr = Some(mucr)))
 }
