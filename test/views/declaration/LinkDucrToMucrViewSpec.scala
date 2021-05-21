@@ -104,7 +104,7 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
         )
 
         val detailsHint2 = view.getElementById("link-ducr-to-mucr-hint2")
-        detailsHint2.child(0) must haveHref(appConfig.arriveOrDepartExportsServiceUrl)
+        detailsHint2.child(0) must haveHref(appConfig.customsMovementsFrontendUrl)
 
         removeBlanksIfAnyBeforeDot(detailsHint2.text) mustBe messages(
           "declaration.linkDucrToMucr.details.hint2",

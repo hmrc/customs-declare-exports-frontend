@@ -57,7 +57,6 @@ class AppConfig @Inject()(
   lazy val exitSurveyUrl = loadConfig("urls.exitSurveyUrl")
 
   lazy val notesForMucrConsolidationUrl = loadConfig("urls.notesForMucrConsolidation")
-  lazy val arriveOrDepartExportsServiceUrl = loadConfig("urls.arriveOrDepartExportsService")
 
   lazy val govUkUrl = loadConfig("urls.govUk")
   lazy val tradeTariffUrl = loadConfig("urls.tradeTariff")
