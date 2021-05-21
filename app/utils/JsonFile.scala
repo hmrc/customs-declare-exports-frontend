@@ -16,19 +16,44 @@
 
 package utils
 
-import play.api.libs.json.{JsArray, JsString, Json}
+import play.api.libs.json.{JsArray, JsString, Json, Reads}
+
+import scala.util.{Failure, Success, Try}
 
 object JsonFile {
   def readFromJsonFile[T](file: String, deserializer: (String, String) => T): List[T] = {
-    val jsonFile = getClass.getResourceAsStream(file)
+    val jsonInputStream = getClass.getResourceAsStream(file)
 
-    Json.parse(jsonFile) match {
+    Json.parse(jsonInputStream) match {
       case JsArray(cs) =>
         cs.toList.collect {
           case JsArray(Seq(label: JsString, code: JsString)) =>
             deserializer(label.value, code.value)
         }
-      case _ => throw new IllegalArgumentException("Could not read JSON array from : " + jsonFile)
+      case _ => throwError(file)
     }
   }
+
+  def getJsonArrayFromFile[T](file: String, reader: Reads[T]): List[T] = {
+    val jsonInputStream = getClass.getResourceAsStream(file)
+
+    Try(Json.parse(jsonInputStream)) match {
+      case Success(JsArray(jsValues)) =>
+        val items = jsValues.toList.map { jsValue =>
+          reader.reads(jsValue).asOpt
+        }
+
+        if (items.contains(None)) {
+          throw new IllegalArgumentException(s"One or more entries could not be parsed in JSON file: '$file'")
+        }
+
+        items.flatten
+
+      case Success(_)  => throwError(file)
+      case Failure(ex) => throw new IllegalArgumentException(s"Failed to read JSON file: '$file'", ex)
+    }
+  }
+
+  private def throwError(jsonFile: String) =
+    throw new IllegalArgumentException(s"Could not read JSON array from file: '$jsonFile'")
 }

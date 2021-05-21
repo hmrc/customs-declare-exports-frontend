@@ -1,0 +1,82 @@
+[
+  {
+    "code": "1040",
+    "en": "Permanent Export of UK goods or goods in Free Circulation and Home Use",
+    "cy": "Permanent Export of UK goods or goods in Free Circulation and Home Use"
+  },
+  {
+    "code": "1007",
+    "en": "Permanent Export of goods from an Excise Warehouse",
+    "cy": "Permanent Export of goods from an Excise Warehouse"
+  },
+  {
+    "code": "1042",
+    "en": "Permanent export of goods previously placed under Onward Supply Relief (OSR)",
+    "cy": "Permanent export of goods previously placed under Onward Supply Relief (OSR)"
+  },
+  {
+    "code": "1044",
+    "en": "Permanent Export of goods previously entered to End Use",
+    "cy": "Permanent Export of goods previously entered to End Use"
+  },
+  {
+    "code": "1100",
+    "en": "Inward Processing (IP) Prior Export Equivalence (PEE)",
+    "cy": "Inward Processing (IP) Prior Export Equivalence (PEE)"
+  },
+  {
+    "code": "2100",
+    "en": "Temporary Export under Outward Processing (OP)",
+    "cy": "Temporary Export under Outward Processing (OP)"
+  },
+  {
+    "code": "2144",
+    "en": "Temporary Export under Outward Processing (OP) of goods previously entered to End Use",
+    "cy": "Temporary Export under Outward Processing (OP) of goods previously entered to End Use"
+  },
+  {
+    "code": "2151",
+    "en": "Temporary Export under Outward Processing (OP) for goods previously entered to Inward Processing (IP)",
+    "cy": "Temporary Export under Outward Processing (OP) for goods previously entered to Inward Processing (IP)"
+  },
+  {
+    "code": "2154",
+    "en": "Temporary Export under Outward Processing (OP) for goods previously entered to Inward Processing (IP) in another Member State",
+    "cy": "Temporary Export under Outward Processing (OP) for goods previously entered to Inward Processing (IP) in another Member State"
+  },
+  {
+    "code": "2200",
+    "en": "Temporary Export under Outward Processing (OP) for goods not covered under Requested Procedure Code 21",
+    "cy": "Temporary Export under Outward Processing (OP) for goods not covered under Requested Procedure Code 21"
+  },
+  {
+    "code": "2244",
+    "en": "Temporary Export under Outward Processing (OP) for goods not covered under Requested Procedure Code 21, previously entered to End Use",
+    "cy": "Temporary Export under Outward Processing (OP) for goods not covered under Requested Procedure Code 21, previously entered to End Use"
+  },
+  {
+    "code": "2300",
+    "en": "Temporary Export of UK goods or goods in Free Circulation and/ or Home Use which are intended to be returned under Returned Goods Relief (RGR)",
+    "cy": "Temporary Export of UK goods or goods in Free Circulation and/ or Home Use which are intended to be returned under Returned Goods Relief (RGR)"
+  },
+  {
+    "code": "3151",
+    "en": "Re-export of non-UK goods previously entered to Inward Processing (IP)",
+    "cy": "Re-export of non-UK goods previously entered to Inward Processing (IP)"
+  },
+  {
+    "code": "3153",
+    "en": "Re-export of non-UK goods previously entered to Temporary Admission (TA)",
+    "cy": "Re-export of non-UK goods previously entered to Temporary Admission (TA)"
+  },
+  {
+    "code": "3154",
+    "en": "Re-export of non-Union goods previously entered to IP in another Member State",
+    "cy": "Re-export of non-Union goods previously entered to IP in another Member State"
+  },
+  {
+    "code": "3171",
+    "en": "Re-export of non-UK goods previously entered to Customs Warehousing",
+    "cy": "Re-export of non-UK goods previously entered to Customs Warehousing"
+  }
+]

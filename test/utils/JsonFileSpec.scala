@@ -17,15 +17,17 @@
 package utils
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
+import connectors.CodeItem
 import org.scalatest.{MustMatchers, WordSpec}
 import services.view.AutoCompleteItem
 
 class JsonFileSpec extends WordSpec with MustMatchers {
-  val file = "/testJsonData.json"
-  val wrongFile = "/wrongJsonData.json"
-  val deserialiser: (String, String) => AutoCompleteItem = (a: String, b: String) => AutoCompleteItem(a, b)
 
-  "JsonFile" should {
+  "JsonFile readFromJsonFile" should {
+
+    val file = "/testJsonData.json"
+    val wrongFile = "/wrongJsonData.json"
+    val deserialiser: (String, String) => AutoCompleteItem = (a: String, b: String) => AutoCompleteItem(a, b)
 
     "read file and parse it correctly" when {
 
@@ -33,16 +35,13 @@ class JsonFileSpec extends WordSpec with MustMatchers {
         val result = JsonFile.readFromJsonFile(file, deserialiser)
         val expectedResult = List(AutoCompleteItem("Chemical", "1"), AutoCompleteItem("Aquarium", "2"), AutoCompleteItem("Peppermint", "3"))
         result must be(expectedResult)
-
       }
-
     }
 
     "read file and throw an exception" when {
 
       "data is not in an Array" in {
         intercept[IllegalArgumentException](JsonFile.readFromJsonFile(wrongFile, deserialiser))
-
       }
     }
 
@@ -50,9 +49,44 @@ class JsonFileSpec extends WordSpec with MustMatchers {
 
       "file doesn't exist" in {
         intercept[MismatchedInputException](JsonFile.readFromJsonFile("wrongPath", deserialiser))
-
       }
     }
   }
 
+  "JsonFile getJsonArrayFromFile" should {
+    "successfully read a file" when {
+      "file is populated with one entry" in {
+        val result = JsonFile.getJsonArrayFromFile("/code-lists/oneCode.json", CodeItem.formats)
+        val expectedResult = List(CodeItem("001", "English", "Welsh"))
+        result must be(expectedResult)
+      }
+
+      "file is populated with multiple entry" in {
+        val result = JsonFile.getJsonArrayFromFile("/code-lists/manyCodes.json", CodeItem.formats)
+        val expectedResult = List(CodeItem("001", "English", "Welsh"), CodeItem("002", "English", "Welsh"), CodeItem("003", "English", "Welsh"))
+
+        result must be(expectedResult)
+      }
+    }
+
+    "throw an exception" when {
+      "file does not exist" in {
+        val file = "imaginary"
+        val thrown = intercept[IllegalArgumentException](JsonFile.getJsonArrayFromFile(file, CodeItem.formats))
+        thrown.getMessage must be(s"Failed to read JSON file: '$file'")
+      }
+
+      "file is empty" in {
+        val file = "/code-lists/empty.json"
+        val thrown = intercept[IllegalArgumentException](JsonFile.getJsonArrayFromFile(file, CodeItem.formats))
+        thrown.getMessage must be(s"Failed to read JSON file: '$file'")
+      }
+
+      "one or more codes are badly formed" in {
+        val file = "/code-lists/empty.json"
+        val thrown = intercept[IllegalArgumentException](JsonFile.getJsonArrayFromFile(file, CodeItem.formats))
+        thrown.getMessage must be(s"Failed to read JSON file: '$file'")
+      }
+    }
+  }
 }

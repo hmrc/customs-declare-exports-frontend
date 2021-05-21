@@ -20,6 +20,7 @@ import base.UnitSpec
 
 import java.util.concurrent.TimeUnit
 import com.typesafe.config.{Config, ConfigFactory}
+import config.AppConfigSpec.configBareMinimum
 import forms.Choice
 import models.DeclarationType
 import play.api.{Configuration, Environment}
@@ -33,48 +34,16 @@ class AppConfigSpec extends UnitSpec {
 
   private val validConfig: Config =
     ConfigFactory.parseString(
-      """
-        |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
-        |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
-        |
-        |urls.customsDeclarationsGoodsTakenOutOfEu="https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
-        |urls.commodityCodes="https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports"
-        |urls.relevantLicenses="https://www.gov.uk/starting-to-export/licences"
-        |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
-        |urls.customsMovementsFrontend="http://url-to-movements-frontend/start"
-        |urls.exitSurveyUrl="http://localhost:9514/feedback/customs-declare-exports-frontend"
-        |urls.emailFrontendUrl="http://localhost:9898/manage-email-cds/service/customs-declare-exports"
-        |urls.tradeTariff="https://www.gov.uk/trade-tariff"
-        |urls.tariffCommodities="https://www.trade-tariff.service.gov.uk/commodities/"
-        |urls.companyInformationRegister="http://companyInformationRegister"
-        |urls.customsDecCompletionRequirements="http://customsDecCompletionRequirements"
-        |urls.locationCodeForAirports="http://locationCodeForAirports"
-        |urls.certificateOfAgreementAirports="http://certificateOfAgreementAirports"
-        |urls.locationCodeForMaritimePorts="http://locationCodeForMaritimePorts"
-        |urls.locationCodeForTempStorage="http://locationCodeForTempStorage"
-        |urls.designatedExportPlaceCodes="http://designatedExportPlaceCodes"
-        |urls.locationCodesForCsePremises="http://locationCodesForCsePremises"
-        |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
-        |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
-        |
+      configBareMinimum + """
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
         |google-analytics.host=localhostGoogle
         |
         |tracking-consent-frontend.gtm.container=a
         |
-        |countryCodesCsvFilename=code-lists/mdg-country-codes.csv
-        |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
         |list-of-available-journeys="CRT,CAN,SUB"
         |list-of-available-declarations="STANDARD,SUPPLEMENTARY"
-        |draft.timeToLive=30d
-        |microservice.services.nrs.host=localhostnrs
-        |microservice.services.nrs.port=7654
-        |microservice.services.nrs.apikey=cds-exports
-        |microservice.services.features.default=disabled
-        |microservice.services.features.welsh-translation=false
         |microservice.services.features.use-improved-error-messages=true
-        |microservice.services.auth.port=9988
         |microservice.services.customs-declare-exports.host=localhost
         |microservice.services.customs-declare-exports.port=9875
         |microservice.services.customs-declare-exports.submit-declaration=/declaration
@@ -87,21 +56,18 @@ class AppConfigSpec extends UnitSpec {
         |microservice.services.customs-declare-exports-movements.host=localhostm
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
-        |microservice.services.contact-frontend.url=/contact-frontend-url
-        |microservice.services.contact-frontend.serviceId=DeclarationServiceId
-        |mongodb.timeToLive=24h
         |platform.frontend.host="self/base-url"
       """.stripMargin
     )
-  private val emptyConfig: Config = ConfigFactory.empty()
-  val validServicesConfiguration = Configuration(validConfig)
-  private val emptyServicesConfiguration = Configuration(emptyConfig)
+
+  private val validServicesConfiguration = Configuration(validConfig)
+  private val missingValuesServicesConfiguration = Configuration(ConfigFactory.parseString(configBareMinimum))
 
   private def servicesConfig(conf: Configuration) = new ServicesConfig(conf)
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
 
   val validAppConfig: AppConfig = appConfig(validServicesConfiguration)
-  val emptyAppConfig: AppConfig = appConfig(emptyServicesConfiguration)
+  val missingAppConfig: AppConfig = appConfig(missingValuesServicesConfiguration)
 
   "The config" should {
 
@@ -123,10 +89,6 @@ class AppConfigSpec extends UnitSpec {
 
     "have login URL" in {
       validAppConfig.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
-    }
-
-    "have customsDeclarationsGoodsTakenOutOfEu URL" in {
-      validAppConfig.customsDeclarationsGoodsTakenOutOfEuUrl must be("https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu")
     }
 
     "have commodityCodes URL" in {
@@ -201,6 +163,14 @@ class AppConfigSpec extends UnitSpec {
       validAppConfig.tariffCdsChiefSupplement must be("http://tariffCdsChiefSupplement")
     }
 
+    "have procedureCodeListFile file path" in {
+      validAppConfig.procedureCodeListFile must be("procedureCodes")
+    }
+
+    "have procedureCodeForC21ListFile file path" in {
+      validAppConfig.procedureCodeForC21ListFile must be("procedureCodesC21")
+    }
+
     "load the Choice options when list-of-available-journeys is defined" in {
       val choices = validAppConfig.availableJourneys()
       choices.size must be(3)
@@ -227,7 +197,7 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have improved error messages feature toggle set to false if not defined" in {
-      emptyAppConfig.isUsingImprovedErrorMessages must be(false)
+      missingAppConfig.isUsingImprovedErrorMessages must be(false)
     }
 
     "have improved error messages feature toggle set to true if defined" in {
@@ -292,95 +262,131 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have single Choice options when list-of-available-journeys is not defined" in {
-      emptyAppConfig.availableJourneys().size must be(1)
-      emptyAppConfig.availableJourneys() must contain(Choice.AllowedChoiceValues.Submissions)
+      missingAppConfig.availableJourneys().size must be(1)
+      missingAppConfig.availableJourneys() must contain(Choice.AllowedChoiceValues.Submissions)
     }
 
     "have single Declaration type options when list-of-available-declarations is not defined" in {
-      emptyAppConfig.availableDeclarations().size must be(1)
-      emptyAppConfig.availableDeclarations() must contain(DeclarationType.STANDARD.toString)
+      missingAppConfig.availableDeclarations().size must be(1)
+      missingAppConfig.availableDeclarations() must contain(DeclarationType.STANDARD.toString)
     }
 
     "empty selfBaseUrl when the key is missing" in {
-      emptyAppConfig.selfBaseUrl must be(None)
+      missingAppConfig.selfBaseUrl must be(None)
     }
 
     "throw an exception" when {
 
       "gtm.container is missing" in {
-        intercept[Exception](emptyAppConfig.gtmContainer).getMessage must be("Could not find config key 'tracking-consent-frontend.gtm.container'")
-      }
-
-      "google-analytics.host is missing" in {
-        intercept[Exception](emptyAppConfig.analyticsHost).getMessage must be("Missing configuration key: google-analytics.host")
-      }
-
-      "google-analytics.token is missing" in {
-        intercept[Exception](emptyAppConfig.analyticsToken).getMessage must be("Missing configuration key: google-analytics.token")
+        intercept[Exception](missingAppConfig.gtmContainer).getMessage must be("Could not find config key 'tracking-consent-frontend.gtm.container'")
       }
 
       "auth.host is missing" in {
-        intercept[Exception](emptyAppConfig.authUrl).getMessage must be("Could not find config key 'auth.host'")
-      }
-
-      "urls.login is missing" in {
-        intercept[Exception](emptyAppConfig.loginUrl).getMessage must be("Missing configuration key: urls.login")
-      }
-
-      "urls.loginContinue is missing" in {
-        intercept[Exception](emptyAppConfig.loginContinueUrl).getMessage must be("Missing configuration key: urls.loginContinue")
+        intercept[Exception](missingAppConfig.authUrl).getMessage must be("Could not find config key 'auth.host'")
       }
 
       "customs-declare-exports.host is missing" in {
-        intercept[Exception](emptyAppConfig.customsDeclareExportsBaseUrl).getMessage must be(
+        intercept[Exception](missingAppConfig.customsDeclareExportsBaseUrl).getMessage must be(
           "Could not find config key 'customs-declare-exports.host'"
         )
       }
 
       "submit declaration uri is missing" in {
-        intercept[Exception](emptyAppConfig.declarations).getMessage must be(
+        intercept[Exception](missingAppConfig.declarations).getMessage must be(
           "Missing configuration for Customs Declarations Exports submit declaration URI"
         )
       }
 
       "cancel declaration uri is missing" in {
-        intercept[Exception](emptyAppConfig.cancelDeclaration).getMessage must be(
+        intercept[Exception](missingAppConfig.cancelDeclaration).getMessage must be(
           "Missing configuration for Customs Declaration Export cancel declaration URI"
         )
       }
 
       "fetch mrn status uri is missing" in {
-        intercept[Exception](emptyAppConfig.fetchMrnStatus).getMessage must be(
+        intercept[Exception](missingAppConfig.fetchMrnStatus).getMessage must be(
           "Missing configuration for Customs Declaration Export fetch mrn status URI"
         )
       }
 
       "fetchSubmissions uri is missing" in {
-        intercept[Exception](emptyAppConfig.fetchSubmissions).getMessage must be(
+        intercept[Exception](missingAppConfig.fetchSubmissions).getMessage must be(
           "Missing configuration for Customs Declaration Exports fetch submission URI"
         )
       }
 
       "fetch notifications uri is missing" in {
-        intercept[Exception](emptyAppConfig.fetchNotifications).getMessage must be(
+        intercept[Exception](missingAppConfig.fetchNotifications).getMessage must be(
           "Missing configuration for Customs Declarations Exports fetch notification URI"
         )
       }
-
-      "link for 'give feedback' is missing" in {
-        intercept[Exception](emptyAppConfig.giveFeedbackLink).getMessage must be(
-          "Missing configuration key: microservice.services.contact-frontend.url"
-        )
-      }
-
-      "countryCodesJsonFilename is missing" in {
-        intercept[Exception](emptyAppConfig.countryCodesJsonFilename).getMessage must be("Missing configuration key: countryCodesJsonFilename")
-      }
-
-      "countryCodesCsvFilename is missing" in {
-        intercept[Exception](emptyAppConfig.countriesCsvFilename).getMessage must be("Missing configuration key: countryCodesCsvFilename")
-      }
     }
   }
+}
 
+object AppConfigSpec {
+  val configBareMinimum =
+    """
+      |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
+      |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
+      |
+      |google-analytics.token=N/A
+      |google-analytics.host=localhostGoogle
+      |
+      |urls.govUk = "https://www.gov.uk"
+      |urls.commodityCodeForTaricPage = "https://www.trade-tariff.service.gov.uk/commodities/NNNNNNNN00#export"
+      |urls.previousProcedureCodes = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes"
+      |urls.tradeTariffVol3ForCds2 = "https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2"
+      |urls.commodityCodeHelp = "https://www.gov.uk/guidance/using-the-trade-tariff-tool-to-find-a-commodity-code"
+      |urls.nactCodes = "https://www.gov.uk/guidance/national-additional-codes-for-data-element-617-of-cds"
+      |urls.commodityCodes="https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports"
+      |urls.relevantLicenses="https://www.gov.uk/starting-to-export/licences"
+      |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
+      |urls.customsMovementsFrontend="http://url-to-movements-frontend/start"
+      |urls.exitSurveyUrl="http://localhost:9514/feedback/customs-declare-exports-frontend"
+      |urls.emailFrontendUrl="http://localhost:9898/manage-email-cds/service/customs-declare-exports"
+      |urls.tradeTariff="https://www.gov.uk/trade-tariff"
+      |urls.tariffCommodities="https://www.trade-tariff.service.gov.uk/commodities/"
+      |urls.ecicsTool = "https://ec.europa.eu/taxation_customs/dds2/ecics/chemicalsubstance_consultation.jsp"
+      |urls.sfusUpload = "http://localhost:6793/cds-file-upload-service/mrn-entry"
+      |urls.sfusInbox = "http://localhost:6793/cds-file-upload-service/exports-message-choice"
+      |urls.eoriService = "https://www.gov.uk/eori"
+      |urls.cdsRegister = "https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service"
+      |urls.cdsCheckStatus = "https://www.tax.service.gov.uk/customs/register-for-cds/are-you-based-in-uk"
+      |urls.organisationsLink = "https://www.gov.uk/government/organisations/hm-revenue-customs"
+      |urls.importExports = "https://www.gov.uk/topic/business-tax/import-export"
+      |urls.exitSurveyUrl = "http://localhost:9514/feedback/customs-declare-exports-frontend"
+      |urls.emailFrontendUrl = "http://localhost:9898/manage-email-cds/service/customs-declare-exports"
+      |urls.govUkPageForTypeCO = "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide/group-1-message-information-including-procedure-codes#de-11-declaration-type-box-1-declaration-first-subdivision"
+      |urls.companyInformationRegister="http://companyInformationRegister"
+      |urls.customsDecCompletionRequirements="http://customsDecCompletionRequirements"
+      |urls.locationCodeForAirports="http://locationCodeForAirports"
+      |urls.certificateOfAgreementAirports="http://certificateOfAgreementAirports"
+      |urls.locationCodeForMaritimePorts="http://locationCodeForMaritimePorts"
+      |urls.locationCodeForTempStorage="http://locationCodeForTempStorage"
+      |urls.designatedExportPlaceCodes="http://designatedExportPlaceCodes"
+      |urls.locationCodesForCsePremises="http://locationCodesForCsePremises"
+      |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
+      |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
+      |urls.notesForMucrConsolidation="http://notesForMucrConsolidation"
+      |urls.arriveOrDepartExportsService="http://arriveOrDepartExportsService"
+      |urls.customsDeclarationsGoodsTakenOutOfEu="http://customsDeclarationsGoodsTakenOutOfEu"
+      |
+      |files.codelists.procedureCodes="procedureCodes"
+      |files.codelists.procedureCodesC21="procedureCodesC21"
+      |
+      |countryCodesCsvFilename=code-lists/mdg-country-codes.csv
+      |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
+      |draft.timeToLive=30d
+      |microservice.services.nrs.host=localhostnrs
+      |microservice.services.nrs.port=7654
+      |microservice.services.nrs.apikey=cds-exports
+      |microservice.services.features.default=disabled
+      |microservice.services.features.welsh-translation=false
+      |
+      |microservice.services.auth.port=9988
+      |microservice.services.contact-frontend.url=/contact-frontend-url
+      |microservice.services.contact-frontend.serviceId=DeclarationServiceId
+      |mongodb.timeToLive=24h
+      """.stripMargin
 }

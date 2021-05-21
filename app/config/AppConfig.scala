@@ -40,51 +40,51 @@ class AppConfig @Inject()(
   private def loadConfig(key: String): String =
     runModeConfiguration.getOptional[String](key).getOrElse(throw new IllegalStateException(s"Missing configuration key: $key"))
 
-  lazy val analyticsToken = loadConfig(s"google-analytics.token")
-  lazy val analyticsHost = loadConfig(s"google-analytics.host")
+  val analyticsToken = loadConfig(s"google-analytics.token")
+  val analyticsHost = loadConfig(s"google-analytics.host")
 
   lazy val authUrl = servicesConfig.baseUrl("auth")
-  lazy val loginUrl = loadConfig("urls.login")
-  lazy val loginContinueUrl = loadConfig("urls.loginContinue")
 
-  lazy val customsDeclarationsGoodsTakenOutOfEuUrl = loadConfig("urls.customsDeclarationsGoodsTakenOutOfEu")
-  lazy val commodityCodeForTaricPageUrl = loadConfig("urls.commodityCodeForTaricPage")
-  lazy val commodityCodesUrl = loadConfig("urls.commodityCodes")
-  lazy val nactCodesUrl = loadConfig("urls.nactCodes")
-  lazy val relevantLicensesUrl = loadConfig("urls.relevantLicenses")
-  lazy val serviceAvailabilityUrl = loadConfig("urls.serviceAvailability")
-  lazy val customsMovementsFrontendUrl = loadConfig("urls.customsMovementsFrontend")
-  lazy val exitSurveyUrl = loadConfig("urls.exitSurveyUrl")
+  val loginUrl = loadConfig("urls.login")
+  val loginContinueUrl = loadConfig("urls.loginContinue")
 
-  lazy val notesForMucrConsolidationUrl = loadConfig("urls.notesForMucrConsolidation")
+  val commodityCodeForTaricPageUrl = loadConfig("urls.commodityCodeForTaricPage")
+  val commodityCodesUrl = loadConfig("urls.commodityCodes")
+  val nactCodesUrl = loadConfig("urls.nactCodes")
+  val relevantLicensesUrl = loadConfig("urls.relevantLicenses")
+  val serviceAvailabilityUrl = loadConfig("urls.serviceAvailability")
+  val customsMovementsFrontendUrl = loadConfig("urls.customsMovementsFrontend")
+  val exitSurveyUrl = loadConfig("urls.exitSurveyUrl")
 
-  lazy val govUkUrl = loadConfig("urls.govUk")
-  lazy val tradeTariffUrl = loadConfig("urls.tradeTariff")
-  lazy val tariffCommoditiesUrl = loadConfig("urls.tariffCommodities")
-  lazy val previousProcedureCodesUrl = loadConfig("urls.previousProcedureCodes")
-  lazy val tradeTariffVol3ForCds2Url = loadConfig("urls.tradeTariffVol3ForCds2")
-  lazy val commodityCodeHelpUrl = loadConfig("urls.commodityCodeHelp")
-  lazy val ecicsToolUrl = loadConfig("urls.ecicsTool")
-  lazy val companyInformationRegister = loadConfig("urls.companyInformationRegister")
+  val notesForMucrConsolidationUrl = loadConfig("urls.notesForMucrConsolidation")
+
+  val govUkUrl = loadConfig("urls.govUk")
+  val tradeTariffUrl = loadConfig("urls.tradeTariff")
+  val tariffCommoditiesUrl = loadConfig("urls.tariffCommodities")
+  val previousProcedureCodesUrl = loadConfig("urls.previousProcedureCodes")
+  val tradeTariffVol3ForCds2Url = loadConfig("urls.tradeTariffVol3ForCds2")
+  val commodityCodeHelpUrl = loadConfig("urls.commodityCodeHelp")
+  val ecicsToolUrl = loadConfig("urls.ecicsTool")
+  val companyInformationRegister = loadConfig("urls.companyInformationRegister")
 
   lazy val customsDeclareExportsBaseUrl = servicesConfig.baseUrl("customs-declare-exports")
 
-  lazy val emailFrontendUrl: String = loadConfig("urls.emailFrontendUrl")
+  val emailFrontendUrl: String = loadConfig("urls.emailFrontendUrl")
 
-  lazy val govUkPageForTypeCO = loadConfig("urls.govUkPageForTypeCO")
+  val govUkPageForTypeCO = loadConfig("urls.govUkPageForTypeCO")
 
-  lazy val customsDecCompletionRequirements = loadConfig("urls.customsDecCompletionRequirements")
-  lazy val locationCodeForAirports = loadConfig("urls.locationCodeForAirports")
-  lazy val certificateOfAgreementAirports = loadConfig("urls.certificateOfAgreementAirports")
-  lazy val locationCodeForMaritimePorts = loadConfig("urls.locationCodeForMaritimePorts")
-  lazy val locationCodeForTempStorage = loadConfig("urls.locationCodeForTempStorage")
-  lazy val designatedExportPlaceCodes = loadConfig("urls.designatedExportPlaceCodes")
-  lazy val locationCodesForCsePremises = loadConfig("urls.locationCodesForCsePremises")
-  lazy val goodsLocationCodesForDataElement = loadConfig("urls.goodsLocationCodesForDataElement")
-  lazy val tariffCdsChiefSupplement = loadConfig("urls.tariffCdsChiefSupplement")
+  val customsDecCompletionRequirements = loadConfig("urls.customsDecCompletionRequirements")
+  val locationCodeForAirports = loadConfig("urls.locationCodeForAirports")
+  val certificateOfAgreementAirports = loadConfig("urls.certificateOfAgreementAirports")
+  val locationCodeForMaritimePorts = loadConfig("urls.locationCodeForMaritimePorts")
+  val locationCodeForTempStorage = loadConfig("urls.locationCodeForTempStorage")
+  val designatedExportPlaceCodes = loadConfig("urls.designatedExportPlaceCodes")
+  val locationCodesForCsePremises = loadConfig("urls.locationCodesForCsePremises")
+  val goodsLocationCodesForDataElement = loadConfig("urls.goodsLocationCodesForDataElement")
+  val tariffCdsChiefSupplement = loadConfig("urls.tariffCdsChiefSupplement")
 
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
-  lazy val giveFeedbackLink = {
+  val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
     val contactFrontendServiceId = loadConfig("microservice.services.contact-frontend.serviceId")
 
@@ -127,9 +127,9 @@ class AppConfig @Inject()(
   lazy val isUsingImprovedErrorMessages =
     runModeConfiguration.getOptional[Boolean]("microservice.services.features.use-improved-error-messages").getOrElse(false)
 
-  lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
+  val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
 
-  lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
+  val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
 
   def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 
@@ -180,4 +180,7 @@ class AppConfig @Inject()(
 
   def tariffGuideUrl(key: String): String =
     runModeConfiguration.getOptional[String](key).getOrElse(throw new IllegalStateException(s"Missing tariff guide url key: $key"))
+
+  val procedureCodeListFile = loadConfig("files.codelists.procedureCodes")
+  val procedureCodeForC21ListFile = loadConfig("files.codelists.procedureCodesC21")
 }
