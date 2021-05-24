@@ -65,7 +65,7 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
 
       "display the hint paragraph" in {
         val hint = view.getElementsByClass("govuk-hint").first
-        hint.child(0) must haveHref(appConfig.notesForMucrConsolidation)
+        hint.child(0) must haveHref(appConfig.notesForMucrConsolidationUrl)
 
         removeBlanksIfAnyBeforeDot(hint.text) mustBe messages("declaration.mucr.hint", messages("declaration.mucr.hint.link"))
       }
