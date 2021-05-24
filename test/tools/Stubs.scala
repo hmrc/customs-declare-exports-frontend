@@ -17,7 +17,7 @@
 package tools
 
 import com.typesafe.config.{Config, ConfigFactory}
-import config.{AppConfig, BetaBannerConfig, FeatureSwitchConfig}
+import config.{AppConfig, AppConfigSpec, BetaBannerConfig, FeatureSwitchConfig}
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
@@ -54,7 +54,8 @@ trait Stubs {
       executionContext
     )
 
-  private val minimalConfig: Config = ConfigFactory.parseString("""
+  private val minimalConfig: Config =
+    ConfigFactory.parseString(AppConfigSpec.configBareMinimum + """
       |assets.url="localhost"
       |assets.version="version"
       |google-analytics.token=N/A

@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
-import config.AppConfig
+import config.{AppConfig, AppConfigSpec}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.CreateDec
 import forms.declaration.DeclarationChoice
@@ -124,7 +124,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
     "display choices that matches configuration" in {
 
       val config: Config =
-        ConfigFactory.parseString("""
+        ConfigFactory.parseString(AppConfigSpec.configBareMinimum + """
                                     |list-of-available-journeys="CRT"
                                     |list-of-available-declarations="STANDARD"
                                     |google-analytics.token=N/A

@@ -1,0 +1,37 @@
+[
+  {
+    "code": "0012",
+    "en": "Permanent Export of Union Goods",
+    "cy": "Permanent Export of Union Goods"
+  },
+  {
+    "code": "0014",
+    "en": "Re-export of Non-Union Goods",
+    "cy": "Re-export of Non-Union Goods"
+  },
+  {
+    "code": "0015",
+    "en": "Temporary Export of Union Goods",
+    "cy": "Temporary Export of Union Goods"
+  },
+  {
+    "code": "0016",
+    "en": "Transit",
+    "cy": "Transit"
+  },
+  {
+    "code": "0017",
+    "en": "Movement of Goods from the UK to another Member State or Territory",
+    "cy": "Movement of Goods from the UK to another Member State or Territory"
+  },
+  {
+    "code": "0018",
+    "en": "Transhipment, prior to export",
+    "cy": "Transhipment, prior to export"
+  },
+  {
+    "code": "0019",
+    "en": "Export Inventory Record Cleansing",
+    "cy": "Export Inventory Record Cleansing"
+  }
+]
