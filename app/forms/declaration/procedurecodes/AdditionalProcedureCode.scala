@@ -24,24 +24,25 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.{hasSpecificLength, isEmpty, _}
 
-case class AdditionalProcedureCodes(additionalProcedureCode: Option[String])
+case class AdditionalProcedureCode(additionalProcedureCode: Option[String])
 
-object AdditionalProcedureCodes extends DeclarationPage {
-  implicit val format = Json.format[AdditionalProcedureCodes]
+object AdditionalProcedureCode extends DeclarationPage {
+  implicit val format = Json.format[AdditionalProcedureCode]
 
+  val additionalProcedureCodeKey = "additionalProcedureCode"
   private val additionalProcedureCodeLength = 3
 
   val mapping = Forms.mapping(
-    "additionalProcedureCode" -> optional(
+    additionalProcedureCodeKey -> optional(
       text()
         .verifying(
           "declaration.additionalProcedureCodes.error.invalid",
           isEmpty or (hasSpecificLength(additionalProcedureCodeLength) and isAlphanumeric)
         )
     )
-  )(AdditionalProcedureCodes.apply)(AdditionalProcedureCodes.unapply)
+  )(AdditionalProcedureCode.apply)(AdditionalProcedureCode.unapply)
 
-  def form(): Form[AdditionalProcedureCodes] = Form(mapping)
+  def form(): Form[AdditionalProcedureCode] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {

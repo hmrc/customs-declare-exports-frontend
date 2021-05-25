@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.FiscalInformationController
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
 import models.{DeclarationType, Mode}
@@ -174,7 +173,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage(Mode.Normal, item.id, fastForward = true)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, item.id)
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, item.id)
         verifyPageAccessed(0)
       }
 

@@ -32,7 +32,7 @@ import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.declaration.officeOfExit.OfficeOfExit
-import forms.declaration.procedurecodes.{AdditionalProcedureCodes, ProcedureCode}
+import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.declaration.removals.RemoveItem
 import forms.{Choice, DeclarationPage}
 import models.{ExportsDeclaration, Mode}
@@ -272,7 +272,7 @@ object Navigator {
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case AdditionalProcedureCodes          => routes.ProcedureCodesController.displayPage
+    case AdditionalProcedureCode           => routes.ProcedureCodesController.displayPage
     case FiscalInformation                 => routes.AdditionalProcedureCodesController.displayPage
     case AdditionalFiscalReferencesSummary => routes.AdditionalProcedureCodesController.displayPage
     case CommodityDetails                  => routes.FiscalInformationController.displayPage(_, _, fastForward = true)

@@ -22,7 +22,7 @@
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import config.AppConfig
-@import forms.declaration.procedurecodes.AdditionalProcedureCodes
+@import forms.declaration.procedurecodes.AdditionalProcedureCode
 
 @this(
   govukLayout: gdsMainTemplate,
@@ -31,7 +31,6 @@
   removeButton: removeButton,
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
-  pageTitle: pageTitle,
   exportsInputText: exportsInputText,
   spanVisuallyHidden: spanVisuallyHidden,
   tariffExpander: tariffExpander,
@@ -40,7 +39,7 @@
   appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[AdditionalProcedureCodes], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[AdditionalProcedureCode], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
 
 @additionalCodesTable = {
   @if(codes.nonEmpty) {
@@ -71,7 +70,7 @@
 
 @govukLayout(
   title = Title("declaration.additionalProcedureCodes.title", "declaration.section.5"),
-  backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalProcedureCodes, mode, ItemId(itemId))))) {
+  backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalProcedureCode, mode, ItemId(itemId))))) {
 
   @formHelper(action = controllers.declaration.routes.AdditionalProcedureCodesController.submitAdditionalProcedureCodes(mode, itemId), 'autoComplete -> "off") {
 
@@ -88,7 +87,7 @@
     )
     @additionalCodesTable
 
-    @tariffExpander(AdditionalProcedureCodes, request.declarationType)(messages, appConfig)
+    @tariffExpander(AdditionalProcedureCode, request.declarationType)(messages, appConfig)
     @addButton(hiddenLabel = Some(messages("declaration.additionalProcedureCodes.add.hint")))
     @saveButtons()
 

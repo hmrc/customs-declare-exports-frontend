@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import controllers.util.Remove
-import forms.declaration.procedurecodes.AdditionalProcedureCodes
+import forms.declaration.procedurecodes.AdditionalProcedureCode
 import mock.ErrorHandlerMocks
 import models.Mode
 import models.declaration.ProcedureCodesData.limitOfCodes
@@ -49,8 +49,8 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
 
   private val itemId = "itemId12345"
 
-  private def templateParameters: (Form[AdditionalProcedureCodes], Seq[String]) = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalProcedureCodes]])
+  private def templateParameters: (Form[AdditionalProcedureCode], Seq[String]) = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalProcedureCode]])
     val dataCaptor = ArgumentCaptor.forClass(classOf[Seq[String]])
     verify(additionalProcedureCodesPage).apply(any(), any(), formCaptor.capture(), dataCaptor.capture())(any(), any())
     (formCaptor.getValue, dataCaptor.getValue)

@@ -65,7 +65,7 @@ class FiscalInformationController @Inject()(
     } else if (fastForward && cacheContainsFiscalReferenceData) {
       navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
     } else if (fastForward && cacheItemIneligibleForOSR) {
-      navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId))
+      navigator.continueTo(mode, routes.AdditionalProcedureCodesController.displayPage(_, itemId))
     } else {
       if (cacheContainsFiscalReferenceData) {
         navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(_, itemId))

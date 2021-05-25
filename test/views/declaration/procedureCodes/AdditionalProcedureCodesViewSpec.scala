@@ -17,7 +17,7 @@
 package views.declaration.procedureCodes
 
 import base.Injector
-import forms.declaration.procedurecodes.AdditionalProcedureCodes
+import forms.declaration.procedurecodes.AdditionalProcedureCode
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -32,10 +32,10 @@ import views.tags.ViewTest
 class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[additional_procedure_codes]
-  private val form: Form[AdditionalProcedureCodes] = AdditionalProcedureCodes.form()
+  private val form: Form[AdditionalProcedureCode] = AdditionalProcedureCode.form()
   private val itemId = "itemId"
 
-  private def createView(form: Form[AdditionalProcedureCodes] = form, codes: Seq[String] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[AdditionalProcedureCode] = form, codes: Seq[String] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
     page(Mode.Normal, itemId, form, codes)(request, messages)
 
   "Additional Procedure Codes View" should {
@@ -91,7 +91,7 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
 
       "provided with filled form" should {
         "display data in Additional Procedure Code input" in {
-          val view = createView(form = AdditionalProcedureCodes.form().fill(AdditionalProcedureCodes(Some("123"))))
+          val view = createView(form = AdditionalProcedureCode.form().fill(AdditionalProcedureCode(Some("123"))))
 
           view.getElementById("additionalProcedureCode").attr("value") mustBe "123"
         }

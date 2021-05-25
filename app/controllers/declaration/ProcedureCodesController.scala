@@ -95,8 +95,9 @@ class ProcedureCodesController @Inject()(
       val updatedModel = model.updatedItem(
         itemId,
         item => {
+          val newProcedureCode = Some(procedureCode.procedureCode)
           val newProcedureCodes = item.procedureCodes
-            .fold(ProcedureCodesData(Some(procedureCode.procedureCode), Seq.empty))(_.copy(procedureCode = Some(procedureCode.procedureCode)))
+            .fold(ProcedureCodesData(Some(procedureCode.procedureCode), Seq.empty))(_.copy(procedureCode = newProcedureCode))
 
           item.copy(procedureCodes = Some(newProcedureCodes))
         }
