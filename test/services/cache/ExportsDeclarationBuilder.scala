@@ -183,7 +183,7 @@ trait ExportsDeclarationBuilder {
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders))))
 
   def withoutDepartureTransport(): ExportsDeclarationModifier = declaration => {
-    declaration.copy(transport = declaration.transport.copy(transportPayment = None))
+    declaration.copy(transport = declaration.transport.copy(expressConsignment = Some(YesNoAnswer(YesNoAnswers.no)), transportPayment = None))
   }
 
   def withDepartureTransport(
@@ -298,7 +298,7 @@ trait ExportsDeclarationBuilder {
   }
 
   def withoutTransportPayment(): ExportsDeclarationModifier = declaration => {
-    declaration.copy(transport = declaration.transport.copy(transportPayment = None))
+    declaration.copy(transport = declaration.transport.copy(expressConsignment = Some(YesNoAnswer(YesNoAnswers.no)), transportPayment = None))
   }
 
   def withBorderTransport(details: BorderTransport): ExportsDeclarationModifier = declaration => {
@@ -360,9 +360,14 @@ trait ExportsDeclarationBuilder {
   def withOfficeOfExit(officeId: String = ""): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId))))
 
-  def withTransportPayment(data: Option[TransportPayment]): ExportsDeclarationModifier =
+  def withTransportPayment(transportPayment: Option[TransportPayment]): ExportsDeclarationModifier =
     cache => {
-      cache.copy(transport = cache.transport.copy(transportPayment = data))
+      cache.copy(
+        transport = cache.transport.copy(
+          expressConsignment = Some(YesNoAnswer(transportPayment.fold(YesNoAnswers.no)(_ => YesNoAnswers.yes))),
+          transportPayment = transportPayment
+        )
+      )
     }
 
   def withContainerData(data: Container): ExportsDeclarationModifier = withContainerData(Seq(data))

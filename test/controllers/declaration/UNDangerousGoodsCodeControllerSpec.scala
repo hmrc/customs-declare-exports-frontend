@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.UNDangerousGoodsCodeController
 import forms.declaration.UNDangerousGoodsCode
 import forms.declaration.UNDangerousGoodsCode.{dangerousGoodsCodeKey, hasDangerousGoodsCodeKey}
 import models.DeclarationType._

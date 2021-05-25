@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import models.Mode
@@ -87,11 +88,11 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
       view.getElementById("containers-row0-seals") must containMessage("declaration.seal.summary.noSeals")
     }
 
-    "display 'Back' button that links to 'transport payment' page" in {
+    "display 'Back' button that links to 'Express Consignment' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer must containMessage(backCaption)
-      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage(Mode.Normal))
+      backLinkContainer.getElementById("back-link") must haveHref(routes.ExpressConsignmentController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {

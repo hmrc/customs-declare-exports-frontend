@@ -125,7 +125,16 @@ object ExportsDeclarationExchangeSpec {
       |    },
       |    "lrn": "QSLRN7285100"
       |  },
+      |  "linkDucrToMucr": {
+      |    "answer": "Yes"
+      |  },
+      |  "mucr": {
+      |    "mucr": "CZYX123A"
+      |  },
       |  "transport": {
+      |    "expressConsignment": {
+      |      "answer": "Yes"
+      |    },
       |    "transportPayment": {
       |      "paymentMethod": "H"
       |    },

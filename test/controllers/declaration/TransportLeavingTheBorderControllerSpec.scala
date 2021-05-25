@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.TransportLeavingTheBorderController
 import forms.declaration.{ModeOfTransportCode, TransportLeavingTheBorder}
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import models.{DeclarationType, Mode}

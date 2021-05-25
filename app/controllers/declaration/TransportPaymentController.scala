@@ -43,14 +43,13 @@ class TransportPaymentController @Inject()(
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)
 
-  def displayPage(mode: Mode): Action[AnyContent] =
-    (authenticate andThen journeyType(validTypes)) { implicit request =>
-      val frm = form().withSubmissionErrors()
-      request.cacheModel.transport.transportPayment match {
-        case Some(data) => Ok(transportPayment(mode, frm.fill(data)))
-        case _          => Ok(transportPayment(mode, frm))
-      }
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    val frm = form().withSubmissionErrors()
+    request.cacheModel.transport.transportPayment match {
+      case Some(data) => Ok(transportPayment(mode, frm.fill(data)))
+      case _          => Ok(transportPayment(mode, frm))
     }
+  }
 
   def submitForm(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
@@ -63,7 +62,7 @@ class TransportPaymentController @Inject()(
     }
 
   private def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(mode, controllers.declaration.routes.TransportContainerController.displayContainerSummary)
+    navigator.continueTo(mode, routes.TransportContainerController.displayContainerSummary)
 
   private def updateCache(formData: TransportPayment)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(_.updateTransportPayment(formData))

@@ -14,31 +14,28 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes._
+@import controllers.navigation.Navigator
 @import forms.declaration.TransportPayment
 @import forms.declaration.TransportPayment._
 @import models.requests.JourneyRequest
-@import controllers.navigation.Navigator
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 @import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.radioGroupErrors
 @import views.components.gds.Styles._
 @import views.html.components.gds._
-@import config.AppConfig
-@import views.helpers.ErrorMapper.radioGroupErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        govukRadios: GovukRadios,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    tariffExpander: tariffExpander,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[TransportPayment])(implicit request: JourneyRequest[_], messages: Messages)

@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.SupervisingCustomsOfficeController
 import forms.declaration.SupervisingCustomsOffice
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
@@ -161,13 +160,13 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
     "we are on simplified declaration journey" should {
 
-      "redirect to Border Transport" in {
+      "redirect to the 'Express Consignment' page" in {
         withNewCaching(simplifiedCacheModel)
 
         val result = await(controller.submit(Mode.Normal).apply(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportPaymentController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.ExpressConsignmentController.displayPage()
       }
 
       "update cache after successful bind" in {

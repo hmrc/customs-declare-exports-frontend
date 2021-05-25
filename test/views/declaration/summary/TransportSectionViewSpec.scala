@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import base.Injector
+import controllers.declaration.routes
 import forms.declaration.{ModeOfTransportCode, TransportCodes, TransportPayment}
 import models.Mode
 import models.declaration.Container
@@ -46,7 +47,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.departure.transportCode.header.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
+      row must haveSummaryActionsHref(routes.TransportLeavingTheBorderController.displayPage())
     }
 
     "display transport reference with change button" in {
@@ -58,7 +59,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.departure.meansOfTransport.header.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.DepartureTransportController.displayPage())
+      row must haveSummaryActionsHref(routes.DepartureTransportController.displayPage())
     }
 
     "display transport reference if question skipped" in {
@@ -70,7 +71,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
       row must haveSummaryValue("")
-      row must haveSummaryActionsHref(controllers.declaration.routes.DepartureTransportController.displayPage())
+      row must haveSummaryActionsHref(routes.DepartureTransportController.displayPage())
     }
 
     "display transport reference if option none selected" in {
@@ -85,7 +86,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
       row must haveSummaryValue(messages("declaration.summary.transport.departure.meansOfTransport.option_none"))
-      row must haveSummaryActionsHref(controllers.declaration.routes.DepartureTransportController.displayPage())
+      row must haveSummaryActionsHref(routes.DepartureTransportController.displayPage())
     }
 
     "display active transport type with change button" in {
@@ -97,7 +98,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.border.meansOfTransport.header.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.BorderTransportController.displayPage())
+      row must haveSummaryActionsHref(routes.BorderTransportController.displayPage())
     }
 
     "display active transport nationality with change button" in {
@@ -109,7 +110,18 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.activeTransportNationality.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.BorderTransportController.displayPage())
+      row must haveSummaryActionsHref(routes.BorderTransportController.displayPage())
+    }
+
+    "display express consignment with change button" in {
+      val view = section(Mode.Normal, data)(messages, journeyRequest())
+      val row = view.getElementsByClass("expressConsignment-row")
+
+      row must haveSummaryKey(messages("declaration.summary.transport.expressConsignment"))
+
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.expressConsignment.change")
+
+      row must haveSummaryActionsHref(routes.ExpressConsignmentController.displayPage())
     }
 
     "display transport payment with change button" in {
@@ -121,7 +133,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.payment.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.TransportPaymentController.displayPage())
+      row must haveSummaryActionsHref(routes.TransportPaymentController.displayPage())
     }
 
     "display information about containers when user said 'No' with change button" in {
@@ -133,7 +145,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.containers.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
+      row must haveSummaryActionsHref(routes.TransportContainerController.displayContainerSummary())
     }
 
     "not display border transport if question not answered" in {

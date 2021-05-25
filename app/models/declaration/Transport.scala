@@ -16,10 +16,12 @@
 
 package models.declaration
 
+import forms.common.YesNoAnswer
 import forms.declaration.{TransportLeavingTheBorder, TransportPayment}
 import play.api.libs.json.{Format, Json}
 
 case class Transport(
+  expressConsignment: Option[YesNoAnswer] = None,
   transportPayment: Option[TransportPayment] = None,
   containers: Option[Seq[Container]] = None,
   borderModeOfTransportCode: Option[TransportLeavingTheBorder] = None,

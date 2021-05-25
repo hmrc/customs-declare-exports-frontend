@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.TaricCodeRemoveController
 import forms.common.YesNoAnswer
 import forms.declaration.TaricCode
 import models.Mode

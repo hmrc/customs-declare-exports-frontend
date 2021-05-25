@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
@@ -24,13 +26,12 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.border_transport
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class BorderTransportController @Inject()(
   authenticate: AuthAction,
@@ -66,16 +67,14 @@ class BorderTransportController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
-        borderTransport => updateCache(borderTransport).map(_ => nextPage(mode, borderTransport))
+        borderTransport => updateCache(borderTransport).map(_ => navigator.continueTo(mode, nextPage))
       )
   }
 
-  private def nextPage(mode: Mode, borderTransport: BorderTransport)(implicit request: JourneyRequest[AnyContent]): Result =
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
-      case DeclarationType.STANDARD =>
-        navigator.continueTo(mode, controllers.declaration.routes.TransportPaymentController.displayPage)
-      case DeclarationType.SUPPLEMENTARY =>
-        navigator.continueTo(mode, controllers.declaration.routes.TransportContainerController.displayContainerSummary)
+      case DeclarationType.STANDARD      => routes.ExpressConsignmentController.displayPage
+      case DeclarationType.SUPPLEMENTARY => routes.TransportContainerController.displayContainerSummary
     }
 
   private def updateCache(formData: BorderTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

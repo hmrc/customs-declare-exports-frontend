@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.TotalPackageQuantityController
 import forms.declaration.TotalPackageQuantity
 import models.DeclarationType._
 import models.Mode
