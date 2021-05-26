@@ -24,6 +24,7 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import config.AppConfig
+@import views.helpers.ErrorMapper.radioGroupErrors
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -47,7 +48,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TransportPayment, mode)))) {
 
     @formHelper(action = TransportPaymentController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("paymentMethod", "cash", form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
 
@@ -59,9 +60,6 @@
                     isPageHeading = true,
                     classes = gdsPageLegend
                 ))
-            )),
-            hint = Some(Hint(
-                content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod.hint"))
             )),
             items = Seq(
                 RadioItem(

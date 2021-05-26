@@ -20,8 +20,7 @@ import forms.Mapping.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Mapping}
-import play.api.data.Forms.{mapping, optional, text}
-import play.api.data.validation.Constraints
+import play.api.data.Forms.mapping
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
