@@ -929,11 +929,10 @@ declaration.transportInformation.borderTransportMode.error.incorrect = Select th
 
 
 declaration.transportInformation.transportPayment.paymentMethod = How did you pay for the express transport?
-declaration.transportInformation.transportPayment.paymentMethod.hint = If you are not submitting an express consignment, you can leave this blank.
 declaration.transportInformation.transportPayment.paymentMethod.cash = Payment in cash
 declaration.transportInformation.transportPayment.paymentMethod.creditCard = Payment by credit card
 declaration.transportInformation.transportPayment.paymentMethod.cheque = Payment by cheque
-declaration.transportInformation.transportPayment.paymentMethod.other = Other (e.g. Direct debit to cash account)
+declaration.transportInformation.transportPayment.paymentMethod.other = Other (for example direct debit to cash account)
 declaration.transportInformation.transportPayment.paymentMethod.eFunds = Electronic funds transfer
 declaration.transportInformation.transportPayment.paymentMethod.accHolder = Account holder with carrier
 declaration.transportInformation.transportPayment.paymentMethod.notPrePaid = Not pre-paid
