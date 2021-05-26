@@ -1,0 +1,252 @@
+[
+  {
+    "code":"000",
+    "en": "No Additional Conditions",
+    "cy": "No Additional Conditions"
+  },
+  {
+    "code":"10C",
+    "en": "Items of correspondence",
+    "cy": "Items of correspondence"
+  },
+  {
+    "code":"11A",
+    "en": "ATA Carnets (Non-Licensable Goods)",
+    "cy": "ATA Carnets (Non-Licensable Goods)"
+  },
+  {
+    "code":"12A",
+    "en": "ATA Carnets (Licensable Goods)",
+    "cy": "ATA Carnets (Licensable Goods)"
+  },
+  {
+    "code":"13C",
+    "en": "CPD Carnets",
+    "cy": "CPD Carnets"
+  },
+  {
+    "code":"14C",
+    "en": "Continental Shelf",
+    "cy": "Continental Shelf"
+  },
+  {
+    "code":"15F",
+    "en": "Trade with Special Fiscal Territories or territories with which the EU has formed a Customs Union",
+    "cy": "Trade with Special Fiscal Territories or territories with which the EU has formed a Customs Union"
+  },
+  {
+    "code":"17X",
+    "en": "Exit Safety and Security Summary Declaration (EXS)",
+    "cy": "Exit Safety and Security Summary Declaration (EXS)"
+  },
+  {
+    "code":"18I",
+    "en": "Indirect Exports",
+    "cy": "Indirect Exports"
+  },
+  {
+    "code":"19Z",
+    "en": "Removal from a Free zone",
+    "cy": "Removal from a Free zone"
+  },
+  {
+    "code":"21G",
+    "en": "Private Exportations: Goods of a Non-Commercial Nature (Unaccompanied Baggage)",
+    "cy": "Private Exportations: Goods of a Non-Commercial Nature (Unaccompanied Baggage)"
+  },
+  {
+    "code":"22C",
+    "en": "Coffins, Human Remains, Funerary Urns and Ornamental Funerary",
+    "cy": "Coffins, Human Remains, Funerary Urns and Ornamental Funerary"
+  },
+  {
+    "code":"23A",
+    "en": "Agricultural Products",
+    "cy": "Agricultural Products"
+  },
+  {
+    "code":"24S",
+    "en": "Seeds, Fertilisers and Products for Treatment of Soil and Crops intended for use on Property Located in a Third Country Territory Adjoining the Customs Union",
+    "cy": "Seeds, Fertilisers and Products for Treatment of Soil and Crops intended for use on Property Located in a Third Country Territory Adjoining the Customs Union"
+  },
+  {
+    "code":"25D",
+    "en": "Diplomatic Privilege (Official Use)",
+    "cy": "Diplomatic Privilege (Official Use)"
+  },
+  {
+    "code":"26D",
+    "en": "Diplomatic Privilege (Personal Use)",
+    "cy": "Diplomatic Privilege (Personal Use)"
+  },
+  {
+    "code":"27M",
+    "en": "UK Government Mail/ Diplomatic Bags",
+    "cy": "UK Government Mail/ Diplomatic Bags"
+  },
+  {
+    "code":"40A",
+    "en": "Animals (twelve months)",
+    "cy": "Animals (twelve months)"
+  },
+  {
+    "code":"40D",
+    "en": "Disaster Relief Material",
+    "cy": "Disaster Relief Material"
+  },
+  {
+    "code":"40F",
+    "en": "Goods for use in Frontier Zone",
+    "cy": "Goods for use in Frontier Zone"
+  },
+  {
+    "code":"40G",
+    "en": "Re-export of Goods Temporarily Admitted in Particular Situations Having No Economic Effect",
+    "cy": "Re-export of Goods Temporarily Admitted in Particular Situations Having No Economic Effect"
+  },
+  {
+    "code":"41G",
+    "en": "Re-export of Goods Temporarily Admitted for a Period Not Exceeding Three Months",
+    "cy": "Re-export of Goods Temporarily Admitted for a Period Not Exceeding Three Months"
+  },
+  {
+    "code":"40M",
+    "en": "Medical, Surgical and Laboratory Equipment",
+    "cy": "Medical, Surgical and Laboratory Equipment"
+  },
+  {
+    "code":"40P",
+    "en": "Re-export of Personal Effects Temporarily Admitted by Travellers",
+    "cy": "Re-export of Personal Effects Temporarily Admitted by Travellers"
+  },
+  {
+    "code":"41P",
+    "en": "Professional Equipment",
+    "cy": "Professional Equipment"
+  },
+  {
+    "code":"42P",
+    "en": "Non-EU Packings being Re-exported",
+    "cy": "Non-EU Packings being Re-exported"
+  },
+  {
+    "code":"40T",
+    "en": "Means of Transport",
+    "cy": "Means of Transport"
+  },
+  {
+    "code":"40W",
+    "en": "Welfare Material for Seafarers",
+    "cy": "Welfare Material for Seafarers"
+  },
+  {
+    "code":"50A",
+    "en": "Animals",
+    "cy": "Animals"
+  },
+  {
+    "code":"50D",
+    "en": "Disaster Relief Material",
+    "cy": "Disaster Relief Material"
+  },
+  {
+    "code":"50F",
+    "en": "Goods for use in Frontier Zone",
+    "cy": "Goods for use in Frontier Zone"
+  },
+  {
+    "code":"50G",
+    "en": "Goods Temporarily Exported in Particular Situations Having No Economic Effect",
+    "cy": "Goods Temporarily Exported in Particular Situations Having No Economic Effect"
+  },
+  {
+    "code":"50M",
+    "en": "Medical, Surgical and Laboratory Equipment",
+    "cy": "Medical, Surgical and Laboratory Equipment"
+  },
+  {
+    "code":"50P",
+    "en": "Personal Effects Temporarily Exported by Travellers",
+    "cy": "Personal Effects Temporarily Exported by Travellers"
+  },
+  {
+    "code":"51P",
+    "en": "Professional Equipment",
+    "cy": "Professional Equipment"
+  },
+  {
+    "code":"52P",
+    "en": "EU Pallets or Containers Temporarily Exported",
+    "cy": "EU Pallets or Containers Temporarily Exported"
+  },
+  {
+    "code":"50T",
+    "en": "Means of Transport",
+    "cy": "Means of Transport"
+  },
+  {
+    "code":"50W",
+    "en": "Welfare Material for Seafarers",
+    "cy": "Welfare Material for Seafarers"
+  },
+  {
+    "code":"61T",
+    "en": "TIR Carnets",
+    "cy": "TIR Carnets"
+  },
+  {
+    "code":"62T",
+    "en": "New Computerised Transit (NCTS) Movements",
+    "cy": "New Computerised Transit (NCTS) Movements"
+  },
+  {
+    "code":"63T",
+    "en": "Transit Simplifications",
+    "cy": "Transit Simplifications"
+  },
+  {
+    "code":"72M",
+    "en": "Movements in Records: Special Procedures",
+    "cy": "Movements in Records: Special Procedures"
+  },
+  {
+    "code":"73N",
+    "en": "Notification of Presentation (NoP) under EIDR",
+    "cy": "Notification of Presentation (NoP) under EIDR"
+  },
+  {
+    "code":"90V",
+    "en": "Over-Shipments: Inventory Record Cleansing",
+    "cy": "Over-Shipments: Inventory Record Cleansing"
+  },
+  {
+    "code":"91U",
+    "en": "Under-shipments: Inventory Record Cleansing",
+    "cy": "Under-shipments: Inventory Record Cleansing"
+  },
+  {
+    "code":"92A",
+    "en": "Abandoned Goods: Inventory Record Cleansing",
+    "cy": "Abandoned Goods: Inventory Record Cleansing"
+  },
+  {
+    "code":"93D",
+    "en": "Destroyed Goods: Inventory Record Cleansing",
+    "cy": "Destroyed Goods: Inventory Record Cleansing"
+  },
+  {
+    "code":"94R",
+    "en": "Re-Routed/ Diverted Goods: Inventory Record Cleansing",
+    "cy": "Re-Routed/ Diverted Goods: Inventory Record Cleansing"
+  },
+  {
+    "code":"95S",
+    "en": "Seized Goods: Inventory Record Cleansing",
+    "cy": "Seized Goods: Inventory Record Cleansing"
+  },
+  {
+    "code":"96M",
+    "en": "Missing Inventory Reference for Cleared Goods: Inventory Release Only",
+    "cy": "Missing Inventory Reference for Cleared Goods: Inventory Release Only"
+  }
+]

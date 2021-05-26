@@ -164,11 +164,27 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have procedureCodeListFile file path" in {
-      validAppConfig.procedureCodeListFile must be("procedureCodes")
+      validAppConfig.procedureCodesListFile must be("procedureCodes")
     }
 
     "have procedureCodeForC21ListFile file path" in {
-      validAppConfig.procedureCodeForC21ListFile must be("procedureCodesC21")
+      validAppConfig.procedureCodesForC21ListFile must be("procedureCodesC21")
+    }
+
+    "have additionalProcedureCodesListFile file path" in {
+      validAppConfig.additionalProcedureCodes must be("additionalProcedureCodes")
+    }
+
+    "have additionalProcedureCodesForC21ListFile file path" in {
+      validAppConfig.additionalProcedureCodesForC21 must be("additionalProcedureCodesC21")
+    }
+
+    "have procedureCodeToAdditionalProcedureCodesLinkFile file path" in {
+      validAppConfig.procedureCodeToAdditionalProcedureCodesLinkFile must be("procedureCodeToAdditionalProcedureCodesLink")
+    }
+
+    "have procedureCodeToAdditionalProcedureCodesC21LinkFile file path" in {
+      validAppConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile must be("procedureCodeToAdditionalProcedureCodesC21Link")
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {
@@ -374,6 +390,10 @@ object AppConfigSpec {
       |
       |files.codelists.procedureCodes="procedureCodes"
       |files.codelists.procedureCodesC21="procedureCodesC21"
+      |files.codelists.additionalProcedureCodes="additionalProcedureCodes"
+      |files.codelists.additionalProcedureCodesC21="additionalProcedureCodesC21"
+      |files.codelists.procedureCodeToAdditionalProcedureCodesLink="procedureCodeToAdditionalProcedureCodesLink"
+      |files.codelists.procedureCodeToAdditionalProcedureCodesC21Link="procedureCodeToAdditionalProcedureCodesC21Link"
       |
       |countryCodesCsvFilename=code-lists/mdg-country-codes.csv
       |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json

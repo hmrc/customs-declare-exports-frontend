@@ -181,6 +181,10 @@ class AppConfig @Inject()(
   def tariffGuideUrl(key: String): String =
     runModeConfiguration.getOptional[String](key).getOrElse(throw new IllegalStateException(s"Missing tariff guide url key: $key"))
 
-  val procedureCodeListFile = loadConfig("files.codelists.procedureCodes")
-  val procedureCodeForC21ListFile = loadConfig("files.codelists.procedureCodesC21")
+  val procedureCodesListFile = loadConfig("files.codelists.procedureCodes")
+  val procedureCodesForC21ListFile = loadConfig("files.codelists.procedureCodesC21")
+  val additionalProcedureCodes = loadConfig("files.codelists.additionalProcedureCodes")
+  val additionalProcedureCodesForC21 = loadConfig("files.codelists.additionalProcedureCodesC21")
+  val procedureCodeToAdditionalProcedureCodesLinkFile = loadConfig("files.codelists.procedureCodeToAdditionalProcedureCodesLink")
+  val procedureCodeToAdditionalProcedureCodesC21LinkFile = loadConfig("files.codelists.procedureCodeToAdditionalProcedureCodesC21Link")
 }
