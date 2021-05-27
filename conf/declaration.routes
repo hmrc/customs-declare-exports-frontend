@@ -269,11 +269,17 @@ GET         /remove-declaration-item/:itemId     controllers.declaration.ItemsSu
 
 POST        /remove-declaration-item/:itemId     controllers.declaration.ItemsSummaryController.removeItem(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-# Procedure codes
+# Procedure Codes
 
 GET         /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 POST        /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesController.submitProcedureCodes(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+# Additional Procedure Codes
+
+GET         /items/:itemId/additional-procedure-codes        controllers.declaration.AdditionalProcedureCodesController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/additional-procedure-codes        controllers.declaration.AdditionalProcedureCodesController.submitAdditionalProcedureCodes(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Fiscal Information
 

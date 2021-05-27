@@ -59,15 +59,28 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         view.getElementsByClass("govuk-heading-m").text() mustBe messages("declaration.summary.items.item.sequenceId", "1")
       }
 
-      "have procedure codes separated by space with change buttons" in {
+      "have procedure code with change button" in {
 
         val row = view.getElementsByClass("item-1-procedureCode-row")
         row must haveSummaryKey(messages("declaration.summary.items.item.procedureCode"))
-        row must haveSummaryValue("1234 000 111")
+        row must haveSummaryValue("1234")
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.procedureCode.change", "1")
 
         row must haveSummaryActionsHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemWithAnswers.id))
+      }
+
+      "have additional procedure codes separated by space with change button" in {
+
+        val row = view.getElementsByClass("item-1-additionalProcedureCodes-row")
+        row must haveSummaryKey(messages("declaration.summary.items.item.additionalProcedureCodes"))
+        row must haveSummaryValue("000 111")
+
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalProcedureCodes.change", "1")
+
+        row must haveSummaryActionsHref(
+          controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemWithAnswers.id)
+        )
       }
 
       "have onward supply answer with change button" in {
@@ -235,14 +248,26 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         view.getElementsByClass("govuk-heading-m").text() mustBe messages("declaration.summary.items.item.sequenceId", "1")
       }
 
-      "have procedure codes separated by space with change buttons" in {
+      "have procedure code with change button" in {
 
         val row = view.getElementsByClass("item-1-procedureCode-row")
         row must haveSummaryKey(messages("declaration.summary.items.item.procedureCode"))
-        row must haveSummaryValue("1234 000 111")
+        row must haveSummaryValue("1234")
 
-        row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.procedureCode.change")
+        row mustNot haveSummaryActionsTexts("site.change", "declaration.summary.items.item.procedureCode.change")
         row mustNot haveSummaryActionsHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemWithAnswers.id))
+      }
+
+      "have additional procedure codes separated by space with change button" in {
+
+        val row = view.getElementsByClass("item-1-additionalProcedureCodes-row")
+        row must haveSummaryKey(messages("declaration.summary.items.item.additionalProcedureCodes"))
+        row must haveSummaryValue("000 111")
+
+        row mustNot haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalProcedureCodes.change")
+        row mustNot haveSummaryActionsHref(
+          controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemWithAnswers.id)
+        )
       }
 
       "have onward supply answer with change button" in {
@@ -398,14 +423,26 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         view.getElementsByClass("govuk-heading-m").text() mustBe messages("declaration.summary.items.item.sequenceId", "1")
       }
 
-      "have procedure codes separated by space with change buttons" in {
+      "have procedure code with change button" in {
 
         val row = view.getElementsByClass("item-1-procedureCode-row")
         row must haveSummaryKey(messages("declaration.summary.items.item.procedureCode"))
-        row must haveSummaryValue("1234 000 111")
+        row must haveSummaryValue("1234")
 
-        row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.procedureCode.change")
+        row mustNot haveSummaryActionsTexts("site.change", "declaration.summary.items.item.procedureCode.change")
         row mustNot haveSummaryActionsHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemWithAnswers.id))
+      }
+
+      "have additional procedure codes separated by space with change button" in {
+
+        val row = view.getElementsByClass("item-1-additionalProcedureCodes-row")
+        row must haveSummaryKey(messages("declaration.summary.items.item.additionalProcedureCodes"))
+        row must haveSummaryValue("000 111")
+
+        row mustNot haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalProcedureCodes.change")
+        row mustNot haveSummaryActionsHref(
+          controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemWithAnswers.id)
+        )
       }
 
       "have onward supply answer with change button" in {

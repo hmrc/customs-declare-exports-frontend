@@ -57,12 +57,12 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
         view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
-      "display 'Back' button to Procedure Codes page" in {
+      "display 'Back' button to Additional Procedure Codes page" in {
 
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemId))
+        backButton must haveHref(controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemId))
       }
 
       "display 'Save and continue' button" in {

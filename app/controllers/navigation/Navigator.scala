@@ -23,8 +23,8 @@ import controllers.declaration.routes
 import controllers.util.{Add, FormAction, Remove, SaveAndReturn}
 import forms.{Choice, DeclarationPage}
 import forms.Choice.AllowedChoiceValues
-import forms.declaration._
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
+import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
 import forms.declaration.additionaldocuments.{DocumentsProduced, DocumentsProducedSummary}
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
@@ -32,7 +32,9 @@ import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.declaration.officeOfExit.OfficeOfExit
+import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.declaration.removals.RemoveItem
+import forms.{Choice, DeclarationPage}
 import models.{ExportsDeclaration, Mode}
 import models.DeclarationType._
 import models.Mode.ErrorFix
@@ -260,7 +262,7 @@ object Navigator {
     case OfficeOfExit                         => routes.LocationController.displayPage
     case AdditionalDeclarationTypeStandardDec => routes.DeclarationChoiceController.displayPage
     case NatureOfTransaction                  => routes.TotalPackageQuantityController.displayPage
-    case ProcedureCodes                       => routes.ItemsSummaryController.displayItemsSummaryPage
+    case ProcedureCode                        => routes.ItemsSummaryController.displayItemsSummaryPage
     case ExportItem                           => routes.PreviousDocumentsSummaryController.displayPage
     case RemoveItem                           => routes.ItemsSummaryController.displayItemsSummaryPage
     case DocumentChangeOrRemove               => routes.PreviousDocumentsSummaryController.displayPage
@@ -270,8 +272,9 @@ object Navigator {
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case FiscalInformation                 => routes.ProcedureCodesController.displayPage
-    case AdditionalFiscalReferencesSummary => routes.ProcedureCodesController.displayPage
+    case AdditionalProcedureCode           => routes.ProcedureCodesController.displayPage
+    case FiscalInformation                 => routes.AdditionalProcedureCodesController.displayPage
+    case AdditionalFiscalReferencesSummary => routes.AdditionalProcedureCodesController.displayPage
     case CommodityDetails                  => routes.FiscalInformationController.displayPage(_, _, fastForward = true)
     case UNDangerousGoodsCode              => routes.CommodityDetailsController.displayPage
     case TaricCode                         => routes.TaricCodeSummaryController.displayPage

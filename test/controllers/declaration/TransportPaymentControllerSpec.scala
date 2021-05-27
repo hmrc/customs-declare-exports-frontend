@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration._
 import forms.declaration.TransportPayment
 import models.DeclarationType._
 import models.{DeclarationType, Mode}

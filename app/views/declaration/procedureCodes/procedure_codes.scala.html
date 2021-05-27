@@ -1,0 +1,74 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.Mode
+@import models.requests.JourneyRequest
+@import controllers.navigation.Navigator
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+
+@import scala.collection.immutable
+@import config.AppConfig
+@import forms.declaration.procedurecodes.ProcedureCode
+@import forms.declaration.procedurecodes.ProcedureCode.procedureCodeKey
+
+@this(
+  govukLayout: gdsMainTemplate,
+  govukFieldset: GovukFieldset,
+  errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
+  exportsInputText: exportsInputText,
+  tariffExpander: tariffExpander,
+  saveButtons: saveButtons,
+  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+  appConfig: AppConfig
+)
+
+@(mode: Mode, itemId: String, form: Form[ProcedureCode])(implicit request: JourneyRequest[_], messages: Messages)
+
+@govukLayout(
+    title = Title("declaration.procedureCodes.title", "declaration.section.5"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ProcedureCode, mode)))) {
+
+    @formHelper(action = controllers.declaration.routes.ProcedureCodesController.submitProcedureCodes(mode, itemId), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.section.5"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.procedureCodes.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                exportsInputText(
+                    field = form(procedureCodeKey),
+                    labelKey = "declaration.procedureCodes.header",
+                    hintKey = Some("declaration.procedureCodes.header.hint"),
+                    inputClasses = Some("govuk-input--width-4")
+                ),
+                tariffExpander(ProcedureCode, request.declarationType)(messages, appConfig),
+                saveButtons()
+            ))
+        ))
+
+    }
+}
