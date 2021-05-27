@@ -107,14 +107,6 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
 
       "return 400 (BAD_REQUEST)" when {
 
-        "form contains incorrect values" in {
-          val incorrectForm = Json.obj("yesNo" -> "wrong")
-
-          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
-          status(result) must be(BAD_REQUEST)
-          verifyPageInvoked
-        }
-
         "neither Yes or No have been selected on the page" in {
           val incorrectForm = Json.obj("yesNo" -> "")
 
