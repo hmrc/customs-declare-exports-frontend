@@ -1010,24 +1010,52 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     "return true" when {
 
       "DUCR is valid" in {
-
-        isValidDucr("9GB123456664559-1ABC") mustBe true
-        isValidDucr("0GB123456664559-13215") mustBe true
-        isValidDucr("9GB123456664559-1H7-1") mustBe true
-        isValidDucr("9GB123456664559-1H7-/1") mustBe true
-        isValidDucr("9GB123456664559-1H7-/(1)") mustBe true
+        isValidDucr("9GB123456789012-1") mustBe true
+        isValidDucr("0GB123456664559-1234567890123456789") mustBe true
+        isValidDucr("9GB123456789012-AB12/(1)") mustBe true
       }
     }
 
     "return false" when {
 
       "DUCR is invalid" in {
+        withClue("Not starting with single year digit") {
+          isValidDucr("GB0123456664559-1234567890123456789") mustBe false
+        }
 
-        isValidDucr("0GB123456664559") mustBe false
-        isValidDucr("9GB123456664559-") mustBe false
-        isValidDucr("91B123456664559-654A") mustBe false
-        isValidDucr("0GB123456664559-13215654987HDFVKDFV876") mustBe false
-        isValidDucr("91B123456664559-654A$") mustBe false
+        withClue("Country code not present") {
+          isValidDucr("000123456789012-1234567890123456789") mustBe false
+          isValidDucr("00B123456789012-1234567890123456789") mustBe false
+          isValidDucr("0G0123456789012-1234567890123456789") mustBe false
+        }
+
+        withClue("EORI value wrong length") {
+          isValidDucr("0GB12345678901-01234567890123456789") mustBe false
+          isValidDucr("0GB1234567890123-234567890123456789") mustBe false
+        }
+
+        withClue("Invalid character present in EORI") {
+          isValidDucr("9GB12A456789012-AB12")
+          isValidDucr("91B12-456664559-AB12") mustBe false
+          isValidDucr("9GB12$456664559-AB12") mustBe false
+          isValidDucr("9GB12ö456664559-AB12") mustBe false
+        }
+
+        withClue("Missing trader ref") {
+          isValidDucr("9GB123456789012") mustBe false
+          isValidDucr("9GB123456789012-") mustBe false
+        }
+
+        withClue("Trader ref too long") {
+          isValidDucr("0GB123456664559-12345678901234567890") mustBe false
+        }
+
+        withClue("Invalid character present in trader ref") {
+          isValidDucr("9GB123456789012-aB12")
+          isValidDucr("91B123456664559-AB12$") mustBe false
+          isValidDucr("9GB123456664559-AB12-") mustBe false
+          isValidDucr("9GB123456664559-AB12ö") mustBe false
+        }
       }
     }
   }

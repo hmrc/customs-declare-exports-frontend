@@ -43,7 +43,7 @@ class DucrSpec extends UnitSpec {
 
     "has no errors for correct Ducr" in {
 
-      val correctDucr = Ducr("9GB123456664559-1H7-1")
+      val correctDucr = Ducr("9GB123456664559-1H7(1)")
       val filledForm = Form(Ducr.ducrMapping).fillAndValidate(correctDucr)
 
       filledForm.errors mustBe empty

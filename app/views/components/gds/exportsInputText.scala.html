@@ -25,6 +25,7 @@
         labelArg: String = "",
         hintKey: Option[String] = None,
         hintKeyLinks: Seq[Html] = Seq.empty,
+        hintHtml: Option[Html] = None,
         isPageHeading: Boolean = false,
         headingClasses: String = gdsPageLabel,
         labelClasses: String = "govuk-label--m",
@@ -48,12 +49,18 @@
     }
 }
 
+@hintContent = @{
+    hintKey
+        .map(key => Hint(content = HtmlContent(Html(messages(key, hintKeyLinks:_*)))))
+        .orElse( hintHtml.map(hint => Hint(content = HtmlContent(hint))))
+}
+
 @govukInput(Input(
     id = field.id,
     name = field.name,
     value = field.value,
     label = buildLabel,
-    hint = hintKey.map(key => Hint(content = HtmlContent(Html(messages(key, hintKeyLinks:_*))))),
+    hint = hintContent,
     errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
     classes = inputClasses.map(clazz => s" $clazz").getOrElse(defaultInputClasses)
 ))

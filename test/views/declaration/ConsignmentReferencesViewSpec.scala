@@ -49,9 +49,17 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
       messages must haveTranslationFor("declaration.consignmentReferences.header")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.info")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint1")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint.bullet1")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint.bullet2")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint.bullet3")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint.bullet4")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint.bullet5")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint2")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.inset")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.info")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.hint")
+      messages must haveTranslationFor("declaration.consignmentReferences.lrn.inset")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.error.empty")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.error.length")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.error.specialCharacter")
@@ -75,9 +83,23 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
         val view = createView()
 
+        val expectedHintText = Seq(
+          messages("declaration.consignmentReferences.ducr.hint1"),
+          messages("declaration.consignmentReferences.ducr.hint.bullet1"),
+          messages("declaration.consignmentReferences.ducr.hint.bullet2"),
+          messages("declaration.consignmentReferences.ducr.hint.bullet3"),
+          messages("declaration.consignmentReferences.ducr.hint.bullet4"),
+          messages("declaration.consignmentReferences.ducr.hint.bullet5"),
+          messages("declaration.consignmentReferences.ducr.hint2")
+        ).mkString(" ")
+
         view.getElementsByAttributeValue("for", "ducr_ducr").text() mustBe messages("declaration.consignmentReferences.ducr.info")
-        view.getElementById("ducr_ducr-hint").text() mustBe messages("declaration.consignmentReferences.ducr.hint")
+        view.getElementById("ducr_ducr-hint").text() mustBe expectedHintText
         view.getElementById("ducr_ducr").attr("value") mustBe empty
+      }
+
+      "display inset text for DUCR" in {
+        createView().getElementsByClass("govuk-inset-text").get(0).text() mustBe messages("declaration.consignmentReferences.ducr.inset")
       }
 
       "display empty input with label for LRN" in {
@@ -87,6 +109,10 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view.getElementsByAttributeValue("for", "lrn").text() mustBe messages("declaration.consignmentReferences.lrn.info")
         view.getElementById("lrn-hint").text() mustBe messages("declaration.consignmentReferences.lrn.hint")
         view.getElementById("lrn").attr("value") mustBe empty
+      }
+
+      "display inset text for LRN" in {
+        createView().getElementsByClass("govuk-inset-text").get(1).text() mustBe messages("declaration.consignmentReferences.lrn.inset")
       }
 
       "display 'Save and continue' button on page" in {
