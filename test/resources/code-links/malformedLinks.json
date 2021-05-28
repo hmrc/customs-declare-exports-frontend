@@ -1,0 +1,14 @@
+[
+  {
+    "parentCode": "1040",
+    "childCodes": ["C12", "F75", "000", "0GD", "0MG", "1CD", "1CG", "1CS", "1DP", "1NO", "1NP", "2DP", "2IE", "3LV", "3NS", "3PE", "3PM", "3RI"]
+  },
+  {
+    "WRONG": "1007",
+    "childCodes": ["F75", "000", "1CG", "1CS"]
+  },
+  {
+    "parentCode": "1042",
+    "childCodes": ["F75", "000", "1CD", "1CG", "2ES"]
+  }
+]

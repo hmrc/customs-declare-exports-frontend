@@ -1,0 +1,317 @@
+[
+  {
+    "code":"000",
+    "en": "No other Additional Procedure Code applies",
+    "cy": "No other Additional Procedure Code applies"
+  },
+  {
+    "code":"000",
+    "en": "No other Additional Procedure Code applies",
+    "cy": "No other Additional Procedure Code applies"
+  },
+  {
+    "code":"1CS",
+	"en": "Goods are presented at approved Customs Supervised Export (CSE) location premises, awaiting clearance for export",
+	"cy": "Goods are presented at approved Customs Supervised Export (CSE) location premises, awaiting clearance for export"
+  },
+  {
+    "code":"3LV",
+	"en": "Low Value Export or Dispatch to a Single Recipient",
+	"cy": "Low Value Export or Dispatch to a Single Recipient"
+  },
+  {
+    "code":"3NS",
+	"en": "Home Use goods that are excluded from external trade statistics being exported or dispatched",
+	"cy": "Home Use goods that are excluded from external trade statistics being exported or dispatched"
+  },
+  {
+    "code":"3PE",
+	"en": "Export or Dispatch of Personal Effects",
+	"cy": "Export or Dispatch of Personal Effects"
+  },
+  {
+    "code":"3PM",
+	"en": "Export or Dispatch of Private Means of Transport",
+	"cy": "Export or Dispatch of Private Means of Transport"
+  },
+  {
+    "code":"3RI",
+	"en": "Rejected Imports",
+	"cy": "Rejected Imports"
+  },
+  {
+    "code":"F75",
+	"en": "Goods dispatched in the context of trade with UK Special Fiscal Territories - Jersey or Guernsey",
+	"cy": "Goods dispatched in the context of trade with UK Special Fiscal Territories - Jersey or Guernsey"
+  },
+  {
+    "code":"2CD",
+	"en": "Controlled drugs, re-exported or dispatched from a special procedure using Simplified Procedures",
+	"cy": "Controlled drugs, re-exported or dispatched from a special procedure using Simplified Procedures"
+  },
+  {
+    "code":"2CG",
+	"en": "Controlled goods, re-exported or dispatched from a special procedure using Simplified Procedures",
+	"cy": "Controlled goods, re-exported or dispatched from a special procedure using Simplified Procedures"
+  },
+  {
+    "code":"2DP",
+	"en": "Goods exported or dispatched under Diplomatic Privilege (personal use)",
+	"cy": "Goods exported or dispatched under Diplomatic Privilege (personal use)"
+  },
+  {
+    "code":"2ES",
+	"en": "Excise goods being exported or dispatched from onward supply relief, moving under an excise duty suspension, for movements not originating in UK",
+	"cy": "Excise goods being exported or dispatched from onward supply relief, moving under an excise duty suspension, for movements not originating in UK"
+  },
+  {
+    "code":"2IE",
+	"en": "Indirect Export: Goods exiting the UK where an export declaration has not been made in the other Member State and the goods cannot be declared by an oral act or act by other means",
+	"cy": "Indirect Export: Goods exiting the UK where an export declaration has not been made in the other Member State and the goods cannot be declared by an oral act or act by other means"
+  },
+  {
+    "code":"0GD",
+	"en": "Certain goods consigned by other Government Departments and agencies",
+	"cy": "Certain goods consigned by other Government Departments and agencies"
+  },
+  {
+    "code":"0MG",
+	"en": "Goods for Military Use Abroad",
+	"cy": "Goods for Military Use Abroad"
+  },
+  {
+    "code":"1CD",
+	"en": "Controlled Drugs using Simplified Procedures",
+	"cy": "Controlled Drugs using Simplified Procedures"
+  },
+  {
+    "code":"1CG",
+	"en": "Controlled Goods using Simplified Procedures",
+	"cy": "Controlled Goods using Simplified Procedures"
+  },
+  {
+    "code":"1DP",
+	"en": "Goods exported or dispatched under diplomatic privilege (official use)",
+	"cy": "Goods exported or dispatched under diplomatic privilege (official use)"
+  },
+  {
+    "code":"1MP",
+	"en": "Prior export of equivalent milk and milk products (EX/IM)",
+	"cy": "Prior export of equivalent milk and milk products (EX/IM)"
+  },
+  {
+    "code":"1NO",
+	"en": "Goods exported or dispatched for US and other NATO visiting forces (official use)",
+	"cy": "Goods exported or dispatched for US and other NATO visiting forces (official use)"
+  },
+  {
+    "code":"1NP",
+	"en": "Goods exported or dispatched by US and other NATO visiting forces personnel (goods for personal use)",
+	"cy": "Goods exported or dispatched by US and other NATO visiting forces personnel (goods for personal use)"
+  },
+  {
+    "code":"1SW",
+	"en": "Export of goods to discharge the shipwork or platform end-use procedure",
+	"cy": "Export of goods to discharge the shipwork or platform end-use procedure"
+  },
+  {
+    "code":"1VW",
+	"en": "Goods liable to VAT only being exported or dispatched from customs warehousing",
+	"cy": "Goods liable to VAT only being exported or dispatched from customs warehousing"
+  },
+  {
+    "code":"46P",
+	"en": "The exportation of replacement goods following the prior import of processed products obtained from equivalent goods under Outward Processing (Prior Import Equivalence)",
+	"cy": "The exportation of replacement goods following the prior import of processed products obtained from equivalent goods under Outward Processing (Prior Import Equivalence)"
+  },
+  {
+    "code":"48P",
+	"en": "Export of defective goods under Outward Processing following the prior import of replacement products",
+	"cy": "Export of defective goods under Outward Processing following the prior import of replacement products"
+  },
+  {
+    "code":"A04",
+	"en": "Re-export or dispatch of goods to discharge an Inward Processing Procedure (VAT only)",
+	"cy": "Re-export or dispatch of goods to discharge an Inward Processing Procedure (VAT only)"
+  },
+  {
+    "code":"F44",
+	"en": "Inward Processing; customs debt under Article 86(3) of the Code",
+	"cy": "Inward Processing; customs debt under Article 86(3) of the Code"
+  },
+  {
+    "code":"B51",
+	"en": "Goods temporarily (re)exported for repair under guarantee using Outward Processing",
+	"cy": "Goods temporarily (re)exported for repair under guarantee using Outward Processing"
+  },
+  {
+    "code":"B52",
+	"en": "Defective goods temporarily (re)exported for replacement under guarantee using Outward Processing",
+	"cy": "Defective goods temporarily (re)exported for replacement under guarantee using Outward Processing"
+  },
+  {
+    "code":"B53",
+	"en": "Outward Processing under agreements with third countries, possibly combined with VAT only Outward Processing",
+	"cy": "Outward Processing under agreements with third countries, possibly combined with VAT only Outward Processing"
+  },
+  {
+    "code":"B54",
+	"en": "Goods temporarily dispatched under VAT only Outward Processing",
+	"cy": "Goods temporarily dispatched under VAT only Outward Processing"
+  },
+  {
+    "code":"C12",
+	"en": "Re-export of educational, scientific and cultural materials; scientific instruments and apparatus as listed in Annex II to Council Regulation (EC) No 1186/2009",
+	"cy": "Re-export of educational, scientific and cultural materials; scientific instruments and apparatus as listed in Annex II to Council Regulation (EC) No 1186/2009"
+  },
+  {
+    "code":"D01",
+	"en": "Pallets (including pallet accessories and equipment)",
+	"cy": "Pallets (including pallet accessories and equipment)"
+  },
+  {
+    "code":"D02",
+	"en": "Containers (including container accessories and equipment)",
+	"cy": "Containers (including container accessories and equipment)"
+  },
+  {
+    "code":"D03",
+	"en": "Means of road, rail, air, sea and inland waterway transport",
+	"cy": "Means of road, rail, air, sea and inland waterway transport"
+  },
+  {
+    "code":"D04",
+	"en": "Personal effects and goods for sports purposes previously imported by travellers",
+	"cy": "Personal effects and goods for sports purposes previously imported by travellers"
+  },
+  {
+    "code":"D05",
+	"en": "Welfare material for seafarers",
+	"cy": "Welfare material for seafarers"
+  },
+  {
+    "code":"D06",
+	"en": "Disaster relief material",
+	"cy": "Disaster relief material"
+  },
+  {
+    "code":"D07",
+	"en": "Medical, surgical and laboratory equipment",
+	"cy": "Medical, surgical and laboratory equipment"
+  },
+  {
+    "code":"D08",
+	"en": "Animals (twelve months or more)",
+	"cy": "Animals (twelve months or more)"
+  },
+  {
+    "code":"D09",
+	"en": "Goods for use in frontier zone",
+	"cy": "Goods for use in frontier zone"
+  },
+  {
+    "code":"D10",
+	"en": "Sound, image or data carrying media",
+	"cy": "Sound, image or data carrying media"
+  },
+  {
+    "code":"D11",
+	"en": "Publicity material",
+	"cy": "Publicity material"
+  },
+  {
+    "code":"D12",
+	"en": "Professional equipment",
+	"cy": "Professional equipment"
+  },
+  {
+    "code":"D13",
+	"en": "Pedagogic material and scientific equipment",
+	"cy": "Pedagogic material and scientific equipment"
+  },
+  {
+    "code":"D15",
+	"en": "Packings, empty",
+	"cy": "Packings, empty"
+  },
+  {
+    "code":"D16",
+	"en": "Moulds, dies, blocks, drawings, sketches, measuring, checking and testing instruments and other similar articles",
+	"cy": "Moulds, dies, blocks, drawings, sketches, measuring, checking and testing instruments and other similar articles"
+  },
+  {
+    "code":"D17",
+	"en": "Special tools and instruments (six months)",
+	"cy": "Special tools and instruments (six months)"
+  },
+  {
+    "code":"D18",
+	"en": "Goods, subject to tests, experiments or demonstrations",
+	"cy": "Goods, subject to tests, experiments or demonstrations"
+  },
+  {
+    "code":"D19",
+	"en": "Goods imported subject to satisfactory acceptance tests, in connection with a sales contract",
+	"cy": "Goods imported subject to satisfactory acceptance tests, in connection with a sales contract"
+  },
+  {
+    "code":"D20",
+	"en": "Goods used to carry out tests, experiments or demonstrations without financial gain (six months)",
+	"cy": "Goods used to carry out tests, experiments or demonstrations without financial gain (six months)"
+  },
+  {
+    "code":"D21",
+	"en": "Samples",
+	"cy": "Samples"
+  },
+  {
+    "code":"D22",
+	"en": "Replacement means of production (six months)",
+	"cy": "Replacement means of production (six months)"
+  },
+  {
+    "code":"D23",
+	"en": "Goods for events or for sale",
+	"cy": "Goods for events or for sale"
+  },
+  {
+    "code":"D24",
+	"en": "Goods for approval (six months)",
+	"cy": "Goods for approval (six months)"
+  },
+  {
+    "code":"D25",
+	"en": "Works of art, collectors’ items and antiques",
+	"cy": "Works of art, collectors’ items and antiques"
+  },
+  {
+    "code":"D26",
+	"en": "Goods imported with a view to their sale by auction",
+	"cy": "Goods imported with a view to their sale by auction"
+  },
+  {
+    "code":"D27",
+	"en": "Spare parts, accessories and equipment",
+	"cy": "Spare parts, accessories and equipment"
+  },
+  {
+    "code":"D28",
+	"en": "Goods imported in particular situations having no economic effect",
+	"cy": "Goods imported in particular situations having no economic effect"
+  },
+  {
+    "code":"D29",
+	"en": "Goods imported for a period not exceeding three months",
+	"cy": "Goods imported for a period not exceeding three months"
+  },
+  {
+    "code":"D30",
+	"en": "Means of Transport, for persons established outside the customs Territory of the Union, or for persons preparing for the transfer of their normal place of residence outside that Territory",
+	"cy": "Means of Transport, for persons established outside the customs Territory of the Union, or for persons preparing for the transfer of their normal place of residence outside that Territory"
+  },
+  {
+    "code":"D51",
+	"en": "Temporary Admission with partial relief from duties",
+	"cy": "Temporary Admission with partial relief from duties"
+  }
+]

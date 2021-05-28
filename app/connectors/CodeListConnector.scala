@@ -18,7 +18,7 @@ package connectors
 
 import akka.util.Helpers.Requiring
 import config.AppConfig
-import models.codes.{CommonCode, ProcedureCode}
+import models.codes.{AdditionalProcedureCode, CommonCode, ProcedureCode}
 import play.api.libs.json.{Json, OFormat}
 import utils.JsonFile
 
@@ -40,6 +40,9 @@ object CodeItem {
 
 trait CodeListConnector {
   def getProcedureCodes(locale: Locale): Seq[ProcedureCode]
+  def getProcedureCodesForC21(locale: Locale): Seq[ProcedureCode]
+  def getAdditionalProcedureCodes(locale: Locale): Seq[AdditionalProcedureCode]
+  def getAdditionalProcedureCodesForC21(locale: Locale): Seq[AdditionalProcedureCode]
 
   val WELSH = new Locale("cy", "GB", "");
 }
@@ -48,16 +51,6 @@ trait CodeListConnector {
 class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeListConnector {
 
   private implicit val supportedLanguages = Seq(ENGLISH, WELSH)
-
-  private val procedureCodeListsByLang = readCodesFromFile(
-    appConfig.procedureCodeListFile,
-    (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
-  )
-
-  private val procedureCodeForC21ListsByLang = readCodesFromFile(
-    appConfig.procedureCodeForC21ListFile,
-    (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
-  )
 
   private def readCodesFromFile[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T)(implicit locals: Seq[Locale]) = {
     val codeList = JsonFile.getJsonArrayFromFile(srcFile, CodeItem.formats)
@@ -68,9 +61,35 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
     }.toMap
   }
 
+  private val procedureCodeListsByLang = readCodesFromFile(
+    appConfig.procedureCodesListFile,
+    (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  private val procedureCodeForC21ListsByLang = readCodesFromFile(
+    appConfig.procedureCodesForC21ListFile,
+    (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  private val additionalProcedureCodeListsByLang = readCodesFromFile(
+    appConfig.additionalProcedureCodes,
+    (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  private val additionalProcedureCodeForC21ListsByLang = readCodesFromFile(
+    appConfig.additionalProcedureCodesForC21,
+    (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
   def getProcedureCodes(locale: Locale): Seq[ProcedureCode] =
     procedureCodeListsByLang.getOrElse(locale, procedureCodeListsByLang.value.head._2)
 
   def getProcedureCodesForC21(locale: Locale): Seq[ProcedureCode] =
     procedureCodeForC21ListsByLang.getOrElse(locale, procedureCodeForC21ListsByLang.value.head._2)
+
+  def getAdditionalProcedureCodes(locale: Locale): Seq[AdditionalProcedureCode] =
+    additionalProcedureCodeListsByLang.getOrElse(locale, additionalProcedureCodeListsByLang.value.head._2)
+
+  def getAdditionalProcedureCodesForC21(locale: Locale): Seq[AdditionalProcedureCode] =
+    additionalProcedureCodeForC21ListsByLang.getOrElse(locale, additionalProcedureCodeForC21ListsByLang.value.head._2)
 }

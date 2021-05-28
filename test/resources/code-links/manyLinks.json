@@ -1,0 +1,10 @@
+[
+  {
+    "parentCode": "1040",
+    "childCodes": ["C12", "F75"]
+  },
+  {
+    "parentCode": "0000",
+    "childCodes": []
+  }
+]
