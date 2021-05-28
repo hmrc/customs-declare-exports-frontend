@@ -92,7 +92,7 @@
 @borderTransportNationality = {
     @components.fields.field_accessible_autocomplete(
         field = form("borderTransportNationality"),
-        label = "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header",
+        label = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header"),
         emptySelectValue = messages("declaration.address.country.empty"),
         items = AutoCompleteItem.fromCountry(Countries.allCountries)
     )

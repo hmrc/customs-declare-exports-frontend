@@ -83,7 +83,7 @@
 @documentType = {
     @components.fields.field_accessible_autocomplete(
         field = form("documentType"),
-        label = "declaration.previousDocuments.documentType",
+        label = messages("declaration.previousDocuments.documentType"),
         labelClass = Some("govuk-label--m"),
         emptySelectValue = messages("declaration.previousDocuments.documentType.empty"),
         items = AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)

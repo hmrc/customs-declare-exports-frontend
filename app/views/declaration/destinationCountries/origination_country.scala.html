@@ -53,7 +53,7 @@
 
         @components.fields.field_accessible_autocomplete_with_header(
             field = form("countryCode"),
-            label = "declaration.originationCountry.title",
+            label = messages("declaration.originationCountry.title"),
             labelClass = Some(gdsPageLabel),
             emptySelectValue = messages("declaration.originationCountry.empty"),
             items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),

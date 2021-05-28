@@ -35,7 +35,7 @@ trait CodeLinkConnector {
 }
 
 @Singleton
-class FileBasedCodeLinkConnector @Inject()(appConfig: AppConfig) extends CodeLinkConnector { //codeListConnector: CodeListConnector,
+class FileBasedCodeLinkConnector @Inject()(appConfig: AppConfig) extends CodeLinkConnector {
 
   private def readCodeLinksFromFile[T <: CommonCode](srcFile: String): Map[String, Seq[String]] = {
     val codeLinks = JsonFile.getJsonArrayFromFile(srcFile, CodeLink.formats)
