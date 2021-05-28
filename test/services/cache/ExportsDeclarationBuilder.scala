@@ -146,7 +146,7 @@ trait ExportsDeclarationBuilder {
 
   private def uuid: String = UUID.randomUUID().toString
 
-  def withEntryIntoDeclarantsRecords(isEidr: String = "Yes"): ExportsDeclarationModifier =
+  def withEntryIntoDeclarantsRecords(isEidr: String = YesNoAnswers.yes): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(isEntryIntoDeclarantsRecords = Some(YesNoAnswer(isEidr))))
 
   def withPersonPresentingGoodsDetails(eori: Option[Eori] = None): ExportsDeclarationModifier =

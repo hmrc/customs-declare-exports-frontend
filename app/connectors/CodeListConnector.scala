@@ -17,6 +17,7 @@
 package connectors
 
 import akka.util.Helpers.Requiring
+import com.google.inject.ImplementedBy
 import config.AppConfig
 import models.codes.{AdditionalProcedureCode, CommonCode, ProcedureCode}
 import play.api.libs.json.{Json, OFormat}
@@ -38,6 +39,7 @@ object CodeItem {
   implicit val formats: OFormat[CodeItem] = Json.format[CodeItem]
 }
 
+@ImplementedBy(classOf[FileBasedCodeListConnector])
 trait CodeListConnector {
   def getProcedureCodes(locale: Locale): Seq[ProcedureCode]
   def getProcedureCodesForC21(locale: Locale): Seq[ProcedureCode]

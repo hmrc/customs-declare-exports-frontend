@@ -14,8 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-
-@(linkText: String, linkUrl: String)(implicit messages: Messages, appConfig: AppConfig)
+@(linkText: String, linkUrl: String)
 
 <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="@linkUrl">@linkText</a>

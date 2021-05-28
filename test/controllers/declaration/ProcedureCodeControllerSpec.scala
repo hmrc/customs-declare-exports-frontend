@@ -157,10 +157,13 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(Mode.Normal, itemId)
           verify(procedureCodesPage, never()).apply(any(), any(), any())(any(), any())
         }
+      }
 
-        "update cache with new Procedure Code" when {
+      "provided with correct code" when {
 
-          "cache was empty" in {
+        "cache was empty" should {
+
+          "update cache with new Procedure Code" in {
 
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId)))))
             val correctForm = Seq(("procedureCode", "1234"))
@@ -174,7 +177,24 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             updatedItem.get.procedureCodes.get.procedureCode.get mustBe "1234"
           }
 
-          "cache was NOT empty" in {
+          "NOT remove Additional Procedure Codes from the cache" in {
+
+            val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(None, Seq("123", "456"))))
+            withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
+            val correctForm = Seq(("procedureCode", "1234"))
+
+            controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+
+            val updatedItem = theCacheModelUpdated.itemBy(itemId)
+            updatedItem mustBe defined
+            updatedItem.get.procedureCodes mustBe defined
+            updatedItem.get.procedureCodes.get.additionalProcedureCodes mustBe Seq("123", "456")
+          }
+        }
+
+        "cache was NOT empty" should {
+
+          "update cache with new Procedure Code" in {
 
             val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq.empty)))
             withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
@@ -188,6 +208,36 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             updatedItem.get.procedureCodes.get.procedureCode mustBe defined
             updatedItem.get.procedureCodes.get.procedureCode.get mustBe "5678"
           }
+
+          "remove all Additional Procedure Codes from the cache" in {
+
+            val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq("123", "456"))))
+            withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
+            val correctForm = Seq(("procedureCode", "5678"))
+
+            controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+
+            val updatedItem = theCacheModelUpdated.itemBy(itemId)
+            updatedItem mustBe defined
+            updatedItem.get.procedureCodes mustBe defined
+            updatedItem.get.procedureCodes.get.additionalProcedureCodes mustBe empty
+          }
+
+          "NOT remove Additional Procedure Codes from the cache" when {
+            "Procedure Code provided is the same as cached one" in {
+
+              val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq("123", "456"))))
+              withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
+              val correctForm = Seq(("procedureCode", "1234"))
+
+              controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
+
+              val updatedItem = theCacheModelUpdated.itemBy(itemId)
+              updatedItem mustBe defined
+              updatedItem.get.procedureCodes mustBe defined
+              updatedItem.get.procedureCodes.get.additionalProcedureCodes mustBe Seq("123", "456")
+            }
+          }
         }
       }
 
@@ -200,7 +250,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
               withItem(anItem(withItemId(itemId), withFiscalInformation(fiscalInformation), withAdditionalFiscalReferenceData(fiscalReferencesData)))
             )
           )
-          val correctForm = Seq(("procedureCode", "1042"), ("additionalProcedureCode", "321"))
+          val correctForm = Seq(("procedureCode", "1042"))
 
           controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
@@ -219,7 +269,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
               withItem(anItem(withItemId(itemId), withFiscalInformation(fiscalInformation), withAdditionalFiscalReferenceData(fiscalReferencesData)))
             )
           )
-          val correctForm = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"))
+          val correctForm = Seq(("procedureCode", "1234"))
 
           controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
@@ -238,7 +288,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           withNewCaching(
             aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId), withPackageInformation(packageInformation))))
           )
-          val correctForm = Seq(("procedureCode", "0019"), ("additionalProcedureCode", "321"))
+          val correctForm = Seq(("procedureCode", "0019"))
 
           controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
@@ -253,7 +303,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           withNewCaching(
             aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId), withPackageInformation(packageInformation))))
           )
-          val correctForm = Seq(("procedureCode", "0019"), ("additionalProcedureCode", "321"))
+          val correctForm = Seq(("procedureCode", "0019"))
 
           controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
@@ -277,7 +327,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
                 withWarehouseIdentification(Some(warehouseIdentification))
               )
             )
-            val correctForm = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"))
+            val correctForm = Seq(("procedureCode", "1234"))
 
             controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
@@ -296,7 +346,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
                 withWarehouseIdentification(Some(warehouseIdentification))
               )
             )
-            val correctForm = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"))
+            val correctForm = Seq(("procedureCode", "1234"))
 
             controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 

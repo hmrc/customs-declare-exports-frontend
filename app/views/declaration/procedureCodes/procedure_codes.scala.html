@@ -22,6 +22,8 @@
 @import views.html.components.gds._
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
+@import services.ProcedureCodeService
+@import services.view.AutoCompleteItem
 
 @import scala.collection.immutable
 @import config.AppConfig
@@ -30,17 +32,31 @@
 
 @this(
   govukLayout: gdsMainTemplate,
-  govukFieldset: GovukFieldset,
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
-  exportsInputText: exportsInputText,
+  govukDetails : GovukDetails,
   tariffExpander: tariffExpander,
   saveButtons: saveButtons,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+  procedureCodeService: ProcedureCodeService,
   appConfig: AppConfig
 )
 
 @(mode: Mode, itemId: String, form: Form[ProcedureCode])(implicit request: JourneyRequest[_], messages: Messages)
+
+@readMoreExpanderContent = {
+  <p>@messages("declaration.procedureCodes.readMoreExpander.paragraph.1")</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.paragraph.2")</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.paragraph.3")</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.removalOfGoodsFromExciseWarehouse") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.removalOfGoodsFromExciseWarehouse.link.text"), linkUrl = appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse)</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.onwardSupplyRelief") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.onwardSupplyRelief.link.text"), linkUrl = appConfig.procedureCodesOnwardSupplyRelief)</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.endUseRelief") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.endUseRelief.link.text"), linkUrl = appConfig.procedureCodesEndUseRelief)</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.inwardProcessing") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.inwardProcessing.link.text"), linkUrl = appConfig.procedureCodesInwardProcessing)</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.paragraph.4")</p>
+  <p>@tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.outwardProcessing.link.text"), linkUrl = appConfig.procedureCodesOutwardProcessing)</p>
+  <p>@tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.temporaryExport.link.text"), linkUrl = appConfig.procedureCodesTemporaryExport)</p>
+  <p>@tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.reExportFollowingSpecialProcedure.link.text"), linkUrl = appConfig.procedureCodesReExportFollowingSpecialProcedure)</p>
+}
 
 @govukLayout(
     title = Title("declaration.procedureCodes.title", "declaration.section.5"),
@@ -52,23 +68,25 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages("declaration.procedureCodes.title")),
-                classes = gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(immutable.Seq(
-                exportsInputText(
-                    field = form(procedureCodeKey),
-                    labelKey = "declaration.procedureCodes.header",
-                    hintKey = Some("declaration.procedureCodes.header.hint"),
-                    inputClasses = Some("govuk-input--width-4")
-                ),
-                tariffExpander(ProcedureCode, request.declarationType)(messages, appConfig),
-                saveButtons()
-            ))
-        ))
+        @components.fields.field_accessible_autocomplete_with_header(
+            field = form(procedureCodeKey),
+            label = messages("declaration.procedureCodes.title"),
+            labelClass = Some(gdsPageLabel),
+            emptySelectValue = messages("declaration.procedureCodes.empty"),
+            items = AutoCompleteItem.fromProcedureCodes(procedureCodeService.getProcedureCodesFor(request.declarationType, request.cacheModel.isEidr, messages.lang.toLocale).toList),
+            isPageHeading = true,
+            hintParagraphs = List(messages("declaration.procedureCodes.hint"))
+        )
 
+        @if(!(request.declarationType == DeclarationType.CLEARANCE && request.cacheModel.isNotEidr)) {
+            @govukDetails(Details(
+                id = Some("procedureCode-readMore"),
+                summary = Text(messages("declaration.procedureCodes.readMoreExpander.header")),
+                content = HtmlContent(readMoreExpanderContent)
+            ))
+        }
+
+        @tariffExpander(ProcedureCode, request.declarationType)(messages, appConfig)
+        @saveButtons()
     }
 }

@@ -16,6 +16,7 @@
 
 package connectors
 
+import com.google.inject.ImplementedBy
 import config.AppConfig
 import models.codes.CommonCode
 import play.api.libs.json.{Json, OFormat}
@@ -29,6 +30,7 @@ object CodeLink {
   implicit val formats: OFormat[CodeLink] = Json.format[CodeLink]
 }
 
+@ImplementedBy(classOf[FileBasedCodeLinkConnector])
 trait CodeLinkConnector {
   def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]]
   def getValidAdditionalProcedureCodesForProcedureCodeC21(procedureCode: String): Option[Seq[String]]
