@@ -27,10 +27,17 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec {
 
   "ConsignmentReferences mapping used for binding data" should {
 
+    "return form without errors" when {
+      "provided with valid input" in {
+        val form = ConsignmentReferences.form().bind(correctConsignmentReferencesJSON)
+
+        form.hasErrors mustBe false
+      }
+    }
+
     "return form with errors" when {
 
       "provided with empty input" in {
-
         val form = ConsignmentReferences.form().bind(emptyJSON)
 
         form.hasErrors mustBe true
@@ -40,7 +47,6 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec {
       }
 
       "provided with invalid input" in {
-
         val form = ConsignmentReferences.form().bind(correctConsignmentReferencesNoDucrJSON)
 
         form.hasErrors mustBe true
@@ -48,19 +54,12 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec {
         form.errors.last.message must equal("error.ducr.empty")
       }
 
-      "provided with valid input" in {
-
-        val form = ConsignmentReferences.form().bind(correctConsignmentReferencesJSON)
-
-        form.hasErrors mustBe false
-      }
-
       "provided with valid input lowercase input" in {
-
         val form = ConsignmentReferences.form().bind(correctConsignmentReferencesLowercaseDucrJSON)
 
-        form.hasErrors mustBe false
-        form.value.map(_.ducr.ducr) mustBe Some(exemplaryDucr)
+        form.hasErrors mustBe true
+        form.errors.length must equal(1)
+        form.errors(0).message must equal("error.ducr")
       }
     }
   }

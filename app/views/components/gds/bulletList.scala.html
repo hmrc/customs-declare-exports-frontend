@@ -21,7 +21,8 @@
 @(title: Option[String] = None,
   titleClasses: String = "govuk-body",
   additionalListClasses: Option[String] = None,
-  items: Seq[Html]
+  items: Seq[Html],
+  footer: Option[String] = None,
 )(implicit messages: Messages)
 
 <nav>
@@ -33,4 +34,5 @@
             </li>
         }
     </ul>
+    @footer.map(paragraphBody(_, "govuk-hint"))
 </nav>
