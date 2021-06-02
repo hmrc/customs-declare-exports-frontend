@@ -147,6 +147,26 @@
             )
         else
             None,
+        declarationData.transport.expressConsignment.map(expressConsignment =>
+            SummaryListRow(
+                classes = "expressConsignment-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.transport.expressConsignment"))
+                ),
+                value = Value(
+                    content = Text(expressConsignment.answer)
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionItem(
+                            href = controllers.declaration.routes.ExpressConsignmentController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.transport.expressConsignment.change"))
+                        )
+                    )
+                ))
+            )
+        ),
         declarationData.transport.transportPayment.map(transportPayment =>
             SummaryListRow(
                 classes = "transport-payment-row",

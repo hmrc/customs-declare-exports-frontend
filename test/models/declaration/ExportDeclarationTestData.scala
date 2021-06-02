@@ -19,11 +19,13 @@ package models.declaration
 import java.time.Instant
 import java.util.UUID
 
-import forms.common.{Date, Eori}
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.{Date, Eori, YesNoAnswer}
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
+import forms.declaration.TransportPayment.cash
 import forms.declaration.{DeclarationHolder, _}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
@@ -63,6 +65,8 @@ object ExportDeclarationTestData {
     natureOfTransaction = Some(correctNatureOfTransaction),
     totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
     transport = Transport(
+      expressConsignment = Some(YesNoAnswer(YesNoAnswers.yes)),
+      transportPayment = Some(TransportPayment(cash)),
       containers = correctTransportInformationContainerData,
       borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(ModeOfTransportCode.Road))),
       meansOfTransportOnDepartureType = Some("10"),

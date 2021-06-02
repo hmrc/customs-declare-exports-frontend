@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes
 import forms.declaration.TransportPayment
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
@@ -70,29 +71,12 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with St
         val saveAndReturnButton = view.getElementById("submit_and_return")
         saveAndReturnButton must containMessage(saveAndReturnCaption)
       }
-    }
 
-    onStandard { implicit request =>
-      val view = createView()
-
-      "display 'Back' button that links to 'border transport' page" in {
+      "display 'Back' button that links to the 'Express Consignment' page" in {
         val backLinkContainer = view.getElementById("back-link")
 
         backLinkContainer must containMessage(backCaption)
-        backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
-      }
-    }
-
-    onSimplified { implicit request =>
-      val view = createView()
-
-      "display 'Back' button that links to 'warehouse identification' page" in {
-        val backLinkContainer = view.getElementById("back-link")
-
-        backLinkContainer must containMessage(backCaption)
-        backLinkContainer.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
-        )
+        backLinkContainer.getElementById("back-link") must haveHref(routes.ExpressConsignmentController.displayPage(Mode.Normal))
       }
     }
   }

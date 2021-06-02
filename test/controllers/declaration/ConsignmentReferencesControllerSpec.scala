@@ -17,10 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.ConsignmentReferencesController
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn}
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

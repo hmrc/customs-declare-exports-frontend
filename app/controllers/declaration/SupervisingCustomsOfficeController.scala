@@ -65,12 +65,9 @@ class SupervisingCustomsOfficeController @Inject()(
 
   private def nextPage(declarationType: DeclarationType): Mode => Call =
     declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
-        controllers.declaration.routes.InlandTransportDetailsController.displayPage
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.TransportPaymentController.displayPage
-      case DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.DepartureTransportController.displayPage
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD => routes.InlandTransportDetailsController.displayPage
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL  => routes.ExpressConsignmentController.displayPage
+      case DeclarationType.CLEARANCE                                => routes.DepartureTransportController.displayPage
     }
 
   private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

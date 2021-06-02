@@ -436,6 +436,10 @@ POST        /border-transport                   controllers.declaration.BorderTr
 
 # Transport Payment
 
+GET         /express-consignment                 controllers.declaration.ExpressConsignmentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /express-consignment                 controllers.declaration.ExpressConsignmentController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
 GET         /transport-payment                   controllers.declaration.TransportPaymentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /transport-payment                   controllers.declaration.TransportPaymentController.submitForm(mode: models.Mode ?= models.Mode.Normal)

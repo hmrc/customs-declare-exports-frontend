@@ -17,10 +17,12 @@
 package controllers.pdf
 
 import java.io.ByteArrayInputStream
+
+import scala.concurrent.Future
+
 import base.{ControllerWithoutFormSpec, Injector}
 import com.dmanchester.playfop.sapi.PlayFop
 import connectors.CustomsDeclareExportsConnector
-import controllers.pdf.EADController
 import models.dis.MrnStatusSpec
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
@@ -28,10 +30,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import services.ead.{BarcodeService, EADService}
-import views.xml.pdf.pdfTemplate
-
-import scala.concurrent.Future
 import views.helpers.ViewDates
+import views.xml.pdf.pdfTemplate
 
 class EADControllerSpec extends ControllerWithoutFormSpec with Injector {
 

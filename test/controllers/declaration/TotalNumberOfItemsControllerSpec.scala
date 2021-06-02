@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.TotalNumberOfItemsController
 import forms.declaration.TotalNumberOfItems
 import models.DeclarationType._
 import models.Mode

@@ -73,9 +73,8 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
   }
 
   private def nextPage(decType: DeclarationType) = decType match {
-    case SUPPLEMENTARY => routes.BorderTransportController.displayPage()
-    case STANDARD      => routes.BorderTransportController.displayPage()
-    case CLEARANCE     => routes.TransportPaymentController.displayPage()
+    case STANDARD | SUPPLEMENTARY => routes.BorderTransportController.displayPage()
+    case CLEARANCE                => routes.ExpressConsignmentController.displayPage()
   }
 
   private def formData(transportType: String, reference: String) =

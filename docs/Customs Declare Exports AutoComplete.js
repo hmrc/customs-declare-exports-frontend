@@ -1111,6 +1111,13 @@ function borderTransport(){
     }
 }
 
+function expressConsignment() {
+    if (currentPageIs('/customs-declare-exports/declaration/express-consignment')) {
+        document.getElementById('code_yes').checked = 'checked';
+        document.getElementById('submit').click();
+    }
+}
+
 function transportPayment(){
     if (currentPageIs('/customs-declare-exports/declaration/transport-payment')) {
         selectRadioOptionFromInputs(document.getElementsByName('paymentMethod'), 4);
@@ -1230,6 +1237,7 @@ function completeJourney() {
     inlandTransportDetails();
     departureTransport();
     borderTransport();
+    expressConsignment();
     transportPayment();
 
     // container

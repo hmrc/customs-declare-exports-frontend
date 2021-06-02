@@ -89,8 +89,7 @@ object Navigator {
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
-    case TransportPayment            => routes.BorderTransportController.displayPage
-    case ContainerFirst              => routes.TransportPaymentController.displayPage
+    case ExpressConsignment          => routes.BorderTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case OriginationCountryPage      => routes.DeclarationHolderController.displayPage
     case DestinationCountryPage      => routes.OriginationCountryController.displayPage
@@ -125,8 +124,7 @@ object Navigator {
     case DeclarantDetails             => routes.EntryIntoDeclarantsRecordsController.displayPage
     case PersonPresentingGoodsDetails => routes.EntryIntoDeclarantsRecordsController.displayPage
     case DeclarantIsExporter          => routes.DeclarantDetailsController.displayPage
-    case TransportPayment             => routes.DepartureTransportController.displayPage
-    case ContainerFirst               => routes.TransportPaymentController.displayPage
+    case ExpressConsignment           => routes.DepartureTransportController.displayPage
     case ContainerAdd                 => routes.TransportContainerController.displayContainerSummary
     case DestinationCountryPage       => routes.DeclarationHolderController.displayPage
     case RoutingCountryQuestionPage   => routes.DestinationCountryController.displayPage
@@ -189,8 +187,7 @@ object Navigator {
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
-    case TransportPayment            => routes.SupervisingCustomsOfficeController.displayPage
-    case ContainerFirst              => routes.TransportPaymentController.displayPage
+    case ExpressConsignment          => routes.SupervisingCustomsOfficeController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case DestinationCountryPage      => routes.DeclarationHolderController.displayPage
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
@@ -222,8 +219,7 @@ object Navigator {
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
-    case TransportPayment            => routes.SupervisingCustomsOfficeController.displayPage
-    case ContainerFirst              => routes.TransportPaymentController.displayPage
+    case ExpressConsignment          => routes.SupervisingCustomsOfficeController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case DestinationCountryPage      => routes.DeclarationHolderController.displayPage
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
@@ -267,6 +263,7 @@ object Navigator {
     case RemoveItem                           => routes.ItemsSummaryController.displayItemsSummaryPage
     case DocumentChangeOrRemove               => routes.PreviousDocumentsSummaryController.displayPage
     case TransportLeavingTheBorder            => routes.ItemsSummaryController.displayItemsSummaryPage
+    case TransportPayment                     => routes.ExpressConsignmentController.displayPage
     case CarrierDetails                       => routes.CarrierEoriNumberController.displayPage
     case TotalNumberOfItems                   => routes.OfficeOfExitController.displayPage
   }
@@ -302,6 +299,7 @@ object Navigator {
     case Document            => previousDocumentsPreviousPageDefault
     case ConsigneeDetails    => consigneeDetailsPreviousPage
     case RepresentativeAgent => representativeAgentPreviousPage
+    case ContainerFirst      => previousPageIfExpressConsignment
   }
 
   val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -321,6 +319,7 @@ object Navigator {
     case Document            => previousDocumentsPreviousPage
     case ConsigneeDetails    => consigneeDetailsPreviousPage
     case RepresentativeAgent => representativeAgentPreviousPage
+    case ContainerFirst      => previousPageIfExpressConsignment
   }
 
   val simplifiedCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -331,6 +330,7 @@ object Navigator {
     case Document            => previousDocumentsPreviousPage
     case ConsigneeDetails    => consigneeDetailsPreviousPage
     case RepresentativeAgent => representativeAgentPreviousPage
+    case ContainerFirst      => previousPageIfExpressConsignment
   }
 
   val occasionalCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -343,6 +343,7 @@ object Navigator {
     case RepresentativeAgent        => representativeAgentClearancePreviousPage
     case IsExs                      => isExsClearancePreviousPage
     case Document                   => previousDocumentsPreviousPage
+    case ContainerFirst             => previousPageIfExpressConsignment
   }
 
   val clearanceCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -495,6 +496,12 @@ object Navigator {
       routes.WarehouseIdentificationController.displayPage(mode)
     else
       warehouseIdentificationPreviousPage(cacheModel, mode)
+
+  private def previousPageIfExpressConsignment(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.transport.transportPayment.nonEmpty)
+      routes.TransportPaymentController.displayPage(mode)
+    else
+      routes.ExpressConsignmentController.displayPage(mode)
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {

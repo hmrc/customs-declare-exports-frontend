@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration._
 import forms.declaration.{CommodityMeasure, PackageInformation}
 import models.declaration.ExportItem
 import models.{DeclarationType, Mode}

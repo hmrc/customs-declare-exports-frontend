@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.{ControllerSpec, TestHelper}
-import controllers.declaration.TaricCodeAddController
 import forms.declaration.{TaricCode, TaricCodeFirst}
 import models.Mode
 import org.mockito.ArgumentCaptor

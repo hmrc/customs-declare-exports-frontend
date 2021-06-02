@@ -15,6 +15,7 @@
  */
 
 package forms.declaration
+
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import models.DeclarationType.DeclarationType

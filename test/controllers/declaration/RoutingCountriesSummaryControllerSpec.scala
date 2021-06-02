@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.RoutingCountriesSummaryController
 import forms.declaration.countries.Country
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor

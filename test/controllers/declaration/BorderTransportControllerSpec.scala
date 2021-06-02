@@ -63,9 +63,8 @@ class BorderTransportControllerSpec extends ControllerSpec {
   }
 
   private def nextPage(decType: DeclarationType) = decType match {
-    case SUPPLEMENTARY =>
-      controllers.declaration.routes.TransportContainerController.displayContainerSummary()
-    case STANDARD => controllers.declaration.routes.TransportPaymentController.displayPage()
+    case STANDARD      => routes.ExpressConsignmentController.displayPage()
+    case SUPPLEMENTARY => routes.TransportContainerController.displayContainerSummary()
   }
 
   private def formData(transportType: String, reference: String, nationality: String) =

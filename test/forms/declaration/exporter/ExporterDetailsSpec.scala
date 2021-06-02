@@ -32,7 +32,7 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
 
   val emptyExporterDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 
-  private def form(model: Option[ExportsDeclaration] = None)(implicit request: JourneyRequest[_]): Form[ExporterDetails] =
+  private def form(model: Option[ExportsDeclaration])(implicit request: JourneyRequest[_]): Form[ExporterDetails] =
     ExporterDetails.form(request.declarationType, model)
 
   onClearance { implicit request =>

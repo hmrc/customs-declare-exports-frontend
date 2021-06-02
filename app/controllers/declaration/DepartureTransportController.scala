@@ -23,11 +23,10 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.departure_transport
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +40,7 @@ class DepartureTransportController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  private def form()(implicit request: JourneyRequest[_]) = DepartureTransport.form(request.declarationType)
+  private def form()(implicit request: JourneyRequest[_]): Form[DepartureTransport] = DepartureTransport.form(request.declarationType)
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)
 
@@ -62,16 +61,14 @@ class DepartureTransportController @Inject()(
           (formWithErrors: Form[DepartureTransport]) => Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
           borderTransport =>
             updateCache(borderTransport)
-              .map(_ => nextPage(mode))
+              .map(_ => navigator.continueTo(mode, nextPage))
         )
     }
 
-  private def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
-      case DeclarationType.CLEARANCE =>
-        navigator.continueTo(mode, controllers.declaration.routes.TransportPaymentController.displayPage)
-      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
-        navigator.continueTo(mode, controllers.declaration.routes.BorderTransportController.displayPage)
+      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY => routes.BorderTransportController.displayPage
+      case DeclarationType.CLEARANCE                                => routes.ExpressConsignmentController.displayPage
     }
 
   private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

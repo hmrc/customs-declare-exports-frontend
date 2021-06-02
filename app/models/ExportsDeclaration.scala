@@ -104,13 +104,13 @@ case class ExportsDeclaration(
   def clearRoutingCountries(): ExportsDeclaration =
     copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
 
-  def updateContainers(containers: Seq[Container]) =
+  def updateContainers(containers: Seq[Container]): ExportsDeclaration =
     copy(transport = transport.copy(containers = Some(containers)))
 
-  def updateTransportPayment(payment: TransportPayment) =
-    copy(transport = transport.copy(transportPayment = Some(payment)))
+  def updateTransportPayment(payment: TransportPayment): ExportsDeclaration =
+    copy(transport = transport.copy(expressConsignment = Some(YesNoAnswer(YesNoAnswers.yes)), transportPayment = Some(payment)))
 
-  def updatePreviousDocuments(previousDocuments: Seq[Document]) =
+  def updatePreviousDocuments(previousDocuments: Seq[Document]): ExportsDeclaration =
     copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))
 
   def containRoutingCountries(): Boolean = locations.routingCountries.nonEmpty
