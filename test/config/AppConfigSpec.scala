@@ -53,7 +53,7 @@ class AppConfigSpec extends UnitSpec {
         |microservice.services.customs-declare-exports.fetch-submissions=/submissions
         |microservice.services.customs-declare-exports.fetch-submission-notifications=/submission-notifications
         |microservice.services.customs-declare-exports.fetch-ead=/ead
-        |microservice.services.customs-declare-exports-movements.host=localhostm
+        |microservice.services.customs-declare-exports-movements.host=localhost
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
         |platform.frontend.host="self/base-url"
@@ -387,6 +387,14 @@ object AppConfigSpec {
       |urls.notesForMucrConsolidation="http://notesForMucrConsolidation"
       |urls.arriveOrDepartExportsService="http://arriveOrDepartExportsService"
       |urls.customsDeclarationsGoodsTakenOutOfEu="http://customsDeclarationsGoodsTakenOutOfEu"
+      |
+      |urls.procedureCodes.removalOfGoodsFromExciseWarehouse = "https://www.gov.uk/guidance/receive-goods-into-and-remove-goods-from-an-excise-warehouse-excise-notice-197"
+      |urls.procedureCodes.onwardSupplyRelief = "https://www.gov.uk/guidance/check-if-you-can-claim-vat-relief-on-goods-imported-into-northern-ireland-for-onward-supply-to-the-eu#onward-supply-relief-osr"
+      |urls.procedureCodes.endUseRelief = "https://www.gov.uk/government/publications/uk-trade-tariff-end-use-relief-on-goods-used-for-a-prescribed-use"
+      |urls.procedureCodes.inwardProcessing = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes/requested-procedure-10-permanent-export-or-dispatch#section"
+      |urls.procedureCodes.outwardProcessing = "https://www.gov.uk/guidance/apply-to-pay-less-duty-on-goods-you-export-to-process-or-repair"
+      |urls.procedureCodes.temporaryExport = "https://www.gov.uk/guidance/pay-less-import-duty-and-vat-when-re-importing-goods-to-the-uk-and-eu#claiming-relief-for-exporting-goods-using-a-duplicate-list"
+      |urls.procedureCodes.reExportFollowingSpecialProcedure = "https://www.gov.uk/guidance/moving-processed-or-repaired-goods-into-free-circulation-or-re-exporting-them"
       |
       |files.codelists.procedureCodes="procedureCodes"
       |files.codelists.procedureCodesC21="procedureCodesC21"

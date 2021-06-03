@@ -17,6 +17,7 @@
 package services.model
 
 import base.UnitSpec
+import models.codes.ProcedureCode
 import services.view.AutoCompleteItem
 import services.{DocumentType, HolderOfAuthorisationCode}
 
@@ -55,6 +56,12 @@ class AutoCompleteItemSpec extends UnitSpec {
     "map from supervising customs office for Warehouse using Description - CODE" in {
       AutoCompleteItem.fromSupervisingCustomsOffice(List(CustomsOffice("code", "description"))) mustBe List(
         AutoCompleteItem("description - code", "code")
+      )
+    }
+
+    "map from Procedure Codes" in {
+      AutoCompleteItem.fromProcedureCodes(List(ProcedureCode(code = "code", description = "description"))) mustBe List(
+        AutoCompleteItem(label = "code - description", value = "code")
       )
     }
   }

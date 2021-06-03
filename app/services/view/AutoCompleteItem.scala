@@ -16,6 +16,7 @@
 
 package services.view
 
+import models.codes.ProcedureCode
 import services.model.{Country, CustomsOffice, OfficeOfExit, PackageType}
 import services.{DocumentType, HolderOfAuthorisationCode}
 
@@ -40,4 +41,7 @@ object AutoCompleteItem {
 
   def fromSupervisingCustomsOffice(offices: List[CustomsOffice]): List[AutoCompleteItem] =
     offices map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
+
+  def fromProcedureCodes(procedureCodes: List[ProcedureCode]): List[AutoCompleteItem] =
+    procedureCodes map (pc => AutoCompleteItem(s"${pc.code} - ${pc.description}", pc.code))
 }

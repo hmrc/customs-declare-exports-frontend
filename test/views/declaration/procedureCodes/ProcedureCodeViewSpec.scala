@@ -17,19 +17,20 @@
 package views.declaration.procedureCodes
 
 import base.Injector
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.procedurecodes.ProcedureCode
+import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import services.cache.ExportsTestData
-import tools.Stubs
+import services.cache.{ExportsDeclarationBuilder, ExportsTestData}
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.procedureCodes.procedure_codes
 import views.tags.ViewTest
 
 @ViewTest
-class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Injector with ExportsDeclarationBuilder {
 
   private val page = instanceOf[procedure_codes]
   private val form: Form[ProcedureCode] = ProcedureCode.form()
@@ -40,8 +41,27 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.procedureCodes.title")
-      messages must haveTranslationFor("declaration.procedureCodes.header")
-      messages must haveTranslationFor("declaration.procedureCodes.header.hint")
+      messages must haveTranslationFor("declaration.procedureCodes.hint")
+      messages must haveTranslationFor("declaration.procedureCodes.empty")
+      messages must haveTranslationFor("declaration.procedureCodes.error.empty")
+      messages must haveTranslationFor("declaration.procedureCodes.error.invalid")
+
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.header")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.paragraph.1")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.paragraph.2")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.paragraph.3")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.paragraph.4")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.removalOfGoodsFromExciseWarehouse")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.removalOfGoodsFromExciseWarehouse.link.text")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.onwardSupplyRelief")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.onwardSupplyRelief.link.text")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.endUseRelief")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.endUseRelief.link.text")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.inwardProcessing")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.inwardProcessing.link.text")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.outwardProcessing.link.text")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.temporaryExport.link.text")
+      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.reExportFollowingSpecialProcedure.link.text")
     }
 
     onEveryDeclarationJourney() { implicit request =>
@@ -57,8 +77,8 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs
         }
 
         "display empty input with label for Procedure Code" in {
-          view.getElementsByAttributeValue("for", "procedureCode") must containMessageForElements("declaration.procedureCodes.header")
-          view.getElementById("procedureCode-hint") must containMessage("declaration.procedureCodes.header.hint")
+          view.getElementsByAttributeValue("for", "procedureCode") must containMessageForElements("declaration.procedureCodes.title")
+          view.getElementById("procedureCode-hint") must containMessage("declaration.procedureCodes.hint")
           view.getElementById("procedureCode").attr("value") mustBe empty
         }
 
@@ -91,5 +111,28 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs
         }
       }
     }
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      "display 'Read more' expander" in {
+        Option(createView().getElementById("procedureCode-readMore")) mustNot be(empty)
+      }
+    }
+
+    onJourney(CLEARANCE)(aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.yes))) { implicit request =>
+      "declaration is EIDR" should {
+        "display 'Read more' expander" in {
+          Option(createView().getElementById("procedureCode-readMore")) mustNot be(empty)
+        }
+      }
+    }
+
+    onJourney(CLEARANCE)(aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.no))) { implicit request =>
+      "declaration is NOT EIDR" should {
+        "NOT display 'Read more' expander" in {
+          Option(createView().getElementById("procedureCode-readMore")) mustBe empty
+        }
+      }
+    }
+
   }
 }

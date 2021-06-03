@@ -16,6 +16,7 @@
 
 package connectors
 
+import com.google.inject.ImplementedBy
 import config.AppConfig
 import models.codes.CommonCode
 import play.api.libs.json.{Json, OFormat}
@@ -29,13 +30,14 @@ object CodeLink {
   implicit val formats: OFormat[CodeLink] = Json.format[CodeLink]
 }
 
+@ImplementedBy(classOf[FileBasedCodeLinkConnector])
 trait CodeLinkConnector {
   def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]]
   def getValidAdditionalProcedureCodesForProcedureCodeC21(procedureCode: String): Option[Seq[String]]
 }
 
 @Singleton
-class FileBasedCodeLinkConnector @Inject()(appConfig: AppConfig) extends CodeLinkConnector { //codeListConnector: CodeListConnector,
+class FileBasedCodeLinkConnector @Inject()(appConfig: AppConfig) extends CodeLinkConnector {
 
   private def readCodeLinksFromFile[T <: CommonCode](srcFile: String): Map[String, Seq[String]] = {
     val codeLinks = JsonFile.getJsonArrayFromFile(srcFile, CodeLink.formats)

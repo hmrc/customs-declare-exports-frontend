@@ -63,50 +63,62 @@ class ProcedureCodesController @Inject()(
       )
   }
 
-  private def updateCache(itemId: String, procedureCode: ProcedureCode)(
-    implicit r: JourneyRequest[AnyContent]
+  private def updateCache(itemId: String, procedureCodeEntered: ProcedureCode)(
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] = {
 
-    def clearDataForProcedureCode(code: String, itemId: String, model: ExportsDeclaration) = {
+    val updateProcedureCode: ExportsDeclaration => ExportsDeclaration = { model =>
+      model.updatedItem(itemId, item => {
+        val newProcedureCode = Some(procedureCodeEntered.procedureCode)
+        val newProcedureCodes = item.procedureCodes.fold(ProcedureCodesData(newProcedureCode, Seq.empty))(_.copy(procedureCode = newProcedureCode))
 
-      def removeFiscalInformationForCode(sourceModel: ExportsDeclaration) =
-        if (!ProcedureCodesData.osrProcedureCodes.contains(code))
-          sourceModel.updatedItem(itemId, item => item.copy(fiscalInformation = None, additionalFiscalReferencesData = None))
-        else sourceModel
+        item.copy(procedureCodes = Some(newProcedureCodes))
+      })
+    }
 
-      def removePackageInformationForCode(sourceModel: ExportsDeclaration) =
-        if (r.isType(DeclarationType.CLEARANCE) && ProcedureCodesData.eicrProcedureCodes.contains(code))
-          sourceModel.updatedItem(itemId, item => item.copy(packageInformation = None))
-        else sourceModel
+    val updateAdditionalProcedureCodes: ExportsDeclaration => ExportsDeclaration = { model =>
+      model.updatedItem(
+        itemId,
+        item => {
+          (for {
+            procedureCodesData <- item.procedureCodes
+            cachedProcedureCode <- procedureCodesData.procedureCode
+            isNewCodeDifferentThanCached = cachedProcedureCode != procedureCodeEntered.procedureCode
+            newProcedureCodesData = item.procedureCodes.map(_.copy(additionalProcedureCodes = Seq.empty)) if isNewCodeDifferentThanCached
 
-      def removeWarehouseIdentificationForCode(sourceModel: ExportsDeclaration) =
-        if (r.isType(DeclarationType.CLEARANCE) || sourceModel.requiresWarehouseId)
-          sourceModel
-        else
-          sourceModel.copy(locations = sourceModel.locations.copy(warehouseIdentification = None))
+            updatedItem = item.copy(procedureCodes = newProcedureCodesData)
+          } yield updatedItem).getOrElse(item)
+        }
+      )
+    }
 
+    val removeFiscalInformationForCode: ExportsDeclaration => ExportsDeclaration = { model =>
+      if (!ProcedureCodesData.osrProcedureCodes.contains(procedureCodeEntered.procedureCode))
+        model.updatedItem(itemId, item => item.copy(fiscalInformation = None, additionalFiscalReferencesData = None))
+      else model
+    }
+
+    val removePackageInformationForCode: ExportsDeclaration => ExportsDeclaration = { model =>
+      if (request.isType(DeclarationType.CLEARANCE) && ProcedureCodesData.eicrProcedureCodes.contains(procedureCodeEntered.procedureCode))
+        model.updatedItem(itemId, item => item.copy(packageInformation = None))
+      else model
+    }
+
+    val removeWarehouseIdentificationForCode: ExportsDeclaration => ExportsDeclaration = { model =>
+      if (request.isType(DeclarationType.CLEARANCE) || model.requiresWarehouseId)
+        model
+      else
+        model.copy(locations = model.locations.copy(warehouseIdentification = None))
+    }
+
+    updateExportsDeclarationSyncDirect { model =>
       model
+        .transform(updateAdditionalProcedureCodes)
+        .transform(updateProcedureCode)
         .transform(removeFiscalInformationForCode)
         .transform(removePackageInformationForCode)
         .transform(removeWarehouseIdentificationForCode)
     }
-
-    def updatedModel(model: ExportsDeclaration): ExportsDeclaration = {
-      val updatedModel = model.updatedItem(
-        itemId,
-        item => {
-          val newProcedureCode = Some(procedureCode.procedureCode)
-          val newProcedureCodes = item.procedureCodes
-            .fold(ProcedureCodesData(Some(procedureCode.procedureCode), Seq.empty))(_.copy(procedureCode = newProcedureCode))
-
-          item.copy(procedureCodes = Some(newProcedureCodes))
-        }
-      )
-
-      clearDataForProcedureCode(procedureCode.procedureCode, itemId, updatedModel)
-    }
-
-    updateExportsDeclarationSyncDirect(updatedModel(_))
   }
 
 }

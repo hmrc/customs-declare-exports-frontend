@@ -50,7 +50,7 @@
     @formGroupWrapper(field = form(DeclarationHolderFormGroupId)){
         @components.fields.field_accessible_autocomplete(
             field = form("authorisationTypeCode"),
-            label = "declaration.declarationHolder.authorisationCode",
+            label = messages("declaration.declarationHolder.authorisationCode"),
             labelClass = Some("govuk-label--m"),
             emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
             items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)

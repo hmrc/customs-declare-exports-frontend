@@ -51,7 +51,7 @@
 
 @components.fields.field_accessible_autocomplete(
     field = form(s"${addressPrefix}.country"),
-    label = s"$labelPrefix.country",
+    label = messages(s"$labelPrefix.country"),
     emptySelectValue = messages("declaration.address.country.empty"),
     items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryName)
 )

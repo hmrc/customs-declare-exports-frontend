@@ -67,6 +67,14 @@ class AppConfig @Inject()(
   val ecicsToolUrl = loadConfig("urls.ecicsTool")
   val companyInformationRegister = loadConfig("urls.companyInformationRegister")
 
+  val procedureCodesRemovalOfGoodsFromExciseWarehouse = loadConfig("urls.procedureCodes.removalOfGoodsFromExciseWarehouse")
+  val procedureCodesOnwardSupplyRelief = loadConfig("urls.procedureCodes.onwardSupplyRelief")
+  val procedureCodesEndUseRelief = loadConfig("urls.procedureCodes.endUseRelief")
+  val procedureCodesInwardProcessing = loadConfig("urls.procedureCodes.inwardProcessing")
+  val procedureCodesOutwardProcessing = loadConfig("urls.procedureCodes.outwardProcessing")
+  val procedureCodesTemporaryExport = loadConfig("urls.procedureCodes.temporaryExport")
+  val procedureCodesReExportFollowingSpecialProcedure = loadConfig("urls.procedureCodes.reExportFollowingSpecialProcedure")
+
   lazy val customsDeclareExportsBaseUrl = servicesConfig.baseUrl("customs-declare-exports")
 
   val emailFrontendUrl: String = loadConfig("urls.emailFrontendUrl")
