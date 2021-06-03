@@ -141,7 +141,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
           CancelDeclaration.form
             .fillAndValidate(
               CancelDeclaration(
-                Lrn("1SA123456789012-1FSA1234567IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"),
+                Lrn("1SA1234567890121FSA1234567IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"),
                 "123456789",
                 "Some Description",
                 NoLongerRequired.toString

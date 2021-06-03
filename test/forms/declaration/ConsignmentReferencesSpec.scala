@@ -46,20 +46,52 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec {
         form.errors(1).message must equal("error.required")
       }
 
-      "provided with invalid input" in {
-        val form = ConsignmentReferences.form().bind(correctConsignmentReferencesNoDucrJSON)
+      "provided with invalid input (no DUCR)" in {
+        val form = ConsignmentReferences.form().bind(consignmentReferencesNoDucrJSON)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
         form.errors.last.message must equal("error.ducr.empty")
       }
 
-      "provided with valid input lowercase input" in {
+      "provided with valid input (lowercase DUCR)" in {
         val form = ConsignmentReferences.form().bind(correctConsignmentReferencesLowercaseDucrJSON)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
         form.errors(0).message must equal("error.ducr")
+      }
+
+      "provided with invalid input (no LRN)" in {
+        val form = ConsignmentReferences.form().bind(consignmentReferencesNoLrnJSON)
+
+        form.hasErrors mustBe true
+        form.errors.length must equal(1)
+        form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.empty")
+      }
+
+      "provided with invalid input (invalid chars in LRN)" in {
+        val form = ConsignmentReferences.form().bind(consignmentReferencesBadLrnJSON)
+
+        form.hasErrors mustBe true
+        form.errors.length must equal(1)
+        form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.specialCharacter")
+      }
+
+      "provided with invalid input (LRN too long)" in {
+        val form = ConsignmentReferences.form().bind(consignmentReferencesLrnTooLongJSON)
+
+        form.hasErrors mustBe true
+        form.errors.length must equal(1)
+        form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.length")
+      }
+
+      "provided with invalid input (LRN invalid chars and too long) only show invalid char error" in {
+        val form = ConsignmentReferences.form().bind(consignmentReferencesLrnBadAndTooLongJSON)
+
+        form.hasErrors mustBe true
+        form.errors.length must equal(1)
+        form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.specialCharacter")
       }
     }
   }
@@ -81,19 +113,30 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec {
 
 object ConsignmentReferencesSpec {
   val exemplaryDucr = "8GB123456789012-1234567890QWERTYUIO"
+  val exemplarLrn = "123LRN"
 
   val emptyJSON: JsValue = JsObject(Map("" -> JsString("")))
 
-  val correctConsignmentReferences = ConsignmentReferences(ducr = Ducr(ducr = exemplaryDucr), lrn = Lrn("123LRN"))
-  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn("123LRN"))
+  val correctConsignmentReferences = ConsignmentReferences(ducr = Ducr(ducr = exemplaryDucr), lrn = Lrn(exemplarLrn))
+  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(exemplarLrn))
   val emptyConsignmentReferences = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(""))
 
   val correctConsignmentReferencesJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("123LRN"))
+    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString(exemplarLrn))
   )
   val correctConsignmentReferencesLowercaseDucrJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr.toLowerCase))), "lrn" -> JsString("123LRN"))
+    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr.toLowerCase))), "lrn" -> JsString(exemplarLrn))
   )
-  val correctConsignmentReferencesNoDucrJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString("123LRN")))
+  val consignmentReferencesNoDucrJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString(exemplarLrn)))
+  val consignmentReferencesNoLrnJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("")))
+  val consignmentReferencesLrnTooLongJSON: JsValue = JsObject(
+    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("12345678901234567890123"))
+  )
+  val consignmentReferencesBadLrnJSON: JsValue = JsObject(
+    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString(s"${exemplarLrn}*"))
+  )
+  val consignmentReferencesLrnBadAndTooLongJSON: JsValue = JsObject(
+    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("1234567890123456789012*"))
+  )
   val emptyConsignmentReferencesJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString("")))
 }

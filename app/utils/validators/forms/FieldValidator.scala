@@ -75,6 +75,8 @@ object FieldValidator {
 
   val isAlphanumeric: String => Boolean = (input: String) => input.forall(_.isLetterOrDigit)
 
+  val isNotAlphanumeric: String => Boolean = (input: String) => !isAlphanumeric(input)
+
   val isAlphanumericWithSpace: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' '))(input)
 
   val isValidAddressField: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' ', '\'', ',', '-'))(input)
