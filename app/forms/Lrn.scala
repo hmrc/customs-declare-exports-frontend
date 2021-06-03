@@ -34,7 +34,7 @@ object Lrn {
   def mapping(prefix: String) =
     text()
       .verifying(s"$prefix.error.empty", _.trim.nonEmpty)
-      .verifying(s"$prefix.error.length", isEmpty or noLongerThan(lrnMaxLength))
+      .verifying(s"$prefix.error.length", isEmpty or isNotAlphanumeric or noLongerThan(lrnMaxLength))
       .verifying(s"$prefix.error.specialCharacter", isEmpty or isAlphanumeric)
       .transform[Lrn](Lrn.apply, _.value)
 }
