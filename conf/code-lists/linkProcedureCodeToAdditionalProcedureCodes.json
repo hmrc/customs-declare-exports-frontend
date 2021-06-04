@@ -13,7 +13,7 @@
   },
   {
     "parentCode": "1044",
-    "childCodes": ["000", "0MG", "1CS", "1SW", "2DC", "2CG"]
+    "childCodes": ["000", "0MG", "1CS", "1SW", "2CD", "2CG"]
   },
   {
     "parentCode": "1100",
@@ -49,7 +49,7 @@
   },
   {
     "parentCode": "3151",
-    "childCodes": ["A04", "F44", "F75", "000", "0GD", "1CS", "2DC", "2CG"]
+    "childCodes": ["A04", "F44", "F75", "000", "0GD", "1CS", "2CD", "2CG"]
   },
   {
     "parentCode": "3153",
@@ -61,6 +61,6 @@
   },
   {
     "parentCode": "3171",
-    "childCodes": ["F75", "000", "0GD", "1CS", "1DP", "1NO", "1NP", "1VW", "2DC", "2CG", "2DP"]
+    "childCodes": ["F75", "000", "0GD", "1CS", "1DP", "1NO", "1NP", "1VW", "2CD", "2CG", "2DP"]
   }
 ]
