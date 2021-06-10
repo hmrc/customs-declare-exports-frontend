@@ -26,6 +26,7 @@ import utils.JsonFile
 import java.util.Locale
 import java.util.Locale._
 import javax.inject.{Inject, Singleton}
+import scala.collection.immutable.ListMap
 
 case class CodeItem(code: String, en: String, cy: String) {
   def getDescriptionByLocale(locale: Locale): String =
@@ -41,10 +42,10 @@ object CodeItem {
 
 @ImplementedBy(classOf[FileBasedCodeListConnector])
 trait CodeListConnector {
-  def getProcedureCodes(locale: Locale): Seq[ProcedureCode]
-  def getProcedureCodesForC21(locale: Locale): Seq[ProcedureCode]
-  def getAdditionalProcedureCodes(locale: Locale): Seq[AdditionalProcedureCode]
-  def getAdditionalProcedureCodesForC21(locale: Locale): Seq[AdditionalProcedureCode]
+  def getProcedureCodes(locale: Locale): Map[String, ProcedureCode]
+  def getProcedureCodesForC21(locale: Locale): Map[String, ProcedureCode]
+  def getAdditionalProcedureCodesMap(locale: Locale): Map[String, AdditionalProcedureCode]
+  def getAdditionalProcedureCodesMapForC21(locale: Locale): Map[String, AdditionalProcedureCode]
 
   val WELSH = new Locale("cy", "GB", "");
 }
@@ -54,44 +55,49 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
 
   private implicit val supportedLanguages = Seq(ENGLISH, WELSH)
 
-  private def readCodesFromFile[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T)(implicit locals: Seq[Locale]) = {
+  private def readCodesMapFromFile[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T) = {
     val codeList = JsonFile.getJsonArrayFromFile(srcFile, CodeItem.formats)
 
-    locals.map { locale =>
-      val procedureCodes = codeList.map(factory(_, locale))
-      (locale -> procedureCodes)
-    }.toMap
+    val langCodes = supportedLanguages.map { locale =>
+      val procedureCodes = codeList
+        .map(factory(_, locale))
+        .map(cc => (cc.code, cc))
+
+      (locale.getLanguage -> ListMap(procedureCodes: _*))
+    }
+
+    ListMap(langCodes: _*)
   }
 
-  private val procedureCodeListsByLang = readCodesFromFile(
+  private val procedureCodeListsByLang = readCodesMapFromFile(
     appConfig.procedureCodesListFile,
     (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  private val procedureCodeForC21ListsByLang = readCodesFromFile(
+  private val procedureCodeForC21ListsByLang = readCodesMapFromFile(
     appConfig.procedureCodesForC21ListFile,
     (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  private val additionalProcedureCodeListsByLang = readCodesFromFile(
+  private val additionalProcedureCodeMapsByLang = readCodesMapFromFile(
     appConfig.additionalProcedureCodes,
     (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  private val additionalProcedureCodeForC21ListsByLang = readCodesFromFile(
+  private val additionalProcedureCodeForC21MapsByLang = readCodesMapFromFile(
     appConfig.additionalProcedureCodesForC21,
     (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  def getProcedureCodes(locale: Locale): Seq[ProcedureCode] =
-    procedureCodeListsByLang.getOrElse(locale, procedureCodeListsByLang.value.head._2)
+  def getProcedureCodes(locale: Locale): Map[String, ProcedureCode] =
+    procedureCodeListsByLang.getOrElse(locale.getLanguage, procedureCodeListsByLang.value.head._2)
 
-  def getProcedureCodesForC21(locale: Locale): Seq[ProcedureCode] =
-    procedureCodeForC21ListsByLang.getOrElse(locale, procedureCodeForC21ListsByLang.value.head._2)
+  def getProcedureCodesForC21(locale: Locale): Map[String, ProcedureCode] =
+    procedureCodeForC21ListsByLang.getOrElse(locale.getLanguage, procedureCodeForC21ListsByLang.value.head._2)
 
-  def getAdditionalProcedureCodes(locale: Locale): Seq[AdditionalProcedureCode] =
-    additionalProcedureCodeListsByLang.getOrElse(locale, additionalProcedureCodeListsByLang.value.head._2)
+  def getAdditionalProcedureCodesMap(locale: Locale): Map[String, AdditionalProcedureCode] =
+    additionalProcedureCodeMapsByLang.getOrElse(locale.getLanguage, additionalProcedureCodeMapsByLang.value.head._2)
 
-  def getAdditionalProcedureCodesForC21(locale: Locale): Seq[AdditionalProcedureCode] =
-    additionalProcedureCodeForC21ListsByLang.getOrElse(locale, additionalProcedureCodeForC21ListsByLang.value.head._2)
+  def getAdditionalProcedureCodesMapForC21(locale: Locale): Map[String, AdditionalProcedureCode] =
+    additionalProcedureCodeForC21MapsByLang.getOrElse(locale.getLanguage, additionalProcedureCodeForC21MapsByLang.value.head._2)
 }

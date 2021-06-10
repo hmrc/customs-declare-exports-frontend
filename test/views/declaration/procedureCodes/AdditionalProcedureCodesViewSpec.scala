@@ -17,12 +17,14 @@
 package views.declaration.procedureCodes
 
 import base.Injector
+import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
 import forms.declaration.procedurecodes.AdditionalProcedureCode
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
+import services.view.AutoCompleteItem
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.procedureCodes.additional_procedure_codes
@@ -34,9 +36,15 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
   private val page = instanceOf[additional_procedure_codes]
   private val form: Form[AdditionalProcedureCode] = AdditionalProcedureCode.form()
   private val itemId = "itemId"
+  private val sampleProcedureCode = ProcedureCode("1040", "blah blah blah")
+  private val defaultAdditionalProcedureCodes = Seq(AdditionalProcedureCodeModel("000", "None"))
 
-  private def createView(form: Form[AdditionalProcedureCode] = form, codes: Seq[String] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form, codes)(request, messages)
+  private def createView(
+    form: Form[AdditionalProcedureCode] = form,
+    validCodes: Seq[AdditionalProcedureCodeModel] = defaultAdditionalProcedureCodes,
+    codes: Seq[String] = Seq.empty
+  )(implicit request: JourneyRequest[_]): Document =
+    page(Mode.Normal, itemId, form, sampleProcedureCode, validCodes, codes)(request, messages)
 
   "Additional Procedure Codes View" should {
 
@@ -44,6 +52,8 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
       messages must haveTranslationFor("declaration.additionalProcedureCodes.title")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.hint")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.table.header")
+      messages must haveTranslationFor("declaration.additionalProcedureCodes.inset")
+      messages must haveTranslationFor("declaration.additionalProcedureCodes.inset.linkText")
     }
 
     onEveryDeclarationJourney() { implicit request =>
@@ -51,7 +61,7 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
         val view = createView()
 
         "display page title" in {
-          view.getElementsByTag("h1") must containMessageForElements("declaration.additionalProcedureCodes.title")
+          view.getElementsByTag("h1") must containMessageForElements("declaration.additionalProcedureCodes.title", sampleProcedureCode.code)
         }
 
         "display section header" in {
@@ -76,6 +86,16 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
           val addButton = view.getElementById("add")
           addButton.text() must include(messages("site.add"))
           addButton.text() must include(messages("declaration.additionalProcedureCodes.add.hint"))
+        }
+
+        "display inset text" in {
+          val inset = view.getElementsByClass("govuk-inset-text")
+          val expected = messages(
+            "declaration.additionalProcedureCodes.inset",
+            AutoCompleteItem.formatProcedureCode(sampleProcedureCode),
+            s"${messages("declaration.additionalProcedureCodes.inset.linkText")} "
+          )
+          inset.get(0) must containText(expected)
         }
 
         "display 'Save and continue' button on page" in {
@@ -108,11 +128,11 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
           view.getElementsByTag("th").get(1).text() mustBe messages("site.remove.header")
         }
 
-        "display table values" in {
+        "display table values in reverse order they were entered" in {
           val view = createView(codes = Seq("123", "456"))
 
-          view.getElementsByTag("tr").get(1).text() must include("123")
-          view.getElementsByTag("tr").get(2).text() must include("456")
+          view.getElementsByTag("tr").get(1).text() must include("456")
+          view.getElementsByTag("tr").get(2).text() must include("123")
         }
       }
     }

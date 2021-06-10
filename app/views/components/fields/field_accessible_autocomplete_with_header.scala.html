@@ -26,7 +26,8 @@
   emptySelectValue: String,
   items: List[AutoCompleteItem],
   isPageHeading: Boolean,
-  args: List[(Symbol, Any)] = List.empty
+  args: List[(Symbol, Any)] = List.empty,
+  rightElement: Option[Html] = None
 )(implicit messages: Messages)
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
@@ -69,6 +70,7 @@ To avoid problems, we need to remove [] from field.
     @input_accessible_autocomplete(
         field = field,
         emptySelectValue = emptySelectValue,
-        items = items
+        items = items,
+        rightElement = rightElement
     )
 </div>

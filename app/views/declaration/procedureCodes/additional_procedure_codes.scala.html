@@ -21,17 +21,23 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
+@import views.components.gds.Styles._
 @import config.AppConfig
+@import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
 @import forms.declaration.procedurecodes.AdditionalProcedureCode
+@import forms.declaration.procedurecodes.AdditionalProcedureCode.additionalProcedureCodeKey
+@import services.view.AutoCompleteItem
 
 @this(
   govukLayout: gdsMainTemplate,
   govukTable : GovukTable,
   addButton: addButton,
   removeButton: removeButton,
+  link: link,
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
   exportsInputText: exportsInputText,
+  insetText: exportsInsetText,
   spanVisuallyHidden: spanVisuallyHidden,
   tariffExpander: tariffExpander,
   saveButtons: saveButtons,
@@ -39,12 +45,13 @@
   appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[AdditionalProcedureCode], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[AdditionalProcedureCode], procedureCode: ProcedureCode, validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
+
 
 @additionalCodesTable = {
   @if(codes.nonEmpty) {
     @govukTable(Table(
-      rows = codes.zipWithIndex.map{ case(code, index) =>
+      rows = codes.zipWithIndex.reverse.map{ case(code, index) =>
         Seq(
           TableRow(
             content = Text(code),
@@ -68,8 +75,9 @@
   }
 }
 
+
 @govukLayout(
-  title = Title("declaration.additionalProcedureCodes.title", "declaration.section.5"),
+  title = Title("declaration.additionalProcedureCodes.title", "declaration.section.5", procedureCode.code),
   backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalProcedureCode, mode, ItemId(itemId))))) {
 
   @formHelper(action = controllers.declaration.routes.AdditionalProcedureCodesController.submitAdditionalProcedureCodes(mode, itemId), 'autoComplete -> "off") {
@@ -78,17 +86,27 @@
 
     @sectionHeader(messages("declaration.section.5"))
 
-    @exportsInputText(
-      field = form("additionalProcedureCode"),
-      labelKey = "declaration.additionalProcedureCodes.title",
+    @components.fields.field_accessible_autocomplete_with_header(
+      field = form(additionalProcedureCodeKey),
+      label = messages("declaration.additionalProcedureCodes.title", procedureCode.code),
+      labelClass = Some(gdsPageLabel),
+      emptySelectValue = messages("declaration.additionalProcedureCodes.error.empty"),
+      items = AutoCompleteItem.fromAdditionalProcedureCodes(validAdditionalProcedureCodes.toList),
       isPageHeading = true,
-      hintKey = Some("declaration.additionalProcedureCodes.hint"),
-      inputClasses = Some("govuk-input--width-4")
+      hintParagraphs = List(messages("declaration.additionalProcedureCodes.hint")),
+      rightElement = Some(addButton(hiddenLabel = Some(messages("declaration.additionalProcedureCodes.add.hint"))))
     )
+
     @additionalCodesTable
 
+    @insetText(
+      content = HtmlContent(messages("declaration.additionalProcedureCodes.inset",
+        AutoCompleteItem.formatProcedureCode(procedureCode),
+        link(text = messages("declaration.additionalProcedureCodes.inset.linkText"), call = Call("GET", appConfig.additionalProcedureCodesOfCDs))
+      ))
+    )
+
     @tariffExpander(AdditionalProcedureCode, request.declarationType)(messages, appConfig)
-    @addButton(hiddenLabel = Some(messages("declaration.additionalProcedureCodes.add.hint")))
     @saveButtons()
 
   }

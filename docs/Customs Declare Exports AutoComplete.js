@@ -705,25 +705,27 @@ function procedureCodes(){
             case 'F':
             case 'J':
             case 'Y':
-                document.getElementById('procedureCode').value = '1040';
-                document.getElementById('additionalProcedureCode').value ='000';
+                selectFromAutoPredict(document.getElementById('procedureCode-container'), '1040');
                 break;
             case 'E':
-                document.getElementById('procedureCode').value = '1040';
-                document.getElementById('additionalProcedureCode').value ='3NS';
+                selectFromAutoPredict(document.getElementById('procedureCode-container'), '1040');
                 break;
             case 'K':
-                document.getElementById('procedureCode').value = '0012';
-                document.getElementById('additionalProcedureCode').value ='000';
+                selectFromAutoPredict(document.getElementById('procedureCode-container'), '0012');
                 break;
             case 'Z':
-                document.getElementById('procedureCode').value = '1040';
-                document.getElementById('additionalProcedureCode').value ='1MU';
+                selectFromAutoPredict(document.getElementById('procedureCode-container'), '1040');
                 break;
             default:
-                document.getElementById('procedureCode').value ='1040';
-                document.getElementById('additionalProcedureCode').value ='1CS';
+                selectFromAutoPredict(document.getElementById('procedureCode-container'), '1040');
         }
+        document.getElementById('submit').click();
+    }
+}
+
+function additionalProcedureCodes(){
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-procedure-codes')) {
+        selectFromAutoPredict(document.getElementById('additionalProcedureCode-container'), '000');
         document.getElementById('submit').click();
     }
 }
@@ -1211,6 +1213,7 @@ function completeJourney() {
     // items
     addFirstItem();
     procedureCodes();
+    additionalProcedureCodes();
     fiscalInformation();
     fiscalReferences();
     fiscalReferencesSummary();

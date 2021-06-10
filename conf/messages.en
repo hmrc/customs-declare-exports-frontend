@@ -799,8 +799,10 @@ declaration.procedureCodes.readMoreExpander.outwardProcessing.link.text = Outwar
 declaration.procedureCodes.readMoreExpander.temporaryExport.link.text = Temporary export for return of goods in the unaltered state
 declaration.procedureCodes.readMoreExpander.reExportFollowingSpecialProcedure.link.text = Re-export following a special procedure
 
-declaration.additionalProcedureCodes.title = Enter the additional procedure codes(s)
-declaration.additionalProcedureCodes.hint = These are 3-digit codes. Up to 99 may be declared.
+declaration.additionalProcedureCodes.title = Add any additional procedure codes to {0}
+declaration.additionalProcedureCodes.hint = Add each code that applies to this item, or select and add the code ‘000’ which means that no other additional procedure codes apply.
+declaration.additionalProcedureCodes.inset = List shows all the permitted additional procedure codes for {0}. For descriptions and conditions of each code, go to {1}.
+declaration.additionalProcedureCodes.inset.linkText = Appendix 2: DE 1/11: Additional Procedure Codes (opens in new tab)
 declaration.additionalProcedureCodes.table.header = Additional procedure codes
 declaration.additionalProcedureCodes.remove.hint = Remove additional code {0}.
 declaration.additionalProcedureCodes.add.hint = Add additional code.

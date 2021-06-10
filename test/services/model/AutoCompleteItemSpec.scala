@@ -17,7 +17,7 @@
 package services.model
 
 import base.UnitSpec
-import models.codes.ProcedureCode
+import models.codes.{AdditionalProcedureCode, ProcedureCode}
 import services.view.AutoCompleteItem
 import services.{DocumentType, HolderOfAuthorisationCode}
 
@@ -61,6 +61,12 @@ class AutoCompleteItemSpec extends UnitSpec {
 
     "map from Procedure Codes" in {
       AutoCompleteItem.fromProcedureCodes(List(ProcedureCode(code = "code", description = "description"))) mustBe List(
+        AutoCompleteItem(label = "code - description", value = "code")
+      )
+    }
+
+    "map from Additional Procedure Codes" in {
+      AutoCompleteItem.fromAdditionalProcedureCodes(List(AdditionalProcedureCode(code = "code", description = "description"))) mustBe List(
         AutoCompleteItem(label = "code - description", value = "code")
       )
     }
