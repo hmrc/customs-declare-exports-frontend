@@ -163,6 +163,26 @@ class AppConfigSpec extends UnitSpec {
       validAppConfig.tariffCdsChiefSupplement must be("http://tariffCdsChiefSupplement")
     }
 
+    "have tradeTariffSections URL" in {
+      validAppConfig.tradeTariffSections must be("http://tradeTariffSections")
+    }
+
+    "have additionalDocumentsLicenceTypes URL" in {
+      validAppConfig.additionalDocumentsLicenceTypes must be("http://additionalDocumentsLicenceTypes")
+    }
+
+    "have additionalDocumentsUnionCodes URL" in {
+      validAppConfig.additionalDocumentsUnionCodes must be("http://additionalDocumentsUnionCodes")
+    }
+
+    "have additionalDocumentsReferenceCodes URL" in {
+      validAppConfig.additionalDocumentsReferenceCodes must be("http://additionalDocumentsReferenceCodes")
+    }
+
+    "have additionalDocumentsUnitCodes URL" in {
+      validAppConfig.additionalDocumentsUnitCodes must be("http://additionalDocumentsUnitCodes")
+    }
+
     "have procedureCodeListFile file path" in {
       validAppConfig.procedureCodesListFile must be("procedureCodes")
     }
@@ -391,6 +411,11 @@ object AppConfigSpec {
       |urls.notesForMucrConsolidation="http://notesForMucrConsolidation"
       |urls.arriveOrDepartExportsService="http://arriveOrDepartExportsService"
       |urls.customsDeclarationsGoodsTakenOutOfEu="http://customsDeclarationsGoodsTakenOutOfEu"
+      |urls.tradeTariffSections = "http://tradeTariffSections"
+      |urls.additionalDocumentsLicenceTypes = "http://additionalDocumentsLicenceTypes"
+      |urls.additionalDocumentsUnionCodes = "http://additionalDocumentsUnionCodes"
+      |urls.additionalDocumentsReferenceCodes = "http://additionalDocumentsReferenceCodes"
+      |urls.additionalDocumentsUnitCodes = "http://additionalDocumentsUnitCodes"
       |
       |urls.procedureCodes.removalOfGoodsFromExciseWarehouse = "https://www.gov.uk/guidance/receive-goods-into-and-remove-goods-from-an-excise-warehouse-excise-notice-197"
       |urls.procedureCodes.onwardSupplyRelief = "https://www.gov.uk/guidance/check-if-you-can-claim-vat-relief-on-goods-imported-into-northern-ireland-for-onward-supply-to-the-eu#onward-supply-relief-osr"

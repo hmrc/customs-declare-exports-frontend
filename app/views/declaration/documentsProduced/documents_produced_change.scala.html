@@ -26,7 +26,7 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, documentId: String, form: Form[DocumentsProduced])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, documentId: String, form: Form[DocumentsProduced], maybeCommodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
 
 
 @govukLayout(
@@ -36,7 +36,7 @@
 
     @formHelper(action = DocumentsProducedChangeController.submitForm(mode, itemId, documentId), 'autoComplete -> "off") {
 
-        @editContent(mode, itemId, form)
+        @editContent(mode, itemId, form, maybeCommodityCode)
 
     }
 }
