@@ -16,9 +16,10 @@
 
 package services.view
 
+import models.codes.ProcedureCode
+import services.DocumentType
 import models.codes.{AdditionalProcedureCode, ProcedureCode}
 import services.model.{Country, CustomsOffice, OfficeOfExit, PackageType}
-import services.{DocumentType, HolderOfAuthorisationCode}
 
 case class AutoCompleteItem(label: String, value: String)
 
@@ -34,9 +35,6 @@ object AutoCompleteItem {
 
   def fromDocumentType(documents: List[DocumentType]): List[AutoCompleteItem] =
     documents map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
-
-  def fromHolderOfAuthorisationCode(codes: List[HolderOfAuthorisationCode]): List[AutoCompleteItem] =
-    codes map (h => AutoCompleteItem(h.asString, h.code))
 
   def fromOfficeOfExit(offices: List[OfficeOfExit]): List[AutoCompleteItem] =
     offices map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))

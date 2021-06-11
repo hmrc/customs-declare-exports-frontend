@@ -402,6 +402,7 @@ object AppConfigSpec {
       |
       |urls.additionalProcedureCodesOfCDs = "http://additionalProcedureCodesOfCDs"
       |
+      |files.codelists.holderOfAuthorisationCodes="holderOfAuthorisationCodes"
       |files.codelists.procedureCodes="procedureCodes"
       |files.codelists.procedureCodesC21="procedureCodesC21"
       |files.codelists.additionalProcedureCodes="additionalProcedureCodes"

@@ -22,9 +22,9 @@
 @import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        editContent: declaration_holder_edit_content,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    editContent: declaration_holder_edit_content,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
@@ -33,7 +33,6 @@
     title = Title("declaration.declarationHolder.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolder, mode)))
 ) {
-
     @formHelper(action = DeclarationHolderAddController.submitForm(mode), 'autoComplete -> "off") {
         @editContent(mode, form)
     }

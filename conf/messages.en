@@ -692,7 +692,6 @@ declaration.declarationHolder.title = Add the authorisation for this export
 declaration.declarationHolder.title.hint = You can add one or more authorisations.
 declaration.declarationHolder.eori = EORI number of the authorisation holder
 declaration.declarationHolder.authorisationCode = Select the authorisation type from the drop-down list
-declaration.declarationHolder.authorisationCode.invalid = Select an authorisation type from the drop-down list
 declaration.declarationHolder.authorisationCode.empty = Select an authorisation type from the drop-down list
 declaration.declarationHolders.table.heading = You have added 1 authorisation
 declaration.declarationHolders.table.multiple.heading= You have added {0} authorisations

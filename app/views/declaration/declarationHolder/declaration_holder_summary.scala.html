@@ -15,19 +15,20 @@
  *@
 
 @import controllers.declaration.routes._
-@import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
 @import forms.declaration.DeclarationHolder
 @import forms.declaration.DeclarationSummaryHolder
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
-@import views.components.gds.Styles._
-@import views.html.components.gds._
+@import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
+@import services.view.HolderOfAuthorisationCodes
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
 
 @import scala.collection.immutable
-@import services.HolderOfAuthorisationCode
-@import views.helpers.ErrorMapper.yesNoErrors
 
 @this(
   govukLayout: gdsMainTemplate,
@@ -43,7 +44,8 @@
   link: link,
   addAnotherQuestion: addAnotherQuestion,
   saveButtons: saveButtons,
-  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+  formHelper: FormWithCSRF,
+  holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 )
 
 @(mode: Mode, form: Form[_], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
@@ -68,7 +70,7 @@
             rows = holders.zipWithIndex.map { case (holder, index) =>
                 Seq(
                     TableRow(
-                        content = Text(holder.authorisationTypeCode.map(HolderOfAuthorisationCode.findByCode(_).asString).getOrElse("")),
+                        content = Text(holder.authorisationTypeCode.fold("")(holderOfAuthorisationCodes.getCodeDescription(messages.lang.toLocale, _))),
                         attributes = Map("id" -> s"holder_type_$index")
                     ),
                     TableRow(

@@ -40,26 +40,28 @@ class CodeListConnectorSpec extends ConnectorSpec {
 
   "FileBasedCodeListConnector" should {
     "throw exception on initialisation" when {
+
       "code list file is missing" in {
         when(appConfig.procedureCodesListFile).thenReturn("")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
       }
 
       "code list file is malformed" in {
         when(appConfig.procedureCodesListFile).thenReturn("/code-lists/malformedCodes.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
       }
 
       "code list file is empty" in {
         when(appConfig.procedureCodesListFile).thenReturn("/code-lists/empty.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
       }
     }
 
     "return a list of procedure codes" when {
+
       "'ENGLISH' locale passed return codes with English descriptions" in {
         connector.getProcedureCodes(ENGLISH) must be(samplePCsEnglish)
       }
@@ -74,6 +76,7 @@ class CodeListConnectorSpec extends ConnectorSpec {
     }
 
     "return a list of C21 procedure codes" when {
+
       "'ENGLISH' locale passed return codes with English descriptions" in {
         connector.getProcedureCodesForC21(ENGLISH) must be(samplePCsEnglish)
       }

@@ -48,7 +48,6 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       messages must haveTranslationFor("declaration.declarationHolder.title.hint")
       messages must haveTranslationFor("declaration.declarationHolder.eori")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode")
-      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.invalid")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.empty")
     }
   }
@@ -93,23 +92,23 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
     }
   }
 
-  "Declaration Holder View for invalid input" should {
+  "Declaration Holder View for empty input" should {
     onEveryDeclarationJourney() { implicit request =>
       /*
        * Both add and save button returns the same errors, so
        * no point to distinguish them and move to controller test
        */
-      "display error for incorrect Authorisation code" in {
+      "display error for empty Authorisation code" in {
 
         val view = createView(
           DeclarationHolder.form
-            .fillAndValidate(DeclarationHolder(Some("12345"), Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
+            .fillAndValidate(DeclarationHolder(None, Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
         )
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#authorisationTypeCode")
 
-        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.invalid")
+        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.empty")
       }
 
       "display error for incorrect EORI" in {
@@ -126,12 +125,9 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       }
 
       "display error for both incorrect fields" in {
-
         val view = createView(
           DeclarationHolder.form
-            .fillAndValidate(
-              DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(Eori(TestHelper.createRandomAlphanumericString(18))))
-            )
+            .fillAndValidate(DeclarationHolder(None, Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -139,9 +135,8 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
         view must containErrorElementWithTagAndHref("a", "#authorisationTypeCode")
         view must containErrorElementWithTagAndHref("a", "#eori")
 
-        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.invalid")
+        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.empty")
         view must containErrorElementWithMessageKey("declaration.eori.error.format")
-
       }
     }
   }
