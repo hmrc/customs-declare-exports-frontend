@@ -110,11 +110,6 @@
     "cy": "Authorisation for self-assessment"
   },
   {
-    "code": "SASP",
-    "en": "Single Authorisation for Simplified Procedures",
-    "cy": "Single Authorisation for Simplified Procedures"
-  },
-  {
     "code": "SDE",
     "en": "Simplified Declaration Procedure authorisation (SDP)",
     "cy": "Simplified Declaration Procedure authorisation (SDP)"
@@ -213,11 +208,6 @@
     "code": "ACR",
     "en": "Authorised consignor for Union transit",
     "cy": "Authorised consignor for Union transit"
-  },
-  {
-    "code": "ACT",
-    "en": "Authorised consignee for TIR procedure",
-    "cy": "Authorised consignee for TIR procedure"
   },
   {
     "code": "TRD",

@@ -43,7 +43,7 @@ class HolderOfAuthorisationCodesSpec extends UnitSpec with BeforeAndAfterEach {
       val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(appConfig, codeListConnector)
 
       Seq(ENGLISH, codeListConnector.WELSH).foreach {
-        holderOfAuthorisationCodes.getCodes(_).size mustBe 45
+        holderOfAuthorisationCodes.getCodes(_).size mustBe 43
       }
     }
 
@@ -52,13 +52,13 @@ class HolderOfAuthorisationCodesSpec extends UnitSpec with BeforeAndAfterEach {
       val codes = holderOfAuthorisationCodes.getCodes(ENGLISH).toList
 
       codes(0)._2 must startWith("ACP - ")
-      codes(25)._2 must startWith("UKCS - ")
+      codes(24)._2 must startWith("UKCS - ")
 
-      codes(26)._2 must startWith("CGU - ")
-      codes(40)._2 must startWith("TST - ")
+      codes(25)._2 must startWith("CGU - ")
+      codes(39)._2 must startWith("TST - ")
 
-      codes(41)._2 must startWith("ACE - ")
-      codes(44)._2 must startWith("TRD - ")
+      codes(40)._2 must startWith("ACE - ")
+      codes(42)._2 must startWith("TRD - ")
     }
 
     "be able to be provided as AutoCompleteItems " in {
@@ -66,13 +66,13 @@ class HolderOfAuthorisationCodesSpec extends UnitSpec with BeforeAndAfterEach {
       val autoCompleteItems = holderOfAuthorisationCodes.asListOfAutoCompleteItems(ENGLISH)
 
       autoCompleteItems(0) mustBe AutoCompleteItem("ACP - Authorised issuer to establish the proof of the customs status of Union goods", "ACP")
-      autoCompleteItems(25) mustBe AutoCompleteItem("UKCS - UK Continental Shelf", "UKCS")
+      autoCompleteItems(24) mustBe AutoCompleteItem("UKCS - UK Continental Shelf", "UKCS")
 
-      autoCompleteItems(26) mustBe AutoCompleteItem("CGU - Customs comprehensive guarantee", "CGU")
-      autoCompleteItems(40) mustBe AutoCompleteItem("TST - Authorisation to operate storage facilities for the temporary storage of goods", "TST")
+      autoCompleteItems(25) mustBe AutoCompleteItem("CGU - Customs comprehensive guarantee", "CGU")
+      autoCompleteItems(39) mustBe AutoCompleteItem("TST - Authorisation to operate storage facilities for the temporary storage of goods", "TST")
 
-      autoCompleteItems(41) mustBe AutoCompleteItem("ACE - Authorised consignee for Union transit", "ACE")
-      autoCompleteItems(44) mustBe AutoCompleteItem("TRD - Authorisation to use transit declaration with a reduced dataset", "TRD")
+      autoCompleteItems(40) mustBe AutoCompleteItem("ACE - Authorised consignee for Union transit", "ACE")
+      autoCompleteItems(42) mustBe AutoCompleteItem("TRD - Authorisation to use transit declaration with a reduced dataset", "TRD")
     }
   }
 }
