@@ -61,82 +61,76 @@ class CodeListConnectorSpec extends ConnectorSpec {
 
     "return a list of procedure codes" when {
       "'ENGLISH' locale passed return codes with English descriptions" in {
-        connector.getProcedureCodes(ENGLISH) must be(
-          List(ProcedureCode("001", "English"), ProcedureCode("002", "English"), ProcedureCode("003", "English"))
-        )
+        connector.getProcedureCodes(ENGLISH) must be(samplePCsEnglish)
       }
 
       "'WELSH' locale passed return codes with Welsh descriptions" in {
-        connector.getProcedureCodes(connector.WELSH) must be(
-          List(ProcedureCode("001", "Welsh"), ProcedureCode("002", "Welsh"), ProcedureCode("003", "Welsh"))
-        )
+        connector.getProcedureCodes(connector.WELSH) must be(samplePCsWelsh)
       }
 
       "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
-        connector.getProcedureCodes(JAPANESE) must be(
-          List(ProcedureCode("001", "English"), ProcedureCode("002", "English"), ProcedureCode("003", "English"))
-        )
+        connector.getProcedureCodes(JAPANESE) must be(samplePCsEnglish)
       }
     }
 
     "return a list of C21 procedure codes" when {
       "'ENGLISH' locale passed return codes with English descriptions" in {
-        connector.getProcedureCodesForC21(ENGLISH) must be(
-          List(ProcedureCode("001", "English"), ProcedureCode("002", "English"), ProcedureCode("003", "English"))
-        )
+        connector.getProcedureCodesForC21(ENGLISH) must be(samplePCsEnglish)
       }
 
       "'WELSH' locale passed return codes with Welsh descriptions" in {
-        connector.getProcedureCodesForC21(connector.WELSH) must be(
-          List(ProcedureCode("001", "Welsh"), ProcedureCode("002", "Welsh"), ProcedureCode("003", "Welsh"))
-        )
+        connector.getProcedureCodesForC21(connector.WELSH) must be(samplePCsWelsh)
       }
 
       "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
-        connector.getProcedureCodes(JAPANESE) must be(
-          List(ProcedureCode("001", "English"), ProcedureCode("002", "English"), ProcedureCode("003", "English"))
-        )
+        connector.getProcedureCodes(JAPANESE) must be(samplePCsEnglish)
       }
     }
 
     "return a list of additional procedure codes" when {
       "'ENGLISH' locale passed return codes with English descriptions" in {
-        connector.getAdditionalProcedureCodes(ENGLISH) must be(
-          List(AdditionalProcedureCode("001", "English"), AdditionalProcedureCode("002", "English"), AdditionalProcedureCode("003", "English"))
-        )
+        connector.getAdditionalProcedureCodesMap(ENGLISH) must be(sampleAPCsEnglish)
       }
 
       "'WELSH' locale passed return codes with Welsh descriptions" in {
-        connector.getAdditionalProcedureCodes(connector.WELSH) must be(
-          List(AdditionalProcedureCode("001", "Welsh"), AdditionalProcedureCode("002", "Welsh"), AdditionalProcedureCode("003", "Welsh"))
-        )
+        connector.getAdditionalProcedureCodesMap(connector.WELSH) must be(sampleAPCsWelsh)
       }
 
       "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
-        connector.getProcedureCodes(JAPANESE) must be(
-          List(ProcedureCode("001", "English"), ProcedureCode("002", "English"), ProcedureCode("003", "English"))
-        )
+        connector.getAdditionalProcedureCodesMap(JAPANESE) must be(sampleAPCsEnglish)
       }
     }
 
     "return a list of C21 additional procedure codes" when {
       "'ENGLISH' locale passed return codes with English descriptions" in {
-        connector.getAdditionalProcedureCodesForC21(ENGLISH) must be(
-          List(AdditionalProcedureCode("001", "English"), AdditionalProcedureCode("002", "English"), AdditionalProcedureCode("003", "English"))
-        )
+        connector.getAdditionalProcedureCodesMapForC21(ENGLISH) must be(sampleAPCsEnglish)
       }
 
       "'WELSH' locale passed return codes with Welsh descriptions" in {
-        connector.getAdditionalProcedureCodesForC21(connector.WELSH) must be(
-          List(AdditionalProcedureCode("001", "Welsh"), AdditionalProcedureCode("002", "Welsh"), AdditionalProcedureCode("003", "Welsh"))
-        )
+        connector.getAdditionalProcedureCodesMapForC21(connector.WELSH) must be(sampleAPCsWelsh)
       }
 
       "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
-        connector.getProcedureCodes(JAPANESE) must be(
-          List(ProcedureCode("001", "English"), ProcedureCode("002", "English"), ProcedureCode("003", "English"))
-        )
+        connector.getAdditionalProcedureCodesMapForC21(JAPANESE) must be(sampleAPCsEnglish)
       }
     }
   }
+
+  private val samplePCsEnglish =
+    Map("001" -> ProcedureCode("001", "English"), "002" -> ProcedureCode("002", "English"), "003" -> ProcedureCode("003", "English"))
+
+  private val samplePCsWelsh =
+    Map("001" -> ProcedureCode("001", "Welsh"), "002" -> ProcedureCode("002", "Welsh"), "003" -> ProcedureCode("003", "Welsh"))
+
+  private val sampleAPCsEnglish = Map(
+    "001" -> AdditionalProcedureCode("001", "English"),
+    "002" -> AdditionalProcedureCode("002", "English"),
+    "003" -> AdditionalProcedureCode("003", "English")
+  )
+
+  private val sampleAPCsWelsh = Map(
+    "001" -> AdditionalProcedureCode("001", "Welsh"),
+    "002" -> AdditionalProcedureCode("002", "Welsh"),
+    "003" -> AdditionalProcedureCode("003", "Welsh")
+  )
 }

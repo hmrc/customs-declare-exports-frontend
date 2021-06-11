@@ -19,33 +19,49 @@ package services
 import connectors.{CodeLinkConnector, CodeListConnector}
 import models.codes.{AdditionalProcedureCode, ProcedureCode}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
+import play.api.Logging
 
 import java.util.Locale
 import javax.inject.Inject
 
-class ProcedureCodeService @Inject()(codeListConnector: CodeListConnector, codeLinkConnector: CodeLinkConnector) {
+class ProcedureCodeService @Inject()(codeListConnector: CodeListConnector, codeLinkConnector: CodeLinkConnector) extends Logging {
 
   def getProcedureCodesFor(journey: DeclarationType, isEidr: Boolean, locale: Locale): Seq[ProcedureCode] =
     journey match {
-      case CLEARANCE if !isEidr => codeListConnector.getProcedureCodesForC21(locale)
-      case _                    => codeListConnector.getProcedureCodes(locale)
+      case CLEARANCE if !isEidr => codeListConnector.getProcedureCodesForC21(locale).values.toSeq
+      case _                    => codeListConnector.getProcedureCodes(locale).values.toSeq
     }
+
+  def getProcedureCodeFor(procedureCode: String, journey: DeclarationType, isEidr: Boolean, locale: Locale): Option[ProcedureCode] =
+    (journey match {
+      case CLEARANCE if !isEidr => codeListConnector.getProcedureCodesForC21(locale).get(procedureCode)
+      case _                    => codeListConnector.getProcedureCodes(locale).get(procedureCode)
+    }).headOption
 
   def getAdditionalProcedureCodesFor(procedureCode: String, locale: Locale): Seq[AdditionalProcedureCode] = {
+
+    val apcMapForLang = codeListConnector.getAdditionalProcedureCodesMap(locale)
     val standardAdditionalProcedureCodes = codeLinkConnector.getValidAdditionalProcedureCodesForProcedureCode(procedureCode).map { codes =>
-      codeListConnector
-        .getAdditionalProcedureCodes(locale)
-        .filter(apc => codes.contains(apc.code))
+      codes.map(lookupAdditionalProcedureCode(_, apcMapForLang))
     }
 
+    lazy val apcC21MapForLang = codeListConnector.getAdditionalProcedureCodesMapForC21(locale)
     lazy val c21AdditionalProcedureCodes = codeLinkConnector.getValidAdditionalProcedureCodesForProcedureCodeC21(procedureCode).map { codes =>
-      codeListConnector
-        .getAdditionalProcedureCodesForC21(locale)
-        .filter(apc => codes.contains(apc.code))
+      codes.map(lookupAdditionalProcedureCode(_, apcC21MapForLang))
     }
 
     standardAdditionalProcedureCodes
       .orElse(c21AdditionalProcedureCodes)
       .getOrElse(Seq.empty[AdditionalProcedureCode])
   }
+
+  private def lookupAdditionalProcedureCode(code: String, apcMap: Map[String, AdditionalProcedureCode]): AdditionalProcedureCode =
+    apcMap.getOrElse(
+      code, {
+        logger.warn(
+          s"AdditionalProcedureCode ${code} is defined in the ProcedureCode->AdditionalProcedureCode mapping file but is not defined in the AdditionalProcedureCode definition file!"
+        )
+        AdditionalProcedureCode(code, "")
+      }
+    )
 }

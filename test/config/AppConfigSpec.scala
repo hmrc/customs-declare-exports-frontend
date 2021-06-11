@@ -257,6 +257,10 @@ class AppConfigSpec extends UnitSpec {
       validAppConfig.selfBaseUrl.get must be("self/base-url")
     }
 
+    "have additionalProcedureCodesOfCDs URL" in {
+      validAppConfig.additionalProcedureCodesOfCDs must be("http://additionalProcedureCodesOfCDs")
+    }
+
     "have link for 'give feedback'" in {
       validAppConfig.giveFeedbackLink must be("/contact-frontend-url?service=DeclarationServiceId")
     }
@@ -395,6 +399,8 @@ object AppConfigSpec {
       |urls.procedureCodes.outwardProcessing = "https://www.gov.uk/guidance/apply-to-pay-less-duty-on-goods-you-export-to-process-or-repair"
       |urls.procedureCodes.temporaryExport = "https://www.gov.uk/guidance/pay-less-import-duty-and-vat-when-re-importing-goods-to-the-uk-and-eu#claiming-relief-for-exporting-goods-using-a-duplicate-list"
       |urls.procedureCodes.reExportFollowingSpecialProcedure = "https://www.gov.uk/guidance/moving-processed-or-repaired-goods-into-free-circulation-or-re-exporting-them"
+      |
+      |urls.additionalProcedureCodesOfCDs = "http://additionalProcedureCodesOfCDs"
       |
       |files.codelists.procedureCodes="procedureCodes"
       |files.codelists.procedureCodesC21="procedureCodesC21"

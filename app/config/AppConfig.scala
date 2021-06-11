@@ -75,6 +75,8 @@ class AppConfig @Inject()(
   val procedureCodesTemporaryExport = loadConfig("urls.procedureCodes.temporaryExport")
   val procedureCodesReExportFollowingSpecialProcedure = loadConfig("urls.procedureCodes.reExportFollowingSpecialProcedure")
 
+  val additionalProcedureCodesOfCDs = loadConfig("urls.additionalProcedureCodesOfCDs")
+
   lazy val customsDeclareExportsBaseUrl = servicesConfig.baseUrl("customs-declare-exports")
 
   val emailFrontendUrl: String = loadConfig("urls.emailFrontendUrl")

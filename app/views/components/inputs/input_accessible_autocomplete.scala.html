@@ -17,7 +17,12 @@
 @import services.view.AutoCompleteItem
 @import views.html.helper._
 
-@(field: Field, emptySelectValue: String, items: List[AutoCompleteItem])(implicit messages: Messages)
+@(  field: Field,
+    emptySelectValue: String,
+    items: List[AutoCompleteItem],
+    rightElement: Option[Html] = None
+)(implicit messages: Messages)
+
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
 JQuery treats [] as element's attribute and tried evaluated this.
@@ -40,14 +45,22 @@ To avoid problems, we need to remove [] from field.
   else if (maxLength >= LowerWidthBand && maxLength < UpperWidthBand) "govuk-input--width-30"
   else "govuk-input--width-20"
 }
-
-<div id="@(fieldNameWithoutBrackets)-container" class="autocomplete__wrapper @widthClass">
-    <select class="govuk-form-group" id="@(fieldNameWithoutBrackets)" name="@field.name" value="@field.value" data-gov-select-autocomplete="true">
-        <option value="">@emptySelectValue</option>
-        @items.map { i =>
-            <option value="@i.value" @if(selectedValue == i.value) {selected="selected"}>@i.label</option>
-        }
-    </select>
+<div class="govuk-grid-row">
+    <div class="@rightElement.map(_ => "govuk-grid-column-two-thirds").getOrElse("govuk-grid-column-full")">
+        <div id="@(fieldNameWithoutBrackets)-container" class="autocomplete__wrapper @widthClass">
+            <select class="govuk-form-group" id="@(fieldNameWithoutBrackets)" name="@field.name" value="@field.value" data-gov-select-autocomplete="true">
+                <option value="">@emptySelectValue</option>
+                @items.map { i =>
+                    <option value="@i.value" @if(selectedValue == i.value) {selected="selected"}>@i.label</option>
+                }
+            </select>
+        </div>
+    </div>
+    @rightElement.map { element =>
+        <div class="govuk-grid-column-one-third">
+            @element
+        </div>
+    }
 </div>
 
 <script src="/customs-declare-exports/assets/lib/accessible-autocomplete/dist/accessible-autocomplete.min.js" type="text/javascript"></script>

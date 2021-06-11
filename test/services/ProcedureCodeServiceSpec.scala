@@ -26,6 +26,7 @@ import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.scalatest.BeforeAndAfterEach
 import ProcedureCodeServiceSpec._
 
+import java.util.Locale
 import java.util.Locale.ENGLISH
 
 class ProcedureCodeServiceSpec extends UnitSpec with BeforeAndAfterEach {
@@ -43,8 +44,8 @@ class ProcedureCodeServiceSpec extends UnitSpec with BeforeAndAfterEach {
     when(codeListConnector.getProcedureCodes(any())).thenReturn(sampleProcedureCodes)
     when(codeListConnector.getProcedureCodesForC21(any())).thenReturn(sampleC21ProcedureCodes)
 
-    when(codeListConnector.getAdditionalProcedureCodes(any())).thenReturn(additionalProcedureCodes)
-    when(codeListConnector.getAdditionalProcedureCodesForC21(any())).thenReturn(c21AdditionalProcedureCodes)
+    when(codeListConnector.getAdditionalProcedureCodesMap(any())).thenReturn(additionalProcedureCodesMap)
+    when(codeListConnector.getAdditionalProcedureCodesMapForC21(any())).thenReturn(c21AdditionalProcedureCodesMap)
 
     when(codeLinkConnector.getValidAdditionalProcedureCodesForProcedureCode(any())).thenReturn(None)
     when(codeLinkConnector.getValidAdditionalProcedureCodesForProcedureCodeC21(any())).thenReturn(None)
@@ -70,6 +71,44 @@ class ProcedureCodeServiceSpec extends UnitSpec with BeforeAndAfterEach {
     s"return list of all procedure codes for ${DeclarationType.CLEARANCE} journey when EIRD is true" in {
       service.getProcedureCodesFor(DeclarationType.CLEARANCE, true, ENGLISH) must equal(Seq(sampleProcedureCode1, sampleProcedureCode2))
     }
+
+    s"return the same procedure codes irrespective of the Locale's country or variant" in {
+      service.getProcedureCodesFor(DeclarationType.CLEARANCE, true, ENGLISH) must equal(Seq(sampleProcedureCode1, sampleProcedureCode2))
+      service.getProcedureCodesFor(DeclarationType.CLEARANCE, true, new Locale(ENGLISH.getCountry, "gb")) must equal(
+        Seq(sampleProcedureCode1, sampleProcedureCode2)
+      )
+      service.getProcedureCodesFor(DeclarationType.CLEARANCE, true, new Locale(ENGLISH.getCountry, "gb", "scouse")) must equal(
+        Seq(sampleProcedureCode1, sampleProcedureCode2)
+      )
+    }
+  }
+
+  "ProcedureCodeService getProcedureCodeFor" should {
+    Seq(false, true).foreach { eidr =>
+      nonC21Journeys.foreach { decType =>
+        s"return the ProcedureCode entity for the given code string for ${decType} journey where EIRD is ${eidr} " in {
+          service.getProcedureCodeFor(sampleProcedureCode1.code, decType, eidr, ENGLISH) must equal(Some(sampleProcedureCode1))
+        }
+      }
+    }
+
+    s"return the C21 ProcedureCode entity for the given code string for ${DeclarationType.CLEARANCE} journey when EIRD is false" in {
+      service.getProcedureCodeFor(sampleC21ProcedureCode1.code, DeclarationType.CLEARANCE, false, ENGLISH) must equal(Some(sampleC21ProcedureCode1))
+    }
+
+    s"return the ProcedureCode entity for the given code string for ${DeclarationType.CLEARANCE} journey when EIRD is true" in {
+      service.getProcedureCodeFor(sampleProcedureCode1.code, DeclarationType.CLEARANCE, true, ENGLISH) must equal(Some(sampleProcedureCode1))
+    }
+
+    s"return the same ProcedureCode entity irrespective of the Locale's country or variant" in {
+      service.getProcedureCodeFor(sampleProcedureCode1.code, DeclarationType.CLEARANCE, true, ENGLISH) must equal(Some(sampleProcedureCode1))
+      service.getProcedureCodeFor(sampleProcedureCode1.code, DeclarationType.CLEARANCE, true, new Locale(ENGLISH.getCountry, "gb")) must equal(
+        Some(sampleProcedureCode1)
+      )
+      service.getProcedureCodeFor(sampleProcedureCode1.code, DeclarationType.CLEARANCE, true, new Locale(ENGLISH.getCountry, "gb", "scouse")) must equal(
+        Some(sampleProcedureCode1)
+      )
+    }
   }
 
   "ProcedureCodeService getAdditionalProcedureCodesFor" should {
@@ -88,6 +127,12 @@ class ProcedureCodeServiceSpec extends UnitSpec with BeforeAndAfterEach {
     "return nothing for an unknown procedure code" in {
       service.getAdditionalProcedureCodesFor("UNKNOWN", ENGLISH) must equal(Seq.empty[AdditionalProcedureCode])
     }
+
+    s"return the same ProcedureCode entity irrespective of the Locale's country or variant" in {
+      service.getAdditionalProcedureCodesFor("UNKNOWN", ENGLISH) must equal(Seq.empty[AdditionalProcedureCode])
+      service.getAdditionalProcedureCodesFor("UNKNOWN", new Locale(ENGLISH.getCountry, "gb")) must equal(Seq.empty[AdditionalProcedureCode])
+      service.getAdditionalProcedureCodesFor("UNKNOWN", new Locale(ENGLISH.getCountry, "gb", "scouse")) must equal(Seq.empty[AdditionalProcedureCode])
+    }
   }
 }
 
@@ -95,22 +140,26 @@ object ProcedureCodeServiceSpec {
   val sampleProcedureCode1 = ProcedureCode("0001", "First procedure code")
   val sampleProcedureCode2 = ProcedureCode("0002", "Second procedure code")
 
-  val sampleProcedureCodes = Seq(sampleProcedureCode1, sampleProcedureCode2)
+  val sampleProcedureCodes = Map(sampleProcedureCode1.code -> sampleProcedureCode1, sampleProcedureCode2.code -> sampleProcedureCode2)
 
   val sampleC21ProcedureCode1 = ProcedureCode("1001", "First C21 procedure code")
   val sampleC21ProcedureCode2 = ProcedureCode("1002", "Second C21 procedure code")
 
-  val sampleC21ProcedureCodes = Seq(sampleC21ProcedureCode1, sampleC21ProcedureCode2)
+  val sampleC21ProcedureCodes = Map(sampleC21ProcedureCode1.code -> sampleC21ProcedureCode1, sampleC21ProcedureCode2.code -> sampleC21ProcedureCode2)
 
   val sampleAdditionalProcedureCode1 = AdditionalProcedureCode("001", "First additional procedure code")
   val sampleAdditionalProcedureCode2 = AdditionalProcedureCode("002", "Second additional procedure code")
 
-  val additionalProcedureCodes = Seq(sampleAdditionalProcedureCode1, sampleAdditionalProcedureCode2)
+  val additionalProcedureCodesMap =
+    Map(sampleAdditionalProcedureCode1.code -> sampleAdditionalProcedureCode1, sampleAdditionalProcedureCode2.code -> sampleAdditionalProcedureCode2)
 
   val sampleC21AdditionalProcedureCodes1 = AdditionalProcedureCode("101", "First C21 additional procedure code")
   val sampleC21AdditionalProcedureCodes2 = AdditionalProcedureCode("102", "Second C21 additional procedure code")
 
-  val c21AdditionalProcedureCodes = Seq(sampleC21AdditionalProcedureCodes1, sampleC21AdditionalProcedureCodes2)
+  val c21AdditionalProcedureCodesMap = Map(
+    sampleC21AdditionalProcedureCodes1.code -> sampleC21AdditionalProcedureCodes1,
+    sampleC21AdditionalProcedureCodes2.code -> sampleC21AdditionalProcedureCodes2
+  )
 
   val validAdditionalCodesForProcedureCode1 = Seq(sampleAdditionalProcedureCode1.code, sampleAdditionalProcedureCode2.code)
   val validAdditionalCodesForC21ProcedureCode1 = Seq(sampleC21AdditionalProcedureCodes1.code, sampleC21AdditionalProcedureCodes2.code)
