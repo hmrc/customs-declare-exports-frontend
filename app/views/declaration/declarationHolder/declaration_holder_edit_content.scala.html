@@ -14,16 +14,15 @@
  * limitations under the License.
  *@
 
-@import forms.declaration.DeclarationHolder
+@import config.AppConfig
 @import controllers.util.DeclarationHolderHelper.DeclarationHolderFormGroupId
-@import services.HolderOfAuthorisationCode
-@import services.view.AutoCompleteItem
+@import forms.declaration.DeclarationHolder
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import services.view.HolderOfAuthorisationCodes
+@import views.components.gds.Styles._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
-@import views.components.gds.Styles._
-@import play.twirl.api.HtmlFormat
-@import config.AppConfig
 
 @import scala.collection.immutable
 
@@ -41,6 +40,7 @@
     addButton: addButton,
     removeButton: removeButton,
     saveButtons: saveButtons,
+    holderOfAuthorisationCodes: HolderOfAuthorisationCodes,
     appConfig: AppConfig
 )
 
@@ -53,7 +53,7 @@
             label = messages("declaration.declarationHolder.authorisationCode"),
             labelClass = Some("govuk-label--m"),
             emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
-            items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
+            items = holderOfAuthorisationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
         )
 
         @exportsInputText(

@@ -17,10 +17,11 @@
 package connectors
 
 import config.AppConfig
-import models.codes.{AdditionalProcedureCode, ProcedureCode}
+import models.codes.{AdditionalProcedureCode, HolderOfAuthorisationCode, ProcedureCode}
 import org.mockito.Mockito.{reset, when}
-
 import java.util.Locale.{ENGLISH, JAPANESE}
+
+import scala.collection.immutable.ListMap
 
 class CodeListConnectorSpec extends ConnectorSpec {
 
@@ -30,107 +31,157 @@ class CodeListConnectorSpec extends ConnectorSpec {
     super.beforeEach()
 
     reset(appConfig)
+    when(appConfig.holderOfAuthorisationCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.procedureCodesListFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.procedureCodesForC21ListFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.additionalProcedureCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
   }
 
-  private lazy val connector = new FileBasedCodeListConnector(appConfig)
+  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
 
   "FileBasedCodeListConnector" should {
     "throw exception on initialisation" when {
+
       "code list file is missing" in {
         when(appConfig.procedureCodesListFile).thenReturn("")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
       }
 
       "code list file is malformed" in {
         when(appConfig.procedureCodesListFile).thenReturn("/code-lists/malformedCodes.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
       }
 
       "code list file is empty" in {
         when(appConfig.procedureCodesListFile).thenReturn("/code-lists/empty.json")
 
-        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig))
+        intercept[IllegalArgumentException](new FileBasedCodeListConnector(appConfig).getProcedureCodes(ENGLISH))
       }
     }
 
-    "return a list of procedure codes" when {
+    "return a map of procedure codes" when {
+
       "'ENGLISH' locale passed return codes with English descriptions" in {
-        connector.getProcedureCodes(ENGLISH) must be(samplePCsEnglish)
+        codeListConnector.getProcedureCodes(ENGLISH) must be(samplePCsEnglish)
       }
 
       "'WELSH' locale passed return codes with Welsh descriptions" in {
-        connector.getProcedureCodes(connector.WELSH) must be(samplePCsWelsh)
+        codeListConnector.getProcedureCodes(codeListConnector.WELSH) must be(samplePCsWelsh)
       }
 
       "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
-        connector.getProcedureCodes(JAPANESE) must be(samplePCsEnglish)
+        codeListConnector.getProcedureCodes(JAPANESE) must be(samplePCsEnglish)
       }
     }
 
-    "return a list of C21 procedure codes" when {
+    "return a map of C21 procedure codes" when {
+
       "'ENGLISH' locale passed return codes with English descriptions" in {
-        connector.getProcedureCodesForC21(ENGLISH) must be(samplePCsEnglish)
+        codeListConnector.getProcedureCodesForC21(ENGLISH) must be(samplePCsEnglish)
       }
 
       "'WELSH' locale passed return codes with Welsh descriptions" in {
-        connector.getProcedureCodesForC21(connector.WELSH) must be(samplePCsWelsh)
+        codeListConnector.getProcedureCodesForC21(codeListConnector.WELSH) must be(samplePCsWelsh)
       }
 
       "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
-        connector.getProcedureCodes(JAPANESE) must be(samplePCsEnglish)
+        codeListConnector.getProcedureCodes(JAPANESE) must be(samplePCsEnglish)
       }
     }
 
-    "return a list of additional procedure codes" when {
+    "return a map of additional procedure codes" when {
       "'ENGLISH' locale passed return codes with English descriptions" in {
-        connector.getAdditionalProcedureCodesMap(ENGLISH) must be(sampleAPCsEnglish)
+        codeListConnector.getAdditionalProcedureCodesMap(ENGLISH) must be(sampleAPCsEnglish)
       }
 
       "'WELSH' locale passed return codes with Welsh descriptions" in {
-        connector.getAdditionalProcedureCodesMap(connector.WELSH) must be(sampleAPCsWelsh)
+        codeListConnector.getAdditionalProcedureCodesMap(codeListConnector.WELSH) must be(sampleAPCsWelsh)
       }
 
       "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
-        connector.getAdditionalProcedureCodesMap(JAPANESE) must be(sampleAPCsEnglish)
+        codeListConnector.getAdditionalProcedureCodesMap(JAPANESE) must be(sampleAPCsEnglish)
       }
     }
 
-    "return a list of C21 additional procedure codes" when {
+    "return a map of C21 additional procedure codes" when {
       "'ENGLISH' locale passed return codes with English descriptions" in {
-        connector.getAdditionalProcedureCodesMapForC21(ENGLISH) must be(sampleAPCsEnglish)
+        codeListConnector.getAdditionalProcedureCodesMapForC21(ENGLISH) must be(sampleAPCsEnglish)
       }
 
       "'WELSH' locale passed return codes with Welsh descriptions" in {
-        connector.getAdditionalProcedureCodesMapForC21(connector.WELSH) must be(sampleAPCsWelsh)
+        codeListConnector.getAdditionalProcedureCodesMapForC21(codeListConnector.WELSH) must be(sampleAPCsWelsh)
       }
 
       "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
-        connector.getAdditionalProcedureCodesMapForC21(JAPANESE) must be(sampleAPCsEnglish)
+        codeListConnector.getAdditionalProcedureCodesMapForC21(JAPANESE) must be(sampleAPCsEnglish)
+      }
+    }
+
+    "return a map of 'Holder of Authorisation' codes" when {
+      "'ENGLISH' locale passed return codes with English descriptions" in {
+        codeListConnector.getHolderOfAuthorisationCodes(ENGLISH) must be(sampleHACsEnglish)
+      }
+
+      "'WELSH' locale passed return codes with Welsh descriptions" in {
+        codeListConnector.getHolderOfAuthorisationCodes(codeListConnector.WELSH) must be(sampleHACsWelsh)
+      }
+
+      "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
+        codeListConnector.getHolderOfAuthorisationCodes(JAPANESE) must be(sampleHACsEnglish)
+      }
+    }
+
+    "return a map of 'Holder of Authorisation' codes ordered as expected" when {
+      "receives a supported language as input, or default to English for unsupported languages" in {
+        when(appConfig.holderOfAuthorisationCodes).thenReturn("/code-lists/holderOfAuthorisationCodes.json")
+        val codeListConnector = new FileBasedCodeListConnector(appConfig)
+        (codeListConnector.supportedLanguages :+ JAPANESE).foreach { locale =>
+          val codes = codeListConnector.getHolderOfAuthorisationCodes(locale).keys.toList
+          codes.size mustBe 43
+
+          codes(0) mustBe "ACP"
+          codes(24) mustBe "UKCS"
+
+          codes(25) mustBe "CGU"
+          codes(39) mustBe "TST"
+
+          codes(40) mustBe "ACE"
+          codes(42) mustBe "TRD"
+        }
       }
     }
   }
 
   private val samplePCsEnglish =
-    Map("001" -> ProcedureCode("001", "English"), "002" -> ProcedureCode("002", "English"), "003" -> ProcedureCode("003", "English"))
+    ListMap("001" -> ProcedureCode("001", "English"), "002" -> ProcedureCode("002", "English"), "003" -> ProcedureCode("003", "English"))
 
   private val samplePCsWelsh =
-    Map("001" -> ProcedureCode("001", "Welsh"), "002" -> ProcedureCode("002", "Welsh"), "003" -> ProcedureCode("003", "Welsh"))
+    ListMap("001" -> ProcedureCode("001", "Welsh"), "002" -> ProcedureCode("002", "Welsh"), "003" -> ProcedureCode("003", "Welsh"))
 
-  private val sampleAPCsEnglish = Map(
+  private val sampleAPCsEnglish = ListMap(
     "001" -> AdditionalProcedureCode("001", "English"),
     "002" -> AdditionalProcedureCode("002", "English"),
     "003" -> AdditionalProcedureCode("003", "English")
   )
 
-  private val sampleAPCsWelsh = Map(
+  private val sampleAPCsWelsh = ListMap(
     "001" -> AdditionalProcedureCode("001", "Welsh"),
     "002" -> AdditionalProcedureCode("002", "Welsh"),
     "003" -> AdditionalProcedureCode("003", "Welsh")
+  )
+
+  private val sampleHACsEnglish = ListMap(
+    "001" -> HolderOfAuthorisationCode("001", "English"),
+    "002" -> HolderOfAuthorisationCode("002", "English"),
+    "003" -> HolderOfAuthorisationCode("003", "English")
+  )
+
+  private val sampleHACsWelsh = ListMap(
+    "001" -> HolderOfAuthorisationCode("001", "Welsh"),
+    "002" -> HolderOfAuthorisationCode("002", "Welsh"),
+    "003" -> HolderOfAuthorisationCode("003", "Welsh")
   )
 }

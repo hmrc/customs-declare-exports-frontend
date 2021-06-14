@@ -20,11 +20,9 @@ import forms.DeclarationPage
 import forms.common.Eori
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
-import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.{optional, text}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
-import services.HolderOfAuthorisationCode
-import utils.validators.forms.FieldValidator._
 
 case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[Eori]) {
   override def toString: String = id
@@ -35,20 +33,15 @@ case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option
 }
 
 object DeclarationHolder extends DeclarationPage {
+
   implicit val format = Json.format[DeclarationHolder]
-
-  private def codeMapping: Mapping[Option[String]] =
-    optional(
-      text()
-        .verifying("declaration.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.code)))
-    )
-
-  private def eoriMapping: Mapping[Option[Eori]] = optional(Eori.mapping())
 
   val mandatoryMapping: Mapping[DeclarationHolder] =
     Forms.mapping(
-      "authorisationTypeCode" -> codeMapping.verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined),
-      "eori" -> eoriMapping.verifying("declaration.eori.empty", _.isDefined)
+      "authorisationTypeCode" ->
+        optional(text()).verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined),
+      "eori" ->
+        optional(Eori.mapping()).verifying("declaration.eori.empty", _.isDefined)
     )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
   val form: Form[DeclarationHolder] = Form(mandatoryMapping)

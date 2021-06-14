@@ -88,16 +88,16 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         errors.head.message mustBe "declaration.declarationHolder.authorisationCode.empty"
       }
 
-      "provided with incorrect code" in {
+      "provided with no code" in {
 
-        val input = Map("authorisationTypeCode" -> "INCORRECT_CODE", "eori" -> "GB123456789012")
+        val input = Map("authorisationTypeCode" -> "", "eori" -> "GB123456789012")
 
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
         val errors = result.left.get
         errors.size mustBe 1
-        errors.head.message mustBe "declaration.declarationHolder.authorisationCode.invalid"
+        errors.head.message mustBe "declaration.declarationHolder.authorisationCode.empty"
       }
 
       "provided with incorrect eori" in {
@@ -112,16 +112,16 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
         errors.head.message mustBe "declaration.eori.error.format"
       }
 
-      "provided with incorrect code and no eori" in {
+      "provided with no code and no eori" in {
 
-        val input = Map("authorisationTypeCode" -> "INCORRECT_CODE")
+        val input = Map("authorisationTypeCode" -> "", "eori" -> "")
 
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
         val errors = result.left.get
         errors.size mustBe 2
-        errors.map(_.message) must contain("declaration.declarationHolder.authorisationCode.invalid")
+        errors.map(_.message) must contain("declaration.declarationHolder.authorisationCode.empty")
         errors.map(_.message) must contain("declaration.eori.empty")
       }
 

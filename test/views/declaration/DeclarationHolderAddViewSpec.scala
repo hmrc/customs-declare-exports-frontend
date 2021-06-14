@@ -47,7 +47,6 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       messages must haveTranslationFor("declaration.declarationHolder.title.hint")
       messages must haveTranslationFor("declaration.declarationHolder.eori")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode")
-      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.invalid")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.empty")
     }
   }
@@ -112,17 +111,17 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
        * Both add and save button returns the same errors, so
        * no point to distinguish them and move to controller test
        */
-      "display error for incorrect Authorisation code" in {
+      "display error for empty Authorisation code" in {
 
         val view = createView(
           DeclarationHolder.form
-            .fillAndValidate(DeclarationHolder(Some("12345"), Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
+            .fillAndValidate(DeclarationHolder(None, Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
         )
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#authorisationTypeCode")
 
-        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.invalid")
+        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.empty")
       }
 
       "display error for incorrect EORI" in {
@@ -142,9 +141,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
         val view = createView(
           DeclarationHolder.form
-            .fillAndValidate(
-              DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(Eori(TestHelper.createRandomAlphanumericString(18))))
-            )
+            .fillAndValidate(DeclarationHolder(None, Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -152,7 +149,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
         view must containErrorElementWithTagAndHref("a", "#authorisationTypeCode")
         view must containErrorElementWithTagAndHref("a", "#eori")
 
-        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.invalid")
+        view must containErrorElementWithMessageKey("declaration.declarationHolder.authorisationCode.empty")
         view must containErrorElementWithMessageKey("declaration.eori.error.format")
 
       }

@@ -25,9 +25,10 @@ import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.scalatest.BeforeAndAfterEach
 import ProcedureCodeServiceSpec._
-
 import java.util.Locale
 import java.util.Locale.ENGLISH
+
+import scala.collection.immutable.ListMap
 
 class ProcedureCodeServiceSpec extends UnitSpec with BeforeAndAfterEach {
 
@@ -140,23 +141,26 @@ object ProcedureCodeServiceSpec {
   val sampleProcedureCode1 = ProcedureCode("0001", "First procedure code")
   val sampleProcedureCode2 = ProcedureCode("0002", "Second procedure code")
 
-  val sampleProcedureCodes = Map(sampleProcedureCode1.code -> sampleProcedureCode1, sampleProcedureCode2.code -> sampleProcedureCode2)
+  val sampleProcedureCodes = ListMap(sampleProcedureCode1.code -> sampleProcedureCode1, sampleProcedureCode2.code -> sampleProcedureCode2)
 
   val sampleC21ProcedureCode1 = ProcedureCode("1001", "First C21 procedure code")
   val sampleC21ProcedureCode2 = ProcedureCode("1002", "Second C21 procedure code")
 
-  val sampleC21ProcedureCodes = Map(sampleC21ProcedureCode1.code -> sampleC21ProcedureCode1, sampleC21ProcedureCode2.code -> sampleC21ProcedureCode2)
+  val sampleC21ProcedureCodes =
+    ListMap(sampleC21ProcedureCode1.code -> sampleC21ProcedureCode1, sampleC21ProcedureCode2.code -> sampleC21ProcedureCode2)
 
   val sampleAdditionalProcedureCode1 = AdditionalProcedureCode("001", "First additional procedure code")
   val sampleAdditionalProcedureCode2 = AdditionalProcedureCode("002", "Second additional procedure code")
 
-  val additionalProcedureCodesMap =
-    Map(sampleAdditionalProcedureCode1.code -> sampleAdditionalProcedureCode1, sampleAdditionalProcedureCode2.code -> sampleAdditionalProcedureCode2)
+  val additionalProcedureCodesMap = ListMap(
+    sampleAdditionalProcedureCode1.code -> sampleAdditionalProcedureCode1,
+    sampleAdditionalProcedureCode2.code -> sampleAdditionalProcedureCode2
+  )
 
   val sampleC21AdditionalProcedureCodes1 = AdditionalProcedureCode("101", "First C21 additional procedure code")
   val sampleC21AdditionalProcedureCodes2 = AdditionalProcedureCode("102", "Second C21 additional procedure code")
 
-  val c21AdditionalProcedureCodesMap = Map(
+  val c21AdditionalProcedureCodesMap = ListMap(
     sampleC21AdditionalProcedureCodes1.code -> sampleC21AdditionalProcedureCodes1,
     sampleC21AdditionalProcedureCodes2.code -> sampleC21AdditionalProcedureCodes2
   )
