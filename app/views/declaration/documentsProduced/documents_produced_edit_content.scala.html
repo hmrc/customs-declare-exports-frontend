@@ -29,6 +29,8 @@
 @this(
         govukFieldset: GovukFieldset,
         govukInput: GovukInput,
+        govukDetails : GovukDetails,
+        govukHint: GovukHint,
         errorSummary: errorSummary,
         formGroupWrapper: formGroupWrapper,
         sectionHeader: sectionHeader,
@@ -37,10 +39,12 @@
         exportsDateInput: exportsDateInput,
         tariffExpander: tariffExpander,
         saveButtons: saveButtons,
+        paragraph: paragraphBody,
+        link: link,
         appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[DocumentsProduced])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[DocumentsProduced], maybeCommodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.addDocument.hint.traderTariff.link")</a>}
 
@@ -60,8 +64,14 @@
 
 @measurementUnitAndQualifierContent = {
 
-    <span class="govuk-hint">
-        @Html(messages("declaration.addDocument.measurementUnit.hint"))
+    <span class="govuk-hint" id="documentWriteOff-hint">
+        @Html(messages("declaration.addDocument.measurementUnit.hint",
+            link(
+                text = messages("declaration.addDocument.measurementUnit.hint.link.text"),
+                call = Call("GET", appConfig.additionalDocumentsUnitCodes),
+                target = "_blank"
+            )
+        ))
     </span>
 
     @if(measurementErrors.nonEmpty){
@@ -111,6 +121,71 @@
     </span>
 }
 
+@expander1Content = {
+    @maybeCommodityCode.map { commodityCode =>
+        @govukHint(Hint(
+            content = HtmlContent(messages("declaration.addDocument.expander.paragraph1.withCommodityCode.text",
+                link(
+                    text = messages("declaration.addDocument.expander.paragraph1.withCommodityCode.link1.text", commodityCode),
+                    call = Call("GET", appConfig.commodityCodeForTaricPageUrl.replace("NNNNNNNN", commodityCode)),
+                    target = "_blank"
+                )
+            ))
+        ))
+    }.getOrElse {
+        @govukHint(Hint(
+            content = HtmlContent(messages("declaration.addDocument.expander.paragraph1.withoutCommodityCode.text",
+                link(
+                    text = messages("declaration.addDocument.expander.paragraph1.withoutCommodityCode.link1.text"),
+                    call = Call("GET", appConfig.tradeTariffSections),
+                    target = "_blank"
+                )
+            ))
+        ))
+    }
+
+    @govukHint(Hint(
+        content = HtmlContent(messages("declaration.addDocument.expander.paragraph2.text"))
+    ))
+
+    @govukHint(Hint(
+        content = HtmlContent(messages("declaration.addDocument.expander.paragraph3.text",
+            link(
+                text = messages("declaration.addDocument.expander.paragraph3.link1.text"),
+                call = Call("GET", appConfig.additionalDocumentsLicenceTypes),
+                target = "_blank"
+            )
+        ))
+    ))
+}
+
+@expander2Content = {
+
+    @govukHint(Hint(
+        content = HtmlContent(messages("declaration.addDocument.documentTypeCode.expander.paragraph1.text",
+            link(
+                text = messages("declaration.addDocument.documentTypeCode.expander.paragraph1.link1.text"),
+                call = Call("GET", appConfig.additionalDocumentsUnionCodes),
+                target = "_blank"
+            )
+        ))
+    ))
+
+    @govukHint(Hint(
+        content = HtmlContent(messages("declaration.addDocument.documentTypeCode.expander.paragraph2.text",
+            link(
+                text = messages("declaration.addDocument.documentTypeCode.expander.paragraph2.link1.text"),
+                call = Call("GET", appConfig.additionalDocumentsReferenceCodes),
+                target = "_blank"
+            )
+        ))
+    ))
+
+    @govukHint(Hint(
+        content = HtmlContent(messages("declaration.addDocument.documentTypeCode.expander.paragraph3.text"))
+    ))
+}
+
 @pageFields = {
     @formGroupWrapper(field = form(DocumentsProducedFormGroupId)){
         @exportsInputText(
@@ -118,6 +193,11 @@
             labelKey = "declaration.addDocument.documentTypeCode",
             hintKey = Some("declaration.addDocument.documentTypeCode.hint"),
             inputClasses = Some("govuk-input--width-4")
+        )
+        @govukDetails(Details(
+            summary = Text(messages("declaration.addDocument.documentTypeCode.expander.title")),
+            content = HtmlContent(expander2Content),
+            id = Some("documentTypeCode-expander"))
         )
         @exportsInputText(
             field = form(documentIdentifierKey),
@@ -159,8 +239,6 @@
     }
 }
 
-
-
 @errorSummary(form.errors)
 
 @sectionHeader(messages("declaration.section.5"))
@@ -173,6 +251,10 @@
         )),
         html = HtmlFormat.fill(immutable.Seq(
             pageHint,
+            govukDetails(Details(
+                summary = Text(messages("declaration.addDocument.expander.title")),
+                content = HtmlContent(expander1Content),
+                id = Some("top-expander"))),
             pageFields,
             tariffExpander(DocumentsProduced, request.declarationType)(messages, appConfig),
             saveButtons()

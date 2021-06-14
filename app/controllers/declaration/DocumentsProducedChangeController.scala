@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.DocumentsProducedAddController.DocumentsProducedFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
+import controllers.util.ExportsDecModelHelper.getCommodityCode
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.{form, globalErrors}
 import models.declaration.DocumentsProducedData
@@ -49,8 +50,9 @@ class DocumentsProducedChangeController @Inject()(
 
   def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findDocument(itemId, documentId) match {
-      case Some(document) => Ok(documentProducedPage(mode, itemId, documentId, form().fill(document).withSubmissionErrors()))
-      case _              => returnToSummary(mode, itemId)
+      case Some(document) =>
+        Ok(documentProducedPage(mode, itemId, documentId, form().fill(document).withSubmissionErrors(), getCommodityCode(request.cacheModel, itemId)))
+      case _ => returnToSummary(mode, itemId)
     }
   }
 
@@ -60,7 +62,9 @@ class DocumentsProducedChangeController @Inject()(
         val boundForm = globalErrors(form().bindFromRequest())
         boundForm.fold(
           formWithErrors => {
-            Future.successful(BadRequest(documentProducedPage(mode, itemId, documentId, formWithErrors)))
+            Future.successful(
+              BadRequest(documentProducedPage(mode, itemId, documentId, formWithErrors, getCommodityCode(request.cacheModel, itemId)))
+            )
           },
           updatedDocument => {
             if (updatedDocument.isDefined)
@@ -97,7 +101,8 @@ class DocumentsProducedChangeController @Inject()(
     MultipleItemsHelper
       .add(boundForm, documentsWithoutExisting, maxNumberOfItems, DocumentsProducedFormGroupId, "declaration.addDocument")
       .fold(
-        formWithErrors => Future.successful(BadRequest(documentProducedPage(mode, itemId, documentId, formWithErrors))),
+        formWithErrors =>
+          Future.successful(BadRequest(documentProducedPage(mode, itemId, documentId, formWithErrors, getCommodityCode(request.cacheModel, itemId)))),
         _ => {
           val updatedDocuments: Seq[DocumentsProduced] = existingDocuments.map(doc => if (doc == existingDocument) newDocument else doc)
           updateCache(itemId, DocumentsProducedData(updatedDocuments))

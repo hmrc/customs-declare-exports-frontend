@@ -54,7 +54,7 @@ class DocumentsProducedChangeControllerSpec extends ControllerSpec with ErrorHan
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withDocumentsProduced(existingDocument1, existingDocument2)))))
-    when(mockDocumentProducedChangePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockDocumentProducedChangePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -64,7 +64,7 @@ class DocumentsProducedChangeControllerSpec extends ControllerSpec with ErrorHan
 
   def theResponseForm: Form[DocumentsProduced] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[DocumentsProduced]])
-    verify(mockDocumentProducedChangePage).apply(any(), any(), any(), formCaptor.capture())(any(), any())
+    verify(mockDocumentProducedChangePage).apply(any(), any(), any(), formCaptor.capture(), any())(any(), any())
     formCaptor.getValue
   }
 
@@ -74,7 +74,7 @@ class DocumentsProducedChangeControllerSpec extends ControllerSpec with ErrorHan
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1) =
-    verify(mockDocumentProducedChangePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(mockDocumentProducedChangePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
 
   "Document Produced controller" should {
 

@@ -20,9 +20,10 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.DocumentsProducedAddController.DocumentsProducedFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
+import controllers.util.ExportsDecModelHelper.getCommodityCode
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.{form, globalErrors}
-import models.declaration.DocumentsProducedData
+import models.declaration.{DocumentsProducedData, ExportItem}
 import models.declaration.DocumentsProducedData.maxNumberOfItems
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -47,7 +48,7 @@ class DocumentsProducedAddController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(documentProducedPage(mode, itemId, form().withSubmissionErrors()))
+    Ok(documentProducedPage(mode, itemId, form().withSubmissionErrors(), getCommodityCode(request.cacheModel, itemId)))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -55,7 +56,7 @@ class DocumentsProducedAddController @Inject()(
 
     boundForm.fold(
       formWithErrors => {
-        Future.successful(BadRequest(documentProducedPage(mode, itemId, formWithErrors)))
+        Future.successful(BadRequest(documentProducedPage(mode, itemId, formWithErrors, getCommodityCode(request.cacheModel, itemId))))
       },
       documents => {
         if (documents.isDefined)
@@ -85,7 +86,8 @@ class DocumentsProducedAddController @Inject()(
     MultipleItemsHelper
       .add(boundForm, cachedData, maxNumberOfItems, DocumentsProducedFormGroupId, "declaration.addDocument")
       .fold(
-        formWithErrors => Future.successful(BadRequest(documentProducedPage(mode, itemId, formWithErrors))),
+        formWithErrors =>
+          Future.successful(BadRequest(documentProducedPage(mode, itemId, formWithErrors, getCommodityCode(request.cacheModel, itemId)))),
         updatedCache =>
           updateCache(itemId, DocumentsProducedData(updatedCache))
             .map(_ => navigator.continueTo(mode, routes.DocumentsProducedController.displayPage(_, itemId)))

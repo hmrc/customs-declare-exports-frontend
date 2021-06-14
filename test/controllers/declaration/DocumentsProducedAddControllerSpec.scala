@@ -50,7 +50,7 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-    when(mockDocumentProducedAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockDocumentProducedAddPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,7 +60,7 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
 
   def theResponseForm: Form[DocumentsProduced] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[DocumentsProduced]])
-    verify(mockDocumentProducedAddPage).apply(any(), any(), formCaptor.capture())(any(), any())
+    verify(mockDocumentProducedAddPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
     formCaptor.getValue
   }
 
@@ -70,7 +70,7 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1) =
-    verify(mockDocumentProducedAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockDocumentProducedAddPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)
 

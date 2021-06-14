@@ -92,6 +92,11 @@ class AppConfig @Inject()(
   val locationCodesForCsePremises = loadConfig("urls.locationCodesForCsePremises")
   val goodsLocationCodesForDataElement = loadConfig("urls.goodsLocationCodesForDataElement")
   val tariffCdsChiefSupplement = loadConfig("urls.tariffCdsChiefSupplement")
+  val tradeTariffSections = loadConfig("urls.tradeTariffSections")
+  val additionalDocumentsLicenceTypes = loadConfig("urls.additionalDocumentsLicenceTypes")
+  val additionalDocumentsUnionCodes = loadConfig("urls.additionalDocumentsUnionCodes")
+  val additionalDocumentsReferenceCodes = loadConfig("urls.additionalDocumentsReferenceCodes")
+  val additionalDocumentsUnitCodes = loadConfig("urls.additionalDocumentsUnitCodes")
 
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   val giveFeedbackLink = {
