@@ -16,21 +16,14 @@
 
 package views.declaration
 
-import base.{Injector, TestHelper}
+import base.Injector
 import controllers.declaration.routes
-import controllers.util.SaveAndReturn
-import forms.common.Date._
-import forms.declaration.DocumentsProducedSpec._
-import forms.declaration.additionaldocuments.DocumentWriteOff._
-import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
 import forms.declaration.additionaldocuments.DocumentsProduced
-import forms.declaration.additionaldocuments.DocumentsProduced._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.OptionValues
 import play.api.data.Form
-import play.api.libs.json.Json
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
