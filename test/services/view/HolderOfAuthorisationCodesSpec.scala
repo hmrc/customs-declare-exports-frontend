@@ -28,16 +28,20 @@ class HolderOfAuthorisationCodesSpec extends UnitSpec with BeforeAndAfterEach {
 
   private val appConfig = mock[AppConfig]
 
-  private val codeListConnector = new FileBasedCodeListConnector(appConfig)
+  private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
+
+  private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
     reset(appConfig)
     when(appConfig.holderOfAuthorisationCodes).thenReturn("/code-lists/holderOfAuthorisationCodes.json")
+    when(appConfig.procedureCodesListFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.procedureCodesForC21ListFile).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.additionalProcedureCodes).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
   }
-
-  private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector)
 
   "HolderOfAuthorisationCodes.getCodeDescription" should {
     "return the description of a 'Holder of Authorisation' code in the expected format" in {

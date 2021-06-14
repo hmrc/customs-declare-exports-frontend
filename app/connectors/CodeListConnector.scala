@@ -72,27 +72,27 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
     ListMap(langCodes: _*)
   }
 
-  private lazy val holderOfAuthorisationCodeListsByLang = loadCommonCodesAsOrderedMap(
+  private val holderOfAuthorisationCodeListsByLang = loadCommonCodesAsOrderedMap(
     appConfig.holderOfAuthorisationCodes,
     (codeItem: CodeItem, locale: Locale) => HolderOfAuthorisationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  private lazy val procedureCodeListsByLang = loadCommonCodesAsOrderedMap(
+  private val procedureCodeListsByLang = loadCommonCodesAsOrderedMap(
     appConfig.procedureCodesListFile,
     (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  private lazy val procedureCodeForC21ListsByLang = loadCommonCodesAsOrderedMap(
+  private val procedureCodeForC21ListsByLang = loadCommonCodesAsOrderedMap(
     appConfig.procedureCodesForC21ListFile,
     (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  private lazy val additionalProcedureCodeMapsByLang = loadCommonCodesAsOrderedMap(
+  private val additionalProcedureCodeMapsByLang = loadCommonCodesAsOrderedMap(
     appConfig.additionalProcedureCodes,
     (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
-  private lazy val additionalProcedureCodeForC21MapsByLang = loadCommonCodesAsOrderedMap(
+  private val additionalProcedureCodeForC21MapsByLang = loadCommonCodesAsOrderedMap(
     appConfig.additionalProcedureCodesForC21,
     (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
