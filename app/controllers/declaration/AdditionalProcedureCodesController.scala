@@ -23,9 +23,11 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.procedurecodes.AdditionalProcedureCode
-import forms.declaration.procedurecodes.AdditionalProcedureCode.form
 import javax.inject.Inject
+import forms.declaration.procedurecodes.AdditionalProcedureCode._
+import models.{ExportsDeclaration, Mode}
 import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
+import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.requests.JourneyRequest
@@ -37,6 +39,7 @@ import services.ProcedureCodeService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+
 import views.html.declaration.procedureCodes.additional_procedure_codes
 
 class AdditionalProcedureCodesController @Inject()(
@@ -135,12 +138,22 @@ class AdditionalProcedureCodesController @Inject()(
 
       case (None, _) =>
         returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq(("additionalProcedureCode", "declaration.additionalProcedureCodes.error.empty"))
+          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.empty"))
+        )
+
+      case (Some(NO_APC_APPLIES_CODE), cachedAdditionalProcedureCodes) if cachedAdditionalProcedureCodes.length != 0 =>
+        returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
+          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.tripleZero.notFirstCode"))
+        )
+
+      case (Some(_), cachedAdditionalProcedureCodes) if cachedAdditionalProcedureCodes.contains(NO_APC_APPLIES_CODE) =>
+        returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
+          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.tripleZero.alreadyPresent"))
         )
 
       case (Some(code), cachedAdditionalProcedureCodes) if cachedAdditionalProcedureCodes.contains(code) =>
         returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq(("additionalProcedureCode", "declaration.additionalProcedureCodes.error.duplication"))
+          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.duplication"))
         )
 
       case (Some(code), cachedAdditionalProcedureCodes) =>
@@ -163,7 +176,7 @@ class AdditionalProcedureCodesController @Inject()(
 
       case AdditionalProcedureCode(None) =>
         returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq(("additionalProcedureCode", "declaration.additionalProcedureCodes.error.empty"))
+          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.empty"))
         )
     }
 
@@ -175,7 +188,7 @@ class AdditionalProcedureCodesController @Inject()(
 
       case AdditionalProcedureCode(Some(additionalCode)) if cachedData.additionalProcedureCodes.contains(additionalCode) =>
         returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq(("additionalProcedureCode", "declaration.additionalProcedureCodes.error.duplication"))
+          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.duplication"))
         )
 
       case AdditionalProcedureCode(Some(additionalCode)) =>

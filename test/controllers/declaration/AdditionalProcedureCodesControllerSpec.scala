@@ -19,6 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import controllers.util.Remove
 import forms.declaration.procedurecodes.AdditionalProcedureCode
+import forms.declaration.procedurecodes.AdditionalProcedureCode.additionalProcedureCodeKey
 import mock.ErrorHandlerMocks
 import models.{DeclarationType, Mode}
 import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
@@ -29,7 +30,7 @@ import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers.{await, status, _}
@@ -298,6 +299,40 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
 
               status(result) mustBe BAD_REQUEST
               verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any(), any())(any(), any())
+            }
+          }
+
+          "adding '000' when another code is already present" should {
+            "return 400 with form validation error" in {
+              val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(sampleProcedureCode), Seq("111"))))
+              prepareCache(item)
+              val formData = Seq(("additionalProcedureCode", "000"), addActionUrlEncoded())
+
+              val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+
+              status(result) mustBe BAD_REQUEST
+
+              val (form, responseSeq) = templateParameters
+              form.errors.length mustBe 1
+              form.errors.head mustBe FormError(additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.tripleZero.notFirstCode")
+              responseSeq mustBe Seq("111")
+            }
+          }
+
+          "adding another code when '000' is already present" should {
+            "return 400 with form validation error" in {
+              val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(sampleProcedureCode), Seq("000"))))
+              prepareCache(item)
+              val formData = Seq(("additionalProcedureCode", "111"), addActionUrlEncoded())
+
+              val result = controller.submitAdditionalProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(formData: _*))
+
+              status(result) mustBe BAD_REQUEST
+
+              val (form, responseSeq) = templateParameters
+              form.errors.length mustBe 1
+              form.errors.head mustBe FormError(additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.tripleZero.alreadyPresent")
+              responseSeq mustBe Seq("000")
             }
           }
 
