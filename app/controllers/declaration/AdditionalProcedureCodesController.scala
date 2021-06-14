@@ -16,29 +16,28 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util._
 import controllers.util.MultipleItemsHelper.remove
+import controllers.util._
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode.form
-import models.{ExportsDeclaration, Mode}
+import javax.inject.Inject
 import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.cache.ExportsCacheService
 import services.ProcedureCodeService
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.internationalisation.ExportsMessagesApiProvider
 import views.html.declaration.procedureCodes.additional_procedure_codes
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalProcedureCodesController @Inject()(
   authenticate: AuthAction,

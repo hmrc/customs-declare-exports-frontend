@@ -19,7 +19,7 @@ package views.declaration.procedureCodes
 import base.Injector
 import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
 import forms.declaration.procedurecodes.AdditionalProcedureCode
-import models.{DeclarationType, Mode}
+import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form

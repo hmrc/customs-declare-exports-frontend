@@ -37,33 +37,19 @@ class HolderOfAuthorisationCodesSpec extends UnitSpec with BeforeAndAfterEach {
     when(appConfig.holderOfAuthorisationCodes).thenReturn("/code-lists/holderOfAuthorisationCodes.json")
   }
 
-  "Holder of Authorisation codes" should {
+  private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector)
 
-    "be available for all supported languages, or default to English" in {
-      val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(appConfig, codeListConnector)
-
-      Seq(ENGLISH, codeListConnector.WELSH).foreach {
-        holderOfAuthorisationCodes.getCodes(_).size mustBe 43
-      }
+  "HolderOfAuthorisationCodes.getCodeDescription" should {
+    "return the description of a 'Holder of Authorisation' code in the expected format" in {
+      val description = holderOfAuthorisationCodes.getCodeDescription(ENGLISH, "UKCS")
+      description mustBe "UKCS - UK Continental Shelf"
     }
+  }
 
-    "ordered according to 3 groups " in {
-      val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(appConfig, codeListConnector)
-      val codes = holderOfAuthorisationCodes.getCodes(ENGLISH).toList
-
-      codes(0)._2 must startWith("ACP - ")
-      codes(24)._2 must startWith("UKCS - ")
-
-      codes(25)._2 must startWith("CGU - ")
-      codes(39)._2 must startWith("TST - ")
-
-      codes(40)._2 must startWith("ACE - ")
-      codes(42)._2 must startWith("TRD - ")
-    }
-
-    "be able to be provided as AutoCompleteItems " in {
-      val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(appConfig, codeListConnector)
+  "HolderOfAuthorisationCodes.asListOfAutoCompleteItems" should {
+    "return 'Holder of Authorisation' codes as AutoCompleteItems" in {
       val autoCompleteItems = holderOfAuthorisationCodes.asListOfAutoCompleteItems(ENGLISH)
+      autoCompleteItems.size mustBe 43
 
       autoCompleteItems(0) mustBe AutoCompleteItem("ACP - Authorised issuer to establish the proof of the customs status of Union goods", "ACP")
       autoCompleteItems(24) mustBe AutoCompleteItem("UKCS - UK Continental Shelf", "UKCS")

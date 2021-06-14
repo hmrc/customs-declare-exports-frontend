@@ -17,28 +17,19 @@
 package services.view
 
 import java.util.Locale
-import java.util.Locale.ENGLISH
 
-import scala.collection.immutable.ListMap
-
-import config.AppConfig
-import connectors.{CodeItem, CodeListConnector}
+import connectors.CodeListConnector
 import javax.inject.{Inject, Singleton}
+import models.codes.HolderOfAuthorisationCode
 
 @Singleton
-class HolderOfAuthorisationCodes @Inject()(appConfig: AppConfig, codeListConnector: CodeListConnector) {
+class HolderOfAuthorisationCodes @Inject()(codeListConnector: CodeListConnector) {
 
-  private val codesByLang = codeListConnector.loadCodesAsOrderedMap(
-    appConfig.holderOfAuthorisationCodes,
-    (codeItem: CodeItem, locale: Locale) => codeItem.code -> s"${codeItem.code} - ${codeItem.getDescriptionByLocale(locale)}"
-  )
-
-  def getCodes(locale: Locale): ListMap[String, String] =
-    codesByLang.get(locale.getLanguage).getOrElse(codesByLang.getOrElse(ENGLISH.getLanguage, codesByLang.head._2))
+  private def description(h: HolderOfAuthorisationCode): String = s"${h.code} - ${h.description}"
 
   def getCodeDescription(locale: Locale, code: String): String =
-    getCodes(locale).getOrElse(code, "")
+    codeListConnector.getHolderOfAuthorisationCodes(locale).get(code).fold("")(description)
 
   def asListOfAutoCompleteItems(locale: Locale): List[AutoCompleteItem] =
-    getCodes(locale).map(t => AutoCompleteItem(t._2, t._1)).toList
+    codeListConnector.getHolderOfAuthorisationCodes(locale).values.map(h => AutoCompleteItem(description(h), h.code)).toList
 }

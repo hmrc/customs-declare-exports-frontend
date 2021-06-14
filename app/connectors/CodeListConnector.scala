@@ -19,12 +19,12 @@ package connectors
 import akka.util.Helpers.Requiring
 import com.google.inject.ImplementedBy
 import config.AppConfig
-import models.codes.{AdditionalProcedureCode, CommonCode, ProcedureCode}
+import models.codes.{AdditionalProcedureCode, CommonCode, HolderOfAuthorisationCode, ProcedureCode}
 import play.api.libs.json.{Json, OFormat}
 import utils.JsonFile
-
 import java.util.Locale
 import java.util.Locale._
+
 import javax.inject.{Inject, Singleton}
 import scala.collection.immutable.ListMap
 
@@ -45,6 +45,7 @@ trait CodeListConnector {
 
   type CodeMap[T <: CommonCode] = Map[String, ListMap[String, T]]
 
+  def getHolderOfAuthorisationCodes(locale: Locale): ListMap[String, HolderOfAuthorisationCode]
   def getProcedureCodes(locale: Locale): ListMap[String, ProcedureCode]
   def getProcedureCodesForC21(locale: Locale): ListMap[String, ProcedureCode]
   def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode]
@@ -71,6 +72,11 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
     ListMap(langCodes: _*)
   }
 
+  private lazy val holderOfAuthorisationCodeListsByLang = loadCommonCodesAsOrderedMap(
+    appConfig.holderOfAuthorisationCodes,
+    (codeItem: CodeItem, locale: Locale) => HolderOfAuthorisationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
   private lazy val procedureCodeListsByLang = loadCommonCodesAsOrderedMap(
     appConfig.procedureCodesListFile,
     (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
@@ -90,6 +96,9 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
     appConfig.additionalProcedureCodesForC21,
     (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
+
+  def getHolderOfAuthorisationCodes(locale: Locale): ListMap[String, HolderOfAuthorisationCode] =
+    holderOfAuthorisationCodeListsByLang.getOrElse(locale.getLanguage, holderOfAuthorisationCodeListsByLang.value.head._2)
 
   def getProcedureCodes(locale: Locale): ListMap[String, ProcedureCode] =
     procedureCodeListsByLang.getOrElse(locale.getLanguage, procedureCodeListsByLang.value.head._2)
