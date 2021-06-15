@@ -17,3 +17,7 @@
 package models.codes
 
 case class AdditionalProcedureCode(code: String, description: String) extends CommonCode
+
+object AdditionalProcedureCode {
+  val NO_APC_APPLIES_CODE = "000"
+}
