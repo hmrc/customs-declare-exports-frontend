@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.PersonPresentingGoodsDetailsController
 import forms.common.Eori
 import forms.declaration.PersonPresentingGoodsDetails
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}

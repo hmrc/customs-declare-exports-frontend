@@ -16,7 +16,7 @@
 
 package handlers
 
-import base.{Injector, UnitSpec}
+import base.{Injector, UnitWithMocksSpec}
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import models.AuthKey.enrolment
@@ -32,7 +32,7 @@ import views.html.error_template
 import java.net.URLEncoder
 import scala.concurrent.Future
 
-class ErrorHandlerSpec extends UnitSpec with Stubs with OptionValues with Injector {
+class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues with Injector {
 
   SharedMetricRegistries.clear()
 

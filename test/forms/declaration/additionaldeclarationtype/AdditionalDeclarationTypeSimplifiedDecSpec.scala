@@ -17,9 +17,9 @@
 package forms.declaration.additionaldeclarationtype
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 
-class AdditionalDeclarationTypeSimplifiedDecSpec extends WordSpec with MustMatchers {
+class AdditionalDeclarationTypeSimplifiedDecSpec extends UnitSpec {
 
   private val validTypes = Seq(AdditionalDeclarationType.SIMPLIFIED_PRE_LODGED, AdditionalDeclarationType.SIMPLIFIED_FRONTIER)
 

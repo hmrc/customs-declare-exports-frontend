@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.InlandTransportDetailsController
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.ModeOfTransportCode.Maritime
 import models.DeclarationType._

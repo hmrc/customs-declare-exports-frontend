@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.CarrierDetailsController
 import forms.common.Address
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails

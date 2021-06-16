@@ -17,7 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.Mapping.requiredRadio
+import forms.MappingHelper.requiredRadio
 import forms.declaration.TransportCodes._
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
@@ -133,21 +133,23 @@ object BorderTransport extends DeclarationPage {
   ] =
     implicit model =>
       Some(
-        model.meansOfTransportCrossingTheBorderNationality,
-        model.meansOfTransportCrossingTheBorderType,
-        model2Ref(IMOShipIDNumber),
-        model2Ref(NameOfVessel),
-        model2Ref(WagonNumber),
-        model2Ref(VehicleRegistrationNumber),
-        model2Ref(IATAFlightNumber),
-        model2Ref(AircraftRegistrationNumber),
-        model2Ref(EuropeanVesselIDNumber),
-        model2Ref(NameOfInlandWaterwayVessel)
+        (
+          model.meansOfTransportCrossingTheBorderNationality,
+          model.meansOfTransportCrossingTheBorderType,
+          model2Ref(IMOShipIDNumber),
+          model2Ref(NameOfVessel),
+          model2Ref(WagonNumber),
+          model2Ref(VehicleRegistrationNumber),
+          model2Ref(IATAFlightNumber),
+          model2Ref(AircraftRegistrationNumber),
+          model2Ref(EuropeanVesselIDNumber),
+          model2Ref(NameOfInlandWaterwayVessel)
+        )
     )
 
-  private def form2Ref(refs: Option[String]*) = refs.map(_.getOrElse("")).mkString
+  private def form2Ref(refs: Option[String]*): String = refs.map(_.getOrElse("")).mkString
 
-  private def model2Ref(transportType: String)(implicit model: BorderTransport) =
+  private def model2Ref(transportType: String)(implicit model: BorderTransport): Option[String] =
     if (model.meansOfTransportCrossingTheBorderType.equals(transportType)) {
       Some(model.meansOfTransportCrossingTheBorderIDNumber)
     } else {

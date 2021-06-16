@@ -17,8 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.DeclarationHolderController
-import controllers.declaration.routes
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.DeclarationHolder
 import models.DeclarationType._

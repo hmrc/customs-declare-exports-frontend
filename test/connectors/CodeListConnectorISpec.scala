@@ -23,7 +23,7 @@ import java.util.Locale.{ENGLISH, JAPANESE}
 
 import scala.collection.immutable.ListMap
 
-class CodeListConnectorSpec extends ConnectorSpec {
+class CodeListConnectorISpec extends ConnectorISpec {
 
   private val appConfig = mock[AppConfig]
 

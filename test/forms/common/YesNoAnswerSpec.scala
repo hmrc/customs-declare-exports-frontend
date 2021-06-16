@@ -15,10 +15,10 @@
  */
 
 package forms.common
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class YesNoAnswerSpec extends WordSpec with MustMatchers {
+class YesNoAnswerSpec extends UnitSpec {
   import YesNoAnswerSpec._
   "Validation defined in YesNoAnswer mapping" should {
 

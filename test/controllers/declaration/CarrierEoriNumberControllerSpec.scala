@@ -17,13 +17,12 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.CarrierEoriNumberController
-import forms.common.{Address, Eori}
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
-import models.{DeclarationType, Mode}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}

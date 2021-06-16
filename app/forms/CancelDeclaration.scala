@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.Mapping.requiredRadio
+import forms.MappingHelper.requiredRadio
 import forms.cancellation.CancellationChangeReason._
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}

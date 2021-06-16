@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.AdditionalInformationRequiredController
 import forms.common.YesNoAnswer
 import models.Mode
 import org.mockito.ArgumentCaptor

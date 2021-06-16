@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.LocationController
 import forms.declaration.GoodsLocationForm
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor

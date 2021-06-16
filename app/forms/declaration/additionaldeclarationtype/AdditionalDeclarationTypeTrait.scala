@@ -17,7 +17,7 @@
 package forms.declaration.additionaldeclarationtype
 
 import forms.DeclarationPage
-import forms.Mapping.requiredRadio
+import forms.MappingHelper.requiredRadio
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey

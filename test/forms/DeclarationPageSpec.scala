@@ -17,9 +17,9 @@
 package forms
 
 import models.DeclarationType._
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 
-class DeclarationPageSpec extends WordSpec with MustMatchers {
+class DeclarationPageSpec extends UnitSpec {
 
   "DeclarationPageSpec" when {
     "getJourneyTypeSpecialisation method is called" which {

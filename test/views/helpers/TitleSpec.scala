@@ -16,10 +16,9 @@
 
 package views.helpers
 
-import org.scalatest.MustMatchers
 import views.declaration.spec.UnitViewSpec
 
-class TitleSpec extends UnitViewSpec with MustMatchers {
+class TitleSpec extends UnitViewSpec {
 
   val serviceName = messages("service.name")
 

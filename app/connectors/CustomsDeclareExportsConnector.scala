@@ -16,28 +16,27 @@
 
 package connectors
 
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
+
 import com.codahale.metrics.Timer
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import connectors.exchange.ExportsDeclarationExchange
 import forms.CancelDeclaration
+import javax.inject.{Inject, Singleton}
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import models.dis.MrnStatus
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 @Singleton
-class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, metrics: Metrics) {
-  private val logger = Logger(this.getClass)
+class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, metrics: Metrics) extends Logging {
 
   private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): T = {
     logger.debug(s"$prefix: ${Json.toJson(payload)}")

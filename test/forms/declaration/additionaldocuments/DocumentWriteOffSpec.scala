@@ -18,11 +18,11 @@ package forms.declaration.additionaldocuments
 
 import base.TestHelper
 import forms.declaration.additionaldocuments.DocumentWriteOff._
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DocumentWriteOffSpec extends WordSpec with MustMatchers {
+class DocumentWriteOffSpec extends UnitSpec {
 
   "DocumentWriteOff form with mapping used to bind data" should {
 

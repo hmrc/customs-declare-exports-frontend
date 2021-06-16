@@ -24,7 +24,6 @@ import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.scalatest.Matchers._
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs

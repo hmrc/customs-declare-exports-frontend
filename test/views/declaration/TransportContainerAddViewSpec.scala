@@ -20,7 +20,6 @@ import base.Injector
 import forms.declaration.ContainerAdd
 import models.Mode
 import org.jsoup.nodes.Document
-import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -30,7 +29,7 @@ import views.html.declaration.transport_container_add
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
+class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
   private val form: Form[ContainerAdd] = ContainerAdd.form()
   private val page = instanceOf[transport_container_add]

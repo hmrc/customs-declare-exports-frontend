@@ -16,11 +16,11 @@
 
 package config
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import play.api.Configuration
 
-class EadConfigSpec extends UnitSpec {
+class EadConfigSpec extends UnitWithMocksSpec {
 
   private val configWithEnabledEAD: Config =
     ConfigFactory.parseString("microservice.services.features.ead=enabled")

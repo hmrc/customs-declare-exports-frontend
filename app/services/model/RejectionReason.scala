@@ -16,22 +16,21 @@
 
 package services.model
 
+import scala.io.Source
+
 import com.github.tototoshi.csv._
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.declaration.notifications.Notification
 import models.{DeclarationType, ExportsDeclaration, Pointer}
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 
-import scala.io.Source
-
 case class RejectionReason(code: String, summaryErrorMessage: String, url: Option[String], pageErrorMessage: Option[String], pointer: Option[Pointer])
 
-object RejectionReason {
+object RejectionReason extends Logging {
   implicit val format: OFormat[RejectionReason] = Json.format[RejectionReason]
-  private val logger = Logger(this.getClass)
 
   def extractErrorDescription(useImprovedErrorMessage: Boolean, cdsDescription: String, exportsDescription: String): String =
     if (useImprovedErrorMessage && exportsDescription.nonEmpty) exportsDescription else cdsDescription
@@ -97,7 +96,7 @@ object RejectionReason {
     } else url
   }
 
-  private def pointerBasedUrl(url: String, declaration: ExportsDeclaration, pointerOpt: Option[Pointer]) =
+  private def pointerBasedUrl(url: String, declaration: ExportsDeclaration, pointerOpt: Option[Pointer]): String =
     pointerOpt match {
       case Some(pointer) if pointer.toString == "declaration.declarantDetails.details.eori" =>
         if (declaration.`type` == DeclarationType.CLEARANCE && declaration.isExs && declaration.parties.personPresentingGoodsDetails.nonEmpty) {
@@ -109,9 +108,7 @@ object RejectionReason {
 }
 
 @Singleton
-class RejectionReasons @Inject()(config: AppConfig) {
-
-  private val logger = Logger(this.getClass)
+class RejectionReasons @Inject()(config: AppConfig) extends Logging {
 
   private val pageErrorsMap: Map[String, String] = {
     def convertRow(list: List[String]): (String, String) = list match {

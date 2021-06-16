@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.CusCodeController
 import forms.declaration.CusCode
 import forms.declaration.CusCode._
 import models.DeclarationType.{apply => _, _}

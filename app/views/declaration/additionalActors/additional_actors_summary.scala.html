@@ -42,7 +42,7 @@
         link: link,
         addAnotherQuestion: addAnotherQuestion,
         saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        formHelper: FormWithCSRF
 )
 
 @(mode: Mode, form: Form[_], actors: Seq[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)

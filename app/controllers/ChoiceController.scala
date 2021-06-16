@@ -26,8 +26,8 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
-
 import javax.inject.Inject
+import play.twirl.api.HtmlFormat
 
 class ChoiceController @Inject()(
   authenticate: AuthAction,
@@ -45,10 +45,11 @@ class ChoiceController @Inject()(
       appConfig.availableJourneys().filterNot(_.equals(Inbox))
 
   def displayPage(previousChoice: Option[Choice]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
-    def pageForPreviousChoice(previousChoice: Option[Choice]) = {
+    def pageForPreviousChoice(previousChoice: Option[Choice]): HtmlFormat.Appendable = {
       val form = Choice.form()
       choicePage(previousChoice.fold(form)(form.fill), availableJourneys)
     }
+
     Ok(pageForPreviousChoice(previousChoice))
   }
 
@@ -68,7 +69,7 @@ class ChoiceController @Inject()(
             case Submissions =>
               Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
             case Inbox =>
-              Redirect(controllers.routes.SecureMessagingController.displayInbox())
+              Redirect(controllers.routes.SecureMessagingController.displayInbox)
         }
       )
   }

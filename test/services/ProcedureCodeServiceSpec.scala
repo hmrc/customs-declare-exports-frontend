@@ -16,7 +16,7 @@
 
 package services
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import connectors.{CodeLinkConnector, CodeListConnector}
 import models.codes.{AdditionalProcedureCode, ProcedureCode}
 import models.DeclarationType
@@ -30,7 +30,7 @@ import java.util.Locale.ENGLISH
 
 import scala.collection.immutable.ListMap
 
-class ProcedureCodeServiceSpec extends UnitSpec with BeforeAndAfterEach {
+class ProcedureCodeServiceSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   private val codeListConnector = mock[CodeListConnector]
   private val codeLinkConnector = mock[CodeLinkConnector]

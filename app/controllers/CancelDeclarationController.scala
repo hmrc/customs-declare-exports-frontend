@@ -16,14 +16,18 @@
 
 package controllers
 
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
+
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.CancelDeclaration
 import forms.CancelDeclaration._
+import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
 import models.requests.AuthenticatedRequest
-import play.api.Logger
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,10 +35,6 @@ import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{cancel_declaration, cancellation_confirmation_page}
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 class CancelDeclarationController @Inject()(
   authenticate: AuthAction,
@@ -46,9 +46,7 @@ class CancelDeclarationController @Inject()(
   cancelDeclarationPage: cancel_declaration,
   cancelConfirmationPage: cancellation_confirmation_page
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
-
-  private val logger = Logger(this.getClass)
+    extends FrontendController(mcc) with I18nSupport with Logging {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
     Ok(cancelDeclarationPage(CancelDeclaration.form))

@@ -17,10 +17,10 @@
 package forms.declaration.additionaldeclarationtype
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.libs.json.{JsError, JsString, JsSuccess, Json}
 
-class AdditionalDeclarationTypeSpec extends WordSpec with MustMatchers {
+class AdditionalDeclarationTypeSpec extends UnitSpec {
 
   "Formatter" should {
     "map to json" in {

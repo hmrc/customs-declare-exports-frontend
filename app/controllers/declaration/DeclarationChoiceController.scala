@@ -16,14 +16,19 @@
 
 package controllers.declaration
 
+import java.time.Instant
+
+import scala.concurrent.{ExecutionContext, Future}
+
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.declaration.DeclarationChoice
 import forms.declaration.DeclarationChoice._
+import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.ExportsSessionKeys
-import models.{DeclarationStatus, Mode}
-import play.api.Logger
+import models.{DeclarationStatus, ExportsDeclaration, Mode}
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,10 +37,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declaration_choice
 
-import java.time.Instant
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-
 class DeclarationChoiceController @Inject()(
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
@@ -43,9 +44,7 @@ class DeclarationChoiceController @Inject()(
   mcc: MessagesControllerComponents,
   choicePage: declaration_choice
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
-
-  private val logger = Logger(this.getClass)
+    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     request.declarationId match {
@@ -81,7 +80,7 @@ class DeclarationChoiceController @Inject()(
       )
   }
 
-  private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier) =
+  private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] =
     exportsCacheService.get(id).map(_.map(_.updateType(`type`))).flatMap {
       case Some(declaration) => exportsCacheService.update(declaration)
       case None =>
@@ -89,7 +88,7 @@ class DeclarationChoiceController @Inject()(
         Future.successful(None)
     }
 
-  private def create(`type`: DeclarationType)(implicit hc: HeaderCarrier) =
+  private def create(`type`: DeclarationType)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
     exportsCacheService
       .create(
         ExportsDeclarationExchange(

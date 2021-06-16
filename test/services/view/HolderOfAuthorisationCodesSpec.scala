@@ -18,13 +18,13 @@ package services.view
 
 import java.util.Locale.ENGLISH
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import config.AppConfig
 import connectors.FileBasedCodeListConnector
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 
-class HolderOfAuthorisationCodesSpec extends UnitSpec with BeforeAndAfterEach {
+class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   private val appConfig = mock[AppConfig]
 

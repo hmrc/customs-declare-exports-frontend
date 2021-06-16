@@ -16,10 +16,10 @@
 
 package forms.declaration
 
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DeclarationChoiceSpec extends WordSpec with MustMatchers {
+class DeclarationChoiceSpec extends UnitSpec {
   import DeclarationChoiceSpec._
 
   "Validation defined in DeclarationChoice mapping" should {

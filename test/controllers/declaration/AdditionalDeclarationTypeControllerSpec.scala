@@ -17,12 +17,10 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.AdditionalDeclarationTypeController
 import controllers.util.SaveAndContinue
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{apply => _, values => _, _}
 import models.DeclarationType._
-import models.{DeclarationType, Mode}
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}

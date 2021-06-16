@@ -16,10 +16,9 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
-
 import scala.concurrent.ExecutionContext
-import controllers.declaration.ExporterDetailsController
+
+import base.ControllerSpec
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.exporter.ExporterDetails

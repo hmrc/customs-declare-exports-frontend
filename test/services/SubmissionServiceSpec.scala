@@ -16,7 +16,7 @@
 
 package services
 
-import base.{Injector, MockConnectors, MockExportCacheService, UnitSpec}
+import base.{Injector, MockConnectors, MockExportCacheService, UnitWithMocksSpec}
 import com.kenshoo.play.metrics.Metrics
 import connectors.CustomsDeclareExportsConnector
 import forms.declaration.LegalDeclaration
@@ -35,7 +35,8 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
 class SubmissionServiceSpec
-    extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector with SubmissionBuilder {
+    extends UnitWithMocksSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector
+    with SubmissionBuilder {
 
   private val auditService = mock[AuditService]
   private val connector = mock[CustomsDeclareExportsConnector]

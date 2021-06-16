@@ -17,7 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.Mapping.requiredRadio
+import forms.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey

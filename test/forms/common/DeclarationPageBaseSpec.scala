@@ -20,9 +20,9 @@ import forms.DeclarationPage
 import models.DeclarationType.{DeclarationType, _}
 import models.viewmodels.TariffContentKey
 import models.DeclarationType
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 
-trait DeclarationPageBaseSpec extends WordSpec with MustMatchers {
+trait DeclarationPageBaseSpec extends UnitSpec {
   val commonKeyDeclarationTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
   def testTariffContentKeys(page: DeclarationPage, messageKey: String) =

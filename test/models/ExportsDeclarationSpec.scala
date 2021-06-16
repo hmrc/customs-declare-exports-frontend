@@ -18,11 +18,12 @@ package models
 
 import java.time.{Clock, Instant, LocalDate, ZoneOffset}
 
+import base.UnitSpec
 import models.declaration.ProcedureCodesData
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
 import services.cache.ExportsDeclarationBuilder
 
-class ExportsDeclarationSpec extends WordSpec with MustMatchers with ExportsDeclarationBuilder with OptionValues {
+class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder with OptionValues {
 
   "Amend" should {
     val currentTime = Instant.now()

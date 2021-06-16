@@ -16,11 +16,11 @@
 
 package services
 
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import org.scalatest.Inspectors.forAll
 import services.DocumentType.allDocuments
 
-class DocumentTypeSpec extends WordSpec with MustMatchers {
+class DocumentTypeSpec extends UnitSpec {
 
   "Document Type" should {
 

@@ -16,14 +16,17 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.DocumentsProducedAddController.DocumentsProducedFormGroupId
 import controllers.navigation.Navigator
-import controllers.util._
 import controllers.util.ExportsDecModelHelper.getCommodityCode
+import controllers.util._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.{form, globalErrors}
-import models.declaration.{DocumentsProducedData, ExportItem}
+import javax.inject.Inject
+import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.maxNumberOfItems
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -33,9 +36,6 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.documentsProduced.documents_produced_add
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class DocumentsProducedAddController @Inject()(
   authenticate: AuthAction,
@@ -67,7 +67,7 @@ class DocumentsProducedAddController @Inject()(
     )
   }
 
-  private def cachedDocuments(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+  private def cachedDocuments(itemId: String)(implicit request: JourneyRequest[AnyContent]): DocumentsProducedData =
     request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).getOrElse(DocumentsProducedData(Seq()))
 
   private def continue(mode: Mode, itemId: String, cachedData: DocumentsProducedData)(implicit request: JourneyRequest[AnyContent]): Future[Result] =

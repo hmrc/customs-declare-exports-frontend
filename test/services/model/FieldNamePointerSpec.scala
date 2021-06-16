@@ -16,9 +16,9 @@
 
 package services.model
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 
-class FieldNamePointerSpec extends UnitSpec {
+class FieldNamePointerSpec extends UnitWithMocksSpec {
 
   "Apply" should {
 

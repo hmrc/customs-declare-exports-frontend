@@ -22,10 +22,9 @@ import javax.xml.XMLConstants
 import javax.xml.transform.stream.StreamSource
 import javax.xml.transform.{Source => XmlSource}
 import javax.xml.validation.{Schema, SchemaFactory}
-import play.api.Logger
+import play.api.Logging
 
-trait SchemaValidation {
-  private val logger = Logger(this.getClass)
+trait SchemaValidation extends Logging {
 
   private val schemas =
     Seq("/wco-declaration-schemas/declaration/DocumentMetaData_2_DMS.xsd", "/wco-declaration-schemas/declaration/WCO_DEC_2_DMS.xsd")

@@ -21,7 +21,6 @@ import config.AppConfig
 import forms.declaration.TaricCodeFirst
 import models.Mode
 import org.jsoup.nodes.Document
-import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -32,7 +31,7 @@ import views.html.declaration.taric_code_add_first
 import views.tags.ViewTest
 
 @ViewTest
-class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
+class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
   private val itemId = "item1"
   private val form: Form[TaricCodeFirst] = TaricCodeFirst.form()

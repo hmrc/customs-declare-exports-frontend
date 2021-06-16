@@ -16,7 +16,7 @@
 
 package forms.common
 
-import forms.Mapping.requiredRadio
+import forms.MappingHelper.requiredRadio
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.isContainedIn

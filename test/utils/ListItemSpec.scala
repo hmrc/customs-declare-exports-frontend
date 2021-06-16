@@ -17,9 +17,9 @@
 package utils
 
 import forms.declaration.DeclarationHolder
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 
-class ListItemSpec extends WordSpec with MustMatchers {
+class ListItemSpec extends UnitSpec {
 
   import ListItem._
   "ListItemId" should {

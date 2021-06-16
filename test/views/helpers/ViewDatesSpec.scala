@@ -18,9 +18,9 @@ package views.helpers
 
 import java.time.LocalDateTime
 
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 
-class ViewDatesSpec extends WordSpec with MustMatchers {
+class ViewDatesSpec extends UnitSpec {
 
   "ViewDates" should {
 

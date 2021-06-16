@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.RepresentativeStatusController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{IsExs, RepresentativeStatus}
 import models.DeclarationType._

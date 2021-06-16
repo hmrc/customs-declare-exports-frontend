@@ -18,10 +18,10 @@ package controllers.util
 
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import testdata.SubmissionsTestData._
 
-class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
+class SubmissionDisplayHelperSpec extends UnitSpec {
 
   "SubmissionDisplayHelper on createSubmissionsWithNotificationsMap" when {
 

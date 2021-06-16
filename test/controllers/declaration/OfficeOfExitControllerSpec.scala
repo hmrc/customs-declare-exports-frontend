@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.OfficeOfExitController
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor

@@ -16,10 +16,10 @@
 
 package models
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import models.Mode.{Amend, Change, ChangeAmend, Draft, ErrorFix, Normal}
 
-class ModeSpec extends UnitSpec {
+class ModeSpec extends UnitWithMocksSpec {
 
   "Normal mode" must {
     "be same after submitting form" in {

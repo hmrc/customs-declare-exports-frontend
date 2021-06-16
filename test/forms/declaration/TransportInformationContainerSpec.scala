@@ -17,9 +17,9 @@
 package forms.declaration
 
 import base.TestHelper
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 
-class TransportInformationContainerSpec extends WordSpec with MustMatchers {
+class TransportInformationContainerSpec extends UnitSpec {
 
   val form = ContainerAdd.form
 

@@ -48,7 +48,7 @@
         addAnotherQuestion: addAnotherQuestion,
         link: link,
         saveButtons: saveButtons,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        formHelper: FormWithCSRF
 )
 
 @(mode: Mode, itemId:String, form: Form[YesNoAnswer], additionalReferences: Seq[AdditionalFiscalReference])(implicit request: JourneyRequest[_], messages: Messages)

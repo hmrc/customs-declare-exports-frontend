@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import controllers.declaration.DeclarationChoiceController
 import forms.Choice
 import forms.declaration.DeclarationChoiceSpec
 import models.DeclarationType.DeclarationType

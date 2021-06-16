@@ -16,6 +16,9 @@
 
 package services
 
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
+
 import com.google.inject.Inject
 import connectors.CustomsDeclareExportsConnector
 import forms.declaration.LegalDeclaration
@@ -24,17 +27,13 @@ import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
-import play.api.Logger
+import play.api.Logging
 import services.audit.{AuditService, AuditTypes, EventData}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
-
 @Singleton
-class SubmissionService @Inject()(exportsConnector: CustomsDeclareExportsConnector, auditService: AuditService, exportsMetrics: ExportsMetrics) {
-
-  private val logger = Logger(this.getClass)
+class SubmissionService @Inject()(exportsConnector: CustomsDeclareExportsConnector, auditService: AuditService, exportsMetrics: ExportsMetrics)
+    extends Logging {
 
   def submit(eori: String, exportsDeclaration: ExportsDeclaration, legalDeclaration: LegalDeclaration)(
     implicit hc: HeaderCarrier,

@@ -16,27 +16,21 @@
 
 package services.ead
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import com.dmanchester.playfop.sapi.PlayFop
 import connectors.CustomsDeclareExportsConnector
 import javax.inject.Inject
 import org.apache.fop.apps.FOUserAgent
 import org.apache.xmlgraphics.util.MimeConstants
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.Messages
 import play.twirl.api.XmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
 import views.xml.pdf.pdfTemplate
 
-import scala.concurrent.{ExecutionContext, Future}
-
-class EADService @Inject()(
-  barcodeService: BarcodeService,
-  pdfTemplate: pdfTemplate,
-  val playFop: PlayFop,
-  connector: CustomsDeclareExportsConnector
-) {
-
-  private val logger = Logger(this.getClass())
+class EADService @Inject()(barcodeService: BarcodeService, pdfTemplate: pdfTemplate, val playFop: PlayFop, connector: CustomsDeclareExportsConnector)
+    extends Logging {
 
   def generatePdf(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, messages: Messages): Future[Array[Byte]] = {
     val myFOUserAgentBlock = { foUserAgent: FOUserAgent =>

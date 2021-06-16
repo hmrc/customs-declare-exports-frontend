@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.AdditionalFiscalReferencesRemoveController
 import forms.common.YesNoAnswer
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import models.Mode

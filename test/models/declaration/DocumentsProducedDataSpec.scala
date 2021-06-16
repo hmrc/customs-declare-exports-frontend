@@ -17,10 +17,10 @@
 package models.declaration
 
 import forms.declaration.DocumentsProducedSpec._
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.libs.json.{JsArray, JsObject, JsValue}
 
-class DocumentsProducedDataSpec extends WordSpec with MustMatchers {
+class DocumentsProducedDataSpec extends UnitSpec {
 
   "Documents Produced Data object" should {
     "contain correct limit value" in {

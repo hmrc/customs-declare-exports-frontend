@@ -17,10 +17,10 @@
 package forms.declaration.additionaldeclarationtype
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes._
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class AdditionalDeclarationTypeSupplementaryDecSpec extends WordSpec with MustMatchers {
+class AdditionalDeclarationTypeSupplementaryDecSpec extends UnitSpec {
   import AdditionalDeclarationTypeSupplementaryDecSpec._
 
   "AdditionalDeclarationType mapping user for binding data" should {

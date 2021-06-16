@@ -23,11 +23,10 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.procedurecodes.AdditionalProcedureCode
-import javax.inject.Inject
 import forms.declaration.procedurecodes.AdditionalProcedureCode._
-import models.{ExportsDeclaration, Mode}
-import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
+import javax.inject.Inject
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
+import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.requests.JourneyRequest
@@ -39,7 +38,6 @@ import services.ProcedureCodeService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-
 import views.html.declaration.procedureCodes.additional_procedure_codes
 
 class AdditionalProcedureCodesController @Inject()(

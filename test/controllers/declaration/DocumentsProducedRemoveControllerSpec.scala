@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.DocumentsProducedRemoveController
 import forms.common.YesNoAnswer
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.Mode

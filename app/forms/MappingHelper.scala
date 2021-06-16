@@ -15,11 +15,12 @@
  */
 
 package forms
+
 import play.api.data.Forms.of
 import play.api.data.format.Formatter
 import play.api.data.{FieldMapping, FormError}
 
-object Mapping {
+object MappingHelper {
   def requiredRadio(requiredKey: String = "error.required"): FieldMapping[String] =
     of(radioFormatter(requiredKey))
 
@@ -49,6 +50,7 @@ object Mapping {
     override def unbind(key: String, value: String): Map[String, String] = Map(key -> value)
   }
 }
+
 case object NoneOfTheAbove {
   val value: String = "no"
 }

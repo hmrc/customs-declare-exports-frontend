@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import controllers.declaration.PreviousDocumentsController
 import forms.declaration.{Document, DocumentSpec, PreviousDocumentsData}
 import models.declaration.DocumentCategory.SimplifiedDeclaration
 import models.{DeclarationType, Mode}

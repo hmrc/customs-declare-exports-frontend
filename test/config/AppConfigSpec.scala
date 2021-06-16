@@ -16,7 +16,7 @@
 
 package config
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 
 import java.util.concurrent.TimeUnit
 import com.typesafe.config.{Config, ConfigFactory}
@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.duration.FiniteDuration
 
-class AppConfigSpec extends UnitSpec {
+class AppConfigSpec extends UnitWithMocksSpec {
 
   private val environment = Environment.simple()
 

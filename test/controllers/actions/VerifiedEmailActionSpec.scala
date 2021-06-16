@@ -16,20 +16,20 @@
 
 package controllers.actions
 
+import java.time.ZonedDateTime
+
+import scala.concurrent.Future
+
 import base.{ControllerWithoutFormSpec, ExportsTestData, Injector}
 import connectors.CustomsDeclareExportsConnector
-import controllers.actions.VerifiedEmailActionImpl
-import models.{EORI, VerifiedEmailAddress}
 import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
+import models.{EORI, VerifiedEmailAddress}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures
-import play.api.{Configuration, Environment}
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
-
-import java.time.ZonedDateTime
-import scala.concurrent.Future
+import play.api.{Configuration, Environment}
 
 class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector with ScalaFutures {
 

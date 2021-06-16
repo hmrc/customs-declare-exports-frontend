@@ -17,9 +17,9 @@
 package forms.declaration.additionaldeclarationtype
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 
-class AdditionalDeclarationTypeOccasionalDecSpec extends WordSpec with MustMatchers {
+class AdditionalDeclarationTypeOccasionalDecSpec extends UnitSpec {
 
   private val validTypes = Seq(AdditionalDeclarationType.OCCASIONAL_PRE_LODGED, AdditionalDeclarationType.OCCASIONAL_FRONTIER)
 

@@ -20,6 +20,7 @@
 @import models.requests.JourneyRequest
 @import services.CustomsOffices
 @import services.view.AutoCompleteItem
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.html.components.gds._
 @import views.helpers.{BackButton, Title}
 @import views.components.gds.Styles._
@@ -29,7 +30,7 @@
     errorSummary: errorSummary,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    formHelper: FormWithCSRF,
     appConfig: AppConfig
 )
 

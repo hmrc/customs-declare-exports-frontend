@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import controllers.declaration.PreviousDocumentsRemoveController
 import forms.common.YesNoAnswer
 import forms.declaration.Document
 import models.Mode

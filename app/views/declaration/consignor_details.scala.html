@@ -20,24 +20,24 @@
 @import controllers.navigation.Navigator
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
-@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, govukFieldset}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukDetails, govukFieldset}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
 @import views.components.gds.Styles._
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukDetails : GovukDetails,
-        govukFieldset: govukFieldset,
-        pageTitle: pageTitle,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        group_address: group_address,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        tariffExpander: tariffExpander,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukDetails : GovukDetails,
+    govukFieldset: govukFieldset,
+    pageTitle: pageTitle,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    group_address: group_address,
+    formHelper: FormWithCSRF,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[ConsignorDetails])(implicit request: JourneyRequest[_], messages: Messages)

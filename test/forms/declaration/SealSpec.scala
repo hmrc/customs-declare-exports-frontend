@@ -18,9 +18,9 @@ package forms.declaration
 
 import base.TestHelper
 import forms.common.DeclarationPageBaseSpec
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 
-class SealSpec extends WordSpec with MustMatchers with DeclarationPageBaseSpec {
+class SealSpec extends UnitSpec with DeclarationPageBaseSpec {
 
   val form = Seal.form
 

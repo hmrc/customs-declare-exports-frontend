@@ -16,18 +16,18 @@
 
 package connectors
 
+import scala.concurrent.ExecutionContext
+
+import base.UnitSpec
 import com.codahale.metrics.SharedMetricRegistries
-import org.scalatest.{BeforeAndAfterEach, WordSpec}
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
-import scala.concurrent.ExecutionContext
-
-class ConnectorSpec extends WordSpec with GuiceOneAppPerSuite with WiremockTestServer with MockitoSugar with BeforeAndAfterEach {
+class ConnectorISpec extends UnitSpec with BeforeAndAfterEach with GuiceOneAppPerSuite with WiremockTestServer {
 
   def overrideConfig: Map[String, Any] = Map(
     "auditing.enabled" -> true,

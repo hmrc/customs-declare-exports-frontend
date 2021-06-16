@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package controllers.util
+package base
 
-import models.ExportsDeclaration
+import org.scalatestplus.mockito.MockitoSugar
 
-object ExportsDecModelHelper {
-  def getCommodityCode(model: ExportsDeclaration, itemId: String): Option[String] =
-    model
-      .itemBy(itemId)
-      .flatMap(_.commodityDetails.flatMap(_.combinedNomenclatureCode))
-}
+trait UnitWithMocksSpec extends UnitSpec with MockitoSugar

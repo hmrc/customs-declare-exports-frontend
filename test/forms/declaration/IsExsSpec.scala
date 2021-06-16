@@ -16,10 +16,10 @@
 
 package forms.declaration
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import play.api.data.FormError
 
-class IsExsSpec extends UnitSpec {
+class IsExsSpec extends UnitWithMocksSpec {
 
   "Is Exs" should {
 

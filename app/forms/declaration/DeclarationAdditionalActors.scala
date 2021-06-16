@@ -17,7 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.Mapping._
+import forms.MappingHelper._
 import forms.common.Eori
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
@@ -69,11 +69,11 @@ object DeclarationAdditionalActors extends DeclarationPage {
 
   private def model2Form: DeclarationAdditionalActors => Option[(Option[Eori], Option[Eori], Option[Eori], Option[Eori], Option[String])] = { model =>
     model.partyType match {
-      case Some(PartyType.Consolidator)     => Option(model.eori, None, None, None, model.partyType)
-      case Some(PartyType.Manufacturer)     => Option(None, model.eori, None, None, model.partyType)
-      case Some(PartyType.FreightForwarder) => Option(None, None, model.eori, None, model.partyType)
-      case Some(PartyType.WarehouseKeeper)  => Option(None, None, None, model.eori, model.partyType)
-      case _                                => Option(None, None, None, None, model.partyType)
+      case Some(PartyType.Consolidator)     => Option((model.eori, None, None, None, model.partyType))
+      case Some(PartyType.Manufacturer)     => Option((None, model.eori, None, None, model.partyType))
+      case Some(PartyType.FreightForwarder) => Option((None, None, model.eori, None, model.partyType))
+      case Some(PartyType.WarehouseKeeper)  => Option((None, None, None, model.eori, model.partyType))
+      case _                                => Option((None, None, None, None, model.partyType))
     }
   }
 

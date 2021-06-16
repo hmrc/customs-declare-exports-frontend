@@ -28,7 +28,6 @@ import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.{Page, Paginated}
-import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status
@@ -36,7 +35,7 @@ import play.api.libs.json.{Json, Writes}
 import play.api.test.Helpers._
 import services.cache.ExportsDeclarationBuilder
 
-class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
+class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with ExportsDeclarationBuilder with ScalaFutures {
 
   private val id = "id"
   private val existingDeclaration = aDeclaration(withId(id))

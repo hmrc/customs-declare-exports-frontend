@@ -38,7 +38,7 @@
         errorSummary: errorSummary,
         saveButtons: saveButtons,
         yesNoRadios: yesNoRadios,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        formHelper: FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, info: PackageInformation, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)

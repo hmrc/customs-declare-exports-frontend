@@ -16,12 +16,13 @@
 
 package views.components.gds
 
+import scala.collection.JavaConverters.asScalaIteratorConverter
+
 import base.{MockAuthAction, OverridableInjector}
 import com.typesafe.config.ConfigFactory
 import config.{SecureMessagingInboxConfig, TimeoutDialogConfig}
 import forms.Choice
 import org.mockito.Mockito.when
-import org.scalatest.Matchers._
 import play.api.Configuration
 import play.api.data.Form
 import play.api.inject.bind
@@ -29,8 +30,6 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.choice_page
-
-import scala.collection.JavaConverters.asScalaIteratorConverter
 
 class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAction {
 

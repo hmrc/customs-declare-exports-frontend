@@ -16,13 +16,12 @@
 
 package controllers.declaration
 
+import scala.concurrent.Future
+
 import base.{ControllerWithoutFormSpec, Injector}
-import controllers.declaration.ConfirmationController
 import play.api.mvc.{AnyContentAsEmpty, Flash, Request, Result}
 import play.api.test.Helpers._
 import views.html.declaration.{draft_confirmation_page, submission_confirmation_page}
-
-import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerWithoutFormSpec with Injector {
 

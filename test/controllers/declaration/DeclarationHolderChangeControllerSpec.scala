@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.DeclarationHolderChangeController
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import models.Mode

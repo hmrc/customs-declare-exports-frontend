@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.PreviousDocumentsSummaryController
 import forms.common.YesNoAnswer
 import forms.declaration.Document
 import models.Mode

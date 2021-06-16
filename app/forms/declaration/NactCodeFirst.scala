@@ -17,7 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.Mapping.requiredRadio
+import forms.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.NactCode.{nactCodeKey, nactCodeLength}
 import models.viewmodels.TariffContentKey

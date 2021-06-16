@@ -16,12 +16,12 @@
 
 package config
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
 import play.api.Configuration
 
-class FeatureSwitchConfigSpec extends UnitSpec {
+class FeatureSwitchConfigSpec extends UnitWithMocksSpec {
 
   private val validConfig: Config =
     ConfigFactory.parseString("""

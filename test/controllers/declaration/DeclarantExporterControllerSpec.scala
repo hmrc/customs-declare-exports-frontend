@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.DeclarantExporterController
 import forms.declaration.DeclarantIsExporter
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor

@@ -16,8 +16,10 @@
 
 package controllers.declaration
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 import base.ControllerWithoutFormSpec
-import controllers.declaration.ItemsSummaryController
 import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -37,9 +39,6 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.cache.ExportItemIdGeneratorService
 import views.html.declaration.declarationitems.{items_add_item, items_remove_item, items_summary}
-
-import scala.concurrent.Await
-import scala.concurrent.duration._
 
 class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues with ScalaFutures {
 

@@ -23,7 +23,6 @@ import forms.declaration.Seal
 import models.Mode
 import models.declaration.Container
 import org.jsoup.nodes.Document
-import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -33,7 +32,7 @@ import views.html.declaration.transport_container_summary
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
+class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
   val containerId = "212374"
   val sealId = "76434574"

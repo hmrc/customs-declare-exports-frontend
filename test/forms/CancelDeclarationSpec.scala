@@ -16,10 +16,10 @@
 
 package forms
 
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.libs.json.{JsObject, JsString}
 
-class CancelDeclarationSpec extends WordSpec with MustMatchers {
+class CancelDeclarationSpec extends UnitSpec {
 
   def formData(lrn: String = "lrn", mrn: String = "123456789012345678", description: String = "description", reason: String = "1") =
     JsObject(

@@ -17,11 +17,11 @@
 package forms.common
 
 import forms.common.Date._
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DateSpec extends WordSpec with MustMatchers {
+class DateSpec extends UnitSpec {
   import DateSpec._
 
   val dateFormatError: String = "dateTime.date.error.format"

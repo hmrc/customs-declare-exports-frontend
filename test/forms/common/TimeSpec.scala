@@ -16,10 +16,10 @@
 
 package forms.common
 
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.data.FormError
 
-class TimeSpec extends WordSpec with MustMatchers {
+class TimeSpec extends UnitSpec {
 
   "Time mapping validation rules" should {
 

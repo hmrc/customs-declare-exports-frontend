@@ -25,7 +25,6 @@ import forms.Choice
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.inject.bind
 import tools.Stubs

@@ -16,11 +16,11 @@
 
 package forms.declaration
 
-import base.{JourneyTypeTestRunner, TestHelper, UnitSpec}
+import base.{JourneyTypeTestRunner, TestHelper, UnitWithMocksSpec}
 import forms.common.DeclarationPageBaseSpec
 import models.viewmodels.TariffContentKey
 
-class PackageInformationSpec extends UnitSpec with JourneyTypeTestRunner with DeclarationPageBaseSpec {
+class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunner with DeclarationPageBaseSpec {
 
   private def formAllFieldsMandatory = PackageInformation.form()
 

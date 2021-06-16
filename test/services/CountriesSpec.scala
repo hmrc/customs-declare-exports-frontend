@@ -16,11 +16,11 @@
 
 package services
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import services.Countries._
 import services.model.Country
 
-class CountriesSpec extends UnitSpec {
+class CountriesSpec extends UnitWithMocksSpec {
 
   "Countries" should {
 

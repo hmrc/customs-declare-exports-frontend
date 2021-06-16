@@ -16,12 +16,12 @@
 
 package services.model
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import models.codes.{AdditionalProcedureCode, ProcedureCode}
 import services.DocumentType
 import services.view.AutoCompleteItem
 
-class AutoCompleteItemSpec extends UnitSpec {
+class AutoCompleteItemSpec extends UnitWithMocksSpec {
 
   "AutoCompleteItem" should {
 

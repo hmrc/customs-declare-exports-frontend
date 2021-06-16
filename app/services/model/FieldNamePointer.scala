@@ -16,16 +16,14 @@
 
 package services.model
 
-import com.github.tototoshi.csv._
-import play.api.Logger
-
 import scala.io.Source
+
+import com.github.tototoshi.csv._
+import play.api.Logging
 
 case class FieldNamePointer(exportPattern: String, fieldName: Option[String])
 
-object FieldNamePointer {
-
-  private val logger = Logger(this.getClass)
+object FieldNamePointer extends Logging {
 
   def apply(data: List[String]): FieldNamePointer = data match {
     case exportPattern :: fieldName :: Nil => FieldNamePointer(exportPattern, applyFieldName(fieldName))

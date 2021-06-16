@@ -19,9 +19,9 @@ package forms.declaration
 import forms.common.DeclarationPageBaseSpec
 import models.DeclarationType
 import models.viewmodels.TariffContentKey
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 
-class CommodityMeasureSpec extends WordSpec with MustMatchers with DeclarationPageBaseSpec {
+class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
 
   "Commodity Measure" should {
 

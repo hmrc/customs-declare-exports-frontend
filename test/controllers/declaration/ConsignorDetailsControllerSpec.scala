@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.ConsignorDetailsController
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.ConsignorDetails

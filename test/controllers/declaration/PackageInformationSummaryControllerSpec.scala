@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.PackageInformationSummaryController
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
 import models.DeclarationType._

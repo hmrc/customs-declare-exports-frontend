@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import org.mockito.Mockito.{reset, when}
 
-class CodeLinkConnectorSpec extends ConnectorSpec {
+class CodeLinkConnectorISpec extends ConnectorISpec {
 
   private val appConfig = mock[AppConfig]
 

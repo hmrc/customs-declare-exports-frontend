@@ -16,19 +16,24 @@
 
 package controllers.navigation
 
-import base.RequestBuilder
+import java.time.{LocalDate, ZoneOffset}
+import java.util.concurrent.TimeUnit
+
+import scala.concurrent.Future
+import scala.concurrent.duration.FiniteDuration
+
+import base.{RequestBuilder, UnitWithMocksSpec}
 import config.AppConfig
 import controllers.util._
 import forms.declaration.carrier.CarrierDetails
-import models.{ExportsDeclaration, Mode, SignedInUser}
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
-import org.mockito.{ArgumentMatchers, Mockito}
+import models.{ExportsDeclaration, Mode, SignedInUser}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito._
 import org.mockito.Mockito.{verify, verifyNoInteractions}
-import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.{ArgumentMatchers, Mockito}
+import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,12 +41,7 @@ import services.audit.{AuditService, AuditTypes}
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.{LocalDate, ZoneOffset}
-import java.util.concurrent.TimeUnit
-import scala.concurrent.Future
-import scala.concurrent.duration.FiniteDuration
-
-class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with ExportsDeclarationBuilder with BeforeAndAfterEach with RequestBuilder {
+class NavigatorSpec extends UnitWithMocksSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
 
   private val mode = Mode.Normal
   private val call: Mode => Call = _ => Call("GET", "url")
@@ -79,10 +79,10 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
 
       val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(SaveAndReturn))), hc)
 
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.declaration.routes.ConfirmationController.displayDraftConfirmation().url)
-      flash(result).get(FlashKeys.expiryDate) shouldBe Some(expiryDate.atStartOfDay(ZoneOffset.UTC).toInstant.toEpochMilli.toString)
-      session(result).get(ExportsSessionKeys.declarationId) shouldBe None
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.declaration.routes.ConfirmationController.displayDraftConfirmation().url)
+      flash(result).get(FlashKeys.expiryDate) mustBe Some(expiryDate.atStartOfDay(ZoneOffset.UTC).toInstant.toEpochMilli.toString)
+      session(result).get(ExportsSessionKeys.declarationId) mustBe None
 
       verify(auditService).auditAllPagesUserInput(ArgumentMatchers.eq(AuditTypes.SaveAndReturnSubmission), any())(any())
     }
@@ -91,32 +91,32 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
       "Save And Continue" in {
         val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(SaveAndContinue))), hc)
 
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some("url")
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("url")
         verifyNoInteractions(auditService)
       }
 
       "Add" in {
         val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(Add))), hc)
 
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some("url")
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("url")
         verifyNoInteractions(auditService)
       }
 
       "Remove" in {
         val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(Remove(Seq.empty)))), hc)
 
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some("url")
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("url")
         verifyNoInteractions(auditService)
       }
 
       "Unknown Action" in {
         val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(Unknown))), hc)
 
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some("url")
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("url")
         verifyNoInteractions(auditService)
       }
     }
@@ -136,21 +136,21 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
 
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
 
-        redirectLocation(result) shouldBe Some(controllers.routes.RejectedNotificationsController.displayPage(sourceId).url)
+        redirectLocation(result) mustBe Some(controllers.routes.RejectedNotificationsController.displayPage(sourceId).url)
       }
 
       "backLink method is invoked with mode ErrorFix and sourceId in request" in {
 
         val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
 
-        result shouldBe controllers.routes.RejectedNotificationsController.displayPage(sourceId)
+        result mustBe controllers.routes.RejectedNotificationsController.displayPage(sourceId)
       }
 
       "backLink method for items is invoked with mode ErrorFix and sourceId in request" in {
 
         val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
 
-        result shouldBe controllers.routes.RejectedNotificationsController.displayPage(sourceId)
+        result mustBe controllers.routes.RejectedNotificationsController.displayPage(sourceId)
       }
     }
 
@@ -162,21 +162,21 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
 
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
 
-        redirectLocation(result) shouldBe Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url)
       }
 
       "backLink method is invoked with mode ErrorFix but without sourceId in request" in {
 
         val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
 
-        result shouldBe controllers.routes.SubmissionsController.displayListOfSubmissions()
+        result mustBe controllers.routes.SubmissionsController.displayListOfSubmissions()
       }
 
       "backLink method for items is invoked with mode ErrorFix but without sourceId in request" in {
 
         val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
 
-        result shouldBe controllers.routes.SubmissionsController.displayListOfSubmissions()
+        result mustBe controllers.routes.SubmissionsController.displayListOfSubmissions()
       }
     }
   }
