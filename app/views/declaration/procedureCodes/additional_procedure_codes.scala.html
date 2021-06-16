@@ -102,7 +102,7 @@
     @insetText(
       content = HtmlContent(messages("declaration.additionalProcedureCodes.inset",
         AutoCompleteItem.formatProcedureCode(procedureCode),
-        link(text = messages("declaration.additionalProcedureCodes.inset.linkText"), call = Call("GET", appConfig.additionalProcedureCodesOfCDs))
+        link(text = messages("declaration.additionalProcedureCodes.inset.linkText"), call = Call("GET", appConfig.additionalProcedureCodesOfCDs), target="_blank")
       ))
     )
 
