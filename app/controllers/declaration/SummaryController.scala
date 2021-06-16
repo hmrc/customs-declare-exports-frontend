@@ -16,16 +16,17 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import forms.declaration.LegalDeclaration
 import handlers.ErrorHandler
-
 import javax.inject.Inject
 import models.requests.ExportsSessionKeys
 import models.responses.FlashKeys
 import models.{ExportsDeclaration, Mode}
-import play.api.Logger
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -33,8 +34,6 @@ import services._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.summary._
-
-import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryController @Inject()(
   authenticate: AuthAction,
@@ -49,9 +48,7 @@ class SummaryController @Inject()(
   draftSummaryPage: draft_summary_page,
   summaryPageNoData: summary_page_no_data
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
-
-  private val logger = Logger(this.getClass)
+    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {

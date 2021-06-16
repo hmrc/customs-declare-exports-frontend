@@ -16,7 +16,7 @@
 
 package models
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import config.PaginationConfig
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
@@ -24,7 +24,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import testdata.SubmissionsTestData._
 
-class SubmissionsPagesElementsSpec extends UnitSpec with BeforeAndAfterEach {
+class SubmissionsPagesElementsSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   implicit private val paginationConfig: PaginationConfig = mock[PaginationConfig]
 

@@ -16,10 +16,10 @@
 
 package models.declaration
 
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
-class ProcedureCodesDataSpec extends WordSpec with MustMatchers {
+class ProcedureCodesDataSpec extends UnitSpec {
 
   "Procedure code" should {
 

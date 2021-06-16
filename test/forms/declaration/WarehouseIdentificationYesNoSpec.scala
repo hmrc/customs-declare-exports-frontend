@@ -17,14 +17,14 @@
 package forms.declaration
 
 import base.TestHelper.createRandomAlphanumericString
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import forms.LightFormMatchers
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.WarehouseIdentification._
 import forms.declaration.WarehouseIdentificationYesNoSpec._
 import play.api.libs.json.{JsObject, JsString}
 
-class WarehouseIdentificationYesNoSpec extends UnitSpec with LightFormMatchers {
+class WarehouseIdentificationYesNoSpec extends UnitWithMocksSpec with LightFormMatchers {
 
   private def formYesNo() = WarehouseIdentification.form(yesNo = true)
 

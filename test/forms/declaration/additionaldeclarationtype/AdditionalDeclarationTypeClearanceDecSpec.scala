@@ -17,9 +17,9 @@
 package forms.declaration.additionaldeclarationtype
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 
-class AdditionalDeclarationTypeClearanceDecSpec extends WordSpec with MustMatchers {
+class AdditionalDeclarationTypeClearanceDecSpec extends UnitSpec {
 
   private val validTypes = Seq(AdditionalDeclarationType.CLEARANCE_PRE_LODGED, AdditionalDeclarationType.CLEARANCE_FRONTIER)
 

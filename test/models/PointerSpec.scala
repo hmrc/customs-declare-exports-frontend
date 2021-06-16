@@ -16,10 +16,10 @@
 
 package models
 
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.libs.json.{JsString, JsSuccess, Json}
 
-class PointerSpec extends WordSpec with MustMatchers {
+class PointerSpec extends UnitSpec {
 
   "PointerSection" should {
     val field = PointerSection("ABC", PointerSectionType.FIELD)

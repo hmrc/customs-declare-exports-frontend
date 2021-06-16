@@ -16,10 +16,10 @@
 
 package forms.common
 
-import base.TestHelper
-import org.scalatest.{Assertion, MustMatchers, WordSpec}
+import base.{TestHelper, UnitSpec}
+import org.scalatest.Assertion
 
-class AddressSpec extends WordSpec with MustMatchers {
+class AddressSpec extends UnitSpec {
   import AddressSpec._
 
   "Bound Form with Address mapping" should {

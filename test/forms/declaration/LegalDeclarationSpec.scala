@@ -16,10 +16,10 @@
 
 package forms.declaration
 
-import base.{TestHelper, UnitSpec}
+import base.{TestHelper, UnitWithMocksSpec}
 import play.api.libs.json._
 
-class LegalDeclarationSpec extends UnitSpec {
+class LegalDeclarationSpec extends UnitWithMocksSpec {
 
   import LegalDeclaration._
 

@@ -16,11 +16,11 @@
 
 package config
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 
-class BetaBannerConfigSpec extends UnitSpec {
+class BetaBannerConfigSpec extends UnitWithMocksSpec {
 
   private val configWithBetaBannerEnabled: Configuration =
     Configuration(ConfigFactory.parseString("microservice.services.features.betaBanner=enabled"))

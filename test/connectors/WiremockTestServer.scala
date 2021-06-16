@@ -16,15 +16,18 @@
 
 package connectors
 
-import base.UnitSpec
+import scala.concurrent.duration._
+
+import base.UnitWithMocksSpec
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, postRequestedFor, urlEqualTo}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.BeforeAndAfterAll
+import org.scalatest.concurrent.Eventually
 import play.api.http.Status._
 
-trait WiremockTestServer extends UnitSpec with BeforeAndAfterAll {
+trait WiremockTestServer extends UnitWithMocksSpec with BeforeAndAfterAll with Eventually {
 
   val wireHost = "localhost"
 
@@ -52,5 +55,7 @@ trait WiremockTestServer extends UnitSpec with BeforeAndAfterAll {
     secureMessagingWireMockServer.stubFor(mappingBuilder)
 
   protected def verifyForAuditing(count: Int = 1): Unit =
-    auditingWireMockServer.verify(count, postRequestedFor(urlEqualTo("/write/audit")))
+    eventually(timeout(1 seconds), interval(50 millis)) {
+      auditingWireMockServer.verify(count, postRequestedFor(urlEqualTo("/write/audit")))
+    }
 }

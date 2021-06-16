@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.ConsigneeDetailsController
 import forms.common.Address
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import models.DeclarationType._

@@ -19,9 +19,9 @@ package models.declaration.notifications
 import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 
 import models.declaration.submissions.SubmissionStatus
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 
-class NotificationSpec extends WordSpec with MustMatchers {
+class NotificationSpec extends UnitSpec {
 
   private val zone: ZoneId = ZoneId.of("Europe/London")
   private val earlierDate = ZonedDateTime.of(LocalDateTime.of(2019, 6, 10, 10, 10), zone)

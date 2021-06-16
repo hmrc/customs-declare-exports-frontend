@@ -16,18 +16,18 @@
 
 package controllers.actions
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import com.google.inject.ImplementedBy
 import connectors.CustomsDeclareExportsConnector
 import controllers.routes
-import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
-import models.EORI
-import play.api.mvc.{ActionRefiner, MessagesControllerComponents, Result}
-import play.api.mvc.Results.Redirect
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
-
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import models.EORI
+import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{ActionRefiner, MessagesControllerComponents, Result}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 @ImplementedBy(classOf[VerifiedEmailActionImpl])
 trait VerifiedEmailAction extends ActionRefiner[AuthenticatedRequest, VerifiedEmailRequest]
@@ -37,11 +37,11 @@ class VerifiedEmailActionImpl @Inject()(backendConnector: CustomsDeclareExportsC
     extends VerifiedEmailAction {
 
   implicit val executionContext: ExecutionContext = mcc.executionContext
-  private lazy val onError = Redirect(routes.UnverifiedEmailController.informUser())
+  private lazy val onError = Redirect(routes.UnverifiedEmailController.informUser)
 
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, VerifiedEmailRequest[A]]] = {
 
-    val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     backendConnector.getVerifiedEmailAddress(EORI(request.user.eori))(hc, executionContext).map { maybeVerifiedEmail =>
       maybeVerifiedEmail

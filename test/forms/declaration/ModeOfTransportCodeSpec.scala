@@ -16,9 +16,9 @@
 
 package forms.declaration
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 
-class ModeOfTransportCodeSpec extends UnitSpec {
+class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
 
   "ModeOfTransportCode classicFormatter" should {
 

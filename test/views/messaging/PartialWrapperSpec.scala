@@ -71,7 +71,7 @@ class PartialWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
   "partial_wrapper in case of Reply Result page" should {
 
     val titleKeyForReplyResult = "replyResult.heading"
-    val view = genView(titleKeyForReplyResult, Some(routes.SecureMessagingController.displayInbox()))
+    val view = genView(titleKeyForReplyResult, Some(routes.SecureMessagingController.displayInbox))
 
     "display page header" in {
       view.getElementsByTag("title").first() must containMessage(titleKeyForReplyResult)

@@ -17,9 +17,11 @@
 package views.declaration
 
 import base.{Injector, TestHelper}
-import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Date.{dayKey, monthKey, yearKey}
+import forms.declaration.DocumentsProducedSpec.{correctDocumentsProduced, correctDocumentsProducedMap, incorrectDocumentsProducedMap}
+import forms.declaration.additionaldocuments.DocumentWriteOff.{documentQuantityKey, documentWriteOffKey, measurementUnitKey, qualifierKey}
+import forms.declaration.additionaldocuments.DocumentWriteOffSpec.{correctDocumentWriteOff, incorrectDocumentWriteOff}
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.{
   dateOfValidityKey,
@@ -29,11 +31,8 @@ import forms.declaration.additionaldocuments.DocumentsProduced.{
   documentTypeCodeKey,
   issuingAuthorityNameKey
 }
-import forms.declaration.additionaldocuments.DocumentWriteOff.{documentQuantityKey, documentWriteOffKey, measurementUnitKey, qualifierKey}
-import forms.declaration.DocumentsProducedSpec.{correctDocumentsProduced, correctDocumentsProducedMap, incorrectDocumentsProducedMap}
-import forms.declaration.additionaldocuments.DocumentWriteOffSpec.{correctDocumentWriteOff, incorrectDocumentWriteOff}
-import models.requests.JourneyRequest
 import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.OptionValues
 import play.api.data.Form

@@ -16,11 +16,11 @@
 
 package config
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import play.api.Configuration
 
-class ChangeErrorLinkConfigSpec extends UnitSpec {
+class ChangeErrorLinkConfigSpec extends UnitWithMocksSpec {
 
   private val configWithChangeLinkEnabled: Config =
     ConfigFactory.parseString("microservice.services.features.changeErrorLink=enabled")

@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.CommodityDetailsController
 import forms.declaration.{CommodityDetails, IsExs}
 import models.DeclarationType._
 import models.Mode

@@ -23,7 +23,6 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Inspectors.forAll
-import org.scalatest.MustMatchers
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -33,7 +32,7 @@ import views.html.declaration.package_information_add
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
+class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
   import PackageInformationViewSpec._
 

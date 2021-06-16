@@ -16,11 +16,10 @@
 
 package controllers.actions
 
-import base.UnitSpec
-import controllers.actions.{EoriAllowList, EoriAllowListProvider}
+import base.UnitWithMocksSpec
 import play.api.Configuration
 
-class EoriAllowListProviderSpec extends UnitSpec {
+class EoriAllowListProviderSpec extends UnitWithMocksSpec {
 
   "EoriAllowListProvider" should {
     "reload correctly from configuration" in {

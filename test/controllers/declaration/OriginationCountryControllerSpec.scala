@@ -16,8 +16,9 @@
 
 package controllers.declaration
 
+import scala.concurrent.ExecutionContext.global
+
 import base.ControllerSpec
-import controllers.declaration.OriginationCountryController
 import forms.declaration.countries.Country
 import models.DeclarationType._
 import models.Mode
@@ -30,8 +31,6 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.destinationCountries.origination_country
-
-import scala.concurrent.ExecutionContext.global
 
 class OriginationCountryControllerSpec extends ControllerSpec {
 

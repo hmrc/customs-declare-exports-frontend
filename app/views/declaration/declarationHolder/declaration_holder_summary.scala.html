@@ -22,7 +22,6 @@
 @import play.twirl.api.HtmlFormat
 @import services.view.HolderOfAuthorisationCodes
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
@@ -31,21 +30,21 @@
 @import scala.collection.immutable
 
 @this(
-  govukLayout: gdsMainTemplate,
-  govukFieldset: GovukFieldset,
-  govukButton: GovukButton,
-  govukTable : GovukTable,
-  govukRadios: GovukRadios,
-  errorSummary: errorSummary,
-  sectionHeader: sectionHeader,
-  pageTitle: pageTitle,
-  exportsInputText: exportsInputText,
-  spanVisuallyHidden: spanVisuallyHidden,
-  link: link,
-  addAnotherQuestion: addAnotherQuestion,
-  saveButtons: saveButtons,
-  formHelper: FormWithCSRF,
-  holderOfAuthorisationCodes: HolderOfAuthorisationCodes
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukButton: GovukButton,
+    govukTable : GovukTable,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    spanVisuallyHidden: spanVisuallyHidden,
+    link: link,
+    addAnotherQuestion: addAnotherQuestion,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 )
 
 @(mode: Mode, form: Form[_], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)

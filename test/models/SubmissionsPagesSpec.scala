@@ -16,9 +16,9 @@
 
 package models
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 
-class SubmissionsPagesSpec extends UnitSpec {
+class SubmissionsPagesSpec extends UnitWithMocksSpec {
 
   "SubmissionPages binder" should {
 

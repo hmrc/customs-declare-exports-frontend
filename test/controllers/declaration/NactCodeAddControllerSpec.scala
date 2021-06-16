@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.{ControllerSpec, TestHelper}
-import controllers.declaration.NactCodeAddController
 import forms.declaration.{NactCode, NactCodeFirst}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor

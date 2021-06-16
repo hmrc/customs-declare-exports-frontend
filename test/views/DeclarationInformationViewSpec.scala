@@ -162,7 +162,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         val elements = banner.children.iterator.asScala.toList
         assert(elements.forall(_.tagName.toLowerCase == "a"))
         elements.head must haveHref(routes.SubmissionsController.displayListOfSubmissions())
-        elements.last must haveHref(routes.SecureMessagingController.displayInbox())
+        elements.last must haveHref(routes.SecureMessagingController.displayInbox)
       }
     }
 

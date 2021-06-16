@@ -17,7 +17,7 @@
 package forms.declaration.consignor
 
 import forms.DeclarationPage
-import forms.Mapping.requiredRadio
+import forms.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Eori, YesNoAnswer}
 import models.viewmodels.TariffContentKey

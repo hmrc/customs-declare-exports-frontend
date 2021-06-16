@@ -15,15 +15,16 @@
  *@
 
 @import controllers.declaration.routes._
+@import forms.declaration.AdditionalInformation
 @import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
-@import forms.declaration.AdditionalInformation
 
 @this(
-        govukLayout: gdsMainTemplate,
-        editContent: additional_information_edit_content,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    editContent: additional_information_edit_content,
+    formHelper: FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, documentId: String, form: Form[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)

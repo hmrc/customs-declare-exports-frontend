@@ -16,19 +16,19 @@
 
 package services
 
-import org.scalatest.{Matchers, WordSpec}
+import base.UnitSpec
 import services.model.CustomsOffice
 
-class CustomsOfficesSpec extends WordSpec with Matchers {
+class CustomsOfficesSpec extends UnitSpec {
 
   "SupervisingCustomsOffice" should {
 
     "have 143 entries" in {
-      CustomsOffices.all.length shouldBe 96
+      CustomsOffices.all.length mustBe 96
     }
 
     "read values from CSV and order by description, alphabetically ascending" in {
-      CustomsOffices.all should contain inOrder (
+      CustomsOffices.all must contain inOrder (
         CustomsOffice("GBABD001", "Aberdeen, Ruby House"),
         CustomsOffice("GBLBA001", "Leeds, Peter Bennett House"),
         CustomsOffice("GBWXH001", "Wrexham, Plas Gororau")

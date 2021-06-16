@@ -20,7 +20,6 @@ import base.Injector
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.Mode
 import org.jsoup.nodes.Document
-import org.scalatest.Matchers._
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs

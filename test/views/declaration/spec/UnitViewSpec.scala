@@ -16,7 +16,7 @@
 
 package views.declaration.spec
 
-import base.{Injector, JourneyTypeTestRunner, UnitSpec}
+import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.{BeMatcher, MatchResult}
@@ -25,7 +25,7 @@ import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import services.cache.ExportsTestData
 
-class UnitViewSpec extends UnitSpec with ViewMatchers with JourneyTypeTestRunner {
+class UnitViewSpec extends UnitWithMocksSpec with ViewMatchers with JourneyTypeTestRunner {
 
   import utils.FakeRequestCSRFSupport._
 

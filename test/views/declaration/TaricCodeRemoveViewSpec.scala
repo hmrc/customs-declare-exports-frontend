@@ -20,7 +20,6 @@ import base.Injector
 import forms.common.YesNoAnswer
 import models.Mode
 import org.jsoup.nodes.Document
-import org.scalatest.MustMatchers
 import play.api.data.Form
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -29,7 +28,7 @@ import views.html.declaration.taric_code_remove
 import views.tags.ViewTest
 
 @ViewTest
-class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
+class TaricCodeRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
 
   private val itemId = "item1"
   private val taricCode = "TARI"

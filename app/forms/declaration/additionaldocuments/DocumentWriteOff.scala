@@ -51,7 +51,7 @@ object DocumentWriteOff {
   private def model2Form: DocumentWriteOff => Option[(Option[String], Option[String], Option[String])] =
     model => {
       val unitAndQualifier: Option[Array[String]] = model.measurementUnit.map(_.split("#"))
-      Some(unitAndQualifier.flatMap(_.headOption), unitAndQualifier.flatMap(_.lift(1)), model.documentQuantity.map(_.toString()))
+      Some((unitAndQualifier.flatMap(_.headOption), unitAndQualifier.flatMap(_.lift(1)), model.documentQuantity.map(_.toString())))
     }
 
   val mapping = Forms

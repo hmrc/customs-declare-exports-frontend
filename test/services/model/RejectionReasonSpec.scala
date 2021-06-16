@@ -16,7 +16,7 @@
 
 package services.model
 
-import base.{Injector, JourneyTypeTestRunner, UnitSpec}
+import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
 import config.AppConfig
 import forms.common.Eori
 import forms.declaration.Seal
@@ -32,7 +32,7 @@ import services.cache.ExportsTestData
 
 import java.time.{ZoneOffset, ZonedDateTime}
 
-class RejectionReasonSpec extends UnitSpec with ExportsTestData with JourneyTypeTestRunner with Injector {
+class RejectionReasonSpec extends UnitWithMocksSpec with ExportsTestData with JourneyTypeTestRunner with Injector {
 
   private val messages = mock[Messages]
   private val config: AppConfig = instanceOf[AppConfig]

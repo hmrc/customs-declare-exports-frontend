@@ -16,10 +16,10 @@
 
 package utils.validators.forms
 
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import utils.validators.forms.FieldValidator._
 
-class FieldValidatorSpec extends WordSpec with MustMatchers {
+class FieldValidatorSpec extends UnitSpec {
 
   val anyString = "Any string"
   val emptyString = ""

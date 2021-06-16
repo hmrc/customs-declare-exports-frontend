@@ -16,12 +16,12 @@
 
 package utils
 
+import base.UnitSpec
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import connectors.CodeItem
-import org.scalatest.{MustMatchers, WordSpec}
 import services.view.AutoCompleteItem
 
-class JsonFileSpec extends WordSpec with MustMatchers {
+class JsonFileSpec extends UnitSpec {
 
   "JsonFile readFromJsonFile" should {
 

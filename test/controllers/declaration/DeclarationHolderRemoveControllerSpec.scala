@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.DeclarationHolderRemoveController
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.DeclarationHolder
 import models.Mode

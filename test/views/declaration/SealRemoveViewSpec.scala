@@ -22,7 +22,6 @@ import forms.declaration.Seal
 import models.Mode
 import models.declaration.Container
 import org.jsoup.nodes.Document
-import org.scalatest.MustMatchers
 import play.api.data.Form
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -31,7 +30,7 @@ import views.html.declaration.seal_remove
 import views.tags.ViewTest
 
 @ViewTest
-class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
+class SealRemoveViewSpec extends UnitViewSpec with Stubs with CommonMessages with Injector {
 
   val containerId = "42354542"
   val sealId = "SealToRemove54214"

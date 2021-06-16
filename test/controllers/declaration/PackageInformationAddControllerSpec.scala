@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.PackageInformationAddController
 import forms.declaration.PackageInformation
 import models.Mode
 import org.mockito.ArgumentCaptor

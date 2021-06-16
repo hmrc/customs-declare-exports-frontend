@@ -23,11 +23,11 @@ import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
-class DocumentsProducedSpec extends WordSpec with MustMatchers {
+class DocumentsProducedSpec extends UnitSpec {
 
   import DocumentsProducedSpec._
 

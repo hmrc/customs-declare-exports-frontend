@@ -16,26 +16,24 @@
 
 package controllers.actions
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import com.google.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.{AuthenticatedRequest, JourneyRequest}
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc.{ActionRefiner, Result, Results}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
-
-import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val exc: ExecutionContext)
-    extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
-
-  private val logger = Logger(this.getClass)
+    extends ActionRefiner[AuthenticatedRequest, JourneyRequest] with Logging {
 
   override protected def executionContext: ExecutionContext = exc
 
   private def refiner[A](request: AuthenticatedRequest[A], types: Seq[DeclarationType]): Future[Either[Result, JourneyRequest[A]]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     request.declarationId match {
       case Some(id) =>
         cacheService.get(id).map {
@@ -49,6 +47,7 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val ex
         Future.successful(Left(Results.Redirect(controllers.routes.RootController.displayPage())))
     }
   }
+
   override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
     refiner(request, Seq.empty[DeclarationType])
 

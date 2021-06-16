@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import controllers.declaration.NotEligibleController
 import models.DeclarationType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}

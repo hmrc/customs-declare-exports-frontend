@@ -16,14 +16,17 @@
 
 package connectors
 
-import config.AppConfig
-import models.codes.{AdditionalProcedureCode, HolderOfAuthorisationCode, ProcedureCode}
-import org.mockito.Mockito.{reset, when}
 import java.util.Locale.{ENGLISH, JAPANESE}
 
 import scala.collection.immutable.ListMap
 
-class CodeListConnectorSpec extends ConnectorSpec {
+import base.UnitWithMocksSpec
+import config.AppConfig
+import models.codes.{AdditionalProcedureCode, HolderOfAuthorisationCode, ProcedureCode}
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+
+class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   private val appConfig = mock[AppConfig]
 

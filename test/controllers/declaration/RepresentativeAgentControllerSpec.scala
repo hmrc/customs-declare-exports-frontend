@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.RepresentativeAgentController
 import forms.declaration.RepresentativeAgent
 import models.Mode
 import org.mockito.ArgumentCaptor

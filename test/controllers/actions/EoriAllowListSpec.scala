@@ -16,10 +16,9 @@
 
 package controllers.actions
 
-import base.UnitSpec
-import controllers.actions.EoriAllowList
+import base.UnitWithMocksSpec
 
-class EoriAllowListSpec extends UnitSpec {
+class EoriAllowListSpec extends UnitWithMocksSpec {
 
   "Eori allow list" when {
     "has empty" should {

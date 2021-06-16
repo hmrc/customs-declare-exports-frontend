@@ -185,7 +185,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
         val result = controller.submitChoice()(postChoiceRequest(inboxChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.routes.SecureMessagingController.displayInbox().url))
+        redirectLocation(result) must be(Some(controllers.routes.SecureMessagingController.displayInbox.url))
         verifyTheCacheIsUnchanged()
       }
     }

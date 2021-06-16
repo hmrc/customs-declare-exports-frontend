@@ -18,13 +18,14 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.Document
 @import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        editContent: previous_documents_edit,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    editContent: previous_documents_edit,
+    formHelper: FormWithCSRF
 )
 
 @(mode: Mode, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)

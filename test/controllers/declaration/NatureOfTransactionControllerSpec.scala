@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.NatureOfTransactionController
 import forms.declaration.{Document, NatureOfTransaction}
 import models.declaration.DocumentCategory.SimplifiedDeclaration
 import models.{DeclarationType, Mode}

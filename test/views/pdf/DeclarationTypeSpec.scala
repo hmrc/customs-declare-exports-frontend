@@ -16,10 +16,9 @@
 
 package views.pdf
 
-import org.scalatest.MustMatchers
 import views.declaration.spec.UnitViewSpec
 
-class DeclarationTypeSpec extends UnitViewSpec with MustMatchers {
+class DeclarationTypeSpec extends UnitViewSpec {
 
   val messagesValidated = messages(request)
 

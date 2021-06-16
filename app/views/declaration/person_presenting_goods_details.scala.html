@@ -14,25 +14,26 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import controllers.navigation.Navigator
 @import forms.declaration.PersonPresentingGoodsDetails
 @import forms.declaration.PersonPresentingGoodsDetails._
 @import models.requests.JourneyRequest
-@import controllers.navigation.Navigator
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
-@import views.components.gds.Styles._
-@import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        exportsInputText: exportsInputText,
-        inputText: exportsInputText,
-        errorSummary: errorSummary,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        sectionHeader: sectionHeader,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    exportsInputText: exportsInputText,
+    inputText: exportsInputText,
+    errorSummary: errorSummary,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    sectionHeader: sectionHeader,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[PersonPresentingGoodsDetails])(implicit request: JourneyRequest[_], messages: Messages)

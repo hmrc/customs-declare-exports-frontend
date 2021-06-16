@@ -17,7 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.Mapping.requiredRadio
+import forms.MappingHelper.requiredRadio
 import models.declaration.DocumentCategory
 import models.declaration.DocumentCategory.{RelatedDocument, SimplifiedDeclaration}
 import models.DeclarationType.DeclarationType

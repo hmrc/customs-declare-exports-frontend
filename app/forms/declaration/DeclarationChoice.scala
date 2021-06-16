@@ -16,7 +16,7 @@
 
 package forms.declaration
 import forms.DeclarationPage
-import forms.Mapping.requiredRadio
+import forms.MappingHelper.requiredRadio
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
 import play.api.data.{Form, Forms}

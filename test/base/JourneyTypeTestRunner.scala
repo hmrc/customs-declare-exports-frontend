@@ -19,11 +19,10 @@ package base
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
-import org.scalatest.WordSpec
 import play.api.mvc.AnyContent
 import services.cache.ExportsTestData
 
-trait JourneyTypeTestRunner extends WordSpec with ExportsTestData {
+trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
 
   val simpleStandardDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.STANDARD))
   val simpleSupplementaryDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))

@@ -16,13 +16,15 @@
 
 package tools
 
+import scala.concurrent.ExecutionContext
+
+import akka.stream.testkit.NoMaterializer
 import com.typesafe.config.{Config, ConfigFactory}
 import config.{AppConfig, AppConfigSpec, BetaBannerConfig, FeatureSwitchConfig}
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
 import play.api.test.Helpers._
-import play.api.test.NoMaterializer
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.govukfrontend.views.html.components
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _, _}
@@ -31,8 +33,6 @@ import uk.gov.hmrc.hmrcfrontend.views.html.components._
 import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.html.components.gds._
-
-import scala.concurrent.ExecutionContext
 
 trait Stubs {
 

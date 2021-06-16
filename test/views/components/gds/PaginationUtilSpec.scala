@@ -16,11 +16,11 @@
 
 package views.components.gds
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import views.components.gds.PaginationUtil.PaginationItem
 import views.components.gds.PaginationUtil.PaginationItem._
 
-class PaginationUtilSpec extends UnitSpec {
+class PaginationUtilSpec extends UnitWithMocksSpec {
 
   private case class TestData(pagesTotal: Int, currentPage: Int, expectedResult: Seq[PaginationItem])
 

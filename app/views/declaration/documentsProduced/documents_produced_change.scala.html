@@ -17,13 +17,14 @@
 @import controllers.declaration.routes._
 @import models.requests.JourneyRequest
 @import forms.declaration.additionaldocuments.DocumentsProduced
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        editContent: documents_produced_edit_content,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    editContent: documents_produced_edit_content,
+    formHelper: FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, documentId: String, form: Form[DocumentsProduced], maybeCommodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)

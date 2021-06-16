@@ -24,11 +24,11 @@ import forms.declaration.EntityDetailsSpec
 import forms.declaration.EntityDetailsSpec.emptyEntityDetailsJSON
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsValue}
 
-class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatchers with JourneyTypeTestRunner with DeclarationPageBaseSpec {
+class ExporterDetailsSpec extends UnitSpec with LightFormMatchers with JourneyTypeTestRunner with DeclarationPageBaseSpec {
 
   val emptyExporterDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 

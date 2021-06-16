@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.PackageInformationRemoveController
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
 import models.Mode

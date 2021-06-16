@@ -16,12 +16,12 @@
 
 package forms.declaration
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.data.FormError
 
-class RoutingCountryQuestionYesNoSpec extends UnitSpec {
+class RoutingCountryQuestionYesNoSpec extends UnitWithMocksSpec {
 
   "Routing Country model" should {
 

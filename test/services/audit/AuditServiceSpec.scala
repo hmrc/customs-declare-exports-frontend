@@ -18,7 +18,8 @@ package services.audit
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
-import base.{ExportsTestData, Injector, TestHelper, UnitSpec}
+
+import base.{ExportsTestData, Injector, TestHelper, UnitWithMocksSpec}
 import config.{AppConfig, SecureMessagingConfig}
 import models.AuthKey.enrolment
 import models.declaration.ExportDeclarationTestData.{allRecordsXmlMarshallingTest, cancellationDeclarationTest}
@@ -27,17 +28,16 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{Assertion, BeforeAndAfterEach, MustMatchers}
+import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.libs.json.{JsObject, Json}
 import services.cache.ExportsDeclarationBuilder
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.Authorization
+import uk.gov.hmrc.http.{Authorization, HeaderCarrier}
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
-class AuditServiceSpec extends AuditTestSupport with BeforeAndAfterEach with MustMatchers {
+class AuditServiceSpec extends AuditTestSupport with BeforeAndAfterEach {
 
   override def afterEach(): Unit = {
     reset(auditConnector)
@@ -95,7 +95,7 @@ class AuditServiceSpec extends AuditTestSupport with BeforeAndAfterEach with Mus
   }
 }
 
-trait AuditTestSupport extends UnitSpec with ExportsDeclarationBuilder with ScalaFutures with Injector {
+trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder with ScalaFutures with Injector {
 
   val auditConnector = mock[AuditConnector]
 

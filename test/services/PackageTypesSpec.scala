@@ -16,10 +16,10 @@
 
 package services
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import services.model.PackageType
 
-class PackageTypesSpec extends UnitSpec {
+class PackageTypesSpec extends UnitWithMocksSpec {
 
   "Package type" should {
 

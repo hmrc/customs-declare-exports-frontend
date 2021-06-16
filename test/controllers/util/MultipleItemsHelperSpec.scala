@@ -16,12 +16,12 @@
 
 package controllers.util
 
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.data.Forms.{mapping, text}
 import play.api.data.{Form, FormError}
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
-class MultipleItemsHelperSpec extends WordSpec with MustMatchers {
+class MultipleItemsHelperSpec extends UnitSpec {
   import MultipleItemsHelperSpec._
 
   "MultipleItemsHelper on add method" should {

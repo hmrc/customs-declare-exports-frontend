@@ -126,25 +126,27 @@ object DepartureTransport extends DeclarationPage {
       )
   }
 
-  private def form2Ref(refs: Option[String]*) = Some(refs.map(_.getOrElse("")).mkString)
+  private def form2Ref(refs: Option[String]*): Option[String] = Some(refs.map(_.getOrElse("")).mkString)
 
   private def model2Form: DepartureTransport => Option[
     (Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])
   ] =
     implicit model =>
       Some(
-        model.meansOfTransportOnDepartureType,
-        model2Ref(IMOShipIDNumber),
-        model2Ref(NameOfVessel),
-        model2Ref(WagonNumber),
-        model2Ref(VehicleRegistrationNumber),
-        model2Ref(IATAFlightNumber),
-        model2Ref(AircraftRegistrationNumber),
-        model2Ref(EuropeanVesselIDNumber),
-        model2Ref(NameOfInlandWaterwayVessel)
+        (
+          model.meansOfTransportOnDepartureType,
+          model2Ref(IMOShipIDNumber),
+          model2Ref(NameOfVessel),
+          model2Ref(WagonNumber),
+          model2Ref(VehicleRegistrationNumber),
+          model2Ref(IATAFlightNumber),
+          model2Ref(AircraftRegistrationNumber),
+          model2Ref(EuropeanVesselIDNumber),
+          model2Ref(NameOfInlandWaterwayVessel)
+        )
     )
 
-  private def model2Ref(transportType: String)(implicit model: DepartureTransport) =
+  private def model2Ref(transportType: String)(implicit model: DepartureTransport): Option[String] =
     if (model.meansOfTransportOnDepartureType.contains(transportType)) model.meansOfTransportOnDepartureIDNumber else None
 
   def form(declarationType: DeclarationType): Form[DepartureTransport] = declarationType match {

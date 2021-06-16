@@ -16,34 +16,32 @@
 
 package controllers.actions
 
-import javax.inject.Provider
-
 import scala.concurrent.{ExecutionContext, Future}
 
 import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
 import com.kenshoo.play.metrics.Metrics
 import controllers.routes
+import javax.inject.Provider
 import models.AuthKey.{enrolment, identifierKey}
 import models.requests.AuthenticatedRequest
 import models.{IdentityData, SignedInUser}
 import play.api.mvc._
-import play.api.{Configuration, Logger}
+import play.api.{Configuration, Logging}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{agentCode, _}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 class AuthActionImpl @Inject()(
   override val authConnector: AuthConnector,
   eoriAllowList: EoriAllowList,
   mcc: MessagesControllerComponents,
   metrics: Metrics
-) extends AuthAction with AuthorisedFunctions {
+) extends AuthAction with AuthorisedFunctions with Logging {
 
   implicit override val executionContext: ExecutionContext = mcc.executionContext
   override val parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
-  private val logger = Logger(this.getClass)
 
   private val authTimer = metrics.defaultRegistry.timer("upstream.auth.timer")
 
@@ -53,8 +51,7 @@ class AuthActionImpl @Inject()(
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
 
-    implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     val authorisation = authTimer.time()
     authorised(Enrolment(enrolment))
@@ -96,7 +93,7 @@ class AuthActionImpl @Inject()(
             block(new AuthenticatedRequest(request, cdsLoggedInUser))
           } else {
             logger.warn("User is not in allow list")
-            Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad()))
+            Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad))
           }
       }
   }

@@ -16,10 +16,10 @@
 
 package forms
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import play.api.data.{Form, FormError}
 
-class DucrSpec extends UnitSpec {
+class DucrSpec extends UnitWithMocksSpec {
 
   "Ducr" should {
 

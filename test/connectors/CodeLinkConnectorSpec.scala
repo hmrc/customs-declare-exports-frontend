@@ -16,10 +16,12 @@
 
 package connectors
 
+import base.UnitWithMocksSpec
 import config.AppConfig
 import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 
-class CodeLinkConnectorSpec extends ConnectorSpec {
+class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   private val appConfig = mock[AppConfig]
 

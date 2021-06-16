@@ -16,15 +16,17 @@
 
 package controllers.actions
 
-import base.RequestBuilder
-import models.{DeclarationType, IdentityData, SignedInUser}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+import base.{RequestBuilder, UnitWithMocksSpec}
 import models.requests.JourneyRequest
+import models.{DeclarationType, IdentityData, SignedInUser}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.mockito.Mockito._
-import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContentAsEmpty, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -32,11 +34,7 @@ import services.cache.{ExportsCacheService, ExportsDeclarationBuilder}
 import uk.gov.hmrc.auth.core.Enrolments
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-
-class TypedJourneyActionTest
-    extends WordSpec with MustMatchers with MockitoSugar with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
+class TypedJourneyActionTest extends UnitWithMocksSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
 
   private val cache = mock[ExportsCacheService]
   private val block = mock[JourneyRequest[_] => Future[Result]]

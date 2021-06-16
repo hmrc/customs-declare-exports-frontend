@@ -17,10 +17,9 @@
 package base
 
 import org.scalatest.enablers.Containing
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 
-trait FormSpec extends WordSpec with MustMatchers {
+trait FormSpec extends UnitSpec {
   implicit val formErrorsContaining: Containing[Seq[FormError]] = ErrorListContaining
 }
 

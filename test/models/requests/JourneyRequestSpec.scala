@@ -17,11 +17,11 @@
 package models.requests
 
 import java.util.UUID
-import base.{MockAuthAction, UnitSpec}
+import base.{MockAuthAction, UnitWithMocksSpec}
 import models.DeclarationType
 import services.cache.ExportsDeclarationBuilder
 
-class JourneyRequestSpec extends UnitSpec with ExportsDeclarationBuilder with MockAuthAction {
+class JourneyRequestSpec extends UnitWithMocksSpec with ExportsDeclarationBuilder with MockAuthAction {
 
   val sourceId = UUID.randomUUID().toString
   val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL), withSourceId(sourceId))

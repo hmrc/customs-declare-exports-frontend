@@ -16,19 +16,19 @@
 
 package views.declaration.spec
 
+import scala.collection.JavaConverters._
+import scala.concurrent.Future
+import scala.util.Try
+
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-import org.scalatest.MustMatchers
 import org.scalatest.matchers._
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.i18n.Messages
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.{contentAsString, _}
 import play.twirl.api.Html
-
-import scala.collection.JavaConverters._
-import scala.concurrent.Future
-import scala.util.Try
 
 //noinspection ScalaStyle
 trait ViewMatchers {
@@ -42,10 +42,10 @@ trait ViewMatchers {
 
   def removeLineBreakIfAny(s: String): String = s.replace(" </br>", " ")
 
-  implicit class PageComplexChecks(document: Document) extends MustMatchers {
+  implicit class PageComplexChecks(document: Document) {
     def checkErrorsSummary(): Unit = {
       document.getElementById("error-summary-heading").text() mustBe "error.summary.title"
-      document.select("div.error-summary.error-summary--show>p").text() must be("error.summary.text")
+      document.select("div.error-summary.error-summary--show>p").text() mustBe "error.summary.text"
     }
   }
 

@@ -16,12 +16,12 @@
 
 package services.cache
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation}
 import models.DeclarationType
 
-class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
+class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
 
   "Export Item" should {
 

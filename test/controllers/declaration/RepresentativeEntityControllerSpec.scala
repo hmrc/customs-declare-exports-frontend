@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.RepresentativeEntityController
 import forms.common.Eori
 import forms.declaration.{EntityDetails, RepresentativeEntity}
 import models.Mode

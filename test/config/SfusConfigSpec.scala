@@ -16,12 +16,12 @@
 
 package config
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import com.typesafe.config.ConfigFactory
 import features.Feature
 import play.api.Configuration
 
-class SfusConfigSpec extends UnitSpec {
+class SfusConfigSpec extends UnitWithMocksSpec {
 
   private def buildSfusConfig(sfusEnabled: Boolean = false, sfusKey: String = Feature.sfus.toString, sfusUploadKey: String = "sfusUpload") = {
     val config = Configuration(ConfigFactory.parseString(s"""

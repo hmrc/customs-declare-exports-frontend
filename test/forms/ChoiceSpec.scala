@@ -17,10 +17,10 @@
 package forms
 
 import forms.Choice.AllowedChoiceValues._
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class ChoiceSpec extends WordSpec with MustMatchers {
+class ChoiceSpec extends UnitSpec {
   import ChoiceSpec._
 
   "Validation defined in Choice mapping" should {

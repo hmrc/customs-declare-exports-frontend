@@ -18,10 +18,10 @@ package models.declaration.submissions
 
 import models.declaration.submissions.CancellationStatus.CancellationStatusReads.reads
 import models.declaration.submissions.CancellationStatus.CancellationStatusWrites.writes
-import org.scalatest.{MustMatchers, WordSpec}
+import base.UnitSpec
 import play.api.libs.json._
 
-class CancellationStatusSpec extends WordSpec with MustMatchers {
+class CancellationStatusSpec extends UnitSpec {
 
   "Cancellation Status Reads" should {
 

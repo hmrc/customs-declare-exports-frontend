@@ -19,7 +19,6 @@ package controllers.actions
 import base.{ControllerWithoutFormSpec, Injector}
 import config.{AppConfig, SecureMessagingInboxConfig}
 import controllers.ChoiceController
-import controllers.actions.NoExternalId
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import views.html.choice_page

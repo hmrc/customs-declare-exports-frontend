@@ -16,11 +16,11 @@
 
 package config
 
-import base.UnitSpec
+import base.UnitWithMocksSpec
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 
-class GoogleFormFeedbackLinkConfigSpec extends UnitSpec {
+class GoogleFormFeedbackLinkConfigSpec extends UnitWithMocksSpec {
 
   private val googleFormFeedbackLink = "googleFormFeedbackLink"
   private val configWithGoogleFormFeedbackLink: Configuration =

@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.NactCodeRemoveController
 import forms.common.YesNoAnswer
 import forms.declaration.NactCode
 import models.{DeclarationType, Mode}

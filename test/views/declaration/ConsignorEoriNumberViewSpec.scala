@@ -23,7 +23,6 @@ import forms.declaration.consignor.ConsignorEoriNumber
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
-import org.scalatest.Matchers._
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs

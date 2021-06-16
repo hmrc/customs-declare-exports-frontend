@@ -42,7 +42,7 @@
         saveButtons: saveButtons,
         tariffExpander: tariffExpander,
         appConfig: AppConfig,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+        formHelper: FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[NactCodeFirst], maybeCombinedNomenclatureCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)

@@ -18,17 +18,16 @@ package connectors.exchange
 
 import java.time.Instant
 
+import base.UnitWithMocksSpec
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.{Ducr, Lrn}
 import models.declaration._
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
-import org.scalatest.{Matchers, WordSpec}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsSuccess, Json}
 import services.cache.ExportsDeclarationBuilder
 
-class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with ExportsDeclarationBuilder with MockitoSugar {
+class ExportsDeclarationExchangeSpec extends UnitWithMocksSpec with ExportsDeclarationBuilder {
 
   private val id = "id"
   private val sourceId = "source-id"
@@ -88,22 +87,22 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
 
   "Request" should {
     "map to ExportsDeclaration" in {
-      request.toExportsDeclaration shouldBe declaration
+      request.toExportsDeclaration mustBe declaration
     }
 
     "map from ExportsDeclaration" in {
-      ExportsDeclarationExchange(declaration) shouldBe request
+      ExportsDeclarationExchange(declaration) mustBe request
     }
 
     "bindable by json payload" in {
       Json
         .parse(ExportsDeclarationExchangeSpec.declarationJson)
-        .validate[ExportsDeclarationExchange] shouldBe a[JsSuccess[_]]
+        .validate[ExportsDeclarationExchange] mustBe a[JsSuccess[_]]
     }
 
     "serialize to form that could be bindable" in {
       val declaration = aDeclaration()
-      Json.toJson(ExportsDeclarationExchange(declaration)).validate[ExportsDeclarationExchange] shouldBe a[JsSuccess[_]]
+      Json.toJson(ExportsDeclarationExchange(declaration)).validate[ExportsDeclarationExchange] mustBe a[JsSuccess[_]]
     }
   }
 }

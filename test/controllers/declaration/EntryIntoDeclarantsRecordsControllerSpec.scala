@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.EntryIntoDeclarantsRecordsController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.{EntryIntoDeclarantsRecords, PersonPresentingGoodsDetails}
