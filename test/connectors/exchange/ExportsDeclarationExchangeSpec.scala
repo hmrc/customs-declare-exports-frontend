@@ -18,17 +18,16 @@ package connectors.exchange
 
 import java.time.Instant
 
+import base.UnitWithMocksSpec
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.{Ducr, Lrn}
 import models.declaration._
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
-import base.UnitSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsSuccess, Json}
 import services.cache.ExportsDeclarationBuilder
 
-class ExportsDeclarationExchangeSpec extends UnitSpec with ExportsDeclarationBuilder with MockitoSugar {
+class ExportsDeclarationExchangeSpec extends UnitWithMocksSpec with ExportsDeclarationBuilder {
 
   private val id = "id"
   private val sourceId = "source-id"
