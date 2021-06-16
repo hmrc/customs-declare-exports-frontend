@@ -69,6 +69,12 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
           )
         }
 
+        "have 'RoRo' option" in {
+          view.getElementsByAttributeValue("for", "Border_Ferry") must containMessageForElements(
+            "declaration.transport.leavingTheBorder.transportMode.ferry"
+          )
+        }
+
         "have 'Road' option" in {
           view.getElementsByAttributeValue("for", "Border_Road") must containMessageForElements(
             "declaration.transport.leavingTheBorder.transportMode.road"

@@ -60,6 +60,7 @@
                     classes = gdsPageLegend
                 ))
             )),
+            hint = Some(Hint(content = Text(messages("declaration.transport.leavingTheBorder.hint")))),
 
             items = Seq(
                 RadioItem(
@@ -67,6 +68,12 @@
                     value = Some(Maritime.value),
                     content = Text(messages("declaration.transport.leavingTheBorder.transportMode.sea")),
                     checked = form("transportLeavingTheBorder").value.contains(Maritime.value)
+                ),
+                RadioItem(
+                    id = Some("Border_Ferry"),
+                    value = Some(RoRo.value),
+                    content = Text(messages("declaration.transport.leavingTheBorder.transportMode.ferry")),
+                    checked = form("transportLeavingTheBorder").value.contains(RoRo.value)
                 ),
                 RadioItem(
                     id = Some("Border_Rail"),

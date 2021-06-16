@@ -957,8 +957,10 @@ declaration.totalPackageQuantity.error = Total number of packages must be 999999
 declaration.totalPackageQuantity.title = What is the total number of packages covered by this export declaration?
 declaration.totalPackageQuantity.error.required = Enter total number of packages
 
-declaration.transport.leavingTheBorder.title = What mode of transport will the goods leave the EU on?
+declaration.transport.leavingTheBorder.title = What mode of transport will the goods leave the UK on?
+declaration.transport.leavingTheBorder.hint = This means the ‘active’ mode of transport, so if a container is loaded on to a ship select ‘Sea transport’. If a truck goes by ferry or Eurotunnel, select ‘Roll-on Roll-off (RORO)’. If goods are Eurotunnel Freight, select ‘Rail transport’.
 declaration.transport.leavingTheBorder.transportMode.sea = Sea transport
+declaration.transport.leavingTheBorder.transportMode.ferry = Roll on Roll off (RoRo)
 declaration.transport.leavingTheBorder.transportMode.rail = Rail transport
 declaration.transport.leavingTheBorder.transportMode.road = Road transport
 declaration.transport.leavingTheBorder.transportMode.air = Air transport

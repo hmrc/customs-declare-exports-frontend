@@ -29,13 +29,14 @@ object ModeOfTransportCode {
   case object Road extends ModeOfTransportCode("3")
   case object Air extends ModeOfTransportCode("4")
   case object PostalConsignment extends ModeOfTransportCode("5")
+  case object RoRo extends ModeOfTransportCode("6")
   case object FixedTransportInstallations extends ModeOfTransportCode("7")
   case object InlandWaterway extends ModeOfTransportCode("8")
   case object Unknown extends ModeOfTransportCode("9")
   case object Empty extends ModeOfTransportCode("no-code")
 
   val meaningfulModeOfTransportCodes: Set[ModeOfTransportCode] =
-    Set(Maritime, Rail, Road, Air, PostalConsignment, FixedTransportInstallations, InlandWaterway, Unknown)
+    Set(Maritime, Rail, Road, Air, PostalConsignment, RoRo, FixedTransportInstallations, InlandWaterway, Unknown)
 
   def classicFormatter(errorKey: String): Formatter[ModeOfTransportCode] = formatter(meaningfulModeOfTransportCodes, errorKey)
 

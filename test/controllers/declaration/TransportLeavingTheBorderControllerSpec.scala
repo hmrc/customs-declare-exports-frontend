@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.declaration.{ModeOfTransportCode, TransportLeavingTheBorder}
+import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -88,7 +89,6 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
           status(result) must be(OK)
           theResponseForm.value mustBe Some(TransportLeavingTheBorder(Some(ModeOfTransportCode.Rail)))
         }
-
       }
 
       "return 400 (BAD_REQUEST)" when {
@@ -123,26 +123,34 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "return 303 (SEE_OTHER)" when {
 
-        "form contains valid values" in {
-          withNewCaching(request.cacheModel)
-          val correctForm = Json.obj("transportLeavingTheBorder" -> ModeOfTransportCode.Rail.value)
+        "form contains valid value" that {
+          meaningfulModeOfTransportCodes.foreach { modeOfTransportCode =>
+            s"equals '${modeOfTransportCode}'" in {
+              withNewCaching(request.cacheModel)
+              val correctForm = Json.obj("transportLeavingTheBorder" -> modeOfTransportCode.value)
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+              val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
-          verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
+              verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
+            }
+          }
         }
 
-        "form contains valid values and cache contains 'warehouse required' procedure code" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("1078"), Seq("000"))))))
-          val correctForm = Json.obj("transportLeavingTheBorder" -> ModeOfTransportCode.Rail.value)
+        "cache contains 'warehouse required' procedure code and form contains valid value" that {
+          meaningfulModeOfTransportCodes.foreach { modeOfTransportCode =>
+            s"equals '${modeOfTransportCode}'" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("1078"), Seq("000"))))))
+              val correctForm = Json.obj("transportLeavingTheBorder" -> modeOfTransportCode.value)
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+              val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
-          verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
+              verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
+            }
+          }
         }
       }
     }
