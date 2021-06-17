@@ -834,10 +834,12 @@ declaration.warehouse.identification.answer.error = Select yes if the goods were
 declaration.warehouse.identification.identificationNumber.error = Customs warehouse identification number must contain 36 characters or fewer
 declaration.warehouse.identification.identificationNumber.empty = Enter the warehouse identification number
 
-declaration.warehouse.supervisingCustomsOffice.title = Where is the supervising customs office?
-declaration.warehouse.supervisingCustomsOffice.hint = If your goods have been altered or are being sent out to be altered, this is the office that gives authorisation for that procedure.
-declaration.warehouse.supervisingCustomsOffice.error = Select a customs supervising office from the list
+declaration.warehouse.supervisingCustomsOffice.title = Where is the HMRC supervising customs office (SPOFF)?
+declaration.warehouse.supervisingCustomsOffice.hint.1 = If you quoted a specific authorisation for any of your declared items, select the office that granted this authorisation.
+declaration.warehouse.supervisingCustomsOffice.hint.2 = Authorisations may cover previous import reliefs such as Processing or Warehousing.
+declaration.warehouse.supervisingCustomsOffice.hint.3 = For excise, enter the code for the supervising office for the excise warehouse.
 declaration.warehouse.supervisingCustomsOffice.label = Select a customs supervising office
+declaration.warehouse.supervisingCustomsOffice.error = Select a customs supervising office from the list
 
 declaration.warehouse.inlandTransportDetails.title = What mode of transport took the goods from the warehouse to the border?
 declaration.warehouse.inlandTransportDetails.hint = The type of transport that will move the goods from a warehouse to the port where they will depart the EU.

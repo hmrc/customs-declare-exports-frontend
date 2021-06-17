@@ -48,7 +48,7 @@
             label = messages("declaration.warehouse.supervisingCustomsOffice.title"),
             labelClass = Some(gdsPageLabel),
             section = Some("declaration.section.6"),
-            hintParagraphs = List(messages("declaration.warehouse.supervisingCustomsOffice.hint")),
+            hintParagraphs = List(1, 2, 3).map(ix => messages(s"declaration.warehouse.supervisingCustomsOffice.hint.$ix")),
             emptySelectValue = messages("declaration.warehouse.supervisingCustomsOffice.label"),
             items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all),
             isPageHeading = true

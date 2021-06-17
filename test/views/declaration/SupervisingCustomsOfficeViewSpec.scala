@@ -16,6 +16,8 @@
 
 package views.declaration
 
+import scala.collection.JavaConverters.asScalaIteratorConverter
+
 import base.Injector
 import forms.declaration.SupervisingCustomsOffice
 import models.requests.JourneyRequest
@@ -43,18 +45,30 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
 
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.title")
-        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint")
+        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint.1")
+        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint.2")
+        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint.3")
+        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.label")
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.error")
-
       }
 
-      "display same page title as header" in {
-        val viewWithMessage = createView()
-        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      "display page title" in {
+        view.getElementsByTag("h1") must containMessageForElements("declaration.warehouse.supervisingCustomsOffice.title")
+      }
+
+      "display same page title and header" in {
+        view.title() must include(view.getElementsByTag("h1").text())
       }
 
       "display section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.6")
+      }
+
+      "display page hints" in {
+        val hints = view.getElementsByClass("govuk-hint").iterator.asScala.toList
+        hints.zipWithIndex.foreach {
+          case (hint, ix) => hint must containMessage(s"declaration.warehouse.supervisingCustomsOffice.hint.${ix + 1}")
+        }
       }
 
       "display 'Save and continue' button on page" in {
