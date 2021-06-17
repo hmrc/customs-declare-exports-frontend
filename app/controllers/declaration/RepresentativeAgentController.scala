@@ -18,11 +18,11 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
+import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.declaration.RepresentativeAgent
+import models.{ExportsDeclaration, Mode}
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -75,7 +75,7 @@ class RepresentativeAgentController @Inject()(
           representativeDetails = Some(
             representativeDetails.copy(
               representingOtherAgent = Some(formData.representingAgent),
-              details = if (formData.representingAgent == no) None else representativeDetails.details
+              details = if (formData.representingAgent == yes) None else representativeDetails.details
             )
           )
         )

@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import forms.common.Eori
 import forms.declaration.RepresentativeAgent
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -69,12 +70,10 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
   def verifyPage(numberOfTimes: Int) = verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   "Representative Agent controller" must {
-
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked with empty cache" in {
-
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -86,7 +85,6 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
         }
 
         "display page method is invoked with data in cache" in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(None, None, Some("Yes"))))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -96,17 +94,14 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
 
           theResponseForm.value.map(_.representingAgent) mustBe Some("Yes")
         }
-
       }
 
       "return 400 (BAD_REQUEST)" when {
 
         "form is incorrect" in {
-
           withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(RepresentativeAgent("invalid"))
-
           val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
@@ -116,32 +111,59 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
     }
 
     onEveryDeclarationJourney() { request =>
-      "return 303 (SEE_OTHER) and redirect to representative entity when representing other agent" in {
+      "representing other agent" should {
+        val formAnswer = "Yes"
+        "redirect (303 SEE_OTHER) to representative entity" in {
+          withNewCaching(request.cacheModel)
 
-        withNewCaching(request.cacheModel)
+          val correctForm = Json.toJson(RepresentativeAgent(formAnswer))
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
-        val correctForm = Json.toJson(RepresentativeAgent("Yes"))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeStatusController.displayPage()
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          verifyPage(0)
+        }
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeStatusController.displayPage()
+        "clear the representative eori if already present " in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(Some(Eori("GB1234567890")), None, None)))
 
-        verifyPage(0)
+          val correctForm = Json.toJson(RepresentativeAgent(formAnswer))
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+
+          val representativeDetails = theCacheModelUpdated.parties.representativeDetails
+          representativeDetails.flatMap(_.details).isDefined mustBe false
+        }
       }
 
-      "return 303 (SEE_OTHER) and redirect to representative status when not representing other agent" in {
+      "not representing other agent" should {
+        val formAnswer = "No"
+        "redirect (303 SEE_OTHER) to representative status" in {
 
-        withNewCaching(request.cacheModel)
+          withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(RepresentativeAgent("No"))
+          val correctForm = Json.toJson(RepresentativeAgent(formAnswer))
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeEntityController.displayPage()
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeEntityController.displayPage()
+          verifyPage(0)
+        }
 
-        verifyPage(0)
+        "not clear the representative eori if already present " in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(Some(Eori("GB1234567890")), None, None)))
+
+          val correctForm = Json.toJson(RepresentativeAgent(formAnswer))
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+
+          val representativeDetails = theCacheModelUpdated.parties.representativeDetails
+          representativeDetails.flatMap(_.details).isDefined mustBe true
+        }
       }
     }
   }
