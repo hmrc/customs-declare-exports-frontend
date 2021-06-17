@@ -17,9 +17,8 @@
 package base
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import config.AppConfig
-import controllers.util.{Add, AddField, SaveAndContinue}
+import controllers.util.{Add, AddField, SaveAndContinue, SaveAndReturn}
 import mock.{JourneyActionMocks, VerifiedEmailMocks}
 import models.ExportsDeclaration
 import models.requests.{ExportsSessionKeys, JourneyRequest}
@@ -50,6 +49,8 @@ trait ControllerSpec
   protected def addActionUrlEncoded(field: String = ""): (String, String) = if (field.isEmpty) (Add.toString, field) else (AddField.toString, field)
 
   protected val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
+
+  protected val saveAndReturnActionUrlEncoded: (String, String) = (SaveAndReturn.toString, "")
 
   protected def viewOf(result: Future[Result]) = Html(contentAsString(result))
 

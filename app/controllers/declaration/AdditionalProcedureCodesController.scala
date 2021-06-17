@@ -16,21 +16,18 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
+import controllers.util.MultipleItemsHelper.remove
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode._
-import javax.inject.Inject
-import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
+import models.{ExportsDeclaration, Mode}
 import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
+import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -39,6 +36,9 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.procedureCodes.additional_procedure_codes
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalProcedureCodesController @Inject()(
   authenticate: AuthAction,
@@ -74,12 +74,12 @@ class AdditionalProcedureCodesController @Inject()(
     val (maybeCachedProcedureCode, cachedData) = getCachedData(itemId)
     val availableAdditionalProcedureCodes = getAvailableAdditionalProcedureCodes(maybeCachedProcedureCode)
 
-    def handleActionTypes(procedureCode: ProcedureCode, validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel]) =
+    def handleActionTypes(procedureCode: ProcedureCode, validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel]) = {
+      val errorHandler =
+        returnErrorPage(mode, itemId, boundForm.get, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(_)
       formAction match {
-        case Add if !boundForm.hasErrors =>
-          addAnotherCodeHandler(mode, itemId, boundForm.get, procedureCode, cachedData, validAdditionalProcedureCodes)
-        case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
-          saveAndContinueHandler(mode, itemId, boundForm.get, procedureCode, cachedData, validAdditionalProcedureCodes)
+        case Add | SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
+          validateForm(formAction, mode, errorHandler, itemId, boundForm.get, cachedData)
         case Remove(values) =>
           removeCodeHandler(mode, itemId, retrieveAdditionalProcedureCode(values), cachedData)
         case _ =>
@@ -89,6 +89,7 @@ class AdditionalProcedureCodesController @Inject()(
             )
           )
       }
+    }
 
     (maybeCachedProcedureCode, availableAdditionalProcedureCodes) match {
       case (_, None) | (None, _) =>
@@ -120,86 +121,41 @@ class AdditionalProcedureCodesController @Inject()(
             .getProcedureCodeFor(procedureCode, request.declarationType, request.cacheModel.isEidr, messagesApi.preferred(request).lang.toLocale)
       )
 
-  private def addAnotherCodeHandler(
+  private def validateForm(
+    action: FormAction,
     mode: Mode,
+    errorHandler: Seq[(String, String)] => Future[Result],
     itemId: String,
     userInput: AdditionalProcedureCode,
-    procedureCode: ProcedureCode,
-    cachedData: ProcedureCodesData,
-    validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel]
-  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
-    (userInput.additionalProcedureCode, cachedData.additionalProcedureCodes) match {
-      case (_, cachedAdditionalProcedureCodes) if cachedAdditionalProcedureCodes.length >= limitOfCodes =>
-        returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq(("", "declaration.additionalProcedureCodes.error.maximumAmount"))
-        )
+    cachedData: ProcedureCodesData
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
+    val cachedAdditionalProcedureCodes = cachedData.additionalProcedureCodes
+    (userInput.additionalProcedureCode, action) match {
+      case (Some(_), _) if cachedAdditionalProcedureCodes.length >= limitOfCodes =>
+        errorHandler(Seq(("", "declaration.additionalProcedureCodes.error.maximumAmount")))
+
+      case (None, Add) =>
+        errorHandler(Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.empty")))
 
       case (None, _) =>
-        returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.empty"))
-        )
+        if (cachedAdditionalProcedureCodes.length > 0)
+          Future.successful(nextPage(action, mode, itemId, cachedData.procedureCode))
+        else
+          errorHandler(Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.empty")))
 
-      case (Some(NO_APC_APPLIES_CODE), cachedAdditionalProcedureCodes) if cachedAdditionalProcedureCodes.length != 0 =>
-        returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.tripleZero.notFirstCode"))
-        )
+      case (Some(NO_APC_APPLIES_CODE), _) if cachedAdditionalProcedureCodes.length != 0 =>
+        errorHandler(Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.tripleZero.notFirstCode")))
 
-      case (Some(_), cachedAdditionalProcedureCodes) if cachedAdditionalProcedureCodes.contains(NO_APC_APPLIES_CODE) =>
-        returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.tripleZero.alreadyPresent"))
-        )
+      case (Some(_), _) if cachedAdditionalProcedureCodes.contains(NO_APC_APPLIES_CODE) =>
+        errorHandler(Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.tripleZero.alreadyPresent")))
 
-      case (Some(code), cachedAdditionalProcedureCodes) if cachedAdditionalProcedureCodes.contains(code) =>
-        returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.duplication"))
-        )
+      case (Some(code), _) if cachedAdditionalProcedureCodes.contains(code) =>
+        errorHandler(Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.duplication")))
 
-      case (Some(code), cachedAdditionalProcedureCodes) =>
+      case (Some(code), _) =>
         updateCache(itemId, ProcedureCodesData(None, cachedAdditionalProcedureCodes :+ code))
-          .map(_ => navigator.continueTo(mode, routes.AdditionalProcedureCodesController.displayPage(_, itemId)))
+          .map(declaration => nextPage(action, mode, itemId, cachedData.procedureCode))
     }
-
-  private def saveAndContinueHandler(
-    mode: Mode,
-    itemId: String,
-    userInput: AdditionalProcedureCode,
-    procedureCode: ProcedureCode,
-    cachedData: ProcedureCodesData,
-    validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel]
-  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
-
-    def validateFirstCode(newAdditionalProcedureCode: AdditionalProcedureCode) = newAdditionalProcedureCode match {
-      case AdditionalProcedureCode(Some(additionalCode)) =>
-        updateCache(itemId, ProcedureCodesData(None, Seq(additionalCode))).map(declaration => nextPage(mode, itemId, declaration))
-
-      case AdditionalProcedureCode(None) =>
-        returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.empty"))
-        )
-    }
-
-    def validateSubsequentCode(newAdditionalProcedureCode: AdditionalProcedureCode) = newAdditionalProcedureCode match {
-      case AdditionalProcedureCode(Some(_)) if cachedData.additionalProcedureCodes.length >= limitOfCodes =>
-        returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq(("", "declaration.additionalProcedureCodes.error.maximumAmount"))
-        )
-
-      case AdditionalProcedureCode(Some(additionalCode)) if cachedData.additionalProcedureCodes.contains(additionalCode) =>
-        returnErrorPage(mode, itemId, userInput, procedureCode, cachedData.additionalProcedureCodes, validAdditionalProcedureCodes)(
-          Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.duplication"))
-        )
-
-      case AdditionalProcedureCode(Some(additionalCode)) =>
-        val updatedCache = ProcedureCodesData(None, cachedData.additionalProcedureCodes :+ additionalCode)
-        updateCache(itemId, updatedCache).map(declaration => nextPage(mode, itemId, declaration))
-
-      case AdditionalProcedureCode(None) =>
-        val updatedCache = ProcedureCodesData(None, cachedData.additionalProcedureCodes)
-        updateCache(itemId, updatedCache).map(declaration => nextPage(mode, itemId, declaration))
-    }
-
-    if (cachedData.additionalProcedureCodes.isEmpty) validateFirstCode(userInput)
-    else validateSubsequentCode(userInput)
   }
 
   private def removeCodeHandler(mode: Mode, itemId: String, code: String, cachedData: ProcedureCodesData)(
@@ -227,9 +183,12 @@ class AdditionalProcedureCodesController @Inject()(
     updateExportsDeclarationSyncDirect(updatedModel(_))
   }
 
-  private def nextPage(mode: Mode, itemId: String, declaration: Option[ExportsDeclaration])(implicit request: JourneyRequest[AnyContent]) =
-    declaration.flatMap(_.itemBy(itemId)).flatMap(_.procedureCodes).flatMap(_.procedureCode) match {
-      case Some(code) if ProcedureCodesData.osrProcedureCodes.contains(code) =>
+  private def nextPage(action: FormAction, mode: Mode, itemId: String, maybeProcedureCode: Option[String])(
+    implicit request: JourneyRequest[AnyContent]
+  ) =
+    (action, maybeProcedureCode) match {
+      case (Add, _) => navigator.continueTo(mode, routes.AdditionalProcedureCodesController.displayPage(_, itemId))
+      case (_, Some(code)) if ProcedureCodesData.osrProcedureCodes.contains(code) =>
         navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId))
       case _ => navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
     }
