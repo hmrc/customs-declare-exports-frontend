@@ -1481,6 +1481,7 @@ declaration.summary.transport.departure.transportCode.2 = Rail transport
 declaration.summary.transport.departure.transportCode.3 = Road transport
 declaration.summary.transport.departure.transportCode.4 = Air transport
 declaration.summary.transport.departure.transportCode.5 = Postal or mail
+declaration.summary.transport.departure.transportCode.6 = Roll on Roll off (RoRo)
 declaration.summary.transport.departure.transportCode.7 = Fixed transport installations
 declaration.summary.transport.departure.transportCode.8 = Inland waterway transport
 declaration.summary.transport.departure.transportCode.9 = Mode unknown, for example own propulsion
