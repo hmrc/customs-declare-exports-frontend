@@ -18,6 +18,7 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ContainerFirst
 import models.Mode
 import org.jsoup.nodes.Document
@@ -50,6 +51,27 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
       view.getElementById("section-header") must containMessage("declaration.section.6")
     }
 
+    "display radio button with Yes option" in {
+      view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
+      view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("declaration.transportInformation.containers.yes")
+    }
+
+    "display radio button with No option" in {
+      view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
+      view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.transportInformation.containers.no")
+    }
+
+    "display inset text" in {
+      val inset = view.getElementsByClass("govuk-inset-text")
+      val expected = Seq(
+        messages("declaration.transportInformation.containers.inset.title"),
+        messages("declaration.transportInformation.containers.inset.bullet1"),
+        messages("declaration.transportInformation.containers.inset.bullet2"),
+        messages("declaration.transportInformation.containers.inset.bullet3")
+      ).mkString(" ")
+      inset.get(0) must containText(expected)
+    }
+
     "display 'Back' button that links to 'transport payment' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
@@ -68,13 +90,11 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
   }
 
   "Transport Containers Add View" should {
-
     "display errors for invalid input" in {
       val view = createView(ContainerFirst.form().fillAndValidate(ContainerFirst(Some("abc123@#"))))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
-
       view must containErrorElementWithMessageKey("declaration.transportInformation.containerId.error.invalid")
     }
 
@@ -83,17 +103,15 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
-
       view must containErrorElementWithMessageKey("declaration.transportInformation.containerId.error.length")
     }
   }
 
   "Transport Containers Add View when filled" should {
-
     "display data in Container ID input" in {
-
       val view = createView(ContainerFirst.form().fill(ContainerFirst(Some("Test"))))
 
+      view.getElementsByAttributeValue("for", "id").get(0) must containMessage("declaration.transportInformation.containerId")
       view.getElementById("id").attr("value") must be("Test")
     }
   }
