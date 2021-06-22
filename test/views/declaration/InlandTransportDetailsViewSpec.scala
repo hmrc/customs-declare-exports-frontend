@@ -17,9 +17,12 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes
 import forms.declaration.InlandModeOfTransportCode
+import models.DeclarationType._
+import models.Mode
+import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -38,7 +41,8 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
     page(mode, form)(request, messages)
 
   "Inland Transport Details View" should {
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       val view = createView()
 
       "have proper messages for labels" in {
@@ -111,9 +115,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
-        )
+        backButton.getElementById("back-link") must haveHref(routes.SupervisingCustomsOfficeController.displayPage())
       }
 
       "display 'Save and continue' button on page" in {
@@ -122,6 +124,18 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
 
       "display 'Save and return' button on page" in {
         view.getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
+      }
+    }
+
+    val exportItem = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
+
+    onJourney(STANDARD, SUPPLEMENTARY)(aDeclaration(withItem(exportItem))) { implicit request =>
+      val view = createView()
+
+      "display 'Back' button that links to the 'Transport Leaving the Border' page" in {
+        val backButton = view.getElementById("back-link")
+        backButton must containMessage("site.back")
+        backButton.getElementById("back-link") must haveHref(routes.TransportLeavingTheBorderController.displayPage())
       }
     }
   }

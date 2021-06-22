@@ -11,17 +11,17 @@ GET         /type                                controllers.declaration.Additio
 
 POST        /type                                controllers.declaration.AdditionalDeclarationTypeController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
-# Not Eligible
-
-GET         /not-eligible                       controllers.declaration.NotEligibleController.displayNotEligible()
-
-GET         /not-declarant                      controllers.declaration.NotEligibleController.displayNotDeclarant()
-
 # Declarant EORI
 
 GET         /declarant-details                   controllers.declaration.DeclarantDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+# Not Eligible
+
+GET         /not-eligible                       controllers.declaration.NotEligibleController.displayNotEligible()
+
+GET         /not-declarant                      controllers.declaration.NotEligibleController.displayNotDeclarant()
 
 # Consignment references
 
@@ -39,85 +39,89 @@ GET         /enter-a-mucr                        controllers.declaration.MucrCon
 
 POST        /enter-a-mucr                        controllers.declaration.MucrController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
+# Entry into Declarant records (Clearance journey)
+
+GET         /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+# Person presenting goods (Clearance journey)
+
+GET         /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
 # Declarant is exporter
 
 GET         /are-you-the-exporter                controllers.declaration.DeclarantExporterController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /are-you-the-exporter                controllers.declaration.DeclarantExporterController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
-# Entry into Declarant records
-
-GET         /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
-
-# Person presenting goods
-
-GET         /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
-
-# Exporter Eori
+# Declarant is not the exporter - Exporter EORI (if known)
 
 GET         /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
 
-# Exporter address
+# Declarant is not the exporter - Exporter address (EORI is not known)
 
 GET         /exporter-address                    controllers.declaration.ExporterDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /exporter-address                    controllers.declaration.ExporterDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
-# EXS Declaration
+# EXS Declaration (Clearance journey)
 
 GET         /is-this-exs                         controllers.declaration.IsExsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /is-this-exs                         controllers.declaration.IsExsController.submit(mode: models.Mode ?= models.Mode.Normal)
 
-# Representative details
+# Consignor Eori Number (Clearance journey)
+
+GET         /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+# Consignor address (Clearance journey)
+
+GET         /consignor-address                   controllers.declaration.ConsignorDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /consignor-address                   controllers.declaration.ConsignorDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
+
+# Declarant is not the exporter - Representative details
 
 GET         /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
+# Declarant is not the exporter - Representative EORI (if known)
+
 GET         /representatives-eori-number         controllers.declaration.RepresentativeEntityController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /representatives-eori-number         controllers.declaration.RepresentativeEntityController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
+# Declarant is not the exporter - Representative type (EORI not known)
+
 GET         /representation-type-agreed          controllers.declaration.RepresentativeStatusController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /representation-type-agreed          controllers.declaration.RepresentativeStatusController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+# Carrier Eori Number (if known)
+
+GET         /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+# Carrier details (Carrier's EORI not known)
+
+GET         /carrier-address                     controllers.declaration.CarrierDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /carrier-address                     controllers.declaration.CarrierDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
 # Consignee details
 
 GET         /consignee-details                   controllers.declaration.ConsigneeDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /consignee-details                   controllers.declaration.ConsigneeDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
-
-# Consignor Eori Number
-
-GET         /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
-
-# Consignor details
-
-GET         /consignor-address                   controllers.declaration.ConsignorDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /consignor-address                   controllers.declaration.ConsignorDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
-
-# Carrier Eori Number
-
-GET         /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
-
-# Carrier details
-
-GET         /carrier-address                     controllers.declaration.CarrierDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /carrier-address                     controllers.declaration.CarrierDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
 # Declaration other parties
 
@@ -155,15 +159,19 @@ GET         /authorisations-required/:id/remove  controllers.declaration.Declara
 
 POST        /authorisations-required/:id/remove  controllers.declaration.DeclarationHolderRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, id: String)
 
-# Destination countries
+# Origination country
 
 GET         /origination-country                 controllers.declaration.OriginationCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /origination-country                 controllers.declaration.OriginationCountryController.submit(mode: models.Mode ?= models.Mode.Normal)
 
+# Destination country
+
 GET         /destination-country                 controllers.declaration.DestinationCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /destination-country                 controllers.declaration.DestinationCountryController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+# Routing countries
 
 GET         /country-of-routing                  controllers.declaration.RoutingCountriesController.displayRoutingQuestion(mode: models.Mode ?= models.Mode.Normal, fastForward: Boolean ?= true)
 
@@ -191,24 +199,6 @@ GET         /location-of-goods                   controllers.declaration.Locatio
 
 POST        /location-of-goods                   controllers.declaration.LocationController.saveLocation(mode: models.Mode ?= models.Mode.Normal)
 
-# Identification of a Warehouse
-
-GET         /warehouse-details                   controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /warehouse-details                   controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
-
-# Supervising Customs Office
-
-GET         /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit(mode: models.Mode ?= models.Mode.Normal)
-
-# Inland Transport Details
-
-GET         /inland-transport-details            controllers.declaration.InlandTransportDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /inland-transport-details            controllers.declaration.InlandTransportDetailsController.submit(mode: models.Mode ?= models.Mode.Normal)
-
 # Office of exit
 
 GET         /office-of-exit                      controllers.declaration.OfficeOfExitController.displayPage(mode: models.Mode ?= models.Mode.Normal)
@@ -226,6 +216,24 @@ POST        /total-numbers-of-items              controllers.declaration.TotalNu
 GET         /total-package-quantity              controllers.declaration.TotalPackageQuantityController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /total-package-quantity              controllers.declaration.TotalPackageQuantityController.saveTotalPackageQuantity(mode: models.Mode ?= models.Mode.Normal)
+
+# Identification of a Warehouse
+
+GET         /warehouse-details                   controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /warehouse-details                   controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
+
+# Supervising Customs Office
+
+GET         /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+# Inland Transport Details
+
+GET         /inland-transport-details            controllers.declaration.InlandTransportDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /inland-transport-details            controllers.declaration.InlandTransportDetailsController.submit(mode: models.Mode ?= models.Mode.Normal)
 
 
 # Previous documents
@@ -417,6 +425,8 @@ GET         /items/:itemId/additional-documentation-list       controllers.decla
 POST        /items/:itemId/additional-documentation-list       controllers.declaration.DocumentsProducedController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # **** END OF ITEM PAGES ****
+
+# Transport leaving the border
 
 GET         /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 

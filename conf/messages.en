@@ -546,7 +546,7 @@ declaration.carrierEori.eori.empty = Enter the carrier’s EORI number
 declaration.carrierEori.hasEori.empty = Select yes if you know the EORI number of your carrier
 
 declaration.carrierAddress.title = What is the registered name and business address of the carrier?
-declaration.carrierAddress.hint.1 = The carrier is the operator of the ship, airline or Roll-on Roll-off (RORO) ferry or tunnel that carries the goods from the UK.
+declaration.carrierAddress.hint.1 = The carrier is the operator of the ship, airline or Roll on Roll off (RoRo) ferry or tunnel that carries the goods from the UK.
 declaration.carrierAddress.hint.2 = You can {0} for UK-registered companies, or look on the company website.
 declaration.carrierAddress.hint.2.link = look up the registered business address (opens in new tab)
 
@@ -960,7 +960,7 @@ declaration.totalPackageQuantity.title = What is the total number of packages co
 declaration.totalPackageQuantity.error.required = Enter total number of packages
 
 declaration.transport.leavingTheBorder.title = What mode of transport will the goods leave the UK on?
-declaration.transport.leavingTheBorder.hint = This means the ‘active’ mode of transport, so if a container is loaded on to a ship select ‘Sea transport’. If a truck goes by ferry or Eurotunnel, select ‘Roll-on Roll-off (RORO)’. If goods are Eurotunnel Freight, select ‘Rail transport’.
+declaration.transport.leavingTheBorder.hint = This means the ‘active’ mode of transport, so if a container is loaded on to a ship select ‘Sea transport’. If a truck goes by ferry or Eurotunnel, select ‘Roll on Roll off (RoRo)’. If goods are Eurotunnel Freight, select ‘Rail transport’.
 declaration.transport.leavingTheBorder.transportMode.sea = Sea transport
 declaration.transport.leavingTheBorder.transportMode.ferry = Roll on Roll off (RoRo)
 declaration.transport.leavingTheBorder.transportMode.rail = Rail transport

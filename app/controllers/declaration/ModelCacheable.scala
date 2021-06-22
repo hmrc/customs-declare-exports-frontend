@@ -24,18 +24,18 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
 trait ModelCacheable {
+
   def exportsCacheService: ExportsCacheService
 
-  protected def updateExportsDeclarationSyncDirect(
+  def updateExportsDeclarationSyncDirect(
     update: ExportsDeclaration => ExportsDeclaration
   )(implicit hc: HeaderCarrier, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     exportsCacheService.update(update(request.cacheModel))
 
-  protected def updateExportsDeclarationSync(
+  def updateExportsDeclarationSync(
     update: ExportsDeclaration => Option[ExportsDeclaration]
   )(implicit hc: HeaderCarrier, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     update(request.cacheModel)
       .map(model => exportsCacheService.update(model))
       .getOrElse(Future.successful(None))
-
 }
