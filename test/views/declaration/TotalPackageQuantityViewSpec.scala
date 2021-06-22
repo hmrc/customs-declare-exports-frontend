@@ -35,10 +35,9 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
     "rendered with empty form" should {
       "have proper messages for keys" in {
         messages must haveTranslationFor("declaration.totalPackageQuantity.title")
-        messages must haveTranslationFor("declaration.totalPackageQuantity")
+        messages must haveTranslationFor("declaration.totalPackageQuantity.hint")
         messages must haveTranslationFor("declaration.totalPackageQuantity.empty")
         messages must haveTranslationFor("declaration.totalPackageQuantity.error")
-        messages must haveTranslationFor("declaration.totalPackageQuantity.error.required")
         messages must haveTranslationFor("tariff.expander.title.clearance")
       }
 
@@ -61,6 +60,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
 
         "display empty input with label for Total Package" in {
           view.getElementById("totalPackage").attr("value") mustBe empty
+          view.getElementById("totalPackage-hint").text() mustBe messages("declaration.totalPackageQuantity.hint")
         }
 
         "display 'Save and continue' button on page" in {

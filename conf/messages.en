@@ -952,12 +952,10 @@ declaration.addDocument.remove.dateOfValidity = Date of validity
 declaration.addDocument.remove.measurementUnitAndQualifier = Measurement unit and qualifier
 declaration.addDocument.remove.documentQuantity = Quantity of the measurement unit
 
-declaration.totalPackageQuantity = Total number of packages
+declaration.totalPackageQuantity.title = What is the total number of packages in this declaration?
+declaration.totalPackageQuantity.hint = Count up the smallest external package type that the goods have been packed in for export. For example, for cartons of books packed on a pallet in a container, the package type would be the pallet.
 declaration.totalPackageQuantity.empty = Enter a total number of packages
 declaration.totalPackageQuantity.error = Total number of packages must be 99999999 or fewer
-
-declaration.totalPackageQuantity.title = What is the total number of packages covered by this export declaration?
-declaration.totalPackageQuantity.error.required = Enter total number of packages
 
 declaration.transport.leavingTheBorder.title = What mode of transport will the goods leave the UK on?
 declaration.transport.leavingTheBorder.hint = This means the ‘active’ mode of transport, so if a container is loaded on to a ship select ‘Sea transport’. If a truck goes by ferry or Eurotunnel, select ‘Roll-on Roll-off (RORO)’. If goods are Eurotunnel Freight, select ‘Rail transport’.
