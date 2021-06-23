@@ -21,6 +21,7 @@ import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import models.DeclarationType._
 import models.Mode
+import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -110,6 +111,16 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
 
       "display the expected tariff details" in {
         verifyTariffDetails(view, "common")
+      }
+    }
+
+    val exportItem = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
+
+    onJourney(SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(exportItem))) { implicit request =>
+      val view: Document = createView()
+
+      "display 'Back' button to the 'Items Summary' page" in {
+        verifyBackButton(view, routes.ItemsSummaryController.displayItemsSummaryPage())
       }
     }
 

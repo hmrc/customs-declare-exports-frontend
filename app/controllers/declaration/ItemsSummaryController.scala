@@ -16,11 +16,14 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.{FormAction, SaveAndReturn}
+import controllers.util.{FormAction, SaveAndReturn, SupervisingCustomsOfficeHelper}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import javax.inject.Inject
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -30,9 +33,6 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.{ExportItemIdGeneratorService, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationitems.{items_add_item, items_remove_item, items_summary}
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class ItemsSummaryController @Inject()(
   authenticate: AuthAction,
@@ -54,26 +54,26 @@ class ItemsSummaryController @Inject()(
     if (request.cacheModel.items.isEmpty)
       Ok(addItemPage(mode))
     else
-      navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage)
+      navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
   }
 
   def addFirstItem(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val actionTypeOpt = FormAction.bindFromRequest()
 
     actionTypeOpt match {
-      case SaveAndReturn => Future.successful(navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage))
+      case SaveAndReturn => Future.successful(navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage))
       case _ =>
         createNewItemInCache()
-          .map(newItem => navigator.continueTo(mode, controllers.declaration.routes.ProcedureCodesController.displayPage(_, newItem.id)))
+          .map(newItem => navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, newItem.id)))
     }
   }
 
   def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     removeEmptyItems().map(updatedModel => {
-      updatedModel.fold(navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage))(
+      updatedModel.fold(navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage))(
         model =>
           if (model.items.isEmpty)
-            navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
+            navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage)
           else
             Ok(itemsSummaryPage(mode, itemSummaryForm, model.items.toList))
       )
@@ -92,25 +92,25 @@ class ItemsSummaryController @Inject()(
           validYesNo.answer match {
             case YesNoAnswers.yes =>
               createNewItemInCache()
-                .map(newItem => navigator.continueTo(mode, controllers.declaration.routes.ProcedureCodesController.displayPage(_, newItem.id)))
+                .map(newItem => navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, newItem.id)))
 
             case YesNoAnswers.no if incorrectItems.nonEmpty =>
               Future.successful(BadRequest(itemsSummaryPage(mode, itemSummaryForm.fill(validYesNo), request.cacheModel.items.toList, incorrectItems)))
 
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, nextPage()))
+              Future.successful(navigator.continueTo(mode, nextPage))
         }
       )
   }
 
-  private def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
+        routes.TransportLeavingTheBorderController.displayPage
+
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        if (request.cacheModel.requiresWarehouseId)
-          controllers.declaration.routes.WarehouseIdentificationController.displayPage
-        else controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+        if (request.cacheModel.requiresWarehouseId) routes.WarehouseIdentificationController.displayPage
+        else SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage
     }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =

@@ -16,18 +16,19 @@
 
 package base
 
+import scala.collection.JavaConverters.asScalaIteratorConverter
+import scala.concurrent.Future
+
 import connectors.exchange.ExportsDeclarationExchange
 import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.{never, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
 import org.mockito.{ArgumentCaptor, Mockito}
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.scalatestplus.mockito.MockitoSugar
 import services.cache.{ExportsCacheService, ExportsDeclarationBuilder}
-
-import scala.concurrent.Future
 
 trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder with BeforeAndAfterEach {
   self: Suite =>
@@ -60,6 +61,12 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
     val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
     verify(mockExportsCacheService).update(captor.capture())(any())
     captor.getValue
+  }
+
+  protected def theCacheModelUpdated(invocations: Int = 1): List[ExportsDeclaration] = {
+    val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
+    verify(mockExportsCacheService, times(invocations)).update(captor.capture())(any())
+    captor.getAllValues.iterator.asScala.toList
   }
 
   protected def theCacheModelCreated: ExportsDeclarationExchange = {

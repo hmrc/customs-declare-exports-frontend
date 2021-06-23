@@ -16,19 +16,20 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import controllers.util.SupervisingCustomsOfficeHelper
 import forms.declaration.TransportLeavingTheBorder
+import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.transport_leaving_the_border
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class TransportLeavingTheBorderController @Inject()(
   authenticate: AuthAction,
@@ -54,20 +55,14 @@ class TransportLeavingTheBorderController @Inject()(
     TransportLeavingTheBorder
       .form(request.declarationType)
       .bindFromRequest()
-      .fold(
-        errors => Future.successful(BadRequest(transportAtBorder(errors, mode))),
-        code =>
-          updateExportsDeclarationSyncDirect(_.updateTransportLeavingBorder(code)).map { _ =>
-            nextPage(mode)
-        }
-      )
+      .fold(errors => Future.successful(BadRequest(transportAtBorder(errors, mode))), updateCache(_).map(_ => navigator.continueTo(mode, nextPage)))
   }
 
-  private def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(
-      mode,
-      if (request.isType(DeclarationType.CLEARANCE) || request.cacheModel.requiresWarehouseId)
-        controllers.declaration.routes.WarehouseIdentificationController.displayPage
-      else controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    )
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+    if (request.isType(DeclarationType.CLEARANCE) || request.cacheModel.requiresWarehouseId)
+      routes.WarehouseIdentificationController.displayPage
+    else SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage
+
+  private def updateCache(code: TransportLeavingTheBorder)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(_.updateTransportLeavingBorder(code))
 }

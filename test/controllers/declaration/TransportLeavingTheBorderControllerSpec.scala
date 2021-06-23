@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.declaration.{ModeOfTransportCode, TransportLeavingTheBorder}
 import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
+import forms.declaration.{ModeOfTransportCode, TransportLeavingTheBorder}
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -114,7 +114,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.WarehouseIdentificationController.displayPage(Mode.Normal)
           verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
         }
       }
@@ -132,7 +132,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
               val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
+              thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
               verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
             }
           }
@@ -147,7 +147,22 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
               val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
               await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
+              thePageNavigatedTo mustBe routes.WarehouseIdentificationController.displayPage(Mode.Normal)
+              verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
+            }
+          }
+        }
+
+        "cache contains '1040' as procedure code, '000' as APC and form contains valid value" that {
+          meaningfulModeOfTransportCodes.foreach { modeOfTransportCode =>
+            s"equals '${modeOfTransportCode}'" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("1040"), Seq("000"))))))
+              val correctForm = Json.obj("transportLeavingTheBorder" -> modeOfTransportCode.value)
+
+              val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe routes.InlandTransportDetailsController.displayPage(Mode.Normal)
               verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
             }
           }

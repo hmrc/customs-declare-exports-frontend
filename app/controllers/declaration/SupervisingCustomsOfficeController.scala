@@ -16,20 +16,21 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import controllers.util.SupervisingCustomsOfficeHelper
 import forms.declaration.SupervisingCustomsOffice
-import models.DeclarationType.DeclarationType
+import forms.declaration.SupervisingCustomsOffice.form
+import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.supervising_customs_office
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class SupervisingCustomsOfficeController @Inject()(
   authenticate: AuthAction,
@@ -41,10 +42,8 @@ class SupervisingCustomsOfficeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  import forms.declaration.SupervisingCustomsOffice._
-
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = form.withSubmissionErrors()
     request.cacheModel.locations.supervisingCustomsOffice match {
       case Some(data) => Ok(supervisingCustomsOfficePage(mode, frm.fill(data)))
       case _          => Ok(supervisingCustomsOfficePage(mode, frm))
@@ -52,23 +51,13 @@ class SupervisingCustomsOfficeController @Inject()(
   }
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
+    form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(supervisingCustomsOfficePage(mode, formWithErrors))),
-        form => {
-          updateCache(form)
-            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
-        }
+        updateCache(_).map(_ => navigator.continueTo(mode, SupervisingCustomsOfficeHelper.nextPage))
       )
   }
-
-  private def nextPage(declarationType: DeclarationType): Mode => Call =
-    declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD => routes.InlandTransportDetailsController.displayPage
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL  => routes.ExpressConsignmentController.displayPage
-      case DeclarationType.CLEARANCE                                => routes.DepartureTransportController.displayPage
-    }
 
   private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(supervisingCustomsOffice = Some(formData))))

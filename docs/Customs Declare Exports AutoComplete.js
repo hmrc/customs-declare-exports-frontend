@@ -292,7 +292,7 @@ function exporterDetails(){
         document.getElementById('details_address_townOrCity').value = 'London';
         document.getElementById('details_address_postCode').value = 'WC1 3RD';
 
-        selectFromAutoPredict(document.getElementById('details_address_country-container"'), "United States of America (the), Including Puerto Rico");
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United Kingdom, Great Britain, Northern Ireland");
         document.getElementById('submit').click()
 
     }
@@ -436,6 +436,13 @@ function otherPartiesInvolved(){
     }
 }
 
+function otherPartiesList(){
+    if (currentPageIs('/customs-declare-exports/declaration/other-parties-list')) {
+        document.getElementById('code_no').checked = 'checked';
+        document.getElementById('submit').click();
+    }
+}
+
 function isAuthorisationRequired(){
     if (currentPageIs('/customs-declare-exports/declaration/is-authorisation-required')) {
         document.getElementById('code_yes').checked = 'checked';
@@ -494,6 +501,7 @@ function holderOfAuthorisation(){
                 document.getElementById('submit').click();
                 break;
             case 'J':
+            case 'K':
                 selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "EIR");
                 document.getElementById('eori').value = 'GB717572504502811';
                 document.getElementById('submit').click();
@@ -514,7 +522,6 @@ function holderOfAuthorisation(){
                 document.getElementById('submit').click();
                 break;
             case 'E':
-            case 'K':
                 document.getElementById('submit').click();
                 break;
         }
@@ -1190,6 +1197,7 @@ function completeJourney() {
     carrierEoriNumber();
     carrierDetails();
     otherPartiesInvolved();
+    otherPartiesList();
     isAuthorisationRequired();
     holderOfAuthorisation();
     authorisationsSummary();
