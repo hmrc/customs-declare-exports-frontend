@@ -52,7 +52,5 @@ object SupervisingCustomsOfficeHelper {
     }
 
   def resetCache(modelCacheable: ModelCacheable)(implicit hc: HeaderCarrier, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    modelCacheable.updateExportsDeclarationSyncDirect { model =>
-      model.copy(locations = model.locations.copy(supervisingCustomsOffice = None))
-    }
+    modelCacheable.updateExportsDeclarationSyncDirect(_.removeSupervisingCustomsOffice)
 }

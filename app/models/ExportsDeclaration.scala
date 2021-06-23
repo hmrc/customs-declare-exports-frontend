@@ -48,17 +48,59 @@ case class ExportsDeclaration(
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
+
+  lazy val lrn: Option[String] = consignmentReferences.map(_.lrn.value)
+  lazy val ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
+
+  def addOrUpdateContainer(container: Container): ExportsDeclaration =
+    copy(transport = transport.addOrUpdateContainer(container))
+
+  def amend()(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
+    val currentTime = Instant.now(clock)
+    this.copy(status = DeclarationStatus.DRAFT, createdDateTime = currentTime, updatedDateTime = currentTime, sourceId = Some(id))
+  }
+
+  def clearRoutingCountries(): ExportsDeclaration =
+    copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
+
+  def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
+
+  def containers: Seq[Container] = transport.containers.getOrElse(Seq.empty)
+
+  def containRoutingCountries(): Boolean = locations.routingCountries.nonEmpty
+
+  def hasContainers: Boolean = containers.nonEmpty
+
+  def isComplete: Boolean = status == DeclarationStatus.COMPLETE
+
+  def isDeclarantExporter: Boolean = parties.declarantIsExporter.exists(_.isExporter)
+
+  def isExs: Boolean = parties.isExs.exists(_.isExs == YesNoAnswers.yes)
+  def isNotExs: Boolean = !isExs
+
+  def isEidr: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
+  def isNotEidr: Boolean = !isEidr
+
+  def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
+  def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
+
+  def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
+
+  def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).exists(_.nonEmpty)
+
+  def requiresWarehouseId: Boolean = items.exists(_.requiresWarehouseId)
+
+  def removeCountryOfRouting(country: Country): ExportsDeclaration =
+    copy(locations = locations.copy(routingCountries = locations.routingCountries.filterNot(_ == country)))
+
+  def removeSupervisingCustomsOffice: ExportsDeclaration =
+    copy(locations = locations.copy(supervisingCustomsOffice = None))
+
   def updateTransportLeavingBorder(code: ModeOfTransportCode): ExportsDeclaration =
     copy(transport = transport.copy(borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(code)))))
 
   def updateTransportLeavingBorder(transportLeavingTheBorder: TransportLeavingTheBorder): ExportsDeclaration =
     copy(transport = transport.copy(borderModeOfTransportCode = Some(transportLeavingTheBorder)))
-
-  def addOrUpdateContainer(container: Container): ExportsDeclaration =
-    copy(transport = transport.addOrUpdateContainer(container))
-
-  val lrn: Option[String] = consignmentReferences.map(_.lrn.value)
-  val ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
 
   def updateDepartureTransport(departure: DepartureTransport): ExportsDeclaration =
     copy(
@@ -77,10 +119,6 @@ case class ExportsDeclaration(
       )
     )
 
-  def isComplete: Boolean = status == DeclarationStatus.COMPLETE
-
-  def isDeclarantExporter: Boolean = parties.declarantIsExporter.exists(_.isExporter)
-
   def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
     copy(items = items.map(item => if (item.id == itemId) update(item) else item))
 
@@ -88,9 +126,6 @@ case class ExportsDeclaration(
 
   def updateCountriesOfRouting(routingCountries: Seq[Country]): ExportsDeclaration =
     copy(locations = locations.copy(routingCountries = routingCountries))
-
-  def removeCountryOfRouting(country: Country): ExportsDeclaration =
-    copy(locations = locations.copy(routingCountries = locations.routingCountries.filterNot(_ == country)))
 
   def updateOriginationCountry(originationCountry: Country): ExportsDeclaration =
     copy(locations = locations.copy(originationCountry = Some(originationCountry)))
@@ -101,9 +136,6 @@ case class ExportsDeclaration(
   def updateRoutingQuestion(answer: Boolean): ExportsDeclaration =
     copy(locations = locations.copy(hasRoutingCountries = Some(answer)))
 
-  def clearRoutingCountries(): ExportsDeclaration =
-    copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
-
   def updateContainers(containers: Seq[Container]): ExportsDeclaration =
     copy(transport = transport.copy(containers = Some(containers)))
 
@@ -112,34 +144,6 @@ case class ExportsDeclaration(
 
   def updatePreviousDocuments(previousDocuments: Seq[Document]): ExportsDeclaration =
     copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))
-
-  def containRoutingCountries(): Boolean = locations.routingCountries.nonEmpty
-
-  def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
-
-  def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
-
-  def hasContainers: Boolean = containers.nonEmpty
-
-  def containers: Seq[Container] = transport.containers.getOrElse(Seq.empty)
-
-  def amend()(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
-    val currentTime = Instant.now(clock)
-    this.copy(status = DeclarationStatus.DRAFT, createdDateTime = currentTime, updatedDateTime = currentTime, sourceId = Some(id))
-  }
-
-  def isExs: Boolean = parties.isExs.exists(_.isExs == YesNoAnswers.yes)
-  def isNotExs: Boolean = !isExs
-
-  def isEidr: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
-  def isNotEidr: Boolean = !isEidr
-
-  def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
-  def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
-
-  def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).exists(_.nonEmpty)
-
-  def requiresWarehouseId: Boolean = items.exists(_.requiresWarehouseId)
 
   def transform(function: ExportsDeclaration => ExportsDeclaration): ExportsDeclaration = function(this)
 }
