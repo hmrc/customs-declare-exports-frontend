@@ -55,7 +55,8 @@
             isPageHeading = true,
             headingClasses = gdsPageLabel,
             inputClasses = Some("govuk-input--width-10"),
-            sectionHeaderKey = None
+            sectionHeaderKey = None,
+            hintKey = Some("declaration.totalPackageQuantity.hint")
         )
 
         @tariffExpander(TotalPackageQuantity, request.declarationType)(messages, appConfig)
