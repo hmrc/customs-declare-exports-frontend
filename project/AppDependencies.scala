@@ -1,5 +1,4 @@
-import play.core.PlayVersion
-import play.sbt.PlayImport._
+import play.core.PlayVersion.current
 import sbt._
 
 object AppDependencies {
@@ -21,13 +20,13 @@ object AppDependencies {
   ).map(_.withSources)
 
   val test: Seq[ModuleID] = Seq(
-    "com.typesafe.play"      %% "play-test"          % PlayVersion.current % "test",
-    "org.scalatest"          %% "scalatest"          % "3.2.9"             % "test",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0"             % "test",
-    "com.vladsch.flexmark"   %  "flexmark-all"       % "0.36.8"            % "test",
-    "org.jsoup"              %  "jsoup"              % "1.13.1"            % "test",
-    "org.scalatestplus"      %% "mockito-3-4"        % "3.2.9.0"           % "test",
-    "org.apache.pdfbox"      %  "pdfbox"             % "2.0.24"            % "test",
-    "com.github.tomakehurst" %  "wiremock-jre8"      % "2.28.1"            % "test"
+    "com.typesafe.play"      %% "play-test"          % current   % "test",
+    "org.scalatest"          %% "scalatest"          % "3.2.9"   % "test",
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0"   % "test",
+    "com.vladsch.flexmark"   %  "flexmark-all"       % "0.36.8"  % "test",
+    "org.jsoup"              %  "jsoup"              % "1.13.1"  % "test",
+    "org.scalatestplus"      %% "mockito-3-4"        % "3.2.9.0" % "test",
+    "org.apache.pdfbox"      %  "pdfbox"             % "2.0.24"  % "test",
+    "com.github.tomakehurst" %  "wiremock-jre8"      % "2.28.1"  % "test"
   ).map(moduleID => if (moduleID.name.contains("flexmark")) moduleID else moduleID.withSources)
 }

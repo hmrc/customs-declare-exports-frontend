@@ -53,16 +53,16 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
   "HolderOfAuthorisationCodes.asListOfAutoCompleteItems" should {
     "return 'Holder of Authorisation' codes as AutoCompleteItems" in {
       val autoCompleteItems = holderOfAuthorisationCodes.asListOfAutoCompleteItems(ENGLISH)
-      autoCompleteItems.size mustBe 43
+      autoCompleteItems.size mustBe 45
 
       autoCompleteItems(0) mustBe AutoCompleteItem("ACP - Authorised issuer to establish the proof of the customs status of Union goods", "ACP")
-      autoCompleteItems(24) mustBe AutoCompleteItem("UKCS - UK Continental Shelf", "UKCS")
+      autoCompleteItems(25) mustBe AutoCompleteItem("UKCS - UK Continental Shelf", "UKCS")
 
-      autoCompleteItems(25) mustBe AutoCompleteItem("CGU - Customs comprehensive guarantee", "CGU")
-      autoCompleteItems(39) mustBe AutoCompleteItem("TST - Authorisation to operate storage facilities for the temporary storage of goods", "TST")
+      autoCompleteItems(26) mustBe AutoCompleteItem("CGU - Customs comprehensive guarantee", "CGU")
+      autoCompleteItems(40) mustBe AutoCompleteItem("TST - Authorisation to operate storage facilities for the temporary storage of goods", "TST")
 
-      autoCompleteItems(40) mustBe AutoCompleteItem("ACE - Authorised consignee for Union transit", "ACE")
-      autoCompleteItems(42) mustBe AutoCompleteItem("TRD - Authorisation to use transit declaration with a reduced dataset", "TRD")
+      autoCompleteItems(41) mustBe AutoCompleteItem("ACE - Authorised consignee for Union transit", "ACE")
+      autoCompleteItems(44) mustBe AutoCompleteItem("TRD - Authorisation to use transit declaration with a reduced dataset", "TRD")
     }
   }
 }
