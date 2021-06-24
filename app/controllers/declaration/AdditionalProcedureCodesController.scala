@@ -206,7 +206,7 @@ class AdditionalProcedureCodesController @Inject()(
 
         val model = maybeModel.fold(request.cacheModel)(identity)
         if (SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesNotVerified(model)) Future.successful(continueToCommodityDetails)
-        else SupervisingCustomsOfficeHelper.resetCache(this).map(_ => continueToCommodityDetails)
+        else SupervisingCustomsOfficeHelper.resetCache(this, model).map(_ => continueToCommodityDetails)
     }
 
   private def returnErrorPage(

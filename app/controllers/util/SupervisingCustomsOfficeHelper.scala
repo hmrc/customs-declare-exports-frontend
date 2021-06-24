@@ -51,6 +51,6 @@ object SupervisingCustomsOfficeHelper {
       case DeclarationType.CLEARANCE                                => routes.DepartureTransportController.displayPage
     }
 
-  def resetCache(modelCacheable: ModelCacheable)(implicit hc: HeaderCarrier, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    modelCacheable.updateExportsDeclarationSyncDirect(_.removeSupervisingCustomsOffice)
+  def resetCache(modelCacheable: ModelCacheable, declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] =
+    modelCacheable.updateExportsDeclarationSyncDirect(declaration.removeSupervisingCustomsOffice)
 }
