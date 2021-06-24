@@ -27,6 +27,9 @@ trait ModelCacheable {
 
   def exportsCacheService: ExportsCacheService
 
+  def updateExportsDeclarationSyncDirect(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] =
+    exportsCacheService.update(declaration)
+
   def updateExportsDeclarationSyncDirect(
     update: ExportsDeclaration => ExportsDeclaration
   )(implicit hc: HeaderCarrier, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
