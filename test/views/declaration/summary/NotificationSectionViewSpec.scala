@@ -36,7 +36,7 @@ class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestData with
 
   val section = instanceOf[notifications_section]
 
-  val view = section(Seq(acceptedNotification, clearedNotification))(messages, journeyRequest())
+  val view = section(Seq(acceptedNotification, clearedNotification))(messages)
 
   "Accepted section" should {
 

@@ -15,7 +15,6 @@
  *@
 
 @import models.declaration.Parties
-@import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
@@ -33,7 +32,7 @@
         holdersSection: parties_section_holders
 )
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actionItems(item: ActionItem) = @{
     if(actionsEnabled) Seq(item)

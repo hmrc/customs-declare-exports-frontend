@@ -15,7 +15,6 @@
  *@
 
 @import models.declaration.Container
-@import models.requests.JourneyRequest
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
@@ -33,7 +32,7 @@
         spanVisuallyHidden: spanVisuallyHidden
 )
 
-@(mode: Mode, containers: Seq[Container], actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, containers: Seq[Container], actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @change(container: Container) = {
     @{

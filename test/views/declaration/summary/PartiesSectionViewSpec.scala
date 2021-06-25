@@ -49,7 +49,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
   "Parties section" must {
 
     onEveryDeclarationJourney() { implicit request =>
-      val view = section(Mode.Change, data)(messages, request)
+      val view = section(Mode.Change, data)(messages)
 
       "contains 'are you exporter' with change button" in {
 
@@ -128,7 +128,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         val nonAgentView = section(
           Mode.Change,
           data.copy(parties = data.parties.copy(representativeDetails = Some(RepresentativeDetails(None, Some("2"), Some("No")))))
-        )(messages, request)
+        )(messages)
         val eoriRow = nonAgentView.getElementsByClass("representative-eori-row")
 
         eoriRow.text() must be(empty)
@@ -179,49 +179,49 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
       }
 
       "does not contain exporter when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutExporterDetails()))(messages, journeyRequest())
+        val view = section(Mode.Normal, aDeclarationAfter(data, withoutExporterDetails()))(messages)
 
         view.getElementsByClass("exporter-eori-row") mustBe empty
         view.getElementsByClass("exporter-address-row") mustBe empty
       }
 
       "does not contain consignee when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutConsigneeDetails()))(messages, journeyRequest())
+        val view = section(Mode.Normal, aDeclarationAfter(data, withoutConsigneeDetails()))(messages)
 
         view.getElementsByClass("consignee-eori-row") mustBe empty
         view.getElementsByClass("consignee-address-row") mustBe empty
       }
 
       "does not contain declarant when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutDeclarantDetails()))(messages, journeyRequest())
+        val view = section(Mode.Normal, aDeclarationAfter(data, withoutDeclarantDetails()))(messages)
 
         view.getElementsByClass("declarant-eori-row") mustBe empty
         view.getElementsByClass("declarant-address-row") mustBe empty
       }
 
       "does not contain representative when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutRepresentativeDetails()))(messages, journeyRequest())
+        val view = section(Mode.Normal, aDeclarationAfter(data, withoutRepresentativeDetails()))(messages)
 
         view.getElementsByClass("representative-eori-row") mustBe empty
         view.getElementsByClass("representative-address-row") mustBe empty
       }
 
       "does not contain carrier details when section not answered" in {
-        val view = section(Mode.Normal, aDeclarationAfter(data, withoutCarrierDetails()))(messages, journeyRequest())
+        val view = section(Mode.Normal, aDeclarationAfter(data, withoutCarrierDetails()))(messages)
 
         view.getElementsByClass("carrier-eori-row") mustBe empty
         view.getElementsByClass("carrier-address-row") mustBe empty
       }
 
       "does not contain anything when there are no parties" in {
-        val view = section(Mode.Normal, aDeclaration())(messages, journeyRequest())
+        val view = section(Mode.Normal, aDeclaration())(messages)
 
         view.getAllElements.text() must be(empty)
       }
     }
 
     onClearance { implicit request =>
-      val view = section(Mode.Change, data)(messages, request)
+      val view = section(Mode.Change, data)(messages)
       "contains 'Is Exs' section with change button" in {
 
         val isExsRow = view.getElementsByClass("isExs-row")

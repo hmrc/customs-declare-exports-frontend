@@ -37,7 +37,7 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
       "there is no documents" in {
 
-        val view = section(Mode.Normal, "itemId", 1, Seq.empty)(messages, journeyRequest())
+        val view = section(Mode.Normal, "itemId", 1, Seq.empty)(messages)
         val row = view.getElementsByClass("supporting-documents-1-row")
 
         row must haveSummaryKey(messages("declaration.summary.items.item.supportingDocuments"))
@@ -51,7 +51,7 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
     "display all supporting documents with change buttons" in {
 
-      val view = section(Mode.Normal, "itemId", 1, documents)(messages, journeyRequest())
+      val view = section(Mode.Normal, "itemId", 1, documents)(messages)
       val table = view.getElementById("supporting-documents-1-table")
 
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
@@ -81,7 +81,7 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
       "actionsEnabled is false" in {
 
-        val view = section(Mode.Normal, "itemId", 1, documents, actionsEnabled = false)(messages, journeyRequest())
+        val view = section(Mode.Normal, "itemId", 1, documents, actionsEnabled = false)(messages)
         val table = view.getElementById("supporting-documents-1-table")
 
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.supportingDocuments")

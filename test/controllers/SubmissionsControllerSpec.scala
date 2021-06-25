@@ -33,6 +33,8 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import views.html.declaration.summary.submitted_declaration_page
+import views.html.{declaration_information, submissions}
 import views.html.{declaration_information, new_declaration_information, submissions}
 
 import java.time.{Instant, LocalDate, ZoneOffset, ZonedDateTime}
@@ -57,6 +59,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
   private val submissionsPage = mock[submissions]
   private val declarationInformationPage = mock[declaration_information]
   private val newDeclarationInformationPage = mock[new_declaration_information]
+  private val submittedDeclarationPage = mock[submitted_declaration_page]
   private val paginationConfig = mock[PaginationConfig]
 
   val controller = new SubmissionsController(
@@ -67,7 +70,8 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     queryNotificationMessageConfig,
     submissionsPage,
     declarationInformationPage,
-    newDeclarationInformationPage
+    newDeclarationInformationPage,
+    submittedDeclarationPage
   )(ec, paginationConfig)
 
   override protected def beforeEach(): Unit = {
@@ -76,6 +80,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     authorizedUser()
     when(declarationInformationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(newDeclarationInformationPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+    when(submittedDeclarationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(submissionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_SIZE)
   }
@@ -85,6 +90,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
       queryNotificationMessageConfig,
       declarationInformationPage,
       newDeclarationInformationPage,
+      submittedDeclarationPage,
       mockCustomsDeclareExportsConnector,
       submissionsPage,
       paginationConfig
@@ -166,13 +172,47 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe controllers.routes.SubmissionsController.displayListOfSubmissions().url
       }
+    }
+  }
 
-      "viewing a declaration" in {
+  "SubmissionsController on viewDeclaration" should {
+
+    "return 200 (OK)" when {
+
+      "there is a Declaration with given ID in the cache" which {
+
+        "has related Notifications" in {
+          when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+            .thenReturn(Future.successful(Some(aDeclaration(withId("some-id")))))
+          when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(Seq(notification)))
+
+          val result = controller.viewDeclaration("some-id")(getRequest())
+
+          status(result) mustBe OK
+        }
+
+        "has NO related Notifications" in {
+          when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+            .thenReturn(Future.successful(Some(aDeclaration(withId("some-id")))))
+          when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(Seq.empty))
+
+          val result = controller.viewDeclaration("some-id")(getRequest())
+
+          status(result) mustBe OK
+        }
+      }
+    }
+
+    "return 303 (SEE_OTHER)" when {
+
+      "there is no Declaration with given ID in the cache" in {
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(None))
+        when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(Seq.empty))
+
         val result = controller.viewDeclaration("some-id")(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe controllers.declaration.routes.SubmittedDeclarationController.displayPage().url
-        session(result).get(ExportsSessionKeys.declarationId) mustBe Some("some-id")
+        redirectLocation(result).get mustBe controllers.routes.SubmissionsController.displayListOfSubmissions().url
       }
     }
   }

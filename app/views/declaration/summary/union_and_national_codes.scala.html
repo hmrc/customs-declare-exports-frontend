@@ -16,7 +16,6 @@
 
 @import forms.declaration.AdditionalInformation
 @import models.Mode
-@import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
 @import views.html.components.gds.linkContent
@@ -39,7 +38,7 @@
   itemNo: Int,
   additionalInformation: Seq[AdditionalInformation],
   actionsEnabled: Boolean = true
-)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+)(implicit messages: Messages)
 
 @change(information: AdditionalInformation) = {
     @{

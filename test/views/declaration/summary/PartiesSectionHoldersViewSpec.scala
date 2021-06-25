@@ -40,7 +40,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
 
     "display holders with answer no if empty" in {
 
-      val view = section(Mode.Normal, Seq.empty)(messages, journeyRequest())
+      val view = section(Mode.Normal, Seq.empty)(messages)
       val row = view.getElementsByClass("holders-row")
 
       row must haveSummaryKey(messages("declaration.summary.parties.holders"))
@@ -53,7 +53,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
 
     "display holders if exists" in {
 
-      val view = section(Mode.Normal, holders)(messages, journeyRequest())
+      val view = section(Mode.Normal, holders)(messages)
       val table = view.getElementById("holders-table")
 
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.parties.holders")

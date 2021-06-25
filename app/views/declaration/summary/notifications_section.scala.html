@@ -15,14 +15,12 @@
  *@
 
 @import models.declaration.notifications.Notification
-@import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{StatusOfSubmission, ViewDates}
-@import views.html.components.gds.summary_list
 
 @this(govukSummaryList: GovukSummaryList)
 
-@(notifications: Seq[Notification])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(notifications: Seq[Notification])(implicit messages: Messages)
 
 @govukSummaryList(SummaryList(
     rows = Seq(

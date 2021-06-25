@@ -19,7 +19,7 @@ package views.declaration.summary
 import base.Injector
 import forms.declaration._
 import forms.declaration.additionaldocuments.DocumentsProduced
-import models.Mode
+import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.item_section
@@ -52,7 +52,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
     "actions are enabled" should {
 
-      val view = itemSection(Mode.Normal, itemWithAnswers)(messages, journeyRequest())
+      val view = itemSection(Mode.Normal, itemWithAnswers, DeclarationType.STANDARD)(messages)
 
       "have item header" in {
 
@@ -241,7 +241,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
     "actions are disabled using actionsEnabled = false" should {
 
-      val view = itemSection(Mode.Normal, itemWithAnswers, actionsEnabled = false)(messages, journeyRequest())
+      val view = itemSection(Mode.Normal, itemWithAnswers, DeclarationType.STANDARD, actionsEnabled = false)(messages)
 
       "have item header" in {
 
@@ -416,7 +416,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
     "actions are disabled using actionsEnabled flag" should {
 
-      val view = itemSection(Mode.Normal, itemWithAnswers, actionsEnabled = false)(messages, journeyRequest())
+      val view = itemSection(Mode.Normal, itemWithAnswers, DeclarationType.STANDARD, actionsEnabled = false)(messages)
 
       "have item header" in {
 
@@ -592,7 +592,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
   "Item section with no answers" should {
 
-    val view = itemSection(Mode.Normal, itemWithoutAnswers)(messages, journeyRequest())
+    val view = itemSection(Mode.Normal, itemWithoutAnswers, DeclarationType.STANDARD)(messages)
 
     "not display procedure code" in {
 

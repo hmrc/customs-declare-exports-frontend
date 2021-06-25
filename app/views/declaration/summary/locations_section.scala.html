@@ -15,7 +15,6 @@
  *@
 
 @import models.declaration.Locations
-@import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
@@ -23,7 +22,7 @@
 
 @this(summaryList: summary_list, linkContent: linkContent)
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @hasLocations(locations: Locations) = @{
     locations.goodsLocation.isDefined || locations.officeOfExit.isDefined

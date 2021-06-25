@@ -15,7 +15,6 @@
  *@
 
 @import forms.declaration.DeclarationAdditionalActors
-@import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
 @import views.html.components.gds.linkContent
@@ -32,7 +31,7 @@
         summaryList: summary_list
 )
 
-@(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors], actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors], actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)

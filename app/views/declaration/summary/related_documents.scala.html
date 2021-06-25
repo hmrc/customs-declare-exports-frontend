@@ -15,7 +15,6 @@
  *@
 
 @import forms.declaration.Document
-@import models.requests.JourneyRequest
 @import services.DocumentType
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
@@ -33,69 +32,69 @@
         summaryList: summary_list
 )
 
-@(mode: Mode, documents: Seq[Document], actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@change(document: Document) = {
-    @{
-        if(actionsEnabled)
-            changeLink(
-            messages("site.change"),
-            Some(messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference)),
-            controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(mode)
-        )
-      else
-        ""
-    }
-}
+@(mode: Mode, documents: Seq[Document], actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@actions(action: Actions) = @{
+  @change(document: Document) = {
+  @{
+    if(actionsEnabled)
+      changeLink(
+        messages("site.change"),
+        Some(messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference)),
+        controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(mode)
+      )
+    else
+      ""
+  }
+  }
+
+  @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)
     else None
-}
+  }
 
-@if(documents.isEmpty) {
+  @if(documents.isEmpty) {
     @summaryList("previous-documents", None, Seq(
-        Some(SummaryListRow(
-            classes = "previous-documents-row",
-            key = Key(Text(messages("declaration.summary.transaction.previousDocuments"))),
-            value = Value(Text(messages("site.no"))),
-            actions = actions(Actions(
-                items = Seq(
-                    actionItem(
-                        href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
-                    )
-                )
-            ))
+      Some(SummaryListRow(
+        classes = "previous-documents-row",
+        key = Key(Text(messages("declaration.summary.transaction.previousDocuments"))),
+        value = Value(Text(messages("site.no"))),
+        actions = actions(Actions(
+          items = Seq(
+            actionItem(
+              href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
+              content = HtmlContent(linkContent(messages("site.change"))),
+              visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
+            )
+          )
         ))
+      ))
     ))
-} else {
+  } else {
     @govukTable(Table(
-        rows = documents.map(document =>
-            Seq(
-                TableRow(
-                    content = Text(DocumentType.findByCode(document.documentType).asText)
-                ),
-                TableRow(
-                    content = Text(document.documentReference)
-                ),
-                TableCell.changeLink(change(document))
-            )
+      rows = documents.map(document =>
+        Seq(
+          TableRow(
+            content = Text(DocumentType.findByCode(document.documentType).asText)
+          ),
+          TableRow(
+            content = Text(document.documentReference)
+          ),
+          TableCell.changeLink(change(document))
+        )
+      ),
+      head = Some(List(
+        HeadCell(
+          content = Text(messages("declaration.summary.transaction.previousDocuments.type"))
         ),
-        head = Some(List(
-            HeadCell(
-                content = Text(messages("declaration.summary.transaction.previousDocuments.type"))
-            ),
-            HeadCell(
-                content = Text(messages("declaration.summary.transaction.previousDocuments.reference"))
-            ),
-            HeadCell(
-                content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
-            )
-        )),
-        caption = Some(messages("declaration.summary.transaction.previousDocuments")),
-        attributes = Map("id" -> "previous-documents")
+        HeadCell(
+          content = Text(messages("declaration.summary.transaction.previousDocuments.reference"))
+        ),
+        HeadCell(
+          content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
+        )
+      )),
+      caption = Some(messages("declaration.summary.transaction.previousDocuments")),
+      attributes = Map("id" -> "previous-documents")
     ))
-}
-
+  }
