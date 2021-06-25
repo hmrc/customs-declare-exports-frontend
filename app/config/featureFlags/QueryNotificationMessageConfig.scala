@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package features
+package config.featureFlags
 
-import play.api.mvc.PathBindable
+import features.Feature
 
-object Feature extends Enumeration {
-  type Feature = Value
-  val betaBanner, changeErrorLink, default, ead, sfus, secureMessagingInbox, googleFormFeedbackLink, queryNotificationMessage = Value
+import javax.inject.{Inject, Singleton}
 
-  implicit object FeaturePathStringBinder
-      extends PathBindable.Parsing[Feature.Feature](
-        withName(_),
-        _.toString,
-        (k: String, e: Exception) => "Cannot parse %s as Feature: %s".format(k, e.getMessage)
-      )
+@Singleton
+class QueryNotificationMessageConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
+  val isQueryNotificationMessageEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.queryNotificationMessage)
 }

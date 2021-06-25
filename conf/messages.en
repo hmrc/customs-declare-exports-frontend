@@ -668,6 +668,8 @@ submissions.pagination.singular = declaration
 submissions.pagination.plural = declarations
 submissions.empty.tab = No declarations
 
+submissions.declarationInformation.new.header = NEW Declaration information page
+
 saved.declarations.title = Your saved declarations
 saved.declarations.ducr = DUCR
 saved.declarations.noDucr = No DUCR added

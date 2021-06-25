@@ -17,10 +17,9 @@
 package controllers
 
 import javax.inject.Inject
-
 import scala.concurrent.{ExecutionContext, Future}
-
 import config.PaginationConfig
+import config.featureFlags.QueryNotificationMessageConfig
 import connectors.CustomsDeclareExportsConnector
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.{AuthAction, VerifiedEmailAction}
@@ -33,15 +32,17 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{declaration_information, submissions}
+import views.html.{declaration_information, new_declaration_information, submissions}
 
 class SubmissionsController @Inject()(
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
+  queryNotificationMessageConfig: QueryNotificationMessageConfig,
   submissionsPage: submissions,
-  declarationInformationPage: declaration_information
+  declarationInformationPage: declaration_information,
+  newDeclarationInformationPage: new_declaration_information
 )(implicit ec: ExecutionContext, paginationConfig: PaginationConfig)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -57,14 +58,20 @@ class SubmissionsController @Inject()(
     }
 
   def displayDeclarationWithNotifications(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    customsDeclareExportsConnector.findSubmission(id).flatMap {
+    if (queryNotificationMessageConfig.isQueryNotificationMessageEnabled) displayNewInformationPage()
+    else displayOldInformationPage(id)
+  }
+
+  private def displayNewInformationPage()(implicit request: Request[_]): Future[Result] = Future.successful(Ok(newDeclarationInformationPage()))
+
+  private def displayOldInformationPage(submissionId: String)(implicit request: Request[_]): Future[Result] =
+    customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
       case Some(submission) =>
-        customsDeclareExportsConnector.findNotifications(id).map { notifications =>
+        customsDeclareExportsConnector.findNotifications(submissionId).map { notifications =>
           Ok(declarationInformationPage(submission, notifications))
         }
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }
-  }
 
   def amend(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     val redirect = Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
