@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper._
 import controllers.util.MultipleItemsHelper
-import forms.declaration.DeclarationHolder
-import forms.declaration.DeclarationHolder.form
+import forms.declaration.declarationHolder.DeclarationHolder.form
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}

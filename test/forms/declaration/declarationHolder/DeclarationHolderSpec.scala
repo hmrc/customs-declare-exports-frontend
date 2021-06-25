@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.declaration.declarationHolder
 
 import base.JourneyTypeTestRunner
 import forms.common.{DeclarationPageBaseSpec, Eori}
@@ -187,6 +187,27 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
       "provided with String containing more than one '-' character" in {
         val input = s"${authorisationTypeCode}-${eori}-this_part_does_not_matter"
         DeclarationHolder.fromId(input) mustBe expectedResult
+      }
+    }
+  }
+
+  "DeclarationHolder on requireAdditionalDocumentation" should {
+
+    "return true" when {
+
+      AuthorizationTypeCodes.CodesRequiringDocumentation.foreach { code =>
+        s"authorisationTypeCode contains $code code" in {
+
+          DeclarationHolder(Some(code), None).isAdditionalDocumentationRequired mustBe true
+        }
+      }
+    }
+
+    "return false" when {
+
+      "authorisationTypeCode contains code that is NOT present in AuthorizationTypeCodes.CodesRequiringDocumentation" in {
+        val code = "AWR"
+        DeclarationHolder(Some(code), None).isAdditionalDocumentationRequired mustBe false
       }
     }
   }

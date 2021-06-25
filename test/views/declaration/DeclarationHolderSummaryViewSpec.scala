@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest

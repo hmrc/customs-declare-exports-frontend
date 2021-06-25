@@ -18,7 +18,6 @@ package models.declaration
 
 import java.time.Instant
 import java.util.UUID
-
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Date, Eori, YesNoAnswer}
 import forms.declaration.ConsignmentReferencesSpec._
@@ -26,13 +25,14 @@ import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransportPayment.cash
-import forms.declaration.{DeclarationHolder, _}
+import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import forms.declaration.countries.Country
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{CancelDeclaration, Lrn}
 import forms.declaration.carrier.CarrierDetails
+import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.exporter.ExporterDetails
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DocumentCategory.RelatedDocument
