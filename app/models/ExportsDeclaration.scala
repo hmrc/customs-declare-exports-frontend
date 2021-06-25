@@ -16,8 +16,6 @@
 
 package models
 
-import java.time.{Clock, Instant}
-
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration._
@@ -27,6 +25,8 @@ import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
 import play.api.libs.json._
+
+import java.time.{Clock, Instant}
 
 case class ExportsDeclaration(
   id: String,
@@ -83,6 +83,8 @@ case class ExportsDeclaration(
 
   def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
   def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
+
+  def isAdditionalDocumentationRequired: Boolean = parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
 
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
 

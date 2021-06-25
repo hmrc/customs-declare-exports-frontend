@@ -18,7 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import forms.common.Eori
-import forms.declaration.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec

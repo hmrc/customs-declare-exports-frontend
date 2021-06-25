@@ -20,7 +20,7 @@ import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Eori
-import forms.declaration.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document

@@ -14,15 +14,46 @@
  * limitations under the License.
  */
 
-package controllers.util
+package forms.declaration.declarationHolder
 
-import forms.declaration.declarationHolder.DeclarationHolder
-import models.requests.JourneyRequest
+object AuthorizationTypeCodes {
 
-object DeclarationHolderHelper {
-
-  val DeclarationHolderFormGroupId: String = "declarationHolder"
-
-  def cachedHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] =
-    request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+  val CodesRequiringDocumentation = Set(
+    "OPO",
+    "REX",
+    "AEOC",
+    "AEOS",
+    "AEOF",
+    "CVA",
+    "CGU",
+    "DPO",
+    "TST",
+    "RSS",
+    "ACP",
+    "SDE",
+    "CCL",
+    "EIR",
+    "TEA",
+    "TEAH",
+    "CWP",
+    "CW1",
+    "CW2",
+    "ACR",
+    "ACE",
+    "SSE",
+    "TRD",
+    "ETD",
+    "FZ",
+    "IPO",
+    "CSE",
+    "DEP",
+    "EPSS",
+    "EXW",
+    "EXWH",
+    "GGA",
+    "MOU",
+    "UKCS",
+    "EUS",
+    "ACT"
+  )
 }

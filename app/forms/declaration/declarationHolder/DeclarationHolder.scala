@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.declaration.declarationHolder
 
 import forms.DeclarationPage
 import forms.common.Eori
@@ -30,6 +30,8 @@ case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option
   def id: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"
   def isEmpty: Boolean = authorisationTypeCode.isEmpty && eori.isEmpty
   def isComplete: Boolean = authorisationTypeCode.isDefined && eori.isDefined
+
+  def isAdditionalDocumentationRequired: Boolean = authorisationTypeCode.exists(AuthorizationTypeCodes.CodesRequiringDocumentation.contains)
 }
 
 object DeclarationHolder extends DeclarationPage {
@@ -44,7 +46,7 @@ object DeclarationHolder extends DeclarationPage {
         optional(Eori.mapping()).verifying("declaration.eori.empty", _.isDefined)
     )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
-  val form: Form[DeclarationHolder] = Form(mandatoryMapping)
+  def form: Form[DeclarationHolder] = Form(mandatoryMapping)
 
   // Method to parse format typeCode-eori
   def fromId(id: String): DeclarationHolder = {

@@ -18,15 +18,15 @@ package services.cache
 
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import java.util.UUID
-
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori, YesNoAnswer}
-import forms.declaration.{DeclarationHolder, _}
+import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
+import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Ducr, Lrn}

@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.Eori
-import forms.declaration.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode
 import models.declaration.DeclarationHoldersData
 import org.mockito.ArgumentCaptor

@@ -80,6 +80,7 @@ class DocumentsProducedSpec extends UnitSpec {
           testFailedValidationErrors(input, expectedErrors)
         }
       }
+
       "provided with Document Status" which {
 
         "is longer than 2 characters" in {
@@ -106,6 +107,7 @@ class DocumentsProducedSpec extends UnitSpec {
           testFailedValidationErrors(input, expectedErrors)
         }
       }
+
       "provided with Document Status Reason" which {
 
         "is longer than 35 characters" in {
@@ -126,6 +128,7 @@ class DocumentsProducedSpec extends UnitSpec {
           testFailedValidationErrors(input, expectedErrors)
         }
       }
+
       "provided with Issuing Authority Name" which {
 
         "is longer than 70 characters" in {
@@ -149,6 +152,7 @@ class DocumentsProducedSpec extends UnitSpec {
           testFailedValidationErrors(input, expectedErrors)
         }
       }
+
       "provided with Document WriteOff" which {
 
         "contains errors in its fields" in {

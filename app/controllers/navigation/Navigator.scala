@@ -27,11 +27,13 @@ import forms.declaration.additionaldocuments.{DocumentsProduced, DocumentsProduc
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
+import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderRequired, DeclarationSummaryHolder}
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.declaration.removals.RemoveItem
 import forms.{Choice, DeclarationPage}
+
 import javax.inject.Inject
 import models.DeclarationType._
 import models.Mode.ErrorFix

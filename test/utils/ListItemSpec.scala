@@ -16,8 +16,8 @@
 
 package utils
 
-import forms.declaration.DeclarationHolder
 import base.UnitSpec
+import forms.declaration.declarationHolder.DeclarationHolder
 
 class ListItemSpec extends UnitSpec {
 
