@@ -18,7 +18,7 @@ package views.messaging
 
 import scala.collection.JavaConverters._
 import base.OverridableInjector
-import config.SecureMessagingConfig
+import config.featureFlags.SecureMessagingConfig
 import controllers.routes
 import org.jsoup.nodes.{Document, Element}
 import org.mockito.Mockito._

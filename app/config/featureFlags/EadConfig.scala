@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package config.featureFlags
 
 import features.Feature
+
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ChangeErrorLinkConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class EadConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
-  val isEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.changeErrorLink)
+  val isEadEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.ead)
 }

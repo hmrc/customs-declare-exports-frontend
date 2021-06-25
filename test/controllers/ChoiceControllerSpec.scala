@@ -18,7 +18,8 @@ package controllers
 
 import base.ControllerWithoutFormSpec
 import base.ExportsTestData._
-import config.{AppConfig, SecureMessagingInboxConfig}
+import config.AppConfig
+import config.featureFlags.SecureMessagingInboxConfig
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import models.DeclarationType

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package config
-
-import javax.inject.{Inject, Singleton}
+package config.featureFlags
 
 import features.Feature.Feature
 import features.SecureMessagingFeatureStatus.SecureMessagingFeatureStatus
 import features.{Feature, SecureMessagingFeatureStatus}
 import play.api.Configuration
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class SecureMessagingInboxConfig @Inject()(config: Configuration) {

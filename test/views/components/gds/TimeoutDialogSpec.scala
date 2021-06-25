@@ -17,10 +17,10 @@
 package views.components.gds
 
 import scala.collection.JavaConverters.asScalaIteratorConverter
-
 import base.{MockAuthAction, OverridableInjector}
 import com.typesafe.config.ConfigFactory
-import config.{SecureMessagingInboxConfig, TimeoutDialogConfig}
+import config.TimeoutDialogConfig
+import config.featureFlags.SecureMessagingInboxConfig
 import forms.Choice
 import org.mockito.Mockito.when
 import play.api.Configuration

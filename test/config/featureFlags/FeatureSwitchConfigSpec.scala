@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package config
+package config.featureFlags
 
 import base.UnitWithMocksSpec
 import com.typesafe.config.{Config, ConfigFactory}

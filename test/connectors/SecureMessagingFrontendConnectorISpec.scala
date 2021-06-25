@@ -19,7 +19,7 @@ package connectors
 import base.{ExportsTestData, Injector}
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{verify, _}
-import config.SecureMessagingConfig
+import config.featureFlags.SecureMessagingConfig
 import models.AuthKey.enrolment
 import models.messaging._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}

@@ -16,11 +16,10 @@
 
 package controllers.actions
 
+import config.featureFlags.SecureMessagingConfig
+
 import javax.inject.{Inject, Singleton}
-
 import scala.concurrent.{ExecutionContext, Future}
-
-import config.SecureMessagingConfig
 import models.requests.VerifiedEmailRequest
 import play.api.mvc.{ActionFunction, Result}
 

@@ -17,14 +17,14 @@
 package connectors
 
 import com.google.inject.Inject
-import config.SecureMessagingConfig
+import config.featureFlags.SecureMessagingConfig
 import models.messaging._
 import play.api.Logging
 import play.api.http.Status
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
-import scala.concurrent.{ExecutionContext, Future}
 
+import scala.concurrent.{ExecutionContext, Future}
 import models.AuthKey.enrolment
 import services.audit.AuditService
 

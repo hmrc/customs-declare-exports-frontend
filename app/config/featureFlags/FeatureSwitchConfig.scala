@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package config.featureFlags
 
-import features.{Feature, FeatureStatus}
 import features.Feature.Feature
 import features.FeatureStatus.FeatureStatus
-import javax.inject.{Inject, Singleton}
+import features.{Feature, FeatureStatus}
 import play.api.Configuration
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class FeatureSwitchConfig @Inject()(configuration: Configuration) {

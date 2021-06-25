@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package config.featureFlags
 
 import features.Feature
+
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
 
 @Singleton
-class SfusConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
+class ChangeErrorLinkConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
-  val sfusUploadLink: String =
-    config
-      .getOptional[String]("urls.sfusUpload")
-      .getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend mrn page url"))
-
-  val isSfusUploadEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.sfus)
+  val isEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.changeErrorLink)
 }

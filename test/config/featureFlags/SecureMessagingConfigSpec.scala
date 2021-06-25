@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package config
+package config.featureFlags
 
 import com.typesafe.config.ConfigFactory
 import org.mockito.Mockito.when

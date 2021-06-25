@@ -17,12 +17,10 @@
 package views
 
 import java.time.ZonedDateTime
-
 import scala.collection.JavaConverters.asScalaIteratorConverter
-
 import base.{Injector, OverridableInjector}
 import com.typesafe.config.{Config, ConfigFactory}
-import config._
+import config.featureFlags.{EadConfig, FeatureSwitchConfig, SecureMessagingConfig, SecureMessagingInboxConfig, SfusConfig}
 import controllers.routes
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
