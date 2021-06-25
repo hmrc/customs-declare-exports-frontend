@@ -54,7 +54,7 @@
             @messages("declaration.taricAdditionalCodes.addfirst.altlink")
         </a>
     } { commodityCode =>
-        <a href=@appConfig.commodityCodeForTaricPageUrl.replace("NNNNNNNN", commodityCode)
+        <a href=@appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode)
            id="link-for-commodity-code" class="govuk-link govuk-link--no-visited-state" target="_blank">
             @messages("declaration.taricAdditionalCodes.addfirst.link", commodityCode)
         </a>

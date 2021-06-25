@@ -32,7 +32,8 @@
             id = Some(field.id),
             name = Some(field.name),
             value = value,
-            content = Text(messages(labelKey))
+            content = Text(messages(labelKey)),
+            checked = field.value == Some("true")
         )
     ),
     errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))

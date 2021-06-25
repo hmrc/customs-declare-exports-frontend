@@ -36,9 +36,18 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
 
     "have no errors" when {
 
-      "user fill only mandatory fields with correct values" in {
+      "user fill only mandatory fields with correct values (supplementaryUnits supplied)" in {
 
-        val correctForm = Map("grossMass" -> "124.12", "netMass" -> "123.12")
+        val correctForm = Map("supplementaryUnits" -> "1", "grossMass" -> "124.12", "netMass" -> "123.12")
+
+        val result = formDefault.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+
+      "user fill only mandatory fields with correct values (supplementaryUnitsNotRequired checked)" in {
+
+        val correctForm = Map("supplementaryUnitsNotRequired" -> "true", "grossMass" -> "124.12", "netMass" -> "123.12")
 
         val result = formDefault.bind(correctForm)
 
@@ -47,7 +56,7 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
 
       "net and gross mass are equal" in {
 
-        val correctForm = Map("grossMass" -> "123.12", "netMass" -> "123.12")
+        val correctForm = Map("supplementaryUnits" -> "1", "grossMass" -> "123.12", "netMass" -> "123.12")
 
         val result = formDefault.bind(correctForm)
 
@@ -74,8 +83,12 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
 
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
-        val expectedErrorKeys = List("grossMass", "netMass")
-        val expectedErrorMessages = List("declaration.commodityMeasure.grossMass.empty", "declaration.commodityMeasure.netMass.empty")
+        val expectedErrorKeys = List("supplementaryUnitsNotRequired", "grossMass", "netMass")
+        val expectedErrorMessages = List(
+          "declaration.commodityMeasure.supplementaryUnitsNotRequired.error.neither",
+          "declaration.commodityMeasure.grossMass.empty",
+          "declaration.commodityMeasure.netMass.empty"
+        )
 
         errorKeys must be(expectedErrorKeys)
         errorMessages must be(expectedErrorMessages)
@@ -89,8 +102,12 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
 
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
-        val expectedErrorKeys = List("grossMass", "netMass")
-        val expectedErrorMessages = List("declaration.commodityMeasure.grossMass.empty", "declaration.commodityMeasure.netMass.empty")
+        val expectedErrorKeys = List("supplementaryUnitsNotRequired", "grossMass", "netMass")
+        val expectedErrorMessages = List(
+          "declaration.commodityMeasure.supplementaryUnitsNotRequired.error.neither",
+          "declaration.commodityMeasure.grossMass.empty",
+          "declaration.commodityMeasure.netMass.empty"
+        )
 
         errorKeys must be(expectedErrorKeys)
         errorMessages must be(expectedErrorMessages)
@@ -117,7 +134,7 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
 
       "net mass is greater than gross mass" in {
 
-        val incorrectForm = Map("grossMass" -> "123.12", "netMass" -> "124.12")
+        val incorrectForm = Map("supplementaryUnits" -> "1", "grossMass" -> "123.12", "netMass" -> "124.12")
 
         val result = formDefault.bind(incorrectForm)
 
@@ -132,7 +149,7 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
 
       "user provided net mass only" in {
 
-        val incorrectForm = Map("grossMass" -> "", "netMass" -> "124.12")
+        val incorrectForm = Map("supplementaryUnits" -> "1", "grossMass" -> "", "netMass" -> "124.12")
 
         val result = formDefault.bind(incorrectForm)
 
@@ -147,7 +164,7 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
 
       "user provided gross mass only" in {
 
-        val incorrectForm = Map("grossMass" -> "123.12", "netMass" -> "")
+        val incorrectForm = Map("supplementaryUnits" -> "1", "grossMass" -> "123.12", "netMass" -> "")
 
         val result = formDefault.bind(incorrectForm)
 
@@ -155,6 +172,36 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
         val errorMessages = result.errors.map(_.message)
         val expectedErrorKeys = List("netMass")
         val expectedErrorMessages = List("declaration.commodityMeasure.netMass.empty")
+
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
+      }
+
+      "supplementaryUnits is empty and supplementaryUnitsNotRequired is not checked" in {
+
+        val incorrectForm = Map("supplementaryUnits" -> "", "grossMass" -> "1", "netMass" -> "1")
+
+        val result = formDefault.bind(incorrectForm)
+
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorKeys = List("supplementaryUnitsNotRequired")
+        val expectedErrorMessages = List("declaration.commodityMeasure.supplementaryUnitsNotRequired.error.neither")
+
+        errorKeys must be(expectedErrorKeys)
+        errorMessages must be(expectedErrorMessages)
+      }
+
+      "supplementaryUnits is not empty and supplementaryUnitsNotRequired is checked" in {
+
+        val incorrectForm = Map("supplementaryUnits" -> "1", "supplementaryUnitsNotRequired" -> "true", "grossMass" -> "1", "netMass" -> "1")
+
+        val result = formDefault.bind(incorrectForm)
+
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorKeys = List("supplementaryUnitsNotRequired")
+        val expectedErrorMessages = List("declaration.commodityMeasure.supplementaryUnitsNotRequired.error.both")
 
         errorKeys must be(expectedErrorKeys)
         errorMessages must be(expectedErrorMessages)

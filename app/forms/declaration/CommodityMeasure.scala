@@ -28,7 +28,12 @@ import utils.validators.forms.FieldValidator._
 
 import scala.util.Try
 
-case class CommodityMeasure(supplementaryUnits: Option[String], grossMass: Option[String], netMass: Option[String])
+case class CommodityMeasure(
+  supplementaryUnits: Option[String],
+  supplementaryUnitsNotRequired: Option[Boolean],
+  grossMass: Option[String],
+  netMass: Option[String]
+)
 
 object CommodityMeasure extends DeclarationPage {
 
@@ -36,22 +41,49 @@ object CommodityMeasure extends DeclarationPage {
 
   val commodityFormId = "CommodityMeasure"
 
-  def applyDefault(supplementaryUnits: Option[String], grossMass: String, netMass: String): CommodityMeasure =
-    CommodityMeasure(supplementaryUnits, if (grossMass.isEmpty) None else Some(grossMass), if (netMass.isEmpty) None else Some(netMass))
+  def applyDefault(
+    supplementaryUnits: Option[String],
+    supplementaryUnitsNotRequired: Option[Boolean],
+    grossMass: String,
+    netMass: String
+  ): CommodityMeasure =
+    CommodityMeasure(
+      supplementaryUnits,
+      supplementaryUnitsNotRequired,
+      if (grossMass.isEmpty) None else Some(grossMass),
+      if (netMass.isEmpty) None else Some(netMass)
+    )
 
-  def unapplyDefault(value: CommodityMeasure): Option[(Option[String], String, String)] =
-    Some((value.supplementaryUnits, value.grossMass.getOrElse(""), value.netMass.getOrElse("")))
+  def unapplyDefault(value: CommodityMeasure): Option[(Option[String], Option[Boolean], String, String)] =
+    Some((value.supplementaryUnits, value.supplementaryUnitsNotRequired, value.grossMass.getOrElse(""), value.netMass.getOrElse("")))
 
   def applyClearance(grossMass: Option[String], netMass: Option[String]): CommodityMeasure =
-    CommodityMeasure(None, grossMass, netMass)
+    CommodityMeasure(None, None, grossMass, netMass)
 
   def unapplyClearance(value: CommodityMeasure): Option[(Option[String], Option[String])] =
     Some((value.grossMass, value.netMass))
 
   private val massFormatValidation: String => Boolean = str => validateDecimalGreaterThanZero(16)(6)(str) and containsNotOnlyZeros(str)
 
+  private val checkboxTrueValue = "true"
+
   private val mappingDefault = Forms.mapping(
     "supplementaryUnits" -> optional(text().verifying("declaration.commodityMeasure.supplementaryUnits.error", massFormatValidation)),
+    "supplementaryUnitsNotRequired" -> of(
+      CrossFieldFormatter(
+        secondaryKey = "supplementaryUnits",
+        constraints = Seq(
+          (
+            "declaration.commodityMeasure.supplementaryUnitsNotRequired.error.neither",
+            (checkbox: String, supUnits: String) => checkbox == checkboxTrueValue or nonEmpty(supUnits)
+          ),
+          (
+            "declaration.commodityMeasure.supplementaryUnitsNotRequired.error.both",
+            (checkbox: String, supUnits: String) => checkbox != checkboxTrueValue or isEmpty(supUnits)
+          )
+        )
+      )
+    ).transform[Option[Boolean]](ff => Some(ff.equals(checkboxTrueValue)), ff => ff.getOrElse(false).toString),
     "grossMass" -> of(
       CrossFieldFormatter(
         secondaryKey = "",

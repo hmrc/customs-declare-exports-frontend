@@ -15,8 +15,9 @@
  *@
 
 @import views.html.helper.FieldElements
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(sectionHeader: sectionHeader)
+@this(sectionHeader: sectionHeader, govukInput: govukInput)
 
 @(
         field: Field,
@@ -24,16 +25,10 @@
         labelClass: String = "govuk-label--m",
         isPageHeading: Boolean = false,
         prefixKey: String,
-        inputClass: String = "govuk-input",
         hintKey: Option[String] = None,
         prefixHintKey: Option[String] = None,
-        prefixClass: String = "",
         sectionHeaderKey: Option[String] = None
 )(implicit messages: Messages)
-
-@inputClasses = @{
- if(field.hasErrors) s"$inputClass govuk-input--error" else inputClass
-}
 
 @groupClasses = @{
  if(field.hasErrors) "govuk-form-group govuk-form-group--error" else "govuk-form-group"
@@ -74,10 +69,19 @@
  </h1>
  }
 
- @hint(hintKey.map(messages(_)), prefixHintKey.map(messages(_)))
+ @govukInput(Input(
+  id = field.id,
+  name = field.id,
+  hint = Some(Hint(
+   content = HtmlContent(hint(hintKey.map(messages(_)), prefixHintKey.map(messages(_))))
+  )),
+  classes = "govuk-input--width-10",
+  spellcheck = Some(false),
+  prefix = Some(PrefixOrSuffix(
+   content = Text(messages(prefixKey))
+  )),
+  value = field.value
+ ))
 
- @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@error</span> }
-
- <span id=@{s"${field.id}-before"} aria-hidden="true" class="@{s"govuk-body $prefixClass"}">@messages(prefixKey)</span>
- <input class="@inputClasses" value="@field.value" id="@field.id" name="@field.id" type="text" aria-describedby=@{s"${field.id}-hint"}>
 </div>
+

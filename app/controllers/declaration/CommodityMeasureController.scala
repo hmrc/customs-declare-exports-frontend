@@ -41,12 +41,10 @@ class CommodityMeasureController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  private def form()(implicit request: JourneyRequest[_]) = CommodityMeasure.form(request.declarationType).withSubmissionErrors()
-
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
-      case Some(data) => Ok(commodityMeasurePage(mode, itemId, form().fill(data)))
-      case _          => Ok(commodityMeasurePage(mode, itemId, form()))
+      case Some(data) => Ok(commodityMeasurePage(mode, itemId, form().fill(data), getCommodityCode(itemId)))
+      case _          => Ok(commodityMeasurePage(mode, itemId, form(), getCommodityCode(itemId)))
     }
   }
 
@@ -54,7 +52,9 @@ class CommodityMeasureController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CommodityMeasure]) => Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors))),
+        (formWithErrors: Form[CommodityMeasure]) => {
+          Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors, getCommodityCode(itemId))))
+        },
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator
@@ -62,6 +62,10 @@ class CommodityMeasureController @Inject()(
         }
       )
   }
+
+  private def form()(implicit request: JourneyRequest[_]) = CommodityMeasure.form(request.declarationType).withSubmissionErrors()
+
+  private def getCommodityCode(itemId: String)(implicit request: JourneyRequest[_]) = request.cacheModel.getCommodityCodeOfItem(itemId)
 
   private def updateExportsCache(itemId: String, updatedItem: CommodityMeasure)(
     implicit r: JourneyRequest[AnyContent]

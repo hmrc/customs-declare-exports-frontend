@@ -38,7 +38,7 @@
         appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[CommodityMeasure])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[CommodityMeasure], commodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.commodityMeasure.title", "declaration.section.5"),
@@ -54,7 +54,7 @@
             if(request.declarationType == DeclarationType.CLEARANCE)
                 inputFieldsClearance(form)
             else
-                inputFields(form)
+                inputFields(form, commodityCode)
         }
 
         @tariffExpander(CommodityMeasure, request.declarationType)(messages, appConfig)
