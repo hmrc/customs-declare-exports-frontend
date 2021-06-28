@@ -17,10 +17,10 @@
 package tools
 
 import scala.concurrent.ExecutionContext
-
 import akka.stream.testkit.NoMaterializer
 import com.typesafe.config.{Config, ConfigFactory}
-import config.{AppConfig, AppConfigSpec, BetaBannerConfig, FeatureSwitchConfig}
+import config.featureFlags.{BetaBannerConfig, FeatureSwitchConfig}
+import config.{AppConfig, AppConfigSpec}
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._

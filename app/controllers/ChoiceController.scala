@@ -16,7 +16,8 @@
 
 package controllers
 
-import config.{AppConfig, SecureMessagingInboxConfig}
+import config.AppConfig
+import config.featureFlags.SecureMessagingInboxConfig
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.Choice
 import forms.Choice._
@@ -26,6 +27,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
+
 import javax.inject.Inject
 import play.twirl.api.HtmlFormat
 

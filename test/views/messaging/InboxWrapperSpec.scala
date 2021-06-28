@@ -17,9 +17,8 @@
 package views.messaging
 
 import scala.collection.JavaConverters.asScalaIteratorConverter
-
 import base.OverridableInjector
-import config.SecureMessagingConfig
+import config.featureFlags.SecureMessagingConfig
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach

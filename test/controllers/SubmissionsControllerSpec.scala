@@ -19,6 +19,7 @@ package controllers
 import akka.util.Timeout
 import base.ControllerWithoutFormSpec
 import config.PaginationConfig
+import config.featureFlags.QueryNotificationMessageConfig
 import connectors.exchange.ExportsDeclarationExchange
 import models._
 import models.declaration.notifications.Notification
@@ -32,7 +33,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.{declaration_information, submissions}
+import views.html.{declaration_information, new_declaration_information, submissions}
 
 import java.time.{Instant, LocalDate, ZoneOffset, ZonedDateTime}
 import java.util.UUID
@@ -51,8 +52,11 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     ducr = None,
     actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = ZonedDateTime.now(ZoneOffset.UTC)))
   )
+
+  private val queryNotificationMessageConfig = mock[QueryNotificationMessageConfig]
   private val submissionsPage = mock[submissions]
   private val declarationInformationPage = mock[declaration_information]
+  private val newDeclarationInformationPage = mock[new_declaration_information]
   private val paginationConfig = mock[PaginationConfig]
 
   val controller = new SubmissionsController(
@@ -60,8 +64,10 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
     mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
+    queryNotificationMessageConfig,
     submissionsPage,
-    declarationInformationPage
+    declarationInformationPage,
+    newDeclarationInformationPage
   )(ec, paginationConfig)
 
   override protected def beforeEach(): Unit = {
@@ -69,12 +75,20 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
 
     authorizedUser()
     when(declarationInformationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(newDeclarationInformationPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
     when(submissionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_SIZE)
   }
 
   override protected def afterEach(): Unit =
-    reset(declarationInformationPage, mockCustomsDeclareExportsConnector, submissionsPage, paginationConfig)
+    reset(
+      queryNotificationMessageConfig,
+      declarationInformationPage,
+      newDeclarationInformationPage,
+      mockCustomsDeclareExportsConnector,
+      submissionsPage,
+      paginationConfig
+    )
 
   def submissionsPagesElementsCaptor: SubmissionsPagesElements = {
     val captor = ArgumentCaptor.forClass(classOf[SubmissionsPagesElements])
@@ -108,19 +122,35 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
         submissionsPagesElementsCaptor.otherSubmissions mustBe expectedOtherSubmissionsPassed
       }
 
-      "display declaration with notification method is invoked" in {
+      "display declaration with notification method is invoked" when {
 
-        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
-          .thenReturn(Future.successful(Some(submission)))
-        when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
-          .thenReturn(Future.successful(Seq(notification)))
+        "QueryNotificationMessage feature flag is disabled" in {
 
-        val result = controller.displayDeclarationWithNotifications("conversationID")(getRequest())
+          when(queryNotificationMessageConfig.isQueryNotificationMessageEnabled).thenReturn(false)
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+            .thenReturn(Future.successful(Some(submission)))
+          when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
+            .thenReturn(Future.successful(Seq(notification)))
 
-        val expectedArguments = (submission, Seq(notification))
+          val result = controller.displayDeclarationWithNotifications("conversationID")(getRequest())
 
-        status(result) mustBe OK
-        declarationInformationPageCaptor mustBe expectedArguments
+          val expectedArguments = (submission, Seq(notification))
+
+          status(result) mustBe OK
+          declarationInformationPageCaptor mustBe expectedArguments
+          verifyNoInteractions(newDeclarationInformationPage)
+        }
+
+        "QueryNotificationMessage feature flag is enabled" in {
+
+          when(queryNotificationMessageConfig.isQueryNotificationMessageEnabled).thenReturn(true)
+
+          val result = controller.displayDeclarationWithNotifications("conversationID")(getRequest())
+
+          status(result) mustBe OK
+          verify(newDeclarationInformationPage).apply()(any(), any())
+          verifyNoInteractions(declarationInformationPage)
+        }
       }
     }
 

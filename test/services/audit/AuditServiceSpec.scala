@@ -18,9 +18,9 @@ package services.audit
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
-
 import base.{ExportsTestData, Injector, TestHelper, UnitWithMocksSpec}
-import config.{AppConfig, SecureMessagingConfig}
+import config.AppConfig
+import config.featureFlags.SecureMessagingConfig
 import models.AuthKey.enrolment
 import models.declaration.ExportDeclarationTestData.{allRecordsXmlMarshallingTest, cancellationDeclarationTest}
 import org.mockito.ArgumentCaptor

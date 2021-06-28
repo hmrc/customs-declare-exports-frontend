@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package config.featureFlags
 
 import features.Feature
+
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ChangeErrorLinkConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class QueryNotificationMessageConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
-  val isEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.changeErrorLink)
+  val isQueryNotificationMessageEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.queryNotificationMessage)
 }

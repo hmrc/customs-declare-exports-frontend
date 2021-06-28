@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package config
+package config.featureFlags
 
 import com.typesafe.config.ConfigFactory
 import features.SecureMessagingFeatureStatus.{disabled, exports, sfus, SecureMessagingFeatureStatus}

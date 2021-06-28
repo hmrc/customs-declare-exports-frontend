@@ -17,7 +17,7 @@
 package models
 
 import base.UnitSpec
-import forms.declaration.declarationHolder.{AuthorizationTypeCodes, DeclarationHolder}
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.declaration.{DeclarationHoldersData, ProcedureCodesData}
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues

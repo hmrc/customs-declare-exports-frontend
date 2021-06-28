@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package config
-
-import javax.inject.{Inject, Singleton}
+package config.featureFlags
 
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class SecureMessagingConfig @Inject()(servicesConfig: ServicesConfig, secureMessagingInboxConfig: SecureMessagingInboxConfig) {

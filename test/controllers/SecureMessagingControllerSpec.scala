@@ -17,7 +17,7 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
-import config.SecureMessagingConfig
+import config.featureFlags.SecureMessagingConfig
 import connectors.SecureMessagingFrontendConnector
 import controllers.actions.SecureMessagingAction
 import models.messaging.{ConversationPartial, InboxPartial, ReplyResultPartial}

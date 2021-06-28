@@ -18,7 +18,7 @@ package views
 
 import base.ExportsTestData._
 import base.OverridableInjector
-import config.{SecureMessagingInboxConfig, SfusConfig}
+import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
 import features.SecureMessagingFeatureStatus
 import features.SecureMessagingFeatureStatus.SecureMessagingFeatureStatus
 import forms.Choice

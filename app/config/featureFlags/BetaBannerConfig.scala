@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package config
+package config.featureFlags
 
 import features.Feature
+
 import javax.inject.{Inject, Singleton}
 
 @Singleton

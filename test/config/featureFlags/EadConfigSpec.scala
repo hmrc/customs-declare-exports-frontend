@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package config
+package config.featureFlags
 
 import base.UnitWithMocksSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import play.api.Configuration
 
 class EadConfigSpec extends UnitWithMocksSpec {
-
-  private val configWithEnabledEAD: Config =
-    ConfigFactory.parseString("microservice.services.features.ead=enabled")
-  private val configWithDisabledEAD: Config =
-    ConfigFactory.parseString("microservice.services.features.ead=disabled")
-  private val emptyConfig: Config =
-    ConfigFactory.parseString("microservice.services.features.default=disabled")
 
   def featureSwitchConfig(config: Configuration): FeatureSwitchConfig = new FeatureSwitchConfig(config)
 
@@ -36,6 +29,8 @@ class EadConfigSpec extends UnitWithMocksSpec {
     "return true" when {
 
       "ead feature is enabled" in {
+
+        val configWithEnabledEAD: Config = ConfigFactory.parseString("microservice.services.features.ead=enabled")
 
         val eadConfig = new EadConfig(featureSwitchConfig(Configuration(configWithEnabledEAD)))
 
@@ -47,12 +42,16 @@ class EadConfigSpec extends UnitWithMocksSpec {
 
       "ead feature is diabled" in {
 
+        val configWithDisabledEAD: Config = ConfigFactory.parseString("microservice.services.features.ead=disabled")
+
         val eadConfig = new EadConfig(featureSwitchConfig(Configuration(configWithDisabledEAD)))
 
         eadConfig.isEadEnabled mustBe false
       }
 
       "ead feature config doesn't exist" in {
+
+        val emptyConfig: Config = ConfigFactory.parseString("microservice.services.features.default=disabled")
 
         val eadConfig = new EadConfig(featureSwitchConfig(Configuration(emptyConfig)))
 

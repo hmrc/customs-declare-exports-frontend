@@ -17,7 +17,7 @@
 package views
 
 import base.OverridableInjector
-import config.SecureMessagingConfig
+import config.featureFlags.SecureMessagingConfig
 import controllers.routes
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.Submissions
