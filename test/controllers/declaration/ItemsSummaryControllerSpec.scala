@@ -68,7 +68,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     withStatisticalValue(),
     withPackageInformation(),
     withAdditionalInformation("code", "description"),
-    withCommodityMeasure(CommodityMeasure(None, Some("100"), Some("100")))
+    withCommodityMeasure(CommodityMeasure(None, Some(true), Some("100"), Some("100")))
   )
 
   private def formPassedToItemsSummaryView: Form[YesNoAnswer] = {

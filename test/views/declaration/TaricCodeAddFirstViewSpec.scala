@@ -76,7 +76,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
           messages("declaration.taricAdditionalCodes.addfirst.link", commodityCode)
         )
 
-        hint.child(0) must haveHref(appConfig.commodityCodeForTaricPageUrl.replace("NNNNNNNN", commodityCode))
+        hint.child(0) must haveHref(appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode))
       }
 
       "a commodity code has not been entered" in {

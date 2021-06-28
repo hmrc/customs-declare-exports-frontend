@@ -127,7 +127,7 @@
             content = HtmlContent(messages("declaration.addDocument.expander.paragraph1.withCommodityCode.text",
                 link(
                     text = messages("declaration.addDocument.expander.paragraph1.withCommodityCode.link1.text", commodityCode),
-                    call = Call("GET", appConfig.commodityCodeForTaricPageUrl.replace("NNNNNNNN", commodityCode)),
+                    call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode)),
                     target = "_blank"
                 )
             ))

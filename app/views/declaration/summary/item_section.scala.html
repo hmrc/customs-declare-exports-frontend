@@ -265,7 +265,7 @@
                     content = Text(messages("declaration.summary.items.item.supplementaryUnits"))
                 ),
                 value = Value(
-                    content = Text(commodityMeasure.supplementaryUnits.getOrElse(""))
+                    content = Text(commodityMeasure.supplementaryUnits.getOrElse(messages("declaration.summary.items.item.supplementaryUnitsNotRequired")))
                 ),
                 actions = actions(Actions(
                     items = Seq(

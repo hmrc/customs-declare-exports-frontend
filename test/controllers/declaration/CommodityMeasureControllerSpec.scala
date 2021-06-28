@@ -50,7 +50,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(goodsMeasurePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(goodsMeasurePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -61,7 +61,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[CommodityMeasure] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[CommodityMeasure]])
-    verify(goodsMeasurePage).apply(any(), any(), captor.capture())(any(), any())
+    verify(goodsMeasurePage).apply(any(), any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
@@ -102,7 +102,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         val noPackageCache = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
         withNewCaching(noPackageCache)
 
-        val incorrectForm = Json.toJson(CommodityMeasure(None, None, None))
+        val incorrectForm = Json.toJson(CommodityMeasure(None, None, None, None))
 
         val result = controller.submitForm(Mode.Normal, "itemId")(postRequest(incorrectForm))
 
@@ -117,7 +117,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         val noPackageCache = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
         withNewCaching(noPackageCache)
 
-        val correctForm = Json.toJson(CommodityMeasure(None, Some("1234.12"), Some("1234.12")))
+        val correctForm = Json.toJson(CommodityMeasure(None, Some(true), Some("1234.12"), Some("1234.12")))
 
         val result = controller.submitForm(Mode.Normal, "itemId")(postRequest(correctForm))
 

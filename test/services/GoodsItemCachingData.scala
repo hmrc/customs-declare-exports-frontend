@@ -42,7 +42,7 @@ trait GoodsItemCachingData {
     ProcedureCodesData(Some(intBetween(1000, 9999).toString), getDataSeq(10, createRandomAlphanumericString, Random.nextInt(5)))
 
   def createCommodityMeasure(): CommodityMeasure =
-    CommodityMeasure(Some(Random.nextDouble().toString), Some(Random.nextDouble().toString), Some(Random.nextDouble().toString))
+    CommodityMeasure(Some(Random.nextDouble().toString), Some(false), Some(Random.nextDouble().toString), Some(Random.nextDouble().toString))
 
   def createAdditionalInformationData() = AdditionalInformationData(getDataSeq(5, createAdditionalInformation))
 

@@ -92,6 +92,13 @@ case class ExportsDeclaration(
 
   def requiresWarehouseId: Boolean = items.exists(_.requiresWarehouseId)
 
+  def getCommodityCodeOfItem(itemId: String): Option[String] =
+    for {
+      exportItem <- itemBy(itemId)
+      commodityDetails <- exportItem.commodityDetails
+      commodityCode <- commodityDetails.combinedNomenclatureCode
+    } yield commodityCode
+
   def removeCountryOfRouting(country: Country): ExportsDeclaration =
     copy(locations = locations.copy(routingCountries = locations.routingCountries.filterNot(_ == country)))
 

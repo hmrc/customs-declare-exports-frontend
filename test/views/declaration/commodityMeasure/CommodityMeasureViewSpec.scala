@@ -36,13 +36,14 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
   val itemId = "a7sc78"
 
   private val goodsMeasurePage = instanceOf[commodity_measure]
-  private def createView(form: Option[Form[CommodityMeasure]] = None)(implicit request: JourneyRequest[_]): Document =
-    goodsMeasurePage(Mode.Normal, itemId, form.getOrElse(CommodityMeasure.form(request.declarationType)))(request, messages)
+  private def createView(form: Option[Form[CommodityMeasure]] = None, commodityCode: Option[String] = None)(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    goodsMeasurePage(Mode.Normal, itemId, form.getOrElse(CommodityMeasure.form(request.declarationType)), commodityCode)(request, messages)
 
   "Commodity Measure" should {
 
     "have correct message keys" in {
-
       messages must haveTranslationFor("declaration.commodityMeasure.title")
       messages must haveTranslationFor("declaration.commodityMeasure.netMass")
       messages must haveTranslationFor("declaration.commodityMeasure.netMass.empty")
@@ -55,6 +56,10 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       messages must haveTranslationFor("declaration.commodityMeasure.supplementaryUnits.item")
       messages must haveTranslationFor("declaration.commodityMeasure.supplementaryUnits.hint")
       messages must haveTranslationFor("declaration.commodityMeasure.supplementaryUnits.error")
+      messages must haveTranslationFor("declaration.commodityMeasure.supplementaryUnitsNotRequired")
+      messages must haveTranslationFor("declaration.commodityMeasure.expander.text")
+      messages must haveTranslationFor("declaration.commodityMeasure.expander.withCommodityCode.link.text")
+      messages must haveTranslationFor("declaration.commodityMeasure.expander.withoutCommodityCode.link.text")
     }
   }
 
@@ -110,14 +115,47 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view.getElementById("supplementaryUnits-hint").text() mustBe messages("declaration.commodityMeasure.supplementaryUnits.hint")
         view.getElementById("supplementaryUnits").attr("value") mustBe empty
       }
+
+      "display unchecked supplementary units not required checkbox" in {
+        val view = createView()
+
+        view.getElementById("supplementaryUnitsNotRequired").attr("checked") mustBe empty
+        view.getElementsByAttributeValue("for", "supplementaryUnitsNotRequired").text() mustBe messages(
+          "declaration.commodityMeasure.supplementaryUnitsNotRequired"
+        )
+      }
+
+      "display the expander" when {
+        "commodityCode is present" in {
+          val commodityCode = "46021910"
+          val hintElement = createView(commodityCode = Some(commodityCode)).getElementById("supplementaryUnits-readMore")
+
+          hintElement must containHtml(messages("declaration.commodityMeasure.expander.title"))
+          hintElement
+            .getElementsByClass("govuk-hint")
+            .get(0) must containText(messages("declaration.commodityMeasure.expander.withCommodityCode.link.text", commodityCode))
+        }
+
+        "commodityCode is missing" in {
+          val hintElement = createView().getElementById("supplementaryUnits-readMore")
+
+          hintElement must containHtml(messages("declaration.commodityMeasure.expander.title"))
+          hintElement
+            .getElementsByClass("govuk-hint")
+            .get(0) must containText(messages("declaration.commodityMeasure.expander.withoutCommodityCode.link.text"))
+        }
+      }
     }
   }
 
   "Commodity Measure View on empty page for supplementary units on clearance request" should {
     onJourney(CLEARANCE) { implicit request =>
-      "no display supplementary units" in {
-
+      "displaying page not include supplementary units form field" in {
         createView().getElementById("supplementaryUnits") mustBe (null)
+      }
+
+      "displaying page not include supplementary units not required form field" in {
+        createView().getElementById("supplementaryUnitsNotRequired") mustBe (null)
       }
     }
   }
@@ -133,6 +171,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must containErrorElementWithTagAndHref("a", "#netMass")
         view must containErrorElementWithTagAndHref("a", "#grossMass")
 
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.supplementaryUnitsNotRequired.error.neither")
         view must containErrorElementWithMessageKey("declaration.commodityMeasure.netMass.empty")
         view must containErrorElementWithMessageKey("declaration.commodityMeasure.grossMass.empty")
       }
@@ -147,6 +186,36 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must containErrorElementWithTagAndHref("a", "#supplementaryUnits")
 
         view must containErrorElementWithMessageKey("declaration.commodityMeasure.supplementaryUnits.error")
+      }
+
+      "display error when supplementary units is empty and supplementary units not required is not checked" in {
+        val view = createView(
+          Some(
+            CommodityMeasure
+              .form(request.declarationType)
+              .bind(Map("supplementaryUnits" -> "", "supplementaryUnitsNotRequired" -> "false", "grossMass" -> "", "netMass" -> ""))
+          )
+        )
+
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#supplementaryUnitsNotRequired")
+
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.supplementaryUnitsNotRequired.error.neither")
+      }
+
+      "display error when supplementary units is not empty and supplementary units not required is checked" in {
+        val view = createView(
+          Some(
+            CommodityMeasure
+              .form(request.declarationType)
+              .bind(Map("supplementaryUnits" -> "123", "supplementaryUnitsNotRequired" -> "true", "grossMass" -> "", "netMass" -> ""))
+          )
+        )
+
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#supplementaryUnitsNotRequired")
+
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.supplementaryUnitsNotRequired.error.both")
       }
 
       "display error when net mass is empty" in {
@@ -214,7 +283,8 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
     onJourney(CLEARANCE) { implicit request =>
       "display no error when nothing is entered" in {
 
-        val view = createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some(""), Some(""), Some("")))))
+        val view =
+          createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some(""), None, Some(""), Some("")))))
 
         view must not(haveGovukGlobalErrorSummary)
       }
@@ -224,41 +294,40 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
   "Commodity Measure View when filled" should {
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display data in supplementary units input" in {
-
-        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some("123"), Some(""), Some("")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some("123"), Some(false), Some(""), Some("")))
         val view = createView(Some(form))
 
         view.getElementById("supplementaryUnits").attr("value") mustBe "123"
-        view.getElementById("netMass").attr("value") mustBe empty
-        view.getElementById("grossMass").attr("value") mustBe empty
+      }
+
+      "display data in supplementary units not required input" in {
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some(""), Some(true), Some(""), Some("")))
+        val view = createView(Some(form))
+
+        view.getElementById("supplementaryUnitsNotRequired").hasAttr("checked") mustBe true
       }
 
       "display data in net mass input" in {
-
-        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some(""), Some(""), Some("123")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some(""), Some(true), Some(""), Some("123")))
         val view = createView(Some(form))
 
-        view.getElementById("supplementaryUnits").attr("value") mustBe empty
-        view.getElementById("grossMass").attr("value") mustBe empty
         view.getElementById("netMass").attr("value") mustBe "123"
       }
 
       "display data in gross mass input" in {
-
-        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some(""), Some("123"), Some("")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some(""), Some(true), Some("123"), Some("")))
         val view = createView(Some(form))
 
-        view.getElementById("supplementaryUnits").attr("value") mustBe empty
         view.getElementById("grossMass").attr("value") mustBe "123"
-        view.getElementById("netMass").attr("value") mustBe empty
       }
 
       "display every input filled" in {
 
-        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some("123"), Some("123"), Some("123")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some("123"), Some(false), Some("123"), Some("123")))
         val view = createView(Some(form))
 
         view.getElementById("supplementaryUnits").attr("value") mustBe "123"
+        view.getElementById("supplementaryUnitsNotRequired").hasAttr("checked") mustBe false
         view.getElementById("netMass").attr("value") mustBe "123"
         view.getElementById("grossMass").attr("value") mustBe "123"
       }
@@ -269,30 +338,27 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
     onJourney(CLEARANCE) { implicit request =>
       "display data in net mass input" in {
 
-        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(None, Some(""), Some("123")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(None, None, Some(""), Some("123")))
         val view = createView(Some(form))
 
-        view.getElementById("supplementaryUnits") mustBe (null)
-        view.getElementById("grossMass").attr("value") mustBe empty
         view.getElementById("netMass").attr("value") mustBe "123"
       }
 
       "display data in gross mass input" in {
 
-        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(None, Some("123"), Some("")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(None, None, Some("123"), Some("")))
         val view = createView(Some(form))
 
-        view.getElementById("supplementaryUnits") mustBe (null)
         view.getElementById("grossMass").attr("value") mustBe "123"
-        view.getElementById("netMass").attr("value") mustBe empty
       }
 
       "display every input filled" in {
 
-        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(None, Some("123"), Some("123")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(None, None, Some("123"), Some("123")))
         val view = createView(Some(form))
 
         view.getElementById("supplementaryUnits") mustBe (null)
+        view.getElementById("supplementaryUnitsNotRequired") mustBe (null)
         view.getElementById("netMass").attr("value") mustBe "123"
         view.getElementById("grossMass").attr("value") mustBe "123"
       }
