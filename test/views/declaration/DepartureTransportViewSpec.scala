@@ -221,7 +221,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
 
     val itemWith1040AsPC = ExportItem(UUID.randomUUID.toString, procedureCodes = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE))))
 
-    onJourney(CLEARANCE)(aDeclaration(withEIDR(), withItem(itemWith1040AsPC))) { implicit request =>
+    onJourney(CLEARANCE)(aDeclaration(withEntryIntoDeclarantsRecords(), withItem(itemWith1040AsPC))) { implicit request =>
       "display 'Back' button to the 'Warehouse' page" when {
         "declaration is EIDR and all declaration's items have '1040' as PC and '000' as unique APC" in {
           val view = createView()

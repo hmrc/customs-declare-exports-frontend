@@ -73,12 +73,14 @@
             label = messages("declaration.procedureCodes.title"),
             labelClass = Some(gdsPageLabel),
             emptySelectValue = messages("declaration.procedureCodes.empty"),
-            items = AutoCompleteItem.fromProcedureCodes(procedureCodeService.getProcedureCodesFor(request.declarationType, request.cacheModel.isEidr, messages.lang.toLocale).toList),
+            items = AutoCompleteItem.fromProcedureCodes(procedureCodeService.getProcedureCodesFor(
+                request.declarationType, request.cacheModel.isEntryIntoDeclarantsRecords, messages.lang.toLocale
+            ).toList),
             isPageHeading = true,
             hintParagraphs = List(messages("declaration.procedureCodes.hint"))
         )
 
-        @if(!(request.declarationType == DeclarationType.CLEARANCE && request.cacheModel.isNotEidr)) {
+        @if(!(request.declarationType == DeclarationType.CLEARANCE && request.cacheModel.isNotEntryIntoDeclarantsRecords)) {
             @govukDetails(Details(
                 id = Some("procedureCode-readMore"),
                 summary = Text(messages("declaration.procedureCodes.readMoreExpander.header")),

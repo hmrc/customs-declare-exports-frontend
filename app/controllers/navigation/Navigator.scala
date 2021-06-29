@@ -492,7 +492,7 @@ object Navigator {
     else routes.ExporterDetailsController.displayPage(mode)
 
   private def departureTransportClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.isEidr) supervisingCustomsOfficePageOnCondition(cacheModel, mode)
+    if (cacheModel.isEntryIntoDeclarantsRecords) supervisingCustomsOfficePageOnCondition(cacheModel, mode)
     else routes.SupervisingCustomsOfficeController.displayPage(mode)
 
   private def supervisingCustomsOfficePageOnCondition(cacheModel: ExportsDeclaration, mode: Mode): Call =

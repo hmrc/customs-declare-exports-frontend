@@ -78,11 +78,8 @@ case class ExportsDeclaration(
   def isExs: Boolean = parties.isExs.exists(_.isExs == YesNoAnswers.yes)
   def isNotExs: Boolean = !isExs
 
-  def isEidr: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
-  def isNotEidr: Boolean = !isEidr
-
-  def isEntryIntoDeclarantsRecords: Boolean = isEidr
-  def isNotEntryIntoDeclarantsRecords: Boolean = !isEidr
+  def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
+  def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
 
   def isAdditionalDocumentationRequired: Boolean = parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
 
