@@ -135,7 +135,6 @@ object Navigator {
     case ConsignorEoriNumber          => routes.IsExsController.displayPage
     case ConsignorDetails             => routes.ConsignorEoriNumberController.displayPage
     case OfficeOfExit                 => routes.LocationController.displayPage
-    case DepartureTransport           => routes.SupervisingCustomsOfficeController.displayPage
     case TotalPackageQuantity         => routes.OfficeOfExitController.displayPage
     case DocumentSummary              => routes.OfficeOfExitController.displayPage
     case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
@@ -343,6 +342,7 @@ object Navigator {
     case RepresentativeAgent        => representativeAgentClearancePreviousPage
     case IsExs                      => isExsClearancePreviousPage
     case Document                   => previousDocumentsPreviousPage
+    case DepartureTransport         => departureTransportClearancePreviousPage
     case ContainerFirst             => ifExpressConsignmentPreviousPage
   }
 
@@ -490,6 +490,10 @@ object Navigator {
     if (cacheModel.parties.exporterDetails.flatMap(_.details.eori).isDefined)
       routes.ExporterEoriNumberController.displayPage(mode)
     else routes.ExporterDetailsController.displayPage(mode)
+
+  private def departureTransportClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isEntryIntoDeclarantsRecords) supervisingCustomsOfficePageOnCondition(cacheModel, mode)
+    else routes.SupervisingCustomsOfficeController.displayPage(mode)
 
   private def supervisingCustomsOfficePageOnCondition(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (isConditionForAllProcedureCodesVerified(cacheModel)) supervisingCustomsOfficePreviousPage(cacheModel, mode)

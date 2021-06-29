@@ -16,6 +16,8 @@
 
 package views.declaration
 
+import java.util.UUID
+
 import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
@@ -23,6 +25,8 @@ import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes._
 import models.DeclarationType._
 import models.Mode
+import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
+import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.twirl.api.Html
@@ -213,7 +217,19 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
           )
         }
       }
+    }
 
+    val itemWith1040AsPC = ExportItem(UUID.randomUUID.toString, procedureCodes = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE))))
+
+    onJourney(CLEARANCE)(aDeclaration(withEntryIntoDeclarantsRecords(), withItem(itemWith1040AsPC))) { implicit request =>
+      "display 'Back' button to the 'Warehouse' page" when {
+        "declaration is EIDR and all declaration's items have '1040' as PC and '000' as unique APC" in {
+          val view = createView()
+          val backButton = view.getElementById("back-link")
+          backButton must containMessage("site.back")
+          backButton.getElementById("back-link") must haveHref(routes.WarehouseIdentificationController.displayPage())
+        }
+      }
     }
   }
 }

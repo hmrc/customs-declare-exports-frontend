@@ -121,12 +121,10 @@ class AdditionalProcedureCodesController @Inject()(
       .map(procedureCode => procedureCodeService.getAdditionalProcedureCodesFor(procedureCode.code, messagesApi.preferred(request).lang.toLocale))
 
   private def getProcedureCode(maybeCachedProcedureCode: Option[String])(implicit request: JourneyRequest[AnyContent]): Option[ProcedureCode] =
-    maybeCachedProcedureCode
-      .flatMap(
-        procedureCode =>
-          procedureCodeService
-            .getProcedureCodeFor(procedureCode, request.declarationType, request.cacheModel.isEidr, messagesApi.preferred(request).lang.toLocale)
-      )
+    maybeCachedProcedureCode.flatMap { procedureCode =>
+      val isEidr = request.cacheModel.isEntryIntoDeclarantsRecords
+      procedureCodeService.getProcedureCodeFor(procedureCode, request.declarationType, isEidr, messagesApi.preferred(request).lang.toLocale)
+    }
 
   private def validateForm(
     action: FormAction,

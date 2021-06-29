@@ -127,15 +127,16 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
       }
     }
 
-    val exportItem = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
+    val itemWith1040AsPC = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
 
-    onJourney(STANDARD, SUPPLEMENTARY)(aDeclaration(withItem(exportItem))) { implicit request =>
-      val view = createView()
-
-      "display 'Back' button that links to the 'Transport Leaving the Border' page" in {
-        val backButton = view.getElementById("back-link")
-        backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(routes.TransportLeavingTheBorderController.displayPage())
+    onJourney(STANDARD, SUPPLEMENTARY)(aDeclaration(withItem(itemWith1040AsPC))) { implicit request =>
+      "display 'Back' button that links to the 'Transport Leaving the Border' page" when {
+        "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" in {
+          val view = createView()
+          val backButton = view.getElementById("back-link")
+          backButton must containMessage("site.back")
+          backButton.getElementById("back-link") must haveHref(routes.TransportLeavingTheBorderController.displayPage())
+        }
       }
     }
   }
