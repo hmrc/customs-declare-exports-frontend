@@ -16,15 +16,12 @@
 
 package controllers.util
 
-import scala.concurrent.Future
-
-import controllers.declaration.{routes, ModelCacheable}
+import controllers.declaration.routes
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HeaderCarrier
 
 object SupervisingCustomsOfficeHelper {
 
@@ -50,7 +47,4 @@ object SupervisingCustomsOfficeHelper {
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL  => routes.ExpressConsignmentController.displayPage
       case DeclarationType.CLEARANCE                                => routes.DepartureTransportController.displayPage
     }
-
-  def resetCache(modelCacheable: ModelCacheable, declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] =
-    modelCacheable.updateExportsDeclarationSyncDirect(declaration.removeSupervisingCustomsOffice)
 }

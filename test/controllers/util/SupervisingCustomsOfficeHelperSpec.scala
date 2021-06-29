@@ -53,6 +53,11 @@ class SupervisingCustomsOfficeHelperSpec extends UnitSpec with ExportsDeclaratio
         val declaration = aDeclaration(withItem(condVerified), withItem(condNotVerified), withItem(condVerified))
         isConditionForAllProcedureCodesVerified(declaration) mustBe false
       }
+
+      "a declaration does not contain items" in {
+        val declaration = aDeclaration()
+        isConditionForAllProcedureCodesVerified(declaration) mustBe false
+      }
     }
   }
 }
