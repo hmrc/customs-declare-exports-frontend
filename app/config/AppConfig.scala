@@ -97,6 +97,7 @@ class AppConfig @Inject()(
   val additionalDocumentsUnionCodes = loadConfig("urls.additionalDocumentsUnionCodes")
   val additionalDocumentsReferenceCodes = loadConfig("urls.additionalDocumentsReferenceCodes")
   val additionalDocumentsUnitCodes = loadConfig("urls.additionalDocumentsUnitCodes")
+  val unDangerousGoodsUrl = loadConfig("urls.unDangerousGoods")
 
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   val giveFeedbackLink = {
