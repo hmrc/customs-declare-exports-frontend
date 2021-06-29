@@ -34,6 +34,7 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
+        insetText: exportsInsetText,
         body: paragraphBody,
         pageTitle: pageTitle,
         saveButtons: saveButtons,
@@ -44,7 +45,7 @@
 
 @(mode: Mode, itemId: String, form: Form[UNDangerousGoodsCode])(implicit request: JourneyRequest[_], messages: Messages)
 
-    @tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.unDangerousGoodsCode.traderTariff.link")</a>}
+    @unDangerousGoodsLink = {<a target="_blank" class="govuk-link" href=@appConfig.unDangerousGoodsUrl>@messages("declaration.unDangerousGoodsCode.inset.link")</a>}
 
 
 @govukLayout(
@@ -63,9 +64,6 @@
                     content = Text(messages("declaration.unDangerousGoodsCode.header")),
                     classes = gdsPageLegend
                 ))
-            )),
-            hint = Some(Hint(
-                content = HtmlContent(Html(messages("declaration.unDangerousGoodsCode.header.hint", tradeTariffLink)))
             )),
             items = Seq(
                 RadioItem(
@@ -89,6 +87,8 @@
             ),
             errorMessage = form(hasDangerousGoodsCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+
+        @insetText(content = HtmlContent(messages("declaration.unDangerousGoodsCode.inset", unDangerousGoodsLink)))
 
         @tariffExpander(UNDangerousGoodsCode, request.declarationType)(messages, appConfig)
 

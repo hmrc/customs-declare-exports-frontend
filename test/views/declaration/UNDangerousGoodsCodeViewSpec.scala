@@ -44,7 +44,8 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
     onEveryDeclarationJourney() { implicit request =>
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.header")
-        messages must haveTranslationFor("declaration.unDangerousGoodsCode.header.hint")
+        messages must haveTranslationFor("declaration.unDangerousGoodsCode.inset")
+        messages must haveTranslationFor("declaration.unDangerousGoodsCode.inset.link")
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.hasCode")
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.noCode")
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.label")
@@ -67,6 +68,11 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
       "display radio button with No option" in {
         view.getElementById("code_no").attr("value") mustBe AllowedUNDangerousGoodsCodeAnswers.no
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.unDangerousGoodsCode.noCode")
+      }
+
+      "display inset text" in {
+        val inset = view.getElementsByClass("govuk-inset-text")
+        inset.get(0) must containText(messages("declaration.unDangerousGoodsCode.inset", messages("declaration.unDangerousGoodsCode.inset.link")))
       }
 
       "display 'Back' button that links to 'Commodity Details' page" in {

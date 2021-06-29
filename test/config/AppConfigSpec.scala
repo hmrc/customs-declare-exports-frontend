@@ -281,6 +281,10 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.additionalProcedureCodesOfCDs must be("http://additionalProcedureCodesOfCDs")
     }
 
+    "have unDangerousGoods URL" in {
+      validAppConfig.unDangerousGoodsUrl must be("http://unDangerousGoods")
+    }
+
     "have link for 'give feedback'" in {
       validAppConfig.giveFeedbackLink must be("/contact-frontend-url?service=DeclarationServiceId")
     }
@@ -426,6 +430,7 @@ object AppConfigSpec {
       |urls.procedureCodes.reExportFollowingSpecialProcedure = "https://www.gov.uk/guidance/moving-processed-or-repaired-goods-into-free-circulation-or-re-exporting-them"
       |
       |urls.additionalProcedureCodesOfCDs = "http://additionalProcedureCodesOfCDs"
+      |urls.unDangerousGoods = "http://unDangerousGoods"
       |
       |files.codelists.holderOfAuthorisationCodes="holderOfAuthorisationCodes"
       |files.codelists.procedureCodes="procedureCodes"
