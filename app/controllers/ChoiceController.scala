@@ -20,16 +20,17 @@ import config.AppConfig
 import config.featureFlags.SecureMessagingInboxConfig
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.Choice
-import forms.Choice._
 import forms.Choice.AllowedChoiceValues._
+import forms.Choice._
+import models.requests.ExportsSessionKeys
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
 
 import javax.inject.Inject
-import play.twirl.api.HtmlFormat
 
 class ChoiceController @Inject()(
   authenticate: AuthAction,
@@ -52,7 +53,7 @@ class ChoiceController @Inject()(
       choicePage(previousChoice.fold(form)(form.fill), availableJourneys)
     }
 
-    Ok(pageForPreviousChoice(previousChoice))
+    Ok(pageForPreviousChoice(previousChoice)).removingFromSession(ExportsSessionKeys.declarationId)
   }
 
   def submitChoice(): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
@@ -61,7 +62,7 @@ class ChoiceController @Inject()(
       .fold(
         (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors, availableJourneys)),
         choice =>
-          choice.value match {
+          (choice.value match {
             case CreateDec =>
               Redirect(controllers.declaration.routes.DeclarationChoiceController.displayPage())
             case CancelDec =>
@@ -72,7 +73,7 @@ class ChoiceController @Inject()(
               Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
             case Inbox =>
               Redirect(controllers.routes.SecureMessagingController.displayInbox)
-        }
+          }).removingFromSession(ExportsSessionKeys.declarationId)
       )
   }
 }
