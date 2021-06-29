@@ -146,8 +146,10 @@ trait ExportsDeclarationBuilder {
 
   private def uuid: String = UUID.randomUUID().toString
 
-  def withEntryIntoDeclarantsRecords(isEidr: String = YesNoAnswers.yes): ExportsDeclarationModifier =
+  def withEIDR(isEidr: String = YesNoAnswers.yes): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(isEntryIntoDeclarantsRecords = Some(YesNoAnswer(isEidr))))
+
+  def withEntryIntoDeclarantsRecords(isEidr: String = YesNoAnswers.yes): ExportsDeclarationModifier = withEIDR(isEidr)
 
   def withPersonPresentingGoodsDetails(eori: Option[Eori] = None): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(personPresentingGoodsDetails = eori.map(PersonPresentingGoodsDetails(_))))

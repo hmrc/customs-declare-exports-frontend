@@ -128,9 +128,9 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       }
     }
 
-    val item = ExportItem(UUID.randomUUID.toString, procedureCodes = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE))))
+    val itemWith1040AsPC = ExportItem(UUID.randomUUID.toString, procedureCodes = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE))))
 
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY)(aDeclaration(withItem(item))) { request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY)(aDeclaration(withItem(itemWith1040AsPC))) { request =>
       "skip SupervisingCustomsOffice page on submit" when {
         "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" in {
           withNewCaching(request.cacheModel)
@@ -190,6 +190,19 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage()
+        }
+      }
+
+      "skip SupervisingCustomsOffice page on submit" when {
+        "declaration is EIDR and all declaration's items have '1040' as PC and '000' as unique APC" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withEIDR(), withItem(itemWith1040AsPC)))
+
+          val correctForm = Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> "R12341234")
+
+          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.DepartureTransportController.displayPage()
         }
       }
     }

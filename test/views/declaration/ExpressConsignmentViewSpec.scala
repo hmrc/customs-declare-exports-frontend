@@ -114,13 +114,15 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       }
     }
 
-    val exportItem = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
+    val itemWith1040AsPC = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
 
-    onJourney(SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(exportItem))) { implicit request =>
+    onJourney(SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWith1040AsPC))) { implicit request =>
       val view: Document = createView()
 
-      "display 'Back' button to the 'Items Summary' page" in {
-        verifyBackButton(view, routes.ItemsSummaryController.displayItemsSummaryPage())
+      "display 'Back' button to the 'Items Summary' page" when {
+        "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" in {
+          verifyBackButton(view, routes.ItemsSummaryController.displayItemsSummaryPage())
+        }
       }
     }
 
