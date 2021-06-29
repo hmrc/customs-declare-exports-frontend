@@ -19,6 +19,7 @@ package controllers.navigation
 import config.AppConfig
 import controllers.declaration.routes
 import controllers.util._
+import controllers.util.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
@@ -33,7 +34,6 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.declaration.removals.RemoveItem
 import forms.{Choice, DeclarationPage}
-
 import javax.inject.Inject
 import models.DeclarationType._
 import models.Mode.ErrorFix
@@ -492,9 +492,8 @@ object Navigator {
     else routes.ExporterDetailsController.displayPage(mode)
 
   private def supervisingCustomsOfficePageOnCondition(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesNotVerified(cacheModel))
-      routes.SupervisingCustomsOfficeController.displayPage(mode)
-    else supervisingCustomsOfficePreviousPage(cacheModel, mode)
+    if (isConditionForAllProcedureCodesVerified(cacheModel)) supervisingCustomsOfficePreviousPage(cacheModel, mode)
+    else routes.SupervisingCustomsOfficeController.displayPage(mode)
 
   private def supervisingCustomsOfficePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.requiresWarehouseId || cacheModel.`type` == CLEARANCE)

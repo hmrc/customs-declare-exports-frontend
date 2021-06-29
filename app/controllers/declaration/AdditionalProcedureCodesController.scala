@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util._
 import controllers.util.MultipleItemsHelper.remove
+import controllers.util.SupervisingCustomsOfficeHelper._
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode._
 import models.{ExportsDeclaration, Mode}
@@ -205,8 +206,8 @@ class AdditionalProcedureCodesController @Inject()(
         val continueToCommodityDetails = navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
 
         val model = maybeModel.fold(request.cacheModel)(identity)
-        if (SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesNotVerified(model)) Future.successful(continueToCommodityDetails)
-        else SupervisingCustomsOfficeHelper.resetCache(this, model).map(_ => continueToCommodityDetails)
+        if (isConditionForAllProcedureCodesVerified(model)) resetCache(this, model).map(_ => continueToCommodityDetails)
+        else Future.successful(continueToCommodityDetails)
     }
 
   private def returnErrorPage(
