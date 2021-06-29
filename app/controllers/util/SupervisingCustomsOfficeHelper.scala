@@ -16,20 +16,17 @@
 
 package controllers.util
 
-import scala.concurrent.Future
-
-import controllers.declaration.{routes, ModelCacheable}
+import controllers.declaration.routes
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HeaderCarrier
 
 object SupervisingCustomsOfficeHelper {
 
-  private def isConditionForProcedureCodesDataNotVerified(data: ProcedureCodesData): Boolean =
-    data.procedureCode.forall(_ != "1040" || !data.additionalProcedureCodes.contains(NO_APC_APPLIES_CODE))
+  private def isConditionForProcedureCodesDataVerified(data: ProcedureCodesData): Boolean =
+    data.procedureCode.contains("1040") && data.additionalProcedureCodes.contains(NO_APC_APPLIES_CODE)
 
   /* The Supervising-Customs-Office page must be skipped if all items have
      - "1040" as Procedure code
@@ -37,12 +34,12 @@ object SupervisingCustomsOfficeHelper {
 
      If this condition is NOT verified the user can land on the Supervising-Customs-Office page.
    */
-  def isConditionForAllProcedureCodesNotVerified(cachedModel: ExportsDeclaration): Boolean =
-    cachedModel.items.forall(_.procedureCodes.forall(isConditionForProcedureCodesDataNotVerified))
+  def isConditionForAllProcedureCodesVerified(cachedModel: ExportsDeclaration): Boolean =
+    cachedModel.items.nonEmpty && cachedModel.items.forall(_.procedureCodes.forall(isConditionForProcedureCodesDataVerified))
 
   def landOnOrSkipToNextPage(implicit request: JourneyRequest[_]): Mode => Call =
-    if (isConditionForAllProcedureCodesNotVerified(request.cacheModel)) routes.SupervisingCustomsOfficeController.displayPage
-    else nextPage
+    if (isConditionForAllProcedureCodesVerified(request.cacheModel)) nextPage
+    else routes.SupervisingCustomsOfficeController.displayPage
 
   def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {
@@ -50,7 +47,4 @@ object SupervisingCustomsOfficeHelper {
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL  => routes.ExpressConsignmentController.displayPage
       case DeclarationType.CLEARANCE                                => routes.DepartureTransportController.displayPage
     }
-
-  def resetCache(modelCacheable: ModelCacheable, declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] =
-    modelCacheable.updateExportsDeclarationSyncDirect(declaration.removeSupervisingCustomsOffice)
 }

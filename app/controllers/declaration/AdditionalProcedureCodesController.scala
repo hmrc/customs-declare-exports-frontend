@@ -16,18 +16,22 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util._
 import controllers.util.MultipleItemsHelper.remove
+import controllers.util.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
+import controllers.util._
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode._
-import models.{ExportsDeclaration, Mode}
-import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
+import javax.inject.Inject
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
+import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,9 +40,6 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.procedureCodes.additional_procedure_codes
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalProcedureCodesController @Inject()(
   authenticate: AuthAction,
@@ -205,9 +206,12 @@ class AdditionalProcedureCodesController @Inject()(
         val continueToCommodityDetails = navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
 
         val model = maybeModel.fold(request.cacheModel)(identity)
-        if (SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesNotVerified(model)) Future.successful(continueToCommodityDetails)
-        else SupervisingCustomsOfficeHelper.resetCache(this, model).map(_ => continueToCommodityDetails)
+        if (!isConditionForAllProcedureCodesVerified(model)) Future.successful(continueToCommodityDetails)
+        else resetSupervisingCustomsOfficeInCache(model).map(_ => continueToCommodityDetails)
     }
+
+  private def resetSupervisingCustomsOfficeInCache(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(declaration.removeSupervisingCustomsOffice)
 
   private def returnErrorPage(
     mode: Mode,

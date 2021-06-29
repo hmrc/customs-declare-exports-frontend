@@ -1065,10 +1065,11 @@ function transportLeavingBorder(){
 
 function warehouseIdentification(){
     if (currentPageIs('/customs-declare-exports/declaration/warehouse-details')) {
-
         // K
         if(document.getElementById('code_no')) {
             document.getElementById('code_no').click()
+        } else {
+            document.getElementById('identificationNumber').value = 'R1234567GB';
         }
 
         document.getElementById('submit').click();
