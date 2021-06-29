@@ -35,7 +35,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
 
   "Transaction section" should {
 
-    val view = section(Mode.Normal, data)(messages, journeyRequest())
+    val view = section(Mode.Normal, data)(messages)
 
     "have total amount invoiced with change button" in {
 
@@ -91,31 +91,31 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
     }
 
     "not display total amount invoiced when question not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages)
 
       view.getElementsByClass("item-amount-row") mustBe empty
     }
 
     "not display exchange rate when question not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages)
 
       view.getElementsByClass("exchange-rate-row") mustBe empty
     }
 
     "not display total package when question not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTotalPackageQuantity))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTotalPackageQuantity))(messages)
 
       view.getElementsByClass("total-no-of-packages-row") mustBe empty
     }
 
     "not display nature of transaction when question not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutNatureOfTransaction()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutNatureOfTransaction()))(messages)
 
       view.getElementsByClass("nature-of-transaction-row") mustBe empty
     }
 
     "not display related documents section when question not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutPreviousDocuments()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutPreviousDocuments()))(messages)
 
       view.getElementsByClass("previous-documents-row") mustBe empty
     }

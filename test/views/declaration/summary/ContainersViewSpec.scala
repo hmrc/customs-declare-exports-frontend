@@ -42,7 +42,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData with Injector
 
       "Containers is empty" in {
 
-        val view = section(Mode.Normal, Seq.empty)(messages, journeyRequest())
+        val view = section(Mode.Normal, Seq.empty)(messages)
         val row = view.getElementsByClass("containers-row")
 
         row must haveSummaryKey(messages("declaration.summary.transport.containers"))
@@ -55,7 +55,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData with Injector
     }
 
     "display all containers and seals" in {
-      val view = section(Mode.Change, containers)(messages, journeyRequest())
+      val view = section(Mode.Change, containers)(messages)
 
       val table = view.getElementById("containers-table")
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.container")

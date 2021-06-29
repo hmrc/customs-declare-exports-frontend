@@ -33,7 +33,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with In
 
       "documents are empty" in {
 
-        val view = section(Mode.Normal, Seq.empty)(messages, journeyRequest())
+        val view = section(Mode.Normal, Seq.empty)(messages)
         val row = view.getElementsByClass("previous-documents-row")
 
         row must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
@@ -51,7 +51,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with In
 
         val data = Seq(Document("325", "123456", RelatedDocument, None), Document("271", "654321", SimplifiedDeclaration, None))
 
-        val view = section(Mode.Change, data)(messages, journeyRequest())
+        val view = section(Mode.Change, data)(messages)
         val table = view.getElementById("previous-documents")
 
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.transaction.previousDocuments")

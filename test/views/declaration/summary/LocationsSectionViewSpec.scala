@@ -31,7 +31,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
   "Locations section" must {
 
-    val view = section(Mode.Change, data)(messages, journeyRequest())
+    val view = section(Mode.Change, data)(messages)
 
     "have a goods location code with change button" in {
 
@@ -46,7 +46,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     "have office of exit id with change button" in {
 
-      val view = section(Mode.Change, data)(messages, journeyRequest())
+      val view = section(Mode.Change, data)(messages)
 
       val row = view.getElementsByClass("location-officeOfExit-row")
       row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
@@ -59,13 +59,13 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     }
 
     "not have answers when goods location not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutGoodsLocation()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutGoodsLocation()))(messages)
 
       view.getElementsByClass("goodsLocationCode-row") mustBe empty
     }
 
     "not have answers when office of exit not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutOfficeOfExit()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutOfficeOfExit()))(messages)
 
       view.getElementsByClass("location-officeOfExit-row") mustBe empty
     }

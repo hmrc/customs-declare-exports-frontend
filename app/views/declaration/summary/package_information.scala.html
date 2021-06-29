@@ -16,7 +16,6 @@
 
 @import forms.declaration.PackageInformation
 @import models.Mode
-@import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
 @import views.html.components.gds.spanVisuallyHidden
@@ -39,7 +38,7 @@
   itemNo: Int,
   packageInformation: Seq[PackageInformation],
   actionsEnabled: Boolean = true
-)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+)(implicit messages: Messages)
 
 @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)

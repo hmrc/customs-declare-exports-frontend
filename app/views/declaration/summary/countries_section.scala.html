@@ -15,7 +15,6 @@
  *@
 
 @import models.declaration.Locations
-@import models.requests.JourneyRequest
 @import services.Countries
 @import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
@@ -24,7 +23,7 @@
 
 @this(summaryList: summary_list, linkContent: linkContent)
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @sectionRequired(locations: Locations) = @{
     locations.originationCountry.isDefined || locations.hasRoutingCountries.isDefined || locations.routingCountries.nonEmpty || locations.destinationCountry.isDefined

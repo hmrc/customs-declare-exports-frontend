@@ -37,8 +37,8 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
 
   val section = instanceOf[references_section]
 
-  val view = section(Mode.Change, data)(messages, journeyRequest())
-  val viewNoAnswers = section(Mode.Change, aDeclaration(withType(DeclarationType.STANDARD)))(messages, journeyRequest())
+  val view = section(Mode.Change, data)(messages)
+  val viewNoAnswers = section(Mode.Change, aDeclaration(withType(DeclarationType.STANDARD)))(messages)
 
   "References section" should {
 

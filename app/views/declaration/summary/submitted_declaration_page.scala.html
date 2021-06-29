@@ -14,9 +14,8 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import models.Mode
-@import models.requests.JourneyRequest
+@import models.ExportsDeclaration
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary._
@@ -37,13 +36,9 @@
         transport_section: transport_section
 )
 
-@(notifications: Seq[Notification])(implicit request: JourneyRequest[_], messages: Messages)
+@(notifications: Seq[Notification], declarationData: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
 
-@backLink = @{request.declarationId match {
-    case Some(id) => controllers.routes.SubmissionsController.displayDeclarationWithNotifications(id)
-    case _ => controllers.routes.SubmissionsController.displayListOfSubmissions()
-    }
-}
+@backLink = @{controllers.routes.SubmissionsController.displayDeclarationWithNotifications(declarationData.id)}
 
 @printThisPage = {
     <p class="govuk-body">
@@ -63,21 +58,21 @@
 
     @printThisPage
 
-    <div class="govuk-section-break">@references_section(Mode.Normal, request.cacheModel, false)</div>
+    <div class="govuk-section-break">@references_section(Mode.Normal, declarationData, false)</div>
 
-    <div class="govuk-section-break">@parties_section(Mode.Normal, request.cacheModel, false)</div>
+    <div class="govuk-section-break">@parties_section(Mode.Normal, declarationData, false)</div>
 
-    <div class="govuk-section-break">@countries_section(Mode.Normal, request.cacheModel, false)</div>
+    <div class="govuk-section-break">@countries_section(Mode.Normal, declarationData, false)</div>
 
-    <div class="govuk-section-break">@locations_section(Mode.Normal, request.cacheModel, false)</div>
+    <div class="govuk-section-break">@locations_section(Mode.Normal, declarationData, false)</div>
 
-    <div class="govuk-section-break">@transaction_section(Mode.Normal, request.cacheModel, false)</div>
+    <div class="govuk-section-break">@transaction_section(Mode.Normal, declarationData, false)</div>
 
-    @items_section(Mode.Normal, request.cacheModel, false)
+    @items_section(Mode.Normal, declarationData, false)
 
-    <div class="govuk-section-break">@warehouse_section(Mode.Normal, request.cacheModel, false)</div>
+    <div class="govuk-section-break">@warehouse_section(Mode.Normal, declarationData, false)</div>
 
-    <div class="govuk-section-break">@transport_section(Mode.Normal, request.cacheModel, false)</div>
+    <div class="govuk-section-break">@transport_section(Mode.Normal, declarationData, false)</div>
 
     @printThisPage
 }

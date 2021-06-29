@@ -32,7 +32,7 @@ class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestData with Inject
 
       "there is no items in the declaration" in {
 
-        val view = itemsSection(Mode.Normal, aDeclaration())(messages, journeyRequest())
+        val view = itemsSection(Mode.Normal, aDeclaration())(messages)
 
         view.getAllElements.text() must be(empty)
       }
@@ -45,7 +45,7 @@ class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestData with Inject
         val data =
           aDeclaration(withItems(anItem(withSequenceId(1), withStatisticalValue("10")), anItem(withSequenceId(2), withProcedureCodes(Some("code")))))
 
-        val view = itemsSection(Mode.Normal, data)(messages, journeyRequest())
+        val view = itemsSection(Mode.Normal, data)(messages)
 
         view.getElementById("declaration-items-summary-1").text() mustNot be(empty)
         view.getElementById("declaration-items-summary-2").text() mustNot be(empty)

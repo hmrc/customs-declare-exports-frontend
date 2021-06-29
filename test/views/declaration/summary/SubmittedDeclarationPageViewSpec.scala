@@ -36,7 +36,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
   val declarationPage = instanceOf[submitted_declaration_page]
   def createView(declaration: ExportsDeclaration = aDeclaration()): Document =
-    declarationPage(Seq(notification))(journeyRequest(declaration), messages)
+    declarationPage(Seq(notification), declaration)(request, messages)
 
   def links(view: Document) = {
     val allLinks = view.getElementsByClass("govuk-link")
@@ -50,7 +50,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
     allLinks
   }
 
-  "Summary page" should {
+  "SubmittedDeclarationPageView" should {
 
     "display correct title" in {
 
@@ -59,10 +59,10 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "display correct back link" in {
 
-      val backButton = createView().getElementById("back-link")
+      val backButton = createView(aDeclaration(withId("declaration-id"))).getElementById("back-link")
 
       backButton.text() mustBe messages("site.back")
-      backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
+      backButton must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("declaration-id"))
     }
 
     "have references section" in {

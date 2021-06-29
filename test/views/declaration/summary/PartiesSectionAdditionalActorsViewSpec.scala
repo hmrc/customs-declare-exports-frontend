@@ -40,7 +40,7 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
 
     "display additional actors with answer no if empty" in {
 
-      val view = section(Mode.Normal, Seq.empty)(messages, journeyRequest())
+      val view = section(Mode.Normal, Seq.empty)(messages)
       val row = view.getElementsByClass("additionalActors-row")
 
       row must haveSummaryKey(messages("declaration.summary.parties.additional"))
@@ -53,7 +53,7 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
 
     "display additional actors if exists" in {
 
-      val view = section(Mode.Normal, additionalActors)(messages, journeyRequest())
+      val view = section(Mode.Normal, additionalActors)(messages)
       val table = view.getElementById("additionalActors-table")
 
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.parties.additional")

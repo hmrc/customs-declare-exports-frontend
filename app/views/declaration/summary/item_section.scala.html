@@ -15,7 +15,7 @@
  *@
 
 @import models.declaration.ExportItem
-@import models.requests.JourneyRequest
+@import models.DeclarationType.DeclarationType
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.elements_in_separate_lines
@@ -31,7 +31,7 @@
         supporting_documents: supporting_documents
 )
 
-@(mode: Mode, item: ExportItem, actionsEnabled: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, item: ExportItem, declarationType: DeclarationType, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)
@@ -257,7 +257,7 @@
             ))
         )
     ),
-    if(journeyRequest.isType(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL))
+    if(Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL).contains(declarationType))
         item.commodityMeasure.map(commodityMeasure =>
             SummaryListRow(
                 classes = s"item-${item.sequenceId}-supplementaryUnits-row",

@@ -27,7 +27,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
   val section = instanceOf[countries_section]
 
-  def view(data: ExportsDeclaration) = section(Mode.Change, data)(messages, journeyRequest())
+  def view(data: ExportsDeclaration) = section(Mode.Change, data)(messages)
 
   "Countries section" should {
 

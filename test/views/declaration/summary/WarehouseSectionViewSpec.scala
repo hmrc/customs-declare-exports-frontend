@@ -37,7 +37,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
   "Warehouse section" should {
 
-    val view = section(mode, data)(messages, journeyRequest())
+    val view = section(mode, data)(messages)
 
     "display warehouse id with change button" in {
       val row = view.getElementsByClass("warehouse-id-row")
@@ -71,7 +71,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     "display warehouse label when user said 'no'" in {
 
-      val row = section(mode, aDeclarationAfter(data, withWarehouseIdentification(Some(WarehouseIdentification(None)))))(messages, journeyRequest())
+      val row = section(mode, aDeclarationAfter(data, withWarehouseIdentification(Some(WarehouseIdentification(None)))))(messages)
         .getElementsByClass("warehouse-id-row")
 
       row must haveSummaryKey(messages("declaration.summary.warehouse.no.label"))
@@ -80,21 +80,21 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     "not display warehouse id when question not answered" in {
 
-      val view = section(mode, aDeclarationAfter(data, withoutWarehouseIdentification()))(messages, journeyRequest())
+      val view = section(mode, aDeclarationAfter(data, withoutWarehouseIdentification()))(messages)
 
       view.getElementsByClass("warehouse-id-row") mustBe empty
     }
 
     "not display supervising office when question not answered" in {
 
-      val view = section(mode, aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages, journeyRequest())
+      val view = section(mode, aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages)
 
       view.getElementsByClass("supervising-office-row") mustBe empty
     }
 
     "not display mode of transport when question not answered" in {
 
-      val view = section(mode, aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages, journeyRequest())
+      val view = section(mode, aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages)
 
       view.getElementsByClass("mode-of-transport-row") mustBe empty
     }

@@ -35,7 +35,7 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
 
       "Sequence is empty" in {
 
-        val view = section(Mode.Normal, "itemId", 1, Seq.empty)(messages, journeyRequest())
+        val view = section(Mode.Normal, "itemId", 1, Seq.empty)(messages)
         val row = view.getElementsByClass("additional-information-1-row")
 
         row must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation"))
@@ -49,7 +49,7 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
 
     "display additional information with change buttons" in {
 
-      val view = section(Mode.Normal, "itemId", 1, data)(messages, journeyRequest())
+      val view = section(Mode.Normal, "itemId", 1, data)(messages)
       val table = view.getElementById("additional-information-1-table")
 
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalInformation")
@@ -81,7 +81,7 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
 
       "actionsEnabled is false" in {
 
-        val view = section(Mode.Normal, "itemId", 1, data, actionsEnabled = false)(messages, journeyRequest())
+        val view = section(Mode.Normal, "itemId", 1, data, actionsEnabled = false)(messages)
         val table = view.getElementById("additional-information-1-table")
 
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalInformation")

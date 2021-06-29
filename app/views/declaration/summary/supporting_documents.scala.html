@@ -15,7 +15,6 @@
  *@
 
 @import forms.declaration.additionaldocuments.DocumentsProduced
-@import models.requests.JourneyRequest
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.link
@@ -39,7 +38,7 @@
   itemNo: Int,
   supportingDocuments: Seq[DocumentsProduced],
   actionsEnabled: Boolean = true
-)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+)(implicit messages: Messages)
 
 @change(document: DocumentsProduced) = {
     @{
