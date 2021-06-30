@@ -35,6 +35,8 @@
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
   govukDetails : GovukDetails,
+  bulletList: bulletList,
+  insetText: exportsInsetText,
   tariffExpander: tariffExpander,
   saveButtons: saveButtons,
   formHelper: FormWithCSRF,
@@ -44,15 +46,26 @@
 
 @(mode: Mode, itemId: String, form: Form[ProcedureCode])(implicit request: JourneyRequest[_], messages: Messages)
 
+@insetContent = {
+    @bulletList(
+        title = Some(messages("declaration.procedureCodes.inset.paragraph.1")),
+        items = Seq(
+            Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.1")),
+            Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.2")),
+            Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.3"))
+        ),
+    )
+
+    <p>@messages("declaration.procedureCodes.inset.paragraph.2")</p>
+}
+
 @readMoreExpanderContent = {
   <p>@messages("declaration.procedureCodes.readMoreExpander.paragraph.1")</p>
-  <p>@messages("declaration.procedureCodes.readMoreExpander.paragraph.2")</p>
-  <p>@messages("declaration.procedureCodes.readMoreExpander.paragraph.3")</p>
   <p>@messages("declaration.procedureCodes.readMoreExpander.removalOfGoodsFromExciseWarehouse") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.removalOfGoodsFromExciseWarehouse.link.text"), linkUrl = appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse)</p>
   <p>@messages("declaration.procedureCodes.readMoreExpander.onwardSupplyRelief") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.onwardSupplyRelief.link.text"), linkUrl = appConfig.procedureCodesOnwardSupplyRelief)</p>
   <p>@messages("declaration.procedureCodes.readMoreExpander.endUseRelief") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.endUseRelief.link.text"), linkUrl = appConfig.procedureCodesEndUseRelief)</p>
   <p>@messages("declaration.procedureCodes.readMoreExpander.inwardProcessing") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.inwardProcessing.link.text"), linkUrl = appConfig.procedureCodesInwardProcessing)</p>
-  <p>@messages("declaration.procedureCodes.readMoreExpander.paragraph.4")</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.paragraph.2")</p>
   <p>@tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.outwardProcessing.link.text"), linkUrl = appConfig.procedureCodesOutwardProcessing)</p>
   <p>@tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.temporaryExport.link.text"), linkUrl = appConfig.procedureCodesTemporaryExport)</p>
   <p>@tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.reExportFollowingSpecialProcedure.link.text"), linkUrl = appConfig.procedureCodesReExportFollowingSpecialProcedure)</p>
@@ -79,8 +92,10 @@
             isPageHeading = true,
             hintParagraphs = List(messages("declaration.procedureCodes.hint"))
         )
-
+      
         @if(!(request.declarationType == DeclarationType.CLEARANCE && request.cacheModel.isNotEntryIntoDeclarantsRecords)) {
+            @insetText(content = HtmlContent(insetContent))
+
             @govukDetails(Details(
                 id = Some("procedureCode-readMore"),
                 summary = Text(messages("declaration.procedureCodes.readMoreExpander.header")),
