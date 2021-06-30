@@ -47,10 +47,13 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Injec
       messages must haveTranslationFor("declaration.procedureCodes.error.invalid")
 
       messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.header")
+      messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.1")
+      messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.1.bullet.1")
+      messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.1.bullet.2")
+      messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.1.bullet.3")
+      messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.2")
       messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.paragraph.1")
       messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.paragraph.2")
-      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.paragraph.3")
-      messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.paragraph.4")
       messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.removalOfGoodsFromExciseWarehouse")
       messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.removalOfGoodsFromExciseWarehouse.link.text")
       messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.onwardSupplyRelief")
@@ -113,26 +116,57 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Injec
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display 'Read more' expander" in {
-        Option(createView().getElementById("procedureCode-readMore")) mustNot be(empty)
+      "display inset text" in {
+        val inset = createView().getElementsByClass("govuk-inset-text")
+        val expected = Seq(
+          messages("declaration.procedureCodes.inset.paragraph.1"),
+          messages("declaration.procedureCodes.inset.paragraph.1.bullet.1"),
+          messages("declaration.procedureCodes.inset.paragraph.1.bullet.2"),
+          messages("declaration.procedureCodes.inset.paragraph.1.bullet.3"),
+          messages("declaration.procedureCodes.inset.paragraph.2")
+        ).mkString(" ")
+        inset.get(0) must containText(expected)
+      }
+
+      "display non-standard procedures expander" in {
+        createView().getElementsByClass("govuk-details__summary-text").first() must containHtml(
+          messages("declaration.procedureCodes.readMoreExpander.header")
+        )
       }
     }
 
     onJourney(CLEARANCE)(aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.yes))) { implicit request =>
       "declaration is EIDR" should {
-        "display 'Read more' expander" in {
-          Option(createView().getElementById("procedureCode-readMore")) mustNot be(empty)
+        "display inset text" in {
+          val inset = createView().getElementsByClass("govuk-inset-text")
+          val expected = Seq(
+            messages("declaration.procedureCodes.inset.paragraph.1"),
+            messages("declaration.procedureCodes.inset.paragraph.1.bullet.1"),
+            messages("declaration.procedureCodes.inset.paragraph.1.bullet.2"),
+            messages("declaration.procedureCodes.inset.paragraph.1.bullet.3"),
+            messages("declaration.procedureCodes.inset.paragraph.2")
+          ).mkString(" ")
+          inset.get(0) must containText(expected)
+        }
+
+        "display non-standard procedures expander" in {
+          createView().getElementsByClass("govuk-details__summary-text").first() must containHtml(
+            messages("declaration.procedureCodes.readMoreExpander.header")
+          )
         }
       }
     }
 
     onJourney(CLEARANCE)(aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.no))) { implicit request =>
       "declaration is NOT EIDR" should {
-        "NOT display 'Read more' expander" in {
+        "NOT display inset text" in {
+          createView().getElementsByClass("govuk-inset-text") must be(empty)
+        }
+
+        "NOT display non-standard procedures expander" in {
           Option(createView().getElementById("procedureCode-readMore")) mustBe empty
         }
       }
     }
-
   }
 }
