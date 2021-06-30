@@ -41,6 +41,7 @@ class StatusOfSubmissionSpec extends UnitViewSpec {
       StatusOfSubmission.asText(GOODS_HAVE_EXITED_THE_COMMUNITY) mustBe "Goods Have Exited The Community"
       StatusOfSubmission.asText(DECLARATION_HANDLED_EXTERNALLY) mustBe "Declaration Handled Externally"
       StatusOfSubmission.asText(AWAITING_EXIT_RESULTS) mustBe "Awaiting Exit Results"
+      StatusOfSubmission.asText(QUERY_NOTIFICATION_MESSAGE) mustBe "Query Raised"
       StatusOfSubmission.asText(UNKNOWN) mustBe "Unknown status"
     }
   }

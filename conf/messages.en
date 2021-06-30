@@ -629,6 +629,7 @@ submission.status.CUSTOMS_POSITION_DENIED         = Customs Position Denied
 submission.status.GOODS_HAVE_EXITED_THE_COMMUNITY = Goods Have Exited The Community
 submission.status.DECLARATION_HANDLED_EXTERNALLY  = Declaration Handled Externally
 submission.status.AWAITING_EXIT_RESULTS           = Awaiting Exit Results
+submission.status.QUERY_NOTIFICATION_MESSAGE      = Query Raised
 submission.status.UNKNOWN                         = Unknown status
 
 submissions.title = Your declarations

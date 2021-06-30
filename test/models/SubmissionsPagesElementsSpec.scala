@@ -19,7 +19,8 @@ package models
 import base.UnitWithMocksSpec
 import config.PaginationConfig
 import models.declaration.notifications.Notification
-import models.declaration.submissions.{Submission, SubmissionStatus}
+import models.declaration.submissions.Submission
+import models.declaration.submissions.SubmissionStatus._
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import testdata.SubmissionsTestData._
@@ -61,78 +62,6 @@ class SubmissionsPagesElementsSpec extends UnitWithMocksSpec with BeforeAndAfter
       }
     }
 
-    "build correct SubmissionsPagesElements" when {
-
-      "provided with a single type of submission" when {
-
-        "it is rejected submission" in {
-
-          val rejectedSubmission = submission_2 -> Seq(notification.copy(status = SubmissionStatus.REJECTED))
-
-          val input = Seq(rejectedSubmission)
-
-          val expectedResult = SubmissionsPagesElements(
-            rejectedSubmissions = Paginated(Seq(rejectedSubmission), Page(), 1),
-            actionSubmissions = Paginated(Seq.empty, Page(), 0),
-            otherSubmissions = Paginated(Seq.empty, Page(), 0)
-          )
-
-          SubmissionsPagesElements(input) mustBe expectedResult
-        }
-
-        "it is action submission" in {
-
-          val actionSubmission = submission_3 -> Seq(
-            notification.copy(status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED, actionId = conversationId)
-          )
-
-          val input = Seq(actionSubmission)
-
-          val expectedResult = SubmissionsPagesElements(
-            rejectedSubmissions = Paginated(Seq.empty, Page(), 0),
-            actionSubmissions = Paginated(Seq(actionSubmission), Page(), 1),
-            otherSubmissions = Paginated(Seq.empty, Page(), 0)
-          )
-
-          SubmissionsPagesElements(input) mustBe expectedResult
-        }
-
-        "it is other submission" in {
-
-          val otherSubmission = submission -> Seq(notification)
-
-          val input = Seq(otherSubmission)
-
-          val expectedResult = SubmissionsPagesElements(
-            rejectedSubmissions = Paginated(Seq.empty, Page(), 0),
-            actionSubmissions = Paginated(Seq.empty, Page(), 0),
-            otherSubmissions = Paginated(Seq(otherSubmission), Page(), 1)
-          )
-
-          SubmissionsPagesElements(input) mustBe expectedResult
-        }
-      }
-
-      "provided with all types of submissions" in {
-
-        val otherSubmission = submission -> Seq(notification)
-        val rejectedSubmission = submission_2 -> Seq(notification.copy(status = SubmissionStatus.REJECTED))
-        val actionSubmission = submission_3 -> Seq(
-          notification.copy(status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED, actionId = conversationId)
-        )
-
-        val input = Seq(otherSubmission, rejectedSubmission, actionSubmission)
-
-        val expectedResult = SubmissionsPagesElements(
-          rejectedSubmissions = Paginated(Seq(rejectedSubmission), Page(), 1),
-          actionSubmissions = Paginated(Seq(actionSubmission), Page(), 1),
-          otherSubmissions = Paginated(Seq(otherSubmission), Page(), 1)
-        )
-
-        SubmissionsPagesElements(input) mustBe expectedResult
-      }
-    }
-
     "create correct Page elements inside Pagination" when {
 
       "provided with none" in {
@@ -163,6 +92,92 @@ class SubmissionsPagesElementsSpec extends UnitWithMocksSpec with BeforeAndAfter
         result.otherSubmissions.page mustBe expectedPageOther
       }
     }
+  }
+
+  "SubmissionsPagesElements on apply" when {
+
+    "provided with a single type of submission" should {
+
+      "build SubmissionsPagesElements containing rejectedSubmissions" when {
+
+        "provided with Notification with REJECTED status" in {
+
+          val rejectedSubmission = submission_2 -> Seq(notification.copy(status = REJECTED))
+
+          val input = Seq(rejectedSubmission)
+
+          val expectedResult = SubmissionsPagesElements(
+            rejectedSubmissions = Paginated(Seq(rejectedSubmission), Page(), 1),
+            actionSubmissions = Paginated(Seq.empty, Page(), 0),
+            otherSubmissions = Paginated(Seq.empty, Page(), 0)
+          )
+
+          SubmissionsPagesElements(input) mustBe expectedResult
+
+        }
+      }
+
+      "build SubmissionsPagesElements containing actionSubmissions" when {
+
+        Seq(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK, QUERY_NOTIFICATION_MESSAGE).foreach { status =>
+          s"provided with Notification with $status status" in {
+
+            val actionSubmission = submission_3 -> Seq(notification.copy(status = status, actionId = conversationId))
+
+            val input = Seq(actionSubmission)
+
+            val expectedResult = SubmissionsPagesElements(
+              rejectedSubmissions = Paginated(Seq.empty, Page(), 0),
+              actionSubmissions = Paginated(Seq(actionSubmission), Page(), 1),
+              otherSubmissions = Paginated(Seq.empty, Page(), 0)
+            )
+
+            SubmissionsPagesElements(input) mustBe expectedResult
+          }
+        }
+      }
+
+      "build SubmissionsPagesElements containing otherSubmissions" when {
+
+        otherStatuses.foreach { status =>
+          s"provided with Notification with $status status" in {
+
+            val otherSubmission = submission -> Seq(notification.copy(status = status))
+
+            val input = Seq(otherSubmission)
+
+            val expectedResult = SubmissionsPagesElements(
+              rejectedSubmissions = Paginated(Seq.empty, Page(), 0),
+              actionSubmissions = Paginated(Seq.empty, Page(), 0),
+              otherSubmissions = Paginated(Seq(otherSubmission), Page(), 1)
+            )
+
+            SubmissionsPagesElements(input) mustBe expectedResult
+          }
+        }
+      }
+    }
+
+    "provided with all types of submissions" should {
+
+      "build correct SubmissionsPagesElements" in {
+
+        val otherSubmission = submission -> Seq(notification)
+        val rejectedSubmission = submission_2 -> Seq(notification.copy(status = REJECTED))
+        val actionSubmission = submission_3 -> Seq(notification.copy(status = ADDITIONAL_DOCUMENTS_REQUIRED, actionId = conversationId))
+
+        val input = Seq(otherSubmission, rejectedSubmission, actionSubmission)
+
+        val expectedResult = SubmissionsPagesElements(
+          rejectedSubmissions = Paginated(Seq(rejectedSubmission), Page(), 1),
+          actionSubmissions = Paginated(Seq(actionSubmission), Page(), 1),
+          otherSubmissions = Paginated(Seq(otherSubmission), Page(), 1)
+        )
+
+        SubmissionsPagesElements(input) mustBe expectedResult
+      }
+    }
+
   }
 
 }
