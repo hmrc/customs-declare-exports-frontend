@@ -37,6 +37,7 @@
   govukDetails : GovukDetails,
   bulletList: bulletList,
   insetText: exportsInsetText,
+  paragraphBody: paragraphBody,
   tariffExpander: tariffExpander,
   saveButtons: saveButtons,
   formHelper: FormWithCSRF,
@@ -47,6 +48,8 @@
 @(mode: Mode, itemId: String, form: Form[ProcedureCode])(implicit request: JourneyRequest[_], messages: Messages)
 
 @insetContent = {
+    @paragraphBody(messages("declaration.procedureCodes.inset.title"), "bold")
+
     @bulletList(
         title = Some(messages("declaration.procedureCodes.inset.paragraph.1")),
         items = Seq(
