@@ -34,6 +34,8 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
+        insetText: exportsInsetText,
+        link: link,
         body: paragraphBody,
         pageTitle: pageTitle,
         saveButtons: saveButtons,
@@ -43,9 +45,6 @@
 )
 
 @(mode: Mode, itemId: String, form: Form[CusCode])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.cusCode.header.tradeTariff.link")</a>}
-@ecicsToolLink = {<a target="_blank" class="govuk-link" href=@appConfig.ecicsToolUrl>@messages("declaration.cusCode.header.ecicsTool.link")</a>}
 
 @govukLayout(
     title = Title("declaration.cusCode.header", "declaration.section.5"),
@@ -65,7 +64,7 @@
                 ))
             )),
             hint = Some(Hint(
-                content = HtmlContent(Html(messages("declaration.cusCode.header.hint", tradeTariffLink, ecicsToolLink)))
+                content = HtmlContent(Html(messages("declaration.cusCode.header.hint")))
             )),
             items = Seq(
                 RadioItem(
@@ -89,6 +88,12 @@
             ),
             errorMessage = form(hasCusCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+
+        @insetText(
+            content = HtmlContent(messages("declaration.cusCode.inset.text",
+                link(text = messages("declaration.cusCode.header.ecicsTool.link"), call = Call("GET", appConfig.ecicsToolUrl), target="_blank")
+            ))
+        )
 
         @tariffExpander(CusCode, request.declarationType)(messages, appConfig)
 

@@ -46,6 +46,7 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.cusCode.header")
         messages must haveTranslationFor("declaration.cusCode.header.hint")
+        messages must haveTranslationFor("declaration.cusCode.inset.text")
         messages must haveTranslationFor("declaration.cusCode.hasCode")
         messages must haveTranslationFor("declaration.cusCode.noCode")
         messages must haveTranslationFor("declaration.cusCode.label")
@@ -61,6 +62,10 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
         view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
+      "display hint text" in {
+        createView().getElementById("hasCusCode-hint").text() mustBe messages("declaration.cusCode.header.hint")
+      }
+
       "display radio button with Yes option" in {
         view.getElementById("code_yes").attr("value") mustBe AllowedCUSCodeAnswers.yes
         view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("declaration.cusCode.hasCode")
@@ -70,7 +75,14 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.cusCode.noCode")
       }
 
-      "display 'Back' button that links to 'UN Dangerous Goods ' page" in {
+      "display inset text" in {
+        createView().getElementsByClass("govuk-inset-text").get(0).text() mustBe messages(
+          "declaration.cusCode.inset.text",
+          messages("declaration.cusCode.header.ecicsTool.link")
+        )
+      }
+
+      "display 'Back' button that links to 'UN Dangerous Goods' page" in {
 
         val backButton = view.getElementById("back-link")
 
