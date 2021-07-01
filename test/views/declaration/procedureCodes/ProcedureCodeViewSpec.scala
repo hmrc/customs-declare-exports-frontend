@@ -47,6 +47,7 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Injec
       messages must haveTranslationFor("declaration.procedureCodes.error.invalid")
 
       messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.header")
+      messages must haveTranslationFor("declaration.procedureCodes.inset.title")
       messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.1")
       messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.1.bullet.1")
       messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.1.bullet.2")
@@ -119,6 +120,7 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Injec
       "display inset text" in {
         val inset = createView().getElementsByClass("govuk-inset-text")
         val expected = Seq(
+          messages("declaration.procedureCodes.inset.title"),
           messages("declaration.procedureCodes.inset.paragraph.1"),
           messages("declaration.procedureCodes.inset.paragraph.1.bullet.1"),
           messages("declaration.procedureCodes.inset.paragraph.1.bullet.2"),
