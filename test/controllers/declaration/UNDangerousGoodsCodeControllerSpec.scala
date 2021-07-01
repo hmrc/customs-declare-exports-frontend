@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.declaration.UNDangerousGoodsCode
+import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
 import forms.declaration.UNDangerousGoodsCode.{dangerousGoodsCodeKey, hasDangerousGoodsCodeKey}
 import models.DeclarationType._
 import models.Mode
@@ -117,17 +117,28 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
     "return 303 (SEE_OTHER)" when {
 
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
-        "accept submission and redirect" in {
-          withNewCaching(aDeclaration(withType(request.declarationType)))
+        def controllerRedirectsToNextPageForCommodityCode(commodityCode: String, expectedCall: Call) = {
+          val commodityDetails = CommodityDetails(Some(commodityCode), None)
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails)))))
           val correctForm = formData("1234")
 
           val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe expectedCall
           verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
         }
 
+        "accept submission and redirect for commodity code 28000000" in {
+          controllerRedirectsToNextPageForCommodityCode("28000000", controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId))
+        }
+
+        "accept submission and redirect for commodity code 21000000" in {
+          controllerRedirectsToNextPageForCommodityCode(
+            "21000000",
+            controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
+          )
+        }
       }
 
       onJourney(CLEARANCE) { request =>

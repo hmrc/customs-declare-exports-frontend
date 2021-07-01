@@ -73,6 +73,11 @@ class CommodityDetailsController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      model.updatedItem(itemId, item => item.copy(commodityDetails = Some(updatedItem)))
+      val postFormAppliedModel = model.updatedItem(itemId, item => item.copy(commodityDetails = Some(updatedItem)))
+
+      if (!postFormAppliedModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
+        postFormAppliedModel.updatedItem(itemId, item => item.copy(cusCode = None))
+      else
+        postFormAppliedModel
     }
 }

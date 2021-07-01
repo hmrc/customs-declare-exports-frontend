@@ -268,7 +268,6 @@ object Navigator {
     case CommodityDetails                  => routes.FiscalInformationController.displayPage(_, _, fastForward = true)
     case UNDangerousGoodsCode              => routes.CommodityDetailsController.displayPage
     case TaricCode                         => routes.TaricCodeSummaryController.displayPage
-    case TaricCodeFirst                    => routes.CusCodeController.displayPage
     case StatisticalValue                  => routes.NactCodeSummaryController.displayPage
   }
 
@@ -284,6 +283,7 @@ object Navigator {
     case DocumentsProduced         => documentsProducedPreviousPage
     case AdditionalInformation     => additionalInformationPreviousPage
     case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
+    case TaricCodeFirst            => additionalTaricCodesPreviousPage
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
@@ -510,6 +510,12 @@ object Navigator {
       routes.TransportPaymentController.displayPage(mode)
     else
       routes.ExpressConsignmentController.displayPage(mode)
+
+  private def additionalTaricCodesPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    if (cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
+      routes.CusCodeController.displayPage(mode, itemId)
+    else
+      routes.UNDangerousGoodsCodeController.displayPage(mode, itemId)
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {

@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.declaration.{CommodityDetails, IsExs}
+import forms.declaration.{CommodityDetails, CusCode, IsExs}
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -188,6 +188,32 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
           controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
         )
       }
+    }
+
+    "clear the cus-code field when commodity code entered does not have a chemical code prefix" in {
+      val cusCode = CusCode(Some("11111111"))
+      withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withCUSCode(cusCode)))))
+
+      val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
+      val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+
+      await(result) mustBe aRedirectToTheNextPage
+
+      val updatedModel = theCacheModelUpdated()
+      updatedModel.head.itemBy(itemId).head.cusCode mustBe None
+    }
+
+    "do not clear the cus-code field when commodity code entered does have a chemical code prefix" in {
+      val cusCode = CusCode(Some("11111111"))
+      withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withCUSCode(cusCode)))))
+
+      val correctForm = Json.toJson(CommodityDetails(Some("28000000"), Some("Description")))
+      val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+
+      await(result) mustBe aRedirectToTheNextPage
+
+      val updatedModel = theCacheModelUpdated()
+      updatedModel.head.itemBy(itemId).head.cusCode mustBe Some(cusCode)
     }
   }
 }

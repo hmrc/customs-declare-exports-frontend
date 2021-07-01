@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.UNDangerousGoodsCode
+import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
 import forms.declaration.UNDangerousGoodsCode.form
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -69,7 +69,10 @@ class UNDangerousGoodsCodeController @Inject()(
       else
         navigator.continueTo(mode, controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId))
     } else {
-      navigator.continueTo(mode, controllers.declaration.routes.CusCodeController.displayPage(_, itemId))
+      if (request.cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
+        navigator.continueTo(mode, controllers.declaration.routes.CusCodeController.displayPage(_, itemId))
+      else
+        navigator.continueTo(mode, controllers.declaration.routes.TaricCodeSummaryController.displayPage(_, itemId))
     }
 
   private def updateExportsCache(itemId: String, updatedItem: UNDangerousGoodsCode)(

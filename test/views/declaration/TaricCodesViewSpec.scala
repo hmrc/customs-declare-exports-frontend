@@ -61,9 +61,11 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wi
         saveButton must containMessageForElements(saveAndContinueCaption)
       }
 
-      "display 'Back' button that links to 'CUS Code' page" in {
+      "display 'Back' button that links to 'UN Dangerous Goods' page" in {
         val backButton = view.getElementById("back-link")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId))
+        backButton.getElementById("back-link") must haveHref(
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+        )
       }
     }
   }
