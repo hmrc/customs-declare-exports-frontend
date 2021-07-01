@@ -18,6 +18,7 @@ package services.cache
 
 import java.util.UUID
 
+import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.declaration._
@@ -114,9 +115,9 @@ trait ExportsItemBuilder {
         )
     )
 
-  def withDocumentsProduced(first: DocumentsProduced, docs: DocumentsProduced*): ItemModifier = cache => {
+  def withDocumentsProduced(isRequired: Option[YesNoAnswer], first: DocumentsProduced, docs: DocumentsProduced*): ItemModifier = cache => {
     val existing = cache.documentsProducedData.map(_.documents).getOrElse(Seq.empty)
-    cache.copy(documentsProducedData = Some(DocumentsProducedData(existing ++ Seq(first) ++ docs)))
+    cache.copy(documentsProducedData = Some(DocumentsProducedData(isRequired, existing ++ Seq(first) ++ docs)))
   }
 
   def withDocumentsProducedData(docs: DocumentsProducedData): ItemModifier =

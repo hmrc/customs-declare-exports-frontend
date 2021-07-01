@@ -31,7 +31,7 @@ import tools.Stubs
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.declaration.documentsProduced.documents_produced
+import views.html.declaration.additionalDocuments.additional_documents
 import views.tags.ViewTest
 
 @ViewTest
@@ -41,7 +41,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
   private val mode = Mode.Normal
 
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val documentsProducedPage = instanceOf[documents_produced]
+  private val documentsProducedPage = instanceOf[additional_documents]
   private def createView(form: Form[YesNoAnswer] = form, cachedDocuments: Seq[DocumentsProduced] = Seq())(
     implicit request: JourneyRequest[_]
   ): Document =
@@ -173,8 +173,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             val removeLink = row.select(".govuk-link").get(0)
             removeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.addDocument.table.change.hint", "ABCDEF1234567890")}"
             removeLink must haveHref(
-              controllers.declaration.routes.DocumentsProducedChangeController
-                .displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))
+              routes.AdditionalDocumentsChangeController.displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))
             )
           }
 
@@ -182,8 +181,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             val removeLink = row.select(".govuk-link").get(1)
             removeLink.text() mustBe s"${messages("site.remove")} ${messages("declaration.addDocument.table.remove.hint", "ABCDEF1234567890")}"
             removeLink must haveHref(
-              controllers.declaration.routes.DocumentsProducedRemoveController
-                .displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))
+              routes.AdditionalDocumentsRemoveController.displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))
             )
           }
         }

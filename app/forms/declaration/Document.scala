@@ -33,7 +33,6 @@ case class Document(documentType: String, documentReference: String, documentCat
 }
 
 object Document extends DeclarationPage {
-  def fromJsonString(value: String): Option[Document] = Json.fromJson(Json.parse(value)).asOpt
 
   implicit val format = Json.format[Document]
 

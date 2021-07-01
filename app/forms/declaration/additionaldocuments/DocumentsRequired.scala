@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package controllers.util
+package forms.declaration.additionaldocuments
 
-import models.ExportsDeclaration
+import forms.DeclarationPage
 
-object ExportsDecModelHelper {
-  def getCommodityCode(model: ExportsDeclaration, itemId: String): Option[String] =
-    model
-      .itemBy(itemId)
-      .flatMap(_.commodityDetails.flatMap(_.combinedNomenclatureCode))
-}
+object DocumentsRequired extends DeclarationPage

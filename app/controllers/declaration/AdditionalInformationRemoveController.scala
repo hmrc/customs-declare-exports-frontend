@@ -58,31 +58,23 @@ class AdditionalInformationRemoveController @Inject()(
       case Some(information) =>
         removeYesNoForm
           .bindFromRequest()
-          .fold(
-            (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(removePage(mode, itemId, id, information, formWithErrors))),
-            formData => {
-              formData.answer match {
-                case YesNoAnswers.yes =>
-                  removeAdditionalInformation(itemId, information)
-                    .map(declaration => afterRemove(mode, itemId, declaration))
-                case YesNoAnswers.no =>
-                  Future.successful(returnToSummary(mode, itemId))
-              }
-            }
-          )
+          .fold(formWithErrors => Future.successful(BadRequest(removePage(mode, itemId, id, information, formWithErrors))), _.answer match {
+            case YesNoAnswers.yes => removeAdditionalInformation(itemId, information).map(declaration => afterRemove(mode, itemId, declaration))
+            case YesNoAnswers.no  => Future.successful(returnToSummary(mode, itemId))
+          })
       case _ => Future.successful(returnToSummary(mode, itemId))
     }
   }
 
   private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformation.remove.empty")
 
-  private def afterRemove(mode: Mode, itemId: String, declaration: Option[ExportsDeclaration])(implicit request: JourneyRequest[AnyContent]) =
+  private def afterRemove(mode: Mode, itemId: String, declaration: Option[ExportsDeclaration])(implicit request: JourneyRequest[AnyContent]): Result =
     declaration.flatMap(_.itemBy(itemId)).flatMap(_.additionalInformation).map(_.items) match {
       case Some(items) if items.nonEmpty => returnToSummary(mode, itemId)
       case _                             => navigator.continueTo(mode, routes.AdditionalInformationRequiredController.displayPage(_, itemId))
     }
 
-  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(mode, routes.AdditionalInformationController.displayPage(_, itemId))
 
   private def findAdditionalInformation(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalInformation] =

@@ -18,7 +18,6 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformation
 import models.Mode
 import models.declaration.AdditionalInformationData
@@ -152,7 +151,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId)
 
           theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation) mustBe Some(
-            AdditionalInformationData(Some(YesNoAnswer(YesNoAnswers.yes)), Seq.empty)
+            AdditionalInformationData(Some(YesNoAnswer.Yes), Seq.empty)
           )
         }
 

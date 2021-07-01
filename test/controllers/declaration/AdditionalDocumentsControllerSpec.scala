@@ -28,19 +28,19 @@ import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.documentsProduced.documents_produced
+import views.html.declaration.additionalDocuments.additional_documents
 
-class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  val mockDocumentProducedPage = mock[documents_produced]
+  val additionalDocumentsPage = mock[additional_documents]
 
-  val controller = new DocumentsProducedController(
+  val controller = new AdditionalDocumentsController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    mockDocumentProducedPage
+    additionalDocumentsPage
   )
 
   val itemId = "itemId"
@@ -49,29 +49,29 @@ class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMo
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration())
-    when(mockDocumentProducedPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDocumentsPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(mockDocumentProducedPage)
+    reset(additionalDocumentsPage)
   }
 
   def theResponseForm: Form[YesNoAnswer] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockDocumentProducedPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
+    verify(additionalDocumentsPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
     formCaptor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    val item = anItem(withDocumentsProduced(documentsProduced))
+    val item = anItem(withDocumentsProduced(Some(YesNoAnswer.Yes), documentsProduced))
     withNewCaching(aDeclaration(withItems(item)))
     await(controller.displayPage(Mode.Normal, item.id)(request))
     theResponseForm
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) =
-    verify(mockDocumentProducedPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(additionalDocumentsPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)
 
@@ -81,7 +81,7 @@ class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "display page method is invoked with data in cache" in {
 
-        val item = anItem(withDocumentsProduced(documentsProduced))
+        val item = anItem(withDocumentsProduced(Some(YesNoAnswer.Yes), documentsProduced))
         withNewCaching(aDeclaration(withItems(item)))
 
         val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
@@ -110,29 +110,31 @@ class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedAddController.displayPage(Mode.Normal, itemId)
+        // TODO. CEDS-3255.
+        // If auth code from List1 thePageNavigatedTo mustBe routes.AdditionalDocumentsAddController.displayPage(Mode.Normal, itemId) else
+        thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(Mode.Normal, itemId)
       }
 
       "user submits valid Yes answer" in {
-        val item = anItem(withDocumentsProduced(documentsProduced))
+        val item = anItem(withDocumentsProduced(Some(YesNoAnswer.Yes), documentsProduced))
         withNewCaching(aDeclaration(withItems(item)))
 
         val requestBody = Seq("yesNo" -> "Yes")
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedAddController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalDocumentsAddController.displayPage(Mode.Normal, itemId)
       }
 
       "user submits valid No answer" in {
-        val item = anItem(withDocumentsProduced(documentsProduced))
+        val item = anItem(withDocumentsProduced(Some(YesNoAnswer.Yes), documentsProduced))
         withNewCaching(aDeclaration(withItems(item)))
 
         val requestBody = Seq("yesNo" -> "No")
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
+        thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage(Mode.Normal)
       }
     }
   }

@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.declaration.DocumentsProducedSpec.correctDocumentsProduced
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
@@ -27,7 +28,7 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.documentsProduced.documents_produced_remove
+import views.html.declaration.additionalDocuments.additional_documents_remove
 import views.tags.ViewTest
 
 @ViewTest
@@ -36,13 +37,14 @@ class DocumentsProducedRemoveViewSpec extends UnitViewSpec with ExportsTestData 
   private val itemId = "a7sc78"
   private val documentId = "1.2131231"
 
-  private val page = instanceOf[documents_produced_remove]
+  private val additionalDocumentsRemovePage = instanceOf[additional_documents_remove]
 
   private def createView(
     mode: Mode = Mode.Normal,
     form: Form[YesNoAnswer] = YesNoAnswer.form(),
     documents: DocumentsProduced = correctDocumentsProduced
-  )(implicit request: JourneyRequest[_]): Document = page(mode, itemId, documentId, documents, form)(request, messages)
+  )(implicit request: JourneyRequest[_]): Document =
+    additionalDocumentsRemovePage(mode, itemId, documentId, documents, form)(request, messages)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.addDocument.remove.title")
@@ -61,7 +63,7 @@ class DocumentsProducedRemoveViewSpec extends UnitViewSpec with ExportsTestData 
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId))
+        view.getElementById("back-link") must haveHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId))
       }
     }
   }

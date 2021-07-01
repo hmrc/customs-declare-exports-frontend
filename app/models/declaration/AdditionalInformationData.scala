@@ -17,7 +17,6 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformation
 import play.api.libs.json.Json
 
@@ -27,7 +26,7 @@ object AdditionalInformationData {
   implicit val format = Json.format[AdditionalInformationData]
 
   def apply(items: Seq[AdditionalInformation]): AdditionalInformationData =
-    new AdditionalInformationData(Some(if (items.nonEmpty) YesNoAnswer(YesNoAnswers.yes) else YesNoAnswer(YesNoAnswers.no)), items)
+    new AdditionalInformationData(Some(if (items.nonEmpty) YesNoAnswer.Yes else YesNoAnswer.No), items)
 
   def default: AdditionalInformationData = AdditionalInformationData(None, Seq.empty)
 

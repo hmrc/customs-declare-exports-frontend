@@ -18,6 +18,7 @@ package models.declaration
 
 import forms.declaration.DocumentsProducedSpec._
 import base.UnitSpec
+import forms.common.YesNoAnswer
 import play.api.libs.json.{JsArray, JsObject, JsValue}
 
 class DocumentsProducedDataSpec extends UnitSpec {
@@ -31,7 +32,7 @@ class DocumentsProducedDataSpec extends UnitSpec {
 
 object DocumentsProducedDataSpec {
 
-  val correctDocumentsProducedData = DocumentsProducedData(Seq(correctDocumentsProduced))
+  val correctDocumentsProducedData = DocumentsProducedData(Some(YesNoAnswer.Yes), Seq(correctDocumentsProduced))
 
   val correctDocumentsProducedDataJSON: JsValue = JsObject(Map("documents" -> JsArray(Seq(correctDocumentsProducedJSON))))
 

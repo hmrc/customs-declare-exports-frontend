@@ -86,7 +86,8 @@
                         content = HtmlContent(link(
                             messages("site.change"),
                             Some(messages("declaration.addDocument.table.change.hint", document.documentIdentifier.getOrElse(""))),
-                            DocumentsProducedChangeController.displayPage(mode, itemId, createId(index, document)))),
+                            AdditionalDocumentsChangeController.displayPage(mode, itemId, createId(index, document))
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"documents-table-row$index-change_button")
                     ),
@@ -94,7 +95,8 @@
                         content = HtmlContent(link(
                             messages("site.remove"),
                             Some(messages("declaration.addDocument.table.remove.hint", document.documentIdentifier.getOrElse(""))),
-                            DocumentsProducedRemoveController.displayPage(mode, itemId, createId(index, document)))),
+                            AdditionalDocumentsRemoveController.displayPage(mode, itemId, createId(index, document))
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"documents-table-row$index-remove_button")
                     )
@@ -130,7 +132,7 @@
     title = title,
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentsProducedSummary, mode, ItemId(itemId))))) {
 
-    @formHelper(action = DocumentsProducedController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDocumentsController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
 

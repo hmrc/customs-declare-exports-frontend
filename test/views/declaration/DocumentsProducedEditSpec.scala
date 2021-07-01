@@ -40,7 +40,7 @@ import play.api.libs.json.Json
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.declaration.documentsProduced.documents_produced_edit_content
+import views.html.declaration.additionalDocuments.additional_documents_edit
 
 class DocumentsProducedEditSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
@@ -48,9 +48,9 @@ class DocumentsProducedEditSpec extends UnitViewSpec with CommonMessages with St
   private val mode = Mode.Normal
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
-  private val documentsProducedEditPage = instanceOf[documents_produced_edit_content]
+  private val additionalDocumentsEditPage = instanceOf[additional_documents_edit]
   private def createView(form: Form[DocumentsProduced] = form, commodityCode: Option[String] = None)(implicit request: JourneyRequest[_]): Document =
-    documentsProducedEditPage(mode, itemId, form, commodityCode)(request, messages)
+    additionalDocumentsEditPage(mode, itemId, form, commodityCode)(request, messages)
 
   "Document Produced" should {
 

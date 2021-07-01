@@ -931,6 +931,13 @@ function getAdIdent(dec) {
     return ident;
 }
 
+function areAdditionalDocumentsRequired() {
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/is-additional-documentation-required')) {
+        document.getElementById('code_yes').checked = 'checked';
+        document.getElementById('submit').click()
+    }
+}
+
 function setAdditionalDocuments() {
 
     GM_setValue("ad-codeA", ['Y923', 'Y957', 'C676'])
@@ -1238,6 +1245,7 @@ function completeJourney() {
     additionalInformationSummary();
     isAdditionalInformationRequired();
     addAdditionalInformation();
+    areAdditionalDocumentsRequired();
     addDocumentsSummary();
     addDocuments();
     exportItems();

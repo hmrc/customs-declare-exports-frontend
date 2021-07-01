@@ -17,15 +17,18 @@
 package views.declaration.summary
 
 import base.Injector
+import controllers.declaration.routes
+import forms.common.YesNoAnswer
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.Mode
+import models.declaration.DocumentsProducedData
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.supporting_documents
+import views.html.declaration.summary.additional_documents
 
-class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
-  private val section = instanceOf[supporting_documents]
+  private val additionalDocumentsSection = instanceOf[additional_documents]
   private val documents = Seq(
     DocumentsProduced(Some("typ1"), Some("identifier1"), None, None, None, None, None),
     DocumentsProduced(Some("typ2"), Some("identifier2"), None, None, None, None, None)
@@ -37,59 +40,60 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
       "there is no documents" in {
 
-        val view = section(Mode.Normal, "itemId", 1, Seq.empty)(messages)
+        val view = additionalDocumentsSection(Mode.Normal, "itemId", 1, DocumentsProducedData(None, Seq.empty))(messages)
         val row = view.getElementsByClass("supporting-documents-1-row")
 
-        row must haveSummaryKey(messages("declaration.summary.items.item.supportingDocuments"))
-        row must haveSummaryValue("")
+        row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
+        row must haveSummaryValue("No")
 
-        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.supportingDocuments.changeAll")
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
 
-        row must haveSummaryActionsHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId"))
+        row must haveSummaryActionsHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, "itemId"))
       }
     }
 
     "display all supporting documents with change buttons" in {
 
-      val view = section(Mode.Normal, "itemId", 1, documents)(messages)
+      val view = additionalDocumentsSection(Mode.Normal, "itemId", 1, DocumentsProducedData(Some(YesNoAnswer.Yes), documents))(messages)
       val table = view.getElementById("supporting-documents-1-table")
 
-      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
+      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
 
-      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")
-      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.items.item.supportingDocuments.information")
+      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.additionalDocuments.code")
+      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.items.item.additionalDocuments.identifier")
       table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("site.change.header")
 
       val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
       row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ1"
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier1"
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row1ChangeLink must haveHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId"))
+      row1ChangeLink must haveHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, "itemId"))
       row1ChangeLink
-        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.supportingDocuments.change", "typ1", "identifier1", 1)}"
+        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.additionalDocuments.change", "typ1", "identifier1", 1)}"
 
       val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
       row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ2"
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier2"
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row2ChangeLink must haveHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId"))
+      row2ChangeLink must haveHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, "itemId"))
       row2ChangeLink
-        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.supportingDocuments.change", "typ2", "identifier2", 1)}"
+        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.additionalDocuments.change", "typ2", "identifier2", 1)}"
     }
 
     "display all supporting documents without change buttons" when {
 
       "actionsEnabled is false" in {
 
-        val view = section(Mode.Normal, "itemId", 1, documents, actionsEnabled = false)(messages)
+        val view =
+          additionalDocumentsSection(Mode.Normal, "itemId", 1, DocumentsProducedData(Some(YesNoAnswer.Yes), documents), actionsEnabled = false)(
+            messages
+          )
         val table = view.getElementById("supporting-documents-1-table")
 
-        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
+        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
 
-        table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")
-        table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages(
-          "declaration.summary.items.item.supportingDocuments.information"
-        )
+        table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.additionalDocuments.code")
+        table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.items.item.additionalDocuments.identifier")
 
         val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
         row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ1"

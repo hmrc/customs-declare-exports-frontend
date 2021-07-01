@@ -17,10 +17,9 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.DocumentsProducedAddController.DocumentsProducedFormGroupId
+import controllers.declaration.AdditionalDocumentsAddController.DocumentsProducedFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
-import controllers.util.ExportsDecModelHelper.getCommodityCode
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.{form, globalErrors}
 import models.declaration.DocumentsProducedData
@@ -33,25 +32,27 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
-import views.html.declaration.documentsProduced.documents_produced_change
+import views.html.declaration.additionalDocuments.additional_documents_change
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DocumentsProducedChangeController @Inject()(
+class AdditionalDocumentsChangeController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  documentProducedPage: documents_produced_change
+  additionalDocumentsChangePage: additional_documents_change
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findDocument(itemId, documentId) match {
       case Some(document) =>
-        Ok(documentProducedPage(mode, itemId, documentId, form().fill(document).withSubmissionErrors(), getCommodityCode(request.cacheModel, itemId)))
+        val commodityCode = request.cacheModel.commodityCode(itemId)
+        Ok(additionalDocumentsChangePage(mode, itemId, documentId, form().fill(document).withSubmissionErrors(), commodityCode))
+
       case _ => returnToSummary(mode, itemId)
     }
   }
@@ -63,7 +64,7 @@ class DocumentsProducedChangeController @Inject()(
         boundForm.fold(
           formWithErrors => {
             Future.successful(
-              BadRequest(documentProducedPage(mode, itemId, documentId, formWithErrors, getCommodityCode(request.cacheModel, itemId)))
+              BadRequest(additionalDocumentsChangePage(mode, itemId, documentId, formWithErrors, request.cacheModel.commodityCode(itemId)))
             )
           },
           updatedDocument => {
@@ -77,14 +78,11 @@ class DocumentsProducedChangeController @Inject()(
     }
   }
 
-  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =
-    navigator.continueTo(mode, routes.DocumentsProducedController.displayPage(_, itemId))
+  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))
 
   private def findDocument(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[DocumentsProduced] =
     ListItem.findById(id, request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents).getOrElse(Seq.empty))
-
-  private def cachedDocuments(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
-    request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents).getOrElse(Seq.empty)
 
   private def changeDocument(
     mode: Mode,
@@ -95,26 +93,29 @@ class DocumentsProducedChangeController @Inject()(
     boundForm: Form[DocumentsProduced]
   )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
 
-    val existingDocuments = cachedDocuments(itemId)
+    val documentsProducedData = request.cacheModel.documentsProducedData(itemId)
+    val existingDocuments = documentsProducedData.documents
     val documentsWithoutExisting: Seq[DocumentsProduced] = existingDocuments.filterNot(_ == existingDocument)
 
     MultipleItemsHelper
       .add(boundForm, documentsWithoutExisting, maxNumberOfItems, DocumentsProducedFormGroupId, "declaration.addDocument")
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(documentProducedPage(mode, itemId, documentId, formWithErrors, getCommodityCode(request.cacheModel, itemId)))),
+        formWithErrors => {
+          val commodityCode = request.cacheModel.commodityCode(itemId)
+          Future.successful(BadRequest(additionalDocumentsChangePage(mode, itemId, documentId, formWithErrors, commodityCode)))
+        },
         _ => {
-          val updatedDocuments: Seq[DocumentsProduced] = existingDocuments.map(doc => if (doc == existingDocument) newDocument else doc)
-          updateCache(itemId, DocumentsProducedData(updatedDocuments))
+          val updatedDocuments = existingDocuments.map(doc => if (doc == existingDocument) newDocument else doc)
+          updateCache(itemId, documentsProducedData.copy(documents = updatedDocuments))
             .map(_ => returnToSummary(mode, itemId))
         }
       )
   }
 
-  private def updateCache(itemId: String, updatedData: DocumentsProducedData)(
+  private def updateCache(itemId: String, documentsProducedData: DocumentsProducedData)(
     implicit req: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      model.updatedItem(itemId, item => item.copy(documentsProducedData = Some(updatedData)))
+      model.updatedItem(itemId, item => item.copy(documentsProducedData = Some(documentsProducedData)))
     })
 }

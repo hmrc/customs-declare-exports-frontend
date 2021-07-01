@@ -18,7 +18,6 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformation
 import mock.ErrorHandlerMocks
 import models.Mode
@@ -71,7 +70,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
     theResponseForm
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) =
+  private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
     verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   private val additionalInformation = AdditionalInformation("12345", "Description")
@@ -138,9 +137,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
 
         withNewCaching(
           aDeclaration(
-            withItems(
-              anItem(withItemId("itemId"), withAdditionalInformationData(AdditionalInformationData(Some(YesNoAnswer(YesNoAnswers.yes)), Seq.empty)))
-            )
+            withItems(anItem(withItemId("itemId"), withAdditionalInformationData(AdditionalInformationData(Some(YesNoAnswer.Yes), Seq.empty))))
           )
         )
 

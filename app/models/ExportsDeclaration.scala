@@ -25,8 +25,9 @@ import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
 import play.api.libs.json._
-
 import java.time.{Clock, Instant}
+
+import forms.declaration.additionaldocuments.DocumentsProduced
 
 case class ExportsDeclaration(
   id: String,
@@ -52,6 +53,18 @@ case class ExportsDeclaration(
   lazy val lrn: Option[String] = consignmentReferences.map(_.lrn.value)
   lazy val ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
 
+  def documentsProducedDataIfAny(itemId: String): Option[DocumentsProducedData] =
+    itemBy(itemId).flatMap(_.documentsProducedData)
+
+  def documentsProducedData(itemId: String): DocumentsProducedData =
+    documentsProducedDataIfAny(itemId).getOrElse(DocumentsProducedData(None, Seq.empty))
+
+  def additionalDocuments(itemId: String): Seq[DocumentsProduced] =
+    documentsProducedDataIfAny(itemId).map(_.documents).getOrElse(Seq.empty)
+
+  def additionalDocumentsRequired(itemId: String): Option[YesNoAnswer] =
+    documentsProducedDataIfAny(itemId).flatMap(_.isRequired)
+
   def addOrUpdateContainer(container: Container): ExportsDeclaration =
     copy(transport = transport.addOrUpdateContainer(container))
 
@@ -62,6 +75,9 @@ case class ExportsDeclaration(
 
   def clearRoutingCountries(): ExportsDeclaration =
     copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
+
+  def commodityCode(itemId: String): Option[String] =
+    itemBy(itemId).flatMap(_.commodityDetails.flatMap(_.combinedNomenclatureCode))
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
 
@@ -153,7 +169,7 @@ case class ExportsDeclaration(
     copy(transport = transport.copy(containers = Some(containers)))
 
   def updateTransportPayment(payment: TransportPayment): ExportsDeclaration =
-    copy(transport = transport.copy(expressConsignment = Some(YesNoAnswer(YesNoAnswers.yes)), transportPayment = Some(payment)))
+    copy(transport = transport.copy(expressConsignment = Some(YesNoAnswer.Yes), transportPayment = Some(payment)))
 
   def updatePreviousDocuments(previousDocuments: Seq[Document]): ExportsDeclaration =
     copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))

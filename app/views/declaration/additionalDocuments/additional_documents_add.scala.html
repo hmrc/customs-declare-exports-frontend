@@ -15,6 +15,7 @@
  *@
 
 @import controllers.declaration.routes._
+@import controllers.navigation.{Navigator, ItemId}
 @import models.requests.JourneyRequest
 @import forms.declaration.additionaldocuments.DocumentsProduced
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
@@ -23,19 +24,18 @@
 
 @this(
     govukLayout: gdsMainTemplate,
-    editContent: documents_produced_edit_content,
+    editContent: additional_documents_edit,
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, documentId: String, form: Form[DocumentsProduced], maybeCommodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[DocumentsProduced], maybeCommodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
 
 
 @govukLayout(
     title = Title("declaration.addDocument.title", "declaration.section.5"),
-    backButton = Some(BackButton(messages("site.back"), DocumentsProducedController.displayPage(mode, itemId)))
-) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentsProduced, mode, ItemId(itemId))))) {
 
-    @formHelper(action = DocumentsProducedChangeController.submitForm(mode, itemId, documentId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDocumentsAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
         @editContent(mode, itemId, form, maybeCommodityCode)
 

@@ -153,7 +153,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
-          theModelPassedToCacheUpdate.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer(YesNoAnswers.yes))
+          theModelPassedToCacheUpdate.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer.Yes)
         }
 
         "call Navigator" in {
@@ -178,7 +178,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
           val modelPassedToCache = theModelPassedToCacheUpdate
-          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer(YesNoAnswers.yes))
+          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer.Yes)
           modelPassedToCache.parties.personPresentingGoodsDetails mustBe Some(PersonPresentingGoodsDetails(Eori("GB1234567890")))
         }
 
@@ -204,7 +204,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
           val modelPassedToCache = theModelPassedToCacheUpdate
-          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer(YesNoAnswers.no))
+          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer.No)
           modelPassedToCache.parties.personPresentingGoodsDetails mustBe None
         }
 
@@ -236,7 +236,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
       "return 303 (SEE_OTHER)" in {
 
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(YesNoAnswer(YesNoAnswers.yes))
+        val correctForm = Json.toJson(YesNoAnswer.Yes)
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -246,7 +246,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
       "redirect to start page" in {
 
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(YesNoAnswer(YesNoAnswers.yes))
+        val correctForm = Json.toJson(YesNoAnswer.Yes)
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 

@@ -24,11 +24,11 @@
 @import views.components.gds.ActionItemBuilder._
 
 @this(
-        summaryList: summary_list,
-        linkContent: linkContent,
-        package_information: package_information,
-        union_and_national_codes: union_and_national_codes,
-        supporting_documents: supporting_documents
+    summaryList: summary_list,
+    linkContent: linkContent,
+    package_information: package_information,
+    union_and_national_codes: union_and_national_codes,
+    additional_documents: additional_documents
 )
 
 @(mode: Mode, item: ExportItem, declarationType: DeclarationType, actionsEnabled: Boolean = true)(implicit messages: Messages)
@@ -337,6 +337,6 @@
 
 <div class="govuk-section-break">
     @item.documentsProducedData.map(documentsProducedData =>
-        supporting_documents(mode, item.id, item.sequenceId, documentsProducedData.documents, actionsEnabled)
+        additional_documents(mode, item.id, item.sequenceId, documentsProducedData, actionsEnabled)
     )
 </div>

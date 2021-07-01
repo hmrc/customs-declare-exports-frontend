@@ -27,21 +27,21 @@ import play.api.data.Form
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.declaration.documentsProduced.documents_produced_change
+import views.html.declaration.additionalDocuments.additional_documents_change
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
+class AdditionalDocumentsChangeViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
   private val itemId = "a7sc78"
   private val documentId = "1.2131231"
   private val mode = Mode.Normal
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
-  private val documentsProducedAddPage = instanceOf[documents_produced_change]
+  private val additionalDocumentsChangePage = instanceOf[additional_documents_change]
 
   private def createView(form: Form[DocumentsProduced] = form)(implicit request: JourneyRequest[_]): Document =
-    documentsProducedAddPage(mode, itemId, documentId, form, None)(request, messages)
+    additionalDocumentsChangePage(mode, itemId, documentId, form, None)(request, messages)
 
   "Documents Produced View on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
@@ -50,7 +50,7 @@ class DocumentsProducedChangeViewSpec extends UnitViewSpec with CommonMessages w
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.DocumentsProducedController.displayPage(mode, itemId))
+        backButton must haveHref(routes.AdditionalDocumentsController.displayPage(mode, itemId))
       }
     }
   }

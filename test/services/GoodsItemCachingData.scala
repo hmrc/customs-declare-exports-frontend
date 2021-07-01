@@ -21,8 +21,9 @@ import forms.common.DateSpec.correctDate
 import forms.declaration._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
-
 import scala.util.Random
+
+import forms.common.YesNoAnswer
 
 trait GoodsItemCachingData {
 
@@ -46,7 +47,7 @@ trait GoodsItemCachingData {
 
   def createAdditionalInformationData() = AdditionalInformationData(getDataSeq(5, createAdditionalInformation))
 
-  def createDocumentsProducedData() = DocumentsProducedData(getDataSeq(10, createDocsProduced))
+  def createDocumentsProducedData() = DocumentsProducedData(Some(YesNoAnswer.Yes), getDataSeq(10, createDocsProduced))
 
   def createDocsProduced(): DocumentsProduced = DocumentsProduced(
     documentTypeCode = Some(createRandomAlphanumericString(4)),

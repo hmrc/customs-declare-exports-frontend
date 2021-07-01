@@ -20,6 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.additionaldocuments.DocumentsProduced
+import javax.inject.Inject
 import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -27,24 +29,22 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.documentsProduced.documents_produced
+import views.html.declaration.additionalDocuments.additional_documents
 
-import javax.inject.Inject
-
-class DocumentsProducedController @Inject()(
+class AdditionalDocumentsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  documentProducedPage: documents_produced
+  additionalDocumentsPage: additional_documents
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = anotherYesNoForm.withSubmissionErrors()
     cachedDocuments(itemId) match {
-      case documents if documents.nonEmpty => Ok(documentProducedPage(mode, itemId, frm, documents))
-      case _                               => navigator.continueTo(mode, controllers.declaration.routes.DocumentsProducedAddController.displayPage(_, itemId))
+      case documents if documents.nonEmpty => Ok(additionalDocumentsPage(mode, itemId, frm, documents))
+      case _                               => navigator.continueTo(mode, redirectIfNoDocuments(itemId))
     }
   }
 
@@ -52,17 +52,22 @@ class DocumentsProducedController @Inject()(
     anotherYesNoForm
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(documentProducedPage(mode, itemId, formWithErrors, cachedDocuments(itemId))),
+        (formWithErrors: Form[YesNoAnswer]) => BadRequest(additionalDocumentsPage(mode, itemId, formWithErrors, cachedDocuments(itemId))),
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.DocumentsProducedAddController.displayPage(_, itemId))
+            case YesNoAnswers.yes => navigator.continueTo(mode, routes.AdditionalDocumentsAddController.displayPage(_, itemId))
             case YesNoAnswers.no  => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
         }
       )
   }
 
+  private def redirectIfNoDocuments(itemId: String): Mode => Call =
+    // TODO. CEDS-3255.
+    // If auth code from List1 return routes.AdditionalDocumentsAddController.displayPage(_, itemId) else
+    routes.AdditionalDocumentsRequiredController.displayPage(_, itemId)
+
   private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.addDocument.add.another.empty")
 
-  private def cachedDocuments(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+  private def cachedDocuments(itemId: String)(implicit request: JourneyRequest[AnyContent]): Seq[DocumentsProduced] =
     request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents).getOrElse(Seq.empty)
 }

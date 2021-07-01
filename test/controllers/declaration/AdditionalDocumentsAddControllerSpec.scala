@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import forms.common.YesNoAnswer
 import forms.declaration.additionaldocuments.DocumentsProduced
 import mock.ErrorHandlerMocks
 import models.Mode
@@ -29,19 +30,19 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.documentsProduced.documents_produced_add
+import views.html.declaration.additionalDocuments.additional_documents_add
 
-class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class AdditionalDocumentsAddControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  val mockDocumentProducedAddPage = mock[documents_produced_add]
+  val additionalDocumentsAddPage = mock[additional_documents_add]
 
-  val controller = new DocumentsProducedAddController(
+  val controller = new AdditionalDocumentsAddController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    mockDocumentProducedAddPage
+    additionalDocumentsAddPage
   )(ec)
 
   val itemId = "itemId"
@@ -50,17 +51,17 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-    when(mockDocumentProducedAddPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDocumentsAddPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(mockDocumentProducedAddPage)
+    reset(additionalDocumentsAddPage)
   }
 
   def theResponseForm: Form[DocumentsProduced] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[DocumentsProduced]])
-    verify(mockDocumentProducedAddPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
+    verify(additionalDocumentsAddPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
     formCaptor.getValue
   }
 
@@ -69,8 +70,8 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
     theResponseForm
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) =
-    verify(mockDocumentProducedAddPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(additionalDocumentsAddPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)
 
@@ -89,7 +90,7 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
 
     "return 400 (BAD_REQUEST) during adding" when {
 
-      def verifyBadRequest(incorrectForm: Seq[(String, String)]) = {
+      def verifyBadRequest(incorrectForm: Seq[(String, String)]): HtmlFormat.Appendable = {
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
@@ -118,7 +119,7 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
 
       "user put duplicated item" in {
 
-        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withDocumentsProduced(documentsProduced)))))
+        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withDocumentsProduced(None, documentsProduced)))))
 
         val duplicatedForm = Seq(("documentTypeCode", "1234"))
 
@@ -135,7 +136,9 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
             withItems(
               anItem(
                 withItemId("itemId"),
-                withDocumentsProducedData(DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced)))
+                withDocumentsProducedData(
+                  DocumentsProducedData(Some(YesNoAnswer.Yes), Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced))
+                )
               )
             )
           )
@@ -158,11 +161,11 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
         verifyPageInvoked(0)
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.documentsProducedData)
-        savedDocuments mustBe Some(DocumentsProducedData(Seq(documentsProduced)))
+        savedDocuments mustBe Some(DocumentsProducedData(None, Seq(documentsProduced)))
       }
 
       "user save empty form without new item" in {
@@ -170,11 +173,11 @@ class DocumentsProducedAddControllerSpec extends ControllerSpec with ErrorHandle
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayItemsSummaryPage()
+        thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
         verifyPageInvoked(0)
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.documentsProducedData)
-        savedDocuments mustBe Some(DocumentsProducedData(Seq.empty))
+        savedDocuments mustBe Some(DocumentsProducedData(None, Seq.empty))
       }
 
     }

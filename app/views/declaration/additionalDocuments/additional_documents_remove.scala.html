@@ -92,9 +92,9 @@ formHelper: FormWithCSRF
 
 @govukLayout(
     title = Title("declaration.addDocument.remove.title", "declaration.section.5"),
-    backButton = Some(BackButton(messages("site.back"), DocumentsProducedController.displayPage(mode, itemId)))) {
+    backButton = Some(BackButton(messages("site.back"), AdditionalDocumentsController.displayPage(mode, itemId)))) {
 
-    @formHelper(action = DocumentsProducedRemoveController.submitForm(mode, itemId, documentId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDocumentsRemoveController.submitForm(mode, itemId, documentId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

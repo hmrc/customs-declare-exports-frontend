@@ -279,6 +279,9 @@ object ExportsDeclarationExchangeSpec {
       |        ]
       |      },
       |      "documentsProducedData": {
+      |        "isRequired": {
+      |          "answer": "Yes"
+      |        },
       |        "documents": [
       |          {
       |            "documentTypeCode": "C501",

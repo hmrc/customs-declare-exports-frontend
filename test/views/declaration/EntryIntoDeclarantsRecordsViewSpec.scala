@@ -85,7 +85,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
 
         "the answer is Yes" in {
 
-          val form = EntryIntoDeclarantsRecords.form().fill(YesNoAnswer(YesNoAnswers.yes))
+          val form = EntryIntoDeclarantsRecords.form().fill(YesNoAnswer.Yes)
           val view = createView(form)
 
           view.getElementById("answer_yes") must beSelected
@@ -94,7 +94,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
 
         "the answer is No" in {
 
-          val form = EntryIntoDeclarantsRecords.form().fill(YesNoAnswer(YesNoAnswers.no))
+          val form = EntryIntoDeclarantsRecords.form().fill(YesNoAnswer.No)
           val view = createView(form)
 
           view.getElementById("answer_yes") mustNot beSelected

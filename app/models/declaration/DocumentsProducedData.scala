@@ -16,10 +16,11 @@
 
 package models.declaration
 
+import forms.common.YesNoAnswer
 import forms.declaration.additionaldocuments.DocumentsProduced
 import play.api.libs.json.Json
 
-case class DocumentsProducedData(documents: Seq[DocumentsProduced]) {
+case class DocumentsProducedData(isRequired: Option[YesNoAnswer], documents: Seq[DocumentsProduced]) {
 
   def isEmpty: Boolean = documents.isEmpty
 }

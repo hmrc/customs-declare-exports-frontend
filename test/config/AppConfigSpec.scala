@@ -430,6 +430,7 @@ object AppConfigSpec {
       |
       |urls.additionalProcedureCodesOfCDs = "http://additionalProcedureCodesOfCDs"
       |urls.unDangerousGoods = "http://unDangerousGoods"
+      |urls.licensesForExportingGoods = "https://www.gov.uk/export-goods"
       |
       |files.codelists.holderOfAuthorisationCodes="holderOfAuthorisationCodes"
       |files.codelists.procedureCodes="procedureCodes"

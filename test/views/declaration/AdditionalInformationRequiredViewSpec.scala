@@ -20,11 +20,9 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
-import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.components.gds.Styles
@@ -35,19 +33,20 @@ import views.tags.ViewTest
 
 @ViewTest
 class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
-  val itemId = "a7sc78"
-  private def form(journeyType: DeclarationType): Form[YesNoAnswer] = YesNoAnswer.form()
-  private val additionalInfoReqPage = instanceOf[additional_information_required]
-  private def createView(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_]): Document = additionalInfoReqPage(Mode.Normal, itemId, form)
+
+  private val additionalInfoRequiredPage = instanceOf[additional_information_required]
+
+  private val itemId = "a7sc78"
+
+  private def createView(implicit request: JourneyRequest[_]): Document =
+    additionalInfoRequiredPage(Mode.Normal, itemId, YesNoAnswer.form())
 
   "Additional Information Required View on empty page" should {
 
     "have correct message keys" in {
-
       messages must haveTranslationFor("declaration.additionalInformationRequired.title")
       messages must haveTranslationFor("declaration.additionalInformationRequired.error")
       messages must haveTranslationFor("declaration.additionalInformationRequired.hint")
-
     }
   }
 
@@ -55,43 +54,36 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-        createView(form(request.declarationType)).getElementsByClass(Styles.gdsPageLegend) must containMessageForElements(
-          "declaration.additionalInformationRequired.title"
-        )
+        createView.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.additionalInformationRequired.title")
       }
 
       "display section header" in {
-        createView(form(request.declarationType)).getElementById("section-header") must containMessage("declaration.section.5")
+        createView.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
       "display radio button with Yes option" in {
-        val view = createView(form(request.declarationType))
+        val view = createView
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
         view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
       }
       "display radio button with No option" in {
-        val view = createView(form(request.declarationType))
+        val view = createView
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
       "display 'Save and continue' button on page" in {
-        val saveButton = createView(form(request.declarationType)).getElementById("submit")
+        val saveButton = createView.getElementById("submit")
         saveButton must containMessage(saveAndContinueCaption)
       }
-
     }
-
   }
 
   "Additional Information Required View back link" should {
 
     onJourney(DeclarationType.STANDARD, DeclarationType.CLEARANCE, DeclarationType.SUPPLEMENTARY) { implicit request =>
       "display 'Back' button that links to the 'Commodity Measure' page" in {
-
-        val view = createView(form(request.declarationType))
-        val backButton = view.getElementById("back-link")
-
+        val backButton = createView.getElementById("back-link")
         backButton must containMessage(backCaption)
         backButton must haveHref(routes.CommodityMeasureController.displayPage(Mode.Normal, itemId))
       }
@@ -99,10 +91,7 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
 
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
       "display 'Back' button that links to the 'Package Information' page" in {
-
-        val view = createView(form(request.declarationType))
-        val backButton = view.getElementById("back-link")
-
+        val backButton = createView.getElementById("back-link")
         backButton must containMessage(backCaption)
         backButton must haveHref(routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId))
       }
