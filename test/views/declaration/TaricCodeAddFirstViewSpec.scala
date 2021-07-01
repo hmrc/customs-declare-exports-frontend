@@ -47,10 +47,11 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
       view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.taricAdditionalCodes.addfirst.header")
     }
 
-    "display 'Back' button that links to 'CUS codes' page" in {
-      val backLinkContainer = view.getElementById("back-link")
-
-      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId))
+    "display 'Back' button that links to 'UN Dangerous Goods' page" in {
+      val backButton = view.getElementById("back-link")
+      backButton.getElementById("back-link") must haveHref(
+        controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+      )
     }
 
     "display 'Save and continue' button on page" in {

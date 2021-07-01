@@ -96,6 +96,13 @@ case class ExportsDeclaration(
       commodityCode <- commodityDetails.combinedNomenclatureCode
     } yield commodityCode
 
+  def isCommodityCodeOfItemPrefixedWith(itemId: String, prefix: Seq[Int]): Boolean =
+    getCommodityCodeOfItem(itemId) match {
+      case Some(commodityCode) if (commodityCode.trim.length > 0) =>
+        prefix.exists(digits => commodityCode.startsWith(digits.toString))
+      case _ => false
+    }
+
   def removeCountryOfRouting(country: Country): ExportsDeclaration =
     copy(locations = locations.copy(routingCountries = locations.routingCountries.filterNot(_ == country)))
 

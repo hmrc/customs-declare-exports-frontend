@@ -33,6 +33,7 @@ object CommodityDetails extends DeclarationPage {
   val combinedNomenclatureCodeKey = "combinedNomenclatureCode"
   val descriptionOfGoodsKey = "descriptionOfGoods"
   val descriptionOfGoodsMaxLength = 280
+  val commodityCodeChemicalPrefixes = Seq(28, 29, 38)
 
   private val combinedNomenclatureCodeMaxLength = 8
 

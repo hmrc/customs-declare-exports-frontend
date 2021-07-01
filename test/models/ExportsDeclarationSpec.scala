@@ -18,15 +18,16 @@ package models
 
 import base.UnitSpec
 import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.CommodityDetails
 import models.declaration.{DeclarationHoldersData, ProcedureCodesData}
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
-import services.cache.ExportsDeclarationBuilder
+import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
 import java.time.{Clock, Instant, LocalDate, ZoneOffset}
 
-class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder with OptionValues with MockitoSugar {
+class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with OptionValues with MockitoSugar {
 
   "Amend" should {
     val currentTime = Instant.now()
@@ -127,6 +128,54 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
         val declaration = aDeclaration(withDeclarationHolders(declarationsHoldersData))
 
         declaration.isAdditionalDocumentationRequired mustBe false
+      }
+    }
+  }
+
+  "ExportsDeclaration on isCommodityCodeOfItemPrefixedWith" should {
+    val chemicalCodes = Seq(28, 29, 38)
+
+    "return true" when {
+      "CommodityCode contains one of the prefixed arguments" in {
+        val commodityDetails = CommodityDetails(Some("3800"), None)
+        val item = anItem(withCommodityDetails(commodityDetails))
+        val declaration = aDeclaration(withType(DeclarationType.STANDARD), withItem(item))
+
+        declaration.isCommodityCodeOfItemPrefixedWith(item.id, chemicalCodes) mustBe true
+      }
+    }
+
+    "return false" when {
+      "no prefixed arguments are supplied" in {
+        val commodityDetails = CommodityDetails(Some("3100"), None)
+        val item = anItem(withCommodityDetails(commodityDetails))
+        val declaration = aDeclaration(withType(DeclarationType.STANDARD), withItem(item))
+
+        declaration.isCommodityCodeOfItemPrefixedWith(item.id, Seq.empty[Int]) mustBe false
+      }
+
+      "CommodityCode is not defined" in {
+        val commodityDetails = CommodityDetails(None, None)
+        val item = anItem(withCommodityDetails(commodityDetails))
+        val declaration = aDeclaration(withType(DeclarationType.STANDARD), withItem(item))
+
+        declaration.isCommodityCodeOfItemPrefixedWith(item.id, chemicalCodes) mustBe false
+      }
+
+      "CommodityCode is empty" in {
+        val commodityDetails = CommodityDetails(Some(""), None)
+        val item = anItem(withCommodityDetails(commodityDetails))
+        val declaration = aDeclaration(withType(DeclarationType.STANDARD), withItem(item))
+
+        declaration.isCommodityCodeOfItemPrefixedWith(item.id, chemicalCodes) mustBe false
+      }
+
+      "CommodityCode contains none of the prefixed arguments" in {
+        val commodityDetails = CommodityDetails(Some("3100"), None)
+        val item = anItem(withCommodityDetails(commodityDetails))
+        val declaration = aDeclaration(withType(DeclarationType.STANDARD), withItem(item))
+
+        declaration.isCommodityCodeOfItemPrefixedWith(item.id, chemicalCodes) mustBe false
       }
     }
   }
