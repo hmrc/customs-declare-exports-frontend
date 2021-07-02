@@ -81,8 +81,6 @@ class AppConfig @Inject()(
 
   val emailFrontendUrl: String = loadConfig("urls.emailFrontendUrl")
 
-  val govUkPageForTypeCO = loadConfig("urls.govUkPageForTypeCO")
-
   val customsDecCompletionRequirements = loadConfig("urls.customsDecCompletionRequirements")
   val locationCodeForAirports = loadConfig("urls.locationCodeForAirports")
   val certificateOfAgreementAirports = loadConfig("urls.certificateOfAgreementAirports")

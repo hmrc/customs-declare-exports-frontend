@@ -43,12 +43,6 @@
 
 @(mode: Mode, form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
 
-@insetLink = {
-    <a class="govuk-link govuk-link--no-visited-state" target="_blank" href=@appConfig.govUkPageForTypeCO>
-        @messages("declaration.destinationCountry.inset.link")
-    </a>
-}
-
 @govukLayout(
     title = Title("declaration.destinationCountry.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DestinationCountryPage, mode)))){
@@ -66,8 +60,6 @@
             items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
             isPageHeading = true
         )
-
-        @insetText(content = HtmlContent(messages("declaration.destinationCountry.inset.text", insetLink)))
 
         @tariffExpander(DestinationCountryPage, request.declarationType)(messages, appConfig)
         @saveButtons()

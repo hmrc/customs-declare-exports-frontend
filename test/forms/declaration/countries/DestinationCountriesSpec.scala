@@ -20,6 +20,7 @@ import base.JourneyTypeTestRunner
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.countries.Countries._
 import models.DeclarationType._
+import models.viewmodels.TariffContentKey
 import play.api.data.FormError
 
 class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
@@ -99,6 +100,12 @@ class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeT
       }
     }
   }
+
+  override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+
+  override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    Seq(TariffContentKey(s"${messageKey}.1.clearance"), TariffContentKey(s"${messageKey}.2.clearance"))
 
   "DestinationCountryPage" when {
     testTariffContentKeys(DestinationCountryPage, "tariff.declaration.destinationCountry")
