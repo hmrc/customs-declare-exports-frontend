@@ -401,7 +401,6 @@ object AppConfigSpec {
       |urls.importExports = "https://www.gov.uk/topic/business-tax/import-export"
       |urls.exitSurveyUrl = "http://localhost:9514/feedback/customs-declare-exports-frontend"
       |urls.emailFrontendUrl = "http://localhost:9898/manage-email-cds/service/customs-declare-exports"
-      |urls.govUkPageForTypeCO = "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide/group-1-message-information-including-procedure-codes#de-11-declaration-type-box-1-declaration-first-subdivision"
       |urls.companyInformationRegister="http://companyInformationRegister"
       |urls.customsDecCompletionRequirements="http://customsDecCompletionRequirements"
       |urls.locationCodeForAirports="http://locationCodeForAirports"
