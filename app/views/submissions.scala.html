@@ -21,7 +21,8 @@
 @import forms.Choice.AllowedChoiceValues.Submissions
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.RequestType.SubmissionRequest
-@import models.declaration.submissions.{Submission, SubmissionStatus}
+@import models.declaration.submissions.Submission
+@import models.declaration.submissions.SubmissionStatus.{PENDING, QUERY_NOTIFICATION_MESSAGE}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, StatusOfSubmission, Title, ViewDates}
 @import views.html.components.gds._
@@ -32,6 +33,7 @@
     pageTitle: pageTitle,
     govukTabs: GovukTabs,
     govukTable: GovukTable,
+    paragraphBody: paragraphBody,
     link: link,
     linkButton: linkButton,
     navigationBanner: navigationBanner,
@@ -43,6 +45,15 @@
 @navBanner = {
     @if(secureMessagingConfig.isSecureMessagingEnabled) {
         @navigationBanner(withLinkToSubmissions = false)
+    }
+}
+
+@warningText = @{
+    val elements = submissionsPagesElements.actionSubmissions.currentPageElements
+    if (elements.exists(_._2.exists(_.status == QUERY_NOTIFICATION_MESSAGE))) {
+        messages("submissions.hint.action.needed.queryNotificationMessage")
+    } else {
+        messages("submissions.hint.action.needed.generic")
     }
 }
 
@@ -102,7 +113,7 @@
                         attributes = Map("id" -> s"submission-tab-$id-row$index-dateAndTime")
                     ),
                     TableRow(
-                        content = Text(StatusOfSubmission.asText(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))),
+                        content = Text(StatusOfSubmission.asText(notifications.headOption.map(n => n.status).getOrElse(PENDING))),
                         attributes = Map("id" -> s"submission-tab-$id-row$index-status")
                     )
                 )
@@ -149,11 +160,11 @@
 
             @if(submissionsPagesElements.actionSubmissions.elementsTotal > 0) {
                 @govukWarningText(WarningText(
-                    iconFallbackText = messages("submissions.hint.action.needed.alt"),
-                    content = Text(messages("submissions.hint.action.needed"))
+                    iconFallbackText = messages("submissions.hint.action.needed.iconFallbackText"),
+                    content = Text(warningText)
                 ))
             } else {
-                <p class="govuk-body govuk-warning-text">@messages("submissions.hint.no.action.needed")</p>
+                @paragraphBody(message = messages("submissions.hint.no.action.needed"), classes = "govuk-body govuk-warning-text")
             }
 
             @govukTabs(Tabs(
