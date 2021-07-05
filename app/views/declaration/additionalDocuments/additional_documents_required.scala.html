@@ -19,7 +19,7 @@
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.common.YesNoAnswer
 @import forms.common.YesNoAnswer.YesNoAnswers
-@import forms.declaration.additionaldocuments.DocumentsRequired
+@import forms.declaration.additionaldocuments.AdditionalDocumentsRequired
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
@@ -33,6 +33,7 @@
     sectionHeader: sectionHeader,
     yesNoRadios: yesNoRadios,
     insetText: exportsInsetText,
+    paragraph: paragraphBody,
     link: link,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
@@ -42,7 +43,7 @@
 @(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @commodityCodeLink = {
-    @request.cacheModel.commodityCode(itemId).fold {
+    @request.cacheModel.commodityCodeOfItem(itemId).fold {
         @link(
             id = Some("general-trade-tariff-inset-link"),
             call = Call("GET", appConfig.tradeTariffUrl),
@@ -59,7 +60,7 @@
     }
 }
 
-@licenseAndCertificatesParagraph = {
+@licenseAndCertificates = {
     @link(
         id = Some("licenses-and-certificates-inset-link"),
         call = Call("GET", appConfig.licensesForExportingGoods),
@@ -69,16 +70,16 @@
 }
 
 @insetSection = {
-    <p class="govuk-label--s">@messages("declaration.additionalDocumentsRequired.inset.text1")</p>
+    @paragraph(classes = "govuk-label--s", message = messages("declaration.additionalDocumentsRequired.inset.text1"))
 
-    <p class="govuk-body">@Html(messages("declaration.additionalDocumentsRequired.inset.text2", commodityCodeLink))</p>
+    @paragraph(messages("declaration.additionalDocumentsRequired.inset.text2", commodityCodeLink))
 
-    <p class="govuk-body">@licenseAndCertificatesParagraph</p>
+    @paragraph(licenseAndCertificates.toString)
 }
 
 @govukLayout(
     title = Title("declaration.additionalDocumentsRequired.title", "declaration.section.5"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentsRequired, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalDocumentsRequired, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.AdditionalDocumentsRequiredController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

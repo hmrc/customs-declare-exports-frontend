@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import javax.inject.Inject
-import models.declaration.DocumentsProducedData
+import models.declaration.AdditionalDocuments
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -42,7 +42,7 @@ class AdditionalDocumentsRequiredController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  private lazy val emptyKey = "declaration.additionalDocumentsRequired.empty"
+  private val emptyKey = "declaration.additionalDocumentsRequired.empty"
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form(errorKey = emptyKey).withSubmissionErrors()
@@ -62,13 +62,13 @@ class AdditionalDocumentsRequiredController @Inject()(
   }
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
-    if (yesNoAnswer.answer == YesNoAnswers.yes) routes.AdditionalDocumentsAddController.displayPage(_, itemId)
+    if (yesNoAnswer.answer == YesNoAnswers.yes) routes.AdditionalDocumentAddController.displayPage(_, itemId)
     else routes.ItemsSummaryController.displayItemsSummaryPage(_)
 
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] = {
-    val documentsProducedData = DocumentsProducedData(Some(yesNoAnswer), request.cacheModel.additionalDocuments(itemId))
-    updateExportsDeclarationSyncDirect(_.updatedItem(itemId, _.copy(documentsProducedData = Some(documentsProducedData))))
+    val additionalDocuments = AdditionalDocuments(Some(yesNoAnswer), request.cacheModel.listOfAdditionalDocuments(itemId))
+    updateExportsDeclarationSyncDirect(_.updatedItem(itemId, _.copy(additionalDocuments = Some(additionalDocuments))))
   }
 }

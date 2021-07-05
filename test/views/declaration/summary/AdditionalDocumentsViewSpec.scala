@@ -19,9 +19,9 @@ package views.declaration.summary
 import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.AdditionalDocument
 import models.Mode
-import models.declaration.DocumentsProducedData
+import models.declaration.AdditionalDocuments
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.additional_documents
@@ -30,8 +30,8 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
   private val additionalDocumentsSection = instanceOf[additional_documents]
   private val documents = Seq(
-    DocumentsProduced(Some("typ1"), Some("identifier1"), None, None, None, None, None),
-    DocumentsProduced(Some("typ2"), Some("identifier2"), None, None, None, None, None)
+    AdditionalDocument(Some("typ1"), Some("identifier1"), None, None, None, None, None),
+    AdditionalDocument(Some("typ2"), Some("identifier2"), None, None, None, None, None)
   )
 
   "Supporting documents view" should {
@@ -40,8 +40,8 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
       "there is no documents" in {
 
-        val view = additionalDocumentsSection(Mode.Normal, "itemId", 1, DocumentsProducedData(None, Seq.empty))(messages)
-        val row = view.getElementsByClass("supporting-documents-1-row")
+        val view = additionalDocumentsSection(Mode.Normal, "itemId", 1, AdditionalDocuments(None, Seq.empty))(messages)
+        val row = view.getElementsByClass("additional-documents-1-row")
 
         row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
         row must haveSummaryValue("No")
@@ -52,10 +52,10 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
       }
     }
 
-    "display all supporting documents with change buttons" in {
+    "display all additional documents with change buttons" in {
 
-      val view = additionalDocumentsSection(Mode.Normal, "itemId", 1, DocumentsProducedData(Some(YesNoAnswer.Yes), documents))(messages)
-      val table = view.getElementById("supporting-documents-1-table")
+      val view = additionalDocumentsSection(Mode.Normal, "itemId", 1, AdditionalDocuments(Some(YesNoAnswer.Yes), documents))(messages)
+      val table = view.getElementById("additional-documents-1-table")
 
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
 
@@ -80,15 +80,15 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
         .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.items.item.additionalDocuments.change", "typ2", "identifier2", 1)}"
     }
 
-    "display all supporting documents without change buttons" when {
+    "display all additional documents without change buttons" when {
 
       "actionsEnabled is false" in {
 
         val view =
-          additionalDocumentsSection(Mode.Normal, "itemId", 1, DocumentsProducedData(Some(YesNoAnswer.Yes), documents), actionsEnabled = false)(
+          additionalDocumentsSection(Mode.Normal, "itemId", 1, AdditionalDocuments(Some(YesNoAnswer.Yes), documents), actionsEnabled = false)(
             messages
           )
-        val table = view.getElementById("supporting-documents-1-table")
+        val table = view.getElementById("additional-documents-1-table")
 
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
 

@@ -18,10 +18,10 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.AdditionalDocument
 import mock.ErrorHandlerMocks
 import models.Mode
-import models.declaration.DocumentsProducedData
+import models.declaration.AdditionalDocuments
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -30,19 +30,19 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.additionalDocuments.additional_documents_add
+import views.html.declaration.additionalDocuments.additional_document_add
 
-class AdditionalDocumentsAddControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  val additionalDocumentsAddPage = mock[additional_documents_add]
+  val additionalDocumentAddPage = mock[additional_document_add]
 
-  val controller = new AdditionalDocumentsAddController(
+  val controller = new AdditionalDocumentAddController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    additionalDocumentsAddPage
+    additionalDocumentAddPage
   )(ec)
 
   val itemId = "itemId"
@@ -51,17 +51,17 @@ class AdditionalDocumentsAddControllerSpec extends ControllerSpec with ErrorHand
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-    when(additionalDocumentsAddPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDocumentAddPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(additionalDocumentsAddPage)
+    reset(additionalDocumentAddPage)
   }
 
-  def theResponseForm: Form[DocumentsProduced] = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[DocumentsProduced]])
-    verify(additionalDocumentsAddPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
+  def theResponseForm: Form[AdditionalDocument] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalDocument]])
+    verify(additionalDocumentAddPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
     formCaptor.getValue
   }
 
@@ -71,11 +71,11 @@ class AdditionalDocumentsAddControllerSpec extends ControllerSpec with ErrorHand
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(additionalDocumentsAddPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(additionalDocumentAddPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
-  val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)
+  val additionalDocument = AdditionalDocument(Some("1234"), None, None, None, None, None, None)
 
-  "Document Produced controller" should {
+  "AdditionalDocumentAddController" should {
 
     "return 200 (OK)" when {
 
@@ -119,7 +119,7 @@ class AdditionalDocumentsAddControllerSpec extends ControllerSpec with ErrorHand
 
       "user put duplicated item" in {
 
-        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withDocumentsProduced(None, documentsProduced)))))
+        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withAdditionalDocuments(None, additionalDocument)))))
 
         val duplicatedForm = Seq(("documentTypeCode", "1234"))
 
@@ -136,8 +136,8 @@ class AdditionalDocumentsAddControllerSpec extends ControllerSpec with ErrorHand
             withItems(
               anItem(
                 withItemId("itemId"),
-                withDocumentsProducedData(
-                  DocumentsProducedData(Some(YesNoAnswer.Yes), Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced))
+                withAdditionalDocuments(
+                  AdditionalDocuments(Some(YesNoAnswer.Yes), Seq.fill(AdditionalDocuments.maxNumberOfItems)(additionalDocument))
                 )
               )
             )
@@ -157,15 +157,15 @@ class AdditionalDocumentsAddControllerSpec extends ControllerSpec with ErrorHand
 
       "user correctly add new item" in {
 
-        val correctForm = Json.toJson(documentsProduced)
+        val correctForm = Json.toJson(additionalDocument)
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
         verifyPageInvoked(0)
 
-        val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.documentsProducedData)
-        savedDocuments mustBe Some(DocumentsProducedData(None, Seq(documentsProduced)))
+        val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
+        savedDocuments mustBe Some(AdditionalDocuments(None, Seq(additionalDocument)))
       }
 
       "user save empty form without new item" in {
@@ -176,8 +176,8 @@ class AdditionalDocumentsAddControllerSpec extends ControllerSpec with ErrorHand
         thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
         verifyPageInvoked(0)
 
-        val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.documentsProducedData)
-        savedDocuments mustBe Some(DocumentsProducedData(None, Seq.empty))
+        val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
+        savedDocuments mustBe Some(AdditionalDocuments(None, Seq.empty))
       }
 
     }

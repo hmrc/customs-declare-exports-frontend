@@ -1030,7 +1030,7 @@ function addDocumentsSummary(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-documentation-list')) {
         switch(getDeclaration()) {
             case 'A':
-                if(document.getElementById("documents_produced").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthA")) {
+                if(document.getElementById("additional_documents").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthA")) {
                     document.getElementById('code_yes').checked = 'checked';
                     document.getElementById('submit').click();
                 } else {
@@ -1039,7 +1039,7 @@ function addDocumentsSummary(){
                 }
                 break;
             case 'C':
-                if(document.getElementById("documents_produced").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthC")) {
+                if(document.getElementById("additional_documents").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthC")) {
                     document.getElementById('code_yes').checked = 'checked';
                     document.getElementById('submit').click();
                 } else {

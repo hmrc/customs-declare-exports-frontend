@@ -59,7 +59,7 @@ class TaricCodeAddController @Inject()(
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    def formWithErrors(formWithErrors: Form[TaricCodeFirst]): Future[Result] =
+    def showFormWithErrors(formWithErrors: Form[TaricCodeFirst]): Future[Result] =
       Future.successful(BadRequest(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), formWithErrors)))
 
     val exportItem = request.cacheModel.itemBy(itemId)
@@ -71,12 +71,12 @@ class TaricCodeAddController @Inject()(
         TaricCodeFirst
           .form()
           .bindFromRequest()
-          .fold(formWithErrors, validForm => saveFirstTaricCode(mode, itemId, validForm.code))
+          .fold(showFormWithErrors, validForm => saveFirstTaricCode(mode, itemId, validForm.code))
     }
   }
 
   private def commodityCode(itemId: String)(implicit request: JourneyRequest[_]): Option[String] =
-    request.cacheModel.commodityCode(itemId)
+    request.cacheModel.commodityCodeOfItem(itemId)
 
   private def saveFirstTaricCode(mode: Mode, itemId: String, maybeCode: Option[String])(
     implicit request: JourneyRequest[AnyContent]

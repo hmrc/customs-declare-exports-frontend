@@ -20,7 +20,7 @@ import java.util.UUID
 
 import forms.common.YesNoAnswer
 import forms.declaration._
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.AdditionalDocument
 import models.declaration._
 
 trait ExportsItemBuilder {
@@ -115,12 +115,13 @@ trait ExportsItemBuilder {
         )
     )
 
-  def withDocumentsProduced(isRequired: Option[YesNoAnswer], first: DocumentsProduced, docs: DocumentsProduced*): ItemModifier = cache => {
-    val existing = cache.documentsProducedData.map(_.documents).getOrElse(Seq.empty)
-    cache.copy(documentsProducedData = Some(DocumentsProducedData(isRequired, existing ++ Seq(first) ++ docs)))
-  }
+  def withAdditionalDocuments(isRequired: Option[YesNoAnswer], first: AdditionalDocument, documents: AdditionalDocument*): ItemModifier =
+    cache => {
+      val existing = cache.additionalDocuments.map(_.documents).getOrElse(Seq.empty)
+      cache.copy(additionalDocuments = Some(AdditionalDocuments(isRequired, existing ++ Seq(first) ++ documents)))
+    }
 
-  def withDocumentsProducedData(docs: DocumentsProducedData): ItemModifier =
-    cache => cache.copy(documentsProducedData = Some(docs))
+  def withAdditionalDocuments(additionalDocuments: AdditionalDocuments): ItemModifier =
+    cache => cache.copy(additionalDocuments = Some(additionalDocuments))
 
 }

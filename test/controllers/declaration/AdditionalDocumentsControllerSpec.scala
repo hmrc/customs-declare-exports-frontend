@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.AdditionalDocument
 import mock.ErrorHandlerMocks
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -64,7 +64,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    val item = anItem(withDocumentsProduced(Some(YesNoAnswer.Yes), documentsProduced))
+    val item = anItem(withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
     withNewCaching(aDeclaration(withItems(item)))
     await(controller.displayPage(Mode.Normal, item.id)(request))
     theResponseForm
@@ -73,15 +73,15 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
     verify(additionalDocumentsPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
-  val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)
+  val additionalDocument = AdditionalDocument(Some("1234"), None, None, None, None, None, None)
 
-  "Document Produced controller" should {
+  "AdditionalDocumentsController" should {
 
     "return 200 (OK)" when {
 
       "display page method is invoked with data in cache" in {
 
-        val item = anItem(withDocumentsProduced(Some(YesNoAnswer.Yes), documentsProduced))
+        val item = anItem(withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
         withNewCaching(aDeclaration(withItems(item)))
 
         val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
@@ -111,23 +111,23 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
 
         await(result) mustBe aRedirectToTheNextPage
         // TODO. CEDS-3255.
-        // If auth code from List1 thePageNavigatedTo mustBe routes.AdditionalDocumentsAddController.displayPage(Mode.Normal, itemId) else
+        // If auth code from List1 thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId) else
         thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(Mode.Normal, itemId)
       }
 
       "user submits valid Yes answer" in {
-        val item = anItem(withDocumentsProduced(Some(YesNoAnswer.Yes), documentsProduced))
+        val item = anItem(withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
         withNewCaching(aDeclaration(withItems(item)))
 
         val requestBody = Seq("yesNo" -> "Yes")
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalDocumentsAddController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
       }
 
       "user submits valid No answer" in {
-        val item = anItem(withDocumentsProduced(Some(YesNoAnswer.Yes), documentsProduced))
+        val item = anItem(withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
         withNewCaching(aDeclaration(withItems(item)))
 
         val requestBody = Seq("yesNo" -> "No")

@@ -39,7 +39,7 @@ case class ExportItem(
   packageInformation: Option[List[PackageInformation]] = None,
   commodityMeasure: Option[CommodityMeasure] = None,
   additionalInformation: Option[AdditionalInformationData] = None,
-  documentsProducedData: Option[DocumentsProducedData] = None
+  additionalDocuments: Option[AdditionalDocuments] = None
 ) {
   def hasFiscalReferences: Boolean =
     fiscalInformation.exists(_.onwardSupplyRelief == yes)

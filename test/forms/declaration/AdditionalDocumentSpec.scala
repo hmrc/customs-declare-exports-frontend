@@ -21,17 +21,17 @@ import forms.common.Date._
 import forms.common.DateSpec.{correctDate, correctDateJSON, incorrectDate}
 import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
-import forms.declaration.additionaldocuments.DocumentsProduced._
-import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
+import forms.declaration.additionaldocuments.AdditionalDocument._
+import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import base.UnitSpec
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
-class DocumentsProducedSpec extends UnitSpec {
+class AdditionalDocumentSpec extends UnitSpec {
 
-  import DocumentsProducedSpec._
+  import AdditionalDocumentSpec._
 
-  "Documents Produced form with mapping used to bind data" should {
+  "AdditionalDocument form with mapping used to bind data" should {
 
     "return form with errors" when {
 
@@ -40,7 +40,7 @@ class DocumentsProducedSpec extends UnitSpec {
         "is longer than 5 characters" in {
 
           val input = JsObject(Map(documentTypeCodeKey -> JsString("123456")))
-          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.addDocument.documentTypeCode.error"))
+          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -48,7 +48,7 @@ class DocumentsProducedSpec extends UnitSpec {
         "is shorter than 4 characters" in {
 
           val input = JsObject(Map(documentTypeCodeKey -> JsString("123")))
-          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.addDocument.documentTypeCode.error"))
+          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -56,7 +56,7 @@ class DocumentsProducedSpec extends UnitSpec {
         "contains special characters" in {
 
           val input = JsObject(Map(documentTypeCodeKey -> JsString("12!$")))
-          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.addDocument.documentTypeCode.error"))
+          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -67,7 +67,7 @@ class DocumentsProducedSpec extends UnitSpec {
         "is longer than 35 characters" in {
           val input = JsObject(Map(documentIdentifierKey -> JsString(TestHelper.createRandomAlphanumericString(36))))
           val expectedErrors =
-            Seq(FormError(documentIdentifierKey, "declaration.addDocument.documentIdentifier.error"))
+            Seq(FormError(documentIdentifierKey, "declaration.additionalDocument.documentIdentifier.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -75,7 +75,7 @@ class DocumentsProducedSpec extends UnitSpec {
         "contains special characters" in {
           val input = JsObject(Map(documentIdentifierKey -> JsString("12#$")))
           val expectedErrors =
-            Seq(FormError(documentIdentifierKey, "declaration.addDocument.documentIdentifier.error"))
+            Seq(FormError(documentIdentifierKey, "declaration.additionalDocument.documentIdentifier.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -86,7 +86,7 @@ class DocumentsProducedSpec extends UnitSpec {
         "is longer than 2 characters" in {
 
           val input = JsObject(Map(documentStatusKey -> JsString("ABC")))
-          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.addDocument.documentStatus.error"))
+          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.documentStatus.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -94,7 +94,7 @@ class DocumentsProducedSpec extends UnitSpec {
         "contains special characters" in {
 
           val input = JsObject(Map(documentStatusKey -> JsString("A@")))
-          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.addDocument.documentStatus.error"))
+          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.documentStatus.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -102,7 +102,7 @@ class DocumentsProducedSpec extends UnitSpec {
         "contains digits" in {
 
           val input = JsObject(Map(documentStatusKey -> JsString("A4")))
-          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.addDocument.documentStatus.error"))
+          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.documentStatus.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -114,7 +114,7 @@ class DocumentsProducedSpec extends UnitSpec {
 
           val input = JsObject(Map(documentStatusReasonKey -> JsString(TestHelper.createRandomAlphanumericString(36))))
           val expectedErrors =
-            Seq(FormError(documentStatusReasonKey, "declaration.addDocument.documentStatusReason.error"))
+            Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -123,7 +123,7 @@ class DocumentsProducedSpec extends UnitSpec {
 
           val input = JsObject(Map(documentStatusReasonKey -> JsString("AB!@#$")))
           val expectedErrors =
-            Seq(FormError(documentStatusReasonKey, "declaration.addDocument.documentStatusReason.error"))
+            Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -135,7 +135,7 @@ class DocumentsProducedSpec extends UnitSpec {
 
           val input = JsObject(Map(issuingAuthorityNameKey -> JsString(TestHelper.createRandomAlphanumericString(71))))
           val expectedErrors =
-            Seq(FormError(issuingAuthorityNameKey, "declaration.addDocument.issuingAuthorityName.error.length"))
+            Seq(FormError(issuingAuthorityNameKey, "declaration.additionalDocument.issuingAuthorityName.error.length"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -147,7 +147,7 @@ class DocumentsProducedSpec extends UnitSpec {
 
           val input =
             JsObject(Map(dateOfValidityKey -> JsObject(Map(yearKey -> JsString("2000"), monthKey -> JsString("13"), dayKey -> JsString("32")))))
-          val expectedErrors = Seq(FormError(dateOfValidityKey, "declaration.addDocument.dateOfValidity.error.format"))
+          val expectedErrors = Seq(FormError(dateOfValidityKey, "declaration.additionalDocument.dateOfValidity.error.format"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -159,8 +159,8 @@ class DocumentsProducedSpec extends UnitSpec {
 
           val input = JsObject(Map(documentWriteOffKey -> incorrectDocumentWriteOffJSON))
           val expectedErrors = Seq(
-            FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.addDocument.measurementUnit.error"),
-            FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.addDocument.documentQuantity.error")
+            FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.additionalDocument.measurementUnit.error"),
+            FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.additionalDocument.documentQuantity.error")
           )
 
           testFailedValidationErrors(input, expectedErrors)
@@ -168,7 +168,7 @@ class DocumentsProducedSpec extends UnitSpec {
       }
 
       def testFailedValidationErrors(input: JsValue, expectedErrors: Seq[FormError]): Unit = {
-        val form = DocumentsProduced.form.bind(input)
+        val form = AdditionalDocument.form.bind(input)
         expectedErrors.foreach(form.errors must contain(_))
       }
     }
@@ -177,20 +177,20 @@ class DocumentsProducedSpec extends UnitSpec {
 
       "provided with correct data" in {
 
-        val form = DocumentsProduced.form.bind(correctDocumentsProducedJSON)
+        val form = AdditionalDocument.form.bind(correctAdditionalDocumentJSON)
         form.errors mustBe empty
       }
 
       "provided with empty data" in {
 
-        val form = DocumentsProduced.form.bind(emptyDocumentsProducedJSON)
+        val form = AdditionalDocument.form.bind(emptyAdditionalDocumentJSON)
         form.errors mustBe empty
       }
 
       "provided with Issuing Authority Name containing special characters" in {
 
         val input = JsObject(Map(issuingAuthorityNameKey -> JsString("Issuing Authority Name with ''' added")))
-        val form = DocumentsProduced.form.bind(input)
+        val form = AdditionalDocument.form.bind(input)
 
         form.errors mustBe empty
       }
@@ -208,7 +208,7 @@ class DocumentsProducedSpec extends UnitSpec {
             documentWriteOffKey -> Json.toJson(DocumentWriteOff(Some("ABC"), Some(12)))
           )
         )
-        val form = DocumentsProduced.form.bind(input)
+        val form = AdditionalDocument.form.bind(input)
 
         form.errors mustBe empty
       }
@@ -219,7 +219,7 @@ class DocumentsProducedSpec extends UnitSpec {
       "provided with document type code in lower case" in {
 
         val input = JsObject(Map(documentTypeCodeKey -> JsString("ab12")))
-        val form = DocumentsProduced.form.bind(input)
+        val form = AdditionalDocument.form.bind(input)
 
         form.errors mustBe empty
         form.value.flatMap(_.documentTypeCode) must be(Some("AB12"))
@@ -228,7 +228,7 @@ class DocumentsProducedSpec extends UnitSpec {
       "provided with document status in lower case" in {
 
         val input = JsObject(Map(documentStatusKey -> JsString("Ab")))
-        val form = DocumentsProduced.form.bind(input)
+        val form = AdditionalDocument.form.bind(input)
 
         form.errors mustBe empty
         form.value.flatMap(_.documentStatus) must be(Some("AB"))
@@ -238,11 +238,11 @@ class DocumentsProducedSpec extends UnitSpec {
   }
 }
 
-object DocumentsProducedSpec {
+object AdditionalDocumentSpec {
   private val categoryCode = "A"
   private val typeCode = "B12"
 
-  val correctDocumentsProduced: DocumentsProduced = DocumentsProduced(
+  val correctAdditionalDocument: AdditionalDocument = AdditionalDocument(
     documentTypeCode = Some(categoryCode + typeCode),
     documentIdentifier = Some("ABCDEF1234567890"),
     documentStatus = Some("AB"),
@@ -252,7 +252,7 @@ object DocumentsProducedSpec {
     documentWriteOff = Some(correctDocumentWriteOff)
   )
 
-  val correctDocumentsProducedMap: Map[String, String] = Map(
+  val correctAdditionalDocumentMap: Map[String, String] = Map(
     documentTypeCodeKey -> (categoryCode + typeCode),
     documentIdentifierKey -> "ABCDEF1234567890",
     documentStatusKey -> "AB",
@@ -265,7 +265,7 @@ object DocumentsProducedSpec {
     s"$documentWriteOffKey.$documentQuantityKey" -> "1234567890.123456"
   )
 
-  val correctDocumentsProducedJSON: JsValue = JsObject(
+  val correctAdditionalDocumentJSON: JsValue = JsObject(
     Map(
       documentTypeCodeKey -> JsString(categoryCode + typeCode),
       documentIdentifierKey -> JsString("ABCDEF1234567890"),
@@ -277,7 +277,7 @@ object DocumentsProducedSpec {
     )
   )
 
-  val incorrectDocumentsProducedMap: Map[String, String] = Map(
+  val incorrectAdditionalDocumentMap: Map[String, String] = Map(
     documentTypeCodeKey -> TestHelper.createRandomAlphanumericString(5),
     documentIdentifierKey -> TestHelper.createRandomAlphanumericString(36),
     documentStatusKey -> "ABC",
@@ -290,7 +290,7 @@ object DocumentsProducedSpec {
     s"$documentWriteOffKey.$documentQuantityKey" -> "12345678901234567"
   )
 
-  val emptyDocumentsProducedJSON: JsValue = JsObject(
+  val emptyAdditionalDocumentJSON: JsValue = JsObject(
     Map(
       documentTypeCodeKey -> JsString(""),
       documentIdentifierKey -> JsString(""),

@@ -20,15 +20,12 @@ import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.Mode
-import models.declaration.DocumentsProducedData
-import models.requests.JourneyRequest
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsEmpty, Call, Request}
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalDocuments.additional_documents_required
@@ -76,19 +73,8 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
     onEveryDeclarationJourney() { implicit request =>
       "return 200 (OK)" when {
 
-        "display page method is invoked and cache is empty" in {
+        "display page method is invoked" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
-          status(result) must be(OK)
-          verifyPageInvoked
-        }
-
-        "display page method is invoked and cache is not empty" in {
-          val documentsProducedData = DocumentsProducedData(Some(YesNoAnswer.Yes), Seq.empty)
-          withNewCaching(
-            aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId), withDocumentsProducedData(documentsProducedData))))
-          )
-
           val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
           status(result) must be(OK)
           verifyPageInvoked
@@ -97,13 +83,23 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
 
       "return 303 (SEE_OTHER) and redirect to the 'Additional Documents' page" when {
         "answer is 'yes'" in {
-          verifyRedirect(Some(YesNoAnswers.yes), routes.AdditionalDocumentsAddController.displayPage(Mode.Normal, itemId))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(Json.obj("yesNo" -> YesNoAnswers.yes)))
+
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
         }
       }
 
       "return 303 (SEE_OTHER) and redirect to the 'Items Summary' page" when {
         "answer is 'no'" in {
-          verifyRedirect(Some(YesNoAnswers.no), routes.ItemsSummaryController.displayItemsSummaryPage())
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(Json.obj("yesNo" -> YesNoAnswers.no)))
+
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
         }
       }
 
@@ -123,17 +119,4 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
 
   private def verifyPageInvoked: HtmlFormat.Appendable =
     verify(page).apply(any[Mode], any[String], any[Form[YesNoAnswer]])(any(), any())
-
-  private def verifyRedirect(yesOrNo: Option[String], expectedPage: Call)(implicit request: JourneyRequest[_]): Assertion = {
-    withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
-
-    val result = yesOrNo.fold {
-      controller.displayPage(Mode.Normal, itemId)(getRequest())
-    } { yn =>
-      controller.submitForm(Mode.Normal, itemId)(postRequest(Json.obj("yesNo" -> yn)))
-    }
-
-    status(result) mustBe SEE_OTHER
-    thePageNavigatedTo mustBe expectedPage
-  }
 }

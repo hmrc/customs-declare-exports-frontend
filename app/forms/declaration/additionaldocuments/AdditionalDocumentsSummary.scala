@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package models.declaration
+package forms.declaration.additionaldocuments
 
-import forms.common.YesNoAnswer
-import forms.declaration.additionaldocuments.DocumentsProduced
-import play.api.libs.json.Json
+import forms.DeclarationPage
 
-case class DocumentsProducedData(isRequired: Option[YesNoAnswer], documents: Seq[DocumentsProduced]) {
-
-  def isEmpty: Boolean = documents.isEmpty
-}
-
-object DocumentsProducedData {
-  implicit val format = Json.format[DocumentsProducedData]
-
-  val formId = "DocumentsProducedData"
-
-  val maxNumberOfItems = 99
-}
+object AdditionalDocumentsSummary extends DeclarationPage

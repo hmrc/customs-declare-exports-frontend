@@ -27,7 +27,7 @@ import models.declaration._
 import play.api.libs.json._
 import java.time.{Clock, Instant}
 
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.AdditionalDocument
 
 case class ExportsDeclaration(
   id: String,
@@ -53,17 +53,17 @@ case class ExportsDeclaration(
   lazy val lrn: Option[String] = consignmentReferences.map(_.lrn.value)
   lazy val ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
 
-  def documentsProducedDataIfAny(itemId: String): Option[DocumentsProducedData] =
-    itemBy(itemId).flatMap(_.documentsProducedData)
+  def additionalDocumentsIfAny(itemId: String): Option[AdditionalDocuments] =
+    itemBy(itemId).flatMap(_.additionalDocuments)
 
-  def documentsProducedData(itemId: String): DocumentsProducedData =
-    documentsProducedDataIfAny(itemId).getOrElse(DocumentsProducedData(None, Seq.empty))
+  def additionalDocuments(itemId: String): AdditionalDocuments =
+    additionalDocumentsIfAny(itemId).getOrElse(AdditionalDocuments(None, Seq.empty))
 
-  def additionalDocuments(itemId: String): Seq[DocumentsProduced] =
-    documentsProducedDataIfAny(itemId).map(_.documents).getOrElse(Seq.empty)
+  def listOfAdditionalDocuments(itemId: String): Seq[AdditionalDocument] =
+    additionalDocumentsIfAny(itemId).map(_.documents).getOrElse(Seq.empty)
 
   def additionalDocumentsRequired(itemId: String): Option[YesNoAnswer] =
-    documentsProducedDataIfAny(itemId).flatMap(_.isRequired)
+    additionalDocumentsIfAny(itemId).flatMap(_.isRequired)
 
   def addOrUpdateContainer(container: Container): ExportsDeclaration =
     copy(transport = transport.addOrUpdateContainer(container))
@@ -76,7 +76,7 @@ case class ExportsDeclaration(
   def clearRoutingCountries(): ExportsDeclaration =
     copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
 
-  def commodityCode(itemId: String): Option[String] =
+  def commodityCodeOfItem(itemId: String): Option[String] =
     itemBy(itemId).flatMap(_.commodityDetails.flatMap(_.combinedNomenclatureCode))
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
@@ -86,6 +86,13 @@ case class ExportsDeclaration(
   def containRoutingCountries(): Boolean = locations.routingCountries.nonEmpty
 
   def hasContainers: Boolean = containers.nonEmpty
+
+  def isCommodityCodeOfItemPrefixedWith(itemId: String, prefix: Seq[Int]): Boolean =
+    commodityCodeOfItem(itemId) match {
+      case Some(commodityCode) if (commodityCode.trim.length > 0) =>
+        prefix.exists(digits => commodityCode.startsWith(digits.toString))
+      case _ => false
+    }
 
   def isComplete: Boolean = status == DeclarationStatus.COMPLETE
 
@@ -104,20 +111,6 @@ case class ExportsDeclaration(
   def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).exists(_.nonEmpty)
 
   def requiresWarehouseId: Boolean = items.exists(_.requiresWarehouseId)
-
-  def getCommodityCodeOfItem(itemId: String): Option[String] =
-    for {
-      exportItem <- itemBy(itemId)
-      commodityDetails <- exportItem.commodityDetails
-      commodityCode <- commodityDetails.combinedNomenclatureCode
-    } yield commodityCode
-
-  def isCommodityCodeOfItemPrefixedWith(itemId: String, prefix: Seq[Int]): Boolean =
-    getCommodityCodeOfItem(itemId) match {
-      case Some(commodityCode) if (commodityCode.trim.length > 0) =>
-        prefix.exists(digits => commodityCode.startsWith(digits.toString))
-      case _ => false
-    }
 
   def removeCountryOfRouting(country: Country): ExportsDeclaration =
     copy(locations = locations.copy(routingCountries = locations.routingCountries.filterNot(_ == country)))

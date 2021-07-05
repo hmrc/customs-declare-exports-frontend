@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.AdditionalDocument
 import javax.inject.Inject
 import models.Mode
 import models.requests.JourneyRequest
@@ -55,7 +55,7 @@ class AdditionalDocumentsController @Inject()(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(additionalDocumentsPage(mode, itemId, formWithErrors, cachedDocuments(itemId))),
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, routes.AdditionalDocumentsAddController.displayPage(_, itemId))
+            case YesNoAnswers.yes => navigator.continueTo(mode, routes.AdditionalDocumentAddController.displayPage(_, itemId))
             case YesNoAnswers.no  => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
         }
       )
@@ -63,11 +63,11 @@ class AdditionalDocumentsController @Inject()(
 
   private def redirectIfNoDocuments(itemId: String): Mode => Call =
     // TODO. CEDS-3255.
-    // If auth code from List1 return routes.AdditionalDocumentsAddController.displayPage(_, itemId) else
+    // If auth code from List1 return routes.AdditionalDocumentAddController.displayPage(_, itemId) else
     routes.AdditionalDocumentsRequiredController.displayPage(_, itemId)
 
-  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.addDocument.add.another.empty")
+  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalDocument.add.another.empty")
 
-  private def cachedDocuments(itemId: String)(implicit request: JourneyRequest[AnyContent]): Seq[DocumentsProduced] =
-    request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents).getOrElse(Seq.empty)
+  private def cachedDocuments(itemId: String)(implicit request: JourneyRequest[AnyContent]): Seq[AdditionalDocument] =
+    request.cacheModel.itemBy(itemId).flatMap(_.additionalDocuments).map(_.documents).getOrElse(Seq.empty)
 }

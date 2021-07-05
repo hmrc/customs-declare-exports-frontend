@@ -19,14 +19,13 @@ package controllers.declaration
 import scala.concurrent.{ExecutionContext, Future}
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.AdditionalDocumentsAddController.DocumentsProducedFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
-import forms.declaration.additionaldocuments.DocumentsProduced
-import forms.declaration.additionaldocuments.DocumentsProduced.{form, globalErrors}
+import forms.declaration.additionaldocuments.AdditionalDocument
+import forms.declaration.additionaldocuments.AdditionalDocument._
 import javax.inject.Inject
-import models.declaration.DocumentsProducedData
-import models.declaration.DocumentsProducedData.maxNumberOfItems
+import models.declaration.AdditionalDocuments
+import models.declaration.AdditionalDocuments.maxNumberOfItems
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -34,67 +33,63 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.additionalDocuments.additional_documents_add
+import views.html.declaration.additionalDocuments.additional_document_add
 
-class AdditionalDocumentsAddController @Inject()(
+class AdditionalDocumentAddController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  additionalDocumentAddPage: additional_documents_add
+  additionalDocumentAddPage: additional_document_add
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(additionalDocumentAddPage(mode, itemId, form().withSubmissionErrors(), request.cacheModel.commodityCode(itemId)))
+    Ok(additionalDocumentAddPage(mode, itemId, form().withSubmissionErrors(), request.cacheModel.commodityCodeOfItem(itemId)))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = globalErrors(form().bindFromRequest())
 
     boundForm.fold(formWithErrors => {
-      Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors, request.cacheModel.commodityCode(itemId))))
+      Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors, request.cacheModel.commodityCodeOfItem(itemId))))
     }, documents => {
-      val documentsProducedData = request.cacheModel.documentsProducedData(itemId)
-      if (documents.isDefined) saveDocuments(mode, itemId, boundForm, documentsProducedData)
-      else continue(mode, itemId, documentsProducedData)
+      val additionalDocuments = request.cacheModel.additionalDocuments(itemId)
+      if (documents.isDefined) saveDocuments(mode, itemId, boundForm, additionalDocuments)
+      else continue(mode, itemId, additionalDocuments)
     })
   }
 
-  private def continue(mode: Mode, itemId: String, documentsProducedData: DocumentsProducedData)(
+  private def continue(mode: Mode, itemId: String, additionalDocuments: AdditionalDocuments)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
-    updateCache(itemId, documentsProducedData)
+    updateCache(itemId, additionalDocuments)
       .map(
         _ =>
-          if (documentsProducedData.isEmpty)
+          if (additionalDocuments.documents.isEmpty)
             navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
           else
             navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))
       )
 
-  private def saveDocuments(mode: Mode, itemId: String, boundForm: Form[DocumentsProduced], documentsProducedData: DocumentsProducedData)(
+  private def saveDocuments(mode: Mode, itemId: String, boundForm: Form[AdditionalDocument], additionalDocuments: AdditionalDocuments)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, documentsProducedData.documents, maxNumberOfItems, DocumentsProducedFormGroupId, "declaration.addDocument")
+      .add(boundForm, additionalDocuments.documents, maxNumberOfItems, AdditionalDocumentFormGroupId, "declaration.additionalDocument")
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors, request.cacheModel.commodityCode(itemId)))),
+          Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors, request.cacheModel.commodityCodeOfItem(itemId)))),
         documents =>
-          updateCache(itemId, documentsProducedData.copy(documents = documents))
+          updateCache(itemId, additionalDocuments.copy(documents = documents))
             .map(_ => navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId)))
       )
 
-  private def updateCache(itemId: String, documentsProducedData: DocumentsProducedData)(
+  private def updateCache(itemId: String, additionalDocuments: AdditionalDocuments)(
     implicit req: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      model.updatedItem(itemId, item => item.copy(documentsProducedData = Some(documentsProducedData)))
+      model.updatedItem(itemId, item => item.copy(additionalDocuments = Some(additionalDocuments)))
     })
-}
-
-object AdditionalDocumentsAddController {
-  val DocumentsProducedFormGroupId: String = "documentsProduced"
 }

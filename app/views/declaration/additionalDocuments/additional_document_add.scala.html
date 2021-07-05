@@ -15,27 +15,27 @@
  *@
 
 @import controllers.declaration.routes._
+@import controllers.navigation.{Navigator, ItemId}
 @import models.requests.JourneyRequest
-@import forms.declaration.additionaldocuments.DocumentsProduced
+@import forms.declaration.additionaldocuments.AdditionalDocument
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
-    editContent: additional_documents_edit,
+    editContent: additional_document_edit,
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, documentId: String, form: Form[DocumentsProduced], maybeCommodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[AdditionalDocument], maybeCommodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
 
 
 @govukLayout(
-    title = Title("declaration.addDocument.title", "declaration.section.5"),
-    backButton = Some(BackButton(messages("site.back"), AdditionalDocumentsController.displayPage(mode, itemId)))
-) {
+    title = Title("declaration.additionalDocument.title", "declaration.section.5"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalDocument, mode, ItemId(itemId))))) {
 
-    @formHelper(action = AdditionalDocumentsChangeController.submitForm(mode, itemId, documentId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDocumentAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
         @editContent(mode, itemId, form, maybeCommodityCode)
 

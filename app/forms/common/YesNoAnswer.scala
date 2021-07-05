@@ -34,10 +34,10 @@ object YesNoAnswer {
 
   import YesNoAnswers._
 
-  lazy val allowedValues: Seq[String] = Seq(yes, no)
+  val allowedValues: Seq[String] = Seq(yes, no)
 
-  lazy val Yes = YesNoAnswer(yes)
-  lazy val No = YesNoAnswer(no)
+  val Yes = YesNoAnswer(yes)
+  val No = YesNoAnswer(no)
 
   private def mapping(fieldName: String, errorKey: String): Mapping[YesNoAnswer] =
     Forms.mapping(

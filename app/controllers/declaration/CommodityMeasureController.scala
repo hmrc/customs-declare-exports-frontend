@@ -43,8 +43,8 @@ class CommodityMeasureController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
-      case Some(data) => Ok(commodityMeasurePage(mode, itemId, form().fill(data), getCommodityCode(itemId)))
-      case _          => Ok(commodityMeasurePage(mode, itemId, form(), getCommodityCode(itemId)))
+      case Some(data) => Ok(commodityMeasurePage(mode, itemId, form().fill(data), commodityCode(itemId)))
+      case _          => Ok(commodityMeasurePage(mode, itemId, form(), commodityCode(itemId)))
     }
   }
 
@@ -53,7 +53,7 @@ class CommodityMeasureController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[CommodityMeasure]) => {
-          Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors, getCommodityCode(itemId))))
+          Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors, commodityCode(itemId))))
         },
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
@@ -63,9 +63,11 @@ class CommodityMeasureController @Inject()(
       )
   }
 
-  private def form()(implicit request: JourneyRequest[_]) = CommodityMeasure.form(request.declarationType).withSubmissionErrors()
+  private def form()(implicit request: JourneyRequest[_]): Form[CommodityMeasure] =
+    CommodityMeasure.form(request.declarationType).withSubmissionErrors()
 
-  private def getCommodityCode(itemId: String)(implicit request: JourneyRequest[_]) = request.cacheModel.getCommodityCodeOfItem(itemId)
+  private def commodityCode(itemId: String)(implicit request: JourneyRequest[_]): Option[String] =
+    request.cacheModel.commodityCodeOfItem(itemId)
 
   private def updateExportsCache(itemId: String, updatedItem: CommodityMeasure)(
     implicit r: JourneyRequest[AnyContent]

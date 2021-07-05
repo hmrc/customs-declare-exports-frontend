@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.AdditionalDocument
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -27,23 +27,23 @@ import play.api.data.Form
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.declaration.additionalDocuments.additional_documents_change
+import views.html.declaration.additionalDocuments.additional_document_change
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalDocumentsChangeViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
+class AdditionalDocumentChangeViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
   private val itemId = "a7sc78"
   private val documentId = "1.2131231"
   private val mode = Mode.Normal
 
-  private val form: Form[DocumentsProduced] = DocumentsProduced.form()
-  private val additionalDocumentsChangePage = instanceOf[additional_documents_change]
+  private val form: Form[AdditionalDocument] = AdditionalDocument.form()
+  private val additionalDocumentChangePage = instanceOf[additional_document_change]
 
-  private def createView(form: Form[DocumentsProduced] = form)(implicit request: JourneyRequest[_]): Document =
-    additionalDocumentsChangePage(mode, itemId, documentId, form, None)(request, messages)
+  private def createView(form: Form[AdditionalDocument] = form)(implicit request: JourneyRequest[_]): Document =
+    additionalDocumentChangePage(mode, itemId, documentId, form, None)(request, messages)
 
-  "Documents Produced View on empty page" should {
+  "additional_document_change view on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
       "display 'Back' button that links to summary page" in {
 

@@ -278,7 +278,7 @@ object ExportsDeclarationExchangeSpec {
       |          }
       |        ]
       |      },
-      |      "documentsProducedData": {
+      |      "additionalDocuments": {
       |        "isRequired": {
       |          "answer": "Yes"
       |        },

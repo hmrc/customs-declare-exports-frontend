@@ -23,7 +23,7 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.AdditionalDocument
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -33,34 +33,34 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
-import views.html.declaration.additionalDocuments.additional_documents_remove
+import views.html.declaration.additionalDocuments.additional_document_remove
 
-class AdditionalDocumentsRemoveController @Inject()(
+class AdditionalDocumentRemoveController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  additionalDocumentsRemovePage: additional_documents_remove
+  additionalDocumentRemovePage: additional_document_remove
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    findDocument(itemId, documentId) match {
-      case Some(document) => Ok(additionalDocumentsRemovePage(mode, itemId, documentId, document, removeYesNoForm.withSubmissionErrors()))
+    findAdditionalDocument(itemId, documentId) match {
+      case Some(document) => Ok(additionalDocumentRemovePage(mode, itemId, documentId, document, removeYesNoForm.withSubmissionErrors()))
       case _              => returnToSummary(mode, itemId)
     }
   }
 
   def submitForm(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    findDocument(itemId, documentId) match {
+    findAdditionalDocument(itemId, documentId) match {
       case Some(document) =>
         removeYesNoForm
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(additionalDocumentsRemovePage(mode, itemId, documentId, document, formWithErrors))),
+            formWithErrors => Future.successful(BadRequest(additionalDocumentRemovePage(mode, itemId, documentId, document, formWithErrors))),
             _.answer match {
-              case YesNoAnswers.yes => removeDocumentsProduced(itemId, document).map(_ => returnToSummary(mode, itemId))
+              case YesNoAnswers.yes => removeAdditionalDocument(itemId, document).map(_ => returnToSummary(mode, itemId))
               case YesNoAnswers.no  => Future.successful(returnToSummary(mode, itemId))
             }
           )
@@ -69,21 +69,21 @@ class AdditionalDocumentsRemoveController @Inject()(
 
   }
 
-  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.addDocument.remove.empty")
+  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalDocument.remove.empty")
 
   private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))
 
-  private def findDocument(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[DocumentsProduced] =
-    ListItem.findById(id, request.cacheModel.additionalDocuments(itemId))
+  private def findAdditionalDocument(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalDocument] =
+    ListItem.findById(id, request.cacheModel.listOfAdditionalDocuments(itemId))
 
-  private def removeDocumentsProduced(itemId: String, itemToRemove: DocumentsProduced)(
+  private def removeAdditionalDocument(itemId: String, itemToRemove: AdditionalDocument)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] = {
-    val documentsProducedData = request.cacheModel.documentsProducedData(itemId)
-    val documents = remove(documentsProducedData.documents, itemToRemove.equals(_: DocumentsProduced))
+    val additionalDocuments = request.cacheModel.additionalDocuments(itemId)
+    val documents = remove(additionalDocuments.documents, itemToRemove.equals(_: AdditionalDocument))
     val updatedDocumentsData =
-      documentsProducedData.copy(isRequired = if (documents.nonEmpty) documentsProducedData.isRequired else None, documents = documents)
-    updateExportsDeclarationSyncDirect(_.updatedItem(itemId, _.copy(documentsProducedData = Some(updatedDocumentsData))))
+      additionalDocuments.copy(isRequired = if (documents.nonEmpty) additionalDocuments.isRequired else None, documents = documents)
+    updateExportsDeclarationSyncDirect(_.updatedItem(itemId, _.copy(additionalDocuments = Some(updatedDocumentsData))))
   }
 }

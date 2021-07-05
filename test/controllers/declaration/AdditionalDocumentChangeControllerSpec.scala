@@ -18,10 +18,10 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
+import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import mock.ErrorHandlerMocks
 import models.Mode
-import models.declaration.DocumentsProducedData
+import models.declaration.AdditionalDocuments
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -31,43 +31,43 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import utils.ListItem
-import views.html.declaration.additionalDocuments.additional_documents_change
+import views.html.declaration.additionalDocuments.additional_document_change
 
-class AdditionalDocumentsChangeControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  val additionalDocumentsChangePage = mock[additional_documents_change]
+  val additionalDocumentChangePage = mock[additional_document_change]
 
-  val controller = new AdditionalDocumentsChangeController(
+  val controller = new AdditionalDocumentChangeController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    additionalDocumentsChangePage
+    additionalDocumentChangePage
   )(ec)
 
   val itemId = "itemId"
-  val existingDocument1 = DocumentsProduced(Some("1000"), None, None, None, None, None, None)
-  val existingDocument2 = DocumentsProduced(Some("2000"), None, None, None, None, None, None)
+  val existingDocument1 = AdditionalDocument(Some("1000"), None, None, None, None, None, None)
+  val existingDocument2 = AdditionalDocument(Some("2000"), None, None, None, None, None, None)
   val documentId = ListItem.createId(0, existingDocument1)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
     withNewCaching(
-      aDeclaration(withItem(anItem(withItemId(itemId), withDocumentsProduced(Some(YesNoAnswer.Yes), existingDocument1, existingDocument2))))
+      aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalDocuments(Some(YesNoAnswer.Yes), existingDocument1, existingDocument2))))
     )
-    when(additionalDocumentsChangePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDocumentChangePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(additionalDocumentsChangePage)
+    reset(additionalDocumentChangePage)
   }
 
-  def theResponseForm: Form[DocumentsProduced] = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[DocumentsProduced]])
-    verify(additionalDocumentsChangePage).apply(any(), any(), any(), formCaptor.capture(), any())(any(), any())
+  def theResponseForm: Form[AdditionalDocument] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalDocument]])
+    verify(additionalDocumentChangePage).apply(any(), any(), any(), formCaptor.capture(), any())(any(), any())
     formCaptor.getValue
   }
 
@@ -77,9 +77,9 @@ class AdditionalDocumentsChangeControllerSpec extends ControllerSpec with ErrorH
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(additionalDocumentsChangePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
+    verify(additionalDocumentChangePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
 
-  "Document Produced controller" should {
+  "AdditionalDocumentChangeController" should {
 
     "return 200 (OK)" when {
 
@@ -143,9 +143,9 @@ class AdditionalDocumentsChangeControllerSpec extends ControllerSpec with ErrorH
         thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
         verifyPageInvoked(0)
 
-        val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.documentsProducedData)
+        val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
         savedDocuments mustBe Some(
-          DocumentsProducedData(
+          AdditionalDocuments(
             Some(YesNoAnswer.Yes),
             Seq(
               existingDocument1
@@ -165,8 +165,8 @@ class AdditionalDocumentsChangeControllerSpec extends ControllerSpec with ErrorH
         thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
         verifyPageInvoked(0)
 
-        val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.documentsProducedData)
-        savedDocuments mustBe Some(DocumentsProducedData(Some(YesNoAnswer.Yes), Seq(existingDocument1, existingDocument2)))
+        val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
+        savedDocuments mustBe Some(AdditionalDocuments(Some(YesNoAnswer.Yes), Seq(existingDocument1, existingDocument2)))
       }
 
       "user save empty form without new item" in {

@@ -27,7 +27,7 @@ import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransportPayment.cash
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
-import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
+import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.countries.Country
 import forms.declaration.declarationHolder.DeclarationHolder
@@ -105,11 +105,11 @@ object ExportDeclarationTestData {
         "itemid",
         sequenceId = 1,
         statisticalValue = Some(StatisticalValue(statisticalValue = "100")),
-        documentsProducedData = Some(
-          DocumentsProducedData(
+        additionalDocuments = Some(
+          AdditionalDocuments(
             Some(YesNoAnswer.Yes),
             Seq(
-              DocumentsProduced(
+              AdditionalDocument(
                 documentTypeCode = Some("C501"),
                 documentIdentifier = Some("SYSUYSU123-24554"),
                 documentStatus = Some("PND"),

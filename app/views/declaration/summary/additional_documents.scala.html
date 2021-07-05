@@ -15,8 +15,8 @@
  *@
 
 @import controllers.declaration.routes
-@import forms.declaration.additionaldocuments.DocumentsProduced
-@import models.declaration.DocumentsProducedData
+@import forms.declaration.additionaldocuments.AdditionalDocument
+@import models.declaration.AdditionalDocuments
 @import models.Mode
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -36,11 +36,11 @@
   mode: Mode,
   itemId: String,
   itemNo: Int,
-  documentsProducedData: DocumentsProducedData,
+  additionalDocuments: AdditionalDocuments,
   actionsEnabled: Boolean = true
 )(implicit messages: Messages)
 
-@change(document: DocumentsProduced) = {
+@change(document: AdditionalDocument) = {
     @{
         if(actionsEnabled)
             changeLink(
@@ -62,9 +62,9 @@
     if (actionsEnabled) Some(action) else None
 }
 
-@if(documentsProducedData.documents.nonEmpty){
+@if(additionalDocuments.documents.nonEmpty){
     @govukTable(Table(
-        rows = documentsProducedData.documents.map(document =>
+        rows = additionalDocuments.documents.map(document =>
             Seq(
                 TableRow(
                     content = Text(document.documentTypeCode.getOrElse(""))
@@ -87,12 +87,12 @@
             )
         )),
         caption = Some(messages("declaration.summary.items.item.additionalDocuments")),
-        attributes = Map("id" -> s"supporting-documents-$itemNo-table")
+        attributes = Map("id" -> s"additional-documents-$itemNo-table")
     ))
 } else {
-    @summaryList(s"supporting-documents-$itemNo", None, Seq(
+    @summaryList(s"additional-documents-$itemNo", None, Seq(
         Some(SummaryListRow(
-            classes = s"supporting-documents-$itemNo-row",
+            classes = s"additional-documents-$itemNo-row",
             key = Key(
                 content = Text(messages("declaration.summary.items.item.additionalDocuments"))
             ),
