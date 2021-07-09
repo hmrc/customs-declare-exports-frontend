@@ -20,8 +20,8 @@ import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer
-import forms.declaration.DocumentsProducedSpec._
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.AdditionalDocumentSpec._
+import forms.declaration.additionaldocuments.AdditionalDocument
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -31,51 +31,51 @@ import tools.Stubs
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.declaration.documentsProduced.documents_produced
+import views.html.declaration.additionalDocuments.additional_documents
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
+class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
   private val itemId = "a7sc78"
   private val mode = Mode.Normal
 
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val documentsProducedPage = instanceOf[documents_produced]
-  private def createView(form: Form[YesNoAnswer] = form, cachedDocuments: Seq[DocumentsProduced] = Seq())(
+  private val additionalDocumentsPage = instanceOf[additional_documents]
+  private def createView(form: Form[YesNoAnswer] = form, cachedDocuments: Seq[AdditionalDocument] = Seq())(
     implicit request: JourneyRequest[_]
   ): Document =
-    documentsProducedPage(mode, itemId, form, cachedDocuments)(request, messages)
+    additionalDocumentsPage(mode, itemId, form, cachedDocuments)(request, messages)
 
-  "Document Produced" should {
+  "additional_documents view" should {
 
     "have correct message keys" in {
-      messages must haveTranslationFor("declaration.addDocument.table.heading")
-      messages must haveTranslationFor("declaration.addDocument.table.multiple.heading")
-      messages must haveTranslationFor("declaration.addDocument.documentTypeCode")
-      messages must haveTranslationFor("declaration.addDocument.documentIdentifier")
-      messages must haveTranslationFor("declaration.addDocument.documentIdentifier.hint")
-      messages must haveTranslationFor("declaration.addDocument.documentIdentifier.error")
-      messages must haveTranslationFor("declaration.addDocument.documentStatusReason")
-      messages must haveTranslationFor("declaration.addDocument.documentStatusReason.error")
-      messages must haveTranslationFor("declaration.addDocument.documentQuantity")
-      messages must haveTranslationFor("declaration.addDocument.documentQuantity.error")
-      messages must haveTranslationFor("declaration.addDocument.documentStatus")
-      messages must haveTranslationFor("declaration.addDocument.documentStatus.error")
-      messages must haveTranslationFor("declaration.addDocument.issuingAuthorityName")
-      messages must haveTranslationFor("declaration.addDocument.issuingAuthorityName.error.length")
-      messages must haveTranslationFor("declaration.addDocument.error.maximumAmount")
-      messages must haveTranslationFor("declaration.addDocument.error.duplicated")
-      messages must haveTranslationFor("declaration.addDocument.error.notDefined")
+      messages must haveTranslationFor("declaration.additionalDocument.table.heading")
+      messages must haveTranslationFor("declaration.additionalDocument.table.multiple.heading")
+      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode")
+      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier")
+      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.hint")
+      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.error")
+      messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason")
+      messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason.error")
+      messages must haveTranslationFor("declaration.additionalDocument.documentQuantity")
+      messages must haveTranslationFor("declaration.additionalDocument.documentQuantity.error")
+      messages must haveTranslationFor("declaration.additionalDocument.documentStatus")
+      messages must haveTranslationFor("declaration.additionalDocument.documentStatus.error")
+      messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName")
+      messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName.error.length")
+      messages must haveTranslationFor("declaration.additionalDocument.error.maximumAmount")
+      messages must haveTranslationFor("declaration.additionalDocument.error.duplicated")
+      messages must haveTranslationFor("declaration.additionalDocument.error.notDefined")
     }
   }
 
-  "Documents Produced View on empty page" should {
+  "additional_documents view on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
       "display page title" in {
-        view.getElementsByTag("h1") must containMessageForElements("declaration.addDocument.table.multiple.heading", "0")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.additionalDocument.table.multiple.heading", "0")
       }
 
       "display section header" in {
@@ -101,7 +101,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
     }
   }
 
-  "Documents Produced View on empty page with cached Additional Information" should {
+  "additional_documents view on empty page with cached Additional Information" should {
     onEveryDeclarationJourney(withItem(anItem(withItemId(itemId), withAdditionalInformation("1234", "Description")))) { implicit request =>
       val view = createView()
 
@@ -116,7 +116,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
     }
   }
 
-  "Documents Produced View for invalid input" should {
+  "additional_documents view for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error" in {
 
@@ -130,21 +130,21 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
     }
   }
 
-  "Documents Produced View when filled" should {
+  "additional_documents view when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display a table with previously entered document" which {
 
-        val view = createView(cachedDocuments = Seq(correctDocumentsProduced))
+        val view = createView(cachedDocuments = Seq(correctAdditionalDocument))
 
         "have header row" that {
-          val header = view.getElementById("documents_produced")
+          val header = view.getElementById("additional_documents")
 
           "have header for Document Type" in {
-            header.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.addDocument.summary.documentTypeCode")
+            header.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.additionalDocument.summary.documentTypeCode")
           }
 
           "have header for Document Identifier" in {
-            header.getElementsByClass("govuk-table__header").get(1) must containMessage("declaration.addDocument.summary.documentIdentifier")
+            header.getElementsByClass("govuk-table__header").get(1) must containMessage("declaration.additionalDocument.summary.documentIdentifier")
           }
 
           "have visually hidden header for Change links" in {
@@ -159,31 +159,29 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
 
         "have data row" that {
 
-          val row = view.selectFirst("#documents_produced tbody tr")
+          val row = view.selectFirst("#additional_documents tbody tr")
 
           "have Document Type" in {
-            row.selectFirst(".document-type").text() must equal(correctDocumentsProduced.documentTypeCode.get)
+            row.selectFirst(".document-type").text() must equal(correctAdditionalDocument.documentTypeCode.get)
           }
 
           "have Document Identifier" in {
-            row.selectFirst(".document-identifier").text() must equal(correctDocumentsProduced.documentIdentifier.get)
+            row.selectFirst(".document-identifier").text() must equal(correctAdditionalDocument.documentIdentifier.get)
           }
 
           "have change link" in {
             val removeLink = row.select(".govuk-link").get(0)
-            removeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.addDocument.table.change.hint", "ABCDEF1234567890")}"
+            removeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.additionalDocument.table.change.hint", "ABCDEF1234567890")}"
             removeLink must haveHref(
-              controllers.declaration.routes.DocumentsProducedChangeController
-                .displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))
+              routes.AdditionalDocumentChangeController.displayPage(Mode.Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
             )
           }
 
           "have remove link" in {
             val removeLink = row.select(".govuk-link").get(1)
-            removeLink.text() mustBe s"${messages("site.remove")} ${messages("declaration.addDocument.table.remove.hint", "ABCDEF1234567890")}"
+            removeLink.text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalDocument.table.remove.hint", "ABCDEF1234567890")}"
             removeLink must haveHref(
-              controllers.declaration.routes.DocumentsProducedRemoveController
-                .displayPage(Mode.Normal, itemId, ListItem.createId(0, correctDocumentsProduced))
+              routes.AdditionalDocumentRemoveController.displayPage(Mode.Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
             )
           }
         }

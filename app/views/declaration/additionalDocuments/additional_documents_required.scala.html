@@ -1,0 +1,105 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes
+@import controllers.navigation.{ItemId, Navigator}
+@import forms.common.YesNoAnswer
+@import forms.common.YesNoAnswer.YesNoAnswers
+@import forms.declaration.additionaldocuments.AdditionalDocumentsRequired
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    yesNoRadios: yesNoRadios,
+    insetText: exportsInsetText,
+    paragraph: paragraphBody,
+    link: link,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
+)
+
+@(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+
+@commodityCodeLink = {
+    @request.cacheModel.commodityCodeOfItem(itemId).fold {
+        @link(
+            id = Some("general-trade-tariff-inset-link"),
+            call = Call("GET", appConfig.tradeTariffUrl),
+            text = messages("declaration.additionalDocumentsRequired.inset.link2Alt"),
+            target = "_blank"
+        )
+    } { commodityCode =>
+        @link(
+            id = Some("commodity-code-inset-link"),
+            call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode)),
+            text = messages("declaration.additionalDocumentsRequired.inset.link2", commodityCode),
+            target = "_blank"
+        )
+    }
+}
+
+@licenseAndCertificates = {
+    @link(
+        id = Some("licenses-and-certificates-inset-link"),
+        call = Call("GET", appConfig.licensesForExportingGoods),
+        text = messages("declaration.additionalDocumentsRequired.inset.link3"),
+        target = "_blank"
+    )&#46;
+}
+
+@insetSection = {
+    @paragraph(classes = "govuk-label--s", message = messages("declaration.additionalDocumentsRequired.inset.text1"))
+
+    @paragraph(messages("declaration.additionalDocumentsRequired.inset.text2", commodityCodeLink))
+
+    @paragraph(licenseAndCertificates.toString)
+}
+
+@govukLayout(
+    title = Title("declaration.additionalDocumentsRequired.title", "declaration.section.5"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalDocumentsRequired, mode, ItemId(itemId))))) {
+
+    @formHelper(action = routes.AdditionalDocumentsRequiredController.submitForm(mode, itemId), 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(form.errors))
+
+        @sectionHeader(messages("declaration.section.5"))
+
+        @yesNoRadios(
+              form = form,
+              heading = Some(Fieldset(
+                  legend = Some(Legend(
+                      content = Text(messages("declaration.additionalDocumentsRequired.title")),
+                      classes = gdsPageLegend,
+                      isPageHeading = true
+                  ))
+              )),
+              hint = Some(Hint(content = Text(messages("declaration.additionalDocumentsRequired.hint"))))
+        )
+
+        @insetText(content = HtmlContent(insetSection))
+
+        @saveButtons()
+    }
+}

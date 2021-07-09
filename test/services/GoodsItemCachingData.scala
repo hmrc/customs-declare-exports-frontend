@@ -19,10 +19,11 @@ package services
 import base.TestHelper._
 import forms.common.DateSpec.correctDate
 import forms.declaration._
-import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
-import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
-
+import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
+import models.declaration.{AdditionalDocuments, AdditionalInformationData, ProcedureCodesData}
 import scala.util.Random
+
+import forms.common.YesNoAnswer
 
 trait GoodsItemCachingData {
 
@@ -46,9 +47,9 @@ trait GoodsItemCachingData {
 
   def createAdditionalInformationData() = AdditionalInformationData(getDataSeq(5, createAdditionalInformation))
 
-  def createDocumentsProducedData() = DocumentsProducedData(getDataSeq(10, createDocsProduced))
+  def createAdditionalDocuments() = AdditionalDocuments(Some(YesNoAnswer.Yes), getDataSeq(10, createAdditionalDocument))
 
-  def createDocsProduced(): DocumentsProduced = DocumentsProduced(
+  def createAdditionalDocument(): AdditionalDocument = AdditionalDocument(
     documentTypeCode = Some(createRandomAlphanumericString(4)),
     documentIdentifier = Some(createRandomAlphanumericString(35)),
     documentStatus = Some(createRandomAlphanumericString(2)),

@@ -71,7 +71,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     theResponseForm
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) =
+  private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
     verify(mockSummaryPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   private val additionalInformation = AdditionalInformation("54321", "Some description")
@@ -111,7 +111,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId)
       }
 
       "no additional information items in the cache" in {
@@ -121,7 +121,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationAddController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalInformationAddController.displayPage(Mode.Normal, itemId)
       }
 
       "user submits valid Yes answer" in {
@@ -132,7 +132,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationAddController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalInformationAddController.displayPage(Mode.Normal, itemId)
       }
 
       "user submits valid No answer" in {
@@ -143,7 +143,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
       }
     }
   }

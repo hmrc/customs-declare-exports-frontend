@@ -24,17 +24,17 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukDetails : GovukDetails,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[TotalNumberOfItems])(implicit request: JourneyRequest[_], messages: Messages)

@@ -22,11 +22,11 @@ import forms.declaration.additionaldocuments.DocumentWriteOff._
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms._
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, FormError, Forms}
 import play.api.libs.json.{JsValue, Json}
 import utils.validators.forms.FieldValidator._
 
-case class DocumentsProduced(
+case class AdditionalDocument(
   documentTypeCode: Option[String],
   documentIdentifier: Option[String],
   documentStatus: Option[String],
@@ -35,9 +35,9 @@ case class DocumentsProduced(
   dateOfValidity: Option[Date],
   documentWriteOff: Option[DocumentWriteOff]
 ) {
-  def toJson: JsValue = Json.toJson(this)(DocumentsProduced.format)
+  def toJson: JsValue = Json.toJson(this)(AdditionalDocument.format)
 
-  implicit val writes = Json.writes[DocumentsProduced]
+  implicit val writes = Json.writes[AdditionalDocument]
 
   def isDefined: Boolean =
     List(documentTypeCode, documentIdentifier, documentStatus, documentStatusReason, issuingAuthorityName, dateOfValidity, documentWriteOff).exists(
@@ -45,11 +45,13 @@ case class DocumentsProduced(
     )
 }
 
-object DocumentsProduced extends DeclarationPage {
+object AdditionalDocument extends DeclarationPage {
 
-  def fromJsonString(value: String): Option[DocumentsProduced] = Json.fromJson(Json.parse(value)).asOpt
+  def fromJsonString(value: String): Option[AdditionalDocument] = Json.fromJson(Json.parse(value)).asOpt
 
-  implicit val format = Json.format[DocumentsProduced]
+  implicit val format = Json.format[AdditionalDocument]
+
+  val AdditionalDocumentFormGroupId: String = "additionalDocument"
 
   private val issuingAuthorityNameMaxLength = 70
 
@@ -62,24 +64,29 @@ object DocumentsProduced extends DeclarationPage {
 
   val mapping = Forms
     .mapping(
-      documentTypeCodeKey -> optional(text().verifying("declaration.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)),
+      documentTypeCodeKey -> optional(
+        text().verifying("declaration.additionalDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
+      ),
       documentIdentifierKey -> optional(
         text()
-          .verifying("declaration.addDocument.documentIdentifier.error", nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35))
+          .verifying(
+            "declaration.additionalDocument.documentIdentifier.error",
+            nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
+          )
       ),
-      documentStatusKey -> optional(text().verifying("declaration.addDocument.documentStatus.error", noLongerThan(2) and isAlphabetic)),
+      documentStatusKey -> optional(text().verifying("declaration.additionalDocument.documentStatus.error", noLongerThan(2) and isAlphabetic)),
       documentStatusReasonKey -> optional(
-        text().verifying("declaration.addDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
+        text().verifying("declaration.additionalDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
       ),
       issuingAuthorityNameKey -> optional(
         text()
-          .verifying("declaration.addDocument.issuingAuthorityName.error.length", noLongerThan(issuingAuthorityNameMaxLength))
+          .verifying("declaration.additionalDocument.issuingAuthorityName.error.length", noLongerThan(issuingAuthorityNameMaxLength))
       ),
       dateOfValidityKey -> optional(
-        Date.mapping("declaration.addDocument.dateOfValidity.error.format", "declaration.addDocument.dateOfValidity.error.outOfRange")
+        Date.mapping("declaration.additionalDocument.dateOfValidity.error.format", "declaration.additionalDocument.dateOfValidity.error.outOfRange")
       ),
       documentWriteOffKey -> optional(DocumentWriteOff.mapping)
-    )(form2data)(DocumentsProduced.unapply)
+    )(form2data)(AdditionalDocument.unapply)
 
   private def form2data(
     documentTypeCode: Option[String],
@@ -89,8 +96,8 @@ object DocumentsProduced extends DeclarationPage {
     issuingAuthorityName: Option[String],
     dateOfValidity: Option[Date],
     documentWriteOff: Option[DocumentWriteOff]
-  ): DocumentsProduced =
-    new DocumentsProduced(
+  ): AdditionalDocument =
+    new AdditionalDocument(
       documentTypeCode.map(_.toUpperCase),
       documentIdentifier,
       documentStatus.map(_.toUpperCase),
@@ -100,11 +107,11 @@ object DocumentsProduced extends DeclarationPage {
       documentWriteOff
     )
 
-  def form(): Form[DocumentsProduced] = Form(mapping)
+  def form(): Form[AdditionalDocument] = Form(mapping)
 
-  def globalErrors(form: Form[DocumentsProduced]): Form[DocumentsProduced] = {
+  def globalErrors(form: Form[AdditionalDocument]): Form[AdditionalDocument] = {
 
-    def globalValidate(docs: DocumentsProduced) =
+    def globalValidate(docs: AdditionalDocument): Seq[FormError] =
       docs.documentWriteOff.map(wo => DocumentWriteOff.globalErrors(wo)).getOrElse(Seq.empty)
 
     form.copy(errors = form.errors ++ form.value.map(globalValidate).getOrElse(Seq.empty))
@@ -114,12 +121,10 @@ object DocumentsProduced extends DeclarationPage {
     decType match {
       case CLEARANCE =>
         Seq(
-          TariffContentKey("tariff.declaration.item.additionalDocumentation.1.clearance"),
-          TariffContentKey("tariff.declaration.item.additionalDocumentation.2.clearance"),
-          TariffContentKey("tariff.declaration.item.additionalDocumentation.3.clearance")
+          TariffContentKey("tariff.declaration.item.additionalDocuments.1.clearance"),
+          TariffContentKey("tariff.declaration.item.additionalDocuments.2.clearance"),
+          TariffContentKey("tariff.declaration.item.additionalDocuments.3.clearance")
         )
-      case _ => Seq(TariffContentKey("tariff.declaration.item.additionalDocumentation.common"))
+      case _ => Seq(TariffContentKey("tariff.declaration.item.additionalDocuments.common"))
     }
 }
-
-object DocumentsProducedSummary extends DeclarationPage

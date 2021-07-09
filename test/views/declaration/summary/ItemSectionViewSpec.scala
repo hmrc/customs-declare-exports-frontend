@@ -17,8 +17,9 @@
 package views.declaration.summary
 
 import base.Injector
+import forms.common.YesNoAnswer
 import forms.declaration._
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.AdditionalDocument
 import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -41,7 +42,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
     withPackageInformation("PB", 10, "marks"),
     withCommodityMeasure(CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))),
     withAdditionalInformation("1234", "additionalDescription"),
-    withDocumentsProduced(DocumentsProduced(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None))
+    withAdditionalDocuments(Some(YesNoAnswer.Yes), AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None))
   )
 
   private val itemWithoutAnswers = anItem(withItemId("itemId"), withSequenceId(1))
@@ -231,10 +232,10 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         )
       }
 
-      "have supporting documents section" in {
+      "have additional documents section" in {
 
-        view.getElementById("supporting-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
-          "declaration.summary.items.item.supportingDocuments"
+        view.getElementById("additional-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
+          "declaration.summary.items.item.additionalDocuments"
         )
       }
     }
@@ -406,10 +407,10 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         )
       }
 
-      "have supporting documents section" in {
+      "have additional documents section" in {
 
-        view.getElementById("supporting-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
-          "declaration.summary.items.item.supportingDocuments"
+        view.getElementById("additional-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
+          "declaration.summary.items.item.additionalDocuments"
         )
       }
     }
@@ -581,10 +582,10 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         )
       }
 
-      "have supporting documents section" in {
+      "have additional documents section" in {
 
-        view.getElementById("supporting-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
-          "declaration.summary.items.item.supportingDocuments"
+        view.getElementById("additional-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
+          "declaration.summary.items.item.additionalDocuments"
         )
       }
     }
@@ -653,17 +654,17 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
       view.getElementsByClass("item-1-commodityCode-row") mustBe empty
 
-      view.getElementById("package-information-1") mustBe null
+      Option(view.getElementById("package-information-1")) mustBe None
     }
 
     "not display union and national codes section" in {
 
-      view.getElementById("additional-information-1") mustBe null
+      Option(view.getElementById("additional-information-1")) mustBe None
     }
 
-    "not display supporting documents section" in {
+    "not display additional documents section" in {
 
-      view.getElementById("supporting-documents-1") mustBe null
+      Option(view.getElementById("additional-documents-1")) mustBe None
     }
   }
 }

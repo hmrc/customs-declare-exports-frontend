@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package models.declaration
+package forms.declaration.additionaldocuments
 
-import forms.declaration.additionaldocuments.DocumentsProduced
-import play.api.libs.json.Json
+import forms.common.DeclarationPageBaseSpec
+import models.viewmodels.TariffContentKey
 
-case class DocumentsProducedData(documents: Seq[DocumentsProduced]) {
+class AdditionalDocumentSpec extends DeclarationPageBaseSpec {
 
-  def isEmpty: Boolean = documents.isEmpty
-}
+  override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    Seq(
+      TariffContentKey(s"${messageKey}.1.clearance"),
+      TariffContentKey(s"${messageKey}.2.clearance"),
+      TariffContentKey(s"${messageKey}.3.clearance")
+    )
 
-object DocumentsProducedData {
-  implicit val format = Json.format[DocumentsProducedData]
-
-  val formId = "DocumentsProducedData"
-
-  val maxNumberOfItems = 99
+  "AdditionalDocument" when {
+    testTariffContentKeys(AdditionalDocument, "tariff.declaration.item.additionalDocuments")
+  }
 }

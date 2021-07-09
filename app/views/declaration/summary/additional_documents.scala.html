@@ -14,39 +14,44 @@
  * limitations under the License.
  *@
 
-@import forms.declaration.additionaldocuments.DocumentsProduced
+@import controllers.declaration.routes
+@import forms.declaration.additionaldocuments.AdditionalDocument
+@import models.declaration.AdditionalDocuments
 @import models.Mode
+@import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.link
-@import views.html.components.gds.linkContent
-@import views.html.components.gds.spanVisuallyHidden
-@import views.html.components.gds.summary_list
-@import views.declaration.summary.TableCell
 @import views.components.gds.ActionItemBuilder._
+@import views.declaration.summary.TableCell
+@import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list}
 
 @this(
-        govukTable: GovukTable,
-        changeLink: link,
-        linkContent: linkContent,
-        spanVisuallyHidden: spanVisuallyHidden,
-        summaryList: summary_list
+    govukTable: GovukTable,
+    changeLink: link,
+    linkContent: linkContent,
+    spanVisuallyHidden: spanVisuallyHidden,
+    summaryList: summary_list
 )
 
 @(
   mode: Mode,
   itemId: String,
   itemNo: Int,
-  supportingDocuments: Seq[DocumentsProduced],
+  additionalDocuments: AdditionalDocuments,
   actionsEnabled: Boolean = true
 )(implicit messages: Messages)
 
-@change(document: DocumentsProduced) = {
+@change(document: AdditionalDocument) = {
     @{
         if(actionsEnabled)
             changeLink(
                 messages("site.change"),
-                Some(messages("declaration.summary.items.item.supportingDocuments.change", document.documentTypeCode.getOrElse(""), document.documentIdentifier.getOrElse(""), itemNo)),
-                controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
+                Some(messages(
+                    "declaration.summary.items.item.additionalDocuments.change",
+                    document.documentTypeCode.getOrElse(""),
+                    document.documentIdentifier.getOrElse(""),
+                    itemNo
+                )),
+                routes.AdditionalDocumentsController.displayPage(mode, itemId)
             )
         else
             ""
@@ -54,13 +59,12 @@
 }
 
 @actions(action: Actions) = @{
-    if(actionsEnabled) Some(action)
-    else None
+    if (actionsEnabled) Some(action) else None
 }
 
-@if(supportingDocuments.nonEmpty){
+@if(additionalDocuments.documents.nonEmpty){
     @govukTable(Table(
-        rows = supportingDocuments.map(document =>
+        rows = additionalDocuments.documents.map(document =>
             Seq(
                 TableRow(
                     content = Text(document.documentTypeCode.getOrElse(""))
@@ -73,31 +77,34 @@
         ),
         head = Some(List(
             HeadCell(
-                content = Text(messages("declaration.summary.items.item.supportingDocuments.code"))
+                content = Text(messages("declaration.summary.items.item.additionalDocuments.code"))
             ),
             HeadCell(
-                content = Text(messages("declaration.summary.items.item.supportingDocuments.information"))
+                content = Text(messages("declaration.summary.items.item.additionalDocuments.identifier"))
             ),
             HeadCell(
                 content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
             )
         )),
-        caption = Some(messages("declaration.summary.items.item.supportingDocuments")),
-        attributes = Map("id" -> s"supporting-documents-$itemNo-table")
+        caption = Some(messages("declaration.summary.items.item.additionalDocuments")),
+        attributes = Map("id" -> s"additional-documents-$itemNo-table")
     ))
 } else {
-    @summaryList(s"supporting-documents-$itemNo", None, Seq(
+    @summaryList(s"additional-documents-$itemNo", None, Seq(
         Some(SummaryListRow(
-            classes = s"supporting-documents-$itemNo-row",
+            classes = s"additional-documents-$itemNo-row",
             key = Key(
-                content = Text(messages("declaration.summary.items.item.supportingDocuments"))
+                content = Text(messages("declaration.summary.items.item.additionalDocuments"))
+            ),
+            value = Value(
+                content = Text(messages("site.no"))
             ),
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId).url,
+                        href = routes.AdditionalDocumentsController.displayPage(mode, itemId).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.supportingDocuments.changeAll"))
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", itemNo))
                     )
                 )
             ))

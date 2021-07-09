@@ -29,19 +29,19 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukTable : GovukTable,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        addAnotherQuestion: addAnotherQuestion,
-        spanVisuallyHidden: spanVisuallyHidden,
-        saveButtons: saveButtons,
-        removeButton: removeButton,
-        link: link,
-        formHelper: FormWithCSRF,
-        tariffExpander: tariffExpander,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    addAnotherQuestion: addAnotherQuestion,
+    spanVisuallyHidden: spanVisuallyHidden,
+    saveButtons: saveButtons,
+    removeButton: removeButton,
+    link: link,
+    formHelper: FormWithCSRF,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[YesNoAnswer], items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)

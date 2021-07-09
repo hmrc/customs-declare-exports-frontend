@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package forms.declaration.additionaldocuments
+package models.declaration
 
-import forms.common.DeclarationPageBaseSpec
-import models.viewmodels.TariffContentKey
+import base.UnitSpec
 
-class DocumentsProducedSpec extends DeclarationPageBaseSpec {
+class AdditionalDocumentsSpec extends UnitSpec {
 
-  override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(
-      TariffContentKey(s"${messageKey}.1.clearance"),
-      TariffContentKey(s"${messageKey}.2.clearance"),
-      TariffContentKey(s"${messageKey}.3.clearance")
-    )
-
-  "DocumentsProduced" when {
-    testTariffContentKeys(DocumentsProduced, "tariff.declaration.item.additionalDocumentation")
+  "AdditionalDocuments object" should {
+    "contain correct limit value" in {
+      AdditionalDocuments.maxNumberOfItems must be(99)
+    }
   }
 }

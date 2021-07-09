@@ -18,7 +18,6 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformation
 import mock.ErrorHandlerMocks
 import models.Mode
@@ -75,7 +74,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
     theResponseForm
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) =
+  private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
     verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   "AdditionalInformation controller" should {
@@ -125,9 +124,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
         verifyPageInvoked(0)
 
         val savedData = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation)
-        savedData mustBe Some(
-          AdditionalInformationData(Some(YesNoAnswer(YesNoAnswers.yes)), Seq(AdditionalInformation("00000", "Change"), additionalInformation2))
-        )
+        savedData mustBe Some(AdditionalInformationData(Some(YesNoAnswer.Yes), Seq(AdditionalInformation("00000", "Change"), additionalInformation2)))
       }
 
       "user does not change document" in {
@@ -140,9 +137,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
         verifyPageInvoked(0)
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation)
-        savedDocuments mustBe Some(
-          AdditionalInformationData(Some(YesNoAnswer(YesNoAnswers.yes)), Seq(additionalInformation1, additionalInformation2))
-        )
+        savedDocuments mustBe Some(AdditionalInformationData(Some(YesNoAnswer.Yes), Seq(additionalInformation1, additionalInformation2)))
       }
 
     }

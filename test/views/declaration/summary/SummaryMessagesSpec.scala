@@ -141,9 +141,9 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.items.item.additionalInformation")
       messages must haveTranslationFor("declaration.summary.items.item.additionalInformation.code")
       messages must haveTranslationFor("declaration.summary.items.item.additionalInformation.information")
-      messages must haveTranslationFor("declaration.summary.items.item.supportingDocuments")
-      messages must haveTranslationFor("declaration.summary.items.item.supportingDocuments.code")
-      messages must haveTranslationFor("declaration.summary.items.item.supportingDocuments.information")
+      messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments")
+      messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments.code")
+      messages must haveTranslationFor("declaration.summary.items.item.additionalDocuments.identifier")
     }
 
     "have defined warehouse messages" in {

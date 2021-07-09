@@ -21,7 +21,6 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.TaricCode.taricCodeLimit
 import forms.declaration.{TaricCode, TaricCodeFirst}
-import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -46,21 +45,23 @@ class TaricCodeAddController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val exportItem = request.cacheModel.itemBy(itemId)
-    exportItem.flatMap(_.taricCodes) match {
+    request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
       case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodeAdd(mode, itemId, TaricCode.form().withSubmissionErrors()))
 
       case Some(_) =>
         val form = TaricCodeFirst.form().fill(TaricCodeFirst.none).withSubmissionErrors()
-        Ok(taricCodeAddFirstPage(mode, itemId, commodityCode(exportItem), form))
+        Ok(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), form))
 
       case _ =>
         val form = TaricCodeFirst.form().withSubmissionErrors()
-        Ok(taricCodeAddFirstPage(mode, itemId, commodityCode(exportItem), form))
+        Ok(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), form))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    def showFormWithErrors(formWithErrors: Form[TaricCodeFirst]): Future[Result] =
+      Future.successful(BadRequest(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), formWithErrors)))
+
     val exportItem = request.cacheModel.itemBy(itemId)
     exportItem.flatMap(_.taricCodes) match {
       case Some(taricCodes) if taricCodes.nonEmpty =>
@@ -70,15 +71,12 @@ class TaricCodeAddController @Inject()(
         TaricCodeFirst
           .form()
           .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(taricCodeAddFirstPage(mode, itemId, commodityCode(exportItem), formWithErrors))),
-            validForm => saveFirstTaricCode(mode, itemId, validForm.code)
-          )
+          .fold(showFormWithErrors, validForm => saveFirstTaricCode(mode, itemId, validForm.code))
     }
   }
 
-  private def commodityCode(exportItem: Option[ExportItem]): Option[String] =
-    exportItem.flatMap(_.commodityDetails.flatMap(_.combinedNomenclatureCode))
+  private def commodityCode(itemId: String)(implicit request: JourneyRequest[_]): Option[String] =
+    request.cacheModel.commodityCodeOfItem(itemId)
 
   private def saveFirstTaricCode(mode: Mode, itemId: String, maybeCode: Option[String])(
     implicit request: JourneyRequest[AnyContent]

@@ -291,9 +291,9 @@ POST        /items/:itemId/additional-procedure-codes        controllers.declara
 
 # Fiscal Information
 
-GET          /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, fastForward: Boolean ?= false)
+GET         /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, fastForward: Boolean ?= false)
 
-POST         /items/:itemId/fiscal-information   controllers.declaration.FiscalInformationController.saveFiscalInformation(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/fiscal-information   controllers.declaration.FiscalInformationController.saveFiscalInformation(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 
 # Additional Fiscal References
@@ -380,13 +380,13 @@ POST        /items/:itemId/package-information/:code/remove    controllers.decla
 
 # Commodity Measure Information
 
-GET          /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST         /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Additional information
 
-GET          /items/:itemId/is-additional-information-required controllers.declaration.AdditionalInformationRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/is-additional-information-required  controllers.declaration.AdditionalInformationRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)
 
 POST        /items/:itemId/is-additional-information-required  controllers.declaration.AdditionalInformationRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
@@ -408,21 +408,25 @@ POST        /items/:itemId/additional-information-list         controllers.decla
 
 # Additional Documents
 
-GET         /items/:itemId/additional-documentation            controllers.declaration.DocumentsProducedAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/is-additional-documentation-required controllers.declaration.AdditionalDocumentsRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/additional-documentation            controllers.declaration.DocumentsProducedAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/is-additional-documentation-required controllers.declaration.AdditionalDocumentsRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-GET         /items/:itemId/additional-documentation/:id/remove    controllers.declaration.DocumentsProducedRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+GET         /items/:itemId/additional-documentation             controllers.declaration.AdditionalDocumentAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/additional-documentation/:id/remove    controllers.declaration.DocumentsProducedRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+POST        /items/:itemId/additional-documentation             controllers.declaration.AdditionalDocumentAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-GET         /items/:itemId/additional-documentation/:id/change    controllers.declaration.DocumentsProducedChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+GET         /items/:itemId/additional-documentation/:id/remove  controllers.declaration.AdditionalDocumentRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
 
-POST        /items/:itemId/additional-documentation/:id/change    controllers.declaration.DocumentsProducedChangeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+POST        /items/:itemId/additional-documentation/:id/remove  controllers.declaration.AdditionalDocumentRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
 
-GET         /items/:itemId/additional-documentation-list       controllers.declaration.DocumentsProducedController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-documentation/:id/change  controllers.declaration.AdditionalDocumentChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, id)
 
-POST        /items/:itemId/additional-documentation-list       controllers.declaration.DocumentsProducedController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-documentation/:id/change  controllers.declaration.AdditionalDocumentChangeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, id)
+
+GET         /items/:itemId/additional-documentation-list        controllers.declaration.AdditionalDocumentsController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/additional-documentation-list        controllers.declaration.AdditionalDocumentsController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # **** END OF ITEM PAGES ****
 
@@ -434,9 +438,9 @@ POST        /transport-leaving-the-border       controllers.declaration.Transpor
 
 # Departure Transport
 
-GET         /departure-transport                    controllers.declaration.DepartureTransportController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /departure-transport                controllers.declaration.DepartureTransportController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /departure-transport                    controllers.declaration.DepartureTransportController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /departure-transport                controllers.declaration.DepartureTransportController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 # Border Transport
 

@@ -16,10 +16,14 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.AdditionalInformation
+import javax.inject.Inject
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -29,9 +33,6 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalInformation.additional_information_required
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationRequiredController @Inject()(
   authenticate: AuthAction,
@@ -70,7 +71,7 @@ class AdditionalInformationRequiredController @Inject()(
       case _            => form()
     }
 
-  private def cachedItems(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+  private def cachedItems(itemId: String)(implicit request: JourneyRequest[AnyContent]): Seq[AdditionalInformation] =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default).items
 
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
@@ -86,6 +87,6 @@ class AdditionalInformationRequiredController @Inject()(
       case YesNoAnswers.yes =>
         controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)
       case YesNoAnswers.no =>
-        controllers.declaration.routes.DocumentsProducedController.displayPage(_, itemId)
+        controllers.declaration.routes.AdditionalDocumentsController.displayPage(_, itemId)
     }
 }

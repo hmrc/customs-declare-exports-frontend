@@ -24,7 +24,7 @@ import forms.Choice.AllowedChoiceValues
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
-import forms.declaration.additionaldocuments.{DocumentsProduced, DocumentsProducedSummary}
+import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
@@ -279,11 +279,12 @@ object Navigator {
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
-    case DocumentsProducedSummary  => documentsProducedSummaryPreviousPage
-    case DocumentsProduced         => documentsProducedPreviousPage
-    case AdditionalInformation     => additionalInformationPreviousPage
-    case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
-    case TaricCodeFirst            => additionalTaricCodesPreviousPage
+    case AdditionalDocumentsSummary  => additionalDocumentsSummaryPreviousPage
+    case AdditionalDocument          => additionalDocumentsPreviousPage
+    case AdditionalInformation       => additionalInformationPreviousPage
+    case AdditionalFiscalReference   => additionalFiscalReferencesPreviousPage
+    case TaricCodeFirst              => additionalTaricCodesPreviousPage
+    case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
@@ -385,17 +386,20 @@ object Navigator {
     else
       routes.CommodityDetailsController.displayPage(mode, itemId)
 
-  private def documentsProducedSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+  private def additionalDocumentsSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.itemBy(itemId).flatMap(_.additionalInformation).exists(_.items.nonEmpty))
       routes.AdditionalInformationController.displayPage(mode, itemId)
     else
       routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
 
-  private def documentsProducedPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
-    if (cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).exists(_.documents.nonEmpty))
-      routes.DocumentsProducedController.displayPage(mode, itemId)
-    else
-      documentsProducedSummaryPreviousPage(cacheModel, mode, itemId)
+  private def additionalDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    if (cacheModel.itemBy(itemId).flatMap(_.additionalDocuments).exists(_.documents.nonEmpty))
+      routes.AdditionalDocumentsController.displayPage(mode, itemId)
+    else {
+      // TODO. CEDS-3255.
+      // If auth code from List1 call additionalDocumentsSummaryPreviousPage else
+      routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId)
+    }
 
   private def additionalInformationPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.itemBy(itemId).flatMap(_.additionalInformation).exists(_.items.nonEmpty))

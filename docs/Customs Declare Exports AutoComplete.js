@@ -931,6 +931,13 @@ function getAdIdent(dec) {
     return ident;
 }
 
+function areAdditionalDocumentsRequired() {
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/is-additional-documentation-required')) {
+        document.getElementById('code_yes').checked = 'checked';
+        document.getElementById('submit').click()
+    }
+}
+
 function setAdditionalDocuments() {
 
     GM_setValue("ad-codeA", ['Y923', 'Y957', 'C676'])
@@ -1023,7 +1030,7 @@ function addDocumentsSummary(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-documentation-list')) {
         switch(getDeclaration()) {
             case 'A':
-                if(document.getElementById("documents_produced").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthA")) {
+                if(document.getElementById("additional_documents").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthA")) {
                     document.getElementById('code_yes').checked = 'checked';
                     document.getElementById('submit').click();
                 } else {
@@ -1032,7 +1039,7 @@ function addDocumentsSummary(){
                 }
                 break;
             case 'C':
-                if(document.getElementById("documents_produced").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthC")) {
+                if(document.getElementById("additional_documents").querySelectorAll("tbody tr").length < GM_getValue("ad-lengthC")) {
                     document.getElementById('code_yes').checked = 'checked';
                     document.getElementById('submit').click();
                 } else {
@@ -1238,6 +1245,7 @@ function completeJourney() {
     additionalInformationSummary();
     isAdditionalInformationRequired();
     addAdditionalInformation();
+    areAdditionalDocumentsRequired();
     addDocumentsSummary();
     addDocuments();
     exportItems();

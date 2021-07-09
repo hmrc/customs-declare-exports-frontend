@@ -28,8 +28,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalInformation.additional_information
-
 import javax.inject.Inject
+import models.declaration.AdditionalInformationData
 
 class AdditionalInformationController @Inject()(
   authenticate: AuthAction,
@@ -64,13 +64,13 @@ class AdditionalInformationController @Inject()(
           validYesNo.answer match {
             case YesNoAnswers.yes =>
               navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationAddController.displayPage(_, itemId))
-            case YesNoAnswers.no => navigator.continueTo(mode, routes.DocumentsProducedController.displayPage(_, itemId))
+            case YesNoAnswers.no => navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))
         }
       )
   }
 
   private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformation.add.another.empty")
 
-  private def cachedAdditionalInformationData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+  private def cachedAdditionalInformationData(itemId: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalInformationData] =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation)
 }

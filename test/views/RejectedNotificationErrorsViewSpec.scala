@@ -115,8 +115,8 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
 
         val expectedUrl = s"/customs-declare-exports/declaration/items/$itemId/add-document"
 
-        val pointerPattern = "declaration.items.#1.documentProduced.#1.documentStatus"
-        val urlPattern = "declaration.items.$.documentProduced.$.documentStatus"
+        val pointerPattern = "declaration.items.#1.additionalDocument.#1.documentStatus"
+        val urlPattern = "declaration.items.$.additionalDocument.$.documentStatus"
 
         val reason = RejectionReason("CDS40045", "rejectionDescription", Some(expectedUrl), Some("page-error-message"), Some(Pointer(pointerPattern)))
 

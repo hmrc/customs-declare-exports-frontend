@@ -58,16 +58,16 @@ object DocumentWriteOff {
     .mapping(
       measurementUnitKey -> optional(
         text()
-          .verifying("declaration.addDocument.measurementUnit.error", hasSpecificLength(measurementUnitLength) and isAlphanumeric)
+          .verifying("declaration.additionalDocument.measurementUnit.error", hasSpecificLength(measurementUnitLength) and isAlphanumeric)
       ),
       qualifierKey -> optional(
         text()
-          .verifying("declaration.addDocument.qualifier.error", hasSpecificLength(qualifierLength) and isAlphanumeric)
+          .verifying("declaration.additionalDocument.qualifier.error", hasSpecificLength(qualifierLength) and isAlphanumeric)
       ),
       documentQuantityKey -> optional(
         text()
           .verifying(
-            "declaration.addDocument.documentQuantity.error",
+            "declaration.additionalDocument.documentQuantity.error",
             input =>
               input.isEmpty || noLongerThan(documentQuantityMaxLength)(input.replaceAll("\\.", ""))
                 && isDecimalWithNoMoreDecimalPlacesThan(documentQuantityMaxDecimalPlaces)(input)
@@ -81,12 +81,12 @@ object DocumentWriteOff {
 
     def missingUnits =
       if ((writeOff.measurementUnit.isEmpty && writeOff.documentQuantity.isDefined) || writeOff.measurementUnit.exists(_.length == qualifierLength))
-        Seq(FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.addDocument.measurementUnit.error"))
+        Seq(FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.additionalDocument.measurementUnit.error"))
       else Seq.empty
 
     def missingQuantity =
       if (writeOff.measurementUnit.isDefined && writeOff.documentQuantity.isEmpty)
-        Seq(FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.addDocument.documentQuantity.error"))
+        Seq(FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.additionalDocument.documentQuantity.error"))
       else Seq.empty
 
     missingUnits ++ missingQuantity

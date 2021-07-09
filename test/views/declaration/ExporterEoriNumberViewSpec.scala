@@ -120,7 +120,7 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with 
   onJourney(CLEARANCE) { implicit request =>
     "display 'Back' button that links to the correct page" in {
       val cachedParties = Parties(
-        isEntryIntoDeclarantsRecords = Some(YesNoAnswer("Yes")),
+        isEntryIntoDeclarantsRecords = Some(YesNoAnswer.Yes),
         consignorDetails =
           Some(ConsignorDetails(EntityDetails(None, address = Some(Address("fullName", "addressLine", "townOrCity", "postCode", "country")))))
       )

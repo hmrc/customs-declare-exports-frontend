@@ -17,20 +17,13 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.additionaldocuments.AdditionalDocument
 import play.api.libs.json.Json
 
-case class DeclarationHoldersData(holders: Seq[DeclarationHolder], isRequired: Option[YesNoAnswer]) {
-  def containsHolder(holder: DeclarationHolder): Boolean = holders.contains(holder)
-}
+case class AdditionalDocuments(isRequired: Option[YesNoAnswer], documents: Seq[AdditionalDocument])
 
-object DeclarationHoldersData {
-  implicit val format = Json.format[DeclarationHoldersData]
+object AdditionalDocuments {
+  implicit val format = Json.format[AdditionalDocuments]
 
-  def apply(holders: Seq[DeclarationHolder]): DeclarationHoldersData =
-    new DeclarationHoldersData(holders, Some(if (holders.isEmpty) YesNoAnswer.No else YesNoAnswer.Yes))
-
-  val formId = "DeclarationHoldersData"
-
-  val limitOfHolders = 99
+  val maxNumberOfItems = 99
 }

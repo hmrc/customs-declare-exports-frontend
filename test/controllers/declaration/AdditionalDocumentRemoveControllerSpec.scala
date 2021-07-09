@@ -18,9 +18,9 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.AdditionalDocument
 import models.Mode
-import models.declaration.DocumentsProducedData
+import models.declaration.AdditionalDocuments
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -30,30 +30,30 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import utils.ListItem
-import views.html.declaration.documentsProduced.documents_produced_remove
+import views.html.declaration.additionalDocuments.additional_document_remove
 
-class DocumentsProducedRemoveControllerSpec extends ControllerSpec with OptionValues {
+class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockRemovePage = mock[documents_produced_remove]
+  val additionalDocumentRemovePage = mock[additional_document_remove]
 
   val controller =
-    new DocumentsProducedRemoveController(
+    new AdditionalDocumentRemoveController(
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
       navigator,
       stubMessagesControllerComponents(),
-      mockRemovePage
+      additionalDocumentRemovePage
     )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockRemovePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDocumentRemovePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockRemovePage)
+    reset(additionalDocumentRemovePage)
     super.afterEach()
   }
 
@@ -65,25 +65,25 @@ class DocumentsProducedRemoveControllerSpec extends ControllerSpec with OptionVa
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockRemovePage).apply(any(), any(), any(), any(), captor.capture())(any(), any())
+    verify(additionalDocumentRemovePage).apply(any(), any(), any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
-  def theDocumentProduced: DocumentsProduced = {
-    val captor = ArgumentCaptor.forClass(classOf[DocumentsProduced])
-    verify(mockRemovePage).apply(any(), any(), any(), captor.capture(), any())(any(), any())
+  def theDocumentProduced: AdditionalDocument = {
+    val captor = ArgumentCaptor.forClass(classOf[AdditionalDocument])
+    verify(additionalDocumentRemovePage).apply(any(), any(), any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
-  private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
-    verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
+  private def verifyRemovePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
+    verify(additionalDocumentRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
 
-  val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)
-  val documentId = ListItem.createId(0, documentsProduced)
+  val additionalDocument = AdditionalDocument(Some("1234"), None, None, None, None, None, None)
+  val documentId = ListItem.createId(0, additionalDocument)
   val itemId = "itemId"
-  val itemWithDocument = anItem(withItemId(itemId), withDocumentsProduced(documentsProduced))
+  val itemWithDocument = anItem(withItemId(itemId), withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
 
-  "DocumentsProduced Remove Controller" must {
+  "AdditionalDocumentRemoveController" must {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {
@@ -96,7 +96,7 @@ class DocumentsProducedRemoveControllerSpec extends ControllerSpec with OptionVa
           status(result) mustBe OK
           verifyRemovePageInvoked()
 
-          theDocumentProduced mustBe documentsProduced
+          theDocumentProduced mustBe additionalDocument
         }
 
       }
@@ -113,6 +113,7 @@ class DocumentsProducedRemoveControllerSpec extends ControllerSpec with OptionVa
         }
 
       }
+
       "return 303 (SEE_OTHER)" when {
 
         "requested document id invalid" in {
@@ -122,7 +123,7 @@ class DocumentsProducedRemoveControllerSpec extends ControllerSpec with OptionVa
           val result = controller.displayPage(Mode.Normal, itemId, "doc-id")(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
         }
 
         "user submits 'Yes' answer" in {
@@ -132,9 +133,9 @@ class DocumentsProducedRemoveControllerSpec extends ControllerSpec with OptionVa
           val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
 
-          theCacheModelUpdated.itemBy(itemId).flatMap(_.documentsProducedData) mustBe Some(DocumentsProducedData(Seq.empty))
+          theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments) mustBe Some(AdditionalDocuments(None, Seq.empty))
         }
 
         "user submits 'No' answer" in {
@@ -144,7 +145,7 @@ class DocumentsProducedRemoveControllerSpec extends ControllerSpec with OptionVa
           val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
 
           verifyTheCacheIsUnchanged()
         }

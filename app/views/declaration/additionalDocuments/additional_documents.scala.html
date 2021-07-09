@@ -17,8 +17,8 @@
 @import controllers.declaration.routes._
 @import controllers.navigation.{Navigator, ItemId}
 @import models.requests.JourneyRequest
-@import forms.declaration.additionaldocuments.DocumentsProduced
-@import forms.declaration.additionaldocuments.DocumentsProducedSummary
+@import forms.declaration.additionaldocuments.AdditionalDocument
+@import forms.declaration.additionaldocuments.AdditionalDocumentsSummary
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
@@ -48,26 +48,26 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[_], documents: Seq[DocumentsProduced])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[_], documents: Seq[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(documents.size == 1)
-        Title("declaration.addDocument.table.heading", "declaration.section.5")
+        Title("declaration.additionalDocument.table.heading", "declaration.section.5")
     else
-        Title("declaration.addDocument.table.multiple.heading", "declaration.section.5", documents.size.toString)
+        Title("declaration.additionalDocument.table.multiple.heading", "declaration.section.5", documents.size.toString)
 }
 
 @header = @{
     if(documents.size == 1)
-        Text(messages("declaration.addDocument.table.heading"))
+        Text(messages("declaration.additionalDocument.table.heading"))
     else
-        Text(messages("declaration.addDocument.table.multiple.heading", documents.size))
+        Text(messages("declaration.additionalDocument.table.multiple.heading", documents.size))
 }
 
 @documentsTable = {
     @if(documents.nonEmpty) {
         @govukTable(Table(
-            attributes = Map("id" -> "documents_produced"),
+            attributes = Map("id" -> "additional_documents"),
             rows = documents.zipWithIndex.map{ case(document, index) =>
                 Seq(
                     TableRow(
@@ -85,32 +85,34 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            Some(messages("declaration.addDocument.table.change.hint", document.documentIdentifier.getOrElse(""))),
-                            DocumentsProducedChangeController.displayPage(mode, itemId, createId(index, document)))),
+                            Some(messages("declaration.additionalDocument.table.change.hint", document.documentIdentifier.getOrElse(""))),
+                            AdditionalDocumentChangeController.displayPage(mode, itemId, createId(index, document))
+                        )),
                         classes = "govuk-table__cell--numeric",
-                        attributes = Map("id" -> s"documents-table-row$index-change_button")
+                        attributes = Map("id" -> s"additional-documents-table-row$index-change_button")
                     ),
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            Some(messages("declaration.addDocument.table.remove.hint", document.documentIdentifier.getOrElse(""))),
-                            DocumentsProducedRemoveController.displayPage(mode, itemId, createId(index, document)))),
+                            Some(messages("declaration.additionalDocument.table.remove.hint", document.documentIdentifier.getOrElse(""))),
+                            AdditionalDocumentRemoveController.displayPage(mode, itemId, createId(index, document))
+                        )),
                         classes = "govuk-table__cell--numeric",
-                        attributes = Map("id" -> s"documents-table-row$index-remove_button")
+                        attributes = Map("id" -> s"additional-documents-table-row$index-remove_button")
                     )
                 )
             },
             head = Some(List(
                 HeadCell(
-                    content = Text(messages("declaration.addDocument.summary.documentTypeCode")),
+                    content = Text(messages("declaration.additionalDocument.summary.documentTypeCode")),
                     classes = "document-type"
                 ),
                 HeadCell(
-                    content = Text(messages("declaration.addDocument.summary.documentIdentifier")),
+                    content = Text(messages("declaration.additionalDocument.summary.documentIdentifier")),
                     classes = "document-identifier"
                 ),
                 HeadCell(
-                    content = Text(messages("declaration.addDocument.summary.statusCode")),
+                    content = Text(messages("declaration.additionalDocument.summary.statusCode")),
                     classes = "document-identifier"
                 ),
                 HeadCell(
@@ -120,7 +122,7 @@
                     content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
                 )
             )),
-            caption = Some(messages("declaration.addDocument.table.caption")),
+            caption = Some(messages("declaration.additionalDocument.table.caption")),
             captionClasses = "govuk-visually-hidden"
         ))
     }
@@ -128,9 +130,9 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentsProducedSummary, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalDocumentsSummary, mode, ItemId(itemId))))) {
 
-    @formHelper(action = DocumentsProducedController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDocumentsController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
 
@@ -144,7 +146,7 @@
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 documentsTable,
-                addAnotherQuestion("declaration.addDocument.add.another", form),
+                addAnotherQuestion("declaration.additionalDocument.add.another", form),
                 saveButtons()
             ))
         ))

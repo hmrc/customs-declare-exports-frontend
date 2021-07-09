@@ -175,7 +175,7 @@ class RejectionReasonSpec extends UnitWithMocksSpec with ExportsTestData with Jo
         PointerSection("declaration", PointerSectionType.FIELD),
         PointerSection("items", PointerSectionType.FIELD),
         PointerSection("2", PointerSectionType.SEQUENCE),
-        PointerSection("documentProduced", PointerSectionType.FIELD),
+        PointerSection("additionalDocument", PointerSectionType.FIELD),
         PointerSection("1", PointerSectionType.SEQUENCE),
         PointerSection("documentStatus", PointerSectionType.FIELD)
       )
@@ -198,7 +198,7 @@ class RejectionReasonSpec extends UnitWithMocksSpec with ExportsTestData with Jo
           PointerSection("declaration", PointerSectionType.FIELD),
           PointerSection("items", PointerSectionType.FIELD),
           PointerSection("1", PointerSectionType.SEQUENCE),
-          PointerSection("documentProduced", PointerSectionType.FIELD),
+          PointerSection("additionalDocument", PointerSectionType.FIELD),
           PointerSection("1", PointerSectionType.SEQUENCE),
           PointerSection("documentStatus", PointerSectionType.FIELD)
         )
@@ -321,7 +321,7 @@ class RejectionReasonSpec extends UnitWithMocksSpec with ExportsTestData with Jo
           PointerSection("declaration", PointerSectionType.FIELD),
           PointerSection("items", PointerSectionType.FIELD),
           PointerSection("1", PointerSectionType.SEQUENCE),
-          PointerSection("documentProduced", PointerSectionType.FIELD),
+          PointerSection("additionalDocument", PointerSectionType.FIELD),
           PointerSection("1", PointerSectionType.SEQUENCE),
           PointerSection("documentStatus", PointerSectionType.FIELD)
         )

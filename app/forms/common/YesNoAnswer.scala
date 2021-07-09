@@ -36,6 +36,9 @@ object YesNoAnswer {
 
   val allowedValues: Seq[String] = Seq(yes, no)
 
+  val Yes = YesNoAnswer(yes)
+  val No = YesNoAnswer(no)
+
   private def mapping(fieldName: String, errorKey: String): Mapping[YesNoAnswer] =
     Forms.mapping(
       fieldName -> requiredRadio(errorKey)

@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.AdditionalDocument
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -27,33 +27,40 @@ import play.api.data.Form
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.declaration.documentsProduced.documents_produced_add
+import views.html.declaration.additionalDocuments.additional_document_add
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedAddViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
+class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
   private val itemId = "a7sc78"
   private val mode = Mode.Normal
 
-  private val form: Form[DocumentsProduced] = DocumentsProduced.form()
-  private val documentsProducedAddPage = instanceOf[documents_produced_add]
-  private def createView(form: Form[DocumentsProduced] = form)(implicit request: JourneyRequest[_]): Document =
-    documentsProducedAddPage(mode, itemId, form, None)(request, messages)
+  private val form: Form[AdditionalDocument] = AdditionalDocument.form()
+  private val additionalDocumentAddPage = instanceOf[additional_document_add]
+  private def createView(form: Form[AdditionalDocument] = form)(implicit request: JourneyRequest[_]): Document =
+    additionalDocumentAddPage(mode, itemId, form, None)(request, messages)
 
-  "Documents Produced View on empty page" should {
+  "additional_document_add view on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
-      "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {
+      // TODO. CEDS-3255.
+      // If auth code from List1 "display 'Back' button that links to 'Additional Information Required' page when no documents present" in {
+      "display 'Back' button that links to 'Additional Documents Required' page when no documents present" in {
 
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
+        // TODO. CEDS-3255.
+        // If auth code from List1 backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId)) else
+        backButton must haveHref(routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId))
       }
     }
   }
 
-  "Documents Produced View on empty page with cached Additional Information" should {
+  // TODO. CEDS-3255.
+  // If auth code from List1
+  /*
+  "additional_document_add view on empty page with cached Additional Information" should {
     onEveryDeclarationJourney(withItem(anItem(withItemId(itemId), withAdditionalInformation("1234", "Description")))) { implicit request =>
       val view = createView()
 
@@ -65,5 +72,5 @@ class DocumentsProducedAddViewSpec extends UnitViewSpec with CommonMessages with
         backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
       }
     }
-  }
+  }*/
 }
