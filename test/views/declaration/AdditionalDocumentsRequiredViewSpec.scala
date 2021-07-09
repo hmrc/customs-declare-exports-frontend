@@ -126,7 +126,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
     "display a 'Back' button that links to the 'Additional Information' page" when {
       val item = anItem(withItemId(itemId), withAdditionalInformation("1234", "description"))
       onEveryDeclarationJourney(withItem(item)) { implicit request =>
-        "Additional Information are not present" in {
+        "Additional Information are present" in {
           verifyBackButton(routes.AdditionalInformationController.displayPage(Mode.Normal, itemId))
         }
       }
