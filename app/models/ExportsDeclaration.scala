@@ -87,6 +87,11 @@ case class ExportsDeclaration(
 
   def hasContainers: Boolean = containers.nonEmpty
 
+  def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).exists(_.nonEmpty)
+
+  def isAdditionalDocumentationRequired: Boolean =
+    parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
+
   def isCommodityCodeOfItemPrefixedWith(itemId: String, prefix: Seq[Int]): Boolean =
     commodityCodeOfItem(itemId) match {
       case Some(commodityCode) if (commodityCode.trim.length > 0) =>
@@ -104,11 +109,7 @@ case class ExportsDeclaration(
   def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
   def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
 
-  def isAdditionalDocumentationRequired: Boolean = parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
-
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
-
-  def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).exists(_.nonEmpty)
 
   def requiresWarehouseId: Boolean = items.exists(_.requiresWarehouseId)
 

@@ -116,14 +116,25 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
         saveAndReturnButton must containMessage("site.save_and_come_back_later")
       }
 
-      "display 'Back' button to the 'Additional Information Required' page" in {
-        verifyBackButton(view, routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId))
+      "display a 'Back' button that links to the 'Additional Information Required' page" when {
+        "Additional Information are not present" in {
+          verifyBackButton(routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId))
+        }
+      }
+    }
+
+    "display a 'Back' button that links to the 'Additional Information' page" when {
+      val item = anItem(withItemId(itemId), withAdditionalInformation("1234", "description"))
+      onEveryDeclarationJourney(withItem(item)) { implicit request =>
+        "Additional Information are not present" in {
+          verifyBackButton(routes.AdditionalInformationController.displayPage(Mode.Normal, itemId))
+        }
       }
     }
   }
 
-  private def verifyBackButton(view: Document, call: Call): Assertion = {
-    val backButton = view.getElementById("back-link")
+  private def verifyBackButton(call: Call)(implicit request: JourneyRequest[_]): Assertion = {
+    val backButton = createView().getElementById("back-link")
     backButton must containMessage(backCaption)
     backButton must haveHref(call)
   }

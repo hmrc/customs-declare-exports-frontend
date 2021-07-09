@@ -18,12 +18,15 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
+import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.scalatest.OptionValues
+import org.scalatest.{Assertion, OptionValues}
 import play.api.data.Form
+import play.api.mvc.Call
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -41,36 +44,56 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
   private def createView(form: Form[AdditionalDocument] = form)(implicit request: JourneyRequest[_]): Document =
     additionalDocumentAddPage(mode, itemId, form, None)(request, messages)
 
-  "additional_document_add view on empty page" should {
-    onEveryDeclarationJourney() { implicit request =>
-      // TODO. CEDS-3255.
-      // If auth code from List1 "display 'Back' button that links to 'Additional Information Required' page when no documents present" in {
-      "display 'Back' button that links to 'Additional Documents Required' page when no documents present" in {
+  "additional_document_add view" when {
 
-        val backButton = createView().getElementById("back-link")
+    "additional documents are present" when {
 
-        backButton must containMessage(backCaption)
-        // TODO. CEDS-3255.
-        // If auth code from List1 backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId)) else
-        backButton must haveHref(routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId))
+      "the authorisation code does not require additional documents" should {
+        val additionalDocument = AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None)
+        val item = anItem(withItemId(itemId), withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
+
+        onEveryDeclarationJourney(withItem(item)) { implicit request =>
+          "display a 'Back' button that links to the 'Additional Documents Required' page" in {
+            verifyBackButton(routes.AdditionalDocumentsController.displayPage(mode, itemId))
+          }
+        }
       }
+    }
+
+    "no additional documents are present" when {
+
+      "the authorisation code does not require additional documents" should {
+        onEveryDeclarationJourney() { implicit request =>
+          "display a 'Back' button that links to the 'Additional Documents Required' page" in {
+            verifyBackButton(routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId))
+          }
+        }
+      }
+
+      "the authorisation code requires additional documents" should {
+        val declarationHolder = DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")))
+
+        onEveryDeclarationJourney(withDeclarationHolders(declarationHolder)) { implicit request =>
+          "display a 'Back' button that links to the 'Additional Information Required' page" in {
+            verifyBackButton(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
+          }
+        }
+
+        "display a 'Back' button that links to the 'Additional Information' page" when {
+          val item = anItem(withItemId(itemId), withAdditionalInformation("1234", "description"))
+          onEveryDeclarationJourney(withDeclarationHolders(declarationHolder), withItem(item)) { implicit request =>
+            "Additional Information are present" in {
+              verifyBackButton(routes.AdditionalInformationController.displayPage(mode, itemId))
+            }
+          }
+        }
+      }
+    }
+
+    def verifyBackButton(call: Call)(implicit request: JourneyRequest[_]): Assertion = {
+      val backButton = createView().getElementById("back-link")
+      backButton must containMessage(backCaption)
+      backButton must haveHref(call)
     }
   }
-
-  // TODO. CEDS-3255.
-  // If auth code from List1
-  /*
-  "additional_document_add view on empty page with cached Additional Information" should {
-    onEveryDeclarationJourney(withItem(anItem(withItemId(itemId), withAdditionalInformation("1234", "Description")))) { implicit request =>
-      val view = createView()
-
-      "display 'Back' button that links to 'Additional Information' page when additional info present" in {
-
-        val backButton = view.getElementById("back-link")
-
-        backButton must containMessage(backCaption)
-        backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
-      }
-    }
-  }*/
 }

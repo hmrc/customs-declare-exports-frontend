@@ -17,8 +17,9 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.common.YesNoAnswer
+import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
+import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -105,14 +106,24 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
 
     "return 303 (SEE_OTHER)" when {
 
-      "there are no documents in the cache" in {
+      "there are no documents in the cache" when {
 
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+        "the authorisation code does not require additional documents" in {
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
-        await(result) mustBe aRedirectToTheNextPage
-        // TODO. CEDS-3255.
-        // If auth code from List1 thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId) else
-        thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(Mode.Normal, itemId)
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(Mode.Normal, itemId)
+        }
+
+        "the authorisation code requires additional documents" in {
+          val declarationHolder = DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")))
+          withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
+
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+        }
       }
 
       "user submits valid Yes answer" in {
