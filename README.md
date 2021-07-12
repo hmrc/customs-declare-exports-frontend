@@ -29,6 +29,27 @@ This repository contains unit tests for the service. In order to run them, simpl
 You may want to point to a non-local frontend Assets server.  If so then simply set an environment variable
 ASSETS_URL
 
+### Feature flags
+This service uses feature flags to enable/disable some of its features. These can be changed/overridden in config under `microservice.services.features.<featureName>` key.
+
+The list of feature flags and what they are responsible for:
+
+`betaBanner = [enabled/disabled]` - When enabled, all pages in the service have BETA banner.
+
+`changeErrorLink = [enabled/disabled]` - When enabled, page under url */submissions/[ID]/rejected-notifications* contains 'Change' links to page with errors.
+
+`ead = [enabled/disabled]` - When enabled, page under url */submissions/[ID]/information* may contain link to generate Exports Accompanying Document.
+
+`sfus = [enabled/disabled]` - When enabled, page under url */submissions/[ID]/information* may contain link to Secure File Upload Service.
+
+`secureMessagingInbox = [disabled / sfus / exports]` - Controls which Secure Messaging Inbox is used - none, the one embedded into exports service, or redirects to inbox in Secure File Upload Service.
+
+`queryNotificationMessage = [enabled/disabled]` - Controls the content version of */submissions* page.
+
+`use-improved-error-messages = [true/false]` - When enabled, DMS errors have descriptions made by Exports team designers. Otherwise, they have default CDS descriptions.
+
+`welsh-translation = [true/false]` - Not used at the moment.
+
 ### Scalastyle
 
 Project contains scalafmt plugin.
