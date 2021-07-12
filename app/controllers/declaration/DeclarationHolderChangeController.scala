@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper._
 import controllers.util.MultipleItemsHelper
-import forms.declaration.declarationHolder.DeclarationHolder.form
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolderAdd.form
+import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -46,7 +46,7 @@ class DeclarationHolderChangeController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holder = DeclarationHolder.fromId(id)
+    val holder = DeclarationHolderAdd.fromId(id)
     Ok(declarationHolderChangePage(mode, id, form.fill(holder).withSubmissionErrors()))
   }
 
@@ -54,15 +54,15 @@ class DeclarationHolderChangeController @Inject()(
     val boundForm = form.bindFromRequest()
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, id, formWithErrors))),
-      holder => changeHolder(mode, DeclarationHolder.fromId(id), holder, boundForm)
+      holder => changeHolder(mode, DeclarationHolderAdd.fromId(id), holder, boundForm)
     )
   }
 
-  private def changeHolder(mode: Mode, existingHolder: DeclarationHolder, newHolder: DeclarationHolder, boundForm: Form[DeclarationHolder])(
+  private def changeHolder(mode: Mode, existingHolder: DeclarationHolderAdd, newHolder: DeclarationHolderAdd, boundForm: Form[DeclarationHolderAdd])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
 
-    val holdersWithoutExisting: Seq[DeclarationHolder] = cachedHolders.filterNot(_ == existingHolder)
+    val holdersWithoutExisting: Seq[DeclarationHolderAdd] = cachedHolders.filterNot(_ == existingHolder)
 
     MultipleItemsHelper
       .add(boundForm, holdersWithoutExisting, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
@@ -76,7 +76,7 @@ class DeclarationHolderChangeController @Inject()(
       )
   }
 
-  private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateExportsCache(holders: Seq[DeclarationHolderAdd])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders)))
       model.copy(parties = updatedParties)

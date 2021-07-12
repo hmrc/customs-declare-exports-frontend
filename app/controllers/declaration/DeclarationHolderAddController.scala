@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper._
 import controllers.util._
-import forms.declaration.declarationHolder.DeclarationHolder
-import forms.declaration.declarationHolder.DeclarationHolder.form
+import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolderAdd.form
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -56,7 +56,7 @@ class DeclarationHolderAddController @Inject()(
     }, _ => saveHolder(mode, boundForm, cachedHolders))
   }
 
-  private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(
+  private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolderAdd], holders: Seq[DeclarationHolderAdd])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
@@ -68,7 +68,7 @@ class DeclarationHolderAddController @Inject()(
             .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
       )
 
-  private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateExportsCache(holders: Seq[DeclarationHolderAdd])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders)))
       model.copy(parties = updatedParties)

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import forms.declaration.declarationHolder.DeclarationHolder
+@import forms.declaration.declarationHolder.DeclarationHolderAdd
 @import services.view.HolderOfAuthorisationCodes
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
@@ -30,22 +30,22 @@
     holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 )
 
-@(mode: Mode, holders: Seq[DeclarationHolder], actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(mode: Mode, holders: Seq[DeclarationHolderAdd], actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)
     else None
 }
 
-@holderTypeCode(holder: DeclarationHolder) = @{
+@holderTypeCode(holder: DeclarationHolderAdd) = @{
     holder.authorisationTypeCode.fold("")(holderOfAuthorisationCodes.getCodeDescription(messages.lang.toLocale, _))
 }
 
-@holderEori(holder: DeclarationHolder) = @{
+@holderEori(holder: DeclarationHolderAdd) = @{
     holder.eori.map(_.value).getOrElse("")
 }
 
-@change(holder: DeclarationHolder) = {
+@change(holder: DeclarationHolderAdd) = {
     @{
         if(actionsEnabled)
             changeLink(

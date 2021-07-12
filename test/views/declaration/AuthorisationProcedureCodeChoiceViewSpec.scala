@@ -70,7 +70,7 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
       "display 'Back' button that links to 'Authorisations Required' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.back")
-        backButton must haveHref(routes.DeclarationHolderController.displayPage())
+        backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
       }
 
       "display section header" in {

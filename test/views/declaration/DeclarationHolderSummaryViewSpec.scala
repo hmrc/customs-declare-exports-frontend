@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
@@ -34,10 +34,10 @@ import views.tags.ViewTest
 class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[declaration_holder_summary]
-  val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")))
-  val declarationHolder2: DeclarationHolder = DeclarationHolder(Some("CVA"), Some(Eori("GB6543253678")))
+  val declarationHolder1: DeclarationHolderAdd = DeclarationHolderAdd(Some("ACE"), Some(Eori("GB123456543")))
+  val declarationHolder2: DeclarationHolderAdd = DeclarationHolderAdd(Some("CVA"), Some(Eori("GB6543253678")))
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = YesNoAnswer.form(), holders: Seq[DeclarationHolder] = Seq.empty)(
+  private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = YesNoAnswer.form(), holders: Seq[DeclarationHolderAdd] = Seq.empty)(
     implicit request: JourneyRequest[_]
   ): Document = page(mode, form, holders)(request, messages)
 

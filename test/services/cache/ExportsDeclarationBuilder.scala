@@ -26,7 +26,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.Add
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolderAdd
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Ducr, Lrn}
@@ -171,15 +171,15 @@ trait ExportsDeclarationBuilder {
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = None))
 
   def withDeclarationHolders(authorisationTypeCode: Option[String] = None, eori: Option[Eori] = None): ExportsDeclarationModifier = { cache =>
-    val existing: Seq[DeclarationHolder] = cache.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
-    val holdersData = DeclarationHoldersData(existing :+ DeclarationHolder(authorisationTypeCode, eori))
+    val existing: Seq[DeclarationHolderAdd] = cache.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+    val holdersData = DeclarationHoldersData(existing :+ DeclarationHolderAdd(authorisationTypeCode, eori))
     cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(holdersData)))
   }
 
   def withDeclarationHolders(holders: DeclarationHoldersData): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(holders)))
 
-  def withDeclarationHolders(holders: DeclarationHolder*): ExportsDeclarationModifier =
+  def withDeclarationHolders(holders: DeclarationHolderAdd*): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders))))
 
   def withoutDepartureTransport(): ExportsDeclarationModifier = declaration => {

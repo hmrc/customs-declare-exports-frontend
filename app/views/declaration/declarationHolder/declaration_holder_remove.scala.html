@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
-@import forms.declaration.declarationHolder.DeclarationHolder
+@import forms.declaration.declarationHolder.DeclarationHolderAdd
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
@@ -39,7 +39,7 @@
         formHelper: FormWithCSRF
 )
 
-@(mode: Mode, holder: DeclarationHolder, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, holder: DeclarationHolderAdd, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
 
 @holderTable = {
     @govukSummaryList(SummaryList(
