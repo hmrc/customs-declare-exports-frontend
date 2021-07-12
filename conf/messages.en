@@ -950,6 +950,7 @@ declaration.additionalDocument.documentTypeCode.expander.paragraph1.link1.text=A
 declaration.additionalDocument.documentTypeCode.expander.paragraph2.text=For National document codes (beginning with a number) see Table 2 in {0}.
 declaration.additionalDocument.documentTypeCode.expander.paragraph2.link1.text=Appendix 5A: National (opens in new tab)
 declaration.additionalDocument.documentTypeCode.expander.paragraph3.text=Columns 3 and 4 in the tables tell you what the document is for, and the document identifier that is required.
+declaration.additionalDocument.documentTypeCode.empty = Enter a document code and authorisation number to show the EORI you entered in section 3 is the holder of this authorisation
 declaration.additionalDocument.documentTypeCode.error = Document code must be in the correct format
 declaration.additionalDocument.documentIdentifier = Document identifier
 declaration.additionalDocument.documentIdentifier.hint = Document identifiers can be licence or certificate serial numbers. Details are in the document code tables.

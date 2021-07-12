@@ -41,7 +41,7 @@ class AdditionalDocumentChangeViewSpec extends UnitViewSpec with CommonMessages 
   private val additionalDocumentChangePage = instanceOf[additional_document_change]
 
   private def createView(form: Form[AdditionalDocument] = form)(implicit request: JourneyRequest[_]): Document =
-    additionalDocumentChangePage(mode, itemId, documentId, form, None)(request, messages)
+    additionalDocumentChangePage(mode, itemId, documentId, form)(request, messages)
 
   "additional_document_change view on empty page" should {
     onEveryDeclarationJourney() { implicit request =>

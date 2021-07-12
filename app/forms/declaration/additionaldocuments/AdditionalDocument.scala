@@ -22,7 +22,7 @@ import forms.declaration.additionaldocuments.DocumentWriteOff._
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms._
-import play.api.data.{Form, FormError, Forms}
+import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.libs.json.{JsValue, Json}
 import utils.validators.forms.FieldValidator._
 
@@ -62,31 +62,43 @@ object AdditionalDocument extends DeclarationPage {
   val issuingAuthorityNameKey = "issuingAuthorityName"
   val dateOfValidityKey = "dateOfValidity"
 
-  val mapping = Forms
-    .mapping(
-      documentTypeCodeKey -> optional(
-        text().verifying("declaration.additionalDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
-      ),
-      documentIdentifierKey -> optional(
-        text()
-          .verifying(
-            "declaration.additionalDocument.documentIdentifier.error",
-            nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
-          )
-      ),
-      documentStatusKey -> optional(text().verifying("declaration.additionalDocument.documentStatus.error", noLongerThan(2) and isAlphabetic)),
-      documentStatusReasonKey -> optional(
-        text().verifying("declaration.additionalDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
-      ),
-      issuingAuthorityNameKey -> optional(
-        text()
-          .verifying("declaration.additionalDocument.issuingAuthorityName.error.length", noLongerThan(issuingAuthorityNameMaxLength))
-      ),
-      dateOfValidityKey -> optional(
-        Date.mapping("declaration.additionalDocument.dateOfValidity.error.format", "declaration.additionalDocument.dateOfValidity.error.outOfRange")
-      ),
-      documentWriteOffKey -> optional(DocumentWriteOff.mapping)
-    )(form2data)(AdditionalDocument.unapply)
+  private def mapping(isAdditionalDocumentationRequired: Boolean): Mapping[AdditionalDocument] = {
+    val documentTypeCodeRequired = optional(
+      text()
+        .verifying("declaration.additionalDocument.documentTypeCode.empty", nonEmpty)
+        .verifying("declaration.additionalDocument.documentTypeCode.error", isEmpty or (hasSpecificLength(4) and isAlphanumeric))
+    ).verifying("declaration.additionalDocument.documentTypeCode.empty", isPresent)
+
+    val documentTypeCodeOptional = optional(
+      text()
+        .verifying("declaration.additionalDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
+    )
+
+    Forms
+      .mapping(
+        documentTypeCodeKey -> (if (isAdditionalDocumentationRequired) documentTypeCodeRequired else documentTypeCodeOptional),
+        documentIdentifierKey -> optional(
+          text()
+            .verifying(
+              "declaration.additionalDocument.documentIdentifier.error",
+              nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
+            )
+        ),
+        documentStatusKey -> optional(text().verifying("declaration.additionalDocument.documentStatus.error", noLongerThan(2) and isAlphabetic)),
+        documentStatusReasonKey -> optional(
+          text()
+            .verifying("declaration.additionalDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
+        ),
+        issuingAuthorityNameKey -> optional(
+          text()
+            .verifying("declaration.additionalDocument.issuingAuthorityName.error.length", noLongerThan(issuingAuthorityNameMaxLength))
+        ),
+        dateOfValidityKey -> optional(
+          Date.mapping("declaration.additionalDocument.dateOfValidity.error.format", "declaration.additionalDocument.dateOfValidity.error.outOfRange")
+        ),
+        documentWriteOffKey -> optional(DocumentWriteOff.mapping)
+      )(form2data)(AdditionalDocument.unapply)
+  }
 
   private def form2data(
     documentTypeCode: Option[String],
@@ -107,7 +119,8 @@ object AdditionalDocument extends DeclarationPage {
       documentWriteOff
     )
 
-  def form(): Form[AdditionalDocument] = Form(mapping)
+  def form(isAdditionalDocumentationRequired: Boolean = false): Form[AdditionalDocument] =
+    Form(mapping(isAdditionalDocumentationRequired))
 
   def globalErrors(form: Form[AdditionalDocument]): Form[AdditionalDocument] = {
 

@@ -16,20 +16,19 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.SupervisingCustomsOfficeHelper.nextPage
 import forms.declaration.AuthorisationProcedureCodeChoice
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import javax.inject.Inject
 import models.requests.JourneyRequest
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.authorisation_procedure_code_choice
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationProcedureCodeChoiceController @Inject()(
   authenticate: AuthAction,

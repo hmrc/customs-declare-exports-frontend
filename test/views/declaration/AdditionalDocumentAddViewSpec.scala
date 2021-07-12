@@ -20,7 +20,7 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -42,7 +42,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
   private val form: Form[AdditionalDocument] = AdditionalDocument.form()
   private val additionalDocumentAddPage = instanceOf[additional_document_add]
   private def createView(form: Form[AdditionalDocument] = form)(implicit request: JourneyRequest[_]): Document =
-    additionalDocumentAddPage(mode, itemId, form, None)(request, messages)
+    additionalDocumentAddPage(mode, itemId, form)(request, messages)
 
   "additional_document_add view" when {
 
@@ -71,7 +71,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
       }
 
       "the authorisation code requires additional documents" should {
-        val declarationHolder = DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")))
+        val declarationHolder = DeclarationHolderAdd(Some("OPO"), Some(Eori("GB123456789012")))
 
         onEveryDeclarationJourney(withDeclarationHolders(declarationHolder)) { implicit request =>
           "display a 'Back' button that links to the 'Additional Information Required' page" in {

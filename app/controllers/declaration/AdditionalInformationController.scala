@@ -64,7 +64,7 @@ class AdditionalInformationController @Inject()(
   private def cachedAdditionalInformationData(itemId: String)(implicit request: JourneyRequest[_]): Option[AdditionalInformationData] =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation)
 
-  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
+  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
     yesNoAnswer.answer match {
       case YesNoAnswers.yes => routes.AdditionalInformationAddController.displayPage(_, itemId)
       case YesNoAnswers.no  => routes.AdditionalDocumentsController.displayPage(_, itemId)

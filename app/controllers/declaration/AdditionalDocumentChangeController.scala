@@ -49,8 +49,8 @@ class AdditionalDocumentChangeController @Inject()(
   def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
       case Some(document) =>
-        val commodityCode = request.cacheModel.commodityCodeOfItem(itemId)
-        Ok(additionalDocumentChangePage(mode, itemId, documentId, form().fill(document).withSubmissionErrors(), commodityCode))
+        val changeForm = form(isAdditionalDocumentationRequiredForItem(itemId)).fill(document).withSubmissionErrors()
+        Ok(additionalDocumentChangePage(mode, itemId, documentId, changeForm))
 
       case _ => returnToSummary(mode, itemId)
     }
@@ -59,12 +59,10 @@ class AdditionalDocumentChangeController @Inject()(
   def submitForm(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
       case Some(existingDocument) =>
-        val boundForm = globalErrors(form().bindFromRequest())
+        val boundForm = globalErrors(form(isAdditionalDocumentationRequiredForItem(itemId)).bindFromRequest())
         boundForm.fold(
           formWithErrors => {
-            Future.successful(
-              BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors, request.cacheModel.commodityCodeOfItem(itemId)))
-            )
+            Future.successful(BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors)))
           },
           updatedDocument => {
             if (updatedDocument.isDefined)
@@ -76,12 +74,6 @@ class AdditionalDocumentChangeController @Inject()(
       case _ => Future.successful(returnToSummary(mode, itemId))
     }
   }
-
-  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))
-
-  private def findAdditionalDocument(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalDocument] =
-    ListItem.findById(id, request.cacheModel.listOfAdditionalDocuments(itemId))
 
   private def changeDocument(
     mode: Mode,
@@ -100,8 +92,7 @@ class AdditionalDocumentChangeController @Inject()(
       .add(boundForm, documentsWithoutExisting, maxNumberOfItems, AdditionalDocumentFormGroupId, "declaration.additionalDocument")
       .fold(
         formWithErrors => {
-          val commodityCode = request.cacheModel.commodityCodeOfItem(itemId)
-          Future.successful(BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors, commodityCode)))
+          Future.successful(BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors)))
         },
         _ => {
           val updatedDocuments = existingDocuments.map(doc => if (doc == existingDocument) newDocument else doc)
@@ -110,6 +101,15 @@ class AdditionalDocumentChangeController @Inject()(
         }
       )
   }
+
+  private def findAdditionalDocument(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalDocument] =
+    ListItem.findById(id, request.cacheModel.listOfAdditionalDocuments(itemId))
+
+  private def isAdditionalDocumentationRequiredForItem(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
+    request.cacheModel.isAdditionalDocumentationRequiredForItem(itemId)
+
+  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))
 
   private def updateCache(itemId: String, additionalDocuments: AdditionalDocuments)(
     implicit req: JourneyRequest[AnyContent]
