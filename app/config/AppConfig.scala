@@ -74,6 +74,7 @@ class AppConfig @Inject()(
   val procedureCodesOutwardProcessing = loadConfig("urls.procedureCodes.outwardProcessing")
   val procedureCodesTemporaryExport = loadConfig("urls.procedureCodes.temporaryExport")
   val procedureCodesReExportFollowingSpecialProcedure = loadConfig("urls.procedureCodes.reExportFollowingSpecialProcedure")
+  val permanentExportOrDispatch = loadConfig("urls.procedureCodes.permanentExportOrDispatch")
 
   val additionalProcedureCodesOfCDs = loadConfig("urls.additionalProcedureCodesOfCDs")
 

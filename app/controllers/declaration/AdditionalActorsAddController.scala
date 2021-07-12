@@ -64,7 +64,9 @@ class AdditionalActorsAddController @Inject()(
       formWithErrors => {
         Future.successful(BadRequest(declarationAdditionalActorsPage(mode, formWithErrors)))
       },
-      actor =>
+      actor => {
+        println(s"\n actor=$actor cachedActors=$cachedActors")
+
         if (actor.isDefined) {
           addAdditionalActor(mode, boundForm, cachedActors)
         } else if (cachedActors.nonEmpty) {
@@ -73,6 +75,7 @@ class AdditionalActorsAddController @Inject()(
         } else
           updateCache(DeclarationAdditionalActorsData(cachedActors))
             .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
+      }
     )
   }
 

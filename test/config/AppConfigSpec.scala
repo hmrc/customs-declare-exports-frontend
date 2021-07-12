@@ -427,6 +427,7 @@ object AppConfigSpec {
       |urls.procedureCodes.outwardProcessing = "https://www.gov.uk/guidance/apply-to-pay-less-duty-on-goods-you-export-to-process-or-repair"
       |urls.procedureCodes.temporaryExport = "https://www.gov.uk/guidance/pay-less-import-duty-and-vat-when-re-importing-goods-to-the-uk-and-eu#claiming-relief-for-exporting-goods-using-a-duplicate-list"
       |urls.procedureCodes.reExportFollowingSpecialProcedure = "https://www.gov.uk/guidance/moving-processed-or-repaired-goods-into-free-circulation-or-re-exporting-them"
+      |urls.procedureCodes.permanentExportOrDispatch = "http://permanentExportOrDispatch"
       |
       |urls.additionalProcedureCodesOfCDs = "http://additionalProcedureCodesOfCDs"
       |urls.unDangerousGoods = "http://unDangerousGoods"

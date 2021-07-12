@@ -95,7 +95,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           controller.displayPage(Mode.Normal)(getRequest()).futureValue
 
-          verify(mockExportsCacheService).get(meq("declarationId"))(any())
+          verify(mockExportsCacheService).get(meq(existingDeclarationId))(any())
         }
 
         "call page view, passing form with data from cache" in {

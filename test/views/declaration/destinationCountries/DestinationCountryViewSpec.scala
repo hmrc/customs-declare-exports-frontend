@@ -17,7 +17,6 @@
 package views.declaration.destinationCountries
 
 import base.Injector
-import config.AppConfig
 import controllers.declaration.routes
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}

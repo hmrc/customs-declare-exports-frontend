@@ -17,15 +17,14 @@
 package controllers.declaration
 
 import java.time.Instant
-
 import scala.concurrent.{ExecutionContext, Future}
-
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.declaration.DeclarationChoice
 import forms.declaration.DeclarationChoice._
+
 import javax.inject.Inject
-import models.DeclarationType.DeclarationType
+import models.DeclarationType.{CLEARANCE, DeclarationType, SIMPLIFIED}
 import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import play.api.Logging
@@ -69,6 +68,7 @@ class DeclarationChoiceController @Inject()(
             case Some(id) =>
               updateDeclarationType(id, declarationType).map { _ =>
                 Redirect(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode))
+                  .addingToSession(ExportsSessionKeys.declarationId -> id)
               }
             case _ =>
               create(declarationType) map { created =>
@@ -80,12 +80,25 @@ class DeclarationChoiceController @Inject()(
       )
   }
 
-  private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] =
-    exportsCacheService.get(id).map(_.map(_.updateType(`type`))).flatMap {
+  private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = {
+    val updatedDeclaration = exportsCacheService.get(id).map { maybeDeclaration =>
+      maybeDeclaration
+        .map(_.updateType(`type`))
+        .map(clearAuthorisationProcedureCodeChoiceIfRequired)
+    }
+
+    updatedDeclaration.flatMap {
       case Some(declaration) => exportsCacheService.update(declaration)
       case None =>
         logger.error(s"Failed to find declaration for id $id")
         Future.successful(None)
+    }
+  }
+
+  private def clearAuthorisationProcedureCodeChoiceIfRequired(dec: ExportsDeclaration): ExportsDeclaration =
+    dec.`type` match {
+      case CLEARANCE | SIMPLIFIED => dec.removeAuthorisationProcedureCodeChoice()
+      case _                      => dec
     }
 
   private def create(`type`: DeclarationType)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =

@@ -141,6 +141,12 @@ case class ExportsDeclaration(
       )
     )
 
+  def updateAuthorisationProcedureCodeChoice(authorisationProcedureCodeChoice: AuthorisationProcedureCodeChoice): ExportsDeclaration =
+    copy(parties = parties.copy(authorisationProcedureCodeChoice = Some(authorisationProcedureCodeChoice)))
+
+  def removeAuthorisationProcedureCodeChoice(): ExportsDeclaration =
+    copy(parties = parties.copy(authorisationProcedureCodeChoice = None))
+
   def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
     copy(items = items.map(item => if (item.id == itemId) update(item) else item))
 

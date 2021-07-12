@@ -259,6 +259,7 @@ object Navigator {
     case TransportPayment                     => routes.ExpressConsignmentController.displayPage
     case CarrierDetails                       => routes.CarrierEoriNumberController.displayPage
     case TotalNumberOfItems                   => routes.OfficeOfExitController.displayPage
+    case AuthorisationProcedureCodeChoice     => routes.DeclarationHolderController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -476,7 +477,7 @@ object Navigator {
 
   private def declarationHolderRequiredPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.`type` == CLEARANCE) routes.ConsigneeDetailsController.displayPage(mode)
-    else routes.AdditionalActorsSummaryController.displayPage(mode)
+    else routes.AuthorisationProcedureCodeChoiceController.displayPage(mode)
 
   private def declarationHolderPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.parties.declarationHoldersData.exists(_.holders.nonEmpty))
