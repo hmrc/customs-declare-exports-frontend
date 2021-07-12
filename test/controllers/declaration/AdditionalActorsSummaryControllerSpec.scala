@@ -132,7 +132,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
     }
 
     "re-direct to next question" when {
-      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+      onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL) { request =>
         "user submits valid No answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
@@ -141,6 +141,18 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
+        }
+      }
+
+      onJourney(SIMPLIFIED) { request =>
+        "user submits valid No answer" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
+
+          val requestBody = Seq("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderAddController.displayPage(Mode.Normal)
         }
       }
     }
