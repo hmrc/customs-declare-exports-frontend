@@ -16,13 +16,13 @@
 
 package controllers.util
 
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.requests.JourneyRequest
 
 object DeclarationHolderHelper {
 
   val DeclarationHolderFormGroupId: String = "declarationHolder"
 
-  def cachedHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] =
+  def cachedHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolderAdd] =
     request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
 }

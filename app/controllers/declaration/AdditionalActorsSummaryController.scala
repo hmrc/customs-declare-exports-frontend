@@ -59,7 +59,7 @@ class AdditionalActorsSummaryController @Inject()(
         validYesNo =>
           validYesNo.answer match {
             case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.AdditionalActorsAddController.displayPage)
-            case YesNoAnswers.no  => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage)
+            case YesNoAnswers.no  => navigator.continueTo(mode, routes.AuthorisationProcedureCodeChoiceController.displayPage)
         }
       )
   }

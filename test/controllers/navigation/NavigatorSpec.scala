@@ -18,11 +18,9 @@ package controllers.navigation
 
 import java.time.{LocalDate, ZoneOffset}
 import java.util.concurrent.TimeUnit
-
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
-
-import base.{RequestBuilder, UnitWithMocksSpec}
+import base.{MockExportCacheService, RequestBuilder, UnitWithMocksSpec}
 import config.AppConfig
 import controllers.util._
 import forms.declaration.carrier.CarrierDetails
@@ -41,7 +39,7 @@ import services.audit.{AuditService, AuditTypes}
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 
-class NavigatorSpec extends UnitWithMocksSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
+class NavigatorSpec extends UnitWithMocksSpec with MockExportCacheService with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
 
   private val mode = Mode.Normal
   private val call: Mode => Call = _ => Call("GET", "url")
@@ -72,7 +70,7 @@ class NavigatorSpec extends UnitWithMocksSpec with BeforeAndAfterEach with Expor
     def request(action: Option[FormAction]) =
       FakeRequest("GET", "uri")
         .withFormUrlEncodedBody(action.getOrElse("other-field").toString -> "")
-        .withSession(ExportsSessionKeys.declarationId -> "declarationId")
+        .withSession(ExportsSessionKeys.declarationId -> existingDeclarationId)
 
     "Go to Save as Draft" in {
       given(config.draftTimeToLive).willReturn(FiniteDuration(10, TimeUnit.DAYS))
@@ -125,7 +123,7 @@ class NavigatorSpec extends UnitWithMocksSpec with BeforeAndAfterEach with Expor
   "Navigator" should {
 
     val request = FakeRequest("GET", "uri")
-      .withSession(ExportsSessionKeys.declarationId -> "declarationId")
+      .withSession(ExportsSessionKeys.declarationId -> existingDeclarationId)
 
     "redirect to RejectedNotificationsController.displayPage" when {
 

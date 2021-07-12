@@ -34,13 +34,14 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
   self: Suite =>
 
   val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
+  val existingDeclarationId = "declarationId"
 
   def withNewCaching(dataToReturn: ExportsDeclaration): Unit = {
     when(mockExportsCacheService.update(any[ExportsDeclaration])(any()))
       .thenAnswer(withTheFirstArgument)
 
     when(mockExportsCacheService.create(any[ExportsDeclarationExchange])(any()))
-      .thenReturn(Future.successful(dataToReturn.copy(id = "declarationId")))
+      .thenReturn(Future.successful(dataToReturn.copy(id = existingDeclarationId)))
 
     when(mockExportsCacheService.get(anyString)(any()))
       .thenReturn(Future.successful(Some(dataToReturn)))

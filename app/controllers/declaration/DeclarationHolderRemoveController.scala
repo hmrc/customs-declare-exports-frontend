@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -46,12 +46,12 @@ class DeclarationHolderRemoveController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holder = DeclarationHolder.fromId(id)
+    val holder = DeclarationHolderAdd.fromId(id)
     Ok(holderRemovePage(mode, holder, removeYesNoForm.withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val holderToRemove = DeclarationHolder.fromId(id)
+    val holderToRemove = DeclarationHolderAdd.fromId(id)
     removeYesNoForm
       .bindFromRequest()
       .fold(
@@ -71,7 +71,7 @@ class DeclarationHolderRemoveController @Inject()(
   private val removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.remove.empty")
 
   private def updateExportsCache(
-    holderToRemove: DeclarationHolder
+    holderToRemove: DeclarationHolderAdd
   )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedHolders = DeclarationHolderHelper.cachedHolders.filterNot(_ == holderToRemove)

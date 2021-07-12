@@ -30,7 +30,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupp
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.countries.Country
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolderAdd
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{CancelDeclaration, Lrn}
@@ -52,7 +52,7 @@ object ExportDeclarationTestData {
   val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
   val correctTransportInformationContainerDataJSON: JsValue = Json.toJson(correctTransportInformationContainerData)
 
-  val correctDeclarationHolder = DeclarationHolder(authorisationTypeCode = Some("ACE"), eori = Some(Eori("PL213472539481923")))
+  val correctDeclarationHolder = DeclarationHolderAdd(authorisationTypeCode = Some("ACE"), eori = Some(Eori("PL213472539481923")))
   val correctDeclarationHoldersData = DeclarationHoldersData(Seq(correctDeclarationHolder))
 
   val correctExporterDetails = ExporterDetails(details = EntityDetailsSpec.correctEntityDetails)
@@ -141,8 +141,8 @@ object ExportDeclarationTestData {
       declarationHoldersData = Some(
         DeclarationHoldersData(
           Seq(
-            DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some(Eori("PL213472539481923"))),
-            DeclarationHolder(authorisationTypeCode = Some("4321"), eori = Some(Eori("PT213472539481923")))
+            DeclarationHolderAdd(authorisationTypeCode = Some("1234"), eori = Some(Eori("PL213472539481923"))),
+            DeclarationHolderAdd(authorisationTypeCode = Some("4321"), eori = Some(Eori("PT213472539481923")))
           )
         )
       ),

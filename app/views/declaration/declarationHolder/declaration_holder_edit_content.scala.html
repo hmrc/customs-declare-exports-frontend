@@ -16,7 +16,7 @@
 
 @import config.AppConfig
 @import controllers.util.DeclarationHolderHelper.DeclarationHolderFormGroupId
-@import forms.declaration.declarationHolder.DeclarationHolder
+@import forms.declaration.declarationHolder.DeclarationHolderAdd
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import services.view.HolderOfAuthorisationCodes
@@ -44,7 +44,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarationHolderAdd])(implicit request: JourneyRequest[_], messages: Messages)
 
 @pageFields = {
     @formGroupWrapper(field = form(DeclarationHolderFormGroupId)){
@@ -77,7 +77,7 @@
     html = HtmlFormat.fill(immutable.Seq(
         govukHint(Hint(content = Text(messages("declaration.declarationHolder.title.hint")))),
         pageFields,
-        tariffExpander(DeclarationHolder, request.declarationType)(messages, appConfig),
+        tariffExpander(DeclarationHolderAdd, request.declarationType)(messages, appConfig),
         saveButtons()
     ))
 ))

@@ -72,7 +72,7 @@ class AdditionalActorsAddController @Inject()(
             .map(_ => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
         } else
           updateCache(DeclarationAdditionalActorsData(cachedActors))
-            .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
+            .map(_ => navigator.continueTo(mode, routes.AuthorisationProcedureCodeChoiceController.displayPage))
     )
   }
 

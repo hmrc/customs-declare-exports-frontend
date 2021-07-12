@@ -28,7 +28,7 @@ import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocu
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
-import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderRequired, DeclarationSummaryHolder}
+import forms.declaration.declarationHolder.{DeclarationHolderAdd, DeclarationHolderRequired, DeclarationSummaryHolder}
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
@@ -259,6 +259,7 @@ object Navigator {
     case TransportPayment                     => routes.ExpressConsignmentController.displayPage
     case CarrierDetails                       => routes.CarrierEoriNumberController.displayPage
     case TotalNumberOfItems                   => routes.OfficeOfExitController.displayPage
+    case AuthorisationProcedureCodeChoice     => routes.AdditionalActorsSummaryController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -273,7 +274,7 @@ object Navigator {
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case DeclarationHolderRequired => declarationHolderRequiredPreviousPage
-    case DeclarationHolder         => declarationHolderPreviousPage
+    case DeclarationHolderAdd      => declarationHolderPreviousPage
     case SupervisingCustomsOffice  => supervisingCustomsOfficePreviousPage
     case WarehouseIdentification   => warehouseIdentificationPreviousPage
   }
@@ -476,12 +477,12 @@ object Navigator {
 
   private def declarationHolderRequiredPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.`type` == CLEARANCE) routes.ConsigneeDetailsController.displayPage(mode)
-    else routes.AdditionalActorsSummaryController.displayPage(mode)
+    else routes.AuthorisationProcedureCodeChoiceController.displayPage(mode)
 
   private def declarationHolderPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.parties.declarationHoldersData.exists(_.holders.nonEmpty))
       routes.DeclarationHolderController.displayPage(mode)
-    else if (cacheModel.`type` == SIMPLIFIED) declarationHolderRequiredPreviousPage(cacheModel, mode)
+    else if (cacheModel.`type` == SIMPLIFIED) routes.AdditionalActorsSummaryController.displayPage(mode)
     else routes.DeclarationHolderRequiredController.displayPage(mode)
 
   private def warehouseIdentificationPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =

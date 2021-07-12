@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.Mode
 import models.declaration.DeclarationHoldersData
 import org.mockito.ArgumentCaptor
@@ -67,8 +67,8 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
     captor.getValue
   }
 
-  def theDeclarationHolder: DeclarationHolder = {
-    val captor = ArgumentCaptor.forClass(classOf[DeclarationHolder])
+  def theDeclarationHolder: DeclarationHolderAdd = {
+    val captor = ArgumentCaptor.forClass(classOf[DeclarationHolderAdd])
     verify(mockRemovePage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
@@ -76,7 +76,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
   private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
     verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543443")))
+  val declarationHolder: DeclarationHolderAdd = DeclarationHolderAdd(Some("ACE"), Some(Eori("GB123456543443")))
   val id = "ACE-GB123456543443"
 
   "DeclarationHolder Remove Controller" must {

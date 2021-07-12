@@ -17,17 +17,18 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.declarationHolder.DeclarationHolderAdd
 import play.api.libs.json.Json
 
-case class DeclarationHoldersData(holders: Seq[DeclarationHolder], isRequired: Option[YesNoAnswer]) {
-  def containsHolder(holder: DeclarationHolder): Boolean = holders.contains(holder)
+case class DeclarationHoldersData(holders: Seq[DeclarationHolderAdd], isRequired: Option[YesNoAnswer]) {
+  def containsHolder(holder: DeclarationHolderAdd): Boolean = holders.contains(holder)
 }
 
 object DeclarationHoldersData {
   implicit val format = Json.format[DeclarationHoldersData]
 
-  def apply(holders: Seq[DeclarationHolder]): DeclarationHoldersData =
+  def apply(holders: Seq[DeclarationHolderAdd]): DeclarationHoldersData =
     new DeclarationHoldersData(holders, Some(if (holders.isEmpty) YesNoAnswer.No else YesNoAnswer.Yes))
 
   val formId = "DeclarationHoldersData"

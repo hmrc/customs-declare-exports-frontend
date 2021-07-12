@@ -20,7 +20,7 @@ import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Eori
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
@@ -36,7 +36,7 @@ import views.tags.ViewTest
 class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val declarationHolderPage = instanceOf[declaration_holder_add]
-  private def createView(form: Form[DeclarationHolder] = DeclarationHolder.form)(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[DeclarationHolderAdd] = DeclarationHolderAdd.form)(implicit request: JourneyRequest[_]): Document =
     declarationHolderPage(Mode.Normal, form)(request, messages)
 
   "Declaration holder" should {
@@ -114,8 +114,8 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       "display error for empty Authorisation code" in {
 
         val view = createView(
-          DeclarationHolder.form
-            .fillAndValidate(DeclarationHolder(None, Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
+          DeclarationHolderAdd.form
+            .fillAndValidate(DeclarationHolderAdd(None, Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -127,8 +127,8 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       "display error for incorrect EORI" in {
 
         val view = createView(
-          DeclarationHolder.form
-            .fillAndValidate(DeclarationHolder(Some("ACE"), Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
+          DeclarationHolderAdd.form
+            .fillAndValidate(DeclarationHolderAdd(Some("ACE"), Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -140,8 +140,8 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       "display error for both incorrect fields" in {
 
         val view = createView(
-          DeclarationHolder.form
-            .fillAndValidate(DeclarationHolder(None, Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
+          DeclarationHolderAdd.form
+            .fillAndValidate(DeclarationHolderAdd(None, Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -160,7 +160,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
     onEveryDeclarationJourney() { implicit request =>
       "display data in Authorisation Code input" in {
 
-        val view = createView(DeclarationHolder.form.fill(DeclarationHolder(Some("test"), None)))
+        val view = createView(DeclarationHolderAdd.form.fill(DeclarationHolderAdd(Some("test"), None)))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
         view.getElementById("eori").attr("value") mustBe empty
@@ -168,7 +168,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
       "display data in EORI input" in {
 
-        val view = createView(DeclarationHolder.form.fill(DeclarationHolder(None, Some(Eori("test")))))
+        val view = createView(DeclarationHolderAdd.form.fill(DeclarationHolderAdd(None, Some(Eori("test")))))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe empty
         view.getElementById("eori").attr("value") mustBe "test"
@@ -176,7 +176,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
 
       "display data in both inputs" in {
 
-        val view = createView(DeclarationHolder.form.fill(DeclarationHolder(Some("test"), Some(Eori("test1")))))
+        val view = createView(DeclarationHolderAdd.form.fill(DeclarationHolderAdd(Some("test"), Some(Eori("test1")))))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
         view.getElementById("eori").attr("value") mustBe "test1"

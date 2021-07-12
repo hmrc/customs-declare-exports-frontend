@@ -443,6 +443,13 @@ function otherPartiesList(){
     }
 }
 
+function authorisationProcedureCodeChoice(){
+    if (currentPageIs('/customs-declare-exports/declaration/authorisation-choice')) {
+        selectRadioOptionFromInputs(document.getElementsByName('authorisationProcedureCodeChoice'), 0);
+        document.getElementById('submit').click();
+    }
+}
+
 function isAuthorisationRequired(){
     if (currentPageIs('/customs-declare-exports/declaration/is-authorisation-required')) {
         document.getElementById('code_yes').checked = 'checked';
@@ -1206,6 +1213,7 @@ function completeJourney() {
     carrierDetails();
     otherPartiesInvolved();
     otherPartiesList();
+    authorisationProcedureCodeChoice();
     isAuthorisationRequired();
     holderOfAuthorisation();
     authorisationsSummary();

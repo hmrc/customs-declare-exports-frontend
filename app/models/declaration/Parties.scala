@@ -34,6 +34,7 @@ case class Parties(
   representativeDetails: Option[RepresentativeDetails] = None,
   declarationAdditionalActorsData: Option[DeclarationAdditionalActorsData] = None,
   declarationHoldersData: Option[DeclarationHoldersData] = None,
+  authorisationProcedureCodeChoice: Option[AuthorisationProcedureCodeChoice] = None,
   carrierDetails: Option[CarrierDetails] = None,
   isEntryIntoDeclarantsRecords: Option[YesNoAnswer] = None,
   personPresentingGoodsDetails: Option[PersonPresentingGoodsDetails] = None
@@ -52,6 +53,7 @@ object Parties {
     representativeDetails = cacheData.parties.representativeDetails,
     declarationAdditionalActorsData = cacheData.parties.declarationAdditionalActorsData,
     declarationHoldersData = cacheData.parties.declarationHoldersData,
+    authorisationProcedureCodeChoice = cacheData.parties.authorisationProcedureCodeChoice,
     carrierDetails = cacheData.parties.carrierDetails,
     isEntryIntoDeclarantsRecords = cacheData.parties.isEntryIntoDeclarantsRecords,
     personPresentingGoodsDetails = cacheData.parties.personPresentingGoodsDetails

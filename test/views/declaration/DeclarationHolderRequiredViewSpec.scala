@@ -97,7 +97,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
       "display 'Back' button that links to the 'Additional Actors Summary' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
+        backButton must haveHref(routes.AuthorisationProcedureCodeChoiceController.displayPage())
       }
     }
 

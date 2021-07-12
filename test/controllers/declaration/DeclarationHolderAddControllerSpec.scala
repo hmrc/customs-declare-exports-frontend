@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.Eori
-import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.Mode
 import models.declaration.DeclarationHoldersData
 import org.mockito.ArgumentCaptor
@@ -61,8 +61,8 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
     theDeclarationHolder
   }
 
-  def theDeclarationHolder: Form[DeclarationHolder] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolder]])
+  def theDeclarationHolder: Form[DeclarationHolderAdd] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolderAdd]])
     verify(mockAddPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
@@ -70,7 +70,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
   private def verifyAddPageInvoked(numberOfTimes: Int = 1) =
     verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456789012")))
+  val declarationHolder: DeclarationHolderAdd = DeclarationHolderAdd(Some("ACE"), Some(Eori("GB123456789012")))
 
   "DeclarationHolder Add Controller" must {
 
