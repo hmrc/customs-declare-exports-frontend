@@ -39,23 +39,20 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
   private val itemId = "a7sc78"
   private val mode = Mode.Normal
 
-  private val form: Form[AdditionalDocument] = AdditionalDocument.form()
+  private val form: Form[AdditionalDocument] = AdditionalDocument.form
   private val additionalDocumentAddPage = instanceOf[additional_document_add]
   private def createView(form: Form[AdditionalDocument] = form)(implicit request: JourneyRequest[_]): Document =
     additionalDocumentAddPage(mode, itemId, form)(request, messages)
 
   "additional_document_add view" when {
 
-    "additional documents are present" when {
+    "additional documents are present" should {
+      val additionalDocument = AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None)
+      val item = anItem(withItemId(itemId), withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
 
-      "the authorisation code does not require additional documents" should {
-        val additionalDocument = AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None)
-        val item = anItem(withItemId(itemId), withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
-
-        onEveryDeclarationJourney(withItem(item)) { implicit request =>
-          "display a 'Back' button that links to the 'Additional Documents Required' page" in {
-            verifyBackButton(routes.AdditionalDocumentsController.displayPage(mode, itemId))
-          }
+      onEveryDeclarationJourney(withItem(item)) { implicit request =>
+        "display a 'Back' button that links to the 'Additional Documents Required' page" in {
+          verifyBackButton(routes.AdditionalDocumentsController.displayPage(mode, itemId))
         }
       }
     }

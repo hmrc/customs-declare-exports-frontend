@@ -46,11 +46,11 @@ class AdditionalDocumentAddController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(additionalDocumentAddPage(mode, itemId, form(isAdditionalDocumentationRequiredForItem(itemId)).withSubmissionErrors()))
+    Ok(additionalDocumentAddPage(mode, itemId, form.withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = globalErrors(form(isAdditionalDocumentationRequiredForItem(itemId)).bindFromRequest())
+    val boundForm = globalErrors(form.bindFromRequest())
 
     boundForm.fold(formWithErrors => {
       Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors)))
@@ -72,9 +72,6 @@ class AdditionalDocumentAddController @Inject()(
           else
             navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))
       )
-
-  private def isAdditionalDocumentationRequiredForItem(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
-    request.cacheModel.isAdditionalDocumentationRequiredForItem(itemId)
 
   private def saveDocuments(mode: Mode, itemId: String, boundForm: Form[AdditionalDocument], additionalDocuments: AdditionalDocuments)(
     implicit request: JourneyRequest[AnyContent]

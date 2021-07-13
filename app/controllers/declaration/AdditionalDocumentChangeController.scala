@@ -49,7 +49,7 @@ class AdditionalDocumentChangeController @Inject()(
   def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
       case Some(document) =>
-        val changeForm = form(isAdditionalDocumentationRequiredForItem(itemId)).fill(document).withSubmissionErrors()
+        val changeForm = form.fill(document).withSubmissionErrors()
         Ok(additionalDocumentChangePage(mode, itemId, documentId, changeForm))
 
       case _ => returnToSummary(mode, itemId)
@@ -59,7 +59,7 @@ class AdditionalDocumentChangeController @Inject()(
   def submitForm(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
       case Some(existingDocument) =>
-        val boundForm = globalErrors(form(isAdditionalDocumentationRequiredForItem(itemId)).bindFromRequest())
+        val boundForm = globalErrors(form.bindFromRequest())
         boundForm.fold(
           formWithErrors => {
             Future.successful(BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors)))
@@ -104,9 +104,6 @@ class AdditionalDocumentChangeController @Inject()(
 
   private def findAdditionalDocument(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalDocument] =
     ListItem.findById(id, request.cacheModel.listOfAdditionalDocuments(itemId))
-
-  private def isAdditionalDocumentationRequiredForItem(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
-    request.cacheModel.isAdditionalDocumentationRequiredForItem(itemId)
 
   private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))

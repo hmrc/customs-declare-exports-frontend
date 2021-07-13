@@ -37,7 +37,7 @@ class AdditionalDocumentChangeViewSpec extends UnitViewSpec with CommonMessages 
   private val documentId = "1.2131231"
   private val mode = Mode.Normal
 
-  private val form: Form[AdditionalDocument] = AdditionalDocument.form()
+  private val form: Form[AdditionalDocument] = AdditionalDocument.form
   private val additionalDocumentChangePage = instanceOf[additional_document_change]
 
   private def createView(form: Form[AdditionalDocument] = form)(implicit request: JourneyRequest[_]): Document =

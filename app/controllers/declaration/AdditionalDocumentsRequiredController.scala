@@ -68,7 +68,10 @@ class AdditionalDocumentsRequiredController @Inject()(
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] = {
-    val additionalDocuments = AdditionalDocuments(Some(yesNoAnswer), request.cacheModel.listOfAdditionalDocuments(itemId))
+    val documents =
+      if (yesNoAnswer.answer == YesNoAnswers.no) Seq.empty else request.cacheModel.listOfAdditionalDocuments(itemId)
+
+    val additionalDocuments = AdditionalDocuments(Some(yesNoAnswer), documents)
     updateExportsDeclarationSyncDirect(_.updatedItem(itemId, _.copy(additionalDocuments = Some(additionalDocuments))))
   }
 }

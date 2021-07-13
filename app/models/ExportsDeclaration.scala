@@ -92,9 +92,6 @@ case class ExportsDeclaration(
   def isAdditionalDocumentationRequired: Boolean =
     parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
 
-  def isAdditionalDocumentationRequiredForItem(itemId: String): Boolean =
-    isAdditionalDocumentationRequired || additionalDocumentsRequired(itemId).exists(_.answer == YesNoAnswers.yes)
-
   def isCommodityCodeOfItemPrefixedWith(itemId: String, prefix: Seq[Int]): Boolean =
     commodityCodeOfItem(itemId) match {
       case Some(commodityCode) if (commodityCode.trim.length > 0) =>

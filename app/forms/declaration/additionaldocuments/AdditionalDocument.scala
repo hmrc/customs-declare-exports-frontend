@@ -22,7 +22,7 @@ import forms.declaration.additionaldocuments.DocumentWriteOff._
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms._
-import play.api.data.{Form, FormError, Forms, Mapping}
+import play.api.data.{Form, FormError, Forms}
 import play.api.libs.json.{JsValue, Json}
 import utils.validators.forms.FieldValidator._
 
@@ -62,21 +62,16 @@ object AdditionalDocument extends DeclarationPage {
   val issuingAuthorityNameKey = "issuingAuthorityName"
   val dateOfValidityKey = "dateOfValidity"
 
-  private def mapping(isAdditionalDocumentationRequired: Boolean): Mapping[AdditionalDocument] = {
+  val mapping = {
     val documentTypeCodeRequired = optional(
       text()
         .verifying("declaration.additionalDocument.documentTypeCode.empty", nonEmpty)
         .verifying("declaration.additionalDocument.documentTypeCode.error", isEmpty or (hasSpecificLength(4) and isAlphanumeric))
     ).verifying("declaration.additionalDocument.documentTypeCode.empty", isPresent)
 
-    val documentTypeCodeOptional = optional(
-      text()
-        .verifying("declaration.additionalDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
-    )
-
     Forms
       .mapping(
-        documentTypeCodeKey -> (if (isAdditionalDocumentationRequired) documentTypeCodeRequired else documentTypeCodeOptional),
+        documentTypeCodeKey -> documentTypeCodeRequired,
         documentIdentifierKey -> optional(
           text()
             .verifying(
@@ -119,8 +114,7 @@ object AdditionalDocument extends DeclarationPage {
       documentWriteOff
     )
 
-  def form(isAdditionalDocumentationRequired: Boolean = false): Form[AdditionalDocument] =
-    Form(mapping(isAdditionalDocumentationRequired))
+  def form: Form[AdditionalDocument] = Form(mapping)
 
   def globalErrors(form: Form[AdditionalDocument]): Form[AdditionalDocument] = {
 
