@@ -19,18 +19,12 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.util.SaveAndReturn
 import forms.common.Date.{dayKey, monthKey, yearKey}
-import forms.declaration.AdditionalDocumentSpec.{correctAdditionalDocument, correctAdditionalDocumentMap, incorrectAdditionalDocumentMap}
-import forms.declaration.additionaldocuments.DocumentWriteOff.{documentQuantityKey, documentWriteOffKey, measurementUnitKey, qualifierKey}
-import forms.declaration.additionaldocuments.DocumentWriteOffSpec.{correctDocumentWriteOff, incorrectDocumentWriteOff}
+import forms.declaration.AdditionalDocumentSpec._
+import forms.declaration.CommodityDetails
 import forms.declaration.additionaldocuments.AdditionalDocument
-import forms.declaration.additionaldocuments.AdditionalDocument.{
-  dateOfValidityKey,
-  documentIdentifierKey,
-  documentStatusKey,
-  documentStatusReasonKey,
-  documentTypeCodeKey,
-  issuingAuthorityNameKey
-}
+import forms.declaration.additionaldocuments.AdditionalDocument._
+import forms.declaration.additionaldocuments.DocumentWriteOff._
+import forms.declaration.additionaldocuments.DocumentWriteOffSpec.{correctDocumentWriteOff, incorrectDocumentWriteOff}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -42,15 +36,15 @@ import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.additionalDocuments.additional_document_edit
 
-class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
+class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
   private val itemId = "a7sc78"
   private val mode = Mode.Normal
 
-  private val form: Form[AdditionalDocument] = AdditionalDocument.form()
+  private val form: Form[AdditionalDocument] = AdditionalDocument.form
   private val additionalDocumentEditPage = instanceOf[additional_document_edit]
-  private def createView(form: Form[AdditionalDocument] = form, commodityCode: Option[String] = None)(implicit request: JourneyRequest[_]): Document =
-    additionalDocumentEditPage(mode, itemId, form, commodityCode)(request, messages)
+  private def createView(form: Form[AdditionalDocument] = form)(implicit request: JourneyRequest[_]): Document =
+    additionalDocumentEditPage(mode, itemId, form)(request, messages)
 
   "AdditionalDocument Add/Change Controller" should {
 
@@ -143,6 +137,7 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
   }
 
   "additional_document_edit view on empty page" should {
+
     onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
@@ -155,17 +150,7 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
       }
 
       "display the top expander" when {
-        "commodityCode is present" in {
-          val commodityCode = "46021910"
-          val hintElement = createView(commodityCode = Some(commodityCode)).getElementById("top-expander")
-
-          hintElement must containHtml(messages("declaration.additionalDocument.expander.title"))
-          hintElement
-            .getElementsByClass("govuk-hint")
-            .get(0) must containText(messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.link1.text", commodityCode))
-        }
-
-        "commodityCode is missing" in {
+        "commodityCode is not present" in {
           val hintElement = view.getElementById("top-expander")
 
           hintElement must containHtml(messages("declaration.additionalDocument.expander.title"))
@@ -259,14 +244,32 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
     }
   }
 
-  "additional_document_edit view for invalid input" should {
-    onEveryDeclarationJourney() { implicit request =>
-      "display error for Document type code" in {
+  "additional_document_edit view on empty page" should {
+    "display the top expander" when {
+      val commodityCode = "46021910"
+      val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
 
-        val view = createView(
-          AdditionalDocument.form
-            .fillAndValidate(correctAdditionalDocument.copy(documentTypeCode = Some(TestHelper.createRandomAlphanumericString(5))))
-        )
+      onEveryDeclarationJourney(withItem(item)) { implicit request =>
+        "commodityCode is present" in {
+
+          val hintElement = createView().getElementById("top-expander")
+
+          hintElement must containHtml(messages("declaration.additionalDocument.expander.title"))
+          hintElement
+            .getElementsByClass("govuk-hint")
+            .get(0) must containText(messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.link1.text", commodityCode))
+        }
+      }
+    }
+  }
+
+  "additional_document_edit view" should {
+
+    onEveryDeclarationJourney() { implicit request =>
+      "display error for invalid Document type code" in {
+        val invalidDocumentTypeCode = Some(TestHelper.createRandomAlphanumericString(5))
+        val form = AdditionalDocument.form.fillAndValidate(correctAdditionalDocument.copy(documentTypeCode = invalidDocumentTypeCode))
+        val view = createView(form)
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
@@ -274,12 +277,20 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
         view must containErrorElementWithMessageKey("declaration.additionalDocument.documentTypeCode.error")
       }
 
-      "display error for Document identifier" in {
+      "display error for empty Document type code" in {
+        val form = AdditionalDocument.form.fillAndValidate(correctAdditionalDocument.copy(documentTypeCode = None))
+        val view = createView(form)
 
-        val additionalDocumentWithIncorrectDocumentIdentifier =
-          correctAdditionalDocument.copy(documentIdentifier = Some("!@#$%"))
-        val view =
-          createView(AdditionalDocument.form.bind(Json.toJson(additionalDocumentWithIncorrectDocumentIdentifier)))
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
+
+        view must containErrorElementWithMessageKey("declaration.additionalDocument.documentTypeCode.empty")
+      }
+
+      "display error for invalid Document identifier" in {
+        val additionalDocumentWithIncorrectDocumentIdentifier = correctAdditionalDocument.copy(documentIdentifier = Some("!@#$%"))
+        val form = AdditionalDocument.form.bind(Json.toJson(additionalDocumentWithIncorrectDocumentIdentifier))
+        val view = createView(form)
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentIdentifierKey")
@@ -287,12 +298,9 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
         view must containErrorElementWithMessageKey("declaration.additionalDocument.documentIdentifier.error")
       }
 
-      "display error for Document status" in {
-
-        val view = createView(
-          AdditionalDocument.form
-            .fillAndValidate(correctAdditionalDocument.copy(documentStatus = Some("ABC")))
-        )
+      "display error for invalid Document status" in {
+        val form = AdditionalDocument.form.fillAndValidate(correctAdditionalDocument.copy(documentStatus = Some("ABC")))
+        val view = createView(form)
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentStatusKey")
@@ -300,12 +308,10 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
         view must containErrorElementWithMessageKey("declaration.additionalDocument.documentStatus.error")
       }
 
-      "display error for Document status reason" in {
-
-        val view = createView(
-          AdditionalDocument.form
-            .fillAndValidate(correctAdditionalDocument.copy(documentStatusReason = Some(TestHelper.createRandomAlphanumericString(36))))
-        )
+      "display error for invalid Document status reason" in {
+        val documentStatusReason = Some(TestHelper.createRandomAlphanumericString(36))
+        val form = AdditionalDocument.form.fillAndValidate(correctAdditionalDocument.copy(documentStatusReason = documentStatusReason))
+        val view = createView(form)
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentStatusReasonKey")
@@ -313,12 +319,10 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
         view must containErrorElementWithMessageKey("declaration.additionalDocument.documentStatusReason.error")
       }
 
-      "display error for Issuing Authority Name" in {
-
-        val view = createView(
-          AdditionalDocument.form
-            .fillAndValidate(correctAdditionalDocument.copy(issuingAuthorityName = Some(TestHelper.createRandomAlphanumericString(71))))
-        )
+      "display error for invalid Issuing Authority Name" in {
+        val issuingAuthorityName = Some(TestHelper.createRandomAlphanumericString(71))
+        val form = AdditionalDocument.form.fillAndValidate(correctAdditionalDocument.copy(issuingAuthorityName = issuingAuthorityName))
+        val view = createView(form)
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$issuingAuthorityNameKey")
@@ -326,20 +330,13 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
         view must containErrorElementWithMessageKey("declaration.additionalDocument.issuingAuthorityName.error.length")
       }
 
-      "display error for Date of Validity" when {
+      "display error for invalid Date of Validity" when {
 
         "year is out of range (2000-2099)" in {
-
-          val view = createView(
-            AdditionalDocument.form
-              .bind(
-                correctAdditionalDocumentMap ++ Map(
-                  s"$dateOfValidityKey.$yearKey" -> "1999",
-                  s"$dateOfValidityKey.$monthKey" -> "12",
-                  s"$dateOfValidityKey.$dayKey" -> "30"
-                )
-              )
-          )
+          val invalidDateOfValidity =
+            Map(s"$dateOfValidityKey.$yearKey" -> "1999", s"$dateOfValidityKey.$monthKey" -> "12", s"$dateOfValidityKey.$dayKey" -> "30")
+          val form = AdditionalDocument.form.bind(correctAdditionalDocumentMap ++ invalidDateOfValidity)
+          val view = createView(form)
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$dateOfValidityKey")
@@ -348,11 +345,10 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
         }
 
         "provided with non-existing month and day" in {
-
-          val view = createView(
-            AdditionalDocument.form
-              .bind(correctAdditionalDocumentMap ++ Map(s"$dateOfValidityKey.$monthKey" -> "13", s"$dateOfValidityKey.$dayKey" -> "32"))
-          )
+          val invalidDateOfValidity =
+            Map(s"$dateOfValidityKey.$yearKey" -> "2020", s"$dateOfValidityKey.$monthKey" -> "13", s"$dateOfValidityKey.$dayKey" -> "32")
+          val form = AdditionalDocument.form.bind(correctAdditionalDocumentMap ++ invalidDateOfValidity)
+          val view = createView(form)
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$dateOfValidityKey")
@@ -361,11 +357,14 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
         }
 
         "provided with partial date" in {
+          val mapWithInvalidDateOfValidity =
+            correctAdditionalDocumentMap -
+              s"$dateOfValidityKey.$yearKey" +
+              (s"$dateOfValidityKey.$monthKey" -> "12") +
+              (s"$dateOfValidityKey.$dayKey" -> "25")
 
-          val view = createView(
-            AdditionalDocument.form
-              .bind(Map(s"$dateOfValidityKey.$monthKey" -> "12", s"$dateOfValidityKey.$dayKey" -> "25"))
-          )
+          val form = AdditionalDocument.form.bind(mapWithInvalidDateOfValidity)
+          val view = createView(form)
 
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${dateOfValidityKey}_$yearKey")
@@ -374,7 +373,7 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
         }
       }
 
-      "display error for Measurement Unit" when {
+      "display error for invalid Measurement Unit" when {
 
         "unit text is too long" in {
           val additionalDocumentWithIncorrectMeasurementUnit = correctAdditionalDocument.copy(
@@ -401,9 +400,9 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
 
       }
 
-      "display error for Document quantity" when {
+      "display error for invalid Document quantity" when {
 
-        "there is precession error" in {
+        "there is a precession error" in {
           val additionalDocumentWithIncorrectDocumentQuantity = correctAdditionalDocument.copy(
             documentWriteOff = Some(correctDocumentWriteOff.copy(documentQuantity = incorrectDocumentWriteOff.documentQuantity))
           )
@@ -415,7 +414,7 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
           view must containErrorElementWithMessageKey("declaration.additionalDocument.documentQuantity.error")
         }
 
-        "there is scale error" in {
+        "there is a scale error" in {
           val additionalDocumentWithIncorrectDocumentQuantity =
             correctAdditionalDocument.copy(documentWriteOff = Some(correctDocumentWriteOff.copy(documentQuantity = Some(0.000000001D))))
           val view = createView(AdditionalDocument.form.bind(Json.toJson(additionalDocumentWithIncorrectDocumentQuantity)))
@@ -426,7 +425,7 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
           view must containErrorElementWithMessageKey("declaration.additionalDocument.documentQuantity.error")
         }
 
-        "there is error in quantity" in {
+        "there is an error in quantity" in {
           val additionalDocumentWithIncorrectDocumentQuantity =
             correctAdditionalDocument.copy(documentWriteOff = Some(correctDocumentWriteOff.copy(documentQuantity = Some(-1))))
           val view = createView(AdditionalDocument.form.bind(Json.toJson(additionalDocumentWithIncorrectDocumentQuantity)))
@@ -469,7 +468,6 @@ class AdditionalDocumentEditSpec extends UnitViewSpec with CommonMessages with S
   "additional_document_edit view when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in all inputs" in {
-
         val data = correctAdditionalDocument
         val form = AdditionalDocument.form.fill(data)
         val view = createView(form)

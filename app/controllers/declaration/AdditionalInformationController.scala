@@ -20,16 +20,16 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import javax.inject.Inject
 import models.Mode
+import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalInformation.additional_information
-import javax.inject.Inject
-import models.declaration.AdditionalInformationData
 
 class AdditionalInformationController @Inject()(
   authenticate: AuthAction,
@@ -43,34 +43,30 @@ class AdditionalInformationController @Inject()(
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = anotherYesNoForm.withSubmissionErrors()
     cachedAdditionalInformationData(itemId) match {
-      case Some(data) if data.items.nonEmpty =>
-        Ok(additionalInformationPage(mode, itemId, frm, data.items))
-      case Some(_) =>
-        navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationAddController.displayPage(_, itemId))
-      case _ =>
-        navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(_, itemId))
+      case Some(data) if data.items.nonEmpty => Ok(additionalInformationPage(mode, itemId, frm, data.items))
+      case Some(_)                           => navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId))
+      case _                                 => navigator.continueTo(mode, routes.AdditionalInformationRequiredController.displayPage(_, itemId))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    def showFormWithErrors(formWithErrors: Form[YesNoAnswer]): Result =
+      BadRequest(additionalInformationPage(mode, itemId, formWithErrors, cachedAdditionalInformationData(itemId).map(_.items).getOrElse(Seq.empty)))
+
     anotherYesNoForm
       .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[YesNoAnswer]) =>
-          BadRequest(
-            additionalInformationPage(mode, itemId, formWithErrors, cachedAdditionalInformationData(itemId).map(_.items).getOrElse(Seq.empty))
-        ),
-        validYesNo =>
-          validYesNo.answer match {
-            case YesNoAnswers.yes =>
-              navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationAddController.displayPage(_, itemId))
-            case YesNoAnswers.no => navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))
-        }
-      )
+      .fold(showFormWithErrors, yesNoAnswer => navigator.continueTo(mode, nextPage(yesNoAnswer, itemId)))
   }
 
-  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformation.add.another.empty")
+  private def anotherYesNoForm: Form[YesNoAnswer] =
+    YesNoAnswer.form(errorKey = "declaration.additionalInformation.add.another.empty")
 
-  private def cachedAdditionalInformationData(itemId: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalInformationData] =
+  private def cachedAdditionalInformationData(itemId: String)(implicit request: JourneyRequest[_]): Option[AdditionalInformationData] =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation)
+
+  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
+    yesNoAnswer.answer match {
+      case YesNoAnswers.yes => routes.AdditionalInformationAddController.displayPage(_, itemId)
+      case YesNoAnswers.no  => routes.AdditionalDocumentsController.displayPage(_, itemId)
+    }
 }

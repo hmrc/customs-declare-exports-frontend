@@ -27,7 +27,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, documentId: String, form: Form[AdditionalDocument], maybeCommodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, documentId: String, form: Form[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
 
 
 @govukLayout(
@@ -37,7 +37,6 @@
 
     @formHelper(action = AdditionalDocumentChangeController.submitForm(mode, itemId, documentId), 'autoComplete -> "off") {
 
-        @editContent(mode, itemId, form, maybeCommodityCode)
-
+        @editContent(mode, itemId, form)
     }
 }

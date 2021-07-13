@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.AdditionalActorsAddController.AdditionalActorsFormGroupId
 import controllers.navigation.Navigator
@@ -23,6 +25,7 @@ import controllers.util.MultipleItemsHelper
 import forms.NoneOfTheAbove
 import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActors.form
+import javax.inject.Inject
 import models.declaration.DeclarationAdditionalActorsData
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -32,9 +35,6 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalActors.additional_actors_add
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalActorsAddController @Inject()(
   authenticate: AuthAction,

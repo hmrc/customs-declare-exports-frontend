@@ -20,17 +20,14 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import javax.inject.Inject
 import models.{DeclarationType, Mode}
-import models.requests.JourneyRequest
-import models.DeclarationType.STANDARD
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalActors.additional_actors_summary
-
-import javax.inject.Inject
 
 class AdditionalActorsSummaryController @Inject()(
   authenticate: AuthAction,

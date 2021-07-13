@@ -31,7 +31,8 @@ case class DeclarationHolderAdd(authorisationTypeCode: Option[String], eori: Opt
   def isEmpty: Boolean = authorisationTypeCode.isEmpty && eori.isEmpty
   def isComplete: Boolean = authorisationTypeCode.isDefined && eori.isDefined
 
-  def isAdditionalDocumentationRequired: Boolean = authorisationTypeCode.exists(AuthorizationTypeCodes.CodesRequiringDocumentation.contains)
+  def isAdditionalDocumentationRequired: Boolean =
+    authorisationTypeCode.exists(AuthorizationTypeCodes.CodesRequiringDocumentation.contains)
 }
 
 object DeclarationHolderAdd extends DeclarationPage {

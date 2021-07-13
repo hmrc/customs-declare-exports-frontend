@@ -46,14 +46,14 @@ class AdditionalDocumentAddController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(additionalDocumentAddPage(mode, itemId, form().withSubmissionErrors(), request.cacheModel.commodityCodeOfItem(itemId)))
+    Ok(additionalDocumentAddPage(mode, itemId, form.withSubmissionErrors()))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = globalErrors(form().bindFromRequest())
+    val boundForm = globalErrors(form.bindFromRequest())
 
     boundForm.fold(formWithErrors => {
-      Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors, request.cacheModel.commodityCodeOfItem(itemId))))
+      Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors)))
     }, documents => {
       val additionalDocuments = request.cacheModel.additionalDocuments(itemId)
       if (documents.isDefined) saveDocuments(mode, itemId, boundForm, additionalDocuments)
@@ -79,8 +79,7 @@ class AdditionalDocumentAddController @Inject()(
     MultipleItemsHelper
       .add(boundForm, additionalDocuments.documents, maxNumberOfItems, AdditionalDocumentFormGroupId, "declaration.additionalDocument")
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors, request.cacheModel.commodityCodeOfItem(itemId)))),
+        formWithErrors => Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors))),
         documents =>
           updateCache(itemId, additionalDocuments.copy(documents = documents))
             .map(_ => navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId)))
