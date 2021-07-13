@@ -64,7 +64,11 @@ class EntryIntoDeclarantsRecordsController @Inject()(
     updateExportsDeclarationSyncDirect { model =>
       val updatedParties = validData.answer match {
         case YesNoAnswers.yes => model.parties.copy(isEntryIntoDeclarantsRecords = Some(validData))
-        case YesNoAnswers.no  => model.parties.copy(isEntryIntoDeclarantsRecords = Some(validData), personPresentingGoodsDetails = None)
+        case YesNoAnswers.no =>
+          model
+            .removeAuthorisationProcedureCodeChoice()
+            .parties
+            .copy(isEntryIntoDeclarantsRecords = Some(validData), personPresentingGoodsDetails = None)
       }
 
       model.copy(parties = updatedParties)

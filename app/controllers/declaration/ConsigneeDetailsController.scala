@@ -65,8 +65,10 @@ class ConsigneeDetailsController @Inject()(
   }
 
   private def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =
-    request.declarationType match {
-      case DeclarationType.CLEARANCE =>
+    (request.declarationType, request.cacheModel.isEntryIntoDeclarantsRecords) match {
+      case (DeclarationType.CLEARANCE, true) =>
+        controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage
+      case (DeclarationType.CLEARANCE, false) =>
         controllers.declaration.routes.DeclarationHolderController.displayPage
       case _ =>
         controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
