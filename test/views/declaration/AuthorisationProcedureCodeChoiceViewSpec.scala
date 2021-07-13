@@ -19,8 +19,10 @@ package views.declaration
 import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
+import forms.common.YesNoAnswer._
 import forms.declaration.AuthorisationProcedureCodeChoice
 import models.Mode
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import tools.Stubs
@@ -67,12 +69,6 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
     }
 
     onEveryDeclarationJourney() { implicit request =>
-      "display 'Back' button that links to 'Authorisations Required' page" in {
-        val backButton = view.getElementById("back-link")
-        backButton must containMessage("site.back")
-        backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
-      }
-
       "display section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.2")
       }
@@ -128,6 +124,35 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
         val saveAndReturn = view.getElementById("submit_and_return")
         saveAndReturn must containMessage("site.save_and_come_back_later")
         saveAndReturn must haveAttribute("name", SaveAndReturn.toString)
+      }
+    }
+
+    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { implicit request =>
+      "display 'Back' button that links to 'Authorisations Required' page" in {
+        val backButton = view.getElementById("back-link")
+        backButton must containMessage("site.back")
+        backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
+      }
+
+    }
+
+    onClearance(aDeclaration(withType(CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.yes))) { implicit request =>
+      "EIDR is true" must {
+        "display 'Back' button that links to 'Consignee Details' page" in {
+          val backButton = view.getElementById("back-link")
+          backButton must containMessage("site.back")
+          backButton must haveHref(routes.ConsigneeDetailsController.displayPage())
+        }
+      }
+    }
+
+    onClearance(aDeclaration(withType(CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.no))) { implicit request =>
+      "EIDR is false" must {
+        "display 'Back' button that links to 'Other parties' page" in {
+          val backButton = view.getElementById("back-link")
+          backButton must containMessage("site.back")
+          backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
+        }
       }
     }
   }

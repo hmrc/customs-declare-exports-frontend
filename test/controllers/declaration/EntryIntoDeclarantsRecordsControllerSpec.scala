@@ -19,9 +19,10 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.{EntryIntoDeclarantsRecords, PersonPresentingGoodsDetails}
+import forms.declaration.{AuthorisationProcedureCodeChoice, EntryIntoDeclarantsRecords, PersonPresentingGoodsDetails}
 import models.DeclarationType._
 import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.declaration.AuthorisationProcedureCode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -182,6 +183,18 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           modelPassedToCache.parties.personPresentingGoodsDetails mustBe Some(PersonPresentingGoodsDetails(Eori("GB1234567890")))
         }
 
+        "update Cache with AuthorisationProcedureCodeChoice left unchanged" in {
+          val expectedValue = AuthorisationProcedureCodeChoice(AuthorisationProcedureCode.Code1040)
+          withNewCaching(request.cacheModel.updateAuthorisationProcedureCodeChoice(expectedValue))
+          val correctForm = Json.obj(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes)
+
+          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+
+          val modelPassedToCache = theModelPassedToCacheUpdate
+          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer.Yes)
+          modelPassedToCache.parties.authorisationProcedureCodeChoice mustBe Some(expectedValue)
+        }
+
         "redirect to Person Presenting the Goods page" in {
 
           withNewCaching(request.cacheModel)
@@ -206,6 +219,19 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           val modelPassedToCache = theModelPassedToCacheUpdate
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer.No)
           modelPassedToCache.parties.personPresentingGoodsDetails mustBe None
+        }
+
+        "update Cache with AuthorisationProcedureCodeChoice set to None" in {
+          withNewCaching(
+            request.cacheModel.updateAuthorisationProcedureCodeChoice(AuthorisationProcedureCodeChoice(AuthorisationProcedureCode.Code1040))
+          )
+          val correctForm = Json.obj(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.no)
+
+          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+
+          val modelPassedToCache = theModelPassedToCacheUpdate
+          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer.No)
+          modelPassedToCache.parties.authorisationProcedureCodeChoice mustBe None
         }
 
         "redirect to Declarant Details page" in {

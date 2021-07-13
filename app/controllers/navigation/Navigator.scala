@@ -259,7 +259,6 @@ object Navigator {
     case TransportPayment                     => routes.ExpressConsignmentController.displayPage
     case CarrierDetails                       => routes.CarrierEoriNumberController.displayPage
     case TotalNumberOfItems                   => routes.OfficeOfExitController.displayPage
-    case AuthorisationProcedureCodeChoice     => routes.AdditionalActorsSummaryController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -273,10 +272,11 @@ object Navigator {
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case DeclarationHolderRequired => declarationHolderRequiredPreviousPage
-    case DeclarationHolderAdd      => declarationHolderPreviousPage
-    case SupervisingCustomsOffice  => supervisingCustomsOfficePreviousPage
-    case WarehouseIdentification   => warehouseIdentificationPreviousPage
+    case DeclarationHolderRequired        => declarationHolderRequiredPreviousPage
+    case DeclarationHolderAdd             => declarationHolderPreviousPage
+    case SupervisingCustomsOffice         => supervisingCustomsOfficePreviousPage
+    case WarehouseIdentification          => warehouseIdentificationPreviousPage
+    case AuthorisationProcedureCodeChoice => authorisationProcedureCodeChoicePreviousPage
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -476,7 +476,7 @@ object Navigator {
     else routes.ExporterDetailsController.displayPage(mode)
 
   private def declarationHolderRequiredPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.`type` == CLEARANCE) routes.ConsigneeDetailsController.displayPage(mode)
+    if (cacheModel.`type` == CLEARANCE && !cacheModel.isEntryIntoDeclarantsRecords) routes.ConsigneeDetailsController.displayPage(mode)
     else routes.AuthorisationProcedureCodeChoiceController.displayPage(mode)
 
   private def declarationHolderPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
@@ -521,6 +521,12 @@ object Navigator {
       routes.CusCodeController.displayPage(mode, itemId)
     else
       routes.UNDangerousGoodsCodeController.displayPage(mode, itemId)
+
+  private def authorisationProcedureCodeChoicePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.`type` == CLEARANCE && cacheModel.isEntryIntoDeclarantsRecords)
+      routes.ConsigneeDetailsController.displayPage(mode)
+    else
+      routes.AdditionalActorsSummaryController.displayPage(mode)
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {
