@@ -95,7 +95,7 @@ trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
   def onClearance(f: JourneyRequest[_] => Unit): Unit =
     onClearance(simpleClearanceDeclaration)(f)
 
-  private def onClearance(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
+  def onClearance(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
     "on Clearance journey" when {
       f(journeyRequest(declaration))
     }
