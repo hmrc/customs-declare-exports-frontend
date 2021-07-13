@@ -44,7 +44,7 @@ class AdditionalActorsAddController @Inject()(
   mcc: MessagesControllerComponents,
   declarationAdditionalActorsPage: additional_actors_add
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+    extends FrontendController(mcc) with AdditionalActorsController with I18nSupport with ModelCacheable with SubmissionErrors {
 
   val validTypes =
     Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
@@ -72,7 +72,7 @@ class AdditionalActorsAddController @Inject()(
             .map(_ => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
         } else
           updateCache(DeclarationAdditionalActorsData(cachedActors))
-            .map(_ => navigator.continueTo(mode, routes.AuthorisationProcedureCodeChoiceController.displayPage))
+            .map(_ => navigator.continueTo(mode, nextPage))
     )
   }
 

@@ -21,6 +21,8 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.{DeclarationType, Mode}
+import models.requests.JourneyRequest
+import models.DeclarationType.STANDARD
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -37,7 +39,7 @@ class AdditionalActorsSummaryController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalActorsPage: additional_actors_summary
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+) extends FrontendController(mcc) with AdditionalActorsController with I18nSupport with ModelCacheable with SubmissionErrors {
 
   val validTypes =
     Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
@@ -59,11 +61,10 @@ class AdditionalActorsSummaryController @Inject()(
         validYesNo =>
           validYesNo.answer match {
             case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.AdditionalActorsAddController.displayPage)
-            case YesNoAnswers.no  => navigator.continueTo(mode, routes.AuthorisationProcedureCodeChoiceController.displayPage)
+            case YesNoAnswers.no  => navigator.continueTo(mode, nextPage)
         }
       )
   }
 
   private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalActors.add.another.empty")
-
 }
