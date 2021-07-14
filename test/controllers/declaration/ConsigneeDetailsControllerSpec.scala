@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.Address
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import models.DeclarationType._
 import models.Mode
@@ -26,7 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.mvc.{AnyContentAsEmpty, Call, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.consignee_details
@@ -69,6 +70,8 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
+  private val correctAddress = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland")
+
   "Consignee Details controller" should {
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
@@ -85,15 +88,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
         "display page method is invoked and cache contains data" in {
 
-          withNewCaching(
-            aDeclarationAfter(
-              request.cacheModel,
-              withConsigneeDetails(
-                None,
-                Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
-              )
-            )
-          )
+          withNewCaching(aDeclarationAfter(request.cacheModel, withConsigneeDetails(None, Some(correctAddress))))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -117,53 +112,40 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
-      "return 303 (SEE_OTHER) and redirect to representative details page" when {
+      "return 303 (SEE_OTHER) and redirect to other parties summary page" when {
 
         "form is correct" in {
 
           withNewCaching(request.cacheModel)
 
-          val correctForm =
-            Json.toJson(
-              ConsigneeDetails(
-                EntityDetails(
-                  None,
-                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
-                )
-              )
-            )
-
-          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage()
+          testFormSubmitRedirectsTo(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage())
         }
       }
     }
 
     onJourney(CLEARANCE) { request =>
-      "return 303 (SEE_OTHER) and redirect to representative details page" when {
+      "return 303 (SEE_OTHER) and redirect to appropriate page" when {
+        "form is correct and EIDR is false" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(YesNoAnswers.no)))
 
-        "form is correct" in {
+          testFormSubmitRedirectsTo(controllers.declaration.routes.DeclarationHolderController.displayPage())
+        }
 
-          withNewCaching(request.cacheModel)
+        "form is correct and EIDR is true" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(YesNoAnswers.yes)))
 
-          val correctForm =
-            Json.toJson(
-              ConsigneeDetails(
-                EntityDetails(
-                  None,
-                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
-                )
-              )
-            )
-
-          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage()
+          testFormSubmitRedirectsTo(controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage())
         }
       }
     }
+  }
+
+  private def testFormSubmitRedirectsTo(expectedRedirectionLocation: Call) = {
+    val correctForm = Json.toJson(ConsigneeDetails(EntityDetails(None, Some(correctAddress))))
+
+    val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+
+    await(result) mustBe aRedirectToTheNextPage
+    thePageNavigatedTo mustBe expectedRedirectionLocation
   }
 }
