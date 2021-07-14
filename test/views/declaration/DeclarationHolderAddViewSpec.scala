@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.declarationHolder.DeclarationHolderAdd
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -88,19 +88,11 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       }
     }
 
-    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY) { implicit request =>
+    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "display 'Back' button that links to the 'Do you need to add authorisations?' page" in {
         val backButton = createView().getElementById("back-link")
         backButton must containMessage(backCaption)
         backButton must haveHref(routes.DeclarationHolderRequiredController.displayPage())
-      }
-    }
-
-    onSimplified { implicit request =>
-      "display 'Back' button that links to the 'Additional Actors Summary' page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton must containMessage(backCaption)
-        backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
       }
     }
   }

@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper.cachedHolders
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -45,7 +45,7 @@ class DeclarationHolderRequiredController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  private val validJourneys = Seq(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)
+  private val validJourneys = Seq(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE, SIMPLIFIED)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val holders = cachedHolders
