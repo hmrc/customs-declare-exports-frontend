@@ -17,12 +17,16 @@
 package views.declaration
 
 import base.Injector
-import config.AppConfig
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.declaration.AuthorisationProcedureCodeChoice
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
+import models.Mode
+import models.declaration.AuthorisationProcedureCode._
+import models.declaration.Parties
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -39,14 +43,19 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
   private def view(implicit request: JourneyRequest[_]): Document =
     declarationHolderRequiredPage(Mode.Normal, form)
 
-  "Declaration Holder Required View on empty page" should {
+  "Declaration Holder Required View" should {
 
     "have correct message keys" in {
-
       messages must haveTranslationFor("declaration.declarationHolderRequired.title")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.hint.1")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.hint.2")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.hint.link")
+      messages must haveTranslationFor("declaration.declarationHolderRequired.mainText.default")
+      messages must haveTranslationFor("declaration.declarationHolderRequired.mainText.standard_prelodged_1040")
+      messages must haveTranslationFor("declaration.declarationHolderRequired.mainText.occasional.1")
+      messages must haveTranslationFor("declaration.declarationHolderRequired.mainText.occasional.2")
+      messages must haveTranslationFor("declaration.declarationHolderRequired.mainText.standard_prelodged_other")
+      messages must haveTranslationFor("declaration.declarationHolderRequired.inset.para1")
+      messages must haveTranslationFor("declaration.declarationHolderRequired.inset.para2")
+      messages must haveTranslationFor("declaration.declarationHolderRequired.inset.bullet1.text")
+      messages must haveTranslationFor("declaration.declarationHolderRequired.inset.bullet2.text")
       messages must haveTranslationFor("declaration.declarationHolderRequired.tradeTariff.link")
       messages must haveTranslationFor("tariff.declaration.addAuthorisationRequired.clearance.text")
       messages must haveTranslationFor("declaration.declarationHolderRequired.empty")
@@ -54,9 +63,6 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
   }
 
   "Declaration Holder Required View on empty page" should {
-
-    val previousProcedureCodesUrl = instanceOf[AppConfig].previousProcedureCodesUrl
-
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
         view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.declarationHolderRequired.title")
@@ -64,14 +70,6 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
 
       "display section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.2")
-      }
-
-      "display page hints" in {
-        view.getElementById("declaration-holder-required-hint1") must containMessage("declaration.declarationHolderRequired.hint.1")
-
-        val hint2 = view.getElementById("declaration-holder-required-hint2")
-        hint2.childNodeSize() mustBe 3
-        hint2.child(0) must haveHref(previousProcedureCodesUrl)
       }
 
       "display radio button with Yes option" in {
@@ -89,11 +87,72 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
         saveButton must containMessage(saveAndContinueCaption)
       }
     }
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, CLEARANCE) { implicit request =>
+      "display inset text" in {
+        val inset = view.getElementsByClass("govuk-inset-text")
+        val expected = Seq(
+          messages("declaration.declarationHolderRequired.inset.para1"),
+          messages("declaration.declarationHolderRequired.inset.bullet1.text"),
+          messages("declaration.declarationHolderRequired.inset.bullet2.text"),
+          messages("declaration.declarationHolderRequired.inset.para2")
+        ).mkString(" ")
+        inset.get(0) must containText(expected)
+      }
+    }
+
+    onJourney(OCCASIONAL) { implicit request =>
+      "not display inset text" in {
+        view.getElementsByClass("govuk-inset-text").size() mustBe 0
+      }
+    }
+
+    "display main text" that {
+      onJourney(SUPPLEMENTARY, SIMPLIFIED, CLEARANCE) { implicit request =>
+        "content is correct for that journey " in {
+          view.getElementsByClass("mainText").get(0) must containText(messages("declaration.declarationHolderRequired.mainText.default"))
+        }
+      }
+
+      onStandard { implicit request =>
+        "'1040' selected then content is correct for that journey " in {
+          val parties = Parties(authorisationProcedureCodeChoice = Some(AuthorisationProcedureCodeChoice(Code1040)))
+          val req = journeyRequest(request.cacheModel.copy(additionalDeclarationType = Some(STANDARD_PRE_LODGED), parties = parties))
+
+          view(req).getElementsByClass("mainText").get(0) must containText(
+            messages("declaration.declarationHolderRequired.mainText.standard_prelodged_1040")
+          )
+        }
+
+        "'1007' selected then content is correct for that journey " in {
+          val parties = Parties(authorisationProcedureCodeChoice = Some(AuthorisationProcedureCodeChoice(Code1007)))
+          val req = journeyRequest(request.cacheModel.copy(additionalDeclarationType = Some(STANDARD_PRE_LODGED), parties = parties))
+
+          view(req).getElementsByClass("mainText").get(0) must containText(messages("declaration.declarationHolderRequired.mainText.default"))
+        }
+
+        "'other' selected then content is correct for that journey " in {
+          val parties = Parties(authorisationProcedureCodeChoice = Some(AuthorisationProcedureCodeChoice(CodeOther)))
+          val req = journeyRequest(request.cacheModel.copy(additionalDeclarationType = Some(STANDARD_PRE_LODGED), parties = parties))
+
+          view(req).getElementsByClass("mainText").get(0) must containText(
+            messages("declaration.declarationHolderRequired.mainText.standard_prelodged_other")
+          )
+        }
+      }
+
+      onOccasional { implicit request =>
+        "content is correct for that journey " in {
+          view.getElementsByClass("mainText").get(0) must containText(messages("declaration.declarationHolderRequired.mainText.occasional.1"))
+          view.getElementsByClass("mainText").get(1) must containText(messages("declaration.declarationHolderRequired.mainText.occasional.2"))
+        }
+      }
+    }
   }
 
   "Declaration Holder Required View back link" should {
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "display 'Back' button that links to the 'Authorisation Choice' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backCaption)
@@ -109,7 +168,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
       }
     }
 
-    onClearance(aDeclaration(withType(DeclarationType.CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.no))) { implicit request =>
+    onClearance(aDeclaration(withType(CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.no))) { implicit request =>
       "EIDR set to false" should {
         "display 'Back' button that links to the 'Consignee Details' page" in {
           val backButton = view.getElementById("back-link")
@@ -119,7 +178,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
       }
     }
 
-    onClearance(aDeclaration(withType(DeclarationType.CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.yes))) { implicit request =>
+    onClearance(aDeclaration(withType(CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.yes))) { implicit request =>
       "EIDR set to true" should {
         "display 'Back' button that links to the 'Authorisation Choice' page" in {
           val backButton = view.getElementById("back-link")
