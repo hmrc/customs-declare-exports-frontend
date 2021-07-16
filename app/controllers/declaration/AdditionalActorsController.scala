@@ -22,6 +22,6 @@ import play.api.mvc.Call
 
 trait AdditionalActorsController {
   def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
-    if (request.declarationType == DeclarationType.SIMPLIFIED) routes.DeclarationHolderAddController.displayPage
+    if (request.declarationType == DeclarationType.OCCASIONAL) routes.DeclarationHolderRequiredController.displayPage
     else routes.AuthorisationProcedureCodeChoiceController.displayPage
 }

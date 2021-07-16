@@ -476,13 +476,15 @@ object Navigator {
     else routes.ExporterDetailsController.displayPage(mode)
 
   private def declarationHolderRequiredPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.`type` == CLEARANCE && !cacheModel.isEntryIntoDeclarantsRecords) routes.ConsigneeDetailsController.displayPage(mode)
-    else routes.AuthorisationProcedureCodeChoiceController.displayPage(mode)
+    cacheModel.`type` match {
+      case CLEARANCE if (!cacheModel.isEntryIntoDeclarantsRecords) => routes.ConsigneeDetailsController.displayPage(mode)
+      case OCCASIONAL                                              => routes.AdditionalActorsSummaryController.displayPage(mode)
+      case _                                                       => routes.AuthorisationProcedureCodeChoiceController.displayPage(mode)
+    }
 
   private def declarationHolderPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.parties.declarationHoldersData.exists(_.holders.nonEmpty))
       routes.DeclarationHolderController.displayPage(mode)
-    else if (cacheModel.`type` == SIMPLIFIED) routes.AdditionalActorsSummaryController.displayPage(mode)
     else routes.DeclarationHolderRequiredController.displayPage(mode)
 
   private def warehouseIdentificationPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =

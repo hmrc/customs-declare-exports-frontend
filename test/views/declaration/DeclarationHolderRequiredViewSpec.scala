@@ -93,19 +93,39 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
 
   "Declaration Holder Required View back link" should {
 
-    onJourney(DeclarationType.OCCASIONAL, DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
-      "display 'Back' button that links to the 'Additional Actors Summary' page" in {
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
+      "display 'Back' button that links to the 'Authorisation Choice' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backCaption)
         backButton must haveHref(routes.AuthorisationProcedureCodeChoiceController.displayPage())
       }
     }
 
-    onClearance { implicit request =>
-      "display 'Back' button that links to the 'Consignee Details' page" in {
+    onOccasional { implicit request =>
+      "display 'Back' button that links to the 'Other Parties' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.ConsigneeDetailsController.displayPage())
+        backButton must haveHref(routes.AdditionalActorsSummaryController.displayPage())
+      }
+    }
+
+    onClearance(aDeclaration(withType(DeclarationType.CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.no))) { implicit request =>
+      "EIDR set to false" should {
+        "display 'Back' button that links to the 'Consignee Details' page" in {
+          val backButton = view.getElementById("back-link")
+          backButton must containMessage(backCaption)
+          backButton must haveHref(routes.ConsigneeDetailsController.displayPage())
+        }
+      }
+    }
+
+    onClearance(aDeclaration(withType(DeclarationType.CLEARANCE), withEntryIntoDeclarantsRecords(YesNoAnswers.yes))) { implicit request =>
+      "EIDR set to true" should {
+        "display 'Back' button that links to the 'Authorisation Choice' page" in {
+          val backButton = view.getElementById("back-link")
+          backButton must containMessage(backCaption)
+          backButton must haveHref(routes.AuthorisationProcedureCodeChoiceController.displayPage())
+        }
       }
     }
   }

@@ -41,7 +41,8 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  private val validTypes = DeclarationType.values.toSeq
+  private val validTypes =
+    Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val form = AuthorisationProcedureCodeChoice.form().withSubmissionErrors()

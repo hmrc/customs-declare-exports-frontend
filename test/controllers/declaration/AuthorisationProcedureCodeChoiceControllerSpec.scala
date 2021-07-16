@@ -18,7 +18,8 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.declaration.AuthorisationProcedureCodeChoice
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
+import models.DeclarationType._
 import models.declaration.AuthorisationProcedureCode
 import models.declaration.AuthorisationProcedureCode.Code1040
 import org.mockito.ArgumentCaptor
@@ -47,7 +48,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+    withNewCaching(aDeclaration(withType(STANDARD)))
     when(authorisationProcedureCodeChoice.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -69,7 +70,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
   }
 
   "Authorisation Procedure Code Choice Controller" must {
-    onEveryDeclarationJourney() { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, CLEARANCE) { request =>
       "the displayPage method is invoked" when {
         "the cache is empty" should {
           "return 200 (OK)" in {
@@ -117,6 +118,26 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
               }
             }
           }
+        }
+      }
+    }
+
+    onJourney(OCCASIONAL) { request =>
+      "the displayPage method is invoked" should {
+        "return 303 (SEE_OTHER)" in {
+          val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> AuthorisationProcedureCode.Code1040.toString)
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+        }
+      }
+
+      "the submit method is invoked" should {
+        "return 303 (SEE_OTHER)" in {
+          val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> AuthorisationProcedureCode.Code1040.toString)
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
         }
       }
     }
