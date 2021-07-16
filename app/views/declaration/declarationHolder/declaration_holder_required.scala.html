@@ -19,11 +19,12 @@
 @import forms.common.YesNoAnswer
 @import forms.declaration.declarationHolder.DeclarationHolderRequired
 @import models.requests.JourneyRequest
+@import models.DeclarationType.DeclarationType
 @import play.twirl.api.HtmlFormat
 
 @import scala.collection.immutable
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
+@import views.helpers.{BackButton, DynamicContent, Title}
 @import views.components.gds.Styles._
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
@@ -35,6 +36,9 @@
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
+    insetText: exportsInsetText,
+    paragraphBody: paragraphBody,
+    bulletList: bulletList,
     appConfig: AppConfig,
     yesNoRadios: yesNoRadios,
     formHelper: FormWithCSRF
@@ -42,19 +46,28 @@
 
 @(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
-@hintLink = {
-    <a target="_blank" href="@appConfig.previousProcedureCodesUrl">@messages("declaration.declarationHolderRequired.hint.link")</a>
+@mainText = @{
+    HtmlFormat.fill(DynamicContent.whichDeclarationHolderRequiredContent(request.cacheModel).map{ messageKey =>
+        paragraphBody(messages(s"declaration.declarationHolderRequired.mainText.$messageKey"), classes = "govuk-body mainText")
+    }.to[collection.immutable.Seq])
 }
 
-@hintParagraph1 = {
-    <span id="declaration-holder-required-hint1" class="govuk-hint">
-        @messages("declaration.declarationHolderRequired.hint.1")
-    </span>
+@insetSection = {
+    @paragraphBody(messages("declaration.declarationHolderRequired.inset.para1"))
+    @bulletList(
+        items = Seq(
+            Html(messages("declaration.declarationHolderRequired.inset.bullet1.text")),
+            Html(messages("declaration.declarationHolderRequired.inset.bullet2.text")),
+        )
+    )
+    @paragraphBody(messages("declaration.declarationHolderRequired.inset.para2"))
 }
-@hintParagraph2 = {
-    <span id="declaration-holder-required-hint2" class="govuk-hint">
-        @Html(messages("declaration.declarationHolderRequired.hint.2", hintLink))
-    </span>
+
+@maybeInset = @{
+    if (request.declarationType == DeclarationType.OCCASIONAL)
+        HtmlFormat.empty
+    else
+        insetText(content = HtmlContent(insetSection))
 }
 
 @tradeTariffLink = {
@@ -77,9 +90,9 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                hintParagraph1,
-                hintParagraph2,
+                mainText,
                 yesNoRadios(form),
+                maybeInset,
                 tariffExpander(DeclarationHolderRequired, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
