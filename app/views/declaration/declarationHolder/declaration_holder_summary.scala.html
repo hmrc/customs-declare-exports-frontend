@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import forms.declaration.declarationHolder.{DeclarationHolderAdd, DeclarationSummaryHolder}
+@import forms.declaration.declarationHolder.{DeclarationHolderAdd, DeclarationHolderSummary}
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import services.view.HolderOfAuthorisationCodes
@@ -115,10 +115,10 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationSummaryHolder, mode)))
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolderSummary, mode)))
 ) {
 
-    @formHelper(action = DeclarationHolderController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = DeclarationHolderSummaryController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.2"))

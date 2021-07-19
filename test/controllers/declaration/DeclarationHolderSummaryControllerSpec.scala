@@ -31,11 +31,11 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.declarationHolder.declaration_holder_summary
 
-class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
+class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionValues {
 
   val mockPage = mock[declaration_holder_summary]
 
-  val controller = new DeclarationHolderController(
+  val controller = new DeclarationHolderSummaryController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,

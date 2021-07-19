@@ -33,7 +33,7 @@ import views.html.declaration.declarationHolder.declaration_holder_summary
 
 import javax.inject.Inject
 
-class DeclarationHolderController @Inject()(
+class DeclarationHolderSummaryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

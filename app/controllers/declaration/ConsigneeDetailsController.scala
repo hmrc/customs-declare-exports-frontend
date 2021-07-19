@@ -69,7 +69,7 @@ class ConsigneeDetailsController @Inject()(
       case (DeclarationType.CLEARANCE, true) =>
         controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage
       case (DeclarationType.CLEARANCE, false) =>
-        controllers.declaration.routes.DeclarationHolderController.displayPage
+        controllers.declaration.routes.DeclarationHolderSummaryController.displayPage
       case _ =>
         controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
     }

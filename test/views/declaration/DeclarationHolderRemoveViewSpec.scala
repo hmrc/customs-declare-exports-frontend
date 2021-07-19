@@ -50,7 +50,7 @@ class DeclarationHolderRemoveViewSpec extends UnitViewSpec with ExportsTestData 
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal))
+        view.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal))
       }
     }
   }

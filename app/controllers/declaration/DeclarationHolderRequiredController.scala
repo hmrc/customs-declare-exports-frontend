@@ -50,7 +50,7 @@ class DeclarationHolderRequiredController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val holders = cachedHolders
     if (holders.isEmpty) Ok(declarationHolderRequired(mode, formWithPreviousAnswer.withSubmissionErrors()))
-    else navigator.continueTo(mode, routes.DeclarationHolderController.displayPage(_))
+    else navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage(_))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
