@@ -146,7 +146,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
 
           val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
           savedHolder mustBe Some(DeclarationHoldersData(Seq(declarationHolder)))

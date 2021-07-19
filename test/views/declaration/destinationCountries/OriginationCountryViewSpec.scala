@@ -67,7 +67,7 @@ class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
         val backButton = view(request).getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
-        backButton must haveHref(routes.DeclarationHolderController.displayPage())
+        backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
       }
 
       s"display 'Save and continue' button for ${request.declarationType}" in {

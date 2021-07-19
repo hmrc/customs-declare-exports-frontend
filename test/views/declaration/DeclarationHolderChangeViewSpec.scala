@@ -71,7 +71,7 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DeclarationHolderController.displayPage().url
+        backButton.attr("href") mustBe routes.DeclarationHolderSummaryController.displayPage().url
       }
 
       "display data in both inputs" in {

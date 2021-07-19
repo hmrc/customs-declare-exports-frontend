@@ -65,7 +65,7 @@ class DeclarationHolderAddController @Inject()(
         formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors))),
         updatedHolders =>
           updateExportsCache(updatedHolders)
-            .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
+            .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
       )
 
   private def updateExportsCache(holders: Seq[DeclarationHolderAdd])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

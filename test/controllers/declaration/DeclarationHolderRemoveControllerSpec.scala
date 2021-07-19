@@ -117,7 +117,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
           val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
 
           theCacheModelUpdated.parties.declarationHoldersData mustBe Some(DeclarationHoldersData(Seq.empty))
         }
@@ -129,7 +129,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
           val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
 
           verifyTheCacheIsUnchanged()
         }

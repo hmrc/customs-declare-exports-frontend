@@ -21,6 +21,7 @@ import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.DeclarationType._
 import models.Mode
+import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -56,18 +57,37 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal))
+        view.getElementById("back-link") must haveHref(
+          controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
+        )
       }
     }
 
     onJourney(CLEARANCE) { implicit request =>
-      "display back link" in {
-        val view = createView()
-        view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage(Mode.Normal))
+      "EIDR is true" must {
+        "display back link to Authorisation Choice page" in {
+          val parties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer.Yes))
+          val req = journeyRequest(request.cacheModel.copy(parties = parties))
+
+          val view = createView()(req)
+          view must containElementWithID("back-link")
+          view.getElementById("back-link") must haveHref(
+            controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
+          )
+        }
+      }
+
+      "EIDR is false" must {
+        "display back link to Consignee Details page" in {
+          val parties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer.No))
+          val req = journeyRequest(request.cacheModel.copy(parties = parties))
+
+          val view = createView()(req)
+          view must containElementWithID("back-link")
+          view.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage(Mode.Normal))
+        }
       }
     }
-
   }
 
   "DeclarationHolder Summary View on empty page" should {

@@ -51,7 +51,7 @@
             changeLink(
                 messages("site.change"),
                 Some(messages("declaration.summary.parties.holders.change", holder.authorisationTypeCode.getOrElse(""), holderEori(holder))),
-                controllers.declaration.routes.DeclarationHolderController.displayPage(mode)
+                controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(mode)
             )
         else
             ""
@@ -71,7 +71,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.DeclarationHolderController.displayPage(mode).url,
+                        href = controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(mode).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.parties.holders.empty.change"))
                     )
