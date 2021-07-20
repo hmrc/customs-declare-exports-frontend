@@ -31,11 +31,11 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.declarationHolder.declaration_holder_summary
 
-class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
+class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionValues {
 
   val mockPage = mock[declaration_holder_summary]
 
-  val controller = new DeclarationHolderController(
+  val controller = new DeclarationHolderSummaryController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
@@ -122,7 +122,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY) { implicit request =>
+    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "return 303 (SEE_OTHER)" when {
         "there are no holders in the cache" in {
           withNewCaching(request.cacheModel)
@@ -131,19 +131,6 @@ class DeclarationHolderControllerSpec extends ControllerSpec with OptionValues {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
-        }
-      }
-    }
-
-    onSimplified { implicit request =>
-      "return 303 (SEE_OTHER)" when {
-        "there are no holders in the cache" in {
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
         }
       }
     }

@@ -68,4 +68,4 @@ object DeclarationHolderRequired extends DeclarationPage {
     Seq(TariffContentKey(s"tariff.declaration.isAuthorisationRequired.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
-object DeclarationSummaryHolder extends DeclarationPage
+object DeclarationHolderSummary extends DeclarationPage

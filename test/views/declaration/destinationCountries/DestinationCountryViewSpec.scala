@@ -99,7 +99,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
-        backButton must haveHref(routes.DeclarationHolderController.displayPage())
+        backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
       }
     }
   }

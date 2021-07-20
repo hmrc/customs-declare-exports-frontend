@@ -60,9 +60,9 @@ class DeclarationHolderRemoveController @Inject()(
           formData.answer match {
             case YesNoAnswers.yes =>
               updateExportsCache(holderToRemove)
-                .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
+                .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
+              Future.successful(navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
           }
         }
       )

@@ -92,7 +92,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
         }
       }
     }

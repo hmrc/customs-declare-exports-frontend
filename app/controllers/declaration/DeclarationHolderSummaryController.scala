@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper.cachedHolders
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.{SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -33,7 +33,7 @@ import views.html.declaration.declarationHolder.declaration_holder_summary
 
 import javax.inject.Inject
 
-class DeclarationHolderController @Inject()(
+class DeclarationHolderSummaryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -66,8 +66,7 @@ class DeclarationHolderController @Inject()(
     YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
 
   private def nextPageWhenNoHolders(implicit request: JourneyRequest[_]): Mode => Call =
-    if (request.declarationType == SIMPLIFIED) routes.DeclarationHolderAddController.displayPage
-    else routes.DeclarationHolderRequiredController.displayPage
+    routes.DeclarationHolderRequiredController.displayPage
 
   private def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {

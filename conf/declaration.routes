@@ -151,9 +151,9 @@ GET         /add-authorisation-required          controllers.declaration.Declara
 
 POST        /add-authorisation-required          controllers.declaration.DeclarationHolderAddController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
-GET         /authorisations-required             controllers.declaration.DeclarationHolderController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /authorisations-required             controllers.declaration.DeclarationHolderSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /authorisations-required             controllers.declaration.DeclarationHolderController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /authorisations-required             controllers.declaration.DeclarationHolderSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 GET         /authorisations-required/:id/change  controllers.declaration.DeclarationHolderChangeController.displayPage(mode: models.Mode ?= models.Mode.Normal, id: String)
 

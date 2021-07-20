@@ -48,7 +48,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.holders.empty.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal))
+      row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal))
     }
 
     "display holders if exists" in {
@@ -66,7 +66,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
       row1.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode1)
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori1
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row1ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
+      row1ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage())
       row1ChangeLink
         .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode1, eori1)}"
 
@@ -74,7 +74,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
       row2.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode2)
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori2
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row2ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
+      row2ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage())
       row2ChangeLink
         .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode2, eori2)}"
     }
