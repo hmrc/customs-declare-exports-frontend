@@ -53,13 +53,21 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
   }
 
   "DeclarationHolder Summary View back link" should {
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
       "display back link" in {
         val view = createView()
         view must containElementWithID("back-link")
         view.getElementById("back-link") must haveHref(
           controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
         )
+      }
+    }
+
+    onJourney(OCCASIONAL) { implicit request =>
+      "display back link to Other Parties page" in {
+        val view = createView()
+        view must containElementWithID("back-link")
+        view.getElementById("back-link") must haveHref(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal))
       }
     }
 

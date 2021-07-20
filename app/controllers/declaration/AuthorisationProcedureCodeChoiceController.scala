@@ -58,7 +58,7 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
       .bindFromRequest()
       .fold(
         errors => Future.successful(BadRequest(authorisationProcedureCodeChoice(errors, mode))),
-        updateCache(_).map(_ => navigator.continueTo(mode, routes.DeclarationHolderRequiredController.displayPage))
+        updateCache(_).map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
       )
   }
 

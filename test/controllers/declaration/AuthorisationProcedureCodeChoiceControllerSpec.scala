@@ -112,7 +112,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
                 val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
                 await(result) mustBe aRedirectToTheNextPage
-                thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
+                thePageNavigatedTo mustBe routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
                 verify(authorisationProcedureCodeChoice, times(0)).apply(any(), any())(any(), any())
                 verify(mockExportsCacheService).update(any[ExportsDeclaration])(any())
               }

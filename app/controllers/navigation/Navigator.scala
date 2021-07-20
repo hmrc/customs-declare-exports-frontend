@@ -486,6 +486,7 @@ object Navigator {
   private def declarationHolderSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     cacheModel.`type` match {
       case CLEARANCE if (!cacheModel.isEntryIntoDeclarantsRecords) => routes.ConsigneeDetailsController.displayPage(mode)
+      case OCCASIONAL                                              => routes.AdditionalActorsSummaryController.displayPage(mode)
       case _                                                       => routes.AuthorisationProcedureCodeChoiceController.displayPage(mode)
     }
 
