@@ -46,7 +46,7 @@
     @Html(messages("declaration.confirmation.decision.paragraph2", link(
         id = Some("decision-link"),
         text = messages("declaration.confirmation.decision.link"),
-        call = routes.SubmissionsController.displayDeclarationWithNotifications(decId)
+        call = routes.DeclarationDetailsController.displayPage(decId)
     )))
 }
 

@@ -705,7 +705,11 @@ submissions.pagination.singular = declaration
 submissions.pagination.plural = declarations
 submissions.empty.tab = No declarations
 
-submissions.declarationInformation.new.header = NEW Declaration information page
+submissions.declarationDetails.title =  Declaration details
+submissions.declarationDetails.references =  Declaration references
+submissions.declarationDetails.ducr = DUCR
+submissions.declarationDetails.lrn = LRN
+submissions.declarationDetails.mrn = MRN:
 
 saved.declarations.title = Your saved declarations
 saved.declarations.ducr = DUCR

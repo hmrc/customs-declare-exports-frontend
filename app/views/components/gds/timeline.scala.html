@@ -1,0 +1,29 @@
+
+@import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
+@import java.time.temporal.TemporalAccessor
+
+@import views.helpers.TimelineEvent
+
+@this()
+
+@(timelineEvents: Seq[TimelineEvent], dateTimeAsShown: TemporalAccessor => String)
+
+@htmlForTimelineEvent(timelineEvent: TimelineEvent) = {
+    <li class="hmrc-timeline__event">
+        <h2 class="hmrc-timeline__event-title">@timelineEvent.title</h2>
+        <time class="hmrc-timeline__event-meta" datetime="@{ISO_OFFSET_DATE_TIME.format(timelineEvent.dateTime)}">
+            @dateTimeAsShown(timelineEvent.dateTime)
+        </time>
+        @timelineEvent.content.map { content =>
+            <div class="hmrc-timeline__event-content">
+                @content
+            </div>
+        }
+    </li>
+}
+
+@if(timelineEvents.nonEmpty) {
+    <ol class="hmrc-timeline govuk-!-margin-top-5">
+        @timelineEvents.map(htmlForTimelineEvent)
+    </ol>
+}

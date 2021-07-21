@@ -16,12 +16,14 @@
 
 package controllers
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import config.PaginationConfig
-import config.featureFlags.QueryNotificationMessageConfig
 import connectors.CustomsDeclareExportsConnector
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.util.SubmissionDisplayHelper
+import javax.inject.Inject
 import models.Mode.ErrorFix
 import models._
 import models.requests.ExportsSessionKeys
@@ -31,20 +33,14 @@ import play.api.mvc._
 import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.summary.submitted_declaration_page
-import views.html.{declaration_information, new_declaration_information, submissions}
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import views.html.submissions
 
 class SubmissionsController @Inject()(
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  queryNotificationMessageConfig: QueryNotificationMessageConfig,
   submissionsPage: submissions,
-  declarationInformationPage: declaration_information,
-  newDeclarationInformationPage: new_declaration_information,
   submittedDeclarationPage: submitted_declaration_page
 )(implicit ec: ExecutionContext, paginationConfig: PaginationConfig)
     extends FrontendController(mcc) with I18nSupport {
@@ -58,22 +54,6 @@ class SubmissionsController @Inject()(
         result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
 
       } yield Ok(submissionsPage(SubmissionsPagesElements(result, submissionsPages))).removingFromSession(ExportsSessionKeys.declarationId)
-    }
-
-  def displayDeclarationWithNotifications(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    if (queryNotificationMessageConfig.isQueryNotificationMessageEnabled) displayNewInformationPage()
-    else displayOldInformationPage(id)
-  }
-
-  private def displayNewInformationPage()(implicit request: Request[_]): Future[Result] = Future.successful(Ok(newDeclarationInformationPage()))
-
-  private def displayOldInformationPage(submissionId: String)(implicit request: Request[_]): Future[Result] =
-    customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
-      case Some(submission) =>
-        customsDeclareExportsConnector.findNotifications(submissionId).map { notifications =>
-          Ok(declarationInformationPage(submission, notifications))
-        }
-      case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }
 
   def amend(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
@@ -96,7 +76,7 @@ class SubmissionsController @Inject()(
           Ok(submittedDeclarationPage(notifications, declaration))
         }
 
-      case None => Future.successful(Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions()))
+      case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }
   }
 
@@ -122,7 +102,7 @@ class SubmissionsController @Inject()(
       }
     }
 
-  private def createNewDraftDec(id: String, redirect: Result)(implicit request: WrappedRequest[AnyContent]) =
+  private def createNewDraftDec(id: String, redirect: Result)(implicit request: WrappedRequest[AnyContent]): Future[Result] =
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
         val amendedDeclaration = ExportsDeclarationExchange.withoutId(declaration.amend())

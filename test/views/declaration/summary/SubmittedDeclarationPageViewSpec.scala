@@ -62,7 +62,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
       val backButton = createView(aDeclaration(withId("declaration-id"))).getElementById("back-link")
 
       backButton.text() mustBe messages("site.back")
-      backButton must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("declaration-id"))
+      backButton must haveHref(controllers.routes.DeclarationDetailsController.displayPage("declaration-id"))
     }
 
     "have references section" in {
@@ -75,7 +75,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "not have parties section" in {
 
-      createView().getElementById("declaration-parties-summary") mustBe null
+      Option(createView().getElementById("declaration-parties-summary")) mustBe None
     }
 
     "have parties section" in {
@@ -86,7 +86,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
     }
 
     "not have countries section" in {
-      createView().getElementById("declaration-countries-summary") mustBe null
+      Option(createView().getElementById("declaration-countries-summary")) mustBe None
     }
 
     "have countries section" in {
@@ -98,7 +98,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "not have locations section" in {
 
-      createView().getElementById("declaration-locations-summary") mustBe null
+      Option(createView().getElementById("declaration-locations-summary")) mustBe None
     }
 
     "have locations section with UK office of exit" in {
@@ -110,7 +110,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "not have transaction section" in {
 
-      createView().getElementById("declaration-transaction-summary") mustBe null
+      Option(createView().getElementById("declaration-transaction-summary")) mustBe None
     }
 
     "have transaction section" in {
@@ -122,7 +122,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "not have items section" in {
 
-      createView().getElementById("declaration-items-summary") mustBe null
+      Option(createView().getElementById("declaration-items-summary")) mustBe None
     }
 
     "have items section" in {
@@ -135,7 +135,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "not have warehouse section" in {
 
-      createView().getElementById("declaration-warehouse-summary") mustBe null
+      Option(createView().getElementById("declaration-warehouse-summary")) mustBe None
     }
 
     "have warehouse section" in {
@@ -147,7 +147,7 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
 
     "not have transport section" in {
 
-      createView().getElementById("declaration-transport-summary") mustBe null
+      Option(createView().getElementById("declaration-transport-summary")) mustBe None
     }
 
     "have transport section" in {

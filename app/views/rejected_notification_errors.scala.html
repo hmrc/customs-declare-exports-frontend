@@ -23,14 +23,14 @@
 @import views.components.gds.ActionItemBuilder._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        pageTitle: pageTitle,
-        sectionHeader: sectionHeader,
-        link: link,
-        govukTable: GovukTable,
-        govukSummaryList : GovukSummaryList,
-        appConfig: AppConfig,
-        changeErrorLinkConfig: ChangeErrorLinkConfig
+    govukLayout: gdsMainTemplate,
+    pageTitle: pageTitle,
+    sectionHeader: sectionHeader,
+    link: link,
+    govukTable: GovukTable,
+    govukSummaryList : GovukSummaryList,
+    appConfig: AppConfig,
+    changeErrorLinkConfig: ChangeErrorLinkConfig
 )
 
 @(declaration: ExportsDeclaration, errors: Seq[RejectionReason])(implicit request: Request[_], messages: Messages)
@@ -79,7 +79,7 @@
 
 @govukLayout(
     title = Title("rejected.notification.title"),
-    backButton = Some(BackButton(messages("site.back"), routes.SubmissionsController.displayDeclarationWithNotifications(declaration.id))),
+    backButton = Some(BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(declaration.id))),
     useCustomContentWidth = true
 ) {
 

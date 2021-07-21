@@ -70,9 +70,13 @@
 }
 
 @ucrLink(submission: Submission) = @{
-  HtmlContent(
-    link(submission.ducr.getOrElse(""), Some(messages("submissions.hidden.text", submission.ducr.getOrElse(""))), routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid))
-  )
+    HtmlContent(
+        link(
+            submission.ducr.getOrElse(""),
+            Some(messages("submissions.hidden.text", submission.ducr.getOrElse(""))),
+            routes.DeclarationDetailsController.displayPage(submission.uuid)
+        )
+    )
 }
 
 @tabTable(id: String, tabSubmissions: Paginated[(Submission, Seq[Notification])], onPageChange: Int => Call) = {

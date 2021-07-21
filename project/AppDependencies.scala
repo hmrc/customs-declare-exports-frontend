@@ -15,7 +15,7 @@ object AppDependencies {
     "com.github.tototoshi" %% "scala-csv"                     % "1.3.8",
     "com.dmanchester"      %% "playfop"                       % "1.0",
     "net.sf.barcode4j"     %  "barcode4j"                     % "2.1",
-    "org.webjars.npm"      %  "govuk-frontend"                % "3.12.0",
+    "org.webjars.npm"      %  "govuk-frontend"                % "3.13.0",
     "org.webjars.npm"      %  "accessible-autocomplete"       % "2.0.3"
   ).map(_.withSources)
 

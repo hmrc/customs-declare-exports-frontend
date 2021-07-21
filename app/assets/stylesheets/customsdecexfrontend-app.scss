@@ -1,15 +1,15 @@
-@import 'partials/_variables';
+@import 'partials/_autocomplete';
 @import 'partials/_base';
+@import 'partials/_currency_input.scss';
+@import 'partials/_exports.scss';
 @import 'partials/_forms';
+@import 'partials/_lists.scss';
+@import 'partials/pagination';
+@import 'partials/_shame';
 @import 'partials/_tabular-data';
 @import 'partials/_typography';
 @import 'partials/_utilities';
-@import 'partials/_shame';
-@import 'partials/_autocomplete';
-@import 'partials/_lists.scss';
-@import 'partials/_exports.scss';
-@import 'partials/_currency_input.scss';
-@import 'partials/pagination';
+@import 'partials/_variables';
 
 $govuk-assets-path: '/customs-declare-exports/assets/';
 $govuk-images-path: "/customs-declare-exports/assets/lib/govuk-frontend/govuk/assets/images/";
@@ -20,6 +20,8 @@ $hmrc-assets-path: "/customs-declare-exports/assets/lib/hmrc-frontend/hmrc/asset
 
 @import 'lib/govuk-frontend/govuk/all';
 @import "lib/hmrc-frontend/hmrc/all";
+
+@import "lib/hmrc-frontend/hmrc/components/timeline/_timeline";
 
 //Below are all the CSS Overwrites that are required in order for the UI to align with the prototype
 @import 'partials/_gdsSummaryLists.scss';

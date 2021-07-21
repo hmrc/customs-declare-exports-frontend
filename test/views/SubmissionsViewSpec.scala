@@ -255,7 +255,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00pm"
         tableCell(view)(1, 4).text() mustBe "Accepted"
         val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
-        decInformationLink.attr("href") mustBe routes.SubmissionsController.displayDeclarationWithNotifications("id").url
+        decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
       }
 
       "all fields are populated with timestamp during BST" in {
@@ -277,7 +277,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
         tableCell(view)(1, 3).text() mustBe "1 May 2019 at 1:45pm"
         tableCell(view)(1, 4).text() mustBe "Accepted"
         val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
-        decInformationLink.attr("href") mustBe routes.SubmissionsController.displayDeclarationWithNotifications("id").url
+        decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
       }
 
       "optional fields are unpopulated" in {
@@ -291,7 +291,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00pm"
         tableCell(view)(1, 4).text() mustBe "Accepted"
         val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
-        decInformationLink.attr("href") mustBe routes.SubmissionsController.displayDeclarationWithNotifications("id").url
+        decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
       }
 
       "submission status is 'pending' due to missing notification" in {
@@ -304,7 +304,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
         val view = tab("rejected", createView(rejectedSubmissions = submissions(rejectedNotification)))
 
         tableCell(view)(1, 0).text() must include(submission.ducr.get)
-        tableCell(view)(1, 0).toString must include(routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid).url)
+        tableCell(view)(1, 0).toString must include(routes.DeclarationDetailsController.displayPage(submission.uuid).url)
       }
 
       "submission date is unknown due to missing submit action" in {

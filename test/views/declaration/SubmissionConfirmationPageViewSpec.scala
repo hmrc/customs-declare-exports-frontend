@@ -109,7 +109,7 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with BeforeAndAfte
       val highlightBox = getHighlightBox(view)
       highlightBox must containText("Standard declaration has been submitted")
       highlightBox must containText("Your LRN is lrn1")
-      getDecisionLink(view) must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("dec1").url)
+      getDecisionLink(view) must haveHref(controllers.routes.DeclarationDetailsController.displayPage("dec1").url)
     }
 
     "display header with declaration type Simplified and LRN" in {
@@ -117,7 +117,7 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with BeforeAndAfte
       val highlightBox = getHighlightBox(view)
       highlightBox must containText("Simplified declaration has been submitted")
       highlightBox must containText("Your LRN is lrn2")
-      getDecisionLink(view) must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("dec2").url)
+      getDecisionLink(view) must haveHref(controllers.routes.DeclarationDetailsController.displayPage("dec2").url)
     }
 
     "display header with declaration type Supplementary and LRN" in {
@@ -125,7 +125,7 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with BeforeAndAfte
       val highlightBox = getHighlightBox(view)
       highlightBox must containText("Supplementary declaration has been submitted")
       highlightBox must containText("Your LRN is lrn3")
-      getDecisionLink(view) must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("dec3").url)
+      getDecisionLink(view) must haveHref(controllers.routes.DeclarationDetailsController.displayPage("dec3").url)
     }
 
     "display header with declaration type Occasional and LRN" in {
@@ -133,7 +133,7 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with BeforeAndAfte
       val highlightBox = getHighlightBox(view)
       highlightBox must containText("Simplified declaration for occasional use has been submitted")
       highlightBox must containText("Your LRN is lrn4")
-      getDecisionLink(view) must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("dec4").url)
+      getDecisionLink(view) must haveHref(controllers.routes.DeclarationDetailsController.displayPage("dec4").url)
     }
 
     "display header with declaration type Clearance and LRN" in {
@@ -141,7 +141,7 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with BeforeAndAfte
       val highlightBox = getHighlightBox(view)
       highlightBox must containText("Customs clearance request has been submitted")
       highlightBox must containText("Your LRN is lrn5")
-      getDecisionLink(view) must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("dec5").url)
+      getDecisionLink(view) must haveHref(controllers.routes.DeclarationDetailsController.displayPage("dec5").url)
     }
   }
 }
