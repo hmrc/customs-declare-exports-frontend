@@ -30,7 +30,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.mockito.stubbing.OngoingStubbing
-import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.{declaration_details, declaration_information}
@@ -74,14 +74,15 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
   override protected def afterEach(): Unit =
     reset(queryNotificationMessageConfig, declarationInformationPage, declarationDetailsPage, mockCustomsDeclareExportsConnector)
 
-  "Display Submissions" should {
+  "displayPage method of Declaration Details page" should {
 
     "return 200 (OK)" when {
+      val submissionCaptor: ArgumentCaptor[Submission] = ArgumentCaptor.forClass(classOf[Submission])
+      val notificationsCaptor: ArgumentCaptor[Seq[Notification]] = ArgumentCaptor.forClass(classOf[Seq[Notification]])
 
-      "display declaration with notification method is invoked" when {
+      "submission and notifications are provided for the Declaration" when {
 
         "QueryNotificationMessage feature flag is disabled" in {
-
           responsesToReturn(isQueryNotificationMessageEnabled = false)
 
           val result = controller.displayPage(actionId)(getRequest())
@@ -89,13 +90,12 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
 
           verifyNoInteractions(declarationDetailsPage)
 
-          verifyPage { (submissionCaptor: ArgumentCaptor[Submission], notificationsCaptor: ArgumentCaptor[Seq[Notification]]) =>
-            verify(declarationInformationPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
-          }
+          verify(declarationInformationPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
+          submissionCaptor.getValue mustBe submission
+          notificationsCaptor.getValue mustBe List(notification)
         }
 
         "QueryNotificationMessage feature flag is enabled" in {
-
           responsesToReturn(isQueryNotificationMessageEnabled = true)
 
           val result = controller.displayPage(actionId)(getRequest())
@@ -103,30 +103,54 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
 
           verifyNoInteractions(declarationInformationPage)
 
-          verifyPage { (submissionCaptor: ArgumentCaptor[Submission], notificationsCaptor: ArgumentCaptor[Seq[Notification]]) =>
-            verify(declarationDetailsPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
-          }
+          verify(declarationDetailsPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
+          submissionCaptor.getValue mustBe submission
+          notificationsCaptor.getValue mustBe List(notification)
         }
       }
 
-      def responsesToReturn(isQueryNotificationMessageEnabled: Boolean): OngoingStubbing[Future[Seq[Notification]]] = {
-        when(queryNotificationMessageConfig.isQueryNotificationMessageEnabled).thenReturn(isQueryNotificationMessageEnabled)
-        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(Some(submission)))
-        when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(Seq(notification)))
+      "submission but no notifications are provided for the Declaration" when {
+
+        "QueryNotificationMessage feature flag is disabled" in {
+          responsesToReturn(isQueryNotificationMessageEnabled = false, List.empty)
+
+          val result = controller.displayPage(actionId)(getRequest())
+          status(result) mustBe OK
+
+          verifyNoInteractions(declarationDetailsPage)
+
+          verify(declarationInformationPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
+          submissionCaptor.getValue mustBe submission
+          notificationsCaptor.getValue mustBe List.empty
+        }
+
+        "QueryNotificationMessage feature flag is enabled" in {
+          responsesToReturn(isQueryNotificationMessageEnabled = true, List.empty)
+
+          val result = controller.displayPage(actionId)(getRequest())
+          status(result) mustBe OK
+
+          verifyNoInteractions(declarationInformationPage)
+
+          verify(declarationDetailsPage).apply(submissionCaptor.capture(), notificationsCaptor.capture())(any(), any())
+          submissionCaptor.getValue mustBe submission
+          notificationsCaptor.getValue mustBe List.empty
+        }
       }
 
-      def verifyPage(callsiteToVerify: (ArgumentCaptor[Submission], ArgumentCaptor[Seq[Notification]]) => HtmlFormat.Appendable): Assertion = {
-        val submissionCaptor: ArgumentCaptor[Submission] = ArgumentCaptor.forClass(classOf[Submission])
-        val notificationsCaptor: ArgumentCaptor[Seq[Notification]] = ArgumentCaptor.forClass(classOf[Seq[Notification]])
-        callsiteToVerify(submissionCaptor, notificationsCaptor)
-        submissionCaptor.getValue mustBe submission
-        notificationsCaptor.getValue mustBe Seq(notification)
+      def responsesToReturn(
+        isQueryNotificationMessageEnabled: Boolean,
+        notifications: Seq[Notification] = List(notification)
+      ): OngoingStubbing[Future[Seq[Notification]]] = {
+        when(queryNotificationMessageConfig.isQueryNotificationMessageEnabled).thenReturn(isQueryNotificationMessageEnabled)
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(Some(submission)))
+        when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(notifications))
       }
     }
 
     "return 303 (SEE_OTHER)" when {
 
-      "there is no submission during display Declaration with notification method" in {
+      "there is no submission for the Declaration" in {
 
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(None))
 

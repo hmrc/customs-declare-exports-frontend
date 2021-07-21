@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import java.time.ZonedDateTime
+import java.time.{ZoneId, ZonedDateTime}
 
 import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus._
@@ -27,10 +27,12 @@ class TimelineEventsSpec extends UnitViewSpec {
   "TimelineEvents" should {
 
     "transform an unordered sequence of Notifications into an ordered sequence of TimelineEvents" in {
-      val issued1st = ZonedDateTime.now
-      val issued2nd = issued1st.plusDays(1L)
-      val issued3rd = issued1st.plusDays(2L)
-      val issued4th = issued1st.plusDays(3L)
+      def withGBZone(datetime: ZonedDateTime): ZonedDateTime = datetime.withZoneSameInstant(ZoneId.of("Europe/London"))
+
+      val issued1st = withGBZone(ZonedDateTime.now)
+      val issued2nd = withGBZone(issued1st.plusDays(1L))
+      val issued3rd = withGBZone(issued1st.plusDays(2L))
+      val issued4th = withGBZone(issued1st.plusDays(3L))
 
       val notifications = List(
         Notification("ign", "ign", issued2nd, RECEIVED, Seq.empty),
