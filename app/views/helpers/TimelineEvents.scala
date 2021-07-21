@@ -22,7 +22,7 @@ import models.declaration.notifications.Notification
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
-case class TimelineEvent(title: String, dateTime: ZonedDateTime, dateTimeAsShown: String, content: Option[Html]) extends Ordered[TimelineEvent] {
+case class TimelineEvent(title: String, dateTime: ZonedDateTime, content: Option[Html]) extends Ordered[TimelineEvent] {
 
   def compare(that: TimelineEvent): Int =
     if (dateTime == that.dateTime) 0
@@ -34,13 +34,6 @@ object TimelineEvents {
 
   def apply(notifications: Seq[Notification])(implicit messages: Messages): Seq[TimelineEvent] =
     notifications.map { notification =>
-      TimelineEvent(
-        title = StatusOfSubmission.asText(notification),
-        dateTime = notification.dateTimeIssuedInUK,
-        dateTimeAsShown = dateTimeAsShown(notification),
-        content = None
-      )
+      TimelineEvent(title = StatusOfSubmission.asText(notification), dateTime = notification.dateTimeIssuedInUK, content = None)
     }.sorted
-
-  def dateTimeAsShown(notification: Notification): String = ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK)
 }

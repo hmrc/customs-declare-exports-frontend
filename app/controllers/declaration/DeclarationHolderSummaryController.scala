@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper.cachedHolders
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -65,7 +65,7 @@ class DeclarationHolderSummaryController @Inject()(
   private val addAnotherYesNoForm: Form[YesNoAnswer] =
     YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
 
-  private def nextPageWhenNoHolders(implicit request: JourneyRequest[_]): Mode => Call =
+  private val nextPageWhenNoHolders: Mode => Call =
     routes.DeclarationHolderRequiredController.displayPage
 
   private def nextPage(implicit request: JourneyRequest[_]): Mode => Call =

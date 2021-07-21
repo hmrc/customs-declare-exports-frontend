@@ -29,8 +29,7 @@ import models.declaration.submissions.SubmissionStatus.{ACCEPTED, RECEIVED, REJE
 import org.mockito.Mockito.when
 import play.api.inject.bind
 import views.declaration.spec.UnitViewSpec
-import views.helpers.StatusOfSubmission
-import views.helpers.TimelineEvents.dateTimeAsShown
+import views.helpers.{StatusOfSubmission, ViewDates}
 import views.html.declaration_details
 
 class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
@@ -119,11 +118,14 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
       lrn.getElementsByClass("govuk-summary-list__value").text mustBe submission.lrn
     }
 
-    "display the Declaration Timeline" in {
+    "display the Declaration Timeline when there is at least one notification for the declaration" in {
       assert(view.getElementsByTag("ol").hasClass("hmrc-timeline"))
 
       val events = view.getElementsByClass("hmrc-timeline__event")
       events.size mustBe notifications.size
+
+      def dateTimeAsShown(notification: Notification): String =
+        ViewDates.formatDateAtTime(notification.dateTimeIssuedInUK)
 
       notifications.zipWithIndex.foreach {
         case (notification, ix) => {
@@ -136,6 +138,12 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
           datetime.text mustBe dateTimeAsShown(notification)
         }
       }
+    }
+
+    "omit the Declaration Timeline from the page when there are no notifications for the declaration" in {
+      val view = page(submission, List.empty)(request, messages)
+      val element = view.getElementsByTag("ol")
+      assert(element.isEmpty || !element.hasClass("hmrc-timeline"))
     }
   }
 }

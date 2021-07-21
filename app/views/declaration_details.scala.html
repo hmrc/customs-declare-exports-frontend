@@ -59,7 +59,7 @@
             <span class="submission-mrn govuk-caption-l">@messages("submissions.declarationDetails.mrn") @mrn</span>
         }
 
-        @timeline(TimelineEvents(notifications))
+        @timeline(TimelineEvents(notifications), ViewDates.formatDateAtTime)
     </div>
 
     <div class="govuk-grid-column-one-third">

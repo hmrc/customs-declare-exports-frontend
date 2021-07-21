@@ -25,7 +25,8 @@ import views.declaration.spec.UnitViewSpec
 class TimelineEventsSpec extends UnitViewSpec {
 
   "TimelineEvents" should {
-    "transform an unordered sequence of Notifications into an ordered sequence of TimelineEvent" in {
+
+    "transform an unordered sequence of Notifications into an ordered sequence of TimelineEvents" in {
       val issued1st = ZonedDateTime.now
       val issued2nd = issued1st.plusDays(1L)
       val issued3rd = issued1st.plusDays(2L)
@@ -51,6 +52,10 @@ class TimelineEventsSpec extends UnitViewSpec {
 
       timelineEvents(3).dateTime mustBe issued1st
       timelineEvents(3).title mustBe messages(s"submission.status.${ACCEPTED.toString}")
+    }
+
+    "transform an empty sequence of Notifications into an empty sequence of TimelineEvents" in {
+      assert(TimelineEvents(List.empty).isEmpty)
     }
   }
 }
