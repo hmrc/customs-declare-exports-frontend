@@ -16,7 +16,7 @@
 
 @this()
 
-@(withLinkToSubmissions: Boolean = true, withLinkToMessageInbox: Boolean = true)(implicit request: Request[_], messages: Messages)
+@(withLinkToSubmissions: Boolean = true, withLinkToMessageInbox: Boolean = true)(implicit messages: Messages)
 
 <div id="navigation-banner" class="govuk-navigation-banner">
     @if(withLinkToSubmissions) {

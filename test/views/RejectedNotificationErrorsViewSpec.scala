@@ -61,7 +61,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
       val backLink = defaultView.getElementById("back-link")
 
       backLink.text() mustBe messages("site.back")
-      backLink.attr("href") mustBe routes.SubmissionsController.displayDeclarationWithNotifications(declaration.id).url
+      backLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage(declaration.id).url
     }
 
     "must contain notifications" when {
