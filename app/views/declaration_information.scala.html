@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, StatusOfSubmission, Title, ViewDates}
+@import views.helpers.DeclarationDetailsLinks.mrnIfEadStatus
 @import views.html.components.gds.{gdsMainTemplate, link, navigationBanner}
 
 @this(
@@ -28,7 +29,7 @@
     govukTable: GovukTable,
     link: link,
     navigationBanner: navigationBanner,
-    eadDocumentConfig: EadConfig,
+    eadConfig: EadConfig,
     sfusConfig: SfusConfig,
     secureMessagingInboxConfig: SecureMessagingInboxConfig,
     secureMessagingConfig: SecureMessagingConfig
@@ -52,26 +53,25 @@
     }
 }
 
-@renderDeclarationLinks = {
-    <div class="govuk-list">
-        @if(notifications.headOption.map(_.status).exists(SubmissionStatus.eadAcceptableStatuses.contains) && eadDocumentConfig.isEadEnabled) {
-            @createEADLink
-        }
-        @viewDeclarationLink
-    </div>
-}
-
-@createEADLink = {
-    @submission.mrn.map { mrn =>
+@pdfForEadLink = {
+    @mrnIfEadStatus(submission, notifications, eadConfig).map { mrn =>
         <div>
-            <a class="govuk-link govuk-link--no-visited-state" href="@controllers.pdf.routes.EADController.generatePdf(mrn)" id="generate-ead">@messages("submissions.generateEAD")</a>
+            @link(
+                id = Some("generate-ead"),
+                text = messages("submissions.generateEAD"),
+                call = controllers.pdf.routes.EADController.generatePdf(mrn)
+            )
         </div>
     }
 }
 
 @viewDeclarationLink = {
     <div>
-        <a class="govuk-link govuk-link--no-visited-state" href="@routes.SubmissionsController.viewDeclaration(submission.uuid)" id="view-declaration">@messages("submissions.viewDeclaration")</a>
+        @link(
+            id = Some("view-declaration"),
+            text = messages("submissions.viewDeclaration"),
+            call = routes.SubmissionsController.viewDeclaration(submission.uuid)
+        )
     </div>
 }
 
@@ -115,7 +115,10 @@
                 ).filterNot(_.value.content == Empty)
             ))
 
-            @renderDeclarationLinks
+            <div class="govuk-list">
+                @pdfForEadLink
+                @viewDeclarationLink
+            </div>
         </div>
 
         @if(notifications.nonEmpty) {

@@ -1,3 +1,4 @@
+@import 'lib/govuk-frontend/govuk/_base';
 @import '_variables';
 
 .align-right {
@@ -81,4 +82,8 @@ button:focus {
   background-color: $blue;
   border: none;
   margin-bottom: 5px;
+}
+
+.padding-bottom-small {
+  padding-bottom: govuk-spacing(2);
 }
