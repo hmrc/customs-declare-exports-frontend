@@ -14,12 +14,13 @@
 * limitations under the License.
 *@
 
-@import config.featureFlags.SecureMessagingConfig
+@import config.featureFlags.{EadConfig, SecureMessagingConfig}
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.{Submission, SubmissionStatus}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, StatusOfSubmission, TimelineEvents, Title, ViewDates}
+@import views.helpers.DeclarationDetailsLinks.mrnIfEadStatus
 @import views.html.components.gds._
 
 @this(
@@ -29,6 +30,7 @@
   headingContent: headingContent,
   timeline: timeline,
   link: link,
+  eadConfig: EadConfig,
   secureMessagingConfig: SecureMessagingConfig
 )
 
@@ -38,6 +40,28 @@
     @if(secureMessagingConfig.isSecureMessagingEnabled) {
         @navigationBanner()
     }
+}
+
+@pdfForEadLink = {
+    @mrnIfEadStatus(submission, notifications, eadConfig).map { mrn =>
+        <div class="padding-bottom-small">
+            @link(
+                id = Some("generate-ead"),
+                text = messages("submissions.generateEAD"),
+                call = controllers.pdf.routes.EADController.generatePdf(mrn)
+            )
+        </div>
+    }
+}
+
+@viewDeclarationLink = {
+    <div>
+        @link(
+            id = Some("view-declaration"),
+            text = messages("submissions.viewDeclaration"),
+            call = routes.SubmissionsController.viewDeclaration(submission.uuid)
+        )
+    </div>
 }
 
 @govukLayout(
@@ -79,6 +103,11 @@
                 )
             ).filterNot(_.value.content == Empty)
         ))
+
+        <div class="govuk-list">
+            @pdfForEadLink
+            @viewDeclarationLink
+        </div>
     </div>
 
   </div>
