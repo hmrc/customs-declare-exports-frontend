@@ -37,12 +37,21 @@ class AdditionalDocumentSpec extends UnitSpec {
 
       "provided with Document Type Code" which {
 
-        "is empty" in {
+        "is empty when it is instead required" in {
 
           val input = emptyAdditionalDocumentJSON
           val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.empty"))
 
           testFailedValidationErrors(input, expectedErrors)
+        }
+
+        "is empty when it is instead required after the entered authorisation code" in {
+
+          val input = emptyAdditionalDocumentJSON
+          val expectedError = FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.empty.fromAuthCode")
+
+          val form = AdditionalDocument.form(isAuthCodeRequiringAdditionalDocuments = true).bind(input)
+          form.errors must contain(expectedError)
         }
 
         "is longer than 5 characters" in {
@@ -183,7 +192,7 @@ class AdditionalDocumentSpec extends UnitSpec {
       }
 
       def testFailedValidationErrors(input: JsValue, expectedErrors: Seq[FormError]): Unit = {
-        val form = AdditionalDocument.form.bind(input)
+        val form = AdditionalDocument.form().bind(input)
         expectedErrors.foreach(form.errors must contain(_))
       }
     }
@@ -192,7 +201,7 @@ class AdditionalDocumentSpec extends UnitSpec {
 
       "provided with correct data" in {
 
-        val form = AdditionalDocument.form.bind(correctAdditionalDocumentJSON)
+        val form = AdditionalDocument.form().bind(correctAdditionalDocumentJSON)
         form.errors mustBe empty
       }
 
@@ -200,7 +209,7 @@ class AdditionalDocumentSpec extends UnitSpec {
 
         val input =
           JsObject(Map(documentTypeCodeKey -> JsString("AB12"), issuingAuthorityNameKey -> JsString("Issuing Authority Name with ''' added")))
-        val form = AdditionalDocument.form.bind(input)
+        val form = AdditionalDocument.form().bind(input)
 
         form.errors mustBe empty
       }
@@ -219,7 +228,7 @@ class AdditionalDocumentSpec extends UnitSpec {
           )
         )
 
-        val form = AdditionalDocument.form.bind(input)
+        val form = AdditionalDocument.form().bind(input)
         form.errors mustBe empty
       }
     }
@@ -229,7 +238,7 @@ class AdditionalDocumentSpec extends UnitSpec {
       "provided with document type code in lower case" in {
 
         val input = JsObject(Map(documentTypeCodeKey -> JsString("ab12")))
-        val form = AdditionalDocument.form.bind(input)
+        val form = AdditionalDocument.form().bind(input)
 
         form.errors mustBe empty
         form.value.flatMap(_.documentTypeCode) must be(Some("AB12"))
@@ -238,7 +247,7 @@ class AdditionalDocumentSpec extends UnitSpec {
       "provided with document status in lower case" in {
 
         val input = JsObject(Map(documentTypeCodeKey -> JsString("AB12"), documentStatusKey -> JsString("Ab")))
-        val form = AdditionalDocument.form.bind(input)
+        val form = AdditionalDocument.form().bind(input)
 
         form.errors mustBe empty
         form.value.flatMap(_.documentStatus) must be(Some("AB"))

@@ -39,7 +39,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
   private val itemId = "a7sc78"
   private val mode = Mode.Normal
 
-  private val form: Form[AdditionalDocument] = AdditionalDocument.form
+  private val form: Form[AdditionalDocument] = AdditionalDocument.form()
   private val additionalDocumentAddPage = instanceOf[additional_document_add]
   private def createView(form: Form[AdditionalDocument] = form)(implicit request: JourneyRequest[_]): Document =
     additionalDocumentAddPage(mode, itemId, form)(request, messages)

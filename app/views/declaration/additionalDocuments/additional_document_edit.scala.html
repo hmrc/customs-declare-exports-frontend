@@ -14,16 +14,17 @@
  * limitations under the License.
  *@
 
-@import models.requests.JourneyRequest
+@import config.AppConfig
 @import forms.declaration.additionaldocuments.DocumentWriteOff._
 @import forms.declaration.additionaldocuments.AdditionalDocument
 @import forms.declaration.additionaldocuments.AdditionalDocument._
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import config.AppConfig
-@import views.html.components.gds._
-@import views.components.gds.Styles._
+@import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
+@import views.components.gds.Styles._
+@import views.helpers.{AdditionalDocument => AD}
+@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
     govukFieldset: GovukFieldset,
@@ -43,12 +44,6 @@
 )
 
 @(mode: Mode, itemId: String, form: Form[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tradeTariffLink = {
-    <a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>
-        @messages("declaration.additionalDocument.hint.traderTariff.link")
-    </a>
-}
 
 @measurementInput(field: Field, labelKey: String, inputClasses: String) = {
     @govukInput(Input(
@@ -110,17 +105,9 @@
                   classes = "govuk-fieldset__legend--m"
               )),
               attributes = Map("id" -> "measurementUnitAndQualifier"),
-              html = HtmlFormat.fill(immutable.Seq(
-                  measurementUnitAndQualifierContent
-              )
-              )))
+              html = HtmlFormat.fill(immutable.Seq(measurementUnitAndQualifierContent))
+          ))
       </div>
-}
-
-@pageHint = {
-    <span class="govuk-hint">
-        @Html(messages("declaration.additionalDocument.hint", tradeTariffLink))
-    </span>
 }
 
 @expander1Content = {
@@ -193,7 +180,7 @@
         @exportsInputText(
             field = form(documentTypeCodeKey),
             labelKey = "declaration.additionalDocument.documentTypeCode",
-            hintKey = Some("declaration.additionalDocument.documentTypeCode.hint"),
+            hintKey = Some(AD.documentCodeHint),
             inputClasses = Some("govuk-input--width-4")
         )
         @govukDetails(Details(
@@ -207,6 +194,9 @@
             hintKey = Some("declaration.additionalDocument.documentIdentifier.hint"),
             inputClasses = Some("govuk-input--width-30")
         )
+        @{
+            AD.documentIdentifierInsets
+        }
         @exportsInputText(
             field = form(documentStatusKey),
             labelKey = "declaration.additionalDocument.documentStatus",
@@ -247,12 +237,12 @@
 
     @govukFieldset(Fieldset(
         legend = Some(Legend(
-            content = Text(messages("declaration.additionalDocument.title")),
+            content = Text(messages(AD.title)),
             classes = gdsPageLegend,
             isPageHeading = true
         )),
         html = HtmlFormat.fill(immutable.Seq(
-            pageHint,
+            AD.pageHint,
             govukDetails(Details(
                 summary = Text(messages("declaration.additionalDocument.expander.title")),
                 content = HtmlContent(expander1Content),
