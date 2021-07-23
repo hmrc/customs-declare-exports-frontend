@@ -18,9 +18,13 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.AuthorisationProcedureCodeChoice
 import models.DeclarationType._
 import models.Mode
+import models.declaration.Parties
+import models.declaration.AuthorisationProcedureCode._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -122,8 +126,56 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
       }
     }
 
-    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
-      "return 303 (SEE_OTHER)" when {
+    "return 303 (SEE_OTHER)" when {
+      onJourney(STANDARD) { implicit request =>
+        "there are no holders in the cache" when {
+          "pre-lodged is selected and Auth Procedure Code Choice is not 1007" in {
+            val parties = Parties(authorisationProcedureCodeChoice = Some(AuthorisationProcedureCodeChoice(Code1040)))
+            withNewCaching(
+              request.cacheModel.copy(parties = parties, additionalDeclarationType = Some(AdditionalDeclarationType.STANDARD_PRE_LODGED))
+            )
+
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
+          }
+
+          "pre-lodged is selected and Auth Procedure Code Choice is 1007" in {
+            val parties = Parties(authorisationProcedureCodeChoice = Some(AuthorisationProcedureCodeChoice(Code1007)))
+            withNewCaching(
+              request.cacheModel.copy(parties = parties, additionalDeclarationType = Some(AdditionalDeclarationType.STANDARD_PRE_LODGED))
+            )
+
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+          }
+
+          "pre-lodged is not selected" in {
+            withNewCaching(request.cacheModel.copy(additionalDeclarationType = Some(AdditionalDeclarationType.STANDARD_FRONTIER)))
+
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+          }
+        }
+      }
+
+      onJourney(SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
+        "there are no holders in the cache" in {
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+        }
+      }
+
+      onJourney(OCCASIONAL) { implicit request =>
         "there are no holders in the cache" in {
           withNewCaching(request.cacheModel)
 
@@ -131,6 +183,32 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
+        }
+      }
+
+      onJourney(CLEARANCE) { implicit request =>
+        "EIDR is true" when {
+          "there are no holders in the cache" in {
+            val parties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer.Yes))
+            withNewCaching(request.cacheModel.copy(parties = parties))
+
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+          }
+        }
+
+        "EIDR is false" when {
+          "there are no holders in the cache" in {
+            val parties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer.No))
+            withNewCaching(request.cacheModel.copy(parties = parties))
+
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
+          }
         }
       }
     }
