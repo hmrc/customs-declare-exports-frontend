@@ -51,7 +51,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-    when(additionalDocumentAddPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(additionalDocumentAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -61,7 +61,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
 
   def theResponseForm: Form[AdditionalDocument] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalDocument]])
-    verify(additionalDocumentAddPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
+    verify(additionalDocumentAddPage).apply(any(), any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
@@ -71,7 +71,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(additionalDocumentAddPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(additionalDocumentAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val additionalDocument = AdditionalDocument(Some("1234"), None, None, None, None, None, None)
 
@@ -97,28 +97,27 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
         verifyPageInvoked()
       }
 
-      "user put incorrect data" in {
+      "user entered an empty document type code" in {
+        verifyBadRequest(Seq(("documentTypeCode", "")))
+      }
 
+      "user entered an invalid document type code" in {
         verifyBadRequest(Seq(("documentTypeCode", "12345")))
       }
 
       "user entered measurement unit without quantity" in {
-
         verifyBadRequest(Seq(("documentWriteOff.measurementUnit", "KGM")))
       }
 
       "user entered quantity without measurement unit" in {
-
         verifyBadRequest(Seq(("documentWriteOff.documentQuantity", "1000")))
       }
 
       "user entered qualifier without measurement unit" in {
-
         verifyBadRequest(Seq(("documentWriteOff.qualifier", "A"), ("documentWriteOff.documentQuantity", "1000")))
       }
 
       "user put duplicated item" in {
-
         withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withAdditionalDocuments(None, additionalDocument)))))
 
         val duplicatedForm = Seq(("documentTypeCode", "1234"))
@@ -130,19 +129,9 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
       }
 
       "user reach maximum amount of items" in {
-
-        withNewCaching(
-          aDeclaration(
-            withItems(
-              anItem(
-                withItemId("itemId"),
-                withAdditionalDocuments(
-                  AdditionalDocuments(Some(YesNoAnswer.Yes), Seq.fill(AdditionalDocuments.maxNumberOfItems)(additionalDocument))
-                )
-              )
-            )
-          )
-        )
+        val additionalDocuments = AdditionalDocuments(Some(YesNoAnswer.Yes), Seq.fill(AdditionalDocuments.maxNumberOfItems)(additionalDocument))
+        val item = anItem(withItemId("itemId"), withAdditionalDocuments(additionalDocuments))
+        withNewCaching(aDeclaration(withItems(item)))
 
         val correctForm = Seq(("documentTypeCode", "4321"))
 
@@ -167,19 +156,6 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
         savedDocuments mustBe Some(AdditionalDocuments(None, Seq(additionalDocument)))
       }
-
-      "user save empty form without new item" in {
-
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded())
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage()
-        verifyPageInvoked(0)
-
-        val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
-        savedDocuments mustBe Some(AdditionalDocuments(None, Seq.empty))
-      }
-
     }
   }
 }

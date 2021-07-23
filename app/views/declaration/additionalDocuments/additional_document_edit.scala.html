@@ -42,7 +42,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[AdditionalDocument], maybeCommodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tradeTariffLink = {
     <a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>
@@ -124,7 +124,7 @@
 }
 
 @expander1Content = {
-    @maybeCommodityCode.map { commodityCode =>
+    @request.cacheModel.commodityCodeOfItem(itemId).map { commodityCode =>
         @govukHint(Hint(
             content = HtmlContent(messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.text",
                 link(

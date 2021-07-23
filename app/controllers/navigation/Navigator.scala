@@ -390,12 +390,11 @@ object Navigator {
       routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
 
   private def additionalDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
-    if (cacheModel.itemBy(itemId).flatMap(_.additionalDocuments).exists(_.documents.nonEmpty))
+    if (cacheModel.listOfAdditionalDocuments(itemId).nonEmpty)
       routes.AdditionalDocumentsController.displayPage(mode, itemId)
     else {
-      // TODO. CEDS-3255.
-      // If auth code from List1 call additionalDocumentsSummaryPreviousPage else
-      routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId)
+      if (cacheModel.isAdditionalDocumentationRequired) additionalDocumentsSummaryPreviousPage(cacheModel, mode, itemId)
+      else routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId)
     }
 
   private def additionalInformationPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =

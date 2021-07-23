@@ -41,33 +41,32 @@ class AdditionalDocumentsController @Inject()(
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = anotherYesNoForm.withSubmissionErrors()
-    cachedDocuments(itemId) match {
-      case documents if documents.nonEmpty => Ok(additionalDocumentsPage(mode, itemId, frm, documents))
-      case _                               => navigator.continueTo(mode, redirectIfNoDocuments(itemId))
-    }
+    val additionalDocuments = cachedAdditionalDocuments(itemId)
+    if (additionalDocuments.nonEmpty) {
+      val frm = yesNoForm.withSubmissionErrors()
+      Ok(additionalDocumentsPage(mode, itemId, frm, additionalDocuments))
+    } else navigator.continueTo(mode, redirectIfNoDocuments(itemId))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    anotherYesNoForm
+    def showFormWithErrors(formWithErrors: Form[YesNoAnswer]): Result =
+      BadRequest(additionalDocumentsPage(mode, itemId, formWithErrors, cachedAdditionalDocuments(itemId)))
+
+    yesNoForm
       .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(additionalDocumentsPage(mode, itemId, formWithErrors, cachedDocuments(itemId))),
-        validYesNo =>
-          validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, routes.AdditionalDocumentAddController.displayPage(_, itemId))
-            case YesNoAnswers.no  => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
-        }
-      )
+      .fold(showFormWithErrors, yesNoAnswer => navigator.continueTo(mode, nextPage(yesNoAnswer, itemId)))
   }
 
-  private def redirectIfNoDocuments(itemId: String): Mode => Call =
-    // TODO. CEDS-3255.
-    // If auth code from List1 return routes.AdditionalDocumentAddController.displayPage(_, itemId) else
-    routes.AdditionalDocumentsRequiredController.displayPage(_, itemId)
+  private def yesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalDocument.add.another.empty")
 
-  private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalDocument.add.another.empty")
+  private def cachedAdditionalDocuments(itemId: String)(implicit request: JourneyRequest[_]): Seq[AdditionalDocument] =
+    request.cacheModel.listOfAdditionalDocuments(itemId)
 
-  private def cachedDocuments(itemId: String)(implicit request: JourneyRequest[AnyContent]): Seq[AdditionalDocument] =
-    request.cacheModel.itemBy(itemId).flatMap(_.additionalDocuments).map(_.documents).getOrElse(Seq.empty)
+  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
+    if (yesNoAnswer.answer == YesNoAnswers.yes) routes.AdditionalDocumentAddController.displayPage(_, itemId)
+    else routes.ItemsSummaryController.displayItemsSummaryPage
+
+  private def redirectIfNoDocuments(itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
+    if (request.cacheModel.isAdditionalDocumentationRequired) routes.AdditionalDocumentAddController.displayPage(_, itemId)
+    else routes.AdditionalDocumentsRequiredController.displayPage(_, itemId)
 }
