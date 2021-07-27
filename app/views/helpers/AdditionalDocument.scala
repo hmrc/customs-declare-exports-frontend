@@ -32,8 +32,7 @@ object AdditionalDocument {
     else "declaration.additionalDocument.documentTypeCode.hint"
 
   def documentIdentifierInsets(implicit messages: Messages, request: JourneyRequest[_]): Option[HtmlFormat.Appendable] =
-    if (!request.cacheModel.isAuthCodeRequiringAdditionalDocuments) None
-    else {
+    if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments) {
       val html = new Html(
         List(
           new paragraphBody().apply(messages("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph1")),
@@ -43,7 +42,7 @@ object AdditionalDocument {
 
       val insets = new govukInsetText().apply(InsetText(content = HtmlContent(html)))
       Some(insets)
-    }
+    } else None
 
   def pageHint(implicit messages: Messages, request: JourneyRequest[_]): Html =
     if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments)

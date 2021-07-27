@@ -22,6 +22,7 @@ import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.Mode
+import models.declaration.ExportDeclarationTestData.declaration
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.{Assertion, OptionValues}
@@ -39,9 +40,11 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
   private val itemId = "a7sc78"
   private val mode = Mode.Normal
 
-  private val form: Form[AdditionalDocument] = AdditionalDocument.form()
   private val additionalDocumentAddPage = instanceOf[additional_document_add]
-  private def createView(form: Form[AdditionalDocument] = form)(implicit request: JourneyRequest[_]): Document =
+
+  private val form: Form[AdditionalDocument] = AdditionalDocument.form(declaration)
+
+  private def createView(implicit request: JourneyRequest[_]): Document =
     additionalDocumentAddPage(mode, itemId, form)(request, messages)
 
   "additional_document_add view" when {
@@ -88,7 +91,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
     }
 
     def verifyBackButton(call: Call)(implicit request: JourneyRequest[_]): Assertion = {
-      val backButton = createView().getElementById("back-link")
+      val backButton = createView.getElementById("back-link")
       backButton must containMessage(backCaption)
       backButton must haveHref(call)
     }
