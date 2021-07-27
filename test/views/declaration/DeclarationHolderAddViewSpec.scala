@@ -19,10 +19,11 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.common.Eori
+import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
+import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -88,11 +89,47 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       }
     }
 
-    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
-      "display 'Back' button that links to the 'Do you need to add authorisations?' page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton must containMessage(backCaption)
-        backButton must haveHref(routes.DeclarationHolderRequiredController.displayPage())
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
+      "display back link" in {
+        val view = createView()
+        view must containElementWithID("back-link")
+        view.getElementById("back-link") must haveHref(
+          controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
+        )
+      }
+    }
+
+    onJourney(OCCASIONAL) { implicit request =>
+      "display back link to Other Parties page" in {
+        val view = createView()
+        view must containElementWithID("back-link")
+        view.getElementById("back-link") must haveHref(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal))
+      }
+    }
+
+    onJourney(CLEARANCE) { implicit request =>
+      "EIDR is true" must {
+        "display back link to Authorisation Choice page" in {
+          val parties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer.Yes))
+          val req = journeyRequest(request.cacheModel.copy(parties = parties))
+
+          val view = createView()(req)
+          view must containElementWithID("back-link")
+          view.getElementById("back-link") must haveHref(
+            controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
+          )
+        }
+      }
+
+      "EIDR is false" must {
+        "display back link to Consignee Details page" in {
+          val parties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer.No))
+          val req = journeyRequest(request.cacheModel.copy(parties = parties))
+
+          val view = createView()(req)
+          view must containElementWithID("back-link")
+          view.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage(Mode.Normal))
+        }
       }
     }
   }

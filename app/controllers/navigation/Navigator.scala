@@ -268,7 +268,7 @@ object Navigator {
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case DeclarationHolderRequired        => declarationHolderRequiredPreviousPage
-    case DeclarationHolderAdd             => declarationHolderPreviousPage
+    case DeclarationHolderAdd             => declarationHolderAddPreviousPage
     case DeclarationHolderSummary         => declarationHolderSummaryPreviousPage
     case SupervisingCustomsOffice         => supervisingCustomsOfficePreviousPage
     case WarehouseIdentification          => warehouseIdentificationPreviousPage
@@ -477,10 +477,10 @@ object Navigator {
       case _                                                       => routes.AuthorisationProcedureCodeChoiceController.displayPage(mode)
     }
 
-  private def declarationHolderPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+  private def declarationHolderAddPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.parties.declarationHoldersData.exists(_.holders.nonEmpty))
       routes.DeclarationHolderSummaryController.displayPage(mode)
-    else routes.DeclarationHolderRequiredController.displayPage(mode)
+    else declarationHolderSummaryPreviousPage(cacheModel, mode)
 
   private def declarationHolderSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     cacheModel.`type` match {
