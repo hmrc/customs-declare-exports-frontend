@@ -16,11 +16,11 @@
 
 @import config.featureFlags.{EadConfig, SecureMessagingConfig}
 @import models.declaration.notifications.Notification
-@import models.declaration.submissions.{Submission, SubmissionStatus}
+@import models.declaration.submissions.Submission
+@import models.requests.VerifiedEmailRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.Styles._
-@import views.helpers.{BackButton, StatusOfSubmission, TimelineEvents, Title, ViewDates}
 @import views.helpers.DeclarationDetailsLinks.mrnIfEadStatus
+@import views.helpers.{BackButton, TimelineEvents, Title, ViewDates}
 @import views.html.components.gds._
 
 @this(
@@ -30,16 +30,23 @@
   headingContent: headingContent,
   timeline: timeline,
   link: link,
+  paragraphBody: paragraphBody,
+  bulletList: bulletList,
+  govukDetails : GovukDetails,
   eadConfig: EadConfig,
   secureMessagingConfig: SecureMessagingConfig
 )
 
-@(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
+@(submission: Submission, notifications: Seq[Notification])(implicit request: VerifiedEmailRequest[_], messages: Messages)
 
 @navBanner = {
     @if(secureMessagingConfig.isSecureMessagingEnabled) {
         @navigationBanner()
     }
+}
+
+@sectionHeading(text: String) = {
+  <h2 class="declaration-details-refs govuk-heading-s">@text</h2>
 }
 
 @pdfForEadLink = {
@@ -62,6 +69,56 @@
             call = routes.SubmissionsController.viewDeclaration(submission.uuid)
         )
     </div>
+}
+
+@documentsRequiredDetailsContent = {
+  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.1"))
+  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.2"))
+
+  @bulletList(items = Seq(
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.1")),
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.2")),
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.3"))
+  ))
+
+  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.3", request.email))
+}
+
+@queryRaisedDetailsContent = {
+  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.1"))
+  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.2", request.email))
+}
+
+@declarationStatusReadMore = {
+  @govukDetails(Details(
+    id = Some("read-more-about-declaration-status-submitted"),
+    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.submitted.header")),
+    content = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.submitted.paragraph"))
+  ))
+
+  @govukDetails(Details(
+    id = Some("read-more-about-declaration-status-declaration-has-error"),
+    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.decHasError.header")),
+    content = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.decHasError.paragraph"))
+  ))
+
+  @govukDetails(Details(
+    id = Some("read-more-about-declaration-status-accepted"),
+    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.accepted.header")),
+    content = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.accepted.paragraph"))
+  ))
+
+  @govukDetails(Details(
+    id = Some("read-more-about-declaration-status-documents-required"),
+    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.header")),
+    content = HtmlContent(documentsRequiredDetailsContent)
+  ))
+
+  @govukDetails(Details(
+    id = Some("read-more-about-declaration-status-query-raised"),
+    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.header")),
+    content = HtmlContent(queryRaisedDetailsContent)
+  ))
 }
 
 @govukLayout(
@@ -87,7 +144,7 @@
     </div>
 
     <div class="govuk-grid-column-one-third">
-        <h2 class="declaration-details-refs govuk-heading-s">@messages("submissions.declarationDetails.references")</h2>
+        @sectionHeading(messages("submissions.declarationDetails.references"))
 
         @govukSummaryList(SummaryList(
             rows = Seq(
@@ -108,6 +165,13 @@
             @pdfForEadLink
             @viewDeclarationLink
         </div>
+
+        <div>
+            @sectionHeading(messages("submissions.declarationDetails.readMoreAboutDecStatus.header"))
+            @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.paragraph"))
+            @declarationStatusReadMore
+        </div>
+
     </div>
 
   </div>

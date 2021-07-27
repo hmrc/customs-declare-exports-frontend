@@ -16,16 +16,13 @@
 
 package views
 
-import java.time.ZonedDateTime
-
-import scala.collection.JavaConverters.asScalaIteratorConverter
-
-import base.{Injector, OverridableInjector}
+import base.{ExportsTestData, Injector, OverridableInjector, RequestBuilder}
 import config.featureFlags._
 import controllers.routes
 import models.declaration.notifications.Notification
-import models.declaration.submissions.{Submission, SubmissionStatus}
 import models.declaration.submissions.SubmissionStatus._
+import models.declaration.submissions.{Submission, SubmissionStatus}
+import models.requests.VerifiedEmailRequest
 import org.mockito.Mockito.when
 import org.scalatest.Assertion
 import play.api.inject.bind
@@ -33,7 +30,15 @@ import views.declaration.spec.UnitViewSpec
 import views.helpers.{StatusOfSubmission, ViewDates}
 import views.html.declaration_details
 
+import java.time.ZonedDateTime
+import scala.collection.JavaConverters.asScalaIteratorConverter
+
 class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
+
+  private val user = ExportsTestData.newUser(ExportsTestData.eori, "Id")
+  private val testEmail = "testEmail@mail.org"
+  private def verifiedEmailRequest(email: String = testEmail) =
+    VerifiedEmailRequest(RequestBuilder.buildAuthenticatedRequest(request, user), email)
 
   private val submission = Submission("id", "eori", "lrn", Some("mrn"), Some("ducr"), Seq.empty)
 
@@ -55,7 +60,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
     "contain the navigation banner" when {
       "the Secure Messaging feature flag is enabled" in {
         when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
-        val view = page(submission, notifications)(request, messages)
+        val view = page(submission, notifications)(verifiedEmailRequest(), messages)
 
         val banner = view.getElementById("navigation-banner")
         assert(Option(banner).isDefined && banner.childrenSize == 2)
@@ -70,7 +75,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
     "not contain the navigation banner" when {
       "the Secure Messaging feature flag is disabled" in {
         when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
-        val view = page(submission, notifications)(request, messages)
+        val view = page(submission, notifications)(verifiedEmailRequest(), messages)
         Option(view.getElementById("navigation-banner")) mustBe None
       }
     }
@@ -97,19 +102,19 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
           SubmissionStatus.values
             .filterNot(eadAcceptableStatuses.contains)
             .foreach { status =>
-              val view = page(submission, List(unknownNotification.copy(status = status)))(request, messages)
+              val view = page(submission, List(unknownNotification.copy(status = status)))(verifiedEmailRequest(), messages)
               Option(view.getElementById("generate-ead")) mustBe None
             }
         }
 
         "there is no mrn" in {
-          val view = page(submission.copy(mrn = None), notifications)(request, messages)
+          val view = page(submission.copy(mrn = None), notifications)(verifiedEmailRequest(), messages)
           Option(view.getElementById("generate-ead")) mustBe None
         }
       }
 
       def verifyPdfForEadLink(notification: Notification): Assertion = {
-        val view = page(submission, List(notification))(request, messages)
+        val view = page(submission, List(notification))(verifiedEmailRequest(), messages)
 
         val declarationLink = view.getElementById("generate-ead")
         declarationLink must containMessage("submissions.generateEAD")
@@ -121,7 +126,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
       "not contain the PDF-for-EAD link" in {
         when(eadConfig.isEadEnabled).thenReturn(false)
         val page = injector.instanceOf[declaration_details]
-        val view = page(submission, notifications)(request, messages)
+        val view = page(submission, notifications)(verifiedEmailRequest(), messages)
         Option(view.getElementById("generate-ead")) mustBe None
       }
     }
@@ -138,8 +143,29 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
       messages must haveTranslationFor("submissions.declarationDetails.lrn")
     }
 
+    "have correct message keys for 'read more' section" in {
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.header")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.paragraph")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.submitted.header")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.submitted.paragraph")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.decHasError.header")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.decHasError.paragraph")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.accepted.header")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.accepted.paragraph")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.header")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.1")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.2")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.1")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.2")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.3")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.3")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.header")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.1")
+      messages must haveTranslationFor("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.2")
+    }
+
     val page = instanceOf[declaration_details]
-    val view = page(submission, notifications)(request, messages)
+    val view = page(submission, notifications)(verifiedEmailRequest(), messages)
 
     "display 'Back' button to the 'Submission list' page" in {
       val backButton = view.getElementById("back-link")
@@ -158,7 +184,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
     }
 
     "display the 'Declaration references' table" in {
-      view.getElementsByClass("declaration-details-refs").text mustBe messages("submissions.declarationDetails.references")
+      view.getElementsByClass("declaration-details-refs").get(0).text mustBe messages("submissions.declarationDetails.references")
 
       val ducr = view.getElementsByClass("submission-ducr").get(0)
       ducr.getElementsByClass("govuk-summary-list__key").text mustBe messages("submissions.declarationDetails.ducr")
@@ -171,7 +197,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
 
     "always contain the view-declaration link, regardless of the notification's status" when {
       def verifyDeclarationLink(notification: Notification): Assertion = {
-        val view = page(submission, List(notification))(request, messages)
+        val view = page(submission, List(notification))(verifiedEmailRequest(), messages)
 
         val declarationLink = view.getElementById("view-declaration")
         declarationLink must containMessage("submissions.viewDeclaration")
@@ -203,8 +229,78 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with Injector {
       }
     }
 
+    "display 'read more' section header" in {
+      view.getElementsByClass("declaration-details-refs").get(1).text mustBe messages("submissions.declarationDetails.readMoreAboutDecStatus.header")
+    }
+
+    "display 'read more' section with submitted declaration status expander" in {
+      view.getElementById("read-more-about-declaration-status-submitted") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.submitted.header"
+      )
+      view.getElementById("read-more-about-declaration-status-submitted") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.submitted.paragraph"
+      )
+    }
+
+    "display 'read more' section with declaration has error declaration status expander" in {
+      view.getElementById("read-more-about-declaration-status-declaration-has-error") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.decHasError.header"
+      )
+      view.getElementById("read-more-about-declaration-status-declaration-has-error") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.decHasError.paragraph"
+      )
+    }
+
+    "display 'read more' section with accepted declaration status expander" in {
+      view.getElementById("read-more-about-declaration-status-accepted") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.accepted.header"
+      )
+      view.getElementById("read-more-about-declaration-status-accepted") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.accepted.paragraph"
+      )
+    }
+
+    "display 'read more' section with documents required declaration status expander" in {
+      view.getElementById("read-more-about-declaration-status-documents-required") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.header"
+      )
+      view.getElementById("read-more-about-declaration-status-documents-required") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.1"
+      )
+      view.getElementById("read-more-about-declaration-status-documents-required") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.2"
+      )
+      view.getElementById("read-more-about-declaration-status-documents-required") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.3",
+        testEmail
+      )
+
+      view.getElementsByClass("govuk-list--bullet").text() must include(
+        messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.1")
+      )
+      view.getElementsByClass("govuk-list--bullet").text() must include(
+        messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.2")
+      )
+      view.getElementsByClass("govuk-list--bullet").text() must include(
+        messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.3")
+      )
+    }
+
+    "display 'read more' section with query raised declaration status expander" in {
+      view.getElementById("read-more-about-declaration-status-query-raised") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.header"
+      )
+      view.getElementById("read-more-about-declaration-status-query-raised") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.1"
+      )
+      view.getElementById("read-more-about-declaration-status-query-raised") must containMessage(
+        "submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.2",
+        testEmail
+      )
+    }
+
     "omit the Declaration Timeline from the page when there are no notifications for the declaration" in {
-      val view = page(submission, List.empty)(request, messages)
+      val view = page(submission, List.empty)(verifiedEmailRequest(), messages)
       val element = view.getElementsByTag("ol")
       assert(element.isEmpty || !element.hasClass("hmrc-timeline"))
     }

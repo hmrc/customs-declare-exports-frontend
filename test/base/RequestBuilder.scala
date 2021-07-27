@@ -21,6 +21,12 @@ import models.SignedInUser
 import play.api.mvc.Request
 
 trait RequestBuilder {
+
   def buildVerifiedEmailRequest[A](sourceRequest: Request[A], user: SignedInUser, email: String = "example@example.com"): VerifiedEmailRequest[A] =
     VerifiedEmailRequest(new AuthenticatedRequest(sourceRequest, user), email)
+
+  def buildAuthenticatedRequest[A](sourceRequest: Request[A], user: SignedInUser): AuthenticatedRequest[A] =
+    new AuthenticatedRequest(sourceRequest, user)
 }
+
+object RequestBuilder extends RequestBuilder
