@@ -39,6 +39,7 @@ object CancelDeclaration {
   val mapping = Forms.mapping(
     functionalReferenceIdKey -> Lrn.mapping("cancellation.functionalReferenceId"),
     mrnKey -> text()
+      .transform(_.trim, (s: String) => s)
       .verifying("cancellation.mrn.error.empty", nonEmpty)
       .verifying("cancellation.mrn.error.length", isEmpty or hasSpecificLength(mrnLength))
       .verifying("cancellation.mrn.error.wrongFormat", isEmpty or isAlphanumeric),

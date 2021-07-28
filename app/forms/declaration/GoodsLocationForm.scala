@@ -70,6 +70,7 @@ object GoodsLocationForm extends DeclarationPage {
 
   val mapping = Forms.mapping(
     "code" -> text()
+      .transform(_.trim, (s: String) => s)
       .verifying("declaration.goodsLocation.code.empty", nonEmpty)
       .verifying(
         "declaration.goodsLocation.code.error",

@@ -17,25 +17,30 @@
 package forms
 
 import base.UnitSpec
+import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 
 class CancelDeclarationSpec extends UnitSpec {
 
-  def formData(lrn: String = "lrn", mrn: String = "123456789012345678", description: String = "description", reason: String = "1") =
-    JsObject(
-      Map(
-        "functionalReferenceId" -> JsString(lrn),
-        "mrn" -> JsString(mrn),
-        "statementDescription" -> JsString(description),
-        "changeReason" -> JsString(reason)
-      )
+  private val validMrn = "123456789012345678"
+  def getBoundedForm(lrn: String = "lrn", mrn: String = validMrn, description: String = "description", reason: String = "1") =
+    CancelDeclaration.form.bind(
+      JsObject(
+        Map(
+          "functionalReferenceId" -> JsString(lrn),
+          "mrn" -> JsString(mrn),
+          "statementDescription" -> JsString(description),
+          "changeReason" -> JsString(reason)
+        )
+      ),
+      Form.FromJsonMaxChars
     )
 
   "Validation defined in CancelDeclaration mapping" should {
 
     "attach errors to form" when {
       "provided with empty lrn" in {
-        val form = CancelDeclaration.form.bind(formData(lrn = ""))
+        val form = getBoundedForm(lrn = "")
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -43,7 +48,7 @@ class CancelDeclarationSpec extends UnitSpec {
       }
 
       "provided with too long lrn" in {
-        val form = CancelDeclaration.form.bind(formData(lrn = "1234567890" * 3))
+        val form = getBoundedForm(lrn = "1234567890" * 3)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -51,7 +56,7 @@ class CancelDeclarationSpec extends UnitSpec {
       }
 
       "provided with invalid lrn" in {
-        val form = CancelDeclaration.form.bind(formData(lrn = "inv@l!d"))
+        val form = getBoundedForm(lrn = "inv@l!d")
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -59,7 +64,7 @@ class CancelDeclarationSpec extends UnitSpec {
       }
 
       "provided with empty mrn" in {
-        val form = CancelDeclaration.form.bind(formData(mrn = ""))
+        val form = getBoundedForm(mrn = "")
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -67,7 +72,7 @@ class CancelDeclarationSpec extends UnitSpec {
       }
 
       "provided with too long mrn" in {
-        val form = CancelDeclaration.form.bind(formData(mrn = "1234567890123456789"))
+        val form = getBoundedForm(mrn = "1234567890123456789")
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -75,7 +80,7 @@ class CancelDeclarationSpec extends UnitSpec {
       }
 
       "provided with invalid mrn" in {
-        val form = CancelDeclaration.form.bind(formData(mrn = "12345678901234567~"))
+        val form = getBoundedForm(mrn = "12345678901234567~")
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -83,7 +88,7 @@ class CancelDeclarationSpec extends UnitSpec {
       }
 
       "provided with empty description" in {
-        val form = CancelDeclaration.form.bind(formData(description = ""))
+        val form = getBoundedForm(description = "")
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -91,7 +96,7 @@ class CancelDeclarationSpec extends UnitSpec {
       }
 
       "provided with too long description" in {
-        val form = CancelDeclaration.form.bind(formData(description = "A23456789B" * 60))
+        val form = getBoundedForm(description = "A23456789B" * 60)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -99,7 +104,7 @@ class CancelDeclarationSpec extends UnitSpec {
       }
 
       "provided with invalid description" in {
-        val form = CancelDeclaration.form.bind(formData(description = "~23456789@"))
+        val form = getBoundedForm(description = "~23456789@")
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -107,7 +112,7 @@ class CancelDeclarationSpec extends UnitSpec {
       }
 
       "provided with missing reason" in {
-        val form = CancelDeclaration.form.bind(formData(reason = ""))
+        val form = getBoundedForm(reason = "")
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -115,7 +120,7 @@ class CancelDeclarationSpec extends UnitSpec {
       }
 
       "provided with invalid reason" in {
-        val form = CancelDeclaration.form.bind(formData(reason = "17"))
+        val form = getBoundedForm(reason = "17")
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -125,11 +130,17 @@ class CancelDeclarationSpec extends UnitSpec {
 
     "not attach any error" when {
       "provided with valid input" in {
-        val form = CancelDeclaration.form.bind(formData())
+        val form = getBoundedForm()
 
-        form.errors must be(Seq.empty)
+        form.errors mustBe empty
+      }
+
+      "provided with an MRN string requiring trimming" in {
+        val form = getBoundedForm(mrn = s"\n \t${validMrn}\t \n")
+
+        form.errors mustBe empty
+        form.value.map(_.mrn) must be(Some(validMrn))
       }
     }
   }
-
 }

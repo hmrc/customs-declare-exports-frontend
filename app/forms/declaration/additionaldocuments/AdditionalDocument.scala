@@ -79,6 +79,7 @@ object AdditionalDocument extends DeclarationPage {
         documentTypeCodeKey -> documentTypeCodeRequired,
         documentIdentifierKey -> optional(
           text()
+            .transform(_.trim, (s: String) => s)
             .verifying(
               "declaration.additionalDocument.documentIdentifier.error",
               nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
