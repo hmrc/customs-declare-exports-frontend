@@ -180,6 +180,7 @@ class AdditionalDocumentSpec extends UnitSpec {
 
       def testFailedValidationErrors(input: Map[String, String], expectedErrors: Seq[FormError]): Unit = {
         val form = AdditionalDocument.form(declaration).bind(input)
+
         expectedErrors.foreach(form.errors must contain(_))
       }
     }
@@ -216,7 +217,17 @@ class AdditionalDocumentSpec extends UnitSpec {
         form.errors mustBe empty
         form.value.flatMap(_.documentStatus) must be(Some("AB"))
       }
+    }
 
+    "trim white spaces" when {
+      "provided with document identifier with white spaces at beginning and end of string" in {
+        val trimmedValue = TestHelper.createRandomAlphanumericString(20)
+        val input = Map(documentTypeCodeKey -> "AB12", documentIdentifierKey -> s"\n \t${trimmedValue}\t \n")
+        val form = AdditionalDocument.form(declaration).bind(input)
+
+        form.errors mustBe empty
+        form.value.flatMap(_.documentIdentifier) must be(Some(trimmedValue))
+      }
     }
   }
 }

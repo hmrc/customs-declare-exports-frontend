@@ -17,7 +17,6 @@
 package views.declaration
 
 import base.{Injector, TestHelper}
-import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolderAdd
