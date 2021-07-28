@@ -21,10 +21,8 @@ import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper.cachedHolders
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.Mode
-import models.declaration.AuthorisationProcedureCode.Code1007
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -45,9 +43,8 @@ class DeclarationHolderSummaryController @Inject()(
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holders = cachedHolders
-    if (holders.isEmpty) navigator.continueTo(mode, nextPageWhenNoHolders)
-    else Ok(declarationHolderPage(mode, addAnotherYesNoForm.withSubmissionErrors(), holders))
+    if (cachedHolders.isEmpty) navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
+    else Ok(declarationHolderPage(mode, addAnotherYesNoForm.withSubmissionErrors(), cachedHolders))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -64,23 +61,8 @@ class DeclarationHolderSummaryController @Inject()(
       )
   }
 
-  private val addAnotherYesNoForm: Form[YesNoAnswer] =
+  private def addAnotherYesNoForm: Form[YesNoAnswer] =
     YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
-
-  private def nextPageWhenNoHolders(implicit request: JourneyRequest[_]): Mode => Call = {
-    val authProcedureCodeChoice = request.cacheModel.parties.authorisationProcedureCodeChoice.map(_.code)
-
-    (request.declarationType, request.cacheModel.additionalDeclarationType) match {
-      case (STANDARD, Some(STANDARD_PRE_LODGED)) if (authProcedureCodeChoice != Some(Code1007)) =>
-        routes.DeclarationHolderRequiredController.displayPage
-      case (CLEARANCE, _) if (!request.cacheModel.isEntryIntoDeclarantsRecords) =>
-        routes.DeclarationHolderRequiredController.displayPage
-      case (OCCASIONAL, _) =>
-        routes.DeclarationHolderRequiredController.displayPage
-      case _ =>
-        routes.DeclarationHolderAddController.displayPage
-    }
-  }
 
   private def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {

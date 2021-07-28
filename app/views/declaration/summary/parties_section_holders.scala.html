@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.declaration.routes
 @import forms.declaration.declarationHolder.DeclarationHolderAdd
 @import services.view.HolderOfAuthorisationCodes
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -30,7 +31,7 @@
     holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 )
 
-@(mode: Mode, holders: Seq[DeclarationHolderAdd], actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)
@@ -51,11 +52,15 @@
             changeLink(
                 messages("site.change"),
                 Some(messages("declaration.summary.parties.holders.change", holder.authorisationTypeCode.getOrElse(""), holderEori(holder))),
-                controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(mode)
+                routes.AuthorisationProcedureCodeChoiceController.displayPage(mode)
             )
         else
             ""
     }
+}
+
+@holders = @{
+  declarationData.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
 }
 
 @if(holders.isEmpty) {
@@ -71,7 +76,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(mode).url,
+                        href = routes.AuthorisationProcedureCodeChoiceController.displayPage(mode).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.parties.holders.empty.change"))
                     )

@@ -128,7 +128,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
         "form is correct and EIDR is false" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(YesNoAnswers.no)))
 
-          testFormSubmitRedirectsTo(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage())
+          testFormSubmitRedirectsTo(controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage())
         }
 
         "form is correct and EIDR is true" in {
