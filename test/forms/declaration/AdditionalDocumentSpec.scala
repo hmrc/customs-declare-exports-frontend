@@ -16,65 +16,67 @@
 
 package forms.declaration
 
-import base.TestHelper
+import base.{TestHelper, UnitSpec}
 import forms.common.Date._
-import forms.common.DateSpec.{correctDate, correctDateJSON, incorrectDate}
+import forms.common.DateSpec.{correctDate, incorrectDate}
+import forms.declaration.additionaldocuments.AdditionalDocument
+import forms.declaration.additionaldocuments.AdditionalDocument._
 import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
-import forms.declaration.additionaldocuments.AdditionalDocument._
-import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
-import base.UnitSpec
+import models.declaration.ExportDeclarationTestData.{allRecords, declaration}
 import play.api.data.FormError
-import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
 class AdditionalDocumentSpec extends UnitSpec {
 
   import AdditionalDocumentSpec._
 
-  "AdditionalDocument form with mapping used to bind data" should {
+  "AdditionalDocument form" should {
 
-    "return form with errors" when {
+    "contain errors" when {
 
-      "provided with Document Type Code" which {
+      "the user enters a Document Type Code" which {
 
-        "is empty" in {
-
-          val input = emptyAdditionalDocumentJSON
+        "is empty, but the user has selected 'yes' in the related 'yes/no' page" in {
+          val input = emptyAdditionalDocumentMap
           val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.empty"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
-        "is longer than 5 characters" in {
+        "is empty, but it was required after the entered authorisation code" in {
+          val input = emptyAdditionalDocumentMap
+          val expectedError = FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.empty.fromAuthCode")
 
-          val input = JsObject(Map(documentTypeCodeKey -> JsString("123456")))
+          val form = AdditionalDocument.form(allRecords).bind(input)
+          form.errors must contain(expectedError)
+        }
+
+        "is longer than 5 characters" in {
+          val input = Map(documentTypeCodeKey -> "123456")
           val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
         "is shorter than 4 characters" in {
-
-          val input = JsObject(Map(documentTypeCodeKey -> JsString("123")))
+          val input = Map(documentTypeCodeKey -> "123")
           val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
         "contains special characters" in {
-
-          val input = JsObject(Map(documentTypeCodeKey -> JsString("12!$")))
+          val input = Map(documentTypeCodeKey -> "12!$")
           val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
       }
 
-      "provided with Document Identifier and Part" which {
+      "the user enters a Document Identifier" which {
 
         "is longer than 35 characters" in {
-          val input =
-            JsObject(Map(documentTypeCodeKey -> JsString("AB12"), documentIdentifierKey -> JsString(TestHelper.createRandomAlphanumericString(36))))
+          val input = Map(documentTypeCodeKey -> "AB12", documentIdentifierKey -> TestHelper.createRandomAlphanumericString(36))
           val expectedErrors =
             Seq(FormError(documentIdentifierKey, "declaration.additionalDocument.documentIdentifier.error"))
 
@@ -82,7 +84,7 @@ class AdditionalDocumentSpec extends UnitSpec {
         }
 
         "contains special characters" in {
-          val input = JsObject(Map(documentTypeCodeKey -> JsString("AB12"), documentIdentifierKey -> JsString("12#$")))
+          val input = Map(documentTypeCodeKey -> "AB12", documentIdentifierKey -> "12#$")
           val expectedErrors =
             Seq(FormError(documentIdentifierKey, "declaration.additionalDocument.documentIdentifier.error"))
 
@@ -90,39 +92,34 @@ class AdditionalDocumentSpec extends UnitSpec {
         }
       }
 
-      "provided with Document Status" which {
+      "the user enters a Document Status" which {
 
         "is longer than 2 characters" in {
-
-          val input = JsObject(Map(documentTypeCodeKey -> JsString("AB12"), documentStatusKey -> JsString("ABC")))
+          val input = Map(documentTypeCodeKey -> "AB12", documentStatusKey -> "ABC")
           val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.documentStatus.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
         "contains special characters" in {
-
-          val input = JsObject(Map(documentTypeCodeKey -> JsString("AB12"), documentStatusKey -> JsString("A@")))
+          val input = Map(documentTypeCodeKey -> "AB12", documentStatusKey -> "A@")
           val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.documentStatus.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
         "contains digits" in {
-
-          val input = JsObject(Map(documentTypeCodeKey -> JsString("AB12"), documentStatusKey -> JsString("A4")))
+          val input = Map(documentTypeCodeKey -> "AB12", documentStatusKey -> "A4")
           val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.documentStatus.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
       }
 
-      "provided with Document Status Reason" which {
+      "the user enters a Document Status Reason" which {
 
         "is longer than 35 characters" in {
-
-          val input =
-            JsObject(Map(documentTypeCodeKey -> JsString("AB12"), documentStatusReasonKey -> JsString(TestHelper.createRandomAlphanumericString(36))))
+          val input = Map(documentTypeCodeKey -> "AB12", documentStatusReasonKey -> TestHelper.createRandomAlphanumericString(36))
           val expectedErrors =
             Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.error"))
 
@@ -130,8 +127,7 @@ class AdditionalDocumentSpec extends UnitSpec {
         }
 
         "contains special characters" in {
-
-          val input = JsObject(Map(documentTypeCodeKey -> JsString("AB12"), documentStatusReasonKey -> JsString("AB!@#$")))
+          val input = Map(documentTypeCodeKey -> "AB12", documentStatusReasonKey -> "AB!@#$")
           val expectedErrors =
             Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.error"))
 
@@ -139,12 +135,10 @@ class AdditionalDocumentSpec extends UnitSpec {
         }
       }
 
-      "provided with Issuing Authority Name" which {
+      "the user enters an Issuing Authority Name" which {
 
         "is longer than 70 characters" in {
-
-          val input =
-            JsObject(Map(documentTypeCodeKey -> JsString("AB12"), issuingAuthorityNameKey -> JsString(TestHelper.createRandomAlphanumericString(71))))
+          val input = Map(documentTypeCodeKey -> "AB12", issuingAuthorityNameKey -> TestHelper.createRandomAlphanumericString(71))
           val expectedErrors =
             Seq(FormError(issuingAuthorityNameKey, "declaration.additionalDocument.issuingAuthorityName.error.length"))
 
@@ -152,15 +146,14 @@ class AdditionalDocumentSpec extends UnitSpec {
         }
       }
 
-      "provided with Date Of Validity" which {
+      "the user enters a Date Of Validity" which {
 
         "is in incorrect format" in {
-
-          val input = JsObject(
-            Map(
-              documentTypeCodeKey -> JsString("AB12"),
-              dateOfValidityKey -> JsObject(Map(yearKey -> JsString("2000"), monthKey -> JsString("13"), dayKey -> JsString("32")))
-            )
+          val input = Map(
+            documentTypeCodeKey -> "AB12",
+            s"$dateOfValidityKey.$yearKey" -> "2000",
+            s"$dateOfValidityKey.$monthKey" -> "13",
+            s"$dateOfValidityKey.$dayKey" -> "32"
           )
           val expectedErrors = Seq(FormError(dateOfValidityKey, "declaration.additionalDocument.dateOfValidity.error.format"))
 
@@ -168,11 +161,14 @@ class AdditionalDocumentSpec extends UnitSpec {
         }
       }
 
-      "provided with Document WriteOff" which {
+      "the user enters a Document WriteOff" which {
 
         "contains errors in its fields" in {
-
-          val input = JsObject(Map(documentTypeCodeKey -> JsString("AB12"), documentWriteOffKey -> incorrectDocumentWriteOffJSON))
+          val input = Map(
+            documentTypeCodeKey -> "AB12",
+            s"$documentWriteOffKey.$measurementUnitKey" -> TestHelper.createRandomAlphanumericString(6),
+            s"$documentWriteOffKey.$documentQuantityKey" -> "12345678901234567"
+          )
           val expectedErrors = Seq(
             FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.additionalDocument.measurementUnit.error"),
             FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.additionalDocument.documentQuantity.error")
@@ -182,63 +178,40 @@ class AdditionalDocumentSpec extends UnitSpec {
         }
       }
 
-      def testFailedValidationErrors(input: JsValue, expectedErrors: Seq[FormError]): Unit = {
-        val form = AdditionalDocument.form.bind(input)
+      def testFailedValidationErrors(input: Map[String, String], expectedErrors: Seq[FormError]): Unit = {
+        val form = AdditionalDocument.form(declaration).bind(input)
         expectedErrors.foreach(form.errors must contain(_))
       }
     }
 
-    "return form without errors" when {
+    "not contain errors" when {
 
-      "provided with correct data" in {
-
-        val form = AdditionalDocument.form.bind(correctAdditionalDocumentJSON)
+      "the user enters correct data" in {
+        val form = AdditionalDocument.form(declaration).bind(correctAdditionalDocumentMap)
         form.errors mustBe empty
       }
 
-      "provided with Issuing Authority Name containing special characters" in {
+      "the user enters an Issuing Authority Name containing special characters" in {
+        val input = Map(documentTypeCodeKey -> "AB12", issuingAuthorityNameKey -> "Issuing Authority Name with ''' added")
+        val form = AdditionalDocument.form(declaration).bind(input)
 
-        val input =
-          JsObject(Map(documentTypeCodeKey -> JsString("AB12"), issuingAuthorityNameKey -> JsString("Issuing Authority Name with ''' added")))
-        val form = AdditionalDocument.form.bind(input)
-
-        form.errors mustBe empty
-      }
-
-      "provide the correct data" in {
-
-        val input = JsObject(
-          Map(
-            documentTypeCodeKey -> JsString("AB12"),
-            documentIdentifierKey -> JsString("ABCDEF1234567890"),
-            documentStatusKey -> JsString("AB"),
-            documentStatusReasonKey -> JsString("DocumentStatusReason"),
-            issuingAuthorityNameKey -> JsString("Issuing Authority Name"),
-            dateOfValidityKey -> correctDateJSON,
-            documentWriteOffKey -> Json.toJson(DocumentWriteOff(Some("ABC"), Some(12)))
-          )
-        )
-
-        val form = AdditionalDocument.form.bind(input)
         form.errors mustBe empty
       }
     }
 
     "convert input to upper case" when {
 
-      "provided with document type code in lower case" in {
-
-        val input = JsObject(Map(documentTypeCodeKey -> JsString("ab12")))
-        val form = AdditionalDocument.form.bind(input)
+      "the user enters a document type code in lower case" in {
+        val input = Map(documentTypeCodeKey -> "ab12")
+        val form = AdditionalDocument.form(declaration).bind(input)
 
         form.errors mustBe empty
         form.value.flatMap(_.documentTypeCode) must be(Some("AB12"))
       }
 
-      "provided with document status in lower case" in {
-
-        val input = JsObject(Map(documentTypeCodeKey -> JsString("AB12"), documentStatusKey -> JsString("Ab")))
-        val form = AdditionalDocument.form.bind(input)
+      "the user enters a document status in lower case" in {
+        val input = Map(documentTypeCodeKey -> "AB12", documentStatusKey -> "Ab")
+        val form = AdditionalDocument.form(declaration).bind(input)
 
         form.errors mustBe empty
         form.value.flatMap(_.documentStatus) must be(Some("AB"))
@@ -271,20 +244,8 @@ object AdditionalDocumentSpec {
     s"$dateOfValidityKey.$yearKey" -> correctDate.year.get.toString,
     s"$dateOfValidityKey.$monthKey" -> correctDate.month.get.toString,
     s"$dateOfValidityKey.$dayKey" -> correctDate.day.get.toString,
-    s"$documentWriteOffKey.$measurementUnitKey" -> "AB12",
+    s"$documentWriteOffKey.$measurementUnitKey" -> "AB1",
     s"$documentWriteOffKey.$documentQuantityKey" -> "1234567890.123456"
-  )
-
-  val correctAdditionalDocumentJSON: JsValue = JsObject(
-    Map(
-      documentTypeCodeKey -> JsString(categoryCode + typeCode),
-      documentIdentifierKey -> JsString("ABCDEF1234567890"),
-      documentStatusKey -> JsString("AB"),
-      documentStatusReasonKey -> JsString("DocumentStatusReason"),
-      issuingAuthorityNameKey -> JsString("Issuing Authority Name"),
-      dateOfValidityKey -> correctDateJSON,
-      documentWriteOffKey -> correctDocumentWriteOffJSON
-    )
   )
 
   val incorrectAdditionalDocumentMap: Map[String, String] = Map(
@@ -300,15 +261,16 @@ object AdditionalDocumentSpec {
     s"$documentWriteOffKey.$documentQuantityKey" -> "12345678901234567"
   )
 
-  val emptyAdditionalDocumentJSON: JsValue = JsObject(
-    Map(
-      documentTypeCodeKey -> JsString(""),
-      documentIdentifierKey -> JsString(""),
-      documentStatusKey -> JsString(""),
-      documentStatusReasonKey -> JsString(""),
-      issuingAuthorityNameKey -> JsString(""),
-      dateOfValidityKey -> JsObject(Map("year" -> JsString(""), "month" -> JsString(""), "day" -> JsString(""))),
-      documentWriteOffKey -> emptyDocumentWriteOffJSON
-    )
+  val emptyAdditionalDocumentMap: Map[String, String] = Map(
+    documentTypeCodeKey -> "",
+    documentIdentifierKey -> "",
+    documentStatusKey -> "",
+    documentStatusReasonKey -> "",
+    issuingAuthorityNameKey -> "",
+    s"$dateOfValidityKey.$yearKey" -> "",
+    s"$dateOfValidityKey.$monthKey" -> "",
+    s"$dateOfValidityKey.$dayKey" -> "",
+    s"$documentWriteOffKey.$measurementUnitKey" -> "",
+    s"$documentWriteOffKey.$documentQuantityKey" -> ""
   )
 }

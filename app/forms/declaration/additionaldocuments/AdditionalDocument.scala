@@ -20,9 +20,10 @@ import forms.DeclarationPage
 import forms.common.Date
 import forms.declaration.additionaldocuments.DocumentWriteOff._
 import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.ExportsDeclaration
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms._
-import play.api.data.{Form, FormError, Forms}
+import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.libs.json.{JsValue, Json}
 import utils.validators.forms.FieldValidator._
 
@@ -62,12 +63,16 @@ object AdditionalDocument extends DeclarationPage {
   val issuingAuthorityNameKey = "issuingAuthorityName"
   val dateOfValidityKey = "dateOfValidity"
 
-  val mapping = {
+  private def mapping(cacheModel: ExportsDeclaration): Mapping[AdditionalDocument] = {
+    val keyWhenDocumentTypeCodeEmpty =
+      if (cacheModel.isAuthCodeRequiringAdditionalDocuments) "declaration.additionalDocument.documentTypeCode.empty.fromAuthCode"
+      else "declaration.additionalDocument.documentTypeCode.empty"
+
     val documentTypeCodeRequired = optional(
       text()
-        .verifying("declaration.additionalDocument.documentTypeCode.empty", nonEmpty)
+        .verifying(keyWhenDocumentTypeCodeEmpty, nonEmpty)
         .verifying("declaration.additionalDocument.documentTypeCode.error", isEmpty or (hasSpecificLength(4) and isAlphanumeric))
-    ).verifying("declaration.additionalDocument.documentTypeCode.empty", isPresent)
+    ).verifying(keyWhenDocumentTypeCodeEmpty, isPresent)
 
     Forms
       .mapping(
@@ -114,7 +119,8 @@ object AdditionalDocument extends DeclarationPage {
       documentWriteOff
     )
 
-  def form: Form[AdditionalDocument] = Form(mapping)
+  def form(cacheModel: ExportsDeclaration): Form[AdditionalDocument] =
+    Form(mapping(cacheModel))
 
   def globalErrors(form: Form[AdditionalDocument]): Form[AdditionalDocument] = {
 

@@ -100,7 +100,7 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
 
         val declaration = aDeclaration(withDeclarationHolders(declarationsHoldersData))
 
-        declaration.isAdditionalDocumentationRequired mustBe true
+        declaration.isAuthCodeRequiringAdditionalDocuments mustBe true
       }
 
       "more than one DeclarationHolder returns true when called with isAdditionalDocumentationRequired method" in {
@@ -114,7 +114,7 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
 
         val declaration = aDeclaration(withDeclarationHolders(declarationsHoldersData))
 
-        declaration.isAdditionalDocumentationRequired mustBe true
+        declaration.isAuthCodeRequiringAdditionalDocuments mustBe true
       }
     }
 
@@ -127,7 +127,7 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
 
         val declaration = aDeclaration(withDeclarationHolders(declarationsHoldersData))
 
-        declaration.isAdditionalDocumentationRequired mustBe false
+        declaration.isAuthCodeRequiringAdditionalDocuments mustBe false
       }
     }
   }

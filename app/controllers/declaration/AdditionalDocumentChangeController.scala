@@ -49,7 +49,7 @@ class AdditionalDocumentChangeController @Inject()(
   def displayPage(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
       case Some(document) =>
-        val changeForm = form.fill(document).withSubmissionErrors()
+        val changeForm = form(request.cacheModel).fill(document).withSubmissionErrors()
         Ok(additionalDocumentChangePage(mode, itemId, documentId, changeForm))
 
       case _ => returnToSummary(mode, itemId)
@@ -59,7 +59,7 @@ class AdditionalDocumentChangeController @Inject()(
   def submitForm(mode: Mode, itemId: String, documentId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalDocument(itemId, documentId) match {
       case Some(existingDocument) =>
-        val boundForm = globalErrors(form.bindFromRequest())
+        val boundForm = globalErrors(form(request.cacheModel).bindFromRequest())
         boundForm.fold(
           formWithErrors => {
             Future.successful(BadRequest(additionalDocumentChangePage(mode, itemId, documentId, formWithErrors)))

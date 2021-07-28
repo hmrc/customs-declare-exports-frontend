@@ -89,7 +89,7 @@ case class ExportsDeclaration(
 
   def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).exists(_.nonEmpty)
 
-  def isAdditionalDocumentationRequired: Boolean =
+  def isAuthCodeRequiringAdditionalDocuments: Boolean =
     parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
 
   def isCommodityCodeOfItemPrefixedWith(itemId: String, prefix: Seq[Int]): Boolean =

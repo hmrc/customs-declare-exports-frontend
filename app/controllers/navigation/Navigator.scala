@@ -393,7 +393,7 @@ object Navigator {
     if (cacheModel.listOfAdditionalDocuments(itemId).nonEmpty)
       routes.AdditionalDocumentsController.displayPage(mode, itemId)
     else {
-      if (cacheModel.isAdditionalDocumentationRequired) additionalDocumentsSummaryPreviousPage(cacheModel, mode, itemId)
+      if (cacheModel.isAuthCodeRequiringAdditionalDocuments) additionalDocumentsSummaryPreviousPage(cacheModel, mode, itemId)
       else routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId)
     }
 
