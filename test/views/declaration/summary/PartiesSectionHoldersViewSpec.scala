@@ -16,15 +16,20 @@
 
 package views.declaration.summary
 
-import base.Injector
+import base.OverridableInjector
 import forms.common.Eori
 import forms.declaration.declarationHolder.DeclarationHolderAdd
-import models.Mode
+import models.{ExportsDeclaration, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import play.api.inject.bind
+import play.api.mvc.Call
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.parties_section_holders
 
-class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData with BeforeAndAfterEach {
 
   val eori1 = "eori1"
   val eori2 = "eori2"
@@ -34,49 +39,65 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
   val holders =
     Seq(DeclarationHolderAdd(Some(authorisationTypeCode1), Some(Eori(eori1))), DeclarationHolderAdd(Some(authorisationTypeCode2), Some(Eori(eori2))))
 
-  private val section = instanceOf[parties_section_holders]
+  private val partiesSectionHoldersHelper = mock[PartiesSectionHoldersHelper]
+  private val testCall = Call("GET", "/test-call-url")
 
-  "Holders (authorised) parties section" should {
+  private val section = new OverridableInjector(bind[PartiesSectionHoldersHelper].to(partiesSectionHoldersHelper)).instanceOf[parties_section_holders]
 
-    "display holders with answer no if empty" in {
+  override def beforeEach(): Unit = {
+    super.beforeEach()
 
-      val view = section(Mode.Normal, Seq.empty)(messages)
-      val row = view.getElementsByClass("holders-row")
+    reset(partiesSectionHoldersHelper)
+    when(partiesSectionHoldersHelper.changeLinkTarget(any[ExportsDeclaration])).thenReturn(_ => testCall)
+  }
 
-      row must haveSummaryKey(messages("declaration.summary.parties.holders"))
-      row must haveSummaryValue(messages("site.no"))
+  "Holders (authorised) parties section" when {
 
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.holders.empty.change")
+    "DeclarationHoldersData is empty" should {
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal))
+      "display holders with answer 'No'" in {
+
+        val view = section(Mode.Normal, aDeclaration())(messages)
+        val row = view.getElementsByClass("holders-row")
+
+        row must haveSummaryKey(messages("declaration.summary.parties.holders"))
+        row must haveSummaryValue(messages("site.no"))
+
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.holders.empty.change")
+
+        row must haveSummaryActionsHref(testCall)
+      }
     }
 
-    "display holders if exists" in {
+    "DeclarationHoldersData is NOT empty" should {
 
-      val view = section(Mode.Normal, holders)(messages)
-      val table = view.getElementById("holders-table")
+      "display holders" in {
 
-      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.parties.holders")
+        val view = section(Mode.Normal, aDeclaration(withDeclarationHolders(holders: _*)))(messages)
+        val table = view.getElementById("holders-table")
 
-      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.parties.holders.type")
-      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.parties.holders.eori")
-      table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("site.change.header")
+        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.parties.holders")
 
-      val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
-      row1.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode1)
-      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori1
-      val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row1ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage())
-      row1ChangeLink
-        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode1, eori1)}"
+        table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.parties.holders.type")
+        table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.parties.holders.eori")
+        table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("site.change.header")
 
-      val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-      row2.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode2)
-      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori2
-      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row2ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage())
-      row2ChangeLink
-        .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode2, eori2)}"
+        val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+        row1.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode1)
+        row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori1
+        val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+        row1ChangeLink must haveHref(testCall)
+        row1ChangeLink
+          .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode1, eori1)}"
+
+        val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+        row2.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode2)
+        row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori2
+        val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+        row2ChangeLink must haveHref(testCall)
+        row2ChangeLink
+          .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode2, eori2)}"
+      }
     }
   }
 }

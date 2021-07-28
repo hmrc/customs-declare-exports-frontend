@@ -18,6 +18,7 @@
 @import services.view.HolderOfAuthorisationCodes
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
+@import views.declaration.summary.PartiesSectionHoldersHelper
 @import views.declaration.summary.TableCell
 @import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list}
 
@@ -27,10 +28,11 @@
     linkContent: linkContent,
     spanVisuallyHidden: spanVisuallyHidden,
     summaryList: summary_list,
-    holderOfAuthorisationCodes: HolderOfAuthorisationCodes
+    holderOfAuthorisationCodes: HolderOfAuthorisationCodes,
+    partiesSectionHoldersHelper: PartiesSectionHoldersHelper
 )
 
-@(mode: Mode, holders: Seq[DeclarationHolderAdd], actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)
@@ -51,11 +53,15 @@
             changeLink(
                 messages("site.change"),
                 Some(messages("declaration.summary.parties.holders.change", holder.authorisationTypeCode.getOrElse(""), holderEori(holder))),
-                controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(mode)
+                partiesSectionHoldersHelper.changeLinkTarget(declarationData)(mode)
             )
         else
             ""
     }
+}
+
+@holders = @{
+  declarationData.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
 }
 
 @if(holders.isEmpty) {
@@ -71,7 +77,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(mode).url,
+                        href = partiesSectionHoldersHelper.changeLinkTarget(declarationData)(mode).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.parties.holders.empty.change"))
                     )

@@ -18,10 +18,11 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.declaration.AuthorisationProcedureCodeChoice
-import models.{ExportsDeclaration, Mode}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{apply => _, _}
 import models.DeclarationType._
 import models.declaration.AuthorisationProcedureCode
 import models.declaration.AuthorisationProcedureCode.Code1040
+import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -47,8 +48,8 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
+
     authorizedUser()
-    withNewCaching(aDeclaration(withType(STANDARD)))
     when(authorisationProcedureCodeChoice.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -69,11 +70,15 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
     captor.getValue
   }
 
-  "Authorisation Procedure Code Choice Controller" must {
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, CLEARANCE) { request =>
-      "the displayPage method is invoked" when {
+  "Authorisation Procedure Code Choice Controller" when {
+
+    "the displayPage method is invoked" must {
+
+      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, CLEARANCE) { request =>
         "the cache is empty" should {
           "return 200 (OK)" in {
+            withNewCaching(request.cacheModel)
+
             val result = controller.displayPage(Mode.Normal)(getRequest())
 
             status(result) must be(OK)
@@ -84,6 +89,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
         "the cache is not empty" should {
           "return 200 (OK)" in {
             withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationProcedureCodeChoice(AuthorisationProcedureCodeChoice(Code1040))))
+
             val result = controller.displayPage(Mode.Normal)(getRequest())
 
             status(result) must be(OK)
@@ -92,52 +98,128 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
         }
       }
 
-      "the submit method is invoked" when {
-        "the form contains incorrect values" should {
+      onJourney(OCCASIONAL) { request =>
+        "return 303 (SEE_OTHER)" in {
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe SEE_OTHER
+        }
+      }
+    }
+
+    "the submit method is invoked" when {
+
+      onJourney(OCCASIONAL) { request =>
+        "return 303 (SEE_OTHER)" in {
+          withNewCaching(request.cacheModel)
+          val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> AuthorisationProcedureCode.Code1040.toString)
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          status(result) mustBe SEE_OTHER
+        }
+      }
+
+      "the form contains incorrect value" when {
+        onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, CLEARANCE) { request =>
           "return 400 (BAD_REQUEST)" in {
             withNewCaching(request.cacheModel)
+
             val result = controller.submitForm(Mode.Normal)(postRequest(Json.obj()))
 
             status(result) must be(BAD_REQUEST)
             verifyTheCacheIsUnchanged()
           }
         }
+      }
 
-        "the form contains valid value" should {
+      "the form contains correct value" should {
+
+        onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, CLEARANCE) { request =>
           "return 303 (SEE_OTHER)" when {
             AuthorisationProcedureCode.values.foreach { authorisationProcedureCode =>
-              s"value equals '${authorisationProcedureCode}'" in {
+              s"AuthorisationProcedureCode equals '${authorisationProcedureCode}'" in {
                 withNewCaching(request.cacheModel)
                 val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> authorisationProcedureCode.toString)
+
                 val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
                 await(result) mustBe aRedirectToTheNextPage
-                thePageNavigatedTo mustBe routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
                 verify(authorisationProcedureCodeChoice, times(0)).apply(any(), any())(any(), any())
                 verify(mockExportsCacheService).update(any[ExportsDeclaration])(any())
               }
             }
           }
         }
-      }
-    }
 
-    onJourney(OCCASIONAL) { request =>
-      "the displayPage method is invoked" should {
-        "return 303 (SEE_OTHER)" in {
-          val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> AuthorisationProcedureCode.Code1040.toString)
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        onJourney(STANDARD) { request =>
+          "AdditionalDeclarationType is pre-lodged and AuthorisationProcedureCode is 1040" should {
+            "redirect to DeclarationHolderRequiredController" in {
+              withNewCaching(request.cacheModel.copy(additionalDeclarationType = Some(STANDARD_PRE_LODGED)))
+              val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> AuthorisationProcedureCode.Code1040.toString)
 
-          await(result) mustBe aRedirectToTheNextPage
+              val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
+            }
+          }
+
+          "AdditionalDeclarationType is pre-lodged and AuthorisationProcedureCode is 'Other'" should {
+            "redirect to DeclarationHolderRequiredController" in {
+              withNewCaching(request.cacheModel.copy(additionalDeclarationType = Some(STANDARD_PRE_LODGED)))
+              val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> AuthorisationProcedureCode.CodeOther.toString)
+
+              val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
+            }
+          }
+
+          "AdditionalDeclarationType is pre-lodged and AuthorisationProcedureCode is 1007" should {
+            "redirect to DeclarationHolderSummaryController" in {
+              withNewCaching(request.cacheModel.copy(additionalDeclarationType = Some(STANDARD_PRE_LODGED)))
+              val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> AuthorisationProcedureCode.Code1007.toString)
+
+              val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
+            }
+          }
+
+          AuthorisationProcedureCode.values.foreach { authorisationProcedureCode =>
+            s"AdditionalDeclarationType is frontier and AuthorisationProcedureCode is '${authorisationProcedureCode}''" should {
+              "redirect to DeclarationHolderSummaryController" in {
+                withNewCaching(request.cacheModel.copy(additionalDeclarationType = Some(STANDARD_FRONTIER)))
+                val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> authorisationProcedureCode.toString)
+
+                val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+                await(result) mustBe aRedirectToTheNextPage
+                thePageNavigatedTo mustBe routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
+              }
+            }
+          }
         }
-      }
 
-      "the submit method is invoked" should {
-        "return 303 (SEE_OTHER)" in {
-          val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> AuthorisationProcedureCode.Code1040.toString)
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        onJourney(SUPPLEMENTARY, SIMPLIFIED, CLEARANCE) { request =>
+          AuthorisationProcedureCode.values.foreach { authorisationProcedureCode =>
+            s"AuthorisationProcedureCode is '${authorisationProcedureCode}'" should {
+              "redirect to DeclarationHolderSummaryController" in {
+                withNewCaching(request.cacheModel)
+                val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> authorisationProcedureCode.toString)
 
-          await(result) mustBe aRedirectToTheNextPage
+                val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+                await(result) mustBe aRedirectToTheNextPage
+                thePageNavigatedTo mustBe routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
+              }
+            }
+          }
         }
       }
     }

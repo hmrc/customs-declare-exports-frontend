@@ -18,13 +18,9 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.declarationHolder.DeclarationHolderAdd
-import forms.declaration.AuthorisationProcedureCodeChoice
 import models.DeclarationType._
 import models.Mode
-import models.declaration.Parties
-import models.declaration.AuthorisationProcedureCode._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -83,11 +79,12 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
   val declarationHolder: DeclarationHolderAdd = DeclarationHolderAdd(Some("ACE"), Some(Eori("GB56523343784324")))
   val id = "ACE-GB56523343784324"
 
-  "DeclarationHolder Summary Controller" should {
+  "DeclarationHolderSummaryController on displayPage" should {
 
     onEveryDeclarationJourney() { request =>
-      "return 200 (OK)" that {
-        "display page method is invoked and the cache contains one or more holders" in {
+      "return 200 (OK)" when {
+
+        "the cache contains one or more holders" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -97,10 +94,23 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
 
           theHoldersList must be(Seq(declarationHolder))
         }
+
+        "there are no holders in the cache" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+        }
       }
+    }
+  }
 
+  "DeclarationHolderSummaryController on submitForm" should {
+
+    onEveryDeclarationJourney() { request =>
       "return 400 (BAD_REQUEST)" when {
-
         "the user submits the page but does not answer with yes or no" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
@@ -126,94 +136,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
       }
     }
 
-    "return 303 (SEE_OTHER)" when {
-      onJourney(STANDARD) { implicit request =>
-        "there are no holders in the cache" when {
-          "pre-lodged is selected and Auth Procedure Code Choice is not 1007" in {
-            val parties = Parties(authorisationProcedureCodeChoice = Some(AuthorisationProcedureCodeChoice(Code1040)))
-            withNewCaching(
-              request.cacheModel.copy(parties = parties, additionalDeclarationType = Some(AdditionalDeclarationType.STANDARD_PRE_LODGED))
-            )
-
-            val result = controller.displayPage(Mode.Normal)(getRequest())
-
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
-          }
-
-          "pre-lodged is selected and Auth Procedure Code Choice is 1007" in {
-            val parties = Parties(authorisationProcedureCodeChoice = Some(AuthorisationProcedureCodeChoice(Code1007)))
-            withNewCaching(
-              request.cacheModel.copy(parties = parties, additionalDeclarationType = Some(AdditionalDeclarationType.STANDARD_PRE_LODGED))
-            )
-
-            val result = controller.displayPage(Mode.Normal)(getRequest())
-
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
-          }
-
-          "pre-lodged is not selected" in {
-            withNewCaching(request.cacheModel.copy(additionalDeclarationType = Some(AdditionalDeclarationType.STANDARD_FRONTIER)))
-
-            val result = controller.displayPage(Mode.Normal)(getRequest())
-
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
-          }
-        }
-      }
-
-      onJourney(SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
-        "there are no holders in the cache" in {
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
-        }
-      }
-
-      onJourney(OCCASIONAL) { implicit request =>
-        "there are no holders in the cache" in {
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
-        }
-      }
-
-      onJourney(CLEARANCE) { implicit request =>
-        "EIDR is true" when {
-          "there are no holders in the cache" in {
-            val parties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer.Yes))
-            withNewCaching(request.cacheModel.copy(parties = parties))
-
-            val result = controller.displayPage(Mode.Normal)(getRequest())
-
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
-          }
-        }
-
-        "EIDR is false" when {
-          "there are no holders in the cache" in {
-            val parties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer.No))
-            withNewCaching(request.cacheModel.copy(parties = parties))
-
-            val result = controller.displayPage(Mode.Normal)(getRequest())
-
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
-          }
-        }
-      }
-    }
-
-    "re-direct to next question" when {
+    "re-direct to next page" when {
       onJourney(STANDARD, SUPPLEMENTARY) { request =>
         "the user submits the page answering No" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
@@ -238,6 +161,5 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         }
       }
     }
-
   }
 }

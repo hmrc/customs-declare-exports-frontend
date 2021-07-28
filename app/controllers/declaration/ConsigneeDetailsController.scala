@@ -31,9 +31,6 @@ import views.html.declaration.consignee_details
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * This controller is not used in supp dec journey
-  */
 class ConsigneeDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -69,7 +66,7 @@ class ConsigneeDetailsController @Inject()(
       case (DeclarationType.CLEARANCE, true) =>
         controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage
       case (DeclarationType.CLEARANCE, false) =>
-        controllers.declaration.routes.DeclarationHolderSummaryController.displayPage
+        controllers.declaration.routes.DeclarationHolderRequiredController.displayPage
       case _ =>
         controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
     }

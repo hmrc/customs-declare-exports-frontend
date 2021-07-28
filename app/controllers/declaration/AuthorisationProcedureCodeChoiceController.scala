@@ -16,19 +16,22 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.AuthorisationProcedureCodeChoice
-import javax.inject.Inject
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import models.DeclarationType._
+import models.declaration.AuthorisationProcedureCode._
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.authorisation_procedure_code_choice
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationProcedureCodeChoiceController @Inject()(
   authenticate: AuthAction,
@@ -40,8 +43,7 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  private val validTypes =
-    Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.CLEARANCE)
+  private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val form = AuthorisationProcedureCodeChoice.form().withSubmissionErrors()
@@ -57,7 +59,7 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
       .bindFromRequest()
       .fold(
         errors => Future.successful(BadRequest(authorisationProcedureCodeChoice(errors, mode))),
-        updateCache(_).map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+        updateCache(_).map(exportsDeclarationUpdated => navigator.continueTo(mode, nextPage(exportsDeclarationUpdated)))
       )
   }
 
@@ -65,4 +67,15 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
     choice: AuthorisationProcedureCodeChoice
   )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(_.updateAuthorisationProcedureCodeChoice(choice))
+
+  private def nextPage(exportsDeclarationOpt: Option[ExportsDeclaration]): Mode => Call =
+    (for {
+      exportsDeclaration <- exportsDeclarationOpt
+      authProcedureCodeChoice <- exportsDeclaration.parties.authorisationProcedureCodeChoice.map(_.code)
+
+    } yield (exportsDeclaration.`type`, exportsDeclaration.additionalDeclarationType, authProcedureCodeChoice)) match {
+      case Some((STANDARD, Some(STANDARD_PRE_LODGED), Code1040 | CodeOther)) => routes.DeclarationHolderRequiredController.displayPage
+      case _                                                                 => routes.DeclarationHolderSummaryController.displayPage
+    }
+
 }
