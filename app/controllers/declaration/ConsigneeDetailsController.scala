@@ -19,8 +19,9 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ConsigneeDetails
+import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -31,9 +32,6 @@ import views.html.declaration.consignee_details
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * This controller is not used in supp dec journey
-  */
 class ConsigneeDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -65,13 +63,9 @@ class ConsigneeDetailsController @Inject()(
   }
 
   private def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =
-    (request.declarationType, request.cacheModel.isEntryIntoDeclarantsRecords) match {
-      case (DeclarationType.CLEARANCE, true) =>
-        controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage
-      case (DeclarationType.CLEARANCE, false) =>
-        controllers.declaration.routes.DeclarationHolderSummaryController.displayPage
-      case _ =>
-        controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
+    request.declarationType match {
+      case CLEARANCE => routes.AuthorisationProcedureCodeChoiceController.displayPage
+      case _         => routes.AdditionalActorsSummaryController.displayPage
     }
 
   private def updateCache(formData: ConsigneeDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

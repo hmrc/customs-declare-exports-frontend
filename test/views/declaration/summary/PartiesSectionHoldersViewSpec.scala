@@ -40,7 +40,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
 
     "display holders with answer no if empty" in {
 
-      val view = section(Mode.Normal, Seq.empty)(messages)
+      val view = section(Mode.Normal, aDeclaration())(messages)
       val row = view.getElementsByClass("holders-row")
 
       row must haveSummaryKey(messages("declaration.summary.parties.holders"))
@@ -48,12 +48,12 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.holders.empty.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal))
+      row must haveSummaryActionsHref(controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal))
     }
 
     "display holders if exists" in {
 
-      val view = section(Mode.Normal, holders)(messages)
+      val view = section(Mode.Normal, aDeclaration(withDeclarationHolders(holders: _*)))(messages)
       val table = view.getElementById("holders-table")
 
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.parties.holders")
@@ -66,7 +66,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
       row1.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode1)
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori1
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row1ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage())
+      row1ChangeLink must haveHref(controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage())
       row1ChangeLink
         .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode1, eori1)}"
 
@@ -74,7 +74,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
       row2.getElementsByClass("govuk-table__cell").get(0).text() must include(authorisationTypeCode2)
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori2
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row2ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderSummaryController.displayPage())
+      row2ChangeLink must haveHref(controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage())
       row2ChangeLink
         .text() mustBe s"${messages("site.change")} ${messages("declaration.summary.parties.holders.change", authorisationTypeCode2, eori2)}"
     }
