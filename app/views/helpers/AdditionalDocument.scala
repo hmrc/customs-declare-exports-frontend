@@ -35,12 +35,12 @@ object AdditionalDocument {
     if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments) {
       val html = new Html(
         List(
-          new paragraphBody().apply(messages("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph1")),
-          new paragraphBody().apply(messages("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph2"))
+          new paragraphBody()(messages("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph1")),
+          new paragraphBody()(messages("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph2"))
         )
       )
 
-      val insets = new govukInsetText().apply(InsetText(content = HtmlContent(html)))
+      val insets = new govukInsetText()(InsetText(content = HtmlContent(html)))
       Some(insets)
     } else None
 
@@ -48,12 +48,12 @@ object AdditionalDocument {
     if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments)
       new Html(
         List(
-          new govukHint().apply(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint.fromAuthCode.paragraph1")))),
-          new govukHint().apply(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint.fromAuthCode.paragraph2"))))
+          new govukHint()(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint.fromAuthCode.paragraph1")))),
+          new govukHint()(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint.fromAuthCode.paragraph2"))))
         )
       )
     else
-      new Html(List(new govukHint().apply(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint"))))))
+      new Html(List(new govukHint()(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint"))))))
 
   def title(implicit request: JourneyRequest[_]): String =
     if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments) "declaration.additionalDocument.title.fromAuthCode"

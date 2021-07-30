@@ -18,22 +18,38 @@ package views.helpers
 
 import java.time.ZonedDateTime
 
+import config.featureFlags.SfusConfig
+import javax.inject.Inject
 import models.declaration.notifications.Notification
+import models.declaration.submissions.Submission
 import play.api.i18n.Messages
 import play.twirl.api.Html
+import views.html.components.upload_files_partial_for_timeline
 
-case class TimelineEvent(title: String, dateTime: ZonedDateTime, content: Option[Html]) extends Ordered[TimelineEvent] {
+case class TimelineEvent(title: String, dateTime: ZonedDateTime, content: Option[Html])
 
-  def compare(that: TimelineEvent): Int =
-    if (dateTime == that.dateTime) 0
-    else if (dateTime.isAfter(that.dateTime)) -1
-    else 1
-}
+class TimelineEvents @Inject()(sfusConfig: SfusConfig, uploadFilesPartialForTimeline: upload_files_partial_for_timeline) {
+  def apply(submission: Submission, notifications: Seq[Notification])(implicit messages: Messages): Seq[TimelineEvent] = {
+    val sortedNotifications =
+      notifications
+        .map(notification => notification.copy(dateTimeIssued = notification.dateTimeIssuedInUK))
+        .sorted
+        .reverse
 
-object TimelineEvents {
+    val IndexToMatchForUploadFilesContent = sortedNotifications.indexWhere(_.isStatusDMSDocOrDMSCtl)
 
-  def apply(notifications: Seq[Notification])(implicit messages: Messages): Seq[TimelineEvent] =
-    notifications.map { notification =>
-      TimelineEvent(title = StatusOfSubmission.asText(notification), dateTime = notification.dateTimeIssuedInUK, content = None)
-    }.sorted
+    sortedNotifications.zipWithIndex.map {
+      case (notification, index) =>
+        val content = index match {
+          case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled => uploadFilesContent(submission.mrn)
+          case _                                                                   => None
+        }
+        TimelineEvent(title = StatusOfSubmission.asText(notification), dateTime = notification.dateTimeIssued, content = content)
+    }
+  }
+
+  private def uploadFilesContent(mrn: Option[String])(implicit messages: Messages): Option[Html] = {
+    val element = uploadFilesPartialForTimeline(mrn)
+    Some(new Html(List(element)))
+  }
 }
