@@ -30,11 +30,17 @@ case class TimelineEvent(title: String, dateTime: ZonedDateTime, content: Option
 
 class TimelineEvents @Inject()(sfusConfig: SfusConfig, uploadFilesPartialForTimeline: upload_files_partial_for_timeline) {
   def apply(submission: Submission, notifications: Seq[Notification])(implicit messages: Messages): Seq[TimelineEvent] = {
-    val sortedNotifications =
+    val sortedNotifications = {
+      /*
+      Not sure if the normalisation we are doing by using ZonedDateTime.withZoneSameInstant (dateTimeIssuedInUK)
+      could potentially affect or not the order in case the source ZonedDateTime instances in Notification have
+      different time zones. Accordingly, just to be safe, I decided to apply the normalisation before sorting.
+       */
       notifications
         .map(notification => notification.copy(dateTimeIssued = notification.dateTimeIssuedInUK))
         .sorted
         .reverse
+    }
 
     val IndexToMatchForUploadFilesContent = sortedNotifications.indexWhere(_.isStatusDMSDocOrDMSCtl)
 
