@@ -16,8 +16,8 @@
 
 @this()
 
-@(messageKey: String, call: Call)(implicit messages: Messages)
+@(messageKey: String, call: Call, classes: String = "govuk-button")(implicit messages: Messages)
 
-<a href="@call.url" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+<a href="@call.url" role="button" draggable="false" class="@classes" data-module="govuk-button">
  @messages(messageKey)
 </a>

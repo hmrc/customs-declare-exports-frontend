@@ -18,8 +18,7 @@ package models.declaration.notifications
 
 import java.time.{ZoneId, ZonedDateTime}
 
-import models.declaration.submissions.SubmissionStatus
-import models.declaration.submissions.SubmissionStatus.SubmissionStatus
+import models.declaration.submissions.SubmissionStatus._
 import play.api.libs.json.Json
 
 case class Notification(actionId: String, mrn: String, dateTimeIssued: ZonedDateTime, status: SubmissionStatus, errors: Seq[NotificationError])
@@ -30,7 +29,10 @@ case class Notification(actionId: String, mrn: String, dateTimeIssued: ZonedDate
     else if (this.dateTimeIssued.isAfter(that.dateTimeIssued)) 1
     else -1
 
-  lazy val isStatusRejected: Boolean = status == SubmissionStatus.REJECTED
+  lazy val isStatusDMSDocOrDMSCtl: Boolean = status == ADDITIONAL_DOCUMENTS_REQUIRED || status == UNDERGOING_PHYSICAL_CHECK
+
+  lazy val isStatusRejected: Boolean = status == REJECTED
+
   lazy val dateTimeIssuedInUK: ZonedDateTime = dateTimeIssued.withZoneSameInstant(ZoneId.of("Europe/London"))
 }
 

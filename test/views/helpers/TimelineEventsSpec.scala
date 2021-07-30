@@ -18,16 +18,41 @@ package views.helpers
 
 import java.time.{ZoneId, ZonedDateTime}
 
+import base.Injector
+import config.featureFlags.SfusConfig
 import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus._
+import models.declaration.submissions.{Submission, SubmissionStatus}
+import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterEach
 import views.declaration.spec.UnitViewSpec
+import views.html.components.upload_files_partial_for_timeline
 
-class TimelineEventsSpec extends UnitViewSpec {
+class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injector {
+
+  private val sfusConfig = mock[SfusConfig]
+  private val submission = mock[Submission]
+  private val uploadFilesPartialForTimeline = instanceOf[upload_files_partial_for_timeline]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    when(submission.mrn).thenReturn(Some("mrn"))
+  }
+
+  private def createTimeline(notifications: Seq[Notification], enableSfusConfig: Boolean = true): Seq[TimelineEvent] = {
+    when(sfusConfig.isSfusUploadEnabled).thenReturn(enableSfusConfig)
+    new TimelineEvents(sfusConfig, uploadFilesPartialForTimeline)(submission, notifications)
+  }
 
   "TimelineEvents" should {
 
-    "transform an unordered sequence of Notifications into an ordered sequence of TimelineEvents" in {
-      def withGBZone(datetime: ZonedDateTime): ZonedDateTime = datetime.withZoneSameInstant(ZoneId.of("Europe/London"))
+    "transform an empty sequence of Notifications into an empty sequence of TimelineEvent instances" in {
+      assert(createTimeline(List.empty).isEmpty)
+    }
+
+    "transform an unordered sequence of Notifications into an ordered sequence of TimelineEvent instances" in {
+      def withGBZone(dateTime: ZonedDateTime): ZonedDateTime =
+        dateTime.withZoneSameInstant(ZoneId.of("Europe/London"))
 
       val issued1st = withGBZone(ZonedDateTime.now)
       val issued2nd = withGBZone(issued1st.plusDays(1L))
@@ -40,8 +65,7 @@ class TimelineEventsSpec extends UnitViewSpec {
         Notification("ign", "ign", issued1st, ACCEPTED, Seq.empty),
         Notification("ign", "ign", issued3rd, REJECTED, Seq.empty)
       )
-
-      val timelineEvents = TimelineEvents(notifications)
+      val timelineEvents = createTimeline(notifications)
 
       timelineEvents(0).dateTime mustBe issued4th
       timelineEvents(0).title mustBe messages(s"submission.status.${UNKNOWN.toString}")
@@ -56,8 +80,42 @@ class TimelineEventsSpec extends UnitViewSpec {
       timelineEvents(3).title mustBe messages(s"submission.status.${ACCEPTED.toString}")
     }
 
-    "transform an empty sequence of Notifications into an empty sequence of TimelineEvents" in {
-      assert(TimelineEvents(List.empty).isEmpty)
+    "generate a sequence of TimelineEvent instances" which {
+
+      "have an Html content only" when {
+        "the source notifications have submission statuses that require it (the Html content)" in {
+          val notification = Notification("ign", "ign", ZonedDateTime.now, RECEIVED, Seq.empty)
+
+          val statusesWithContent = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK)
+          SubmissionStatus.values.foreach { status =>
+            val content = createTimeline(List(notification.copy(status = status)))(0).content
+            content.isDefined mustBe statusesWithContent.contains(status)
+          }
+        }
+      }
+
+      "in one single instance only" should {
+        "have a 'Documents required' Html content" when {
+          "multiple DMSDOC and/or DMSCTL notifications are present" in {
+            val notifications = List(
+              Notification("ign", "ign", ZonedDateTime.now, ADDITIONAL_DOCUMENTS_REQUIRED, Seq.empty),
+              Notification("ign", "ign", ZonedDateTime.now, UNDERGOING_PHYSICAL_CHECK, Seq.empty),
+            )
+            val timelineEvents = createTimeline(notifications)
+            assert(timelineEvents(0).content.isDefined)
+            assert(timelineEvents(1).content.isEmpty)
+          }
+        }
+      }
+
+      // Test to remove once the sfus feature flag is gone
+      "do not have 'Documents required' Html content" when {
+        "the 'Sfus' feature flag is disabled" in {
+          val notification = Notification("ign", "ign", ZonedDateTime.now, ADDITIONAL_DOCUMENTS_REQUIRED, Seq.empty)
+          val timelineEvents = createTimeline(List(notification), false)
+          assert(timelineEvents(0).content.isEmpty)
+        }
+      }
     }
   }
 }

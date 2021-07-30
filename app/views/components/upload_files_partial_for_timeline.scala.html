@@ -1,0 +1,37 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.featureFlags.SfusConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components.{Details, GovukDetails, Text}
+@import views.html.components.gds.linkButton
+
+@this(govukDetails : GovukDetails, linkButton: linkButton, sfusConfig: SfusConfig)
+
+@(mrn: Option[String], isPrimary: Boolean = true)(implicit messages: Messages)
+
+<div id="upload-files-section" class="section">
+    @linkButton(
+        messageKey = "submissions.declarationDetails.upload.files.button",
+        call = Call("GET", s"${sfusConfig.sfusUploadLink}/${mrn.getOrElse("")}"),
+        classes = if (isPrimary) "govuk-button" else "govuk-button govuk-button--secondary"
+    )
+
+    @govukDetails(Details(
+        id = Some("upload-files-hint"),
+        summary = Text(messages("submissions.declarationDetails.upload.files.title")),
+        content = Text(messages("submissions.declarationDetails.upload.files.hint"))
+    ))
+</div>

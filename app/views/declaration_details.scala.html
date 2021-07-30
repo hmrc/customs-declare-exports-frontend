@@ -29,6 +29,7 @@
   navigationBanner: navigationBanner,
   headingContent: headingContent,
   timeline: timeline,
+  timelineEvents: TimelineEvents,
   link: link,
   paragraphBody: paragraphBody,
   bulletList: bulletList,
@@ -51,13 +52,13 @@
 
 @pdfForEadLink = {
     @mrnIfEadStatus(submission, notifications, eadConfig).map { mrn =>
-        <div class="padding-bottom-small">
+        <p>
             @link(
                 id = Some("generate-ead"),
                 text = messages("submissions.generateEAD"),
                 call = controllers.pdf.routes.EADController.generatePdf(mrn)
             )
-        </div>
+        </p>
     }
 }
 
@@ -140,7 +141,7 @@
             <span class="submission-mrn govuk-caption-l">@messages("submissions.declarationDetails.mrn") @mrn</span>
         }
 
-        @timeline(TimelineEvents(notifications), ViewDates.formatDateAtTime)
+        @timeline(timelineEvents(submission, notifications), ViewDates.formatDateAtTime)
     </div>
 
     <div class="govuk-grid-column-one-third">
