@@ -19,7 +19,7 @@ package views.helpers
 import java.time.{ZoneId, ZonedDateTime}
 
 import base.Injector
-import config.featureFlags.SfusConfig
+import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus._
 import models.declaration.submissions.{Submission, SubmissionStatus}
@@ -30,18 +30,20 @@ import views.html.components.upload_files_partial_for_timeline
 
 class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injector {
 
+  private val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
   private val sfusConfig = mock[SfusConfig]
   private val submission = mock[Submission]
   private val uploadFilesPartialForTimeline = instanceOf[upload_files_partial_for_timeline]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    when(secureMessagingInboxConfig.sfusInboxLink).thenReturn("dummyInboxLink")
     when(submission.mrn).thenReturn(Some("mrn"))
   }
 
   private def createTimeline(notifications: Seq[Notification], enableSfusConfig: Boolean = true): Seq[TimelineEvent] = {
     when(sfusConfig.isSfusUploadEnabled).thenReturn(enableSfusConfig)
-    new TimelineEvents(sfusConfig, uploadFilesPartialForTimeline)(submission, notifications)
+    new TimelineEvents(secureMessagingInboxConfig, sfusConfig, uploadFilesPartialForTimeline)(submission, notifications)
   }
 
   "TimelineEvents" should {
@@ -86,7 +88,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
         "the source notifications have submission statuses that require it (the Html content)" in {
           val notification = Notification("ign", "ign", ZonedDateTime.now, RECEIVED, Seq.empty)
 
-          val statusesWithContent = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK)
+          val statusesWithContent = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK, QUERY_NOTIFICATION_MESSAGE)
           SubmissionStatus.values.foreach { status =>
             val content = createTimeline(List(notification.copy(status = status)))(0).content
             content.isDefined mustBe statusesWithContent.contains(status)
@@ -100,6 +102,20 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
             val notifications = List(
               Notification("ign", "ign", ZonedDateTime.now, ADDITIONAL_DOCUMENTS_REQUIRED, Seq.empty),
               Notification("ign", "ign", ZonedDateTime.now, UNDERGOING_PHYSICAL_CHECK, Seq.empty),
+            )
+            val timelineEvents = createTimeline(notifications)
+            assert(timelineEvents(0).content.isDefined)
+            assert(timelineEvents(1).content.isEmpty)
+          }
+        }
+      }
+
+      "in one single instance only" should {
+        "have a 'View queries' Html content" when {
+          "multiple DMSQRY notifications are present" in {
+            val notifications = List(
+              Notification("ign", "ign", ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE, Seq.empty),
+              Notification("ign", "ign", ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE, Seq.empty),
             )
             val timelineEvents = createTimeline(notifications)
             assert(timelineEvents(0).content.isDefined)

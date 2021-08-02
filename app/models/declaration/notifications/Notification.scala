@@ -31,6 +31,8 @@ case class Notification(actionId: String, mrn: String, dateTimeIssued: ZonedDate
 
   lazy val isStatusDMSDocOrDMSCtl: Boolean = status == ADDITIONAL_DOCUMENTS_REQUIRED || status == UNDERGOING_PHYSICAL_CHECK
 
+  lazy val isStatusDMSQry: Boolean = status == QUERY_NOTIFICATION_MESSAGE
+
   lazy val isStatusRejected: Boolean = status == REJECTED
 
   lazy val dateTimeIssuedInUK: ZonedDateTime = dateTimeIssued.withZoneSameInstant(ZoneId.of("Europe/London"))
