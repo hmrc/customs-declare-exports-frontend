@@ -16,24 +16,53 @@
 
 package forms.declaration
 
-import forms.{DeclarationPage, Ducr, Lrn}
+import forms.{DeclarationPage, Ducr, Lrn, Mrn}
 import models.viewmodels.TariffContentKey
-import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.DeclarationType.{CLEARANCE, DeclarationType, SUPPLEMENTARY}
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator.{isMissing, isPresent}
 
-case class ConsignmentReferences(ducr: Ducr, lrn: Lrn)
+case class ConsignmentReferences(ducr: Ducr, lrn: Lrn, mrn: Option[Mrn] = None)
 
 object ConsignmentReferences extends DeclarationPage {
 
-  val mapping =
-    Forms.mapping("ducr" -> Ducr.ducrMapping, "lrn" -> Lrn.mapping("declaration.consignmentReferences.lrn"))(ConsignmentReferences.apply)(
-      ConsignmentReferences.unapply
-    )
-
   implicit val format = Json.format[ConsignmentReferences]
 
-  def form(): Form[ConsignmentReferences] = Form(mapping)
+  def form(decType: DeclarationType): Form[ConsignmentReferences] = {
+
+    def form2Model: (Ducr, Lrn, Option[Mrn]) => ConsignmentReferences = {
+      case (ducr, lrn, mrn) =>
+        mrn match {
+          case Some(x) => ConsignmentReferences(ducr, lrn, mrn)
+          case None    => ConsignmentReferences(ducr, lrn, None)
+        }
+    }
+
+    def model2Form: ConsignmentReferences => Option[(Ducr, Lrn, Option[Mrn])] =
+      model =>
+        model.mrn match {
+          case Some(code) => Some((model.ducr, model.lrn, Some(code)))
+          case None       => Some((model.ducr, model.lrn, None))
+      }
+
+    val mrnMapping = decType match {
+      case SUPPLEMENTARY =>
+        optional(Mrn.mapping("declaration.consignmentReferences.supplementary.mrn"))
+          .verifying("declaration.consignmentReferences.supplementary.mrn.error.empty", isPresent(_))
+      case _ =>
+        optional(text())
+          .verifying("error.notRequired", isMissing(_))
+          .transform(_.map(Mrn(_)), (o: Option[Mrn]) => o.map(_.value))
+    }
+
+    Form(
+      Forms.mapping("ducr" -> Ducr.ducrMapping, "lrn" -> Lrn.mapping("declaration.consignmentReferences.lrn"), "mrn" -> mrnMapping)(form2Model)(
+        model2Form
+      )
+    )
+  }
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {

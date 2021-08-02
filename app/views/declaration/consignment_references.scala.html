@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
+@import play.twirl.api.HtmlFormat
 @import config.AppConfig
 
 @this(
@@ -35,13 +36,19 @@
         tariffExpander: tariffExpander,
         insetText: exportsInsetText,
         bulletList: bulletList,
+        paragraphBody: paragraphBody,
         formHelper: FormWithCSRF,
         appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
 
-@hintSection = {
+@ducrHintSectionSupplementary = {
+    @paragraphBody(messages("declaration.consignmentReferences.supplementary.ducr.hint1"))
+    @paragraphBody(messages("declaration.consignmentReferences.ducr.hint2"), "govuk-hint")
+}
+
+@ducrHintSectionOthers = {
     @bulletList(
         title = Some(messages("declaration.consignmentReferences.ducr.hint1")),
         titleClasses = "govuk-body govuk-hint",
@@ -57,6 +64,51 @@
     )
 }
 
+@ducrHintSection = @{
+  if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+      ducrHintSectionSupplementary
+  else
+      ducrHintSectionOthers
+}
+
+@lrnHintSection = @{
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+        paragraphBody(messages("declaration.consignmentReferences.supplementary.lrn.hint"))
+    else
+        paragraphBody(messages("declaration.consignmentReferences.lrn.hint"), "govuk-hint")
+}
+
+@mrnHintSection = {
+    @paragraphBody(messages("declaration.consignmentReferences.supplementary.mrn.hint1"))
+    @paragraphBody(messages("declaration.consignmentReferences.supplementary.mrn.hint2"), "govuk-hint")
+}
+
+@optionalMrnSection = @{
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+        exportsInputText(
+            field = form("mrn"),
+            inputClasses = Some("govuk-input"),
+            hintHtml = Some(mrnHintSection),
+            labelKey = "declaration.consignmentReferences.supplementary.mrn.info"
+        )
+    else
+        HtmlFormat.empty
+}
+
+@optionalDucrInsetText = @{
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+        HtmlFormat.empty
+    else
+        insetText(content = HtmlContent(messages("declaration.consignmentReferences.ducr.inset")))
+}
+
+@optionalLrnInsetText = @{
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+        HtmlFormat.empty
+    else
+        insetText(content = HtmlContent(messages("declaration.consignmentReferences.lrn.inset")))
+}
+
 @govukLayout(
     title = Title("declaration.consignmentReferences.header", "declaration.section.1"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsignmentReferences, mode)))) {
@@ -70,24 +122,22 @@
         @exportsInputText(
             field = form("ducr.ducr"),
             inputClasses = Some("govuk-input"),
-            hintHtml = Some(hintSection),
+            hintHtml = Some(ducrHintSection),
             labelKey = "declaration.consignmentReferences.ducr.info"
         )
 
-        @insetText(
-            content = HtmlContent(messages("declaration.consignmentReferences.ducr.inset"))
-        )
+        @optionalDucrInsetText
+
+        @optionalMrnSection
 
         @exportsInputText(
             field = form("lrn"),
             inputClasses = Some("govuk-input"),
             labelKey = "declaration.consignmentReferences.lrn.info",
-            hintKey = Some("declaration.consignmentReferences.lrn.hint")
+            hintHtml = Some(lrnHintSection)
         )
 
-        @insetText(
-            content = HtmlContent(messages("declaration.consignmentReferences.lrn.inset"))
-        )
+        @optionalLrnInsetText
 
         @tariffExpander(ConsignmentReferences, request.declarationType)(messages, appConfig)
 
