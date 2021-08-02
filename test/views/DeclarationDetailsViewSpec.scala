@@ -57,7 +57,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   private val dmsctlNotification = Notification("id", mrn, now, UNDERGOING_PHYSICAL_CHECK, Seq.empty)
   private val dmsrejNotification = Notification("id", mrn, now, REJECTED, Seq.empty)
 
-  // Since the notification list is reverse-ordered (more to least recent) in TimelineEvents...
+  // Since the notification list is reverse-ordered (most to least recent) in TimelineEvents...
 
   // 1. order of dmsqry1Notification and dmsqry2Notification is relevant.
   //    Only the TimelineEvent instance generated from dmsqry2Notification will have an Html content,
