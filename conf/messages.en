@@ -713,6 +713,7 @@ submissions.declarationDetails.mrn = MRN:
 submissions.declarationDetails.upload.files.button = Upload files
 submissions.declarationDetails.upload.files.title = If you already uploaded files
 submissions.declarationDetails.upload.files.hint = If you have already uploaded and attached the documents that support your declaration, you do not have to attach any further documents, unless you are asked to do so in a query from customs authorities.
+submissions.declarationDetails.view.queries.button = View queries
 
 submissions.declarationDetails.readMoreAboutDecStatus.header = More about declaration status
 submissions.declarationDetails.readMoreAboutDecStatus.paragraph = Find out what different declaration statuses mean
