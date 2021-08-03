@@ -16,6 +16,8 @@
 
 package services.cache
 
+import base.ExportsTestData._
+
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import java.util.UUID
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -29,7 +31,7 @@ import forms.declaration.countries.Country
 import forms.declaration.declarationHolder.DeclarationHolderAdd
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
-import forms.{Ducr, Lrn}
+import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
@@ -39,9 +41,10 @@ import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 trait ExportsDeclarationBuilder {
 
   protected type ExportsDeclarationModifier = ExportsDeclaration => ExportsDeclaration
-  protected val DUCR = "5GB123456789000-123ABC456DEFIIIII"
-  protected val LRN = Lrn("FG7676767889")
-  protected val MUCR = Mucr("CZYX123A")
+  protected val DUCR = ducr
+  protected val LRN = Lrn(lrn)
+  protected val MUCR = Mucr(mucr)
+  protected val MRN = Mrn(mrn)
   private val modelWithDefaults: ExportsDeclaration = ExportsDeclaration(
     uuid,
     status = DeclarationStatus.COMPLETE,

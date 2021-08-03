@@ -16,82 +16,135 @@
 
 package forms.declaration
 
+import base.{JourneyTypeTestRunner, TestHelper}
+import base.ExportsTestData._
 import forms.{Ducr, Lrn}
 import forms.common.DeclarationPageBaseSpec
 import models.viewmodels.TariffContentKey
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.requests.JourneyRequest
+import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class ConsignmentReferencesSpec extends DeclarationPageBaseSpec {
+class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 
   import ConsignmentReferencesSpec._
 
+  private def getBoundedForm(data: JsValue)(implicit request: JourneyRequest[_]) =
+    ConsignmentReferences.form(request.declarationType).bind(data, Form.FromJsonMaxChars)
+
   "ConsignmentReferences mapping used for binding data" should {
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
+      "return form without errors" when {
+        "provided with valid input" in {
+          val form = getBoundedForm(correctForDecType(correctConsignmentReferencesJSON))
 
-    "return form without errors" when {
-      "provided with valid input" in {
-        val form = ConsignmentReferences.form().bind(correctConsignmentReferencesJSON)
-
-        form.hasErrors mustBe false
+          form.hasErrors mustBe false
+        }
       }
     }
 
     "return form with errors" when {
 
-      "provided with empty input" in {
-        val form = ConsignmentReferences.form().bind(emptyJSON)
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
+        "provided with empty input" in {
+          val form = getBoundedForm(emptyJSON)
 
-        form.hasErrors mustBe true
-        form.errors.length must equal(2)
-        form.errors(0).message must equal("error.required")
-        form.errors(1).message must equal("error.required")
+          form.hasErrors mustBe true
+          form.errors.length must equal(2)
+          form.errors(0).message must equal("error.required")
+          form.errors(1).message must equal("error.required")
+        }
       }
 
-      "provided with invalid input (no DUCR)" in {
-        val form = ConsignmentReferences.form().bind(consignmentReferencesNoDucrJSON)
+      onJourney(SUPPLEMENTARY) { implicit request =>
+        "provided with empty input" in {
+          val form = getBoundedForm(emptyJSON)
 
-        form.hasErrors mustBe true
-        form.errors.length must equal(1)
-        form.errors.last.message must equal("error.ducr.empty")
+          form.hasErrors mustBe true
+          form.errors.length must equal(3)
+          form.errors(0).message must equal("error.required")
+          form.errors(1).message must equal("error.required")
+          form.errors(2).message must equal("declaration.consignmentReferences.supplementary.mrn.error.empty")
+        }
       }
 
-      "provided with valid input (lowercase DUCR)" in {
-        val form = ConsignmentReferences.form().bind(correctConsignmentReferencesLowercaseDucrJSON)
+      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
+        "provided with invalid input (no DUCR)" in {
+          val form = getBoundedForm(correctForDecType(consignmentReferencesNoDucrJSON))
 
-        form.hasErrors mustBe true
-        form.errors.length must equal(1)
-        form.errors(0).message must equal("error.ducr")
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors.last.message must equal("error.ducr.empty")
+        }
+
+        "provided with valid input (lowercase DUCR)" in {
+          val form = getBoundedForm(correctForDecType(correctConsignmentReferencesLowercaseDucrJSON))
+
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors(0).message must equal("error.ducr")
+        }
+
+        "provided with invalid input (no LRN)" in {
+          val form = getBoundedForm(correctForDecType(consignmentReferencesNoLrnJSON))
+
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.empty")
+        }
+
+        "provided with invalid input (invalid chars in LRN)" in {
+          val form = getBoundedForm(correctForDecType(consignmentReferencesBadLrnJSON))
+
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.specialCharacter")
+        }
+
+        "provided with invalid input (LRN too long)" in {
+          val form = getBoundedForm(correctForDecType(consignmentReferencesLrnTooLongJSON))
+
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.length")
+        }
+
+        "provided with invalid input (LRN invalid chars and too long) only show invalid char error" in {
+          val form = getBoundedForm(correctForDecType(consignmentReferencesLrnBadAndTooLongJSON))
+
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.specialCharacter")
+        }
       }
 
-      "provided with invalid input (no LRN)" in {
-        val form = ConsignmentReferences.form().bind(consignmentReferencesNoLrnJSON)
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
+        "provided with invalid input (MRN present when should not be)" in {
+          val form = getBoundedForm(addMrnToJSON(correctConsignmentReferencesJSON, mrn))
 
-        form.hasErrors mustBe true
-        form.errors.length must equal(1)
-        form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.empty")
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors.last.message must equal("error.notRequired")
+        }
       }
 
-      "provided with invalid input (invalid chars in LRN)" in {
-        val form = ConsignmentReferences.form().bind(consignmentReferencesBadLrnJSON)
+      onJourney(SUPPLEMENTARY) { implicit request =>
+        "provided with invalid input (no MRN)" in {
+          val form = getBoundedForm(correctConsignmentReferencesJSON)
 
-        form.hasErrors mustBe true
-        form.errors.length must equal(1)
-        form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.specialCharacter")
-      }
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors(0).message must equal("declaration.consignmentReferences.supplementary.mrn.error.empty")
+        }
 
-      "provided with invalid input (LRN too long)" in {
-        val form = ConsignmentReferences.form().bind(consignmentReferencesLrnTooLongJSON)
+        "provided with invalid input (MRN too long)" in {
+          val form = getBoundedForm(addMrnToJSON(correctConsignmentReferencesJSON, TestHelper.createRandomAlphanumericString(19)))
 
-        form.hasErrors mustBe true
-        form.errors.length must equal(1)
-        form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.length")
-      }
-
-      "provided with invalid input (LRN invalid chars and too long) only show invalid char error" in {
-        val form = ConsignmentReferences.form().bind(consignmentReferencesLrnBadAndTooLongJSON)
-
-        form.hasErrors mustBe true
-        form.errors.length must equal(1)
-        form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.specialCharacter")
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors(0).message must equal("declaration.consignmentReferences.supplementary.mrn.error.invalid")
+        }
       }
     }
   }
@@ -112,31 +165,34 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec {
 }
 
 object ConsignmentReferencesSpec {
-  val exemplaryDucr = "8GB123456789012-1234567890QWERTYUIO"
-  val exemplarLrn = "123LRN"
 
   val emptyJSON: JsValue = JsObject(Map("" -> JsString("")))
 
-  val correctConsignmentReferences = ConsignmentReferences(ducr = Ducr(ducr = exemplaryDucr), lrn = Lrn(exemplarLrn))
-  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(exemplarLrn))
+  val correctConsignmentReferences = ConsignmentReferences(ducr = Ducr(ducr = ducr), lrn = Lrn(lrn))
+  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(lrn))
   val emptyConsignmentReferences = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(""))
 
-  val correctConsignmentReferencesJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString(exemplarLrn))
-  )
+  def addMrnToJSON(data: JsValue, mrn: String): JsValue = data.asInstanceOf[JsObject].deepMerge(JsObject(Map("mrn" -> JsString(mrn))))
+
+  def correctForDecType(data: JsValue)(implicit request: JourneyRequest[_]) =
+    request.declarationType match {
+      case SUPPLEMENTARY => addMrnToJSON(data, mrn)
+      case _             => data
+    }
+
+  val correctConsignmentReferencesJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString(lrn)))
+
   val correctConsignmentReferencesLowercaseDucrJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr.toLowerCase))), "lrn" -> JsString(exemplarLrn))
+    Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr.toLowerCase))), "lrn" -> JsString(lrn))
   )
-  val consignmentReferencesNoDucrJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString(exemplarLrn)))
-  val consignmentReferencesNoLrnJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("")))
+  val consignmentReferencesNoDucrJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString(lrn)))
+  val consignmentReferencesNoLrnJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString("")))
   val consignmentReferencesLrnTooLongJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("12345678901234567890123"))
+    Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString("12345678901234567890123"))
   )
-  val consignmentReferencesBadLrnJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString(s"${exemplarLrn}*"))
-  )
+  val consignmentReferencesBadLrnJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString(s"${lrn}*")))
   val consignmentReferencesLrnBadAndTooLongJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("1234567890123456789012*"))
+    Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString("1234567890123456789012*"))
   )
   val emptyConsignmentReferencesJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString("")))
 }

@@ -51,6 +51,8 @@ object FieldValidator {
 
   val isPresent: Option[_] => Boolean = _.nonEmpty
 
+  val isMissing: Option[_] => Boolean = _.isEmpty
+
   val isEmpty: String => Boolean = (input: String) => input.isEmpty
 
   val nonEmpty: String => Boolean = (input: String) => input.trim.nonEmpty

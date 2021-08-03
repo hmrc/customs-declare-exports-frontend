@@ -19,6 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -105,10 +106,24 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
         status(result) must be(BAD_REQUEST)
       }
+    }
 
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" in {
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
+
+        val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage()
+      }
+    }
+
+    onJourney(SUPPLEMENTARY) { implicit request =>
+      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" in {
+        withNewCaching(request.cacheModel)
+        val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, Some(MRN)))
 
         val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 

@@ -16,25 +16,23 @@
 
 package forms
 
-import play.api.data.Forms._
+import play.api.data.Forms.text
 import play.api.libs.json.{Format, JsString, Reads, Writes}
 import utils.validators.forms.FieldValidator._
 
-case class Lrn(value: String) {
-  def isEmpty: Boolean = value.isEmpty
-  def nonEmpty: Boolean = !isEmpty
-}
+case class Mrn(value: String)
 
-object Lrn {
-  implicit val format: Format[Lrn] =
-    Format[Lrn](Reads.StringReads.map(Lrn.apply), Writes[Lrn](lrn => JsString(lrn.value)))
+object Mrn {
+  implicit val format: Format[Mrn] =
+    Format[Mrn](Reads.StringReads.map(Mrn.apply), Writes[Mrn](mrn => JsString(mrn.value)))
 
-  private val lrnMaxLength = 22
+  def validRegex: String = "\\d{2}[a-zA-Z]{2}[a-zA-Z0-9]{14}"
+
+  val isValid: String => Boolean = (input: String) => input.matches(validRegex)
 
   def mapping(prefix: String) =
     text()
       .verifying(s"$prefix.error.empty", nonEmpty)
-      .verifying(s"$prefix.error.length", isEmpty or isNotAlphanumeric or noLongerThan(lrnMaxLength))
-      .verifying(s"$prefix.error.specialCharacter", isEmpty or isAlphanumeric)
-      .transform[Lrn](Lrn.apply, _.value)
+      .verifying(s"$prefix.error.invalid", isEmpty or isValid)
+      .transform[Mrn](Mrn.apply, _.value)
 }
