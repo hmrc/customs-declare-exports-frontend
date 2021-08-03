@@ -139,7 +139,7 @@ class RejectionReasons @Inject()(config: AppConfig) extends Logging {
   def unknown(errorCode: String, pointer: Option[Pointer]) = RejectionReason(errorCode, "Unknown error", None, None, pointer)
 
   def fromNotifications(notifications: Seq[Notification])(implicit messages: Messages): Seq[RejectionReason] = {
-    val rejectedNotification = notifications.find(_.isStatusRejected)
+    val rejectedNotification = notifications.find(_.isStatusDMSRej)
 
     rejectedNotification.map { notification =>
       notification.errors.map { error =>

@@ -39,6 +39,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     super.beforeEach()
     when(secureMessagingInboxConfig.sfusInboxLink).thenReturn("dummyInboxLink")
     when(submission.mrn).thenReturn(Some("mrn"))
+    when(submission.uuid).thenReturn("id")
   }
 
   private def createTimeline(notifications: Seq[Notification], enableSfusConfig: Boolean = true): Seq[TimelineEvent] = {
@@ -86,13 +87,29 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
       "have an Html content only" when {
         "the source notifications have submission statuses that require it (the Html content)" in {
-          val notification = Notification("ign", "ign", ZonedDateTime.now, RECEIVED, Seq.empty)
+          val notification = Notification("ign", "ign", ZonedDateTime.now, ACCEPTED, Seq.empty)
 
-          val statusesWithContent = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK, QUERY_NOTIFICATION_MESSAGE)
+          val statusesWithContent = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK, QUERY_NOTIFICATION_MESSAGE, REJECTED)
           SubmissionStatus.values.foreach { status =>
             val content = createTimeline(List(notification.copy(status = status)))(0).content
             content.isDefined mustBe statusesWithContent.contains(status)
           }
+        }
+      }
+
+      "does not have 'Upload files' Html content" when {
+        "at least one of the notifications has REJECTED (DMSREJ) as status" in {
+          val notifications = List(
+            Notification("ign", "ign", ZonedDateTime.now, ADDITIONAL_DOCUMENTS_REQUIRED, Seq.empty),
+            Notification("ign", "ign", ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE, Seq.empty),
+            Notification("ign", "ign", ZonedDateTime.now, UNDERGOING_PHYSICAL_CHECK, Seq.empty),
+            Notification("ign", "ign", ZonedDateTime.now, REJECTED, Seq.empty)
+          )
+          val timelineEvents = createTimeline(notifications)
+          assert(timelineEvents(0).content.isDefined)
+          assert(timelineEvents(1).content.isEmpty)
+          assert(timelineEvents(2).content.isDefined)
+          assert(timelineEvents(3).content.isEmpty)
         }
       }
 
@@ -116,6 +133,20 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
             val notifications = List(
               Notification("ign", "ign", ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE, Seq.empty),
               Notification("ign", "ign", ZonedDateTime.now, QUERY_NOTIFICATION_MESSAGE, Seq.empty),
+            )
+            val timelineEvents = createTimeline(notifications)
+            assert(timelineEvents(0).content.isDefined)
+            assert(timelineEvents(1).content.isEmpty)
+          }
+        }
+      }
+
+      "in one single instance only" should {
+        "have a 'Fix and resubmit' Html content" when {
+          "multiple DMSREJ notifications are present" in {
+            val notifications = List(
+              Notification("ign", "ign", ZonedDateTime.now, REJECTED, Seq.empty),
+              Notification("ign", "ign", ZonedDateTime.now, REJECTED, Seq.empty),
             )
             val timelineEvents = createTimeline(notifications)
             assert(timelineEvents(0).content.isDefined)

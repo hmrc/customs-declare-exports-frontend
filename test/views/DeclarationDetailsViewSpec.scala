@@ -46,16 +46,14 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   private val user = ExportsTestData.newUser(ExportsTestData.eori, "Id")
   private val testEmail = "testEmail@mail.org"
 
-  private val submission = Submission("id", "eori", "lrn", Some(mrn), Some("ducr"), Seq.empty)
+  private val uuid = "uuid"
+  private val submission = Submission(uuid, "eori", "lrn", Some(mrn), Some("ducr"), Seq.empty)
 
-  private val actionIdDiscriminant = "id2"
-
-  private val acceptedNotification = Notification("id", mrn, now, ACCEPTED, Seq.empty)
   private val dmsqry1Notification = Notification("id1", mrn, now, QUERY_NOTIFICATION_MESSAGE, Seq.empty)
-  private val dmsqry2Notification = Notification(actionIdDiscriminant, mrn, now, QUERY_NOTIFICATION_MESSAGE, Seq.empty)
+  private val dmsqry2Notification = Notification("id2", mrn, now, QUERY_NOTIFICATION_MESSAGE, Seq.empty)
   private val dmsdocNotification = Notification("id", mrn, now, ADDITIONAL_DOCUMENTS_REQUIRED, Seq.empty)
   private val dmsctlNotification = Notification("id", mrn, now, UNDERGOING_PHYSICAL_CHECK, Seq.empty)
-  private val dmsrejNotification = Notification("id", mrn, now, REJECTED, Seq.empty)
+  private val acceptedNotification = Notification("id", mrn, now, ACCEPTED, Seq.empty)
 
   // Since the notification list is reverse-ordered (most to least recent) in TimelineEvents...
 
@@ -70,8 +68,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   // 3. button for dmsctlNotification will be a primary button, while button for dmsqry2Notification
   //    will be a secondary button being placed on the timeline after the former.
 
-  private val notifications =
-    List(acceptedNotification, dmsqry1Notification, dmsqry2Notification, dmsdocNotification, dmsctlNotification, dmsrejNotification)
+  private val notifications = List(dmsqry1Notification, dmsqry2Notification, dmsdocNotification, dmsctlNotification, acceptedNotification)
 
   private def verifiedEmailRequest(email: String = testEmail): VerifiedEmailRequest[_] =
     VerifiedEmailRequest(RequestBuilder.buildAuthenticatedRequest(request, user), email)
@@ -166,6 +163,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       messages must haveTranslationFor(s"${msgKey}.references")
       messages must haveTranslationFor(s"${msgKey}.ducr")
       messages must haveTranslationFor(s"${msgKey}.lrn")
+      messages must haveTranslationFor(s"${msgKey}.fix.resubmit.button")
       messages must haveTranslationFor(s"${msgKey}.upload.files.button")
       messages must haveTranslationFor(s"${msgKey}.upload.files.title")
       messages must haveTranslationFor(s"${msgKey}.upload.files.hint")
@@ -206,6 +204,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     val injector =
       new OverridableInjector(bind[SecureMessagingInboxConfig].toInstance(secureMessagingInboxConfig), bind[SfusConfig].toInstance(sfusConfig))
+
     val page = injector.instanceOf[declaration_details]
     val view = page(submission, notifications)(verifiedEmailRequest(), messages)
 
@@ -274,87 +273,104 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "display on the Declaration Timeline events with content" which {
-      "must include a primary button and a secondary button" when {
+
+      "must include one primary button and one secondary button" when {
 
         "a DMSCTL notification is more recent than a DMSQRY notification" in {
-          val events = view.getElementsByClass("hmrc-timeline__event")
-          notifications.reverse.zipWithIndex.foreach {
-            case (notification, ix) =>
-              verifyContent(notification, events.get(ix), false, true)
-          }
+          val events = eventsOnTimeline(notifications)
+          content(events.get(0)).size mustBe 0
+          verifyUploadFilesContent(content(events.get(1)), false)
+          content(events.get(2)).size mustBe 0
+          verifyViewQueriesContent(content(events.get(3)), true)
+          content(events.get(4)).size mustBe 0
         }
 
         "a DMSDOC notification is more recent than a DMSQRY notification" in {
-          val dmsdocNotificationWithId = dmsdocNotification.copy(actionId = actionIdDiscriminant)
-          val notifications = List(dmsqry2Notification, dmsdocNotificationWithId)
-          val view = page(submission, notifications)(verifiedEmailRequest(), messages)
-          val events = view.getElementsByClass("hmrc-timeline__event")
-          verifyContent(dmsdocNotificationWithId, events.get(0), false, true)
-          verifyContent(dmsqry2Notification, events.get(1), false, true)
+          val notifications = List(dmsqry2Notification, dmsdocNotification)
+          val events = eventsOnTimeline(notifications)
+          verifyUploadFilesContent(content(events.get(0)), false)
+          verifyViewQueriesContent(content(events.get(1)), true)
         }
 
         "a DMSQRY notification is more recent than a DMSCTL notification" in {
           val notifications = List(dmsctlNotification, dmsqry2Notification)
-          val view = page(submission, notifications)(verifiedEmailRequest(), messages)
-          val events = view.getElementsByClass("hmrc-timeline__event")
-          verifyContent(dmsqry2Notification, events.get(0), true, false)
-          verifyContent(dmsctlNotification, events.get(1), true, false)
+          val events = eventsOnTimeline(notifications)
+          verifyViewQueriesContent(content(events.get(0)), false)
+          verifyUploadFilesContent(content(events.get(1)), true)
         }
 
         "a DMSQRY notification is more recent than a DMSDOC notification" in {
-          val dmsdocNotificationWithId = dmsdocNotification.copy(actionId = actionIdDiscriminant)
-          val notifications = List(dmsdocNotificationWithId, dmsqry2Notification)
-          val view = page(submission, notifications)(verifiedEmailRequest(), messages)
-          val events = view.getElementsByClass("hmrc-timeline__event")
-          verifyContent(dmsqry2Notification, events.get(0), true, false)
-          verifyContent(dmsdocNotificationWithId, events.get(1), true, false)
+          val notifications = List(dmsdocNotification, dmsqry2Notification)
+          val events = eventsOnTimeline(notifications)
+          verifyViewQueriesContent(content(events.get(0)), false)
+          verifyUploadFilesContent(content(events.get(1)), true)
+        }
+
+        "one notification at least is a DMSREJ notification in addition to a DMSQRY notification" in {
+          val dmsrejNotification = Notification("id", mrn, now, REJECTED, Seq.empty)
+          val notifications = List(dmsqry2Notification, dmsdocNotification, dmsrejNotification)
+          val events = eventsOnTimeline(notifications)
+          verifyRejectedContent(content(events.get(0)))
+          content(events.get(1)).size mustBe 0
+          verifyViewQueriesContent(content(events.get(2)), true)
         }
       }
-    }
 
-    def verifyContent(notification: Notification, element: Element, isDmsctlOrDocSecondary: Boolean, isDmsqrySecondary: Boolean): Assertion = {
-      val content = element.getElementsByClass("hmrc-timeline__event-content")
-      notification.status match {
-        case UNDERGOING_PHYSICAL_CHECK =>
-          verifyUploadFilesContent(content, isDmsctlOrDocSecondary)
-
-        case ADDITIONAL_DOCUMENTS_REQUIRED if notification.actionId == actionIdDiscriminant =>
-          verifyUploadFilesContent(content, isDmsctlOrDocSecondary)
-
-        case QUERY_NOTIFICATION_MESSAGE if notification.actionId == actionIdDiscriminant =>
-          verifyViewQueriesContent(content, isDmsqrySecondary)
-
-        case _ => content.size mustBe 0
+      "must only include one primary button and no secondary buttons" when {
+        "one notification at least is a DMSREJ notification in addition to DMSCTL and/or DMSDOC notifications" in {
+          val dmsrejNotification = Notification("id", mrn, now, REJECTED, Seq.empty)
+          val notifications = List(dmsdocNotification, dmsctlNotification, dmsrejNotification)
+          val events = eventsOnTimeline(notifications)
+          verifyRejectedContent(content(events.get(0)))
+          content(events.get(1)).size mustBe 0
+          content(events.get(2)).size mustBe 0
+        }
       }
-    }
 
-    def verifyUploadFilesContent(content: Elements, buttonIsSecondary: Boolean): Assertion = {
-      val uploadFilesElements = content.get(0).getElementById("upload-files-section").children
-      uploadFilesElements.size mustBe 2
+      def eventsOnTimeline(notifications: List[Notification]): Elements = {
+        val view = page(submission, notifications)(verifiedEmailRequest(), messages)
+        view.getElementsByClass("hmrc-timeline__event")
+      }
 
-      And("the 'Documents required' content, when defined, should include a link-button to SFUS")
-      verifyButton(uploadFilesElements.get(0), buttonIsSecondary, "upload.files", s"$dummySfusLink/$mrn")
+      def content(element: Element): Elements = element.getElementsByClass("hmrc-timeline__event-content")
 
-      And("and an expander")
-      val details = uploadFilesElements.get(1)
-      details.getElementsByTag("summary").text mustBe messages(s"${msgKey}.upload.files.title")
-      details.getElementsByClass("govuk-details__text").text mustBe messages(s"${msgKey}.upload.files.hint")
-    }
+      def verifyRejectedContent(content: Elements): Assertion = {
+        val rejectedElements = content.get(0).children
+        rejectedElements.size mustBe 1
 
-    def verifyViewQueriesContent(content: Elements, buttonIsSecondary: Boolean): Assertion = {
-      val viewQueriesElements = content.get(0).children
-      viewQueriesElements.size mustBe 1
+        And("the 'Fix and resubmit' content, should include a primary link-button to the RejectedNotificationsController")
+        val call = controllers.routes.RejectedNotificationsController.displayPage(uuid).url
+        verifyButton(rejectedElements.get(0), false, "fix.resubmit", call)
+      }
 
-      And("the 'View queries' content, when defined, should include a link-button to the Secure-Messaging Inbox")
-      verifyButton(viewQueriesElements.get(0), buttonIsSecondary, "view.queries", dummyInboxLink)
-    }
+      def verifyUploadFilesContent(content: Elements, buttonIsSecondary: Boolean): Assertion = {
+        val uploadFilesElements = content.get(0).getElementById("upload-files-section").children
+        uploadFilesElements.size mustBe 2
 
-    def verifyButton(button: Element, buttonIsSecondary: Boolean, msgId: String, href: String): Assertion = {
-      button.hasClass("govuk-button") mustBe true
-      And(s"the link-button should be a ${if (buttonIsSecondary) "secondary" else "primary"} one")
-      button.hasClass("govuk-button--secondary") mustBe buttonIsSecondary
-      button.text mustBe messages(s"$msgKey.$msgId.button")
-      button.attr("href") mustBe href
+        And("the 'Documents required' content, when defined, should include a link-button to SFUS")
+        verifyButton(uploadFilesElements.get(0), buttonIsSecondary, "upload.files", s"$dummySfusLink/$mrn")
+
+        And("and an expander")
+        val details = uploadFilesElements.get(1)
+        details.getElementsByTag("summary").text mustBe messages(s"${msgKey}.upload.files.title")
+        details.getElementsByClass("govuk-details__text").text mustBe messages(s"${msgKey}.upload.files.hint")
+      }
+
+      def verifyViewQueriesContent(content: Elements, buttonIsSecondary: Boolean): Assertion = {
+        val viewQueriesElements = content.get(0).children
+        viewQueriesElements.size mustBe 1
+
+        And("the 'View queries' content, when defined, should include a link-button to the Secure-Messaging Inbox")
+        verifyButton(viewQueriesElements.get(0), buttonIsSecondary, "view.queries", dummyInboxLink)
+      }
+
+      def verifyButton(button: Element, buttonIsSecondary: Boolean, msgId: String, href: String): Assertion = {
+        button.hasClass("govuk-button") mustBe true
+        And(s"the link-button should be a ${if (buttonIsSecondary) "secondary" else "primary"} one")
+        button.hasClass("govuk-button--secondary") mustBe buttonIsSecondary
+        button.text mustBe messages(s"$msgKey.$msgId.button")
+        button.attr("href") mustBe href
+      }
     }
 
     "display 'read more' section header" in {

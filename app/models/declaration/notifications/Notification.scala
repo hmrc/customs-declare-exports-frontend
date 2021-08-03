@@ -33,7 +33,7 @@ case class Notification(actionId: String, mrn: String, dateTimeIssued: ZonedDate
 
   lazy val isStatusDMSQry: Boolean = status == QUERY_NOTIFICATION_MESSAGE
 
-  lazy val isStatusRejected: Boolean = status == REJECTED
+  lazy val isStatusDMSRej: Boolean = status == REJECTED
 
   lazy val dateTimeIssuedInUK: ZonedDateTime = dateTimeIssued.withZoneSameInstant(ZoneId.of("Europe/London"))
 }
