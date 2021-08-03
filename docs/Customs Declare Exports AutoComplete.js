@@ -237,6 +237,7 @@ function consignmentReferences(){
     if (currentPageIs('/customs-declare-exports/declaration/consignment-references')) {
         document.getElementById('lrn').value = 'QSLRN' + Math.floor(Math.random() * 8999) + 100;
         document.getElementById('ducr_ducr').value = '8GB123456' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1';
+        document.getElementById('mrn').value = '20GB46J8TMJ4RF' + Math.floor(Math.random() * 8999);
         document.getElementById('submit').click()
     }
 }
@@ -546,10 +547,10 @@ function authorisationsSummary(){
                     document.getElementById('code_no').checked = 'checked';
                     document.getElementById('submit').click();
                 }
-            break;
+                break;
             default:
-                    document.getElementById('code_no').checked = 'checked';
-                    document.getElementById('submit').click();
+                document.getElementById('code_no').checked = 'checked';
+                document.getElementById('submit').click();
                 break;
         }
     }
