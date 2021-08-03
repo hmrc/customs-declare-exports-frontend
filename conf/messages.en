@@ -655,7 +655,6 @@ declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.link
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10 = {0} (requested procedure 31)
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10.linkText = Re-export following a special procedure
 
-
 submission.status.PENDING                         = Pending
 submission.status.REQUESTED_CANCELLATION          = Cancellation Requested
 submission.status.ACCEPTED                        = Accepted
@@ -718,6 +717,7 @@ submissions.declarationDetails.references =  Declaration references
 submissions.declarationDetails.ducr = DUCR
 submissions.declarationDetails.lrn = LRN
 submissions.declarationDetails.mrn = MRN:
+submissions.declarationDetails.fix.resubmit.button = Fix and resubmit
 submissions.declarationDetails.upload.files.button = Upload files
 submissions.declarationDetails.upload.files.title = If you already uploaded files
 submissions.declarationDetails.upload.files.hint = If you have already uploaded and attached the documents that support your declaration, you do not have to attach any further documents, unless you are asked to do so in a query from customs authorities.

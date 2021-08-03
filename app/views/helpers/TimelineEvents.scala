@@ -49,16 +49,21 @@ class TimelineEvents @Inject()(
     }
 
     val IndexToMatchForUploadFilesContent = sortedNotifications.indexWhere(_.isStatusDMSDocOrDMSCtl)
-    val IndexToMatchForViewQueriesButton = sortedNotifications.indexWhere(_.isStatusDMSQry)
+    val IndexToMatchForViewQueriesContent = sortedNotifications.indexWhere(_.isStatusDMSQry)
+    val IndexToMatchForFixResubmitContent = sortedNotifications.indexWhere(_.isStatusDMSRej)
 
     sortedNotifications.zipWithIndex.map {
       case (notification, index) =>
         val content = index match {
-          case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled =>
-            uploadFilesContent(submission.mrn, IndexToMatchForUploadFilesContent < IndexToMatchForViewQueriesButton)
+          case IndexToMatchForFixResubmitContent => fixAndResubmitContent(submission.uuid)
 
-          case IndexToMatchForViewQueriesButton =>
-            viewQueriesButton(IndexToMatchForViewQueriesButton < IndexToMatchForUploadFilesContent)
+          case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
+            uploadFilesContent(submission.mrn, IndexToMatchForUploadFilesContent < IndexToMatchForViewQueriesContent)
+
+          case IndexToMatchForViewQueriesContent =>
+            val noDmsrejNotification = IndexToMatchForFixResubmitContent < 0
+            val dmsqryMoreRecentThanDmsdoc = IndexToMatchForViewQueriesContent < IndexToMatchForUploadFilesContent
+            viewQueriesContent(noDmsrejNotification && dmsqryMoreRecentThanDmsdoc)
 
           case _ => None
         }
@@ -66,12 +71,18 @@ class TimelineEvents @Inject()(
     }
   }
 
+  private def fixAndResubmitContent(declarationID: String)(implicit messages: Messages): Option[Html] = {
+    val call = controllers.routes.RejectedNotificationsController.displayPage(declarationID)
+    val element = new linkButton()("submissions.declarationDetails.fix.resubmit.button", call)
+    Some(new Html(List(element)))
+  }
+
   private def uploadFilesContent(mrn: Option[String], isPrimary: Boolean)(implicit messages: Messages): Option[Html] = {
     val element = uploadFilesPartialForTimeline(mrn, isPrimary)
     Some(new Html(List(element)))
   }
 
-  private def viewQueriesButton(isPrimary: Boolean)(implicit messages: Messages): Option[Html] = {
+  private def viewQueriesContent(isPrimary: Boolean)(implicit messages: Messages): Option[Html] = {
     val element = new linkButton()(
       "submissions.declarationDetails.view.queries.button",
       Call("GET", secureMessagingInboxConfig.sfusInboxLink),
