@@ -55,6 +55,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   private val dmsctlNotification = Notification("id", mrn, now, UNDERGOING_PHYSICAL_CHECK, Seq.empty)
   private val acceptedNotification = Notification("id", mrn, now, ACCEPTED, Seq.empty)
 
+  private val dmsrejNotification = Notification("id", mrn, now, REJECTED, Seq.empty)
+
   // Since the notification list is reverse-ordered (most to least recent) in TimelineEvents...
 
   // 1. order of dmsqry1Notification and dmsqry2Notification is relevant.
@@ -307,7 +309,6 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         }
 
         "one notification at least is a DMSREJ notification in addition to a DMSQRY notification" in {
-          val dmsrejNotification = Notification("id", mrn, now, REJECTED, Seq.empty)
           val notifications = List(dmsqry2Notification, dmsdocNotification, dmsrejNotification)
           val events = eventsOnTimeline(notifications)
           verifyRejectedContent(content(events.get(0)))
@@ -317,13 +318,33 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
 
       "must only include one primary button and no secondary buttons" when {
-        "one notification at least is a DMSREJ notification in addition to DMSCTL and/or DMSDOC notifications" in {
-          val dmsrejNotification = Notification("id", mrn, now, REJECTED, Seq.empty)
+
+        "one notification at least is a DMSREJ notification in addition to only DMSCTL and/or DMSDOC notifications" in {
           val notifications = List(dmsdocNotification, dmsctlNotification, dmsrejNotification)
           val events = eventsOnTimeline(notifications)
           verifyRejectedContent(content(events.get(0)))
           content(events.get(1)).size mustBe 0
           content(events.get(2)).size mustBe 0
+        }
+
+        "there is one only DMSREJ notification" in {
+          val events = eventsOnTimeline(List(dmsrejNotification))
+          verifyRejectedContent(content(events.get(0)))
+        }
+
+        "there is one only DMSDOC notification" in {
+          val events = eventsOnTimeline(List(dmsdocNotification))
+          verifyUploadFilesContent(content(events.get(0)), false)
+        }
+
+        "there is one only DMSCTL notification" in {
+          val events = eventsOnTimeline(List(dmsctlNotification))
+          verifyUploadFilesContent(content(events.get(0)), false)
+        }
+
+        "there is one only DMSQRY notification" in {
+          val events = eventsOnTimeline(List(dmsqry2Notification))
+          verifyViewQueriesContent(content(events.get(0)), false)
         }
       }
 
