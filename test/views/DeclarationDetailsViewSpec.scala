@@ -181,6 +181,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.decHasError.paragraph")
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.accepted.header")
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.accepted.paragraph")
+
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.header")
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.1")
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.2")
@@ -188,9 +189,18 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.2")
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.3")
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.3")
+
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.queryRaised.header")
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.queryRaised.paragraph.1")
       messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.queryRaised.paragraph.2")
+
+      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.header")
+      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.1")
+      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.2")
+      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.1")
+      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.2")
+      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.3")
+      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.3")
     }
 
     val dummyInboxLink = "dummyInboxLink"
@@ -399,55 +409,54 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "display 'read more' section with submitted declaration status expander" in {
-      view.getElementById("read-more-about-declaration-status-submitted") must containMessage(s"${msgKey}.readMoreAboutDecStatus.submitted.header")
-      view.getElementById("read-more-about-declaration-status-submitted") must containMessage(s"${msgKey}.readMoreAboutDecStatus.submitted.paragraph")
+      val element = view.getElementById("read-more-about-declaration-status-submitted")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.submitted.header")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.submitted.paragraph")
     }
 
     "display 'read more' section with declaration has error declaration status expander" in {
-      view.getElementById("read-more-about-declaration-status-declaration-has-error") must containMessage(
-        s"${msgKey}.readMoreAboutDecStatus.decHasError.header"
-      )
-      view.getElementById("read-more-about-declaration-status-declaration-has-error") must containMessage(
-        s"${msgKey}.readMoreAboutDecStatus.decHasError.paragraph"
-      )
+      val element = view.getElementById("read-more-about-declaration-status-declaration-has-error")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.decHasError.header")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.decHasError.paragraph")
     }
 
     "display 'read more' section with accepted declaration status expander" in {
-      view.getElementById("read-more-about-declaration-status-accepted") must containMessage(s"${msgKey}.readMoreAboutDecStatus.accepted.header")
-      view.getElementById("read-more-about-declaration-status-accepted") must containMessage(s"${msgKey}.readMoreAboutDecStatus.accepted.paragraph")
+      val element = view.getElementById("read-more-about-declaration-status-accepted")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.accepted.header")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.accepted.paragraph")
     }
 
     "display 'read more' section with documents required declaration status expander" in {
-      view.getElementById("read-more-about-declaration-status-documents-required") must containMessage(
-        s"${msgKey}.readMoreAboutDecStatus.documentsRequired.header"
-      )
-      view.getElementById("read-more-about-declaration-status-documents-required") must containMessage(
-        s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.1"
-      )
-      view.getElementById("read-more-about-declaration-status-documents-required") must containMessage(
-        s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.2"
-      )
-      view.getElementById("read-more-about-declaration-status-documents-required") must containMessage(
-        s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.3",
-        testEmail
-      )
+      val element = view.getElementById("read-more-about-declaration-status-documents-required")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.header")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.1")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.2")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.3", testEmail)
 
-      view.getElementsByClass("govuk-list--bullet").text() must include(messages(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.1"))
-      view.getElementsByClass("govuk-list--bullet").text() must include(messages(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.2"))
-      view.getElementsByClass("govuk-list--bullet").text() must include(messages(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.3"))
+      val bulletPoints = view.getElementsByClass("govuk-list--bullet").text
+      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.1"))
+      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.2"))
+      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.3"))
     }
 
     "display 'read more' section with query raised declaration status expander" in {
-      view.getElementById("read-more-about-declaration-status-query-raised") must containMessage(
-        s"${msgKey}.readMoreAboutDecStatus.queryRaised.header"
-      )
-      view.getElementById("read-more-about-declaration-status-query-raised") must containMessage(
-        s"${msgKey}.readMoreAboutDecStatus.queryRaised.paragraph.1"
-      )
-      view.getElementById("read-more-about-declaration-status-query-raised") must containMessage(
-        s"${msgKey}.readMoreAboutDecStatus.queryRaised.paragraph.2",
-        testEmail
-      )
+      val element = view.getElementById("read-more-about-declaration-status-query-raised")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.queryRaised.header")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.queryRaised.paragraph.1")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.queryRaised.paragraph.2", testEmail)
+    }
+
+    "display 'read more' section with 'Goods being examined' declaration status expander" in {
+      val element = view.getElementById("read-more-about-declaration-status-goods-being-examined")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.header")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.1")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.2")
+      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.3", testEmail)
+
+      val bulletPoints = view.getElementsByClass("govuk-list--bullet").text
+      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.1"))
+      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.2"))
+      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.3"))
     }
 
     "omit the Declaration Timeline from the page when there are no notifications for the declaration" in {

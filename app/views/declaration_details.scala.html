@@ -90,6 +90,19 @@
   @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.2", request.email))
 }
 
+@goodsExaminedDetailsContent = {
+  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.1"))
+  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.2"))
+
+  @bulletList(items = Seq(
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bulletPoint.1")),
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bulletPoint.2")),
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bulletPoint.3"))
+  ))
+
+  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.3", request.email))
+}
+
 @declarationStatusReadMore = {
   @govukDetails(Details(
     id = Some("read-more-about-declaration-status-submitted"),
@@ -119,6 +132,12 @@
     id = Some("read-more-about-declaration-status-query-raised"),
     summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.header")),
     content = HtmlContent(queryRaisedDetailsContent)
+  ))
+
+  @govukDetails(Details(
+    id = Some("read-more-about-declaration-status-goods-being-examined"),
+    summary = Text(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.header")),
+    content = HtmlContent(goodsExaminedDetailsContent)
   ))
 }
 

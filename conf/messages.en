@@ -741,6 +741,13 @@ submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragrap
 submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.header = Status of ‘Query raised’
 submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.1 = Queries may be raised while your goods are going through customs. Your declaration will appear in the ‘Action needed’ tab, showing ‘Query raised’.
 submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.2 = You’ll also be notified about any queries on your CDS email: {0}.
+submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.header = Status of ‘Goods being examined’
+submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.1 = If the Border Force decides to check your goods, your declaration will appear in the ‘Action needed’ tab showing ‘Goods being examined’.
+submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.2 = If this happens, you must use the button provided to upload scans or PDFs of all the documents that support your declaration, such as:
+submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bulletPoint.1 = commercial or proforma invoice as evidence of value (if needed)
+submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bulletPoint.2 = packing list, cargo manifest or similar as evidence of contents
+submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bulletPoint.3 = any certificates, permits, licences that you declared
+submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.3 = Do not upload any documents unless you are asked to do so, in this timeline, in an email notification to your CDS email: {0}, or directly by customs authorities.
 
 saved.declarations.title = Your saved declarations
 saved.declarations.ducr = DUCR
