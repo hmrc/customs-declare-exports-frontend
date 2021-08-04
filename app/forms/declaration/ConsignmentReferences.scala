@@ -17,6 +17,8 @@
 package forms.declaration
 
 import forms.{DeclarationPage, Ducr, Lrn, Mrn}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.{CLEARANCE, DeclarationType, SUPPLEMENTARY}
 import play.api.data.{Form, Forms}
@@ -30,7 +32,7 @@ object ConsignmentReferences extends DeclarationPage {
 
   implicit val format = Json.format[ConsignmentReferences]
 
-  def form(decType: DeclarationType): Form[ConsignmentReferences] = {
+  def form(decType: DeclarationType, additionalDecType: Option[AdditionalDeclarationType]): Form[ConsignmentReferences] = {
 
     def form2Model: (Ducr, Lrn, Option[Mrn]) => ConsignmentReferences = {
       case (ducr, lrn, mrn) =>
@@ -47,8 +49,8 @@ object ConsignmentReferences extends DeclarationPage {
           case None       => Some((model.ducr, model.lrn, None))
       }
 
-    val mrnMapping = decType match {
-      case SUPPLEMENTARY =>
+    val mrnMapping = (decType, additionalDecType) match {
+      case (SUPPLEMENTARY, Some(AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED)) =>
         optional(Mrn.mapping("declaration.consignmentReferences.supplementary.mrn"))
           .verifying("declaration.consignmentReferences.supplementary.mrn.error.empty", isPresent(_))
       case _ =>

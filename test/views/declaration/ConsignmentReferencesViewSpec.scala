@@ -20,8 +20,9 @@ import base.{Injector, TestHelper}
 import base.ExportsTestData._
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn, Mrn}
+import forms.declaration.ConsignmentReferences
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
@@ -40,9 +41,14 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
   private val consignmentReferencesPage = instanceOf[consignment_references]
 
   private def createView(maybeForm: Option[Form[ConsignmentReferences]])(implicit request: JourneyRequest[_]): Document =
-    consignmentReferencesPage(Mode.Normal, maybeForm.getOrElse(ConsignmentReferences.form(request.declarationType)))(request, messages)
+    consignmentReferencesPage(
+      Mode.Normal,
+      maybeForm.getOrElse(ConsignmentReferences.form(request.declarationType, request.cacheModel.additionalDeclarationType))
+    )(request, messages)
+
   private def createView()(implicit request: JourneyRequest[_]): Document =
-    createView(Some(ConsignmentReferences.form(request.declarationType)))(request)
+    createView(Some(ConsignmentReferences.form(request.declarationType, request.cacheModel.additionalDeclarationType)))(request)
+
   private def createView(form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_]): Document =
     createView(Some(form))(request)
 
@@ -140,40 +146,81 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       }
     }
 
-    onJourney(SUPPLEMENTARY) { implicit request =>
-      "display empty input with label for DUCR" in {
-        val view = createView()
-        val expectedHintText =
-          Seq(messages("declaration.consignmentReferences.supplementary.ducr.hint1"), messages("declaration.consignmentReferences.ducr.hint2"))
-            .mkString(" ")
+    onJourney(SUPPLEMENTARY) { req =>
+      s"with AdditionalDeclarationType of SUPPLEMENTARY_EIDR" should {
+        implicit val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_EIDR)))
 
-        view.getElementsByAttributeValue("for", "ducr_ducr").text() mustBe messages("declaration.consignmentReferences.ducr.info")
-        view.getElementById("ducr_ducr-hint").text() mustBe expectedHintText
-        view.getElementById("ducr_ducr").attr("value") mustBe empty
+        "display empty input with label for DUCR" in {
+          val view = createView()
+          val expectedHintText = Seq(
+            messages("declaration.consignmentReferences.ducr.hint1"),
+            messages("declaration.consignmentReferences.ducr.hint.bullet1"),
+            messages("declaration.consignmentReferences.ducr.hint.bullet2"),
+            messages("declaration.consignmentReferences.ducr.hint.bullet3"),
+            messages("declaration.consignmentReferences.ducr.hint.bullet4"),
+            messages("declaration.consignmentReferences.ducr.hint.bullet5"),
+            messages("declaration.consignmentReferences.ducr.hint2")
+          ).mkString(" ")
+
+          view.getElementsByAttributeValue("for", "ducr_ducr").text() mustBe messages("declaration.consignmentReferences.ducr.info")
+          view.getElementById("ducr_ducr-hint").text() mustBe expectedHintText
+          view.getElementById("ducr_ducr").attr("value") mustBe empty
+        }
+
+        "display empty input with label for LRN" in {
+          val view = createView()
+
+          view.getElementsByAttributeValue("for", "lrn").text() mustBe messages("declaration.consignmentReferences.lrn.info")
+          view.getElementById("lrn-hint").text() mustBe messages("declaration.consignmentReferences.lrn.hint")
+          view.getElementById("lrn").attr("value") mustBe empty
+        }
+
+        "display inset text for DUCR" in {
+          createView().getElementsByClass("govuk-inset-text").get(0).text() mustBe messages("declaration.consignmentReferences.ducr.inset")
+        }
+
+        "display inset text for LRN" in {
+          createView().getElementsByClass("govuk-inset-text").get(1).text() mustBe messages("declaration.consignmentReferences.lrn.inset")
+        }
       }
 
-      "display empty input with label for MRN" in {
-        val view = createView()
-        val expectedHintText = Seq(
-          messages("declaration.consignmentReferences.supplementary.mrn.hint1"),
-          messages("declaration.consignmentReferences.supplementary.mrn.hint2")
-        ).mkString(" ")
+      s"with AdditionalDeclarationType of SUPPLEMENTARY_SIMPLIFIED" should {
+        implicit val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)))
 
-        view.getElementsByAttributeValue("for", "mrn").text() mustBe messages("declaration.consignmentReferences.supplementary.mrn.info")
-        view.getElementById("mrn-hint").text() mustBe expectedHintText
-        view.getElementById("mrn").attr("value") mustBe empty
-      }
+        "display empty input with label for DUCR" in {
+          val view = createView()
+          val expectedHintText =
+            Seq(messages("declaration.consignmentReferences.supplementary.ducr.hint1"), messages("declaration.consignmentReferences.ducr.hint2"))
+              .mkString(" ")
 
-      "display empty input with label for LRN" in {
-        val view = createView()
+          view.getElementsByAttributeValue("for", "ducr_ducr").text() mustBe messages("declaration.consignmentReferences.ducr.info")
+          view.getElementById("ducr_ducr-hint").text() mustBe expectedHintText
+          view.getElementById("ducr_ducr").attr("value") mustBe empty
+        }
 
-        view.getElementsByAttributeValue("for", "lrn").text() mustBe messages("declaration.consignmentReferences.lrn.info")
-        view.getElementById("lrn-hint").text() mustBe messages("declaration.consignmentReferences.supplementary.lrn.hint")
-        view.getElementById("lrn").attr("value") mustBe empty
-      }
+        "display empty input with label for MRN" in {
+          val view = createView()
+          val expectedHintText = Seq(
+            messages("declaration.consignmentReferences.supplementary.mrn.hint1"),
+            messages("declaration.consignmentReferences.supplementary.mrn.hint2")
+          ).mkString(" ")
 
-      "do not display inset text for DUCR or LRN" in {
-        createView().getElementsByClass("govuk-inset-text").size() mustBe 0
+          view.getElementsByAttributeValue("for", "mrn").text() mustBe messages("declaration.consignmentReferences.supplementary.mrn.info")
+          view.getElementById("mrn-hint").text() mustBe expectedHintText
+          view.getElementById("mrn").attr("value") mustBe empty
+        }
+
+        "display empty input with label for LRN" in {
+          val view = createView()
+
+          view.getElementsByAttributeValue("for", "lrn").text() mustBe messages("declaration.consignmentReferences.lrn.info")
+          view.getElementById("lrn-hint").text() mustBe messages("declaration.consignmentReferences.supplementary.lrn.hint")
+          view.getElementById("lrn").attr("value") mustBe empty
+        }
+
+        "do not display inset text for DUCR or LRN" in {
+          createView().getElementsByClass("govuk-inset-text").size() mustBe 0
+        }
       }
     }
 
@@ -204,7 +251,11 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       "display error for empty LRN" in {
 
         val view =
-          createView(ConsignmentReferences.form(request.declarationType).fillAndValidate(ConsignmentReferences(Ducr(ducr), Lrn(""))))
+          createView(
+            ConsignmentReferences
+              .form(request.declarationType, request.cacheModel.additionalDeclarationType)
+              .fillAndValidate(ConsignmentReferences(Ducr(ducr), Lrn("")))
+          )
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#lrn")
@@ -216,7 +267,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
         val view = createView(
           ConsignmentReferences
-            .form(request.declarationType)
+            .form(request.declarationType, request.cacheModel.additionalDeclarationType)
             .fillAndValidate(ConsignmentReferences(Ducr(ducr), Lrn(TestHelper.createRandomAlphanumericString(23))))
         )
 
@@ -229,7 +280,11 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       "display error when LRN contains special character" in {
 
         val view =
-          createView(ConsignmentReferences.form(request.declarationType).fillAndValidate(ConsignmentReferences(Ducr(ducr), Lrn("#@#$"))))
+          createView(
+            ConsignmentReferences
+              .form(request.declarationType, request.cacheModel.additionalDeclarationType)
+              .fillAndValidate(ConsignmentReferences(Ducr(ducr), Lrn("#@#$")))
+          )
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#lrn")
@@ -240,7 +295,11 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       "display error when DUCR is incorrect and LRN empty" in {
 
         val view =
-          createView(ConsignmentReferences.form(request.declarationType).fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn(""))))
+          createView(
+            ConsignmentReferences
+              .form(request.declarationType, request.cacheModel.additionalDeclarationType)
+              .fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn("")))
+          )
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
@@ -254,7 +313,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
         val view = createView(
           ConsignmentReferences
-            .form(request.declarationType)
+            .form(request.declarationType, request.cacheModel.additionalDeclarationType)
             .fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn(TestHelper.createRandomAlphanumericString(23))))
         )
 
@@ -271,7 +330,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         val view =
           createView(
             ConsignmentReferences
-              .form(request.declarationType)
+              .form(request.declarationType, request.cacheModel.additionalDeclarationType)
               .fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn("$$%")))
           )
 
@@ -284,12 +343,14 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       }
     }
 
-    onJourney(SUPPLEMENTARY) { implicit request =>
+    onJourney(SUPPLEMENTARY) { req =>
+      implicit val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)))
+
       "display error for empty MRN" in {
         val view =
           createView(
             ConsignmentReferences
-              .form(request.declarationType)
+              .form(request.declarationType, Some(SUPPLEMENTARY_SIMPLIFIED))
               .fillAndValidate(ConsignmentReferences(Ducr(ducr), Lrn(TestHelper.createRandomAlphanumericString(22)), Some(Mrn(""))))
           )
 
@@ -303,7 +364,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         val view =
           createView(
             ConsignmentReferences
-              .form(request.declarationType)
+              .form(request.declarationType, Some(SUPPLEMENTARY_SIMPLIFIED))
               .fillAndValidate(ConsignmentReferences(Ducr(ducr), Lrn(TestHelper.createRandomAlphanumericString(22)), Some(Mrn("wsfsdf£"))))
           )
 
@@ -323,7 +384,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         val view =
           createView(
             ConsignmentReferences
-              .form(request.declarationType)
+              .form(request.declarationType, request.cacheModel.additionalDeclarationType)
               .fill(ConsignmentReferences(Ducr(ducr), Lrn("")))
           )
 
@@ -334,7 +395,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
         val view = createView(
           ConsignmentReferences
-            .form(request.declarationType)
+            .form(request.declarationType, request.cacheModel.additionalDeclarationType)
             .fill(ConsignmentReferences(Ducr(""), Lrn(lrn)))
         )
 
@@ -342,13 +403,15 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       }
     }
 
-    onJourney(SUPPLEMENTARY) { implicit request =>
+    onJourney(SUPPLEMENTARY) { req =>
+      implicit val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)))
+
       "display data in MRN input" in {
 
         val view =
           createView(
             ConsignmentReferences
-              .form(request.declarationType)
+              .form(request.declarationType, request.cacheModel.additionalDeclarationType)
               .fill(ConsignmentReferences(Ducr(ducr), Lrn(lrn), Some(Mrn(mrn))))
           )
 

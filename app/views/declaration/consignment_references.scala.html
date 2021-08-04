@@ -17,6 +17,7 @@
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
 @import forms.declaration.ConsignmentReferences
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
@@ -41,7 +42,12 @@
         appConfig: AppConfig
 )
 
+
 @(mode: Mode, form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
+
+@isSupplementaryPlusSimplified = @{
+    request.declarationType == DeclarationType.SUPPLEMENTARY && request.cacheModel.additionalDeclarationType.getOrElse("") == SUPPLEMENTARY_SIMPLIFIED
+}
 
 @ducrHintSectionSupplementary = {
     @paragraphBody(messages("declaration.consignmentReferences.supplementary.ducr.hint1"))
@@ -65,14 +71,14 @@
 }
 
 @ducrHintSection = @{
-  if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+  if (isSupplementaryPlusSimplified)
       ducrHintSectionSupplementary
   else
       ducrHintSectionOthers
 }
 
 @lrnHintSection = @{
-    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+    if (isSupplementaryPlusSimplified)
         paragraphBody(messages("declaration.consignmentReferences.supplementary.lrn.hint"))
     else
         paragraphBody(messages("declaration.consignmentReferences.lrn.hint"), "govuk-hint")
@@ -84,7 +90,7 @@
 }
 
 @optionalMrnSection = @{
-    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+    if (isSupplementaryPlusSimplified)
         exportsInputText(
             field = form("mrn"),
             inputClasses = Some("govuk-input"),
@@ -96,14 +102,14 @@
 }
 
 @optionalDucrInsetText = @{
-    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+    if (isSupplementaryPlusSimplified)
         HtmlFormat.empty
     else
         insetText(content = HtmlContent(messages("declaration.consignmentReferences.ducr.inset")))
 }
 
 @optionalLrnInsetText = @{
-    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+    if (isSupplementaryPlusSimplified)
         HtmlFormat.empty
     else
         insetText(content = HtmlContent(messages("declaration.consignmentReferences.lrn.inset")))

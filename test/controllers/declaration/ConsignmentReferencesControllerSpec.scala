@@ -19,6 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -120,10 +121,22 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
       }
     }
 
-    onJourney(SUPPLEMENTARY) { implicit request =>
-      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" in {
+    onJourney(SUPPLEMENTARY) { req =>
+      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page for SUPPLEMENTARY_SIMPLIFIED" in {
+        implicit val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)))
         withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, Some(MRN)))
+
+        val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage()
+      }
+
+      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page for SUPPLEMENTARY_EIDR" in {
+        implicit val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_EIDR)))
+        withNewCaching(request.cacheModel)
+        val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
 
         val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
