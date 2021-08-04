@@ -58,11 +58,11 @@ class TimelineEvents @Inject()(
           case IndexToMatchForFixResubmitContent => fixAndResubmitContent(submission.uuid)
 
           case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
-            uploadFilesContent(submission.mrn, IndexToMatchForUploadFilesContent < IndexToMatchForViewQueriesContent)
+            uploadFilesContent(submission.mrn, isIndex1Primary(IndexToMatchForUploadFilesContent, IndexToMatchForViewQueriesContent))
 
           case IndexToMatchForViewQueriesContent =>
             val noDmsrejNotification = IndexToMatchForFixResubmitContent < 0
-            val dmsqryMoreRecentThanDmsdoc = IndexToMatchForViewQueriesContent < IndexToMatchForUploadFilesContent
+            val dmsqryMoreRecentThanDmsdoc = isIndex1Primary(IndexToMatchForViewQueriesContent, IndexToMatchForUploadFilesContent)
             viewQueriesContent(noDmsrejNotification && dmsqryMoreRecentThanDmsdoc)
 
           case _ => None
@@ -70,6 +70,8 @@ class TimelineEvents @Inject()(
         TimelineEvent(title = StatusOfSubmission.asText(notification), dateTime = notification.dateTimeIssued, content = content)
     }
   }
+
+  private def isIndex1Primary(index1: Int, index2: Int): Boolean = index2 < 0 || index1 < index2
 
   private def fixAndResubmitContent(declarationID: String)(implicit messages: Messages): Option[Html] = {
     val call = controllers.routes.RejectedNotificationsController.displayPage(declarationID)
