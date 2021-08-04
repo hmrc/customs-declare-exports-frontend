@@ -93,11 +93,12 @@
                 rows = summaryRows
             ))
 
-            @link(
-                text = messages("rejected.notification.continue"),
-                call = routes.SubmissionsController.amend(declaration.id)
-            )
-
+            <p id="continue-checking-answers">
+                @link(
+                    text = messages("rejected.notification.continue"),
+                    call = routes.SubmissionsController.amend(declaration.id)
+                )
+            </p>
         </div>
     </div>
 

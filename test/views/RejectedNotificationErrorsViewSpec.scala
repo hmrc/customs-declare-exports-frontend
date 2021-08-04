@@ -36,6 +36,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
 
   private def view(reasons: Seq[RejectionReason] = Seq.empty, testMessages: Messages = messages): Document =
     page(declaration, reasons)(request, testMessages)
+
   val defaultView: Document = view()
 
   "Rejected notification errors page" should {
@@ -101,8 +102,10 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
     }
 
     "must contain continue link" in {
+      val continueLink = defaultView
+        .getElementById("continue-checking-answers")
+        .getElementsByAttributeValue("href", routes.SubmissionsController.amend(declaration.id).url)
 
-      val continueLink = defaultView.getElementsByAttributeValue("href", routes.SubmissionsController.amend(declaration.id).url)
       continueLink.text() mustBe messages("rejected.notification.continue")
     }
 
