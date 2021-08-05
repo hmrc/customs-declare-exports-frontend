@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import base.ExportsTestData.eidrDateStamp
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
@@ -136,7 +137,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
       "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page for SUPPLEMENTARY_EIDR" in {
         implicit val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_EIDR)))
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
+        val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, None, Some(eidrDateStamp)))
 
         val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 

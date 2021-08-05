@@ -151,6 +151,12 @@ function currentPageIs(path) {
     }
 }
 
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 // actual pages
 function startPage(){
     if (currentPageIs('/customs-declare-exports/start')) {
@@ -237,7 +243,16 @@ function consignmentReferences(){
     if (currentPageIs('/customs-declare-exports/declaration/consignment-references')) {
         document.getElementById('lrn').value = 'QSLRN' + Math.floor(Math.random() * 8999) + 100;
         document.getElementById('ducr_ducr').value = '8GB123456' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1';
-        document.getElementById('mrn').value = '20GB46J8TMJ4RF' + Math.floor(Math.random() * 8999);
+
+        switch(getDeclaration()) {
+            case 'Y':
+                document.getElementById('mrn').value = '20GB46J8TMJ4RF' + Math.floor(Math.random() * 8999);
+                break;
+            case 'Z':
+                document.getElementById('eidrDateStamp').value = '2021' + getRandomInt(10,12) + getRandomInt(1,30);
+                break;
+        }
+
         document.getElementById('submit').click()
     }
 }

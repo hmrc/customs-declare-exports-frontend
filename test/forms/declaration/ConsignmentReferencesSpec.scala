@@ -49,11 +49,21 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
       }
 
       onJourney(SUPPLEMENTARY) { implicit request =>
-        AdditionalDeclarationType.values.foreach { additionalDeclarationType =>
-          s"provided with valid input for SUPPLEMENTARY with additionalDecType of ${additionalDeclarationType}" in {
+        "with additionalDeclarationType of SUPPLEMENTARY_SIMPLIFIED" when {
+          "provided with valid input for SUPPLEMENTARY with additionalDecType of SUPPLEMENTARY_SIMPLIFIED" in {
 
-            val data = customiseDataForSupplementary(correctConsignmentReferencesJSON, additionalDeclarationType)
-            val form = getBoundedForm(data, Some(additionalDeclarationType))
+            val data = addMrnToJSON(correctConsignmentReferencesJSON, mrn)
+            val form = getBoundedForm(data, Some(SUPPLEMENTARY_SIMPLIFIED))
+
+            form.hasErrors mustBe false
+          }
+        }
+
+        "with additionalDeclarationType of SUPPLEMENTARY_EIDR" when {
+          "provided with valid input for SUPPLEMENTARY with additionalDecType of SUPPLEMENTARY_EIDR" in {
+
+            val data = addEidrToJSON(correctConsignmentReferencesJSON, eidrDateStamp)
+            val form = getBoundedForm(data, Some(SUPPLEMENTARY_EIDR))
 
             form.hasErrors mustBe false
           }
@@ -89,9 +99,10 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
           val form = getBoundedForm(emptyJSON, Some(SUPPLEMENTARY_EIDR))
 
           form.hasErrors mustBe true
-          form.errors.length must equal(2)
+          form.errors.length must equal(3)
           form.errors(0).message must equal("error.required")
           form.errors(1).message must equal("error.required")
+          form.errors(2).message must equal("declaration.consignmentReferences.supplementary.eidr.error.empty")
         }
       }
 
@@ -145,10 +156,17 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
         }
       }
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE, SUPPLEMENTARY) { implicit request =>
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
         "provided with invalid input (MRN present when should not be)" in {
-          val maybeAddDecType = if (request.declarationType == SUPPLEMENTARY) Some(SUPPLEMENTARY_EIDR) else None
-          val form = getBoundedForm(addMrnToJSON(correctConsignmentReferencesJSON, mrn), maybeAddDecType)
+          val form = getBoundedForm(addMrnToJSON(correctConsignmentReferencesJSON, mrn))
+
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors.last.message must equal("error.notRequired")
+        }
+
+        "provided with invalid input (EIDR date stamp present when should not be)" in {
+          val form = getBoundedForm(addEidrToJSON(correctConsignmentReferencesJSON, eidrDateStamp))
 
           form.hasErrors mustBe true
           form.errors.length must equal(1)
@@ -157,23 +175,61 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
       }
 
       onJourney(SUPPLEMENTARY) { implicit request =>
-        "provided with invalid input (no MRN)" in {
-          val form = getBoundedForm(correctConsignmentReferencesJSON, Some(SUPPLEMENTARY_SIMPLIFIED))
+        "with additionalDeclarationType of SUPPLEMENTARY_SIMPLIFIED" when {
+          "provided with invalid input (no MRN)" in {
+            val form = getBoundedForm(correctConsignmentReferencesJSON, Some(SUPPLEMENTARY_SIMPLIFIED))
 
-          form.hasErrors mustBe true
-          form.errors.length must equal(1)
-          form.errors(0).message must equal("declaration.consignmentReferences.supplementary.mrn.error.empty")
+            form.hasErrors mustBe true
+            form.errors.length must equal(1)
+            form.errors(0).message must equal("declaration.consignmentReferences.supplementary.mrn.error.empty")
+          }
+
+          "provided with invalid input (MRN too long)" in {
+            val form = getBoundedForm(
+              addMrnToJSON(correctConsignmentReferencesJSON, TestHelper.createRandomAlphanumericString(19)),
+              Some(SUPPLEMENTARY_SIMPLIFIED)
+            )
+
+            form.hasErrors mustBe true
+            form.errors.length must equal(1)
+            form.errors(0).message must equal("declaration.consignmentReferences.supplementary.mrn.error.invalid")
+          }
+
+          "provided with invalid input (EIDR Date Stamp present when should not be)" in {
+            val form =
+              getBoundedForm(addEidrToJSON(addMrnToJSON(correctConsignmentReferencesJSON, mrn), eidrDateStamp), Some(SUPPLEMENTARY_SIMPLIFIED))
+
+            form.hasErrors mustBe true
+            form.errors.length must equal(1)
+            form.errors.last.message must equal("error.notRequired")
+          }
         }
 
-        "provided with invalid input (MRN too long)" in {
-          val form = getBoundedForm(
-            addMrnToJSON(correctConsignmentReferencesJSON, TestHelper.createRandomAlphanumericString(19)),
-            Some(SUPPLEMENTARY_SIMPLIFIED)
-          )
+        "with additionalDeclarationType of SUPPLEMENTARY_EIDR" when {
+          "provided with invalid input (no EIDR Date Stamp)" in {
+            val form = getBoundedForm(correctConsignmentReferencesJSON, Some(SUPPLEMENTARY_EIDR))
 
-          form.hasErrors mustBe true
-          form.errors.length must equal(1)
-          form.errors(0).message must equal("declaration.consignmentReferences.supplementary.mrn.error.invalid")
+            form.hasErrors mustBe true
+            form.errors.length must equal(1)
+            form.errors(0).message must equal("declaration.consignmentReferences.supplementary.eidr.error.empty")
+          }
+
+          "provided with invalid input (EIDR Date Stamp too long)" in {
+            val form =
+              getBoundedForm(addEidrToJSON(correctConsignmentReferencesJSON, TestHelper.createRandomNumericString(9)), Some(SUPPLEMENTARY_EIDR))
+
+            form.hasErrors mustBe true
+            form.errors.length must equal(1)
+            form.errors(0).message must equal("declaration.consignmentReferences.supplementary.eidr.error.invalid")
+          }
+
+          "provided with invalid input (MRN present when should not be)" in {
+            val form = getBoundedForm(addEidrToJSON(addMrnToJSON(correctConsignmentReferencesJSON, mrn), eidrDateStamp), Some(SUPPLEMENTARY_EIDR))
+
+            form.hasErrors mustBe true
+            form.errors.length must equal(1)
+            form.errors.last.message must equal("error.notRequired")
+          }
         }
       }
     }
@@ -189,6 +245,14 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
       TariffContentKey(s"${messageKey}.3.clearance")
     )
 
+  override def getSupplementaryTariffKeys(messageKey: String): Seq[TariffContentKey] =
+    Seq(
+      TariffContentKey(s"${messageKey}.1.supplementary"),
+      TariffContentKey(s"${messageKey}.1.common"),
+      TariffContentKey(s"${messageKey}.2.common"),
+      TariffContentKey(s"${messageKey}.3.common")
+    )
+
   "ConsignmentReferences" when {
     testTariffContentKeys(ConsignmentReferences, "tariff.declaration.consignmentReferences")
   }
@@ -202,13 +266,11 @@ object ConsignmentReferencesSpec {
   val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(lrn))
   val emptyConsignmentReferences = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(""))
 
-  def addMrnToJSON(data: JsValue, mrn: String): JsValue = data.asInstanceOf[JsObject].deepMerge(JsObject(Map("mrn" -> JsString(mrn))))
+  def addMrnToJSON(data: JsValue, mrn: String): JsValue =
+    data.asInstanceOf[JsObject].deepMerge(JsObject(Map("mrn" -> JsString(mrn))))
 
-  def customiseDataForSupplementary(data: JsValue, additionalDeclarationType: AdditionalDeclarationType) =
-    if (additionalDeclarationType == SUPPLEMENTARY_SIMPLIFIED)
-      addMrnToJSON(correctConsignmentReferencesJSON, mrn)
-    else
-      correctConsignmentReferencesJSON
+  def addEidrToJSON(data: JsValue, eidrDateStamp: String): JsValue =
+    data.asInstanceOf[JsObject].deepMerge(JsObject(Map("eidrDateStamp" -> JsString(eidrDateStamp))))
 
   val correctConsignmentReferencesJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString(lrn)))
 
