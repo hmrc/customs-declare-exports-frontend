@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantIsExporter
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -89,13 +89,23 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display 'Back' button that links to 'Link DUCR to a MUCR' page" in {
 
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backCaption)
         backButton must haveHref(routes.LinkDucrToMucrController.displayPage().url)
+      }
+    }
+
+    onSupplementary { implicit request =>
+      "display 'Back' button that links to 'Are you the exporter' page" in {
+
+        val backButton = createView().getElementById("back-link")
+
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.ConsignmentReferencesController.displayPage().url)
       }
     }
 

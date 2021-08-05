@@ -17,18 +17,19 @@
 package controllers.declaration
 
 import javax.inject.Inject
-
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ConsignmentReferences
 import forms.declaration.ConsignmentReferences.form
 import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.DeclarationType.{DeclarationType, SUPPLEMENTARY}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.consignment_references
@@ -58,10 +59,14 @@ class ConsignmentReferencesController @Inject()(
         (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
         validConsignmentReferences =>
           updateCache(validConsignmentReferences)
-            .map(_ => navigator.continueTo(mode, routes.LinkDucrToMucrController.displayPage))
+            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
       )
   }
 
   private def updateCache(formData: ConsignmentReferences)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(_.copy(consignmentReferences = Some(formData)))
+
+  private def nextPage(decType: DeclarationType): Mode => Call =
+    if (decType == SUPPLEMENTARY) routes.DeclarantExporterController.displayPage
+    else routes.LinkDucrToMucrController.displayPage
 }
