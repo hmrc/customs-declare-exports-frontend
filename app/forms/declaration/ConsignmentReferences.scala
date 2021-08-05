@@ -24,9 +24,9 @@ import models.DeclarationType.{CLEARANCE, DeclarationType, SUPPLEMENTARY}
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isMissing, isPresent}
+import utils.validators.forms.FieldValidator._
 
-case class ConsignmentReferences(ducr: Ducr, lrn: Lrn, mrn: Option[Mrn] = None)
+case class ConsignmentReferences(ducr: Ducr, lrn: Lrn, mrn: Option[Mrn] = None, eidrDateStamp: Option[String] = None)
 
 object ConsignmentReferences extends DeclarationPage {
 
@@ -34,20 +34,12 @@ object ConsignmentReferences extends DeclarationPage {
 
   def form(decType: DeclarationType, additionalDecType: Option[AdditionalDeclarationType]): Form[ConsignmentReferences] = {
 
-    def form2Model: (Ducr, Lrn, Option[Mrn]) => ConsignmentReferences = {
-      case (ducr, lrn, mrn) =>
-        mrn match {
-          case Some(x) => ConsignmentReferences(ducr, lrn, mrn)
-          case None    => ConsignmentReferences(ducr, lrn, None)
-        }
+    def form2Model: (Ducr, Lrn, Option[Mrn], Option[String]) => ConsignmentReferences = {
+      case (ducr, lrn, mrn, eidrDateStamp) => ConsignmentReferences(ducr, lrn, mrn, eidrDateStamp)
     }
 
-    def model2Form: ConsignmentReferences => Option[(Ducr, Lrn, Option[Mrn])] =
-      model =>
-        model.mrn match {
-          case Some(code) => Some((model.ducr, model.lrn, Some(code)))
-          case None       => Some((model.ducr, model.lrn, None))
-      }
+    def model2Form: ConsignmentReferences => Option[(Ducr, Lrn, Option[Mrn], Option[String])] =
+      model => Some((model.ducr, model.lrn, model.mrn, model.eidrDateStamp))
 
     val mrnMapping = (decType, additionalDecType) match {
       case (SUPPLEMENTARY, Some(AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED)) =>
@@ -59,10 +51,25 @@ object ConsignmentReferences extends DeclarationPage {
           .transform(_.map(Mrn(_)), (o: Option[Mrn]) => o.map(_.value))
     }
 
+    val eidrMapping = (decType, additionalDecType) match {
+      case (SUPPLEMENTARY, Some(AdditionalDeclarationType.SUPPLEMENTARY_EIDR)) =>
+        optional(
+          text()
+            .verifying("declaration.consignmentReferences.supplementary.eidr.error.empty", nonEmpty)
+            .verifying("declaration.consignmentReferences.supplementary.eidr.error.invalid", isEmpty or (isNumeric and hasSpecificLength(8)))
+        ).verifying("declaration.consignmentReferences.supplementary.eidr.error.empty", isPresent(_))
+      case _ =>
+        optional(text())
+          .verifying("error.notRequired", isMissing(_))
+    }
+
     Form(
-      Forms.mapping("ducr" -> Ducr.ducrMapping, "lrn" -> Lrn.mapping("declaration.consignmentReferences.lrn"), "mrn" -> mrnMapping)(form2Model)(
-        model2Form
-      )
+      Forms.mapping(
+        "ducr" -> Ducr.ducrMapping,
+        "lrn" -> Lrn.mapping("declaration.consignmentReferences.lrn"),
+        "mrn" -> mrnMapping,
+        "eidrDateStamp" -> eidrMapping
+      )(form2Model)(model2Form)
     )
   }
 
@@ -73,6 +80,13 @@ object ConsignmentReferences extends DeclarationPage {
           TariffContentKey("tariff.declaration.consignmentReferences.1.clearance"),
           TariffContentKey("tariff.declaration.consignmentReferences.2.clearance"),
           TariffContentKey("tariff.declaration.consignmentReferences.3.clearance")
+        )
+      case SUPPLEMENTARY =>
+        Seq(
+          TariffContentKey("tariff.declaration.consignmentReferences.1.supplementary"),
+          TariffContentKey("tariff.declaration.consignmentReferences.1.common"),
+          TariffContentKey("tariff.declaration.consignmentReferences.2.common"),
+          TariffContentKey("tariff.declaration.consignmentReferences.3.common")
         )
       case _ =>
         Seq(

@@ -23,7 +23,7 @@ import models.DeclarationType
 import base.UnitSpec
 
 trait DeclarationPageBaseSpec extends UnitSpec {
-  val commonKeyDeclarationTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
+  val commonKeyDeclarationTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL)
 
   def testTariffContentKeys(page: DeclarationPage, messageKey: String) =
     "defineTariffContentKeys is called" which {
@@ -34,6 +34,7 @@ trait DeclarationPageBaseSpec extends UnitSpec {
             page.defineTariffContentKeys(decType) mustBe getCommonTariffKeys(messageKey)
           }
 
+          page.defineTariffContentKeys(SUPPLEMENTARY) mustBe getSupplementaryTariffKeys(messageKey)
           page.defineTariffContentKeys(CLEARANCE) mustBe getClearanceTariffKeys(messageKey)
         }
       }
@@ -55,6 +56,8 @@ trait DeclarationPageBaseSpec extends UnitSpec {
     }
 
   def getCommonTariffKeys(messageKey: String) = Seq(TariffContentKey(s"$messageKey.common"))
+
+  def getSupplementaryTariffKeys(messageKey: String) = getCommonTariffKeys(messageKey)
 
   def getClearanceTariffKeys(messageKey: String) = Seq(TariffContentKey(s"$messageKey.clearance"))
 }

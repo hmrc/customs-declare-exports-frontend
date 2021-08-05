@@ -24,6 +24,8 @@ object TestHelper {
 
   def createRandomAlphanumericString(length: Int): String = Random.alphanumeric.take(length).mkString
 
+  def createRandomNumericString(length: Int): String = Random.nextInt(length).toString
+
   val maxStringLength = 150
   def createRandomString(length: Int = maxStringLength): String = Random.nextString(length)
 

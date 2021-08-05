@@ -49,6 +49,7 @@ object ExportsTestData extends ExportsDeclarationBuilder {
   val ducr = "5GB123456789000-123ABC456DEFIIIII"
   val mrn = "20GB46J8TMJ4RFGVA0"
   val mucr = "CZYX123A"
+  val eidrDateStamp = "20001231"
 
   val currentLoginTime: DateTime = new DateTime(1530442800000L, UTC)
   val previousLoginTime: DateTime = new DateTime(1530464400000L, UTC)

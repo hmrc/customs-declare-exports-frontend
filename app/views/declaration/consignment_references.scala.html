@@ -17,7 +17,7 @@
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
 @import forms.declaration.ConsignmentReferences
-@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
@@ -71,14 +71,14 @@
 }
 
 @ducrHintSection = @{
-  if (isSupplementaryPlusSimplified)
+  if (request.declarationType == DeclarationType.SUPPLEMENTARY)
       ducrHintSectionSupplementary
   else
       ducrHintSectionOthers
 }
 
 @lrnHintSection = @{
-    if (isSupplementaryPlusSimplified)
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
         paragraphBody(messages("declaration.consignmentReferences.supplementary.lrn.hint"))
     else
         paragraphBody(messages("declaration.consignmentReferences.lrn.hint"), "govuk-hint")
@@ -89,27 +89,37 @@
     @paragraphBody(messages("declaration.consignmentReferences.supplementary.mrn.hint2"), "govuk-hint")
 }
 
-@optionalMrnSection = @{
-    if (isSupplementaryPlusSimplified)
-        exportsInputText(
-            field = form("mrn"),
-            inputClasses = Some("govuk-input"),
-            hintHtml = Some(mrnHintSection),
-            labelKey = "declaration.consignmentReferences.supplementary.mrn.info"
-        )
-    else
-        HtmlFormat.empty
+@optionalSupplementarySection = @{
+    (request.declarationType, request.cacheModel.additionalDeclarationType) match {
+        case (DeclarationType.SUPPLEMENTARY, Some(SUPPLEMENTARY_SIMPLIFIED)) =>
+            exportsInputText(
+                field = form("mrn"),
+                inputClasses = Some("govuk-input"),
+                hintHtml = Some(mrnHintSection),
+                labelKey = "declaration.consignmentReferences.supplementary.mrn.info"
+            )
+
+        case (DeclarationType.SUPPLEMENTARY, Some(SUPPLEMENTARY_EIDR)) =>
+            exportsInputText(
+                field = form("eidrDateStamp"),
+                inputClasses = Some("govuk-input"),
+                hintKey = Some("declaration.consignmentReferences.supplementary.eidr.hint1"),
+                labelKey = "declaration.consignmentReferences.supplementary.eidr.info"
+            )
+
+        case _ => HtmlFormat.empty
+    }
 }
 
 @optionalDucrInsetText = @{
-    if (isSupplementaryPlusSimplified)
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
         HtmlFormat.empty
     else
         insetText(content = HtmlContent(messages("declaration.consignmentReferences.ducr.inset")))
 }
 
 @optionalLrnInsetText = @{
-    if (isSupplementaryPlusSimplified)
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
         HtmlFormat.empty
     else
         insetText(content = HtmlContent(messages("declaration.consignmentReferences.lrn.inset")))
@@ -134,7 +144,7 @@
 
         @optionalDucrInsetText
 
-        @optionalMrnSection
+        @optionalSupplementarySection
 
         @exportsInputText(
             field = form("lrn"),

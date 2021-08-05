@@ -108,6 +108,26 @@
                 ))
             )
         ),
+        declarationData.consignmentReferences.flatMap(_.eidrDateStamp).map( ref =>
+            SummaryListRow(
+                classes = "eidrDateStamp-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.references.eidr"))
+                ),
+                value = Value(
+                    content = Text(ref)
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionItem(
+                            href = routes.ConsignmentReferencesController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.references.eidr.change"))
+                        )
+                    )
+                ))
+            )
+        ),
         declarationData.consignmentReferences.map(refs =>
             SummaryListRow(
                 classes = "lrn-row",
