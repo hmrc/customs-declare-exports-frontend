@@ -17,6 +17,7 @@
 package forms
 
 import play.api.data.Forms._
+import play.api.data.Mapping
 import play.api.libs.json.{Format, JsString, Reads, Writes}
 import utils.validators.forms.FieldValidator._
 
@@ -31,7 +32,7 @@ object Lrn {
 
   private val lrnMaxLength = 22
 
-  def mapping(prefix: String) =
+  def mapping(prefix: String): Mapping[Lrn] =
     text()
       .verifying(s"$prefix.error.empty", nonEmpty)
       .verifying(s"$prefix.error.length", isEmpty or isNotAlphanumeric or noLongerThan(lrnMaxLength))

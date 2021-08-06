@@ -26,20 +26,20 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        insetText: exportsInsetText,
-        bulletList: bulletList,
-        paragraphBody: paragraphBody,
-        formHelper: FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukDetails : GovukDetails,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    insetText: exportsInsetText,
+    bulletList: bulletList,
+    paragraphBody: paragraphBody,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 
@@ -136,7 +136,7 @@
         @pageTitle(messages("declaration.consignmentReferences.header"))
 
         @exportsInputText(
-            field = form("ducr.ducr"),
+            field = form(ConsignmentReferences.ducrId),
             inputClasses = Some("govuk-input"),
             hintHtml = Some(ducrHintSection),
             labelKey = "declaration.consignmentReferences.ducr.info"

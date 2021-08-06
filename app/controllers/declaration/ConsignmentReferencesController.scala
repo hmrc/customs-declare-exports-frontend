@@ -16,20 +16,20 @@
 
 package controllers.declaration
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ConsignmentReferences
 import forms.declaration.ConsignmentReferences.form
-import models.{ExportsDeclaration, Mode}
+import javax.inject.Inject
+import models.DeclarationType.SUPPLEMENTARY
+import models.Mode
 import models.requests.JourneyRequest
-import models.DeclarationType.{DeclarationType, SUPPLEMENTARY}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.consignment_references
@@ -38,6 +38,7 @@ class ConsignmentReferencesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  exportsConnector: CustomsDeclareExportsConnector,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
@@ -53,20 +54,34 @@ class ConsignmentReferencesController @Inject()(
   }
 
   def submitConsignmentReferences(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form(request.declarationType, request.cacheModel.additionalDeclarationType)
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
-        validConsignmentReferences =>
-          updateCache(validConsignmentReferences)
-            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
-      )
+    val boundForm = form(request.declarationType, request.cacheModel.additionalDeclarationType).bindFromRequest()
+    boundForm.fold(
+      formWithErrors => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
+      verifyDucrDuplicationIfNotSupplementary(mode, boundForm, _)
+    )
   }
 
-  private def updateCache(formData: ConsignmentReferences)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.copy(consignmentReferences = Some(formData)))
-
-  private def nextPage(decType: DeclarationType): Mode => Call =
-    if (decType == SUPPLEMENTARY) routes.DeclarantExporterController.displayPage
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+    if (request.declarationType == SUPPLEMENTARY) routes.DeclarantExporterController.displayPage
     else routes.LinkDucrToMucrController.displayPage
+
+  private def updateCacheAndContinue(mode: Mode, formData: ConsignmentReferences)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+    updateExportsDeclarationSyncDirect(_.copy(consignmentReferences = Some(formData)))
+      .map(_ => navigator.continueTo(mode, nextPage))
+
+  private def verifyDucrDuplicationIfNotSupplementary(mode: Mode, form: Form[ConsignmentReferences], consignmentReferences: ConsignmentReferences)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] =
+    if (request.declarationType == SUPPLEMENTARY) updateCacheAndContinue(mode, consignmentReferences)
+    else verifyDucrDuplication(mode, form, consignmentReferences)
+
+  private def verifyDucrDuplication(mode: Mode, form: Form[ConsignmentReferences], consignmentReferences: ConsignmentReferences)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] =
+    exportsConnector.findSubmissionByDucr(consignmentReferences.ducr).flatMap {
+      _.fold(updateCacheAndContinue(mode, consignmentReferences)) { _ =>
+        val formWithErrors = form.copy(data = Map("lrn" -> consignmentReferences.lrn.value), errors = ConsignmentReferences.duplicatedDucr)
+        Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors)))
+      }
+    }
 }
