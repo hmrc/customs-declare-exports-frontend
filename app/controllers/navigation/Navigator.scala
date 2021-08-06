@@ -350,8 +350,12 @@ object Navigator {
   }
 
   private def declarantIsExporterPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage(mode)
-    else routes.MucrController.displayPage(mode)
+    cacheModel.`type` match {
+      case SUPPLEMENTARY => routes.ConsignmentReferencesController.displayPage(mode)
+      case _ =>
+        if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage(mode)
+        else routes.MucrController.displayPage(mode)
+    }
 
   private def entryIntoDeclarantsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage(mode)

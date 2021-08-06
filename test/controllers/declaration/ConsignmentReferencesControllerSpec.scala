@@ -131,7 +131,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
         val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage()
+        thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage()
       }
 
       "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page for SUPPLEMENTARY_EIDR" in {
@@ -142,7 +142,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
         val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage()
+        thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage()
       }
     }
   }
