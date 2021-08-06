@@ -16,7 +16,8 @@
 
 package forms
 
-import play.api.data.Forms.{mapping, text}
+import play.api.data.Forms
+import play.api.data.Forms.text
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -27,11 +28,11 @@ object Ducr {
 
   def form2Data(ducr: String): Ducr = new Ducr(ducr.toUpperCase)
 
-  val ducrMapping =
-    mapping(
+  val mapping =
+    Forms.mapping(
       "ducr" ->
         text()
-          .verifying("error.ducr.empty", nonEmpty)
-          .verifying("error.ducr", isEmpty or isValidDucr)
+          .verifying("declaration.consignmentReferences.ducr.error.empty", nonEmpty)
+          .verifying("declaration.consignmentReferences.ducr.error.invalid", isEmpty or isValidDucr)
     )(form2Data)(Ducr.unapply)
 }

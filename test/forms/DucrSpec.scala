@@ -34,9 +34,9 @@ class DucrSpec extends UnitWithMocksSpec {
     "return error for incorrect DUCR" in {
 
       val incorrectDucr = Ducr("91B123456664559-654A")
-      val filledForm = Form(Ducr.ducrMapping).fillAndValidate(incorrectDucr)
+      val filledForm = Form(Ducr.mapping).fillAndValidate(incorrectDucr)
 
-      val expectedError = FormError("ducr", "error.ducr")
+      val expectedError = FormError("ducr", "declaration.consignmentReferences.ducr.error.invalid")
 
       filledForm.errors mustBe Seq(expectedError)
     }
@@ -44,7 +44,7 @@ class DucrSpec extends UnitWithMocksSpec {
     "has no errors for correct Ducr" in {
 
       val correctDucr = Ducr("9GB123456664559-1H7(1)")
-      val filledForm = Form(Ducr.ducrMapping).fillAndValidate(correctDucr)
+      val filledForm = Form(Ducr.mapping).fillAndValidate(correctDucr)
 
       filledForm.errors mustBe empty
     }

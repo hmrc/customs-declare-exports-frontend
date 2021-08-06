@@ -23,7 +23,7 @@ import com.codahale.metrics.Timer
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import connectors.exchange.ExportsDeclarationExchange
-import forms.CancelDeclaration
+import forms.{CancelDeclaration, Ducr}
 import javax.inject.{Inject, Singleton}
 import models._
 import models.declaration.notifications.Notification
@@ -122,6 +122,10 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   def findSubmission(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient
       .GET[Option[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}/$id/submission")
+
+  def findSubmissionByDucr(ducr: Ducr)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
+    httpClient
+      .GET[Option[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}/${ducr.ducr}/submission/ducr")
 
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient

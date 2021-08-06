@@ -66,6 +66,9 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint.bullet5")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint2")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.inset")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.duplicate")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.empty")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.invalid")
       messages must haveTranslationFor("declaration.consignmentReferences.supplementary.ducr.hint1")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.info")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.hint")
@@ -247,7 +250,6 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
     onEveryDeclarationJourney() { implicit request =>
       "display error for empty LRN" in {
-
         val view =
           createView(
             ConsignmentReferences
@@ -262,7 +264,6 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       }
 
       "display error when LRN is longer then 22 characters" in {
-
         val view = createView(
           ConsignmentReferences
             .form(request.declarationType, request.cacheModel.additionalDeclarationType)
@@ -276,7 +277,6 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       }
 
       "display error when LRN contains special character" in {
-
         val view =
           createView(
             ConsignmentReferences
@@ -291,7 +291,6 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       }
 
       "display error when DUCR is incorrect and LRN empty" in {
-
         val view =
           createView(
             ConsignmentReferences
@@ -303,12 +302,11 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view must containErrorElementWithMessageKey("error.ducr")
+        view must containErrorElementWithMessageKey("declaration.consignmentReferences.ducr.error.invalid")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.empty")
       }
 
       "display error when DUCR is incorrect and LRN is longer then 22 characters" in {
-
         val view = createView(
           ConsignmentReferences
             .form(request.declarationType, request.cacheModel.additionalDeclarationType)
@@ -319,12 +317,11 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view must containErrorElementWithMessageKey("error.ducr")
+        view must containErrorElementWithMessageKey("declaration.consignmentReferences.ducr.error.invalid")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.length")
       }
 
       "display error when DUCR is incorrect and LRN contains special character" in {
-
         val view =
           createView(
             ConsignmentReferences
@@ -336,7 +333,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view must containErrorElementWithMessageKey("error.ducr")
+        view must containErrorElementWithMessageKey("declaration.consignmentReferences.ducr.error.invalid")
         view must containErrorElementWithMessageKey("declaration.consignmentReferences.lrn.error.specialCharacter")
       }
     }
@@ -412,7 +409,6 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
     onEveryDeclarationJourney() { implicit request =>
       "display data in DUCR input" in {
-
         val view =
           createView(
             ConsignmentReferences
@@ -424,7 +420,6 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       }
 
       "display data in LRN input" in {
-
         val view = createView(
           ConsignmentReferences
             .form(request.declarationType, request.cacheModel.additionalDeclarationType)

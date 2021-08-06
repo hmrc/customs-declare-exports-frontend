@@ -19,10 +19,10 @@ package forms.declaration
 import forms.{DeclarationPage, Ducr, Lrn, Mrn}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import models.viewmodels.TariffContentKey
 import models.DeclarationType.{CLEARANCE, DeclarationType, SUPPLEMENTARY}
-import play.api.data.{Form, Forms}
-import play.api.data.Forms.{optional, text}
+import models.viewmodels.TariffContentKey
+import play.api.data.{Form, FormError}
+import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -31,6 +31,9 @@ case class ConsignmentReferences(ducr: Ducr, lrn: Lrn, mrn: Option[Mrn] = None, 
 object ConsignmentReferences extends DeclarationPage {
 
   implicit val format = Json.format[ConsignmentReferences]
+
+  val ducrId = "ducr.ducr"
+  val duplicatedDucr = Seq(FormError(ducrId, "declaration.consignmentReferences.ducr.error.duplicate"))
 
   def form(decType: DeclarationType, additionalDecType: Option[AdditionalDeclarationType]): Form[ConsignmentReferences] = {
 
@@ -64,8 +67,8 @@ object ConsignmentReferences extends DeclarationPage {
     }
 
     Form(
-      Forms.mapping(
-        "ducr" -> Ducr.ducrMapping,
+      mapping(
+        "ducr" -> Ducr.mapping,
         "lrn" -> Lrn.mapping("declaration.consignmentReferences.lrn"),
         "mrn" -> mrnMapping,
         "eidrDateStamp" -> eidrMapping

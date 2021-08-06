@@ -16,15 +16,14 @@
 
 package forms.declaration
 
-import base.{JourneyTypeTestRunner, TestHelper}
 import base.ExportsTestData._
-import forms.{Ducr, Lrn}
+import base.{JourneyTypeTestRunner, TestHelper}
 import forms.common.DeclarationPageBaseSpec
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
-import models.viewmodels.TariffContentKey
+import forms.{Ducr, Lrn}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
+import models.viewmodels.TariffContentKey
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
@@ -34,7 +33,7 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
 
   private def getBoundedForm(data: JsValue, additionalDeclarationType: Option[AdditionalDeclarationType] = None)(
     implicit request: JourneyRequest[_]
-  ) =
+  ): Form[ConsignmentReferences] =
     ConsignmentReferences.form(request.declarationType, additionalDeclarationType).bind(data, Form.FromJsonMaxChars)
 
   "ConsignmentReferences mapping used for binding data" should {
@@ -112,7 +111,7 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
 
           form.hasErrors mustBe true
           form.errors.length must equal(1)
-          form.errors.last.message must equal("error.ducr.empty")
+          form.errors.last.message must equal("declaration.consignmentReferences.ducr.error.empty")
         }
 
         "provided with valid input (lowercase DUCR)" in {
@@ -120,7 +119,7 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
 
           form.hasErrors mustBe true
           form.errors.length must equal(1)
-          form.errors(0).message must equal("error.ducr")
+          form.errors(0).message must equal("declaration.consignmentReferences.ducr.error.invalid")
         }
 
         "provided with invalid input (no LRN)" in {
