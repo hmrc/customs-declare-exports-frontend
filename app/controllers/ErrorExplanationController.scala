@@ -25,7 +25,7 @@ import views.html.error_explanation
 class ErrorExplanationController @Inject()(mcc: MessagesControllerComponents, errorExplanationPage: error_explanation)
     extends FrontendController(mcc) with I18nSupport {
 
-    def onPageLoad: Action[AnyContent] = Action { implicit request =>
-        Ok(errorExplanationPage())
-    }
+  def onPageLoad: Action[AnyContent] = Action { implicit request =>
+    Ok(errorExplanationPage())
+  }
 }
