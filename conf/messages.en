@@ -1870,3 +1870,18 @@ pdf.template.receivedDateTime = Date and time declaration received
 pdf.template.previousDocuments = Previous Documents
 pdf.template.createdDateTime = Created
 pdf.template.versionId = Version ID
+
+## Error code explanations
+
+error.explanation.title = CDS error codes: descriptions and explanations
+error.explanation.intro.paragraph1 = Note that not all these errors need to be fixed. Sometimes fixing one error will fix another one as well. You need to consider which errors apply to you and fix those. Then go to ‘Check your answers’ and submit the declaration to see if it is rejected again. The other errors will be reduced each time you submit, until your declaration is validated.
+error.explanation.intro.paragraph2 = In some cases you will see a link on the service to show you which field and (if relevant) a number telling you which goods item and which entry in the field contains the error.
+error.explanation.table.heading1 = Wording you will see on the service
+error.explanation.table.heading2 = CDS error code
+error.explanation.table.heading3 = Explanation of the error
+
+error.explanation.CDS10001.wording = Obligation error: Mandatory Data Element has not been provided
+error.explanation.CDS10001.explanation.formatted = <strong>Required details are missing from the declaration</strong><br /><br />Go through the declaration from the beginning to find any fields you have left blank.
+
+
+

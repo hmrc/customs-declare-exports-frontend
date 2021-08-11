@@ -60,7 +60,12 @@ GET         /choice                                        controllers.ChoiceCon
 POST        /choice                                        controllers.ChoiceController.submitChoice()
 
 # Sign out
+
 GET         /sign-out                                      controllers.SignOutController.signOut(signOutReason: models.SignOutReason)
 
 GET         /we-signed-you-out                             controllers.SignOutController.sessionTimeoutSignedOut()
 GET         /you-have-signed-out                           controllers.SignOutController.userSignedOut()
+
+# Guidance pages
+
+GET         /error-explanation                             controllers.ErrorExplanationController.onPageLoad
