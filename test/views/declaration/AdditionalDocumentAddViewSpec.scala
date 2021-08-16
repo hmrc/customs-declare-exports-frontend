@@ -51,7 +51,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
 
     "additional documents are present" should {
       val additionalDocument = AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None)
-      val item = anItem(withItemId(itemId), withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
+      val item = anItem(withItemId(itemId), withAdditionalDocuments(YesNoAnswer.Yes, additionalDocument))
 
       onEveryDeclarationJourney(withItem(item)) { implicit request =>
         "display a 'Back' button that links to the 'Additional Documents Required' page" in {

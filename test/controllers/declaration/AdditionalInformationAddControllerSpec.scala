@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.Yes
 import forms.declaration.AdditionalInformation
 import mock.ErrorHandlerMocks
 import models.Mode
@@ -136,9 +136,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
       "user correctly add new item" in {
 
         withNewCaching(
-          aDeclaration(
-            withItems(anItem(withItemId("itemId"), withAdditionalInformationData(AdditionalInformationData(Some(YesNoAnswer.Yes), Seq.empty))))
-          )
+          aDeclaration(withItems(anItem(withItemId("itemId"), withAdditionalInformationData(AdditionalInformationData(Yes, Seq.empty)))))
         )
 
         val correctForm = Json.toJson(additionalInformation)

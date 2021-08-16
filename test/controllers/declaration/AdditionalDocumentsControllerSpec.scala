@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
+import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.DeclarationHolderAdd
 import mock.ErrorHandlerMocks
@@ -65,7 +66,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    val item = anItem(withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
+    val item = anItem(withAdditionalDocuments(Yes, additionalDocument))
     withNewCaching(aDeclaration(withItems(item)))
     await(controller.displayPage(Mode.Normal, item.id)(request))
     theResponseForm
@@ -82,7 +83,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
 
       "display page method is invoked with data in cache" in {
 
-        val item = anItem(withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
+        val item = anItem(withAdditionalDocuments(Yes, additionalDocument))
         withNewCaching(aDeclaration(withItems(item)))
 
         val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
@@ -127,7 +128,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
       }
 
       "user submits valid Yes answer" in {
-        val item = anItem(withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
+        val item = anItem(withAdditionalDocuments(Yes, additionalDocument))
         withNewCaching(aDeclaration(withItems(item)))
 
         val requestBody = Seq("yesNo" -> "Yes")
@@ -138,7 +139,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
       }
 
       "user submits valid No answer" in {
-        val item = anItem(withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
+        val item = anItem(withAdditionalDocuments(Yes, additionalDocument))
         withNewCaching(aDeclaration(withItems(item)))
 
         val requestBody = Seq("yesNo" -> "No")

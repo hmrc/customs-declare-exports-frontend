@@ -49,15 +49,13 @@
 
 @insetContent = {
     @paragraphBody(messages("declaration.procedureCodes.inset.title"), "bold")
+    @paragraphBody(messages("declaration.procedureCodes.inset.paragraph.1"))
 
-    @bulletList(
-        title = Some(messages("declaration.procedureCodes.inset.paragraph.1")),
-        items = Seq(
-            Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.1")),
-            Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.2")),
-            Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.3"))
-        ),
-    )
+    @bulletList(Seq(
+        Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.1")),
+        Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.2")),
+        Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.3"))
+    ))
 
     <p>@messages("declaration.procedureCodes.inset.paragraph.2")</p>
 }

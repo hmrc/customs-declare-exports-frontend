@@ -18,11 +18,11 @@ package controllers.declaration
 
 import base.ControllerWithoutFormSpec
 import forms.Choice
-import forms.declaration.{AuthorisationProcedureCodeChoice, DeclarationChoiceSpec}
-import models.{DeclarationType, Mode}
+import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
+import forms.declaration.DeclarationChoiceSpec
 import models.DeclarationType.{DeclarationType, _}
-import models.declaration.AuthorisationProcedureCode.Code1040
 import models.requests.ExportsSessionKeys
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.OptionValues
@@ -133,7 +133,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
         s"user updates an existing $journeyType declaration" in {
           val dec = aDeclaration(withId(existingDeclarationId), withType(journeyType))
-          withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(AuthorisationProcedureCodeChoice(Code1040))))
+          withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
 
           val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
 
@@ -155,7 +155,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
         s"user updates an existing $journeyType declaration" in {
           val dec = aDeclaration(withId(existingDeclarationId), withType(journeyType))
-          withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(AuthorisationProcedureCodeChoice(Code1040))))
+          withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
 
           val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
 
@@ -168,15 +168,14 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
       Seq(STANDARD, SUPPLEMENTARY, OCCASIONAL).foreach { journeyType =>
         s"user updates an existing SIMPLIFIED declaration's journeyType to $journeyType" in {
           val dec = aDeclaration(withId(existingDeclarationId), withType(SIMPLIFIED))
-          val authorisationProcedureCodeChoice = AuthorisationProcedureCodeChoice(Code1040)
-          withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(authorisationProcedureCodeChoice)))
+          withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
 
           val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
           status(result) must be(SEE_OTHER)
 
           val updatedDec = theCacheModelUpdated
           updatedDec.`type` must be(journeyType)
-          updatedDec.parties.authorisationProcedureCodeChoice mustBe Some(authorisationProcedureCodeChoice)
+          updatedDec.parties.authorisationProcedureCodeChoice mustBe Choice1040
         }
       }
     }
@@ -185,7 +184,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
       Seq(CLEARANCE, SIMPLIFIED).foreach { journeyType =>
         s"user updates an existing STANDARD declaration's journeyType to $journeyType" in {
           val dec = aDeclaration(withId(existingDeclarationId), withType(STANDARD))
-          withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(AuthorisationProcedureCodeChoice(Code1040))))
+          withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
 
           val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(createChoiceJSON(journeyType.toString), Some(existingDeclarationId)))
           status(result) must be(SEE_OTHER)

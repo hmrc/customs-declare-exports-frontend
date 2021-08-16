@@ -20,9 +20,8 @@ import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.mvc.AnyContent
-import services.cache.ExportsTestData
 
-trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
+trait JourneyTypeTestRunner extends UnitSpec with services.cache.ExportsTestData {
 
   val simpleStandardDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.STANDARD))
   val simpleSupplementaryDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
@@ -63,7 +62,7 @@ trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
   def onStandard(f: JourneyRequest[_] => Unit): Unit =
     onStandard(simpleStandardDeclaration)(f)
 
-  private def onStandard(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
+  def onStandard(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
     "on Standard journey" when {
       f(journeyRequest(declaration))
     }
@@ -71,7 +70,7 @@ trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
   def onSimplified(f: JourneyRequest[_] => Unit): Unit =
     onSimplified(simpleSimplifiedDeclaration)(f)
 
-  private def onSimplified(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
+  def onSimplified(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
     "on Simplified journey" when {
       f(journeyRequest(declaration))
     }
@@ -79,7 +78,7 @@ trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
   def onSupplementary(f: JourneyRequest[_] => Unit): Unit =
     onSupplementary(simpleSupplementaryDeclaration)(f)
 
-  private def onSupplementary(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
+  def onSupplementary(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
     "on Supplementary journey" when {
       f(journeyRequest(declaration))
     }
@@ -87,7 +86,7 @@ trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
   def onOccasional(f: JourneyRequest[_] => Unit): Unit =
     onOccasional(simpleOccasionalDeclaration)(f)
 
-  private def onOccasional(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
+  def onOccasional(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
     "on Occasional journey" when {
       f(journeyRequest(declaration))
     }

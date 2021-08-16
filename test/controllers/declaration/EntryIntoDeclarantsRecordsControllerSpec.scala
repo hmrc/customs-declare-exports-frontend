@@ -17,12 +17,12 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.YesNoAnswer.{No, Yes, YesNoAnswers}
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.{AuthorisationProcedureCodeChoice, EntryIntoDeclarantsRecords, PersonPresentingGoodsDetails}
+import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
+import forms.declaration.{EntryIntoDeclarantsRecords, PersonPresentingGoodsDetails}
 import models.DeclarationType._
 import models.{DeclarationType, ExportsDeclaration, Mode}
-import models.declaration.AuthorisationProcedureCode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -154,7 +154,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
-          theModelPassedToCacheUpdate.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer.Yes)
+          theModelPassedToCacheUpdate.parties.isEntryIntoDeclarantsRecords mustBe Yes
         }
 
         "call Navigator" in {
@@ -179,20 +179,19 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
           val modelPassedToCache = theModelPassedToCacheUpdate
-          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer.Yes)
+          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Yes
           modelPassedToCache.parties.personPresentingGoodsDetails mustBe Some(PersonPresentingGoodsDetails(Eori("GB1234567890")))
         }
 
         "update Cache with AuthorisationProcedureCodeChoice left unchanged" in {
-          val expectedValue = AuthorisationProcedureCodeChoice(AuthorisationProcedureCode.Code1040)
-          withNewCaching(request.cacheModel.updateAuthorisationProcedureCodeChoice(expectedValue))
+          withNewCaching(request.cacheModel.updateAuthorisationProcedureCodeChoice(Choice1040.value))
           val correctForm = Json.obj(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes)
 
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
           val modelPassedToCache = theModelPassedToCacheUpdate
-          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer.Yes)
-          modelPassedToCache.parties.authorisationProcedureCodeChoice mustBe Some(expectedValue)
+          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Yes
+          modelPassedToCache.parties.authorisationProcedureCodeChoice mustBe Choice1040
         }
 
         "redirect to Person Presenting the Goods page" in {
@@ -217,20 +216,18 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
           val modelPassedToCache = theModelPassedToCacheUpdate
-          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer.No)
+          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe No
           modelPassedToCache.parties.personPresentingGoodsDetails mustBe None
         }
 
         "update Cache with AuthorisationProcedureCodeChoice set to None" in {
-          withNewCaching(
-            request.cacheModel.updateAuthorisationProcedureCodeChoice(AuthorisationProcedureCodeChoice(AuthorisationProcedureCode.Code1040))
-          )
+          withNewCaching(request.cacheModel.updateAuthorisationProcedureCodeChoice(Choice1040.value))
           val correctForm = Json.obj(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.no)
 
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
           val modelPassedToCache = theModelPassedToCacheUpdate
-          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer.No)
+          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe No
           modelPassedToCache.parties.authorisationProcedureCodeChoice mustBe None
         }
 
@@ -262,7 +259,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
       "return 303 (SEE_OTHER)" in {
 
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(YesNoAnswer.Yes)
+        val correctForm = Json.toJson(Yes.value)
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -272,7 +269,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
       "redirect to start page" in {
 
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(YesNoAnswer.Yes)
+        val correctForm = Json.toJson(Yes.value)
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 

@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
 import models.Mode
 import models.declaration.AdditionalDocuments
@@ -81,7 +82,7 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
   val additionalDocument = AdditionalDocument(Some("1234"), None, None, None, None, None, None)
   val documentId = ListItem.createId(0, additionalDocument)
   val itemId = "itemId"
-  val itemWithDocument = anItem(withItemId(itemId), withAdditionalDocuments(Some(YesNoAnswer.Yes), additionalDocument))
+  val itemWithDocument = anItem(withItemId(itemId), withAdditionalDocuments(Yes, additionalDocument))
 
   "AdditionalDocumentRemoveController" must {
 

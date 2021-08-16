@@ -20,8 +20,10 @@
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import services.view.HolderOfAuthorisationCodes
-@import views.components.gds.Styles._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.DeclarationHolder._
+@import views.html.components.fields.field_accessible_autocomplete
 @import views.html.components.gds._
 
 @import scala.collection.immutable
@@ -46,19 +48,26 @@
 
 @(mode: Mode, form: Form[DeclarationHolderAdd])(implicit request: JourneyRequest[_], messages: Messages)
 
-@pageFields = {
-    @formGroupWrapper(field = form(DeclarationHolderFormGroupId)){
-        @components.fields.field_accessible_autocomplete(
+@formContent = {
+    @formGroupWrapper(field = form(DeclarationHolderFormGroupId)) {
+
+        @bodyForDeclarationHolderEditPage(appConfig)
+
+        @field_accessible_autocomplete(
             field = form("authorisationTypeCode"),
             label = messages("declaration.declarationHolder.authorisationCode"),
             labelClass = Some("govuk-label--m"),
+            hintParagraphs = hintForAuthorisationCode,
             emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
             items = holderOfAuthorisationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
         )
 
+        @insetTextBelowAuthorisationCode(appConfig)
+
         @exportsInputText(
             field = form("eori"),
             labelKey = "declaration.declarationHolder.eori",
+            hintKey = Some("declaration.declarationHolder.eori.hint"),
             isPageHeading = false
         )
     }
@@ -74,9 +83,8 @@
         classes = gdsPageLabel,
         isPageHeading = true
     )),
-    html = HtmlFormat.fill(immutable.Seq(
-        govukHint(Hint(content = Text(messages("declaration.declarationHolder.title.hint")))),
-        pageFields,
+    html = HtmlFormat.fill(List(
+        formContent,
         tariffExpander(DeclarationHolderAdd, request.declarationType)(messages, appConfig),
         saveButtons()
     ))
