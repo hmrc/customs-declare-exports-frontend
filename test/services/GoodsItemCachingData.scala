@@ -47,7 +47,7 @@ trait GoodsItemCachingData {
 
   def createAdditionalInformationData() = AdditionalInformationData(getDataSeq(5, createAdditionalInformation))
 
-  def createAdditionalDocuments() = AdditionalDocuments(Some(YesNoAnswer.Yes), getDataSeq(10, createAdditionalDocument))
+  def createAdditionalDocuments() = AdditionalDocuments(YesNoAnswer.Yes, getDataSeq(10, createAdditionalDocument))
 
   def createAdditionalDocument(): AdditionalDocument = AdditionalDocument(
     documentTypeCode = Some(createRandomAlphanumericString(4)),

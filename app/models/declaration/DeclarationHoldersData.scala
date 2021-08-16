@@ -17,6 +17,7 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.declarationHolder.DeclarationHolderAdd
 import play.api.libs.json.Json
 
@@ -28,7 +29,7 @@ object DeclarationHoldersData {
   implicit val format = Json.format[DeclarationHoldersData]
 
   def apply(holders: Seq[DeclarationHolderAdd]): DeclarationHoldersData =
-    new DeclarationHoldersData(holders, Some(if (holders.isEmpty) YesNoAnswer.No else YesNoAnswer.Yes))
+    new DeclarationHoldersData(holders, if (holders.isEmpty) No else Yes)
 
   val formId = "DeclarationHoldersData"
 

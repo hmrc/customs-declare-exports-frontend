@@ -169,7 +169,7 @@ case class ExportsDeclaration(
     copy(transport = transport.copy(containers = Some(containers)))
 
   def updateTransportPayment(payment: TransportPayment): ExportsDeclaration =
-    copy(transport = transport.copy(expressConsignment = Some(YesNoAnswer.Yes), transportPayment = Some(payment)))
+    copy(transport = transport.copy(expressConsignment = YesNoAnswer.Yes, transportPayment = Some(payment)))
 
   def updatePreviousDocuments(previousDocuments: Seq[Document]): ExportsDeclaration =
     copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))

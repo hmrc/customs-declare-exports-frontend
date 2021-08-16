@@ -20,7 +20,7 @@ import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.YesNoAnswer.{No, Yes, YesNoAnswers}
 import forms.declaration.EntryIntoDeclarantsRecords
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -85,7 +85,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
 
         "the answer is Yes" in {
 
-          val form = EntryIntoDeclarantsRecords.form().fill(YesNoAnswer.Yes)
+          val form = EntryIntoDeclarantsRecords.form().fill(Yes.value)
           val view = createView(form)
 
           view.getElementById("answer_yes") must beSelected
@@ -94,7 +94,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
 
         "the answer is No" in {
 
-          val form = EntryIntoDeclarantsRecords.form().fill(YesNoAnswer.No)
+          val form = EntryIntoDeclarantsRecords.form().fill(No.value)
           val view = createView(form)
 
           view.getElementById("answer_yes") mustNot beSelected

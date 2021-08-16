@@ -15,16 +15,16 @@
  *@
 
 @import config.AppConfig
+@import controllers.declaration.routes
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.common.YesNoAnswer
 @import forms.declaration.declarationHolder.DeclarationHolderRequired
-@import models.requests.JourneyRequest
 @import models.DeclarationType.DeclarationType
+@import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
-
-@import scala.collection.immutable
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, DynamicContent, Title}
+@import views.helpers.{BackButton, Title}
+@import views.helpers.DeclarationHolder.bodyForDeclarationHolderRequiredPage
 @import views.components.gds.Styles._
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
@@ -46,20 +46,14 @@
 
 @(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
-@mainText = @{
-    HtmlFormat.fill(DynamicContent.whichDeclarationHolderRequiredContent(request.cacheModel).map{ messageKey =>
-        paragraphBody(messages(s"declaration.declarationHolderRequired.mainText.$messageKey"), classes = "govuk-body mainText")
-    }.to[collection.immutable.Seq])
-}
-
 @insetSection = {
     @paragraphBody(messages("declaration.declarationHolderRequired.inset.para1"))
-    @bulletList(
-        items = Seq(
-            Html(messages("declaration.declarationHolderRequired.inset.bullet1.text")),
-            Html(messages("declaration.declarationHolderRequired.inset.bullet2.text")),
-        )
-    )
+
+    @bulletList(Seq(
+        Html(messages("declaration.declarationHolderRequired.inset.bullet1.text")),
+        Html(messages("declaration.declarationHolderRequired.inset.bullet2.text")),
+    ))
+
     @paragraphBody(messages("declaration.declarationHolderRequired.inset.para2"))
 }
 
@@ -78,7 +72,7 @@
     title = Title("declaration.declarationHolderRequired.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolderRequired, mode)))) {
 
-    @formHelper(action = controllers.declaration.routes.DeclarationHolderRequiredController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.DeclarationHolderRequiredController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
@@ -89,8 +83,8 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
-                mainText,
+            html = HtmlFormat.fill(List(
+                bodyForDeclarationHolderRequiredPage,
                 yesNoRadios(form),
                 maybeInset,
                 tariffExpander(DeclarationHolderRequired, request.declarationType)(messages, appConfig),

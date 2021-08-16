@@ -19,6 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AuthorisationProcedureCodeChoice
+import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{apply => _, _}
 import models.DeclarationType._
 import models.declaration.AuthorisationProcedureCode
@@ -106,12 +107,12 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
 
         onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { request =>
           "return 200 (OK)" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationProcedureCodeChoice(AuthorisationProcedureCodeChoice(Code1040))))
+            withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationProcedureCodeChoice(Choice1040)))
 
             val result = controller.displayPage(Mode.Normal)(getRequest())
 
             status(result) must be(OK)
-            theResponseForm.value mustBe Some(AuthorisationProcedureCodeChoice(Code1040))
+            theResponseForm.value mustBe Choice1040
           }
         }
 
@@ -121,7 +122,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
               withNewCaching(
                 aDeclarationAfter(
                   request.cacheModel,
-                  withAuthorisationProcedureCodeChoice(AuthorisationProcedureCodeChoice(Code1040)),
+                  withAuthorisationProcedureCodeChoice(Choice1040),
                   withEntryIntoDeclarantsRecords(YesNoAnswers.yes)
                 )
               )
@@ -129,7 +130,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
               val result = controller.displayPage(Mode.Normal)(getRequest())
 
               status(result) must be(OK)
-              theResponseForm.value mustBe Some(AuthorisationProcedureCodeChoice(Code1040))
+              theResponseForm.value mustBe Choice1040
             }
           }
         }
@@ -149,7 +150,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
       onJourney(CLEARANCE) { request =>
         "it is NOT EntryIntoDeclarantsRecords" should {
           "redirect to DeclarationHolderRequiredController" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationProcedureCodeChoice(AuthorisationProcedureCodeChoice(Code1040))))
+            withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationProcedureCodeChoice(Choice1040)))
 
             val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -165,7 +166,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
       onJourney(OCCASIONAL) { request =>
         "return 303 (SEE_OTHER)" in {
           withNewCaching(request.cacheModel)
-          val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> AuthorisationProcedureCode.Code1040.toString)
+          val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> Code1040.toString)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -209,7 +210,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
           "AdditionalDeclarationType is pre-lodged and AuthorisationProcedureCode is 1040" should {
             "redirect to DeclarationHolderRequiredController" in {
               withNewCaching(request.cacheModel.copy(additionalDeclarationType = Some(STANDARD_PRE_LODGED)))
-              val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> AuthorisationProcedureCode.Code1040.toString)
+              val correctForm = Json.obj(AuthorisationProcedureCodeChoice.formFieldName -> Code1040.toString)
 
               val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 

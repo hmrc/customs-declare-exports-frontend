@@ -19,19 +19,20 @@
 @import views.html.components.gds._
 
 @this(
-  govukLayout: gdsMainTemplate,
-  pageTitle: pageTitle,
-  link: link,
-  bulletList: bulletList,
-  config: ExternalServicesConfig
+    govukLayout: gdsMainTemplate,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    link: link,
+    bulletList: bulletList,
+    config: ExternalServicesConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
 @howToSection = {
-  <p class="govuk-body">@messages("unauthorised.paragraph.1")</p>
-  @bulletList(
-    items = Seq(
+    @paragraphBody(messages("unauthorised.paragraph.1"))
+
+    @bulletList(List(
       Html(messages("unauthorised.paragraph.1.bullet.1", link(
         id = Some("get_eori_link"),
         text = messages("unauthorised.paragraph.1.bullet.1.link"),
@@ -42,27 +43,18 @@
         text = messages("unauthorised.paragraph.1.bullet.2.link"),
         call = Call("GET", config.cdsRegister)
       )
-    )
-  )
-}
-
-@appliedSection = {
-  <p class="govuk-body">
-  @Html(messages("unauthorised.paragraph.2", link(
-      id = Some("check_cds_application_status_link"),
-      text = messages("unauthorised.paragraph.2.link"),
-      call = Call("GET", config.cdsCheckStatus)
-    )
-  ))
-  </p>
+    ))
 }
 
 @govukLayout(title = Title("unauthorised.heading")) {
 
-  @pageTitle(messages("unauthorised.heading"))
+    @pageTitle(messages("unauthorised.heading"))
 
-  @howToSection
+    @howToSection
 
-  @appliedSection
-
+    @paragraphBody(messages("unauthorised.paragraph.2", link(
+        id = Some("check_cds_application_status_link"),
+        text = messages("unauthorised.paragraph.2.link"),
+        call = Call("GET", config.cdsCheckStatus)
+    )))
 }

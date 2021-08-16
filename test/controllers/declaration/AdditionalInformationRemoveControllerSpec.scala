@@ -150,9 +150,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId)
 
-          theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation) mustBe Some(
-            AdditionalInformationData(Some(YesNoAnswer.Yes), Seq.empty)
-          )
+          theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation) mustBe Some(AdditionalInformationData(YesNoAnswer.Yes, Seq.empty))
         }
 
         "user submits 'No' answer" in {

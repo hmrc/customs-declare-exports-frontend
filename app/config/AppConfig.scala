@@ -74,7 +74,7 @@ class AppConfig @Inject()(
   val procedureCodesOutwardProcessing = loadConfig("urls.procedureCodes.outwardProcessing")
   val procedureCodesTemporaryExport = loadConfig("urls.procedureCodes.temporaryExport")
   val procedureCodesReExportFollowingSpecialProcedure = loadConfig("urls.procedureCodes.reExportFollowingSpecialProcedure")
-  val permanentExportOrDispatch = loadConfig("urls.procedureCodes.permanentExportOrDispatch")
+  val permanentExportOrDispatch = PermanentExportOrDispatch(loadConfig)
 
   val additionalProcedureCodesOfCDs = loadConfig("urls.additionalProcedureCodesOfCDs")
 
@@ -188,8 +188,7 @@ class AppConfig @Inject()(
 
   lazy val shutterPage: String = servicesConfig.getString(shutterPageToAllowList)
   lazy val allowListIps: Seq[String] = allowListConfig(allowListedIps)
-  lazy val allowListExcludedPaths: Seq[Call] =
-    allowListConfig(allowListExcludedPathsDefined).map(path => Call("GET", path))
+  lazy val allowListExcludedPaths: Seq[Call] = allowListConfig(allowListExcludedPathsDefined).map(path => Call("GET", path))
   lazy val allowListEnabled: Boolean = servicesConfig.getBoolean(allowListed)
 
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")

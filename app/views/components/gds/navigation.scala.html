@@ -16,16 +16,10 @@
 
 @this()
 
-@(items: Seq[Html], additionalListClasses: Option[String] = None, itemClasses: Option[String] = None)
+@(elements: Seq[Html], classes: Option[String] = None, role: Option[String] = None)
 
-<nav>
-    <ul class='govuk-list govuk-list--bullet@additionalListClasses.fold("")(cls => s" ${cls}")'>
-        @items.map { item =>
-            @itemClasses.fold {
-                <li>@item</li>
-            } { cls =>
-                <li class="@cls">@item</li>
-            }
-        }
-    </ul>
-</nav>
+@(classes, role) match {
+    case (Some(cls), Some(rl)) => { <nav class="@cls" role="@rl">@elements</nav> }
+    case (Some(cls), _)        => { <nav class="@cls">@elements</nav> }
+    case _                     => { <nav>@elements</nav> }
+}

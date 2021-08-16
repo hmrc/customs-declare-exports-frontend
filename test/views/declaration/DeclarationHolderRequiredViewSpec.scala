@@ -20,13 +20,12 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
-import forms.declaration.AuthorisationProcedureCodeChoice
-import models.requests.JourneyRequest
 import models.DeclarationType._
 import models.Mode
-import models.declaration.AuthorisationProcedureCode._
 import models.declaration.Parties
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -38,34 +37,38 @@ import views.tags.ViewTest
 
 @ViewTest
 class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
+
   private val form = YesNoAnswer.form()
   private val declarationHolderRequiredPage = instanceOf[declaration_holder_required]
+
+  private val prefix = "declaration.declarationHolderRequired"
+
   private def view(implicit request: JourneyRequest[_]): Document =
     declarationHolderRequiredPage(Mode.Normal, form)
 
   "Declaration Holder Required View" should {
 
     "have correct message keys" in {
-      messages must haveTranslationFor("declaration.declarationHolderRequired.title")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.mainText.default")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.mainText.standard_prelodged_1040")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.mainText.occasional.1")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.mainText.occasional.2")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.mainText.standard_prelodged_other")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.inset.para1")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.inset.para2")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.inset.bullet1.text")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.inset.bullet2.text")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.tradeTariff.link")
+      messages must haveTranslationFor(s"$prefix.title")
+      messages must haveTranslationFor(s"$prefix.body.default")
+      messages must haveTranslationFor(s"$prefix.body.standard.prelodged.1040")
+      messages must haveTranslationFor(s"$prefix.body.occasional.1")
+      messages must haveTranslationFor(s"$prefix.body.occasional.2")
+      messages must haveTranslationFor(s"$prefix.body.standard.prelodged.others")
+      messages must haveTranslationFor(s"$prefix.inset.para1")
+      messages must haveTranslationFor(s"$prefix.inset.para2")
+      messages must haveTranslationFor(s"$prefix.inset.bullet1.text")
+      messages must haveTranslationFor(s"$prefix.inset.bullet2.text")
+      messages must haveTranslationFor(s"$prefix.tradeTariff.link")
       messages must haveTranslationFor("tariff.declaration.addAuthorisationRequired.clearance.text")
-      messages must haveTranslationFor("declaration.declarationHolderRequired.empty")
+      messages must haveTranslationFor(s"$prefix.empty")
     }
   }
 
   "Declaration Holder Required View on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.declarationHolderRequired.title")
+        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements(s"$prefix.title")
       }
 
       "display section header" in {
@@ -92,10 +95,10 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
       "display inset text" in {
         val inset = view.getElementsByClass("govuk-inset-text")
         val expected = Seq(
-          messages("declaration.declarationHolderRequired.inset.para1"),
-          messages("declaration.declarationHolderRequired.inset.bullet1.text"),
-          messages("declaration.declarationHolderRequired.inset.bullet2.text"),
-          messages("declaration.declarationHolderRequired.inset.para2")
+          messages(s"$prefix.inset.para1"),
+          messages(s"$prefix.inset.bullet1.text"),
+          messages(s"$prefix.inset.bullet2.text"),
+          messages(s"$prefix.inset.para2")
         ).mkString(" ")
         inset.get(0) must containText(expected)
       }
@@ -110,41 +113,37 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
     "display main text" that {
       onJourney(SUPPLEMENTARY, SIMPLIFIED, CLEARANCE) { implicit request =>
         "content is correct for that journey " in {
-          view.getElementsByClass("mainText").get(0) must containText(messages("declaration.declarationHolderRequired.mainText.default"))
+          view.getElementsByClass("govuk-body").get(0) must containText(messages(s"$prefix.body.default"))
         }
       }
 
       onStandard { implicit request =>
         "'1040' selected then content is correct for that journey " in {
-          val parties = Parties(authorisationProcedureCodeChoice = Some(AuthorisationProcedureCodeChoice(Code1040)))
+          val parties = Parties(authorisationProcedureCodeChoice = Choice1040)
           val req = journeyRequest(request.cacheModel.copy(additionalDeclarationType = Some(STANDARD_PRE_LODGED), parties = parties))
 
-          view(req).getElementsByClass("mainText").get(0) must containText(
-            messages("declaration.declarationHolderRequired.mainText.standard_prelodged_1040")
-          )
+          view(req).getElementsByClass("govuk-body").get(0) must containText(messages(s"$prefix.body.standard.prelodged.1040"))
         }
 
         "'1007' selected then content is correct for that journey " in {
-          val parties = Parties(authorisationProcedureCodeChoice = Some(AuthorisationProcedureCodeChoice(Code1007)))
+          val parties = Parties(authorisationProcedureCodeChoice = Choice1007)
           val req = journeyRequest(request.cacheModel.copy(additionalDeclarationType = Some(STANDARD_PRE_LODGED), parties = parties))
 
-          view(req).getElementsByClass("mainText").get(0) must containText(messages("declaration.declarationHolderRequired.mainText.default"))
+          view(req).getElementsByClass("govuk-body").get(0) must containText(messages(s"$prefix.body.default"))
         }
 
         "'other' selected then content is correct for that journey " in {
-          val parties = Parties(authorisationProcedureCodeChoice = Some(AuthorisationProcedureCodeChoice(CodeOther)))
+          val parties = Parties(authorisationProcedureCodeChoice = ChoiceOthers)
           val req = journeyRequest(request.cacheModel.copy(additionalDeclarationType = Some(STANDARD_PRE_LODGED), parties = parties))
 
-          view(req).getElementsByClass("mainText").get(0) must containText(
-            messages("declaration.declarationHolderRequired.mainText.standard_prelodged_other")
-          )
+          view(req).getElementsByClass("govuk-body").get(0) must containText(messages(s"$prefix.body.standard.prelodged.others"))
         }
       }
 
       onOccasional { implicit request =>
         "content is correct for that journey " in {
-          view.getElementsByClass("mainText").get(0) must containText(messages("declaration.declarationHolderRequired.mainText.occasional.1"))
-          view.getElementsByClass("mainText").get(1) must containText(messages("declaration.declarationHolderRequired.mainText.occasional.2"))
+          view.getElementsByClass("govuk-body").get(0) must containText(messages(s"$prefix.body.occasional.1"))
+          view.getElementsByClass("govuk-body").get(1) must containText(messages(s"$prefix.body.occasional.2"))
         }
       }
     }

@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
 import mock.ErrorHandlerMocks
 import models.Mode
@@ -129,7 +129,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
       }
 
       "user reach maximum amount of items" in {
-        val additionalDocuments = AdditionalDocuments(Some(YesNoAnswer.Yes), Seq.fill(AdditionalDocuments.maxNumberOfItems)(additionalDocument))
+        val additionalDocuments = AdditionalDocuments(Yes, Seq.fill(AdditionalDocuments.maxNumberOfItems)(additionalDocument))
         val item = anItem(withItemId("itemId"), withAdditionalDocuments(additionalDocuments))
         withNewCaching(aDeclaration(withItems(item)))
 

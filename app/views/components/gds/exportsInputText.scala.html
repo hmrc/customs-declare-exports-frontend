@@ -20,18 +20,18 @@
 @this(govukInput: GovukInput, headingContent: headingContent)
 
 @(
-        field: Field,
-        labelKey: String,
-        labelArg: String = "",
-        hintKey: Option[String] = None,
-        hintKeyLinks: Seq[Html] = Seq.empty,
-        hintHtml: Option[Html] = None,
-        isPageHeading: Boolean = false,
-        headingClasses: String = gdsPageLabel,
-        labelClasses: String = "govuk-label--m",
-        defaultInputClasses: String = "govuk-!-width-two-thirds",
-        inputClasses: Option[String] = None,
-        sectionHeaderKey: Option[String] = None
+    field: Field,
+    labelKey: String,
+    labelArg: String = "",
+    hintKey: Option[String] = None,
+    hintKeyLinks: Seq[Html] = Seq.empty,
+    hintHtml: Option[Html] = None,
+    isPageHeading: Boolean = false,
+    headingClasses: String = gdsPageLabel,
+    labelClasses: String = "govuk-label--m",
+    defaultInputClasses: String = "govuk-!-width-two-thirds",
+    inputClasses: Option[String] = None,
+    sectionHeaderKey: Option[String] = None
 )(implicit messages: Messages)
 
 @buildLabel = @{
