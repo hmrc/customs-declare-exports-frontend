@@ -253,7 +253,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe "mrn"
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00pm"
-        tableCell(view)(1, 4).text() mustBe "Accepted"
+        tableCell(view)(1, 4).text() mustBe messages("submission.status.ACCEPTED")
         val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
         decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
       }
@@ -275,7 +275,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe "mrn"
         tableCell(view)(1, 3).text() mustBe "1 May 2019 at 1:45pm"
-        tableCell(view)(1, 4).text() mustBe "Accepted"
+        tableCell(view)(1, 4).text() mustBe messages("submission.status.ACCEPTED")
         val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
         decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
       }
@@ -289,7 +289,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe empty
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00pm"
-        tableCell(view)(1, 4).text() mustBe "Accepted"
+        tableCell(view)(1, 4).text() mustBe messages("submission.status.ACCEPTED")
         val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
         decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
       }
