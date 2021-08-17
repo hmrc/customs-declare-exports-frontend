@@ -69,10 +69,10 @@
     HeadCell( content = Text(messages(s"submissions.$key.header")) )
 }
 
-@ucrLink(submission: Submission) = @{
+@mrnLink(submission: Submission) = @{
     HtmlContent(
         link(
-            submission.ducr.getOrElse(""),
+            submission.mrn.getOrElse(""),
             Some(messages("submissions.hidden.text", submission.ducr.getOrElse(""))),
             routes.DeclarationDetailsController.displayPage(submission.uuid)
         )
@@ -92,19 +92,19 @@
             rows = tabSubmissions.currentPageElements.zipWithIndex.map { case ((submission, notifications), index) =>
                 Seq(
                     TableRow(
-                        content = ucrLink(submission),
+                        content = mrnLink(submission),
                         classes = "govuk-table__cell_break-all",
-                        attributes = Map("id" -> s"submission-tab-$id-row$index-ucr")
+                        attributes = Map("id" -> s"submission-tab-$id-row$index-mrn")
+                    ),
+                    TableRow(
+                        content = Text(submission.ducr.getOrElse("")),
+                        classes = "govuk-table__cell_break-all",
+                        attributes = Map("id" -> s"submission-tab-$id-row$index-ducr")
                     ),
                     TableRow(
                         content = Text(submission.lrn),
                         classes = "govuk-table__cell_break-all",
                         attributes = Map("id" -> s"submission-tab-$id-row$index-lrn")
-                    ),
-                    TableRow(
-                        content = Text(submission.mrn.getOrElse("")),
-                        classes = "govuk-table__cell_break-all",
-                        attributes = Map("id" -> s"submission-tab-$id-row$index-mrn")
                     ),
                     TableRow(
                         content = Text(
@@ -123,9 +123,9 @@
                 )
             },
             head = Some(List(
-                headCell("ucr"),
-                headCell("lrn"),
                 headCell("mrn"),
+                headCell("ducr"),
+                headCell("lrn"),
                 headCell("dateAndTime"),
                 headCell("status")
             ))

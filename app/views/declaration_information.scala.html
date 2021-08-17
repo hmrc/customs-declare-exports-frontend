@@ -98,7 +98,7 @@
             @govukSummaryList(SummaryList(
                 rows = Seq(
                     SummaryListRow(
-                        key = Key(content = Text(messages("submissions.ucr"))),
+                        key = Key(content = Text(messages("submissions.ducr"))),
                         value = Value(content = submission.ducr.map(HtmlContent(_)).getOrElse(Empty)),
                         classes = "submission__ucr"
                     ),
