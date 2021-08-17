@@ -141,7 +141,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       messages must haveTranslationFor("submissions.declarationInformation")
       messages must haveTranslationFor("site.backToDeclarations")
       messages must haveTranslationFor("submissions.references")
-      messages must haveTranslationFor("submissions.ucr")
+      messages must haveTranslationFor("submissions.ducr")
       messages must haveTranslationFor("submissions.lrn")
       messages must haveTranslationFor("submissions.mrn")
       messages must haveTranslationFor("submissions.timeline")
@@ -179,7 +179,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     "contain references table with correct labels" in {
 
       viewWithFeatures.getElementsByTag("h2").first() must containMessage("submissions.references")
-      viewWithFeatures.select(".submission__ucr .govuk-summary-list__key").first() must containMessage("submissions.ucr")
+      viewWithFeatures.select(".submission__ucr .govuk-summary-list__key").first() must containMessage("submissions.ducr")
       viewWithFeatures.select(".submission__ucr .govuk-summary-list__value").first().text() mustBe submission.ducr.get
       viewWithFeatures.select(".submission__lrn .govuk-summary-list__key").first() must containMessage("submissions.lrn")
       viewWithFeatures.select(".submission__lrn .govuk-summary-list__value").first().text() mustBe submission.lrn
