@@ -22,7 +22,7 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ConsignmentReferences
-import forms.declaration.ConsignmentReferences.form
+import forms.declaration.ConsignmentReferences.{ducrId, form}
 import javax.inject.Inject
 import models.DeclarationType.SUPPLEMENTARY
 import models.Mode
@@ -80,7 +80,8 @@ class ConsignmentReferencesController @Inject()(
   ): Future[Result] =
     exportsConnector.findSubmissionByDucr(consignmentReferences.ducr).flatMap {
       _.fold(updateCacheAndContinue(mode, consignmentReferences)) { _ =>
-        val formWithErrors = form.copy(data = Map("lrn" -> consignmentReferences.lrn.value), errors = ConsignmentReferences.duplicatedDucr)
+        val data = Map(ducrId -> consignmentReferences.ducr.ducr, "lrn" -> consignmentReferences.lrn.value)
+        val formWithErrors = form.copy(data = data, errors = ConsignmentReferences.duplicatedDucr)
         Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors)))
       }
     }
