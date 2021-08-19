@@ -26,26 +26,28 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title("error.explanation.title"), useCustomContentWidth = true) {
+@title = @{"CDS error codes: descriptions and explanations"}
+
+@govukLayout(title = Title(title), useCustomContentWidth = true) {
 
     <span class="govuk-caption-xl">Guidance</span>
-    @pageTitle(messages("error.explanation.title"))
+    @pageTitle(title)
 
-    @paragraphBody(messages("error.explanation.intro.paragraph1"))
+    @paragraphBody("Note that not all these errors need to be fixed. Sometimes fixing one error will fix another one as well. You need to consider which errors apply to you and fix those. Then go to ‘Check your answers’ and submit the declaration to see if it is rejected again. The other errors will be reduced each time you submit, until your declaration is validated.")
 
-    @paragraphBody(messages("error.explanation.intro.paragraph2"))
+    @paragraphBody("In some cases you will see a link on the service to show you which field and (if relevant) a number telling you which goods item and which entry in the field contains the error.")
 
     <table class="govuk-table">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header ">
-                @messages("error.explanation.table.heading1")
+                Wording you will see on the service
             </th>
             <th scope="col" class="govuk-table__header">
-                @messages("error.explanation.table.heading2")
+                CDS error code
             </th>
             <th scope="col" class="govuk-table__header govuk-!-width-one-half">
-                @messages("error.explanation.table.heading3")
+                Explanation of the error
             </th>
         </tr>
       </thead>

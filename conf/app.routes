@@ -68,4 +68,4 @@ GET         /you-have-signed-out                           controllers.SignOutCo
 
 # Guidance pages
 
-GET         /error-explanation                             controllers.ErrorExplanationController.onPageLoad
+GET         /error-explanation                             controllers.GuidanceController.errorExplanation()
