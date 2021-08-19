@@ -16,20 +16,21 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype._
+import javax.inject.Inject
+import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionaldeclarationtype.declaration_type
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalDeclarationTypeController @Inject()(
   authenticate: AuthAction,
@@ -61,21 +62,19 @@ class AdditionalDeclarationTypeController @Inject()(
 
   private def extractFormType(journeyRequest: JourneyRequest[_]): AdditionalDeclarationTypeTrait =
     journeyRequest.declarationType match {
-      case DeclarationType.SUPPLEMENTARY => AdditionalDeclarationTypeSupplementaryDec
-      case DeclarationType.STANDARD      => AdditionalDeclarationTypeStandardDec
-      case DeclarationType.SIMPLIFIED    => AdditionalDeclarationTypeSimplifiedDec
-      case DeclarationType.OCCASIONAL    => AdditionalDeclarationTypeOccasionalDec
-      case DeclarationType.CLEARANCE     => AdditionalDeclarationTypeClearanceDec
+      case SUPPLEMENTARY => AdditionalDeclarationTypeSupplementaryDec
+      case STANDARD      => AdditionalDeclarationTypeStandardDec
+      case SIMPLIFIED    => AdditionalDeclarationTypeSimplifiedDec
+      case OCCASIONAL    => AdditionalDeclarationTypeOccasionalDec
+      case CLEARANCE     => AdditionalDeclarationTypeClearanceDec
     }
+
+  private def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
+    if (request.declarationType == CLEARANCE) routes.ConsignmentReferencesController.displayPage
+    else routes.DeclarantDetailsController.displayPage
 
   private def updateCache(formData: AdditionalDeclarationType)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       model.copy(additionalDeclarationType = Some(formData))
     })
-
-  private def nextPage(implicit request: JourneyRequest[_]): Mode => Call = request.declarationType match {
-    case DeclarationType.CLEARANCE => controllers.declaration.routes.ConsignmentReferencesController.displayPage
-    case _                         => controllers.declaration.routes.DeclarantDetailsController.displayPage
-  }
-
 }

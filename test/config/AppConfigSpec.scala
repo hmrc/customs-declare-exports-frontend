@@ -427,7 +427,11 @@ object AppConfigSpec {
       |urls.procedureCodes.outwardProcessing = "https://www.gov.uk/guidance/apply-to-pay-less-duty-on-goods-you-export-to-process-or-repair"
       |urls.procedureCodes.temporaryExport = "https://www.gov.uk/guidance/pay-less-import-duty-and-vat-when-re-importing-goods-to-the-uk-and-eu#claiming-relief-for-exporting-goods-using-a-duplicate-list"
       |urls.procedureCodes.reExportFollowingSpecialProcedure = "https://www.gov.uk/guidance/moving-processed-or-repaired-goods-into-free-circulation-or-re-exporting-them"
-      |urls.procedureCodes.permanentExportOrDispatch = "http://permanentExportOrDispatch"
+      |urls.procedureCodes.permanentExportOrDispatch.base = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes/requested-procedure-10-permanent-export-or-dispatch"
+      |urls.procedureCodes.permanentExportOrDispatch.targetAuthHolder = "holder-of-the-authorisation-identification-number-de-339"
+      |urls.procedureCodes.permanentExportOrDispatch.targetConditions = "conditions-for-use"
+      |urls.procedureCodes.permanentExportOrDispatch.targetDocuments = "documents-produced-certificates-and-authorisations-additional-references-de-23"
+      |urls.procedureCodes.permanentExportOrDispatch.targetSection = "section"
       |
       |urls.additionalProcedureCodesOfCDs = "http://additionalProcedureCodesOfCDs"
       |urls.unDangerousGoods = "http://unDangerousGoods"

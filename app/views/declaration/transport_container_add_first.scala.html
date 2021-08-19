@@ -27,35 +27,36 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        insetText: exportsInsetText,
-        bulletList: bulletList,
-        body: paragraphBody,
-        pageTitle: pageTitle,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    paragraphBody: paragraphBody,
+    exportsInputText: exportsInputText,
+    insetText: exportsInsetText,
+    bulletList: bulletList,
+    body: paragraphBody,
+    pageTitle: pageTitle,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
 @insetSection = {
+    @paragraphBody(messages("declaration.transportInformation.containers.inset.title"), "govuk-body govuk-hint")
+
     @bulletList(
-        title = Some(messages("declaration.transportInformation.containers.inset.title")),
-        titleClasses = "govuk-body govuk-hint",
-        additionalListClasses = Some("govuk-hint"),
         items = Seq(
             Html(messages("declaration.transportInformation.containers.inset.bullet1")),
             Html(messages("declaration.transportInformation.containers.inset.bullet2")),
             Html(messages("declaration.transportInformation.containers.inset.bullet3"))
-        )
+        ),
+        additionalListClasses = Some("govuk-hint")
     )
 }
 

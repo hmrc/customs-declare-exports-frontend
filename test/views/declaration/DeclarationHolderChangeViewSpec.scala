@@ -41,17 +41,6 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
   private def createView(form: Form[DeclarationHolderAdd])(implicit request: JourneyRequest[_]): Document =
     declarationHolderPage(Mode.Normal, id, form)(request, messages)
 
-  "Declaration holder" should {
-
-    "have correct message keys" in {
-      messages must haveTranslationFor("declaration.declarationHolder.title")
-      messages must haveTranslationFor("declaration.declarationHolder.title.hint")
-      messages must haveTranslationFor("declaration.declarationHolder.eori")
-      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode")
-      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.empty")
-    }
-  }
-
   "Declaration Holder View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       val view = createView(DeclarationHolderAdd.form.fill(declarationHolder))

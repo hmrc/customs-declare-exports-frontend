@@ -18,7 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import controllers.declaration.routes
-import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
 import models.Mode
 import models.declaration.AdditionalDocuments
@@ -54,7 +54,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
     "display all additional documents with change buttons" in {
 
-      val view = additionalDocumentsSection(Mode.Normal, "itemId", 1, AdditionalDocuments(Some(YesNoAnswer.Yes), documents))(messages)
+      val view = additionalDocumentsSection(Mode.Normal, "itemId", 1, AdditionalDocuments(Yes, documents))(messages)
       val table = view.getElementById("additional-documents-1-table")
 
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
@@ -85,9 +85,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
       "actionsEnabled is false" in {
 
         val view =
-          additionalDocumentsSection(Mode.Normal, "itemId", 1, AdditionalDocuments(Some(YesNoAnswer.Yes), documents), actionsEnabled = false)(
-            messages
-          )
+          additionalDocumentsSection(Mode.Normal, "itemId", 1, AdditionalDocuments(Yes, documents), actionsEnabled = false)(messages)
         val table = view.getElementById("additional-documents-1-table")
 
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")

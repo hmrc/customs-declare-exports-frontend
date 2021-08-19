@@ -17,10 +17,10 @@
 package services.cache
 
 import base.ExportsTestData._
-
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import java.util.UUID
-import forms.common.YesNoAnswer.YesNoAnswers
+
+import forms.common.YesNoAnswer.{No, YesNoAnswers}
 import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
@@ -186,7 +186,7 @@ trait ExportsDeclarationBuilder {
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders))))
 
   def withoutDepartureTransport(): ExportsDeclarationModifier = declaration => {
-    declaration.copy(transport = declaration.transport.copy(expressConsignment = Some(YesNoAnswer.No), transportPayment = None))
+    declaration.copy(transport = declaration.transport.copy(expressConsignment = No, transportPayment = None))
   }
 
   def withDepartureTransport(
@@ -248,8 +248,8 @@ trait ExportsDeclarationBuilder {
   def withDeclarationAdditionalActors(declarationAdditionalActorsData: DeclarationAdditionalActorsData): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(declarationAdditionalActorsData)))
 
-  def withAuthorisationProcedureCodeChoice(authorisationProcedureCodeChoiceData: AuthorisationProcedureCodeChoice): ExportsDeclarationModifier =
-    cache => cache.copy(parties = cache.parties.copy(authorisationProcedureCodeChoice = Some(authorisationProcedureCodeChoiceData)))
+  def withAuthorisationProcedureCodeChoice(authorisationProcedureCodeChoice: Option[AuthorisationProcedureCodeChoice]): ExportsDeclarationModifier =
+    cache => cache.copy(parties = cache.parties.copy(authorisationProcedureCodeChoice = authorisationProcedureCodeChoice))
 
   def withRepresentativeDetails(eori: Option[Eori], statusCode: Option[String], representingOtherAgent: Option[String]): ExportsDeclarationModifier =
     cache =>
@@ -304,7 +304,7 @@ trait ExportsDeclarationBuilder {
   }
 
   def withoutTransportPayment(): ExportsDeclarationModifier = declaration => {
-    declaration.copy(transport = declaration.transport.copy(expressConsignment = Some(YesNoAnswer.No), transportPayment = None))
+    declaration.copy(transport = declaration.transport.copy(expressConsignment = No, transportPayment = None))
   }
 
   def withBorderTransport(details: BorderTransport): ExportsDeclarationModifier = declaration => {

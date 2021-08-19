@@ -55,10 +55,9 @@
 }
 
 @ducrHintSectionOthers = {
+    @paragraphBody(messages("declaration.consignmentReferences.ducr.hint1"), "govuk-body govuk-hint")
+
     @bulletList(
-        title = Some(messages("declaration.consignmentReferences.ducr.hint1")),
-        titleClasses = "govuk-body govuk-hint",
-        additionalListClasses = Some("govuk-hint"),
         items = Seq(
             Html(messages("declaration.consignmentReferences.ducr.hint.bullet1")),
             Html(messages("declaration.consignmentReferences.ducr.hint.bullet2")),
@@ -66,8 +65,10 @@
             Html(messages("declaration.consignmentReferences.ducr.hint.bullet4")),
             Html(messages("declaration.consignmentReferences.ducr.hint.bullet5"))
         ),
-        footer = Some(messages("declaration.consignmentReferences.ducr.hint2"))
+        additionalListClasses = Some("govuk-hint")
     )
+
+    @paragraphBody(messages("declaration.consignmentReferences.ducr.hint2"), "govuk-hint")
 }
 
 @ducrHintSection = @{

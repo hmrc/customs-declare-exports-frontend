@@ -25,7 +25,7 @@ import forms.declaration.declarationHolder.DeclarationHolderAdd.form
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
@@ -63,10 +63,34 @@ class DeclarationHolderAddController @Inject()(
       .add(boundForm, holders, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors))),
-        updatedHolders =>
-          updateExportsCache(updatedHolders)
-            .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+        updatedHolders => {
+
+          validateMutuallyExclusiveAuthTypeCodes(boundForm, holders) match {
+            case Some(error) =>
+              val formWithError = boundForm.copy(errors = Seq(error))
+              Future.successful(BadRequest(declarationHolderPage(mode, formWithError)))
+
+            case _ =>
+              updateExportsCache(updatedHolders)
+                .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+          }
+        }
       )
+
+  private def validateMutuallyExclusiveAuthTypeCodes(boundForm: Form[DeclarationHolderAdd], holders: Seq[DeclarationHolderAdd]): Option[FormError] = {
+    val mutuallyExclusiveAuthTypeCodes = Seq("CSE", "EXRR")
+
+    boundForm.value match {
+      case Some(DeclarationHolderAdd(Some(code), _)) if (mutuallyExclusiveAuthTypeCodes.contains(code)) =>
+        val mustNotAlreadyContainCodes = mutuallyExclusiveAuthTypeCodes.filter(_ != code)
+
+        if (holders.map(_.authorisationTypeCode.getOrElse("")).containsSlice(mustNotAlreadyContainCodes))
+          Some(FormError(DeclarationHolderFormGroupId, s"declaration.declarationHolder.${code}.error.exclusive"))
+        else
+          None
+      case _ => None
+    }
+  }
 
   private def updateExportsCache(holders: Seq[DeclarationHolderAdd])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {

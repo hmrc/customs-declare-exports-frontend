@@ -35,6 +35,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     headingContent: headingContent,
+    paragraphBody: paragraphBody,
     legend: legend,
     bulletList: bulletList,
     insetText: exportsInsetText,
@@ -47,15 +48,15 @@
 @(mode: Mode, itemId: String, form: Form[StatisticalValue])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hintSection = {
+    @paragraphBody(messages("declaration.statisticalValue.header.hint"), "govuk-body govuk-hint")
+
     @bulletList(
-        title = Some(messages("declaration.statisticalValue.header.hint")),
-        titleClasses = "govuk-body govuk-hint",
-        additionalListClasses = Some("govuk-hint"),
         items = Seq(
             Html(messages("declaration.statisticalValue.header.hint.i1")),
             Html(messages("declaration.statisticalValue.header.hint.i2")),
             Html(messages("declaration.statisticalValue.header.hint.i3"))
-        )
+        ),
+        additionalListClasses = Some("govuk-hint")
     )
 }
 

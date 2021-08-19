@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import forms.common.YesNoAnswer.{No, Yes}
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.DeclarationType._
@@ -74,7 +75,7 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
     onJourney(CLEARANCE) { implicit request =>
       "EIDR is true" must {
         "display back link to Authorisation Choice page" in {
-          val parties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer.Yes))
+          val parties = Parties(isEntryIntoDeclarantsRecords = Yes)
           val req = journeyRequest(request.cacheModel.copy(parties = parties))
 
           val view = createView()(req)
@@ -87,7 +88,7 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
 
       "EIDR is false" must {
         "display back link to Consignee Details page" in {
-          val parties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer.No))
+          val parties = Parties(isEntryIntoDeclarantsRecords = No)
           val req = journeyRequest(request.cacheModel.copy(parties = parties))
 
           val view = createView()(req)

@@ -42,7 +42,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
     withPackageInformation("PB", 10, "marks"),
     withCommodityMeasure(CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))),
     withAdditionalInformation("1234", "additionalDescription"),
-    withAdditionalDocuments(Some(YesNoAnswer.Yes), AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None))
+    withAdditionalDocuments(YesNoAnswer.Yes, AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None))
   )
 
   private val itemWithoutAnswers = anItem(withItemId("itemId"), withSequenceId(1))

@@ -111,7 +111,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
     "have proper messages for labels" in {
       messages must haveTranslationFor("submissions.title")
       messages must haveTranslationFor("site.backToSelectionPage")
-      messages must haveTranslationFor("submissions.ucr.header")
+      messages must haveTranslationFor("submissions.ducr.header")
       messages must haveTranslationFor("submissions.lrn.header")
       messages must haveTranslationFor("submissions.mrn.header")
       messages must haveTranslationFor("submissions.dateAndTime.header")
@@ -237,9 +237,9 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
     "display table headers" in {
       val view = createView(otherSubmissions = submissions())
 
-      tableHead(view)(0) must containMessage("submissions.ucr.header")
-      tableHead(view)(1) must containMessage("submissions.lrn.header")
-      tableHead(view)(2) must containMessage("submissions.mrn.header")
+      tableHead(view)(0) must containMessage("submissions.mrn.header")
+      tableHead(view)(1) must containMessage("submissions.ducr.header")
+      tableHead(view)(2) must containMessage("submissions.lrn.header")
       tableHead(view)(3) must containMessage("submissions.dateAndTime.header")
       tableHead(view)(4) must containMessage("submissions.status.header")
     }
@@ -249,11 +249,11 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
       "all fields are populated with timestamp before BST" in {
         val view = tab("other", createView(otherSubmissions = submissions()))
 
-        tableCell(view)(1, 0).text() mustBe s"ducr ${messages("submissions.hidden.text", "ducr")}"
-        tableCell(view)(1, 1).text() mustBe "lrn"
-        tableCell(view)(1, 2).text() mustBe "mrn"
+        tableCell(view)(1, 0).text() mustBe s"mrn ${messages("submissions.hidden.text", "ducr")}"
+        tableCell(view)(1, 1).text() mustBe "ducr"
+        tableCell(view)(1, 2).text() mustBe "lrn"
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00pm"
-        tableCell(view)(1, 4).text() mustBe "Accepted"
+        tableCell(view)(1, 4).text() mustBe messages("submission.status.ACCEPTED")
         val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
         decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
       }
@@ -271,11 +271,11 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
         )
         val view = tab("other", createView(otherSubmissions = Paginated(Seq(bstSubmission -> Seq(acceptedNotification)), Page(), 1)))
 
-        tableCell(view)(1, 0).text() mustBe s"ducr ${messages("submissions.hidden.text", "ducr")}"
-        tableCell(view)(1, 1).text() mustBe "lrn"
-        tableCell(view)(1, 2).text() mustBe "mrn"
+        tableCell(view)(1, 0).text() mustBe s"mrn ${messages("submissions.hidden.text", "ducr")}"
+        tableCell(view)(1, 1).text() mustBe "ducr"
+        tableCell(view)(1, 2).text() mustBe "lrn"
         tableCell(view)(1, 3).text() mustBe "1 May 2019 at 1:45pm"
-        tableCell(view)(1, 4).text() mustBe "Accepted"
+        tableCell(view)(1, 4).text() mustBe messages("submission.status.ACCEPTED")
         val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
         decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
       }
@@ -286,10 +286,10 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
           tab("other", createView(otherSubmissions = Paginated(Seq(submissionWithOptionalFieldsEmpty -> Seq(acceptedNotification)), Page(), 1)))
 
         tableCell(view)(1, 0).text() mustBe messages("submissions.hidden.text", "").trim
-        tableCell(view)(1, 1).text() mustBe "lrn"
-        tableCell(view)(1, 2).text() mustBe empty
+        tableCell(view)(1, 1).text() mustBe empty
+        tableCell(view)(1, 2).text() mustBe "lrn"
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00pm"
-        tableCell(view)(1, 4).text() mustBe "Accepted"
+        tableCell(view)(1, 4).text() mustBe messages("submission.status.ACCEPTED")
         val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
         decInformationLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage("id").url
       }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{ControllerSpec, ExportsTestData}
 import forms.common.Eori
 import forms.declaration.declarationHolder.DeclarationHolderAdd
 import models.Mode
@@ -70,7 +70,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
   private def verifyAddPageInvoked(numberOfTimes: Int = 1) =
     verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolderAdd = DeclarationHolderAdd(Some("ACE"), Some(Eori("GB123456789012")))
+  val declarationHolder: DeclarationHolderAdd = DeclarationHolderAdd(Some("ACE"), Some(Eori(ExportsTestData.eori)))
 
   "DeclarationHolder Add Controller" must {
 
@@ -133,6 +133,32 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+        }
+
+        "user adds mutually exclusive data" when {
+          "attempted to add EXRR when already having CSE present" in {
+            withNewCaching(
+              aDeclarationAfter(request.cacheModel, withDeclarationHolders(DeclarationHolderAdd(Some("CSE"), Some(Eori(ExportsTestData.eori)))))
+            )
+
+            val requestBody = Seq("authorisationTypeCode" -> "EXRR", "eori" -> ExportsTestData.eori)
+            val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+            status(result) mustBe BAD_REQUEST
+            verifyAddPageInvoked()
+          }
+
+          "attempted to add CSE when already having EXRR present" in {
+            withNewCaching(
+              aDeclarationAfter(request.cacheModel, withDeclarationHolders(DeclarationHolderAdd(Some("EXRR"), Some(Eori(ExportsTestData.eori)))))
+            )
+
+            val requestBody = Seq("authorisationTypeCode" -> "CSE", "eori" -> ExportsTestData.eori)
+            val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+            status(result) mustBe BAD_REQUEST
+            verifyAddPageInvoked()
+          }
         }
       }
 

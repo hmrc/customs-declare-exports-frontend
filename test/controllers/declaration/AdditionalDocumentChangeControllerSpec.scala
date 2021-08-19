@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import mock.ErrorHandlerMocks
 import models.Mode
@@ -54,9 +54,7 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(
-      aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalDocuments(Some(YesNoAnswer.Yes), existingDocument1, existingDocument2))))
-    )
+    withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalDocuments(Yes, existingDocument1, existingDocument2)))))
     when(additionalDocumentChangePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -146,7 +144,7 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
         savedDocuments mustBe Some(
           AdditionalDocuments(
-            Some(YesNoAnswer.Yes),
+            Yes,
             Seq(
               existingDocument1
                 .copy(documentTypeCode = Some("1001"), documentWriteOff = Some(DocumentWriteOff(Some("KGM"), Some(BigDecimal("123"))))),
@@ -166,7 +164,7 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
         verifyPageInvoked(0)
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
-        savedDocuments mustBe Some(AdditionalDocuments(Some(YesNoAnswer.Yes), Seq(existingDocument1, existingDocument2)))
+        savedDocuments mustBe Some(AdditionalDocuments(Yes, Seq(existingDocument1, existingDocument2)))
       }
     }
   }
