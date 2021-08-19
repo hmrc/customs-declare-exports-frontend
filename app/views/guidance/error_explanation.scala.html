@@ -26,12 +26,10 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@title = @{"CDS error codes: descriptions and explanations"}
-
-@govukLayout(title = Title(title), useCustomContentWidth = true) {
+@govukLayout(title = Title("guidance.error.explanation.title"), useCustomContentWidth = true) {
 
     <span class="govuk-caption-xl">Guidance</span>
-    @pageTitle(title)
+    @pageTitle(messages("guidance.error.explanation.title"))
 
     @paragraphBody("Note that not all these errors need to be fixed. Sometimes fixing one error will fix another one as well. You need to consider which errors apply to you and fix those. Then go to ‘Check your answers’ and submit the declaration to see if it is rejected again. The other errors will be reduced each time you submit, until your declaration is validated.")
 

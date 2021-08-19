@@ -1899,3 +1899,5 @@ pdf.template.receivedDateTime = Date and time declaration received
 pdf.template.previousDocuments = Previous Documents
 pdf.template.createdDateTime = Created
 pdf.template.versionId = Version ID
+
+guidance.error.explanation.title = CDS error codes: descriptions and explanations
