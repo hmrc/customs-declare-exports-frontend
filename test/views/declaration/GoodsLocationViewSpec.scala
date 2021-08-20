@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.{Injector, TestHelper}
+import controllers.declaration.routes
 import forms.declaration.GoodsLocationForm
 import models.DeclarationType._
 import models.{DeclarationType, Mode}
@@ -36,19 +37,39 @@ class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs
   private val page = instanceOf[goods_location]
   private val form: Form[GoodsLocationForm] = GoodsLocationForm.form()
 
-  private def createView(
-    mode: Mode = Mode.Normal,
-    form: Form[GoodsLocationForm] = form,
-    declarationType: DeclarationType = DeclarationType.STANDARD
-  ): Document = page(mode, form)(journeyRequest(declarationType), messages)
+  private def createView(form: Form[GoodsLocationForm] = form, declarationType: DeclarationType = DeclarationType.STANDARD): Document =
+    page(Mode.Normal, form)(journeyRequest(declarationType), messages)
+
+  val prefix = "declaration.goodsLocation"
 
   "Goods Location View on empty page" should {
 
     "have proper messages for labels" in {
-      messages must haveTranslationFor("declaration.goodsLocation.title")
-      messages must haveTranslationFor("declaration.goodsLocation.hint")
-      messages must haveTranslationFor("declaration.goodsLocation.code.empty")
-      messages must haveTranslationFor("declaration.goodsLocation.code.error")
+      messages must haveTranslationFor(s"$prefix.title")
+      messages must haveTranslationFor(s"$prefix.body")
+      messages must haveTranslationFor(s"$prefix.code.empty")
+      messages must haveTranslationFor(s"$prefix.code.error")
+      messages must haveTranslationFor(s"$prefix.inset")
+      messages must haveTranslationFor(s"$prefix.inset.bullet1")
+      messages must haveTranslationFor(s"$prefix.inset.bullet2")
+      messages must haveTranslationFor(s"$prefix.inset.bullet3")
+      messages must haveTranslationFor(s"$prefix.expander.title")
+      messages must haveTranslationFor(s"$prefix.expander.intro01")
+      messages must haveTranslationFor(s"$prefix.expander.intro03")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph01.title")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph02.title")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph03.title")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph03.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph04.title")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph04.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph05.title")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph06.title")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph07.title")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph08.title")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph09.title")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph10.title")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph10.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph11.text")
       messages must haveTranslationFor("tariff.declaration.locationOfGoods.clearance.text")
     }
 
@@ -65,11 +86,46 @@ class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs
     }
 
     "display header" in {
-      view.getElementsByTag("h1") must containMessageForElements("declaration.goodsLocation.title")
+      view.getElementsByTag("h1") must containMessageForElements(s"$prefix.title")
+    }
+
+    "display main body text" in {
+      view.getElementsByClass("govuk-body").get(0).text mustBe messages(s"$prefix.body")
+    }
+
+    "display the inset text" in {
+      val insetContent = view.getElementsByClass("govuk-inset-text").get(0).children
+
+      insetContent.first.text mustBe messages(s"$prefix.inset")
+
+      val ul = insetContent.last.children.get(0)
+      val bulletPoints = ul.children
+      bulletPoints.size mustBe 3
+
+      bulletPoints.get(0).text mustBe messages(s"$prefix.inset.bullet1")
+      bulletPoints.get(1).text mustBe messages(s"$prefix.inset.bullet2")
+      bulletPoints.get(2).text mustBe messages(s"$prefix.inset.bullet3")
     }
 
     "display goods location expander" in {
-      view.getElementsByClass("govuk-details__summary-text").first() must containHtml(messages("declaration.goodsLocation.expander.title"))
+      val expander = view.getElementsByClass("govuk-details").first.children
+      expander.get(0).text mustBe messages(s"$prefix.expander.title")
+
+      val details = expander.last
+
+      val children = details.children
+      children.size mustBe 23
+      children.get(0).text mustBe messages(s"$prefix.expander.intro01")
+      children.get(5).text mustBe messages(s"$prefix.expander.intro03")
+
+      val titles = details.getElementsByClass("govuk-label--s")
+      titles.size mustBe 10
+
+      val links = details.getElementsByTag("a")
+      links.size mustBe 13
+
+      val hints = details.getElementsByClass("govuk-hint")
+      hints.size mustBe 9
     }
 
     "display tariff expander" in {
@@ -123,11 +179,11 @@ class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs
   "Goods Location view" should {
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
-      behave like viewWithCorrectBackButton(request.declarationType, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage())
+      behave like viewWithCorrectBackButton(request.declarationType, routes.RoutingCountriesSummaryController.displayPage())
     }
 
     onJourney(SUPPLEMENTARY, CLEARANCE) { request =>
-      behave like viewWithCorrectBackButton(request.declarationType, controllers.declaration.routes.DestinationCountryController.displayPage())
+      behave like viewWithCorrectBackButton(request.declarationType, routes.DestinationCountryController.displayPage())
     }
 
     def viewWithCorrectBackButton(declarationType: DeclarationType, redirect: Call): Unit =
@@ -147,11 +203,11 @@ class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs
 
   private def verifyError(code: String, errorKey: String = "error"): Assertion = {
     val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm(code))
-    val view = createView(form = form)
+    val view = createView(form)
 
     view must haveGovukGlobalErrorSummary
     view must containErrorElementWithTagAndHref("a", "#code")
 
-    view must containErrorElementWithMessageKey(s"declaration.goodsLocation.code.$errorKey")
+    view must containErrorElementWithMessageKey(s"$prefix.code.$errorKey")
   }
 }

@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes._
+@import controllers.declaration.routes
 @import controllers.navigation.Navigator
 @import forms.declaration.GoodsLocationForm
 @import models.requests.JourneyRequest
@@ -26,39 +26,62 @@
 @import views.html.components.goodsLocationExpander
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        errorSummary: errorSummary,
-        exportsInputText: exportsInputText,
-        saveButtons: saveButtons,
-        goodsLocationExpander: goodsLocationExpander,
-        tariffExpander: tariffExpander,
-        pageTitle: pageTitle,
-        formHelper: FormWithCSRF,
-        sectionHeader: sectionHeader,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukInput: GovukInput,
+    govukButton: GovukButton,
+    errorSummary: errorSummary,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    insetText: exportsInsetText,
+    bulletList: bulletList,
+    saveButtons: saveButtons,
+    goodsLocationExpander: goodsLocationExpander,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    sectionHeader: sectionHeader,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[GoodsLocationForm])(implicit request: JourneyRequest[_], messages: Messages)
+
+
+@goodsLocationInput(field: Field) = {
+    @govukInput(Input(
+        id = field.id,
+        name = field.name,
+        value = field.value,
+        classes = s"govuk-!-width-two-thirds ${if(field.hasErrors) "govuk-input--error"}",
+        errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
+    ))
+}
+
+@insetSection = {
+    @paragraphBody(messages("declaration.goodsLocation.inset"))
+
+    @bulletList(List(
+        Html(messages("declaration.goodsLocation.inset.bullet1")),
+        Html(messages("declaration.goodsLocation.inset.bullet2")),
+        Html(messages("declaration.goodsLocation.inset.bullet3"))
+    ))
+}
 
 @govukLayout(
     title = Title("declaration.goodsLocation.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(GoodsLocationForm, mode)))) {
 
-    @formHelper(action = LocationController.saveLocation(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.LocationController.saveLocation(mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.3"))
 
-        @exportsInputText(
-            field = form("code"),
-            labelKey = "declaration.goodsLocation.title",
-            hintKey = Some("declaration.goodsLocation.hint"),
-            isPageHeading = true,
-            headingClasses = gdsPageLabel,
-            sectionHeaderKey = None
-        )
+        @pageTitle(messages("declaration.goodsLocation.title"))
+
+        @paragraphBody(messages("declaration.goodsLocation.body"))
+
+        @insetText(content = HtmlContent(insetSection))
+
+        @goodsLocationInput(form("code"))
 
         @goodsLocationExpander()
 

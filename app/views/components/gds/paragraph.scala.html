@@ -14,10 +14,8 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@this()
 
-@this(govukInput: GovukInput, govukInsetText : GovukInsetText)
+@(html: Html, classes: String = "govuk-body", id: Option[String] = None)
 
-@(content: Content, id: Option[String] = None)(implicit messages: Messages)
-
-@govukInsetText(InsetText(id, content = content))
+<p class="@classes" @id.map{id => id="@id" }>@html</p>
