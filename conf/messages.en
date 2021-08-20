@@ -2,7 +2,7 @@ date.day = Day
 date.month = Month
 date.year = Year
 
-service.name=CDS Exports Service
+service.name=CDS Export Declaration Service
 
 feedback=This is a new service - your {0} will help us to improve it.
 feedback.link=feedback
