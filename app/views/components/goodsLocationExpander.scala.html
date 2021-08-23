@@ -18,90 +18,107 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import config.AppConfig
 
-@this(govukDetails : GovukDetails, govukHint: GovukHint, link: link, paragraph: paragraphBody, appConfig: AppConfig)
+@this(
+    govukDetails : GovukDetails,
+    govukHint: GovukHint,
+    paragraphBody: paragraphBody,
+    paragraph: paragraph,
+    link: link,
+    appConfig: AppConfig
+)
 
 @()(implicit messages: Messages)
 
+@text(suffix: String, args: Any*) = @{ messages(s"declaration.goodsLocation.expander.$suffix", args:_*) }
+
 @expanderContent = {
-    @paragraph(messages("declaration.goodsLocation.expander.intro"))
+    @paragraphBody(text("intro01"))
 
-    @paragraph(messages("declaration.goodsLocation.expander.paragraph1.title"), "bold")
+    @paragraphBody(text("paragraph01.title"), "govuk-label--s")
+    @paragraph(link(text = text("paragraph01.link"), call = Call("GET", appConfig.rollOnRollOffPorts), target = "_blank"))
+
+    @paragraphBody(text("paragraph02.title"), "govuk-label--s")
+    @paragraph(link(text = text("paragraph02.link"), call = Call("GET", appConfig.railLocationCodes), target = "_blank"))
+
+    @paragraphBody(text("intro03"))
+
+    @paragraphBody(text("paragraph03.title"), "govuk-label--s")
     @govukHint(Hint(
-        content = HtmlContent(messages("declaration.goodsLocation.expander.paragraph1.text",
+        content = HtmlContent(text("paragraph03.text",
             link(
-                text = messages("declaration.goodsLocation.expander.paragraph1.link1.text"),
+                text = text("paragraph03.link"),
                 call = Call("GET", appConfig.customsDecCompletionRequirements),
                 target = "_blank"
             )
         ))
     ))
 
-    @paragraph(messages("declaration.goodsLocation.expander.paragraph2.title"), "bold")
+    @paragraphBody(text("paragraph04.title"), "govuk-label--s")
     @govukHint(Hint(
-        content = HtmlContent(messages("declaration.goodsLocation.expander.paragraph2.text",
+        content = HtmlContent(text("paragraph04.text",
             link(
-                text = messages("declaration.goodsLocation.expander.paragraph2.link1.text"),
+                text = text("paragraph04.link"),
                 call = Call("GET", appConfig.customsDecCompletionRequirements),
                 target = "_blank"
             )
         ))
     ))
 
-    @paragraph(messages("declaration.goodsLocation.expander.paragraph3.title"), "bold")
+    @paragraphBody(text("paragraph05.title"), "govuk-label--s")
     @govukHint(Hint(
         content = HtmlContent(link(
-            text = messages("declaration.goodsLocation.expander.paragraph3.link1.text"),
+            text = text("paragraph05.link"),
             call = Call("GET", appConfig.locationCodeForAirports),
             target = "_blank"
         ))
     ))
 
-    @paragraph(messages("declaration.goodsLocation.expander.paragraph4.title"), "bold")
+    @paragraphBody(text("paragraph06.title"), "govuk-label--s")
     @govukHint(Hint(
         content = HtmlContent(link(
-            text = messages("declaration.goodsLocation.expander.paragraph4.link1.text"),
+            text = text("paragraph06.link"),
             call = Call("GET", appConfig.certificateOfAgreementAirports),
             target = "_blank"
         ))
     ))
 
-    @paragraph(messages("declaration.goodsLocation.expander.paragraph5.title"), "bold")
+    @paragraphBody(text("paragraph07.title"), "govuk-label--s")
     @govukHint(Hint(
         content = HtmlContent(link(
-            text = messages("declaration.goodsLocation.expander.paragraph5.link1.text"),
+            text = text("paragraph07.link"),
             call = Call("GET", appConfig.locationCodeForMaritimePorts),
             target = "_blank"
         ))
     ))
 
-    @paragraph(messages("declaration.goodsLocation.expander.paragraph6.title"), "bold")
+    @paragraphBody(text("paragraph08.title"), "govuk-label--s")
     @govukHint(Hint(
         content = HtmlContent(link(
-            text = messages("declaration.goodsLocation.expander.paragraph6.link1.text"),
+            text = text("paragraph08.link"),
             call = Call("GET", appConfig.locationCodeForTempStorage),
             target = "_blank"
         ))
     ))
 
-    @paragraph(messages("declaration.goodsLocation.expander.paragraph7.title"), "bold")
+    @paragraphBody(text("paragraph09.title"), "govuk-label--s")
     @govukHint(Hint(
         content = HtmlContent(link(
-            text = messages("declaration.goodsLocation.expander.paragraph7.link1.text"),
+            text = text("paragraph09.link"),
             call = Call("GET", appConfig.designatedExportPlaceCodes),
             target = "_blank"
         ))
     ))
 
-    @paragraph(messages("declaration.goodsLocation.expander.paragraph8.title"), "bold")
+    @paragraphBody(text("paragraph10.title"), "govuk-label--s")
     @govukHint(Hint(
-        content = HtmlContent(messages("declaration.goodsLocation.expander.paragraph8.text",
+        content = HtmlContent(text("paragraph10.text",
             link(
-                text = messages("declaration.goodsLocation.expander.paragraph8.link1.text"),
+                text = text("paragraph10.link1"),
                 call = Call("GET", appConfig.locationCodesForCsePremises),
                 target = "_blank"
             ),
             link(
-                text = messages("declaration.goodsLocation.expander.paragraph8.link2.text"),
+                text = text("paragraph10.link2"),
                 call = Call("GET", appConfig.previousProcedureCodesUrl),
                 target = "_blank"
             )
@@ -109,14 +126,14 @@
     ))
 
     @govukHint(Hint(
-        content = HtmlContent(messages("declaration.goodsLocation.expander.paragraph9.text",
+        content = HtmlContent(text("paragraph11.text",
             link(
-                text = messages("declaration.goodsLocation.expander.paragraph9.link1.text"),
+                text = text("paragraph11.link1"),
                 call = Call("GET", appConfig.goodsLocationCodesForDataElement),
                 target = "_blank"
             ),
             link(
-                text = messages("declaration.goodsLocation.expander.paragraph9.link2.text"),
+                text = text("paragraph11.link2"),
                 call = Call("GET", appConfig.tariffCdsChiefSupplement),
                 target = "_blank"
             )
@@ -125,6 +142,6 @@
 }
 
 @govukDetails(Details(
-    summary = Text(messages("declaration.goodsLocation.expander.title")),
+    summary = Text(text("title")),
     content = HtmlContent(expanderContent)
 ))

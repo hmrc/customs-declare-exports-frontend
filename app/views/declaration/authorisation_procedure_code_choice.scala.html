@@ -48,7 +48,7 @@
 @(form: Form[AuthorisationProcedureCodeChoice], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
 
 @insetSection = {
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.title"), "bold")
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.title"), "govuk-label--s")
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.paragraph1"))
 
     @bulletList(Seq(

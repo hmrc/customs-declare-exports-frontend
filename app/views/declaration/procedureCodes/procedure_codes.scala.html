@@ -48,7 +48,7 @@
 @(mode: Mode, itemId: String, form: Form[ProcedureCode])(implicit request: JourneyRequest[_], messages: Messages)
 
 @insetContent = {
-    @paragraphBody(messages("declaration.procedureCodes.inset.title"), "bold")
+    @paragraphBody(messages("declaration.procedureCodes.inset.title"), "govuk-label--s")
     @paragraphBody(messages("declaration.procedureCodes.inset.paragraph.1"))
 
     @bulletList(Seq(

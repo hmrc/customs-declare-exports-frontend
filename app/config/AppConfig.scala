@@ -82,6 +82,8 @@ class AppConfig @Inject()(
 
   val emailFrontendUrl: String = loadConfig("urls.emailFrontendUrl")
 
+  val rollOnRollOffPorts = loadConfig("urls.rollOnRollOffPorts")
+  val railLocationCodes = loadConfig("urls.railLocationCodes")
   val customsDecCompletionRequirements = loadConfig("urls.customsDecCompletionRequirements")
   val locationCodeForAirports = loadConfig("urls.locationCodeForAirports")
   val certificateOfAgreementAirports = loadConfig("urls.certificateOfAgreementAirports")
