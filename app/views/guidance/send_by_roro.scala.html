@@ -26,7 +26,7 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title("guidance.error.explanation.title"), useCustomContentWidth = true) {
+@govukLayout(title = Title("guidance.roro.title"), useCustomContentWidth = true) {
 
     <span class="govuk-caption-xl">Guidance</span>
     @pageTitle(messages("guidance.roro.title"))
@@ -43,18 +43,16 @@
         <li>decide if you need to make export declarations and what the options are for the goods you want to export</li>
     </ul>
 
-    <p class="govuk-body">If you use an agent or freight forwarder they will be able to enter these RoRo details for you. If you make declarations yourself, you will be able to do this using your software, or by accessing either of the current customs systems directly -  the existing National Export System or the new system that is replacing CHIEF, the CDS export declaration service.</p>
-    
+    @paragraphBody("If you use an agent or freight forwarder they will be able to enter these RoRo details for you. If you make declarations yourself, you will be able to do this using your software, or by accessing either of the current customs systems directly -  the existing National Export System or the new system that is replacing CHIEF, the CDS export declaration service.")
+
     <h3 class="govuk-heading-m">CDS exports: specific requirements for RoRo transport and containers</h3>
 
-    <p class="govuk-body">For departures from Dover, Eurotunnel, or Holyhead for private beta participants, use the following information and codes:</p>
+    @paragraphBody("For departures from Dover, Eurotunnel, or Holyhead for private beta participants, use the following information and codes:")
 
     <ol class="govuk-list govuk-list--number">
         <li>In ‘Type of declaration’ (section 1) select ‘Arrived’. </li>
 
-
         <li>In ‘Add the authorisation for this export’ (section 2) select EXRR and enter your EORI number. Do not enter CSE even if you hold it.</li>
-
 
         <li>In ‘What is the goods location code?’ (section 3) enter one of:
 
@@ -76,15 +74,11 @@
 
         <li>In ‘How will the goods be transported to the UK border?’ or ‘What mode of transport took the goods from the warehouse to the border? (section 6) select ‘Road transport’.</li>
 
-
         <li>In ‘What are the details for the road transport?’ or ‘What are the details for the transport the goods are physically loaded on for departure?’ (section 6) select ‘Vehicle registration number’ and enter the registration number of the truck that will carry your goods out of the UK. You may enter ‘Unknown’ if you do not have the details, but do not leave this blank.</li>
-
 
         <li>In ‘What are the details for the transport that left the border?’ enter the ferry number, ferry name, or (for Eurotunnel) the wagon number. You may enter ‘Unknown’ if you do not have the details, but do not leave this blank.</li>
 
-
         <li>In ‘What is the nationality of the transport’ enter a country, or if you do not know, enter GB. Do not leave this blank.</li>
-
 
         <li>In ‘Are the goods in a container or containers?’ enter the container identification number, or enter ‘Unknown’ if you do not have the details, but do not leave this blank. Note that ‘container’ includes all container types including swap bodies.</li>
     </ol>
@@ -92,14 +86,13 @@
     <h3 class="govuk-heading-m">Clearance procedures</h3>
 
 
-    <p class="govuk-body">Once you’ve submitted the declaration, HMRC will send you a notification giving you a route 1, 2, 3 or 6. The meaning of each of those is:</p>
+    @paragraphBody("Once you’ve submitted the declaration, HMRC will send you a notification giving you a route 1, 2, 3 or 6. The meaning of each of those is:")
 
     <ul class="govuk-list  govuk-list--bullet">
         <li>Route 1: Documentary checks required – upload documents that support your declaration and wait for permission to progress to be granted or for further instruction</li>
         <li>Route 2: Asks you to upload documents (as for Route 1) and make sure the haulier or driver transports your goods to a designated export place or authorised premises, so that we can make customs checks </li>
         <li>Route 3: Post departure documentary check – send a copy of the export entry and supporting documents by email to the National Clearance Hub or post to:
 
-        
         <address>Freepost RTGR-LSCG-LTJS<br />
         HM Revenue and Customs<br />
         National Clearance Hub<br />
@@ -115,14 +108,15 @@
 
     <h3 class="govuk-heading-m">VAT zero rating and other benefits</h3>
 
-    <p class="govuk-body">Where you can show documentary proof of export, including commercial evidence, any goods liable to VAT can be considered for VAT zero rating. If you manufacture goods in the UK, you can off-set your VAT liability. </p>
+    @paragraphBody("Where you can show documentary proof of export, including commercial evidence, any goods liable to VAT can be considered for VAT zero rating. If you manufacture goods in the UK, you can off-set your VAT liability.")
 
-    <p class="govuk-body">Goods that entered the UK under import reliefs, or subject to excise duty suspension can be recorded when they are re-exported or exported, which help support conclusion of the relief or suspension.</p>
-    
+    @paragraphBody("Goods that entered the UK under import reliefs, or subject to excise duty suspension can be recorded when they are re-exported or exported, which help support conclusion of the relief or suspension.")
+
+
     <h3 class="govuk-heading-m">Documents as proof of departure</h3>
 
-    <p class="govuk-body">As long as your declaration status shows as ‘Cleared’ you can be satisfied that HMRC will assume that your goods have departed.</p>
+    @paragraphBody("As long as your declaration status shows as ‘Cleared’ you can be satisfied that HMRC will assume that your goods have departed.")
 
-    <p class="govuk-body">You still need to keep commercial evidence of the export such as boarding tickets, and proof of import. These documents do not need to be provided to NCH for documentary checks but HMRC may ask to see proof of departure.</p>
+    @paragraphBody("You still need to keep commercial evidence of the export such as boarding tickets, and proof of import. These documents do not need to be provided to NCH for documentary checks but HMRC may ask to see proof of departure.")
 
 }
