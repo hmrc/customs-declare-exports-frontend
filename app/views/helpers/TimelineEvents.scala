@@ -19,7 +19,7 @@ package views.helpers
 import java.time.ZonedDateTime
 
 import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import play.api.i18n.Messages
@@ -30,7 +30,9 @@ import views.html.components.upload_files_partial_for_timeline
 
 case class TimelineEvent(title: String, dateTime: ZonedDateTime, content: Option[Html])
 
+@Singleton
 class TimelineEvents @Inject()(
+  linkButton: linkButton,
   secureMessagingInboxConfig: SecureMessagingInboxConfig,
   sfusConfig: SfusConfig,
   uploadFilesPartialForTimeline: upload_files_partial_for_timeline
@@ -75,7 +77,7 @@ class TimelineEvents @Inject()(
 
   private def fixAndResubmitContent(declarationID: String)(implicit messages: Messages): Option[Html] = {
     val call = controllers.routes.RejectedNotificationsController.displayPage(declarationID)
-    val element = new linkButton()("submissions.declarationDetails.fix.resubmit.button", call)
+    val element = linkButton("submissions.declarationDetails.fix.resubmit.button", call)
     Some(new Html(List(element)))
   }
 
@@ -85,7 +87,7 @@ class TimelineEvents @Inject()(
   }
 
   private def viewQueriesContent(isPrimary: Boolean)(implicit messages: Messages): Option[Html] = {
-    val element = new linkButton()(
+    val element = linkButton(
       "submissions.declarationDetails.view.queries.button",
       Call("GET", secureMessagingInboxConfig.sfusInboxLink),
       if (isPrimary) "govuk-button" else "govuk-button govuk-button--secondary"

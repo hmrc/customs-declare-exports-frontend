@@ -20,6 +20,7 @@ import config.AppConfig
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import javax.inject.{Inject, Singleton}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
@@ -29,11 +30,17 @@ import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.govukInsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
+import views.helpers.DeclarationHolder.bodyClassId
 import views.html.components.gds.{bulletList, link, numberedList, paragraphBody}
 
-object DeclarationHolder {
-
-  val bodyClassId = "text-under-h1"
+@Singleton
+class DeclarationHolder @Inject()(
+  bulletList: bulletList,
+  insetTextPartial: govukInsetText,
+  link: link,
+  numberedList: numberedList,
+  paragraphBody: paragraphBody
+) {
 
   def bodyForDeclarationHolderEditPage(appConfig: AppConfig)(implicit messages: Messages, request: JourneyRequest[_]): Option[Html] = {
     val messageList = valuesToMatch(request.cacheModel) match {
@@ -53,7 +60,7 @@ object DeclarationHolder {
     }
 
     if (messageList.isEmpty) None
-    else Some(HtmlFormat.fill(messageList.map(message => new paragraphBody()(message, s"govuk-body $bodyClassId"))))
+    else Some(HtmlFormat.fill(messageList.map(message => paragraphBody(message, s"govuk-body $bodyClassId"))))
   }
 
   def bodyForDeclarationHolderRequiredPage(implicit messages: Messages, request: JourneyRequest[_]): Html = {
@@ -66,7 +73,7 @@ object DeclarationHolder {
     }
 
     val body = keys.map { key =>
-      new paragraphBody()(messages(s"declaration.declarationHolderRequired.body.$key"))
+      paragraphBody(messages(s"declaration.declarationHolderRequired.body.$key"))
     }
 
     HtmlFormat.fill(body)
@@ -103,29 +110,29 @@ object DeclarationHolder {
     List(
       messages(
         s"declaration.declarationHolder.body.$key.1007",
-        new link()(messages("declaration.declarationHolder.body.1007.link"), None, Call("GET", appConfig.permanentExportOrDispatch.section), "_blank")
+        link(messages("declaration.declarationHolder.body.1007.link"), None, Call("GET", appConfig.permanentExportOrDispatch.section), "_blank")
       )
     )
 
   private val insetKey = "declaration.declarationHolder.authCode.inset"
 
   private def insetText(appendable: Html, key: String)(implicit messages: Messages): Option[Html] = {
-    val html = new Html(List(new paragraphBody()(messages(s"$insetKey.$key.title"), "govuk-label--s"), appendable))
-    Some(new govukInsetText()(InsetText(content = HtmlContent(html))))
+    val html = new Html(List(paragraphBody(messages(s"$insetKey.$key.title"), "govuk-label--s"), appendable))
+    Some(insetTextPartial(InsetText(content = HtmlContent(html))))
   }
 
   private def insetTextForExciseRemovals(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
     val call1 = Call("GET", appConfig.permanentExportOrDispatch.authHolder)
-    val link1 = new link()(messages(s"$insetKey.excise.bullet1.link"), None, call1, "_blank")
+    val link1 = link(messages(s"$insetKey.excise.bullet1.link"), None, call1, "_blank")
 
     val call2 = Call("GET", appConfig.permanentExportOrDispatch.conditions)
-    val link2 = new link()(messages(s"$insetKey.excise.bullet2.link"), None, call2, "_blank")
+    val link2 = link(messages(s"$insetKey.excise.bullet2.link"), None, call2, "_blank")
 
     val call3 = Call("GET", appConfig.permanentExportOrDispatch.documents)
-    val link3 = new link()(messages(s"$insetKey.excise.bullet3.link"), None, call3, "_blank")
+    val link3 = link(messages(s"$insetKey.excise.bullet3.link"), None, call3, "_blank")
 
     insetText(
-      new bulletList()(
+      bulletList(
         List(
           Html(messages(s"$insetKey.excise.bullet1", link1)),
           Html(messages(s"$insetKey.excise.bullet2", link2)),
@@ -138,10 +145,10 @@ object DeclarationHolder {
 
   private def insetTextForNonStandardProcedures(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
     val call1 = Call("GET", appConfig.previousProcedureCodesUrl)
-    val link1 = new link()(messages(s"$insetKey.special.bullet1.link"), None, call1, "_blank")
+    val link1 = link(messages(s"$insetKey.special.bullet1.link"), None, call1, "_blank")
 
     insetText(
-      new numberedList()(
+      numberedList(
         List(
           Html(messages(s"$insetKey.special.bullet1", link1)),
           Html(messages(s"$insetKey.special.bullet2")),
@@ -158,4 +165,9 @@ object DeclarationHolder {
 
   private def valuesToMatch(model: ExportsDeclaration) =
     (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice, model.parties.isEntryIntoDeclarantsRecords)
+}
+
+object DeclarationHolder {
+
+  val bodyClassId = "text-under-h1"
 }

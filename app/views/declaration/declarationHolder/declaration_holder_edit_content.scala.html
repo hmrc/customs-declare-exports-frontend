@@ -22,7 +22,7 @@
 @import services.view.HolderOfAuthorisationCodes
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.DeclarationHolder._
+@import views.helpers.DeclarationHolder
 @import views.html.components.fields.field_accessible_autocomplete
 @import views.html.components.gds._
 
@@ -37,6 +37,7 @@
     sectionHeader: sectionHeader,
     govukHint: govukHint,
     pageTitle: pageTitle,
+    declarationHolder: DeclarationHolder,
     exportsInputText: exportsInputText,
     tariffExpander: tariffExpander,
     addButton: addButton,
@@ -51,18 +52,18 @@
 @formContent = {
     @formGroupWrapper(field = form(DeclarationHolderFormGroupId)) {
 
-        @bodyForDeclarationHolderEditPage(appConfig)
+        @declarationHolder.bodyForDeclarationHolderEditPage(appConfig)
 
         @field_accessible_autocomplete(
             field = form("authorisationTypeCode"),
             label = messages("declaration.declarationHolder.authorisationCode"),
             labelClass = Some("govuk-label--m"),
-            hintParagraphs = hintForAuthorisationCode,
+            hintParagraphs = declarationHolder.hintForAuthorisationCode,
             emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
             items = holderOfAuthorisationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
         )
 
-        @insetTextBelowAuthorisationCode(appConfig)
+        @declarationHolder.insetTextBelowAuthorisationCode(appConfig)
 
         @exportsInputText(
             field = form("eori"),

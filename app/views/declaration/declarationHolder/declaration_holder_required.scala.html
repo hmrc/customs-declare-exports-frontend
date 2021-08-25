@@ -24,7 +24,7 @@
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
-@import views.helpers.DeclarationHolder.bodyForDeclarationHolderRequiredPage
+@import views.helpers.DeclarationHolder
 @import views.components.gds.Styles._
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
@@ -34,6 +34,7 @@
     govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    declarationHolder: DeclarationHolder,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     insetText: exportsInsetText,
@@ -84,7 +85,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(List(
-                bodyForDeclarationHolderRequiredPage,
+                declarationHolder.bodyForDeclarationHolderRequiredPage,
                 yesNoRadios(form),
                 maybeInset,
                 tariffExpander(DeclarationHolderRequired, request.declarationType)(messages, appConfig),
