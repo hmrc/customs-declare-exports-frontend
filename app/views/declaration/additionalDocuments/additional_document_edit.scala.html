@@ -22,7 +22,7 @@
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
 @import views.components.gds.Styles._
-@import views.helpers.{AdditionalDocument => AD}
+@import views.helpers.{AdditionalDocument => AdditionalDocHelper}
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
@@ -40,6 +40,7 @@
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     link: link,
+    additionalDocument: AdditionalDocHelper,
     appConfig: AppConfig
 )
 
@@ -180,7 +181,7 @@
         @exportsInputText(
             field = form(documentTypeCodeKey),
             labelKey = "declaration.additionalDocument.documentTypeCode",
-            hintKey = Some(AD.documentCodeHint),
+            hintKey = Some(additionalDocument.documentCodeHint),
             inputClasses = Some("govuk-input--width-4")
         )
         @govukDetails(Details(
@@ -195,7 +196,7 @@
             inputClasses = Some("govuk-input--width-30")
         )
         @{
-            AD.documentIdentifierInsets
+            additionalDocument.documentIdentifierInsets
         }
         @exportsInputText(
             field = form(documentStatusKey),
@@ -237,12 +238,12 @@
 
     @govukFieldset(Fieldset(
         legend = Some(Legend(
-            content = Text(messages(AD.title)),
+            content = Text(messages(AdditionalDocHelper.title)),
             classes = gdsPageLegend,
             isPageHeading = true
         )),
         html = HtmlFormat.fill(immutable.Seq(
-            AD.pageHint,
+            additionalDocument.pageHint,
             govukDetails(Details(
                 summary = Text(messages("declaration.additionalDocument.expander.title")),
                 content = HtmlContent(expander1Content),
