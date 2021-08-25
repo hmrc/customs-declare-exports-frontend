@@ -21,14 +21,15 @@
 @this(
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
-    paragraphBody: paragraphBody
+    paragraphBody: paragraphBody,
+    sectionHeader: sectionHeader
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
 @govukLayout(title = Title("guidance.roro.title"), useCustomContentWidth = true) {
 
-    <span class="govuk-caption-xl">Guidance</span>
+    @sectionHeader(messages("guidance.subHeading"))
     @pageTitle(messages("guidance.roro.title"))
 
     @paragraphBody("Find out what to do if you use roll on roll off (RoRo) including Eurotunnel to export road freight, rail freight or unaccompanied freight from the UK to other countries.")
