@@ -22,7 +22,7 @@
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
 @import views.components.gds.Styles._
-@import views.helpers.{AdditionalDocument => AD}
+@import views.helpers.{AdditionalDocument => AdditionalDocHelper}
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
@@ -40,7 +40,7 @@
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     link: link,
-    additionalDocument: AD,
+    additionalDocument: AdditionalDocHelper,
     appConfig: AppConfig
 )
 
@@ -238,7 +238,7 @@
 
     @govukFieldset(Fieldset(
         legend = Some(Legend(
-            content = Text(messages(AD.title)),
+            content = Text(messages(AdditionalDocHelper.title)),
             classes = gdsPageLegend,
             isPageHeading = true
         )),

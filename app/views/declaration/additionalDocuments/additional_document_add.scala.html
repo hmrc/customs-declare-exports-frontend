@@ -19,7 +19,7 @@
 @import models.requests.JourneyRequest
 @import forms.declaration.additionaldocuments.AdditionalDocument
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import views.helpers.{AdditionalDocument => AD, BackButton, Title}
+@import views.helpers.{AdditionalDocument => AdditionalDocHelper, BackButton, Title}
 @import views.html.components.gds._
 
 @this(
@@ -31,7 +31,7 @@
 @(mode: Mode, itemId: String, form: Form[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title(AD.title, "declaration.section.5"),
+    title = Title(AdditionalDocHelper.title, "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalDocument, mode, ItemId(itemId))))) {
 
     @formHelper(action = AdditionalDocumentAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
