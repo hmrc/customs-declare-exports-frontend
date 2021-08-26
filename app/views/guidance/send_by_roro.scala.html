@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import config.ExternalServicesConfig
 @import views.helpers.Title
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -28,7 +28,7 @@
     bulletList: bulletList,
     numberedList: numberedList,
     sectionHeader: sectionHeader,
-    config: ExternalServicesConfig
+    appConfig: AppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -48,20 +48,20 @@
     @bulletList(List(
         Html(messages("guidance.roro.section.1.list.1.bullet.1", link(
             text = messages("guidance.roro.section.1.list.1.bullet.1.link"),
-            call = Call("GET", config.eoriService)
+            call = Call("GET", appConfig.eoriService)
         ))),
         Html(messages("guidance.roro.section.1.list.1.bullet.2", link(
             text = messages("guidance.roro.section.1.list.1.bullet.2.link"),
-            call = Call("GET", config.checkCustomsDeclarationService)
+            call = Call("GET", appConfig.checkCustomsDeclarationService)
         )))
     ))
 
     @paragraphBody(messages("guidance.roro.section.1.paragraph.2", link(
         text = messages("guidance.roro.section.1.paragraph.2.link.1"),
-        call = Call("GET", config.nationalExportSystemGuidance)
+        call = Call("GET", appConfig.nationalExportSystemGuidance)
     ), link(
         text = messages("guidance.roro.section.1.paragraph.2.link.2"),
-        call = Call("GET", config.loginContinue)
+        call = Call("GET", appConfig.loginContinueUrl)
     )))
 
 
@@ -91,7 +91,7 @@
         Html(messages("guidance.roro.section.3.list.1.bullet.2")),
         Html(messages("guidance.roro.section.3.list.1.bullet.3", link(
             text = messages("guidance.roro.section.3.list.1.bullet.3.link"),
-            call = Call("GET", config.nationalClearanceHub)
+            call = Call("GET", appConfig.nationalClearanceHub)
         ))),
         Html(messages("guidance.roro.section.3.list.1.bullet.4"))
     ))

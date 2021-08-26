@@ -101,6 +101,11 @@ class AppConfig @Inject()(
   val unDangerousGoodsUrl = loadConfig("urls.unDangerousGoods")
   val licensesForExportingGoods = loadConfig("urls.licensesForExportingGoods")
 
+  val eoriService = loadConfig("urls.eoriService")
+  val checkCustomsDeclarationService = loadConfig("urls.checkCustomsDeclarationService")
+  val nationalExportSystemGuidance = loadConfig("urls.nationalExportSystemGuidance")
+  val nationalClearanceHub = loadConfig("urls.nationalClearanceHub")
+
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
