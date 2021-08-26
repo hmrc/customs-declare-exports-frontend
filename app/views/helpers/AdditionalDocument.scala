@@ -16,6 +16,7 @@
 
 package views.helpers
 
+import javax.inject.{Inject, Singleton}
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -25,7 +26,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import views.html.components.gds.paragraphBody
 
-object AdditionalDocument {
+@Singleton
+class AdditionalDocument @Inject()(hintPartial: govukHint, insetTextPartial: govukInsetText, paragraphBody: paragraphBody) {
 
   def documentCodeHint(implicit request: JourneyRequest[_]): String =
     if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments) "declaration.additionalDocument.documentTypeCode.hint.fromAuthCode"
@@ -35,12 +37,12 @@ object AdditionalDocument {
     if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments) {
       val html = new Html(
         List(
-          new paragraphBody()(messages("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph1")),
-          new paragraphBody()(messages("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph2"))
+          paragraphBody(messages("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph1")),
+          paragraphBody(messages("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph2"))
         )
       )
 
-      val insets = new govukInsetText()(InsetText(content = HtmlContent(html)))
+      val insets = insetTextPartial(InsetText(content = HtmlContent(html)))
       Some(insets)
     } else None
 
@@ -48,12 +50,15 @@ object AdditionalDocument {
     if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments)
       new Html(
         List(
-          new govukHint()(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint.fromAuthCode.paragraph1")))),
-          new govukHint()(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint.fromAuthCode.paragraph2"))))
+          hintPartial(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint.fromAuthCode.paragraph1")))),
+          hintPartial(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint.fromAuthCode.paragraph2"))))
         )
       )
     else
-      new Html(List(new govukHint()(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint"))))))
+      new Html(List(hintPartial(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint"))))))
+}
+
+object AdditionalDocument {
 
   def title(implicit request: JourneyRequest[_]): String =
     if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments) "declaration.additionalDocument.title.fromAuthCode"

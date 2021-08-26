@@ -26,6 +26,7 @@ import models.declaration.submissions.{Submission, SubmissionStatus}
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import views.declaration.spec.UnitViewSpec
+import views.html.components.gds.linkButton
 import views.html.components.upload_files_partial_for_timeline
 
 class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injector {
@@ -44,7 +45,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
   private def createTimeline(notifications: Seq[Notification], enableSfusConfig: Boolean = true): Seq[TimelineEvent] = {
     when(sfusConfig.isSfusUploadEnabled).thenReturn(enableSfusConfig)
-    new TimelineEvents(secureMessagingInboxConfig, sfusConfig, uploadFilesPartialForTimeline)(submission, notifications)
+    new TimelineEvents(new linkButton(), secureMessagingInboxConfig, sfusConfig, uploadFilesPartialForTimeline)(submission, notifications)
   }
 
   "TimelineEvents" should {
