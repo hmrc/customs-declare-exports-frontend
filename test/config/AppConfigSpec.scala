@@ -421,6 +421,9 @@ object AppConfigSpec {
       |urls.additionalDocumentsUnitCodes = "http://additionalDocumentsUnitCodes"
       |urls.rollOnRollOffPorts="https://www.gov.uk/government/publications/roll-on-roll-off-ports"
       |urls.railLocationCodes="https://www.gov.uk/government/publications/rail-location-codes"
+      |urls.checkCustomsDeclarationService="https://www.gov.uk/check-customs-declaration"
+      |urls.nationalExportSystemGuidance="urls.nationalExportSystemGuidance"
+      |urls.nationalClearanceHub="urls.nationalClearanceHub"
       |
       |urls.procedureCodes.removalOfGoodsFromExciseWarehouse = "https://www.gov.uk/guidance/receive-goods-into-and-remove-goods-from-an-excise-warehouse-excise-notice-197"
       |urls.procedureCodes.onwardSupplyRelief = "https://www.gov.uk/guidance/check-if-you-can-claim-vat-relief-on-goods-imported-into-northern-ireland-for-onward-supply-to-the-eu#onward-supply-relief-osr"
