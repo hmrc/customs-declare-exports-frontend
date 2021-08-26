@@ -872,7 +872,7 @@ declaration.goodsLocation.code.error = Goods location code must be in the correc
 declaration.goodsLocation.inset = The new RoRo location codes for the RoRo ports are:
 declaration.goodsLocation.inset.bullet1 = Dover (Eastern Docks): GBAUDVRDOVDVR
 declaration.goodsLocation.inset.bullet2 = Eurotunnel: GBAUEUTEUTEUT
-declaration.goodsLocation.inset.bullet3 = Holyhead: GVAUHLYHLDHLY
+declaration.goodsLocation.inset.bullet3 = Holyhead: GBAUHLYHLDHLY
 
 declaration.goodsLocation.expander.title = Find the goods location code (CDS data element 5/23)
 declaration.goodsLocation.expander.intro01 = When other locations are available for use you can select the location type, and then look up the code (links open in a new tab).
