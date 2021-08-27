@@ -68,4 +68,5 @@ GET         /you-have-signed-out                           controllers.SignOutCo
 
 # Guidance pages
 
+GET         /start                                         controllers.GuidanceController.start()
 GET         /error-explanation                             controllers.GuidanceController.errorExplanation()

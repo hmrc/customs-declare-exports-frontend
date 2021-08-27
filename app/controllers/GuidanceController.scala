@@ -20,10 +20,14 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.guidance.{error_explanation}
+import views.html.guidance.{start, error_explanation}
 
-class GuidanceController @Inject()(mcc: MessagesControllerComponents, errorExplanationPage: error_explanation)
+class GuidanceController @Inject()(mcc: MessagesControllerComponents, startPage: start, errorExplanationPage: error_explanation)
     extends FrontendController(mcc) with I18nSupport {
+
+  def start: Action[AnyContent] = Action { implicit request =>
+    Ok(startPage())
+  }
 
   def errorExplanation: Action[AnyContent] = Action { implicit request =>
     Ok(errorExplanationPage())

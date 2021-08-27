@@ -21,16 +21,24 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import views.html.guidance.start
 import views.html.guidance.error_explanation
 
 class GuidanceControllerSpec extends ControllerWithoutFormSpec {
 
   val errorExplanationPage = mock[error_explanation]
-  val controller = new GuidanceController(stubMessagesControllerComponents(), errorExplanationPage)
+  val controller = new GuidanceController(stubMessagesControllerComponents(), start, errorExplanationPage)
 
   "GuidanceController" should {
 
     "return 200 (OK)" when {
+
+      "the start method is invoked" in {
+        when(startPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+
+        val result = controller.start()(getRequest())
+        status(result) must be(OK)
+      }
 
       "the errorExplanation method is invoked" in {
         when(errorExplanationPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
