@@ -1909,4 +1909,81 @@ pdf.template.previousDocuments = Previous Documents
 pdf.template.createdDateTime = Created
 pdf.template.versionId = Version ID
 
+guidance.subHeading = Guidance
+
 guidance.error.explanation.title = CDS error codes: descriptions and explanations
+
+
+
+
+
+
+
+
+guidance.roro.title = Sending goods for export from roll on roll off ports or via Eurotunnel
+guidance.roro.intro = Find out what to do if you use roll on roll off (RoRo) including Eurotunnel to export road freight, rail freight or unaccompanied freight from the UK to other countries.
+
+guidance.roro.section.1.header = Exporting from the UK by road and RoRo
+guidance.roro.section.1.paragraph.1 = To be ready, you’ll need to:
+guidance.roro.section.1.list.1.bullet.1 = get a {0}
+guidance.roro.section.1.list.1.bullet.1.link = UK EORI number
+guidance.roro.section.1.list.1.bullet.2 = decide {0} and what the options are for the goods you want to export
+guidance.roro.section.1.list.1.bullet.2.link = if you need to make export declarations
+guidance.roro.section.1.paragraph.2 = If you use an agent or freight forwarder they will be able to enter these RoRo details for you. If you make declarations yourself, you will be able to do this using your software, or by accessing either of the current customs systems directly - the existing {0} or the new system that is replacing CHIEF, the {1}.
+guidance.roro.section.1.paragraph.2.link.1 = National Export System
+guidance.roro.section.1.paragraph.2.link.2 = CDS export declaration service
+
+guidance.roro.section.2.header = CDS exports: specific requirements for RoRo transport and containers
+guidance.roro.section.2.paragraph.1 = For departures from Dover, Eurotunnel, or Holyhead for private beta participants, use the following information and codes:
+
+guidance.roro.section.2.list.1.bullet.1 = In ‘Type of declaration’ (section 1) select ‘Arrived’. 
+guidance.roro.section.2.list.1.bullet.2 = In ‘Add the authorisation for this export’ (section 2) select EXRR and enter your EORI number. Do not enter CSE even if you hold it.
+guidance.roro.section.2.list.1.bullet.3 = In ‘What is the goods location code?’ (section 3) enter one of: <ul class="govuk-list  govuk-list--bullet"><li>GBAUDVRDOVDVR = Dover</li><li>GBAUEUTEUTEUT = Eurotunnel</li><li>GBAUHLYHLDHLY = Holyhead</li></ul>
+guidance.roro.section.2.list.1.bullet.4 = In ‘Where is the customs office of exit?’ (section 3) select the intended departure point out of: <ul class="govuk-list  govuk-list--bullet"><li>Dover (OTS) Freight Clearance - GB000040</li><li>Eurotunnel Freight - GB000060</li><li>Holyhead - GB000124</li></ul>
+guidance.roro.section.2.list.1.bullet.5 = In ‘How will the goods be transported to the UK border?’ or ‘What mode of transport took the goods from the warehouse to the border? (section 6) select ‘Road transport’.
+guidance.roro.section.2.list.1.bullet.6 = In ‘What are the details for the road transport?’ or ‘What are the details for the transport the goods are physically loaded on for departure?’ (section 6) select ‘Vehicle registration number’ and enter the registration number of the truck that will carry your goods out of the UK. You may enter ‘Unknown’ if you do not have the details, but do not leave this blank.
+guidance.roro.section.2.list.1.bullet.7 = In ‘What are the details for the transport that left the border?’ enter the ferry number, ferry name, or (for Eurotunnel) the wagon number. You may enter ‘Unknown’ if you do not have the details, but do not leave this blank.
+guidance.roro.section.2.list.1.bullet.8 = In ‘What is the nationality of the transport’ enter a country, or if you do not know, enter GB. Do not leave this blank.
+guidance.roro.section.2.list.1.bullet.9 = In ‘Are the goods in a container or containers?’ enter the container identification number, or enter ‘Unknown’ if you do not have the details, but do not leave this blank. Note that ‘container’ includes all container types including swap bodies.
+
+guidance.roro.section.3.header = Clearance procedures
+guidance.roro.section.3.paragraph.1 = Once you’ve submitted the declaration, HMRC will send you a notification giving you a route 1, 2, 3 or 6. The meaning of each of those is:
+
+guidance.roro.section.3.list.1.bullet.1 = Route 1: Documentary checks required – upload documents that support your declaration and wait for permission to progress to be granted or for further instruction
+guidance.roro.section.3.list.1.bullet.2 = Route 2: Asks you to upload documents (as for Route 1) and make sure the haulier or driver transports your goods to a designated export place or authorised premises, so that we can make customs checks 
+guidance.roro.section.3.list.1.bullet.3 = Route 3: Post departure documentary check – send a copy of the export entry and supporting documents by email to the {0} or post to: <address>Freepost RTGR-LSCG-LTJS<br />HM Revenue and Customs<br />National Clearance Hub<br />Ralli Quays<br />3 Stanley Street<br />Salford<br />M60 9LA<br />United Kingdom</address>
+guidance.roro.section.3.list.1.bullet.3.link = National Clearance Hub
+guidance.roro.section.3.list.1.bullet.4 = Route 6: Gives permission to progress to port
+
+guidance.roro.section.4.header = VAT zero rating and other benefits
+guidance.roro.section.4.paragraph.1 = Where you can show documentary proof of export, including commercial evidence, any goods liable to VAT can be considered for VAT zero rating. If you manufacture goods in the UK, you can off-set your VAT liability.
+guidance.roro.section.4.paragraph.2 = Goods that entered the UK under import reliefs, or subject to excise duty suspension can be recorded when they are re-exported or exported, which help support conclusion of the relief or suspension.
+
+guidance.roro.section.5.header = Documents as proof of departure
+guidance.roro.section.5.paragraph.1 = As long as your declaration status shows as ‘Cleared’ you can be satisfied that HMRC will assume that your goods have departed.
+guidance.roro.section.5.paragraph.2 = You still need to keep commercial evidence of the export such as boarding tickets, and proof of import. These documents do not need to be provided to NCH for documentary checks but HMRC may ask to see proof of departure.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

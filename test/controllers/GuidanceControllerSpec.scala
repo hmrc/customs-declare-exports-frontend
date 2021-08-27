@@ -22,11 +22,14 @@ import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.guidance.error_explanation
+import views.html.guidance.send_by_roro
 
 class GuidanceControllerSpec extends ControllerWithoutFormSpec {
 
   val errorExplanationPage = mock[error_explanation]
-  val controller = new GuidanceController(stubMessagesControllerComponents(), errorExplanationPage)
+  val sendByRoroPage = mock[send_by_roro]
+
+  val controller = new GuidanceController(stubMessagesControllerComponents(), errorExplanationPage, sendByRoroPage)
 
   "GuidanceController" should {
 
@@ -36,6 +39,13 @@ class GuidanceControllerSpec extends ControllerWithoutFormSpec {
         when(errorExplanationPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result = controller.errorExplanation()(getRequest())
+        status(result) must be(OK)
+      }
+
+      "the sendByRoroPage method is invoked" in {
+        when(sendByRoroPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+
+        val result = controller.sendByRoro()(getRequest())
         status(result) must be(OK)
       }
     }
