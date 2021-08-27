@@ -20,9 +20,9 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.guidance.{start, error_explanation}
+import views.html.guidance.{start, error_explanation, send_by_roro}
 
-class GuidanceController @Inject()(mcc: MessagesControllerComponents, startPage: start, errorExplanationPage: error_explanation)
+class GuidanceController @Inject()(mcc: MessagesControllerComponents, startPage: start, errorExplanationPage: error_explanation, sendByRoroPage: send_by_roro)
     extends FrontendController(mcc) with I18nSupport {
 
   def start: Action[AnyContent] = Action { implicit request =>
@@ -31,5 +31,9 @@ class GuidanceController @Inject()(mcc: MessagesControllerComponents, startPage:
 
   def errorExplanation: Action[AnyContent] = Action { implicit request =>
     Ok(errorExplanationPage())
+  }
+
+  def sendByRoro: Action[AnyContent] = Action { implicit request =>
+    Ok(sendByRoroPage())
   }
 }
