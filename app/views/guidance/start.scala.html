@@ -67,7 +67,7 @@
 
     @paragraphBody(messages("guidance.start.section.1.paragraph.2", link(
         text = messages("guidance.start.section.1.paragraph.2.link"),
-        call = Call("GET", "#")
+        call = Call("GET", appConfig.exportDeclarationGuidance)
     )))
 
 
@@ -77,7 +77,7 @@
 
     @button(
         label = messages("guidance.start.section.2.button"),
-        href = Some("/customs-declare-exports/choice"),
+        href = Some(appConfig.firstPageInService),
         classes = Some("govuk-button govuk-button--start"),
         isStartButton = true
     )
@@ -87,7 +87,7 @@
 
     @paragraphBody(messages("guidance.start.section.3.paragraph.1", link(
         text = messages("guidance.start.section.3.paragraph.1.link"),
-        call = Call("GET", "#")
+        call = Call("GET", appConfig.exportDeclarationGuidance)
     )))
 
     @paragraphBody(messages("guidance.start.section.3.paragraph.2"))

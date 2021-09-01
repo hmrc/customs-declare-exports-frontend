@@ -47,6 +47,7 @@ class AppConfig @Inject()(
 
   val loginUrl = loadConfig("urls.login")
   val loginContinueUrl = loadConfig("urls.loginContinue")
+  val firstPageInService = loadConfig("urls.firstPageInService")
 
   val commodityCodeTariffPageUrl = loadConfig("urls.commodityCodeTariffPage")
   val commodityCodesUrl = loadConfig("urls.commodityCodes")
@@ -107,7 +108,7 @@ class AppConfig @Inject()(
   val checkCustomsDeclarationService = loadConfig("urls.checkCustomsDeclarationService")
   val nationalExportSystemGuidance = loadConfig("urls.nationalExportSystemGuidance")
   val nationalClearanceHub = loadConfig("urls.nationalClearanceHub")
-  
+
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
