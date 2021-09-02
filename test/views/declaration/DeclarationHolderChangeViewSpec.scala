@@ -20,7 +20,7 @@ import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Eori
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -34,16 +34,16 @@ import views.tags.ViewTest
 @ViewTest
 class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  val declarationHolder: DeclarationHolderAdd = DeclarationHolderAdd(Some("ACE"), Some(Eori("GB42354735346235")))
+  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")))
   val id = "ACE-GB42354735346235"
 
   private val declarationHolderPage = instanceOf[declaration_holder_change]
-  private def createView(form: Form[DeclarationHolderAdd])(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[DeclarationHolder])(implicit request: JourneyRequest[_]): Document =
     declarationHolderPage(Mode.Normal, id, form)(request, messages)
 
   "Declaration Holder View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
-      val view = createView(DeclarationHolderAdd.form.fill(declarationHolder))
+      val view = createView(DeclarationHolder.form.fill(declarationHolder))
 
       "display page title" in {
 
@@ -90,8 +90,8 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       "display error for empty Authorisation code" in {
 
         val view = createView(
-          DeclarationHolderAdd.form
-            .fillAndValidate(DeclarationHolderAdd(None, Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
+          DeclarationHolder.form
+            .fillAndValidate(DeclarationHolder(None, Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -103,8 +103,8 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       "display error for incorrect EORI" in {
 
         val view = createView(
-          DeclarationHolderAdd.form
-            .fillAndValidate(DeclarationHolderAdd(Some("ACE"), Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
+          DeclarationHolder.form
+            .fillAndValidate(DeclarationHolder(Some("ACE"), Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -115,8 +115,8 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
 
       "display error for both incorrect fields" in {
         val view = createView(
-          DeclarationHolderAdd.form
-            .fillAndValidate(DeclarationHolderAdd(None, Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
+          DeclarationHolder.form
+            .fillAndValidate(DeclarationHolder(None, Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
         view must haveGovukGlobalErrorSummary

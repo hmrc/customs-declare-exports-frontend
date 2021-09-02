@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -67,8 +67,8 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
     captor.getValue
   }
 
-  def theHoldersList: Seq[DeclarationHolderAdd] = {
-    val captor = ArgumentCaptor.forClass(classOf[Seq[DeclarationHolderAdd]])
+  def theHoldersList: Seq[DeclarationHolder] = {
+    val captor = ArgumentCaptor.forClass(classOf[Seq[DeclarationHolder]])
     verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
@@ -76,7 +76,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
   private def verifyPageInvoked(numberOfTimes: Int = 1) =
     verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolderAdd = DeclarationHolderAdd(Some("ACE"), Some(Eori("GB56523343784324")))
+  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")))
   val id = "ACE-GB56523343784324"
 
   "DeclarationHolderSummaryController on displayPage" should {

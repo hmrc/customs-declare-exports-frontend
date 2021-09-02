@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import forms.declaration.declarationHolder.{DeclarationHolderAdd, DeclarationHolderSummary}
+@import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderSummary}
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import services.view.HolderOfAuthorisationCodes
@@ -46,7 +46,7 @@
     holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 )
 
-@(mode: Mode, form: Form[_], holders: Seq[DeclarationHolderAdd])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[_], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(holders.size == 1)

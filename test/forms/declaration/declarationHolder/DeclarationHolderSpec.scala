@@ -20,11 +20,11 @@ import base.JourneyTypeTestRunner
 import forms.common.{DeclarationPageBaseSpec, Eori}
 import models.declaration.ExportDeclarationTestData.correctDeclarationHolder
 
-class DeclarationHolderAddSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
+class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 
   "DeclarationHolder mandatoryMapping" should {
 
-    val mapping = DeclarationHolderAdd.mandatoryMapping
+    val mapping = DeclarationHolder.mandatoryMapping
 
     "return no errors" when {
 
@@ -144,32 +144,32 @@ class DeclarationHolderAddSpec extends DeclarationPageBaseSpec with JourneyTypeT
 
     "return DeclarationHolder with both fields empty" when {
 
-      val expectedResult = DeclarationHolderAdd(None, None)
+      val expectedResult = DeclarationHolder(None, None)
 
       "provided with empty String" in {
         val input = ""
-        DeclarationHolderAdd.fromId(input) mustBe expectedResult
+        DeclarationHolder.fromId(input) mustBe expectedResult
       }
 
       "provided with String containing only '-' character" in {
         val input = "-"
-        DeclarationHolderAdd.fromId(input) mustBe expectedResult
+        DeclarationHolder.fromId(input) mustBe expectedResult
       }
     }
 
     "return DeclarationHolder with authorisationTypeCode only" when {
 
       val authorisationTypeCode = "ACE"
-      val expectedResult = DeclarationHolderAdd(Some(authorisationTypeCode), None)
+      val expectedResult = DeclarationHolder(Some(authorisationTypeCode), None)
 
       "provided with String containing NO '-' character" in {
         val input = s"${authorisationTypeCode}"
-        DeclarationHolderAdd.fromId(input) mustBe expectedResult
+        DeclarationHolder.fromId(input) mustBe expectedResult
       }
 
       "provided with String containing '-' as the last character" in {
         val input = s"${authorisationTypeCode}-"
-        DeclarationHolderAdd.fromId(input) mustBe expectedResult
+        DeclarationHolder.fromId(input) mustBe expectedResult
       }
     }
 
@@ -177,16 +177,16 @@ class DeclarationHolderAddSpec extends DeclarationPageBaseSpec with JourneyTypeT
 
       val authorisationTypeCode = "ACE"
       val eori = "PL213472539481923"
-      val expectedResult = DeclarationHolderAdd(Some(authorisationTypeCode), Some(Eori(eori)))
+      val expectedResult = DeclarationHolder(Some(authorisationTypeCode), Some(Eori(eori)))
 
       "provided with String containing '-' character in the middle" in {
         val input = s"${authorisationTypeCode}-${eori}"
-        DeclarationHolderAdd.fromId(input) mustBe expectedResult
+        DeclarationHolder.fromId(input) mustBe expectedResult
       }
 
       "provided with String containing more than one '-' character" in {
         val input = s"${authorisationTypeCode}-${eori}-this_part_does_not_matter"
-        DeclarationHolderAdd.fromId(input) mustBe expectedResult
+        DeclarationHolder.fromId(input) mustBe expectedResult
       }
     }
   }
@@ -198,7 +198,7 @@ class DeclarationHolderAddSpec extends DeclarationPageBaseSpec with JourneyTypeT
       AuthorizationTypeCodes.CodesRequiringDocumentation.foreach { code =>
         s"authorisationTypeCode contains $code code" in {
 
-          DeclarationHolderAdd(Some(code), None).isAdditionalDocumentationRequired mustBe true
+          DeclarationHolder(Some(code), None).isAdditionalDocumentationRequired mustBe true
         }
       }
     }
@@ -207,13 +207,13 @@ class DeclarationHolderAddSpec extends DeclarationPageBaseSpec with JourneyTypeT
 
       "authorisationTypeCode contains code that is NOT present in AuthorizationTypeCodes.CodesRequiringDocumentation" in {
         val code = "AWR"
-        DeclarationHolderAdd(Some(code), None).isAdditionalDocumentationRequired mustBe false
+        DeclarationHolder(Some(code), None).isAdditionalDocumentationRequired mustBe false
       }
     }
   }
 
   "DeclarationHolder" when {
-    testTariffContentKeys(DeclarationHolderAdd, "tariff.declaration.addAuthorisationRequired")
+    testTariffContentKeys(DeclarationHolder, "tariff.declaration.addAuthorisationRequired")
   }
 
   "DeclarationHolderRequired" when {

@@ -30,11 +30,11 @@ import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
-import views.helpers.DeclarationHolder.bodyClassId
+import views.helpers.DeclarationHolderHelper.bodyClassId
 import views.html.components.gds.{bulletList, link, numberedList, paragraphBody}
 
 @Singleton
-class DeclarationHolder @Inject()(
+class DeclarationHolderHelper @Inject()(
   bulletList: bulletList,
   insetTextPartial: GovukInsetText,
   link: link,
@@ -167,7 +167,7 @@ class DeclarationHolder @Inject()(
     (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice, model.parties.isEntryIntoDeclarantsRecords)
 }
 
-object DeclarationHolder {
+object DeclarationHolderHelper {
 
   val bodyClassId = "text-under-h1"
 }

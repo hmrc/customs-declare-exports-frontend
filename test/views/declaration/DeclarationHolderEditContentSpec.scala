@@ -21,7 +21,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AuthorisationProcedureCodeChoice
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType.{CLEARANCE, DeclarationType, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -84,7 +84,7 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
     val declarationHolderPage = instanceOf[declaration_holder_edit_content]
 
     def createPartial(implicit request: JourneyRequest[_]): Document =
-      declarationHolderPage(Mode.Normal, DeclarationHolderAdd.form)(request, messages)
+      declarationHolderPage(Mode.Normal, DeclarationHolder.form)(request, messages)
 
     "display the expected body (the text under page's H1)" when {
 

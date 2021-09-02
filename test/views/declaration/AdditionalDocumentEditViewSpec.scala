@@ -26,7 +26,7 @@ import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.additionaldocuments.AdditionalDocument._
 import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec.incorrectDocumentWriteOff
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.declaration.ExportDeclarationTestData.{allRecords, declaration}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -159,7 +159,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
 
     "the entered authorisation code requires additional documents" should {
 
-      val declarationHolder = DeclarationHolderAdd(Some("OPO"), Some(Eori("GB123456789012")))
+      val declarationHolder = DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")))
 
       onEveryDeclarationJourney(withDeclarationHolders(declarationHolder)) { implicit request =>
         val view = createView()

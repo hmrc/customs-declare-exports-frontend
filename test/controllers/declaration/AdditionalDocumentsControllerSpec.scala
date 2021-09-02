@@ -20,7 +20,7 @@ import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -117,7 +117,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
         }
 
         "the authorisation code requires additional documents" in {
-          val declarationHolder = DeclarationHolderAdd(Some("OPO"), Some(Eori("GB123456789012")))
+          val declarationHolder = DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")))
           withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
 
           val result = controller.displayPage(Mode.Normal, itemId)(getRequest())

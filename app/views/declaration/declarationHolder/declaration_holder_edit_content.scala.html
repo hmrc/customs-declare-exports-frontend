@@ -16,13 +16,13 @@
 
 @import config.AppConfig
 @import controllers.util.DeclarationHolderHelper.DeclarationHolderFormGroupId
-@import forms.declaration.declarationHolder.DeclarationHolderAdd
+@import forms.declaration.declarationHolder.DeclarationHolder
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import services.view.HolderOfAuthorisationCodes
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.DeclarationHolder
+@import views.helpers.DeclarationHolderHelper
 @import views.html.components.fields.field_accessible_autocomplete
 @import views.html.components.gds._
 
@@ -37,7 +37,7 @@
     sectionHeader: sectionHeader,
     govukHint: GovukHint,
     pageTitle: pageTitle,
-    declarationHolder: DeclarationHolder,
+    declarationHolder: DeclarationHolderHelper,
     exportsInputText: exportsInputText,
     tariffExpander: tariffExpander,
     addButton: addButton,
@@ -47,7 +47,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[DeclarationHolderAdd])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @formContent = {
     @formGroupWrapper(field = form(DeclarationHolderFormGroupId)) {
@@ -64,14 +64,14 @@
         )
 
         @declarationHolder.insetTextBelowAuthorisationCode(appConfig)
-
-        @exportsInputText(
-            field = form("eori"),
-            labelKey = "declaration.declarationHolder.eori",
-            hintKey = Some("declaration.declarationHolder.eori.hint"),
-            isPageHeading = false
-        )
     }
+
+    @exportsInputText(
+        field = form("eori"),
+        labelKey = "declaration.declarationHolder.eori",
+        hintKey = Some("declaration.declarationHolder.eori.hint"),
+        isPageHeading = false
+    )
 }
 
 @errorSummary(form.errors)
@@ -86,7 +86,7 @@
     )),
     html = HtmlFormat.fill(List(
         formContent,
-        tariffExpander(DeclarationHolderAdd, request.declarationType)(messages, appConfig),
+        tariffExpander(DeclarationHolder, request.declarationType)(messages, appConfig),
         saveButtons()
     ))
 ))

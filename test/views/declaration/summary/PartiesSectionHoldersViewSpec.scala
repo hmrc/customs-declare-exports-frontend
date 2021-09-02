@@ -18,7 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import forms.common.Eori
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -32,7 +32,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
   val authorisationTypeCode2 = "AWB"
 
   val holders =
-    Seq(DeclarationHolderAdd(Some(authorisationTypeCode1), Some(Eori(eori1))), DeclarationHolderAdd(Some(authorisationTypeCode2), Some(Eori(eori2))))
+    Seq(DeclarationHolder(Some(authorisationTypeCode1), Some(Eori(eori1))), DeclarationHolder(Some(authorisationTypeCode2), Some(Eori(eori2))))
 
   private val section = instanceOf[parties_section_holders]
 
