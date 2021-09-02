@@ -25,7 +25,7 @@
     heading: heading,
     paragraphBody: paragraphBody,
     link: link,
-    button: button,
+    govukButton: GovukButton,
     bulletList: bulletList,
     numberedList: numberedList,
     sectionHeader: sectionHeader,
@@ -36,7 +36,7 @@
 
 @govukLayout(title = Title("guidance.start.title")) {
 
-    @pageTitle(messages("guidance.start.title"), "govuk-heading-xl")
+    @pageTitle(messages("guidance.start.title"))
 
     @paragraphBody(messages("guidance.start.intro.paragraph.1"))
 
@@ -75,12 +75,12 @@
 
     @paragraphBody(messages("guidance.start.section.2.paragraph.1"))
 
-    @button(
-        label = messages("guidance.start.section.2.button"),
-        href = Some(appConfig.firstPageInService),
-        classes = Some("govuk-button govuk-button--start"),
+    @govukButton(Button(
+        content = Text(messages("guidance.start.section.2.button")),
+        href = Some(controllers.routes.ChoiceController.displayPage().url),
+        classes = "govuk-button govuk-button--start",
         isStartButton = true
-    )
+    )) 
 
 
     @heading(messages("guidance.start.section.3.header"), "govuk-heading-m", "h2")

@@ -47,7 +47,6 @@ class AppConfig @Inject()(
 
   val loginUrl = loadConfig("urls.login")
   val loginContinueUrl = loadConfig("urls.loginContinue")
-  val firstPageInService = loadConfig("urls.firstPageInService")
 
   val commodityCodeTariffPageUrl = loadConfig("urls.commodityCodeTariffPage")
   val commodityCodesUrl = loadConfig("urls.commodityCodes")

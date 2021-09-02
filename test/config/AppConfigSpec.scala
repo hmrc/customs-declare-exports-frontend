@@ -373,7 +373,6 @@ object AppConfigSpec {
     """
       |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
       |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
-      |urls.firstPageInService = "/customs-declare-exports/choice"
       |
       |google-analytics.token=N/A
       |google-analytics.host=localhostGoogle
