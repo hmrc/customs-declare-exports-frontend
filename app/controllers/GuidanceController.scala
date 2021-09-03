@@ -20,24 +20,29 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.guidance.{error_explanation, send_by_roro, start}
+import views.html.guidance._
 
 class GuidanceController @Inject()(
   mcc: MessagesControllerComponents,
-  startPage: start,
+  completeDeclarationPage: complete_declaration,
   errorExplanationPage: error_explanation,
-  sendByRoroPage: send_by_roro
+  sendByRoroPage: send_by_roro,
+  startPage: start
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def start: Action[AnyContent] = Action { implicit request =>
+  val start: Action[AnyContent] = Action { implicit request =>
     Ok(startPage())
   }
 
-  def errorExplanation: Action[AnyContent] = Action { implicit request =>
+  val completeDeclaration: Action[AnyContent] = Action { implicit request =>
+    Ok(completeDeclarationPage())
+  }
+
+  val errorExplanation: Action[AnyContent] = Action { implicit request =>
     Ok(errorExplanationPage())
   }
 
-  def sendByRoro: Action[AnyContent] = Action { implicit request =>
+  val sendByRoro: Action[AnyContent] = Action { implicit request =>
     Ok(sendByRoroPage())
   }
 }

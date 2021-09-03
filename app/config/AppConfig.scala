@@ -116,6 +116,8 @@ class AppConfig @Inject()(
     s"$contactFrontendUrl?service=$contactFrontendServiceId"
   }
 
+  val guidance = Guidance(loadConfig)
+
   lazy val declarations = servicesConfig.getConfString(
     "customs-declare-exports.declarations",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")
