@@ -421,6 +421,7 @@ object AppConfigSpec {
       |urls.additionalDocumentsUnitCodes = "http://additionalDocumentsUnitCodes"
       |urls.rollOnRollOffPorts="https://www.gov.uk/government/publications/roll-on-roll-off-ports"
       |urls.railLocationCodes="https://www.gov.uk/government/publications/rail-location-codes"
+      |urls.exportDeclarationGuidance="http://localhost:6791/customs-declare-exports/complete-declaration"
       |urls.checkCustomsDeclarationService="https://www.gov.uk/check-customs-declaration"
       |urls.nationalExportSystemGuidance="urls.nationalExportSystemGuidance"
       |urls.nationalClearanceHub="urls.nationalClearanceHub"

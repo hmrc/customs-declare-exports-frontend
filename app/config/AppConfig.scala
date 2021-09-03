@@ -100,8 +100,10 @@ class AppConfig @Inject()(
   val additionalDocumentsUnitCodes = loadConfig("urls.additionalDocumentsUnitCodes")
   val unDangerousGoodsUrl = loadConfig("urls.unDangerousGoods")
   val licensesForExportingGoods = loadConfig("urls.licensesForExportingGoods")
+  val exportDeclarationGuidance = loadConfig("urls.exportDeclarationGuidance")
 
   val eoriService = loadConfig("urls.eoriService")
+  val cdsRegister = loadConfig("urls.cdsRegister")
   val checkCustomsDeclarationService = loadConfig("urls.checkCustomsDeclarationService")
   val nationalExportSystemGuidance = loadConfig("urls.nationalExportSystemGuidance")
   val nationalClearanceHub = loadConfig("urls.nationalClearanceHub")

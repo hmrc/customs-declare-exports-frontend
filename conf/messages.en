@@ -1911,6 +1911,34 @@ pdf.template.versionId = Version ID
 
 guidance.subHeading = Guidance
 
+guidance.start.title = Declare your goods for export from the UK to other countries
+guidance.start.intro.paragraph.1 = How to declare goods you export from the UK using the CDS export declaration online service.
+guidance.start.intro.paragraph.2 = The CDS export declaration service is a free digital platform being introduced alongside the National Export System (NES).
+
+guidance.start.section.1.header = Before you start
+guidance.start.section.1.paragraph.1 = To make an export declaration, you will need to:
+guidance.start.section.1.list.1.bullet.1 = have an {0} number
+guidance.start.section.1.list.1.bullet.1.link = EORI
+guidance.start.section.1.list.1.bullet.2 = know the EORI number of the relevant ‘parties’ - your agent, client (exporter), freight forwarder, carrier (if available), warehouse keeper or consolidator, as needed
+guidance.start.section.1.list.1.bullet.3 = get access to the {0}
+guidance.start.section.1.list.1.bullet.3.link = Customs Declaration Service
+guidance.start.section.1.list.1.bullet.4 = know the right {0} for the goods
+guidance.start.section.1.list.1.bullet.4.link = commodity codes
+guidance.start.section.1.list.1.bullet.5 = have the details of where the goods will be sent and the transport used
+guidance.start.section.1.list.1.bullet.6 = a description of the item, including the value, weight, size and type of packaging
+guidance.start.section.1.paragraph.2 = To use the online service, you will need to understand the new processes. Find out more information in the guide: {0}.
+guidance.start.section.1.paragraph.2.link = Completing an online export declaration using the Customs Declarations Service
+
+guidance.start.section.2.header = How to declare
+guidance.start.section.2.paragraph.1 = You can access the online service directly to make your declaration.
+guidance.start.section.2.button = Start now
+
+guidance.start.section.3.header = If you need help
+guidance.start.section.3.paragraph.1 = If you cannot find the answer in the guide {0}, call the helpdesk.
+guidance.start.section.3.paragraph.1.link = Completing an online export declaration using the Customs Declaration Service
+guidance.start.section.3.paragraph.2 = Telephone: 0300 322 9434
+guidance.start.section.3.paragraph.3 = Monday to Friday, 9am to 5pm (except public holidays)
+
 guidance.error.explanation.title = CDS error codes: descriptions and explanations
 
 
