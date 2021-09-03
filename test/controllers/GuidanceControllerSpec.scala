@@ -21,17 +21,17 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.guidance.start
-import views.html.guidance.error_explanation
-import views.html.guidance.send_by_roro
+import views.html.guidance._
 
 class GuidanceControllerSpec extends ControllerWithoutFormSpec {
 
-  val startPage = mock[start]
+  val completeDeclarationPage = mock[complete_declaration]
   val errorExplanationPage = mock[error_explanation]
   val sendByRoroPage = mock[send_by_roro]
+  val startPage = mock[start]
 
-  val controller = new GuidanceController(stubMessagesControllerComponents(), startPage, errorExplanationPage, sendByRoroPage)
+  val controller =
+    new GuidanceController(stubMessagesControllerComponents(), completeDeclarationPage, errorExplanationPage, sendByRoroPage, startPage)
 
   "GuidanceController" should {
 
@@ -40,21 +40,28 @@ class GuidanceControllerSpec extends ControllerWithoutFormSpec {
       "the start method is invoked" in {
         when(startPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
 
-        val result = controller.start()(getRequest())
+        val result = controller.start(getRequest())
+        status(result) must be(OK)
+      }
+
+      "the completeDeclaration method is invoked" in {
+        when(completeDeclarationPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+
+        val result = controller.completeDeclaration(getRequest())
         status(result) must be(OK)
       }
 
       "the errorExplanation method is invoked" in {
         when(errorExplanationPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
 
-        val result = controller.errorExplanation()(getRequest())
+        val result = controller.errorExplanation(getRequest())
         status(result) must be(OK)
       }
 
       "the sendByRoroPage method is invoked" in {
         when(sendByRoroPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
 
-        val result = controller.sendByRoro()(getRequest())
+        val result = controller.sendByRoro(getRequest())
         status(result) must be(OK)
       }
     }

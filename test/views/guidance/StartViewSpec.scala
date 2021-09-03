@@ -16,8 +16,6 @@
 
 package views.guidance
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
-
 import base.Injector
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
