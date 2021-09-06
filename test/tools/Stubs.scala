@@ -17,6 +17,7 @@
 package tools
 
 import scala.concurrent.ExecutionContext
+
 import akka.stream.testkit.NoMaterializer
 import com.typesafe.config.{Config, ConfigFactory}
 import config.featureFlags.{BetaBannerConfig, FeatureSwitchConfig}
@@ -26,9 +27,9 @@ import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.govukfrontend.views.html.components
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _, _}
+import uk.gov.hmrc.govukfrontend.views.html.components.{Footer => _, _}
 import uk.gov.hmrc.hmrcfrontend.config._
+import uk.gov.hmrc.hmrcfrontend.views.config.HmrcFooterItems
 import uk.gov.hmrc.hmrcfrontend.views.html.components._
 import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -56,7 +57,6 @@ trait Stubs {
 
   private val minimalConfig: Config =
     ConfigFactory.parseString(AppConfigSpec.configBareMinimum + """
-      |assets.url="localhost"
       |assets.version="version"
       |google-analytics.token=N/A
       |google-analytics.host=localhostGoogle
@@ -90,33 +90,34 @@ trait Stubs {
   val minimalAppConfig = appConfig
 
   val gdsGovukLayout = new GovukLayout(
-    new components.GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink()),
+    new GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink()),
     new GovukHeader(),
     new GovukFooter(),
-    new GovukBackLink()
+    new GovukBackLink(),
+    new TwoThirdsMainContent()
   )
 
   val gdsGovukFlexibleLayout = new govukFlexibleLayout(
-    new components.GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink()),
+    new GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink()),
     new GovukHeader(),
     new GovukFooter(),
     new GovukBackLink()
   )
 
-  val hmrcFooter = new hmrcStandardFooter(new HmrcFooter(), new HmrcFooterItems(new AccessibilityStatementConfig(minimalConfiguration)))
+  val hmrcFooter = new HmrcStandardFooter(new HmrcFooter(), new HmrcFooterItems(new AccessibilityStatementConfig(minimalConfiguration)))
 
   val hmrcTrackingConsentSnippet = new HmrcTrackingConsentSnippet(new TrackingConsentConfig(minimalConfiguration))
   val hmrcReportTechnicalIssue = new HmrcReportTechnicalIssue()
 
   val govukHeader = new GovukHeader()
-  val pBanner = new phaseBanner(new GovukPhaseBanner(new govukTag()), minimalAppConfig)
-  val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner(), new HmrcUserResearchBanner(), new GovukPhaseBanner(new govukTag())))
+  val pBanner = new phaseBanner(new GovukPhaseBanner(new GovukTag()), minimalAppConfig)
+  val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner(), new HmrcUserResearchBanner(), new GovukPhaseBanner(new GovukTag())))
   val hmrcTimeoutDialogHelper = new HmrcTimeoutDialogHelper(new HmrcTimeoutDialog, new TimeoutDialogConfig(minimalConfiguration))
   val gdsMainTemplate = new gdsMainTemplate(
     govukHeader = govukHeader,
     govukLayout = gdsGovukLayout,
     govukFlexibleLayout = gdsGovukFlexibleLayout,
-    govukBackLink = new components.GovukBackLink(),
+    govukBackLink = new GovukBackLink(),
     siteHeader = sHeader,
     phaseBanner = pBanner,
     timeoutDialogConfig = timeoutDialogConfig,

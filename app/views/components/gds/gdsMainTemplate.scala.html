@@ -16,6 +16,7 @@
 
 @import config.{AppConfig, TimeoutDialogConfig}
 @import config.featureFlags.BetaBannerConfig
+@import controllers.routes.{Assets, SignOutController}
 @import models.requests.AuthenticatedRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -24,21 +25,22 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{En, Cy}
 @import views.helpers.{BackButton, Title}
+@import views.html.components.gds.{phaseBanner, siteHeader}
 
 @this(
   govukHeader: GovukHeader,
   govukLayout: GovukLayout,
   govukFlexibleLayout: govukFlexibleLayout,
   govukBackLink: GovukBackLink,
-  siteHeader: components.gds.siteHeader,
-  phaseBanner: components.gds.phaseBanner,
+  siteHeader: siteHeader,
+  phaseBanner: phaseBanner,
   timeoutDialogConfig: TimeoutDialogConfig,
   betaBannerConfig: BetaBannerConfig,
   hmrcHead: HmrcHead,
   hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
   hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
   hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
-  hmrcFooter: hmrcStandardFooter,
+  hmrcFooter: HmrcStandardFooter,
   appConfig: AppConfig
 )
 
@@ -55,7 +57,7 @@
     @if(useTimeoutDialog) {
         @hmrcHead(
             headBlock = Some(hmrcTimeoutDialogHelper(
-                signOutUrl = controllers.routes.SignOutController.signOut(models.SignOutReason.SessionTimeout).url,
+                signOutUrl = SignOutController.signOut(models.SignOutReason.SessionTimeout).url,
                 keepAliveUrl = Some(request.uri),
                 timeout = Some(timeoutDialogConfig.timeout.toSeconds.toInt),
                 countdown = Some(timeoutDialogConfig.countdown.toSeconds.toInt)
@@ -65,18 +67,18 @@
 
     @hmrcTrackingConsentSnippet()
 
-    <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
-    <link rel="shortcut icon" href='@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")' rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href='@Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
+    <link rel="shortcut icon" href='@Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")' rel="stylesheet" type="text/css" />
     <meta name="format-detection" content="telephone=no" />
-    <!--[if lte IE 8]><link href='@controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
-    <!--[if gt IE 8]><!--><link href='@routes.Assets.versioned("stylesheets/customsdecexfrontend-app.css")' media="all" rel="stylesheet" type="text/css" /><!--<![endif]-->
+    <!--[if lte IE 8]><link href='@Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
+    <!--[if gt IE 8]><!--><link href='@Assets.versioned("stylesheets/customsdecexfrontend-app.css")' media="all" rel="stylesheet" type="text/css" /><!--<![endif]-->
 }
 
 @scripts = {
-    <script src="@routes.Assets.versioned("javascripts/show-hide-content.js")" type="text/javascript"></script>
+    <script src="@Assets.versioned("javascripts/show-hide-content.js")" type="text/javascript"></script>
 
-    <script src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script src='@routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
+    <script src='@Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
+    <script src='@Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
     <script>window.HMRCFrontend.initAll();</script>
     <script>window.GOVUKFrontend.initAll();</script>
     }
@@ -130,4 +132,4 @@
     )(content)
 }
 
-<script src='@routes.Assets.versioned("javascripts/preventMultipleFormSubmissions.js")'></script>
+<script src='@Assets.versioned("javascripts/preventMultipleFormSubmissions.js")'></script>
