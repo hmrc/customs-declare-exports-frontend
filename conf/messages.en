@@ -1939,6 +1939,29 @@ guidance.start.section.3.paragraph.1.link = Completing an online export declarat
 guidance.start.section.3.paragraph.2 = Telephone: 0300 322 9434
 guidance.start.section.3.paragraph.3 = Monday to Friday, 9am to 5pm (except public holidays)
 
+guidance.entry.title = You need to declare the goods before they leave Great Britain
+
+guidance.entry.section.1.paragraph.1 = You must declare the goods before they get to the port or location where they are leaving Great Britain. 
+guidance.entry.section.1.paragraph.2 = You can {0}, such as a freight forwarder, customs agent, or by using the Royal Mail or a courier company.
+guidance.entry.section.1.paragraph.2.link.1 = get someone to deal with customs declarations for you
+guidance.entry.section.1.paragraph.3 = There are different rules if you’re: 
+guidance.entry.section.1.paragraph.4 = Find out about {0}.
+guidance.entry.section.1.paragraph.4.link.1 = declarations of exports from the UK using roll on roll off (RoRo)
+guidance.entry.section.1.list.1.bullet.1 = {0}
+guidance.entry.section.1.list.1.bullet.1.link = taking goods in your luggage, car or van to use in your business or sell
+guidance.entry.section.1.list.1.bullet.2 = {0}
+guidance.entry.section.1.list.1.bullet.2.link = exporting goods by post
+
+guidance.entry.section.2.header.1 = Make the declaration yourself 
+guidance.entry.section.2.header.2 = Make a declaration on the new Customs Declaration Service (CDS) system
+guidance.entry.section.2.paragraph.1 = If you are new to making export declarations or if you are migrating from the NESWEB platform, you first need to get access to CDS. Then you can do one (or both) of the following:
+guidance.entry.section.2.paragraph.2 = If you need access to the export declaration service for other people in your business, you can {0}. 
+guidance.entry.section.2.paragraph.2.link = add team members so they can use the service
+guidance.entry.section.2.list.1.bullet.1 = start using HMRC’s free {0} 
+guidance.entry.section.2.list.1.bullet.1.link = CDS export declaration service
+guidance.entry.section.2.list.1.bullet.2 = purchase {0}
+guidance.entry.section.2.list.1.bullet.2.link = software that can submit CDS declarations
+
 guidance.error.explanation.title = CDS error codes: descriptions and explanations
 
 guidance.roro.title = Sending goods for export from roll on roll off ports or via Eurotunnel
