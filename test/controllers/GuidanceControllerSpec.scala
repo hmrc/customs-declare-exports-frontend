@@ -32,7 +32,7 @@ class GuidanceControllerSpec extends ControllerWithoutFormSpec {
   val startPage = mock[start]
 
   val controller =
-    new GuidanceController(stubMessagesControllerComponents(), completeDeclarationPage, errorExplanationPage, sendByRoroPage, startPage, entryPage)
+    new GuidanceController(stubMessagesControllerComponents(), completeDeclarationPage, errorExplanationPage, sendByRoroPage, entryPage, startPage)
 
   "GuidanceController" should {
 

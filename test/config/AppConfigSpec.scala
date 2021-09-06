@@ -465,17 +465,22 @@ object AppConfigSpec {
       |microservice.services.contact-frontend.serviceId=DeclarationServiceId
       |mongodb.timeToLive=24h
       |
+      |guidance.addATeamMember = "https://www.gov.uk/guidance/register-for-the-goods-vehicle-movement-service#add-a-team-member"
       |guidance.additionalDocumentsReferenceCodes = "https://www.gov.uk/guidance/data-element-23-documents-and-other-reference-codes-national-of-the-customs-declaration-service-cds#table-2-national-document-codes"
       |guidance.additionalDocumentsUnionCodes = "https://www.gov.uk/government/publications/data-element-23-documents-and-other-reference-codes-union-of-the-customs-declaration-service-cds"
       |guidance.aiCodes = "https://www.gov.uk/guidance/additional-information-ai-statement-codes-for-data-element-22-of-the-customs-declaration-service-cds"
       |guidance.aiCodesForContainers = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes/requested-procedure-10-permanent-export-or-dispatch#additional-information-de-22-1"
+      |guidance.appointSomeoneToDealWithCustomsOnYourBehalf = "https://www.gov.uk/guidance/appoint-someone-to-deal-with-customs-on-your-behalf"
+      |guidance.cdsDeclarationSoftware = "https://www.gov.uk/guidance/list-of-software-developers-providing-customs-declaration-support"
       |guidance.cdsTariffCompletionGuide = "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide"
       |guidance.clearingGoodsFromToUK = "https://www.gov.uk/guidance/national-clearance-hub-for-goods-entering-leaving-or-transiting-the-eu"
       |guidance.commodityCode0306310010 = "https://www.trade-tariff.service.gov.uk/commodities/0306310010#export"
       |guidance.commodityCode2208303000 = "https://www.trade-tariff.service.gov.uk/commodities/2208303000#import"
       |guidance.commodityCode9306909000 = "https://www.trade-tariff.service.gov.uk/xi/commodities/9306909000?country=KP#export"
       |guidance.commodityCodes = "https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports"
+      |guidance.exportingByPost = "https://www.gov.uk/government/publications/notice-143-a-guide-for-international-post-users/notice-143-a-guide-for-international-post-users"
       |guidance.specialProcedures = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes"
+      |guidance.takingCommercialGoodsOnYourPerson = "https://www.gov.uk/guidance/taking-commercial-goods-out-of-great-britain-in-your-baggage"
       |guidance.vatOnGoodsExportedFromUK = "https://www.gov.uk/guidance/vat-on-goods-exported-from-the-uk-notice-703"
       |guidance.vatRatingForStandardExport = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes/requested-procedure-10-permanent-export-or-dispatch#vat-1"
       |
