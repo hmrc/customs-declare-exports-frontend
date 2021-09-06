@@ -27,7 +27,7 @@ import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.html.components.govukInsetText
+import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import views.helpers.DeclarationHolder.bodyClassId
@@ -36,7 +36,7 @@ import views.html.components.gds.{bulletList, link, numberedList, paragraphBody}
 @Singleton
 class DeclarationHolder @Inject()(
   bulletList: bulletList,
-  insetTextPartial: govukInsetText,
+  insetTextPartial: GovukInsetText,
   link: link,
   numberedList: numberedList,
   paragraphBody: paragraphBody

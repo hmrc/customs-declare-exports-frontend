@@ -17,17 +17,17 @@
 @import views.html.helper.FieldElements
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(sectionHeader: sectionHeader, govukInput: govukInput)
+@this(sectionHeader: sectionHeader, govukInput: GovukInput)
 
 @(
-        field: Field,
-        labelKey: String,
-        labelClass: String = "govuk-label--m",
-        isPageHeading: Boolean = false,
-        prefixKey: String,
-        hintKey: Option[String] = None,
-        prefixHintKey: Option[String] = None,
-        sectionHeaderKey: Option[String] = None
+    field: Field,
+    labelKey: String,
+    labelClass: String = "govuk-label--m",
+    isPageHeading: Boolean = false,
+    prefixKey: String,
+    hintKey: Option[String] = None,
+    prefixHintKey: Option[String] = None,
+    sectionHeaderKey: Option[String] = None
 )(implicit messages: Messages)
 
 @groupClasses = @{
