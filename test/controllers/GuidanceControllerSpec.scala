@@ -28,10 +28,11 @@ class GuidanceControllerSpec extends ControllerWithoutFormSpec {
   val completeDeclarationPage = mock[complete_declaration]
   val errorExplanationPage = mock[error_explanation]
   val sendByRoroPage = mock[send_by_roro]
+  val entryPage = mock[entry]
   val startPage = mock[start]
 
   val controller =
-    new GuidanceController(stubMessagesControllerComponents(), completeDeclarationPage, errorExplanationPage, sendByRoroPage, startPage)
+    new GuidanceController(stubMessagesControllerComponents(), completeDeclarationPage, errorExplanationPage, sendByRoroPage, entryPage, startPage)
 
   "GuidanceController" should {
 
@@ -41,6 +42,13 @@ class GuidanceControllerSpec extends ControllerWithoutFormSpec {
         when(startPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result = controller.start(getRequest())
+        status(result) must be(OK)
+      }
+
+      "the entry method is invoked" in {
+        when(entryPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+
+        val result = controller.entry(getRequest())
         status(result) must be(OK)
       }
 

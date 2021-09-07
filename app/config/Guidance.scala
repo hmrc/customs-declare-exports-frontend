@@ -20,17 +20,22 @@ import javax.inject.Singleton
 
 @Singleton
 class Guidance(
+  val addATeamMember: String,
   val additionalDocumentsReferenceCodes: String,
   val additionalDocumentsUnionCodes: String,
   val aiCodes: String,
   val aiCodesForContainers: String,
+  val appointSomeoneToDealWithCustomsOnYourBehalf: String,
+  val cdsDeclarationSoftware: String,
   val cdsTariffCompletionGuide: String,
   val clearingGoodsFromToUK: String,
   val commodityCode0306310010: String,
   val commodityCode2208303000: String,
   val commodityCode9306909000: String,
   val commodityCodes: String,
+  val exportingByPost: String,
   val specialProcedures: String,
+  val takingCommercialGoodsOnYourPerson: String,
   val vatOnGoodsExportedFromUK: String,
   val vatRatingForStandardExport: String
 )
@@ -38,17 +43,22 @@ class Guidance(
 object Guidance {
   def apply(loadConfig: String => String): Guidance =
     new Guidance(
+      addATeamMember = loadConfig("guidance.addATeamMember"),
       additionalDocumentsReferenceCodes = loadConfig("guidance.additionalDocumentsReferenceCodes"),
       additionalDocumentsUnionCodes = loadConfig("guidance.additionalDocumentsUnionCodes"),
       aiCodes = loadConfig("guidance.aiCodes"),
       aiCodesForContainers = loadConfig("guidance.aiCodesForContainers"),
+      appointSomeoneToDealWithCustomsOnYourBehalf = loadConfig("guidance.appointSomeoneToDealWithCustomsOnYourBehalf"),
+      cdsDeclarationSoftware = loadConfig("guidance.cdsDeclarationSoftware"),
       cdsTariffCompletionGuide = loadConfig("guidance.cdsTariffCompletionGuide"),
       clearingGoodsFromToUK = loadConfig("guidance.clearingGoodsFromToUK"),
       commodityCode0306310010 = loadConfig("guidance.commodityCode0306310010"),
       commodityCode2208303000 = loadConfig("guidance.commodityCode2208303000"),
       commodityCode9306909000 = loadConfig("guidance.commodityCode9306909000"),
       commodityCodes = loadConfig("guidance.commodityCodes"),
+      exportingByPost = loadConfig("guidance.exportingByPost"),
       specialProcedures = loadConfig("guidance.specialProcedures"),
+      takingCommercialGoodsOnYourPerson = loadConfig("guidance.takingCommercialGoodsOnYourPerson"),
       vatOnGoodsExportedFromUK = loadConfig("guidance.vatOnGoodsExportedFromUK"),
       vatRatingForStandardExport = loadConfig("guidance.vatRatingForStandardExport")
     )
