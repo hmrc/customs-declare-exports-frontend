@@ -1953,10 +1953,10 @@ guidance.entry.section.1.list.1.bullet.2 = {0}
 guidance.entry.section.1.list.1.bullet.2.link = exporting goods by post
 
 guidance.entry.section.2.header.1 = Make the declaration yourself 
-guidance.entry.section.2.header.2 = Make a declaration on the new Customs Declaration Service (CDS) system
-guidance.entry.section.2.paragraph.1 = If you are new to making export declarations or if you are migrating from the NESWEB platform, you first need to get access to CDS. Then you can do one (or both) of the following:
-guidance.entry.section.2.paragraph.2 = If you need access to the export declaration service for other people in your business, you can {0}. 
-guidance.entry.section.2.paragraph.2.link = add team members so they can use the service
+guidance.entry.section.2.paragraph.1 = Make a declaration on the new Customs Declaration Service (CDS) system
+guidance.entry.section.2.paragraph.2 = If you are new to making export declarations or if you are migrating from the NESWEB platform, you first need to get access to CDS. Then you can do one (or both) of the following:
+guidance.entry.section.2.paragraph.3 = If you need access to the export declaration service for other people in your business, you can {0}. 
+guidance.entry.section.2.paragraph.3.link = add team members so they can use the service
 guidance.entry.section.2.list.1.bullet.1 = start using HMRC’s free {0} 
 guidance.entry.section.2.list.1.bullet.1.link = CDS export declaration service
 guidance.entry.section.2.list.1.bullet.2 = purchase {0}
