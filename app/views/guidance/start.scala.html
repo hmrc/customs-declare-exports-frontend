@@ -80,7 +80,7 @@
 
     @paragraphBody(messages("guidance.start.section.2.paragraph.2", link(
         text = messages("guidance.start.section.2.paragraph.2.link"),
-        call = Call("GET", guidance.manageYourEmailAddress)
+        call = Call("GET", controllers.routes.GuidanceController.sendByRoro.url)
     )))
 
     @govukButton(Button(
