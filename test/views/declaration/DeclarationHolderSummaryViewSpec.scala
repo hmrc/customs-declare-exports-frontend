@@ -22,7 +22,7 @@ import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.Mode
-import models.declaration.Parties
+import models.declaration.{EoriSource, Parties}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -36,8 +36,8 @@ import views.tags.ViewTest
 class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[declaration_holder_summary]
-  val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")))
-  val declarationHolder2: DeclarationHolder = DeclarationHolder(Some("CVA"), Some(Eori("GB6543253678")))
+  val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")), Some(EoriSource.OtherEori))
+  val declarationHolder2: DeclarationHolder = DeclarationHolder(Some("CVA"), Some(Eori("GB6543253678")), Some(EoriSource.OtherEori))
 
   private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = YesNoAnswer.form(), holders: Seq[DeclarationHolder] = Seq.empty)(
     implicit request: JourneyRequest[_]

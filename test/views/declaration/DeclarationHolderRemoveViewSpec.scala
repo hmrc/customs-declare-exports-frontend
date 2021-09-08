@@ -20,6 +20,7 @@ import base.Injector
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode
+import models.declaration.EoriSource
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -33,7 +34,7 @@ import views.tags.ViewTest
 class DeclarationHolderRemoveViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[declaration_holder_remove]
-  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")))
+  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")), Some(EoriSource.OtherEori))
 
   private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = YesNoAnswer.form(), holder: DeclarationHolder = declarationHolder)(
     implicit request: JourneyRequest[_]

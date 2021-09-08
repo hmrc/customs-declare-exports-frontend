@@ -19,11 +19,12 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.Eori
 import forms.declaration.declarationHolder.DeclarationHolder
+import mock.ErrorHandlerMocks
 import models.Mode
-import models.declaration.DeclarationHoldersData
+import models.declaration.{DeclarationHoldersData, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, verifyNoInteractions, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -31,47 +32,49 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.declarationHolder.declaration_holder_change
 
-class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionValues {
+class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionValues with ErrorHandlerMocks {
 
-  val mockAddPage = mock[declaration_holder_change]
+  val mockChangePage = mock[declaration_holder_change]
 
   val controller = new DeclarationHolderChangeController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
+    mockErrorHandler,
     stubMessagesControllerComponents(),
-    mockAddPage
+    mockChangePage
   )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    setupErrorHandler()
+    when(mockChangePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAddPage)
+    reset(mockChangePage)
     super.afterEach()
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal, id1)(request))
+    withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder1)))
+    await(controller.displayPage(Mode.Normal, declarationHolder1.id)(request))
     theDeclarationHolder
   }
 
   def theDeclarationHolder: Form[DeclarationHolder] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolder]])
-    verify(mockAddPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockChangePage).apply(any(), any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
-  private def verifyAddPageInvoked(numberOfTimes: Int = 1) = verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+  private def verifyChangePageInvoked(numberOfTimes: Int = 1) =
+    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
-  val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")))
-  val id1 = "ACE-GB42354735346235"
-  val declarationHolder2: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("FR65435642343253")))
+  val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")), Some(EoriSource.UserEori))
+  val declarationHolder2: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("FR65435642343253")), Some(EoriSource.OtherEori))
 
   "DeclarationHolder Change Controller" must {
 
@@ -79,50 +82,67 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
       "return 200 (OK)" when {
         "display page method is invoked" in {
 
-          withNewCaching(request.cacheModel)
+          withNewCaching(
+            aDeclarationAfter(request.cacheModel, withDeclarationHolders(Some("ACE"), Some(Eori("GB42354735346235")), Some(EoriSource.UserEori)))
+          )
 
-          val result = controller.displayPage(Mode.Normal, id1)(getRequest())
+          val result = controller.displayPage(Mode.Normal, declarationHolder1.id)(getRequest())
 
           status(result) mustBe OK
-          verifyAddPageInvoked()
+          verifyChangePageInvoked()
 
           theDeclarationHolder.value mustBe Some(declarationHolder1)
         }
-
       }
 
       "return 400 (BAD_REQUEST)" when {
-        "user adds invalid data" in {
+        "display page method is invoked with invalid holderId" in {
           withNewCaching(request.cacheModel)
 
-          val requestBody = Seq("authorisationTypeCode" -> "inva!id", "eori" -> "inva!id")
-          val result = controller.submitForm(Mode.Normal, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.displayPage(Mode.Normal, "invalid")(getRequest())
 
           status(result) mustBe BAD_REQUEST
-          verifyAddPageInvoked()
+          verifyNoInteractions(mockChangePage)
         }
 
-        "user adds duplicate data" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder2)))
+        "submit page method is invoked with invalid holderId" in {
+          withNewCaching(request.cacheModel)
 
           val requestBody =
-            Seq("authorisationTypeCode" -> declarationHolder2.authorisationTypeCode.get, "eori" -> declarationHolder2.eori.map(_.value).get)
-          val result = controller.submitForm(Mode.Normal, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
+            Seq(
+              "authorisationTypeCode" -> declarationHolder2.authorisationTypeCode.get,
+              "eori" -> declarationHolder2.eori.map(_.value).get,
+              "eoriSource" -> declarationHolder2.eoriSource.map(_.toString).get
+            )
+          val result = controller.submitForm(Mode.Normal, "invalid")(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
-          verifyAddPageInvoked()
+          verifyNoInteractions(mockChangePage)
         }
 
-        "user adds too many codes" in {
-          val holders = Seq.fill(99)(declarationHolder1)
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(DeclarationHoldersData(holders))))
+        "user edits with invalid data" in {
+          withNewCaching(request.cacheModel)
 
-          val requestBody =
-            Seq("authorisationTypeCode" -> declarationHolder1.authorisationTypeCode.get, "eori" -> declarationHolder1.eori.map(_.value).get)
-          val result = controller.submitForm(Mode.Normal, "SOME-EORI")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val requestBody = Seq("authorisationTypeCode" -> "inva!id", "eori" -> "inva!id", "eoriSource" -> "inva!id")
+          val result = controller.submitForm(Mode.Normal, declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
-          verifyAddPageInvoked()
+          verifyChangePageInvoked()
+        }
+
+        "user edit leads to duplicate data" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder1, declarationHolder2)))
+
+          val requestBody =
+            Seq(
+              "authorisationTypeCode" -> declarationHolder2.authorisationTypeCode.get,
+              "eori" -> declarationHolder2.eori.map(_.value).get,
+              "eoriSource" -> declarationHolder2.eoriSource.map(_.toString).get
+            )
+          val result = controller.submitForm(Mode.Normal, declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          status(result) mustBe BAD_REQUEST
+          verifyChangePageInvoked()
         }
       }
 
@@ -131,8 +151,12 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder1)))
 
           val requestBody =
-            Seq("authorisationTypeCode" -> declarationHolder2.authorisationTypeCode.get, "eori" -> declarationHolder2.eori.map(_.value).get)
-          val result = controller.submitForm(Mode.Normal, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
+            Seq(
+              "authorisationTypeCode" -> declarationHolder2.authorisationTypeCode.get,
+              "eori" -> declarationHolder2.eori.map(_.value).get,
+              "eoriSource" -> declarationHolder2.eoriSource.map(_.toString).get
+            )
+          val result = controller.submitForm(Mode.Normal, declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
@@ -140,9 +164,7 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with OptionVa
           val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
           savedHolder mustBe Some(DeclarationHoldersData(Seq(declarationHolder2)))
         }
-
       }
     }
-
   }
 }

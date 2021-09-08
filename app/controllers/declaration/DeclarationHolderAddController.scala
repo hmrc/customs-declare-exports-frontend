@@ -46,13 +46,14 @@ class DeclarationHolderAddController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(declarationHolderPage(mode, form.withSubmissionErrors()))
+    Ok(declarationHolderPage(mode, form(request.eori).withSubmissionErrors(), request.eori))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest()
+    val boundForm = form(request.eori).bindFromRequest()
+
     boundForm.fold(formWithErrors => {
-      Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors)))
+      Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, request.eori)))
     }, _ => saveHolder(mode, boundForm, cachedHolders))
   }
 
@@ -62,13 +63,13 @@ class DeclarationHolderAddController @Inject()(
     MultipleItemsHelper
       .add(boundForm, holders, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, request.eori))),
         updatedHolders => {
 
           validateMutuallyExclusiveAuthTypeCodes(boundForm, holders) match {
             case Some(error) =>
               val formWithError = boundForm.copy(errors = Seq(error))
-              Future.successful(BadRequest(declarationHolderPage(mode, formWithError)))
+              Future.successful(BadRequest(declarationHolderPage(mode, formWithError, request.eori)))
 
             case _ =>
               updateExportsCache(updatedHolders)
@@ -81,7 +82,7 @@ class DeclarationHolderAddController @Inject()(
     val mutuallyExclusiveAuthTypeCodes = Seq("CSE", "EXRR")
 
     boundForm.value match {
-      case Some(DeclarationHolder(Some(code), _)) if (mutuallyExclusiveAuthTypeCodes.contains(code)) =>
+      case Some(DeclarationHolder(Some(code), _, _)) if (mutuallyExclusiveAuthTypeCodes.contains(code)) =>
         val mustNotAlreadyContainCodes = mutuallyExclusiveAuthTypeCodes.filter(_ != code)
 
         if (holders.map(_.authorisationTypeCode.getOrElse("")).containsSlice(mustNotAlreadyContainCodes))

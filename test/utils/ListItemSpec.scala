@@ -24,14 +24,14 @@ class ListItemSpec extends UnitSpec {
   import ListItem._
   "ListItemId" should {
 
-    val item1 = DeclarationHolder(Some("code1"), None)
-    val item2 = DeclarationHolder(Some("code2"), None)
-    val item3 = DeclarationHolder(Some("code3"), None)
+    val item1 = DeclarationHolder(Some("code1"), None, None)
+    val item2 = DeclarationHolder(Some("code2"), None, None)
+    val item3 = DeclarationHolder(Some("code3"), None, None)
     val items = Seq(item1, item2, item3)
     val id2 = ListItem.createId(1, item2)
 
     "generate id" in {
-      val item = DeclarationHolder(Some("some code"), None)
+      val item = DeclarationHolder(Some("some code"), None, None)
       createId(2, item) mustBe s"2.${item.hashCode()}"
     }
 

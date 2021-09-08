@@ -78,7 +78,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            Some(messages("declaration.declarationHolders.table.change.hint", holder.toString)),
+                            Some(messages("declaration.declarationHolders.table.change.hint", holder.id)),
                             DeclarationHolderChangeController.displayPage(mode, holder.id))),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"holder-table-row$index-change_button")
@@ -86,7 +86,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            Some(messages("declaration.declarationHolders.table.remove.hint", holder.toString)),
+                            Some(messages("declaration.declarationHolders.table.remove.hint", holder.id)),
                             DeclarationHolderRemoveController.displayPage(mode, holder.id))),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"holder-table-row$index-remove_button")

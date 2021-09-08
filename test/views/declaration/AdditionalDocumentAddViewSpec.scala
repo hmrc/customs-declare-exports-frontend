@@ -22,6 +22,7 @@ import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode
+import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.declaration
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -71,7 +72,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
       }
 
       "the authorisation code requires additional documents" should {
-        val declarationHolder = DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")))
+        val declarationHolder = DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
 
         onEveryDeclarationJourney(withDeclarationHolders(declarationHolder)) { implicit request =>
           "display a 'Back' button that links to the 'Additional Information Required' page" in {

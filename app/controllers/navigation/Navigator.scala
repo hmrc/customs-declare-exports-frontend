@@ -268,7 +268,7 @@ object Navigator {
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case DeclarationHolderRequired        => declarationHolderRequiredPreviousPage
-    case DeclarationHolder             => declarationHolderAddPreviousPage
+    case DeclarationHolder                => declarationHolderAddPreviousPage
     case DeclarationHolderSummary         => declarationHolderSummaryPreviousPage
     case SupervisingCustomsOffice         => supervisingCustomsOfficePreviousPage
     case WarehouseIdentification          => warehouseIdentificationPreviousPage

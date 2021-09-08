@@ -21,6 +21,7 @@ import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.Mode
+import models.declaration.EoriSource
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -76,7 +77,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
   private def verifyPageInvoked(numberOfTimes: Int = 1) =
     verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")))
+  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")), Some(EoriSource.OtherEori))
   val id = "ACE-GB56523343784324"
 
   "DeclarationHolderSummaryController on displayPage" should {

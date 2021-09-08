@@ -173,9 +173,13 @@ trait ExportsDeclarationBuilder {
   def withoutDeclarationHolders(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = None))
 
-  def withDeclarationHolders(authorisationTypeCode: Option[String] = None, eori: Option[Eori] = None): ExportsDeclarationModifier = { cache =>
+  def withDeclarationHolders(
+    authorisationTypeCode: Option[String] = None,
+    eori: Option[Eori] = None,
+    eoriSource: Option[EoriSource] = None
+  ): ExportsDeclarationModifier = { cache =>
     val existing: Seq[DeclarationHolder] = cache.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
-    val holdersData = DeclarationHoldersData(existing :+ DeclarationHolder(authorisationTypeCode, eori))
+    val holdersData = DeclarationHoldersData(existing :+ DeclarationHolder(authorisationTypeCode, eori, eoriSource))
     cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(holdersData)))
   }
 

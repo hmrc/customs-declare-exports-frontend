@@ -18,15 +18,17 @@ package forms.declaration.declarationHolder
 
 import forms.DeclarationPage
 import forms.common.Eori
+import forms.MappingHelper.requiredRadio
 import models.DeclarationType.DeclarationType
+import models.declaration.EoriSource
+import models.declaration.EoriSource.UserEori
 import models.viewmodels.TariffContentKey
-import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
+import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
-case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[Eori]) {
-  override def toString: String = id
-
+case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[Eori], eoriSource: Option[EoriSource]) {
   def id: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"
   def isEmpty: Boolean = authorisationTypeCode.isEmpty && eori.isEmpty
   def isComplete: Boolean = authorisationTypeCode.isDefined && eori.isDefined
@@ -36,29 +38,39 @@ case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option
 }
 
 object DeclarationHolder extends DeclarationPage {
-
   implicit val format = Json.format[DeclarationHolder]
 
-  val mandatoryMapping: Mapping[DeclarationHolder] =
-    Forms.mapping(
-      "authorisationTypeCode" ->
-        optional(text()).verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined),
-      "eori" ->
-        optional(Eori.mapping()).verifying("declaration.eori.empty", _.isDefined)
-    )(DeclarationHolder.apply)(DeclarationHolder.unapply)
+  val authorisationTypeCode = "authorisationTypeCode"
+  val eoriSource = "eoriSource"
+  val eori = "eori"
 
-  def form: Form[DeclarationHolder] = Form(mandatoryMapping)
+  private def applyDeclarationHolder(userEori: String)(authorisationTypeCode: Option[String], eori: Option[Eori], eoriSource: String) = {
+    val maybeEoriSource = EoriSource.lookupByValue.get(eoriSource)
 
-  // Method to parse format typeCode-eori
-  def fromId(id: String): DeclarationHolder = {
-    val dividedString: Array[String] = id.split('-').filterNot(_.isEmpty)
+    (eori, maybeEoriSource) match {
+      case (None, Some(eoriSource)) if eoriSource.equals(UserEori) =>
+        DeclarationHolder(authorisationTypeCode, Some(Eori(userEori)), maybeEoriSource)
 
-    dividedString.length match {
-      case 0 => DeclarationHolder(None, None)
-      case 1 => DeclarationHolder(Some(dividedString(0).trim), None)
-      case _ => DeclarationHolder(Some(dividedString(0).trim), Some(Eori(dividedString(1).trim)))
+      case _ =>
+        DeclarationHolder(authorisationTypeCode, eori, maybeEoriSource)
     }
   }
+
+  private def unapplyDeclarationHolder(declarationHolder: DeclarationHolder): Option[(Option[String], Option[Eori], String)] = {
+    val maybeEoriSourceValue = declarationHolder.eoriSource.map(_.toString) orElse declarationHolder.eori.map(_ => EoriSource.OtherEori.toString)
+
+    Some((declarationHolder.authorisationTypeCode, declarationHolder.eori, maybeEoriSourceValue.getOrElse("")))
+  }
+
+  def mapping(userEori: String): Mapping[DeclarationHolder] =
+    Forms.mapping(
+      authorisationTypeCode ->
+        optional(text()).verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined),
+      eori -> mandatoryIfEqual(eoriSource, EoriSource.OtherEori.toString, Eori.mapping("declaration.declarationHolder.eori.other.error.empty")),
+      eoriSource -> requiredRadio("declaration.declarationHolder.eori.error.radio", EoriSource.values.map(_.toString))
+    )(applyDeclarationHolder(userEori))(unapplyDeclarationHolder)
+
+  def form(userEori: String): Form[DeclarationHolder] = Form(mapping(userEori))
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.addAuthorisationRequired.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

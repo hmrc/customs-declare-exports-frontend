@@ -28,13 +28,13 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, form: Form[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarationHolder], userEori: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.declarationHolder.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolder, mode)))
 ) {
     @formHelper(action = DeclarationHolderAddController.submitForm(mode), 'autoComplete -> "off") {
-        @editContent(mode, form)
+        @editContent(mode, form, userEori)
     }
 }
