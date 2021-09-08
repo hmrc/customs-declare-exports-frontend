@@ -16,13 +16,15 @@
 
 @import config.AppConfig
 @import controllers.util.DeclarationHolderHelper.DeclarationHolderFormGroupId
-@import forms.declaration.declarationHolder.DeclarationHolderAdd
+@import forms.declaration.declarationHolder.DeclarationHolder
+@import forms.declaration.declarationHolder.DeclarationHolder.eoriSource
 @import models.requests.JourneyRequest
+@import models.declaration.EoriSource._
 @import play.twirl.api.HtmlFormat
 @import services.view.HolderOfAuthorisationCodes
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.DeclarationHolder
+@import views.helpers.DeclarationHolderHelper
 @import views.html.components.fields.field_accessible_autocomplete
 @import views.html.components.gds._
 
@@ -37,8 +39,10 @@
     sectionHeader: sectionHeader,
     govukHint: GovukHint,
     pageTitle: pageTitle,
-    declarationHolder: DeclarationHolder,
+    declHolderHelper: DeclarationHolderHelper,
     exportsInputText: exportsInputText,
+    legend: legend,
+    govukRadios: GovukRadios,
     tariffExpander: tariffExpander,
     addButton: addButton,
     removeButton: removeButton,
@@ -47,31 +51,60 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[DeclarationHolderAdd])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarationHolder], userEori: String)(implicit request: JourneyRequest[_], messages: Messages)
+
+@otherEoriInput = {
+    @exportsInputText(
+        field = form("eori"),
+        labelKey = "declaration.declarationHolder.eori.other.label",
+        hintKey = Some("declaration.declarationHolder.eori.other.hint"),
+        labelClasses = "govuk-label--s"
+    )
+}
 
 @formContent = {
     @formGroupWrapper(field = form(DeclarationHolderFormGroupId)) {
 
-        @declarationHolder.bodyForDeclarationHolderEditPage(appConfig)
+        @declHolderHelper.bodyForDeclarationHolderEditPage(appConfig)
 
         @field_accessible_autocomplete(
             field = form("authorisationTypeCode"),
             label = messages("declaration.declarationHolder.authorisationCode"),
             labelClass = Some("govuk-label--m"),
-            hintParagraphs = declarationHolder.hintForAuthorisationCode,
+            hintParagraphs = declHolderHelper.hintForAuthorisationCode,
             emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
             items = holderOfAuthorisationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
         )
 
-        @declarationHolder.insetTextBelowAuthorisationCode(appConfig)
-
-        @exportsInputText(
-            field = form("eori"),
-            labelKey = "declaration.declarationHolder.eori",
-            hintKey = Some("declaration.declarationHolder.eori.hint"),
-            isPageHeading = false
-        )
+        @declHolderHelper.insetTextBelowAuthorisationCode(appConfig)
     }
+
+    @legend(
+        content = HtmlContent(messages("declaration.declarationHolder.eori")),
+        classes = "govuk-label--m",
+        isPageHeading = false
+    )
+
+    @govukRadios(Radios(
+        name = eoriSource,
+        items = Seq(
+            RadioItem(
+                id = Some(UserEori.toString),
+                value = Some(UserEori.toString),
+                content = Text(messages("declaration.declarationHolder.eori.user.text", userEori)),
+                checked = form(eoriSource).value.contains(UserEori.toString)
+            ),
+            RadioItem(
+                id = Some(OtherEori.toString),
+                value = Some(OtherEori.toString),
+                content = Text(messages("declaration.declarationHolder.eori.other.text")),
+                checked = form(eoriSource).value.contains(OtherEori.toString),
+                conditionalHtml = Some(otherEoriInput),
+            )
+        ),
+        attributes = Map("id" -> eoriSource),
+        errorMessage = form(eoriSource).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    ))
 }
 
 @errorSummary(form.errors)
@@ -86,7 +119,7 @@
     )),
     html = HtmlFormat.fill(List(
         formContent,
-        tariffExpander(DeclarationHolderAdd, request.declarationType)(messages, appConfig),
+        tariffExpander(DeclarationHolder, request.declarationType)(messages, appConfig),
         saveButtons()
     ))
 ))

@@ -17,7 +17,7 @@
 package models
 
 import base.UnitSpec
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.CommodityDetails
 import models.declaration.{DeclarationHoldersData, ProcedureCodesData}
 import org.mockito.Mockito.when
@@ -91,9 +91,9 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
     "return true" when {
 
       "only a single DeclarationHolder returns true when called with isAdditionalDocumentationRequired method" in {
-        val declarationHolder = mock[DeclarationHolderAdd]
+        val declarationHolder = mock[DeclarationHolder]
         when(declarationHolder.isAdditionalDocumentationRequired).thenReturn(false)
-        val declarationHolderRequiringAdditionalDocumentation = mock[DeclarationHolderAdd]
+        val declarationHolderRequiringAdditionalDocumentation = mock[DeclarationHolder]
         when(declarationHolderRequiringAdditionalDocumentation.isAdditionalDocumentationRequired).thenReturn(true)
 
         val declarationsHoldersData = DeclarationHoldersData(declarationHolderRequiringAdditionalDocumentation +: Seq.fill(13)(declarationHolder))
@@ -104,9 +104,9 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
       }
 
       "more than one DeclarationHolder returns true when called with isAdditionalDocumentationRequired method" in {
-        val declarationHolder = mock[DeclarationHolderAdd]
+        val declarationHolder = mock[DeclarationHolder]
         when(declarationHolder.isAdditionalDocumentationRequired).thenReturn(false)
-        val declarationHolderRequiringAdditionalDocumentation = mock[DeclarationHolderAdd]
+        val declarationHolderRequiringAdditionalDocumentation = mock[DeclarationHolder]
         when(declarationHolderRequiringAdditionalDocumentation.isAdditionalDocumentationRequired).thenReturn(true)
 
         val declarationsHoldersData =
@@ -121,7 +121,7 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
     "return false" when {
 
       "all DeclarationHolders return false when called with isAdditionalDocumentationRequired method" in {
-        val declarationHolder = mock[DeclarationHolderAdd]
+        val declarationHolder = mock[DeclarationHolder]
         when(declarationHolder.isAdditionalDocumentationRequired).thenReturn(false)
         val declarationsHoldersData = DeclarationHoldersData(Seq.fill(13)(declarationHolder))
 

@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.util
+package models.declaration
 
-import forms.declaration.declarationHolder.DeclarationHolder
-import models.requests.JourneyRequest
+import play.api.libs.json.{JsString, JsonValidationError, Reads, Writes}
 
-object DeclarationHolderHelper {
+sealed trait EoriSource
 
-  val DeclarationHolderFormGroupId: String = "declarationHolder"
+object EoriSource {
+  case object UserEori extends EoriSource
+  case object OtherEori extends EoriSource
 
-  def cachedHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] =
-    request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+  val values = Seq(UserEori, OtherEori)
+
+  lazy val lookupByValue: Map[String, EoriSource] = values.map(entry => entry.toString -> entry).toMap
+
+  implicit val reads: Reads[EoriSource] = Reads.StringReads.collect(JsonValidationError("error.unknown"))(lookupByValue)
+  implicit val writes: Writes[EoriSource] = Writes(code => JsString(code.toString))
 }

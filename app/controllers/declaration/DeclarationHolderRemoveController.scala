@@ -19,9 +19,11 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper
+import controllers.util.DeclarationHolderHelper.cachedHolders
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder
+import handlers.ErrorHandler
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -40,38 +42,45 @@ class DeclarationHolderRemoveController @Inject()(
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
+  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   holderRemovePage: declaration_holder_remove
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holder = DeclarationHolderAdd.fromId(id)
-    Ok(holderRemovePage(mode, holder, removeYesNoForm.withSubmissionErrors()))
+  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val maybeExistingHolder = cachedHolders.find(_.id.equals(id))
+
+    maybeExistingHolder.fold(errorHandler.displayErrorPage()) { holder =>
+      Future.successful(Ok(holderRemovePage(mode, holder, removeYesNoForm.withSubmissionErrors())))
+    }
   }
 
   def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val holderToRemove = DeclarationHolderAdd.fromId(id)
-    removeYesNoForm
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(holderRemovePage(mode, holderToRemove, formWithErrors))),
-        formData => {
-          formData.answer match {
-            case YesNoAnswers.yes =>
-              updateExportsCache(holderToRemove)
-                .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
-            case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+    val maybeExistingHolder = cachedHolders.find(_.id.equals(id))
+
+    maybeExistingHolder.fold(errorHandler.displayErrorPage()) { holderToRemove =>
+      removeYesNoForm
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(holderRemovePage(mode, holderToRemove, formWithErrors))),
+          formData => {
+            formData.answer match {
+              case YesNoAnswers.yes =>
+                updateExportsCache(holderToRemove)
+                  .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+              case YesNoAnswers.no =>
+                Future.successful(navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+            }
           }
-        }
-      )
+        )
+    }
   }
 
   private val removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.remove.empty")
 
   private def updateExportsCache(
-    holderToRemove: DeclarationHolderAdd
+    holderToRemove: DeclarationHolder
   )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedHolders = DeclarationHolderHelper.cachedHolders.filterNot(_ == holderToRemove)

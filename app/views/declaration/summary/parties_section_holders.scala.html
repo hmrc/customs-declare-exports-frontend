@@ -15,7 +15,7 @@
  *@
 
 @import controllers.declaration.routes
-@import forms.declaration.declarationHolder.DeclarationHolderAdd
+@import forms.declaration.declarationHolder.DeclarationHolder
 @import services.view.HolderOfAuthorisationCodes
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
@@ -38,15 +38,15 @@
     else None
 }
 
-@holderTypeCode(holder: DeclarationHolderAdd) = @{
+@holderTypeCode(holder: DeclarationHolder) = @{
     holder.authorisationTypeCode.fold("")(holderOfAuthorisationCodes.getCodeDescription(messages.lang.toLocale, _))
 }
 
-@holderEori(holder: DeclarationHolderAdd) = @{
+@holderEori(holder: DeclarationHolder) = @{
     holder.eori.map(_.value).getOrElse("")
 }
 
-@change(holder: DeclarationHolderAdd) = {
+@change(holder: DeclarationHolder) = {
     @{
         if(actionsEnabled)
             changeLink(

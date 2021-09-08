@@ -18,9 +18,9 @@ package controllers.declaration
 
 import base.{ControllerSpec, ExportsTestData}
 import forms.common.Eori
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode
-import models.declaration.DeclarationHoldersData
+import models.declaration.{DeclarationHoldersData, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -47,7 +47,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -61,16 +61,16 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
     theDeclarationHolder
   }
 
-  def theDeclarationHolder: Form[DeclarationHolderAdd] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolderAdd]])
-    verify(mockAddPage).apply(any(), captor.capture())(any(), any())
+  def theDeclarationHolder: Form[DeclarationHolder] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[DeclarationHolder]])
+    verify(mockAddPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   private def verifyAddPageInvoked(numberOfTimes: Int = 1) =
-    verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+    verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolderAdd = DeclarationHolderAdd(Some("ACE"), Some(Eori(ExportsTestData.eori)))
+  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
 
   "DeclarationHolder Add Controller" must {
 
@@ -93,7 +93,16 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
 
       "return 400 (BAD_REQUEST)" when {
 
-        "user adds invalid data" in {
+        "user submits no data" in {
+          withNewCaching(request.cacheModel)
+
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded())
+
+          status(result) mustBe BAD_REQUEST
+          verifyAddPageInvoked()
+        }
+
+        "user submits invalid data" in {
           withNewCaching(request.cacheModel)
 
           val requestBody = Seq("authorisationTypeCode" -> "inva!id", "eori" -> "inva!id")
@@ -103,7 +112,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           verifyAddPageInvoked()
         }
 
-        "user adds duplicate data" in {
+        "user submits duplicate data" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody =
@@ -126,19 +135,13 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           verifyAddPageInvoked()
         }
 
-        "user submits no data" in {
-          withNewCaching(request.cacheModel)
-
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded())
-
-          status(result) mustBe BAD_REQUEST
-          verifyAddPageInvoked()
-        }
-
         "user adds mutually exclusive data" when {
           "attempted to add EXRR when already having CSE present" in {
             withNewCaching(
-              aDeclarationAfter(request.cacheModel, withDeclarationHolders(DeclarationHolderAdd(Some("CSE"), Some(Eori(ExportsTestData.eori)))))
+              aDeclarationAfter(
+                request.cacheModel,
+                withDeclarationHolders(DeclarationHolder(Some("CSE"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori)))
+              )
             )
 
             val requestBody = Seq("authorisationTypeCode" -> "EXRR", "eori" -> ExportsTestData.eori)
@@ -150,7 +153,10 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
 
           "attempted to add CSE when already having EXRR present" in {
             withNewCaching(
-              aDeclarationAfter(request.cacheModel, withDeclarationHolders(DeclarationHolderAdd(Some("EXRR"), Some(Eori(ExportsTestData.eori)))))
+              aDeclarationAfter(
+                request.cacheModel,
+                withDeclarationHolders(DeclarationHolder(Some("EXRR"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori)))
+              )
             )
 
             val requestBody = Seq("authorisationTypeCode" -> "CSE", "eori" -> ExportsTestData.eori)
@@ -168,7 +174,11 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           withNewCaching(request.cacheModel)
 
           val requestBody =
-            Seq("authorisationTypeCode" -> declarationHolder.authorisationTypeCode.get, "eori" -> declarationHolder.eori.map(_.value).get)
+            Seq(
+              "authorisationTypeCode" -> declarationHolder.authorisationTypeCode.get,
+              "eori" -> declarationHolder.eori.map(_.value).get,
+              "eoriSource" -> "OtherEori"
+            )
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage

@@ -16,20 +16,21 @@
 
 package views.declaration
 
+import base.ExportsTestData.eori
 import base.Injector
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AuthorisationProcedureCodeChoice
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder
+import models.{ExportsDeclaration, Mode}
 import models.DeclarationType.{CLEARANCE, DeclarationType, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.{Assertion, GivenWhenThen}
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.DeclarationHolder.bodyClassId
+import views.helpers.DeclarationHolderHelper.bodyClassId
 import views.html.declaration.declarationHolder.declaration_holder_edit_content
 import views.tags.ViewTest
 
@@ -71,12 +72,17 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
       messages must haveTranslationFor(s"$prefix.authCode.inset.special.bullet3")
       messages must haveTranslationFor(s"$prefix.authCode.inset.special.bullet4")
       messages must haveTranslationFor(s"$prefix.eori")
-      messages must haveTranslationFor(s"$prefix.eori.hint")
+      messages must haveTranslationFor(s"$prefix.eori.user.text")
+      messages must haveTranslationFor(s"$prefix.eori.other.text")
+      messages must haveTranslationFor(s"$prefix.eori.other.label")
+      messages must haveTranslationFor(s"$prefix.eori.other.hint")
+      messages must haveTranslationFor(s"$prefix.eori.other.error.empty")
+      messages must haveTranslationFor(s"$prefix.eori.error.radio")
     }
   }
 
   /*
-    Testing partial's dynamic content provided by calling the DeclarationHolder helper class
+    Testing partial's dynamic content provided by calling the DeclarationHolderHelper class
    */
 
   "'Declaration Holder Edit Content' partial" should {
@@ -84,7 +90,7 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
     val declarationHolderPage = instanceOf[declaration_holder_edit_content]
 
     def createPartial(implicit request: JourneyRequest[_]): Document =
-      declarationHolderPage(Mode.Normal, DeclarationHolderAdd.form)(request, messages)
+      declarationHolderPage(Mode.Normal, DeclarationHolder.form(eori), eori)(request, messages)
 
     "display the expected body (the text under page's H1)" when {
 

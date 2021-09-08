@@ -20,8 +20,9 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.DeclarationHolderHelper._
 import controllers.util.MultipleItemsHelper
-import forms.declaration.declarationHolder.DeclarationHolderAdd.form
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder.form
+import forms.declaration.declarationHolder.DeclarationHolder
+import handlers.ErrorHandler
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -40,34 +41,44 @@ class DeclarationHolderChangeController @Inject()(
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
+  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   declarationHolderChangePage: declaration_holder_change
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holder = DeclarationHolderAdd.fromId(id)
-    Ok(declarationHolderChangePage(mode, id, form.fill(holder).withSubmissionErrors()))
+  def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val maybeExistingHolder = cachedHolders.find(_.id.equals(id))
+
+    maybeExistingHolder.fold(errorHandler.displayErrorPage()) { holder =>
+      Future.successful(Ok(declarationHolderChangePage(mode, id, form(request.eori).fill(holder).withSubmissionErrors(), request.eori)))
+    }
   }
 
   def submitForm(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest()
+    val boundForm = form(request.eori).bindFromRequest()
+    val maybeExistingHolder = cachedHolders.find(_.id.equals(id))
+
     boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, id, formWithErrors))),
-      holder => changeHolder(mode, DeclarationHolderAdd.fromId(id), holder, boundForm)
+      formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, id, formWithErrors, request.eori))),
+      newHolder => {
+        maybeExistingHolder.fold(errorHandler.displayErrorPage()) { existingHolder =>
+          changeHolder(mode, existingHolder, newHolder, boundForm)
+        }
+      }
     )
   }
 
-  private def changeHolder(mode: Mode, existingHolder: DeclarationHolderAdd, newHolder: DeclarationHolderAdd, boundForm: Form[DeclarationHolderAdd])(
+  private def changeHolder(mode: Mode, existingHolder: DeclarationHolder, newHolder: DeclarationHolder, boundForm: Form[DeclarationHolder])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
 
-    val holdersWithoutExisting: Seq[DeclarationHolderAdd] = cachedHolders.filterNot(_ == existingHolder)
+    val holdersWithoutExisting: Seq[DeclarationHolder] = cachedHolders.filterNot(_ == existingHolder)
 
     MultipleItemsHelper
       .add(boundForm, holdersWithoutExisting, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, existingHolder.id, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, existingHolder.id, formWithErrors, request.eori))),
         _ => {
           val updatedHolders = cachedHolders.map(holder => if (holder == existingHolder) newHolder else holder)
           updateExportsCache(updatedHolders)
@@ -76,7 +87,7 @@ class DeclarationHolderChangeController @Inject()(
       )
   }
 
-  private def updateExportsCache(holders: Seq[DeclarationHolderAdd])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders)))
       model.copy(parties = updatedParties)

@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import forms.declaration.declarationHolder.{DeclarationHolderAdd, DeclarationHolderSummary}
+@import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderSummary}
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import services.view.HolderOfAuthorisationCodes
@@ -46,7 +46,7 @@
     holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 )
 
-@(mode: Mode, form: Form[_], holders: Seq[DeclarationHolderAdd])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[_], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(holders.size == 1)
@@ -78,7 +78,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            Some(messages("declaration.declarationHolders.table.change.hint", holder.toString)),
+                            Some(messages("declaration.declarationHolders.table.change.hint", holder.id)),
                             DeclarationHolderChangeController.displayPage(mode, holder.id))),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"holder-table-row$index-change_button")
@@ -86,7 +86,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            Some(messages("declaration.declarationHolders.table.remove.hint", holder.toString)),
+                            Some(messages("declaration.declarationHolders.table.remove.hint", holder.id)),
                             DeclarationHolderRemoveController.displayPage(mode, holder.id))),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"holder-table-row$index-remove_button")

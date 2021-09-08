@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import forms.declaration.declarationHolder.DeclarationHolderAdd
+@import forms.declaration.declarationHolder.DeclarationHolder
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.{BackButton, Title}
@@ -28,13 +28,13 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, form: Form[DeclarationHolderAdd])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarationHolder], userEori: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.declarationHolder.title", "declaration.section.2"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolderAdd, mode)))
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolder, mode)))
 ) {
     @formHelper(action = DeclarationHolderAddController.submitForm(mode), 'autoComplete -> "off") {
-        @editContent(mode, form)
+        @editContent(mode, form, userEori)
     }
 }

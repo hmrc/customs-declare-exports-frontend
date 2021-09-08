@@ -18,12 +18,13 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
-import forms.declaration.declarationHolder.DeclarationHolderAdd
+import forms.declaration.declarationHolder.DeclarationHolder
+import mock.ErrorHandlerMocks
 import models.Mode
-import models.declaration.DeclarationHoldersData
+import models.declaration.{DeclarationHoldersData, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -31,7 +32,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.declarationHolder.declaration_holder_remove
 
-class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionValues {
+class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionValues with ErrorHandlerMocks {
 
   val mockRemovePage = mock[declaration_holder_remove]
 
@@ -40,6 +41,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
+    mockErrorHandler,
     stubMessagesControllerComponents(),
     mockRemovePage
   )(ec)
@@ -47,6 +49,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
+    setupErrorHandler()
     when(mockRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -56,7 +59,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration())
+    withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
     await(controller.displayPage(Mode.Normal, id)(request))
     theResponseForm
   }
@@ -67,8 +70,8 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
     captor.getValue
   }
 
-  def theDeclarationHolder: DeclarationHolderAdd = {
-    val captor = ArgumentCaptor.forClass(classOf[DeclarationHolderAdd])
+  def theDeclarationHolder: DeclarationHolder = {
+    val captor = ArgumentCaptor.forClass(classOf[DeclarationHolder])
     verify(mockRemovePage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
@@ -76,8 +79,8 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
   private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
     verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolderAdd = DeclarationHolderAdd(Some("ACE"), Some(Eori("GB123456543443")))
-  val id = "ACE-GB123456543443"
+  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543443")), Some(EoriSource.OtherEori))
+  val id = declarationHolder.id
 
   "DeclarationHolder Remove Controller" must {
 
@@ -85,7 +88,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
       "return 200 (OK)" that {
         "display page method is invoked and cache is empty" in {
 
-          withNewCaching(request.cacheModel)
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val result = controller.displayPage(Mode.Normal, id)(getRequest())
 
@@ -94,12 +97,32 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
 
           theDeclarationHolder mustBe declarationHolder
         }
-
       }
 
       "return 400 (BAD_REQUEST)" when {
+        "display page method is invoked with invalid holderId" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
+
+          val result = controller.displayPage(Mode.Normal, "invalid")(getRequest())
+
+          result.map(_ => ()).recover { case ex => ex.printStackTrace() }
+
+          status(result) mustBe BAD_REQUEST
+          verifyNoInteractions(mockRemovePage)
+        }
+
+        "submit page method is invoked with invalid holderId" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
+
+          val requestBody = Seq("yesNo" -> "Yes")
+          val result = controller.submitForm(Mode.Normal, "invalid")(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          status(result) mustBe BAD_REQUEST
+          verifyNoInteractions(mockRemovePage)
+        }
+
         "user submits an invalid answer" in {
-          withNewCaching(request.cacheModel)
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody = Seq("yesNo" -> "invalid")
           val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
@@ -107,8 +130,8 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
         }
-
       }
+
       "return 303 (SEE_OTHER)" when {
         "user submits 'Yes' answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
@@ -135,6 +158,5 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
         }
       }
     }
-
   }
 }

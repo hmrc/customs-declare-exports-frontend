@@ -28,7 +28,7 @@ import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocu
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
-import forms.declaration.declarationHolder.{DeclarationHolderAdd, DeclarationHolderRequired, DeclarationHolderSummary}
+import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderRequired, DeclarationHolderSummary}
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
@@ -268,7 +268,7 @@ object Navigator {
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case DeclarationHolderRequired        => declarationHolderRequiredPreviousPage
-    case DeclarationHolderAdd             => declarationHolderAddPreviousPage
+    case DeclarationHolder                => declarationHolderAddPreviousPage
     case DeclarationHolderSummary         => declarationHolderSummaryPreviousPage
     case SupervisingCustomsOffice         => supervisingCustomsOfficePreviousPage
     case WarehouseIdentification          => warehouseIdentificationPreviousPage

@@ -24,7 +24,7 @@
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
-@import views.helpers.DeclarationHolder
+@import views.helpers.DeclarationHolderHelper
 @import views.components.gds.Styles._
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
@@ -34,7 +34,7 @@
     govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    declarationHolder: DeclarationHolder,
+    declarationHolder: DeclarationHolderHelper,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     insetText: exportsInsetText,

@@ -810,8 +810,13 @@ declaration.declarationHolder.authCode.inset.special.bullet1.link = Appendix 1 g
 declaration.declarationHolder.authCode.inset.special.bullet2 = Find the guide for your 4-digit CDS procedure code.
 declaration.declarationHolder.authCode.inset.special.bullet3 = Look at the guidance ‘Holder of the authorisation identification number: 3/39’ (you can search for the words ‘Holder of’ using CTRL F).
 declaration.declarationHolder.authCode.inset.special.bullet4 = Look at section 2/3 to see details about the required references to enter in section 5 of this declaration.
-declaration.declarationHolder.eori = EORI number of the authorisation holder
-declaration.declarationHolder.eori.hint = For example, GB121212121212.
+declaration.declarationHolder.eori = Who holds this authorisation?
+declaration.declarationHolder.eori.user.text = I hold it as the declarant (EORI: {0})
+declaration.declarationHolder.eori.other.text = Another party holds the authorisation
+declaration.declarationHolder.eori.other.label = Enter the authorisation holder''s EORI number
+declaration.declarationHolder.eori.other.hint = For example GB121212121212.
+declaration.declarationHolder.eori.other.error.empty = Enter the authorisation holder's EORI number
+declaration.declarationHolder.eori.error.radio = Select who holds the authorisation
 
 declaration.declarationHolders.table.heading = You have added 1 authorisation
 declaration.declarationHolders.table.multiple.heading= You have added {0} authorisations
