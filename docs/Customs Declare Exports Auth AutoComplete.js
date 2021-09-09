@@ -12,7 +12,7 @@
 (function() {
     'use strict';
 
-    document.getElementsByName("redirectionUrl")[0].value = getBaseUrl() + "/customs-declare-exports";
+    document.getElementsByName("redirectionUrl")[0].value = getBaseUrl() + "/customs-declare-exports/start";
 
     document.getElementById("affinityGroupSelect").selectedIndex = 1;
 
