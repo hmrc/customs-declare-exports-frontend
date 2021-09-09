@@ -32,7 +32,20 @@ class GuidanceControllerSpec extends ControllerWithoutFormSpec {
   val startPage = mock[start]
 
   val controller =
-    new GuidanceController(stubMessagesControllerComponents(), completeDeclarationPage, errorExplanationPage, sendByRoroPage, entryPage, startPage)
+    new GuidanceController(
+      mockAuthAction,
+      stubMessagesControllerComponents(),
+      completeDeclarationPage,
+      errorExplanationPage,
+      sendByRoroPage,
+      entryPage,
+      startPage
+    )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    authorizedUser()
+  }
 
   "GuidanceController" should {
 

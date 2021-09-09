@@ -160,12 +160,6 @@ function getRandomInt(min, max) {
 // actual pages
 function startPage(){
     if (currentPageIs('/customs-declare-exports/start')) {
-
-        if(getDeclaration() == 0){
-            alert("Select journey type");
-            return;
-        }
-
         document.getElementsByClassName('govuk-button')[0].click()
     }
 }
