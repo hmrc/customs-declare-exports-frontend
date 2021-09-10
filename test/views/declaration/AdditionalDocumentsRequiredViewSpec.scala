@@ -83,7 +83,8 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
       }
 
       "display the 1st paragraph within the inset text" in {
-        view.getElementsByClass("govuk-inset-text").get(0).children.first.text mustBe messages(s"$msgKey.inset.text1")
+        val insets = view.getElementsByClass("govuk-inset-text").get(0)
+        insets.children.first.text mustBe messages(s"$msgKey.inset.text1")
       }
 
       "display the 2nd paragraph within the inset text and the expected link" when {
@@ -93,7 +94,9 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
           val commodityDetails = CommodityDetails(Some(commodityCode), None)
           val item = anItem(withItemId(itemId), withCommodityDetails(commodityDetails))
           val aDeclaration = aDeclarationAfter(request.cacheModel, withItem(item))
+
           val view = createView()(journeyRequest(aDeclaration))
+
           val paragraph = view.getElementsByClass("govuk-inset-text").get(0).children.get(1)
           paragraph.text mustBe messages(s"$msgKey.inset.text2", messages(s"$msgKey.inset.link2", commodityCode))
           paragraph.child(0) must haveHref(appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode))
@@ -104,6 +107,14 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
           paragraph.text mustBe messages(s"$msgKey.inset.text2", messages(s"$msgKey.inset.link2Alt"))
           paragraph.child(0) must haveHref(appConfig.tradeTariffUrl)
         }
+      }
+
+      "display the 3rd paragraph within the inset text" in {
+        val paragraph = view.getElementsByClass("govuk-inset-text").get(0).children.last
+        paragraph.child(0) must haveHref(appConfig.licensesForExportingGoods)
+
+        val expectedText = messages(s"$msgKey.inset.text3", messages(s"$msgKey.inset.link3"))
+        removeBlanksIfAnyBeforeDot(paragraph.text) mustBe expectedText
       }
 
       "display 'Save and continue' button" in {
