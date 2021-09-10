@@ -44,7 +44,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
     "have proper messages for labels" in {
       messages must haveTranslationFor("rejected.notification.ducr")
       messages must haveTranslationFor("rejected.notification.title")
-      messages must haveTranslationFor("rejected.notification.continue")
+      messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.1.link")
     }
 
     "have correct title" in {
@@ -106,7 +106,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
         .getElementById("continue-checking-answers")
         .getElementsByAttributeValue("href", routes.SubmissionsController.amend(declaration.id).url)
 
-      continueLink.text() mustBe messages("rejected.notification.continue")
+      continueLink.text() mustBe messages("rejected.notification.guidance.section.1.paragraph.1.link")
     }
 
     "contain change error link" when {

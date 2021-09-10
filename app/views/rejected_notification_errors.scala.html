@@ -26,6 +26,8 @@
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     sectionHeader: sectionHeader,
+    heading: heading,
+    paragraphBody: paragraphBody,
     link: link,
     govukTable: GovukTable,
     govukSummaryList : GovukSummaryList,
@@ -93,12 +95,39 @@
                 rows = summaryRows
             ))
 
-            <p id="continue-checking-answers">
-                @link(
-                    text = messages("rejected.notification.continue"),
-                    call = routes.SubmissionsController.amend(declaration.id)
-                )
-            </p>
+
+@* Section 1 *@
+
+            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.1", link(
+                text = messages("rejected.notification.guidance.section.1.paragraph.1.link"),
+                call = routes.SubmissionsController.amend(declaration.id),
+                id = Some("continue-checking-answers")
+            )))
+
+            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.2", link(
+                text = messages("rejected.notification.guidance.section.1.paragraph.2.link"),
+                call = routes.SavedDeclarationsController.displayDeclarations()
+            )))
+
+            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.3", link(
+                text = messages("rejected.notification.guidance.section.1.paragraph.3.link"),
+                call = Call("GET", controllers.routes.GuidanceController.errorExplanation.url),
+                target = "_blank"
+            )))
+
+            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.4"))
+
+
+@* Section 2 *@
+
+            @heading(messages("rejected.notification.guidance.section.2.header"), "govuk-heading-m", "h2")
+
+            @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.1"))
+
+            @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.2"))
+
+            @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.3"))
+
         </div>
     </div>
 
