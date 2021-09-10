@@ -14,19 +14,25 @@
  * limitations under the License.
  *@
 
+@import scala.collection.immutable
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
+@import views.helpers.InputTextHelper
+@import views.html.components.gds.label
+@import play.twirl.api.HtmlFormat
 
-@this(govukTextarea : GovukTextarea)
+@this(govukTextarea : GovukTextarea, label: label, helper: InputTextHelper)
 
 @(
-        field: Field,
-        labelKey: String,
-        hintKey: Option[String] = None,
-        isPageHeading: Boolean = false,
-        headingClasses: String = gdsPageLabel,
-        labelClasses: String = "govuk-label--m",
-        inputClasses: Option[String] = None
+    field: Field,
+    labelKey: String,
+    labelArg: String = "",
+    hintKey: Option[String] = None,
+    bodyHtml: Option[Html] = None,
+    isPageHeading: Boolean = false,
+    headingClasses: String = gdsPageLabel,
+    labelClasses: String = "govuk-label--m",
+    inputClasses: Option[String] = None
 )(implicit messages: Messages)
 
 @buildLabel = @{
@@ -37,12 +43,30 @@
     }
 }
 
-@govukTextarea(Textarea(
-    id = field.id,
-    name = field.name,
-    value = field.value,
-    label = buildLabel,
-    hint = hintKey.map(key => Hint(content = Text(messages(key)))),
-    classes = inputClasses.getOrElse(""),
-    errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
-))
+@{bodyHtml
+    .map{ body =>
+        HtmlContent(HtmlFormat.fill(immutable.Seq(
+            label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg),
+            body,
+            govukTextarea(Textarea(
+                id = field.id,
+                name = field.name,
+                value = field.value,
+                hint = hintKey.map(key => Hint(content = Text(messages(key)))),
+                classes = inputClasses.getOrElse(""),
+                errorMessage = helper.getAnyErrorMessages(field)
+            ))
+        ))).asHtml
+    }
+    .getOrElse{
+        govukTextarea(Textarea(
+            id = field.id,
+            name = field.name,
+            value = field.value,
+            label = buildLabel,
+            hint = hintKey.map(key => Hint(content = Text(messages(key)))),
+            classes = inputClasses.getOrElse(""),
+            errorMessage = helper.getAnyErrorMessages(field)
+        ))
+    }
+}

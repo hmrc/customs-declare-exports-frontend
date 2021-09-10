@@ -64,9 +64,9 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
     "have correct message keys" in {
       messages must haveTranslationFor("declaration.additionalDocument.title")
       messages must haveTranslationFor("declaration.additionalDocument.title.fromAuthCode")
-      messages must haveTranslationFor("declaration.additionalDocument.hint")
-      messages must haveTranslationFor("declaration.additionalDocument.hint.fromAuthCode.paragraph1")
-      messages must haveTranslationFor("declaration.additionalDocument.hint.fromAuthCode.paragraph2")
+      messages must haveTranslationFor("declaration.additionalDocument.text")
+      messages must haveTranslationFor("declaration.additionalDocument.text.fromAuthCode.paragraph1")
+      messages must haveTranslationFor("declaration.additionalDocument.text.fromAuthCode.paragraph2")
 
       messages must haveTranslationFor("declaration.additionalDocument.expander.title")
       messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph1.withCommodityCode.text")
@@ -76,9 +76,13 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph2.text")
       messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph3.text")
       messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph3.link1.text")
+      messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph4.text")
+      messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph4.link1.text")
 
       messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode")
+      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.text")
       messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.hint")
+      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.text.fromAuthCode")
       messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.hint.fromAuthCode")
       messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.expander.title")
       messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.expander.paragraph1.text")
@@ -91,21 +95,22 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.error")
 
       messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier")
-      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.hint")
+      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.body")
       messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph1")
       messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph2")
       messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.error")
 
       messages must haveTranslationFor("declaration.additionalDocument.documentStatus")
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatus.hint")
+      messages must haveTranslationFor("declaration.additionalDocument.documentStatus.text")
       messages must haveTranslationFor("declaration.additionalDocument.documentStatus.error")
 
       messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason")
+      messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason.text")
       messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason.hint")
       messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason.error")
 
       messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName")
-      messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName.hint")
+      messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName.text")
       messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName.error.length")
 
       messages must haveTranslationFor("declaration.additionalDocument.dateOfValidity")
@@ -114,8 +119,9 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       messages must haveTranslationFor("declaration.additionalDocument.dateOfValidity.error.outOfRange")
 
       messages must haveTranslationFor("declaration.additionalDocument.measurementUnit.header")
+      messages must haveTranslationFor("declaration.additionalDocument.measurementUnit.text")
       messages must haveTranslationFor("declaration.additionalDocument.measurementUnit.hint")
-      messages must haveTranslationFor("declaration.additionalDocument.measurementUnit.hint.link.text")
+      messages must haveTranslationFor("declaration.additionalDocument.measurementUnit.link.text")
       messages must haveTranslationFor("declaration.additionalDocument.measurementUnit.error")
       messages must haveTranslationFor("declaration.additionalDocument.measurementUnit")
 
@@ -170,15 +176,16 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         }
 
         "display the expected page hint" in {
-          val hints = view.getElementsByClass("govuk-hint")
-          hints.get(0).text() mustBe messages("declaration.additionalDocument.hint.fromAuthCode.paragraph1")
-          hints.get(1).text() mustBe messages("declaration.additionalDocument.hint.fromAuthCode.paragraph2")
+          val text = view.getElementsByClass("govuk-body")
+          text.get(0).text() mustBe messages("declaration.additionalDocument.text.fromAuthCode.paragraph1")
+          text.get(1).text() mustBe messages("declaration.additionalDocument.text.fromAuthCode.paragraph2")
         }
 
         "display empty input with label for Document type code" in {
           view.getElementsByAttributeValue("for", documentTypeCodeKey) must containMessageForElements(
             "declaration.additionalDocument.documentTypeCode"
           )
+          view.getElementById(s"$documentTypeCodeKey-text") must containMessage("declaration.additionalDocument.documentTypeCode.text.fromAuthCode")
           view.getElementById(s"$documentTypeCodeKey-hint") must containMessage("declaration.additionalDocument.documentTypeCode.hint.fromAuthCode")
           view.getElementById(documentTypeCodeKey).attr("value") mustBe empty
         }
@@ -209,17 +216,17 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       }
 
       "display the expected page hint" in {
-        val hints = view.getElementsByClass("govuk-hint")
-        hints.get(0).text() mustBe messages("declaration.additionalDocument.hint")
+        val texts = view.getElementsByClass("govuk-body")
+        texts.get(0).text() mustBe messages("declaration.additionalDocument.text")
       }
 
       "display the top expander" when {
         "commodityCode is not present" in {
-          val hintElement = view.getElementById("top-expander")
+          val topExpander = view.getElementById("top-expander")
 
-          hintElement must containHtml(messages("declaration.additionalDocument.expander.title"))
-          hintElement
-            .getElementsByClass("govuk-hint")
+          topExpander must containHtml(messages("declaration.additionalDocument.expander.title"))
+          topExpander
+            .getElementsByClass("govuk-body")
             .get(0) must containText(messages("declaration.additionalDocument.expander.paragraph1.withoutCommodityCode.link1.text"))
         }
       }
@@ -238,7 +245,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view.getElementsByAttributeValue("for", documentIdentifierKey) must containMessageForElements(
           "declaration.additionalDocument.documentIdentifier"
         )
-        view.getElementById(s"$documentIdentifierKey-hint") must containMessage("declaration.additionalDocument.documentIdentifier.hint")
+        view.getElementById(s"$documentIdentifierKey-text") must containMessage("declaration.additionalDocument.documentIdentifier.body")
         view.getElementById(documentIdentifierKey).attr("value") mustBe empty
       }
 
@@ -248,7 +255,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
 
       "display empty input with label for Document status" in {
         view.getElementsByAttributeValue("for", documentStatusKey) must containMessageForElements("declaration.additionalDocument.documentStatus")
-        view.getElementById(s"$documentStatusKey-hint") must containMessage("declaration.additionalDocument.documentStatus.hint")
+        view.getElementById(s"$documentStatusKey-text") must containMessage("declaration.additionalDocument.documentStatus.text")
         view.getElementById(s"$documentStatusKey").attr("value") mustBe empty
       }
 
@@ -256,6 +263,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view.getElementsByAttributeValue("for", documentStatusReasonKey) must containMessageForElements(
           "declaration.additionalDocument.documentStatusReason"
         )
+        view.getElementById(s"$documentStatusReasonKey-text") must containMessage("declaration.additionalDocument.documentStatusReason.text")
         view.getElementById(s"$documentStatusReasonKey-hint") must containMessage("declaration.additionalDocument.documentStatusReason.hint")
         view.getElementById(documentStatusReasonKey).attr("value") mustBe empty
       }
@@ -264,7 +272,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view.getElementsByAttributeValue("for", issuingAuthorityNameKey) must containMessageForElements(
           "declaration.additionalDocument.issuingAuthorityName"
         )
-        view.getElementById(s"$issuingAuthorityNameKey-hint") must containMessage("declaration.additionalDocument.issuingAuthorityName.hint")
+        view.getElementById(s"$issuingAuthorityNameKey-text") must containMessage("declaration.additionalDocument.issuingAuthorityName.text")
         view.getElementById(issuingAuthorityNameKey).attr("value") mustBe empty
       }
 
@@ -287,7 +295,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
           "declaration.additionalDocument.qualifier"
         )
         view.getElementById(s"${documentWriteOffKey}_$qualifierKey").attr("value") mustBe empty
-        view.getElementById(s"${documentWriteOffKey}-hint") must containMessage("declaration.additionalDocument.measurementUnit.hint.link.text")
+        view.getElementById(s"${documentWriteOffKey}-text") must containMessage("declaration.additionalDocument.measurementUnit.link.text")
       }
 
       "display empty input with label for Document quantity" in {
@@ -297,7 +305,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") mustBe empty
         view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey-hint") must containMessage(
           "declaration.additionalDocument.documentQuantity.hint",
-          messages("declaration.additionalDocument.measurementUnit.hint.link.text")
+          messages("declaration.additionalDocument.measurementUnit.hint")
         )
       }
 
@@ -320,11 +328,11 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       onEveryDeclarationJourney(withItem(item)) { implicit request =>
         "commodityCode is present" in {
 
-          val hintElement = createView().getElementById("top-expander")
+          val topExpander = createView().getElementById("top-expander")
 
-          hintElement must containHtml(messages("declaration.additionalDocument.expander.title"))
-          hintElement
-            .getElementsByClass("govuk-hint")
+          topExpander must containHtml(messages("declaration.additionalDocument.expander.title"))
+          topExpander
+            .getElementsByClass("govuk-body")
             .get(0) must containText(messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.link1.text", commodityCode))
         }
       }

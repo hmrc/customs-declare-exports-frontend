@@ -14,10 +14,14 @@
  * limitations under the License.
  *@
 
+@import scala.collection.immutable
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
+@import views.html.components.gds._
+@import views.helpers.InputTextHelper
+@import play.twirl.api.HtmlFormat
 
-@this(govukInput: GovukInput, headingContent: headingContent)
+@this(govukInput: GovukInput, headingContent: headingContent, label: label, helper: InputTextHelper)
 
 @(
     field: Field,
@@ -26,28 +30,14 @@
     hintKey: Option[String] = None,
     hintKeyLinks: Seq[Html] = Seq.empty,
     hintHtml: Option[Html] = None,
+    bodyHtml: Option[Html] = None,
     isPageHeading: Boolean = false,
     headingClasses: String = gdsPageLabel,
-    labelClasses: String = "govuk-label--m",
+    labelClasses: String = "govuk-label govuk-label--m",
     defaultInputClasses: String = "govuk-!-width-two-thirds",
     inputClasses: Option[String] = None,
     sectionHeaderKey: Option[String] = None
 )(implicit messages: Messages)
-
-@buildLabel = @{
-    if(isPageHeading) {
-        Label(
-            content = HtmlContent(
-                headingContent(
-                    messages(labelKey, labelArg),
-                    sectionHeaderKey.map(messages(_))
-                )
-            ),
-            classes = headingClasses)
-    } else {
-        Label(content = Text(messages(labelKey, labelArg)), classes = labelClasses)
-    }
-}
 
 @hintContent = @{
     hintKey
@@ -55,12 +45,30 @@
         .orElse( hintHtml.map(hint => Hint(content = HtmlContent(hint))))
 }
 
-@govukInput(Input(
-    id = field.id,
-    name = field.name,
-    value = field.value,
-    label = buildLabel,
-    hint = hintContent,
-    errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
-    classes = inputClasses.map(clazz => s" $clazz").getOrElse(defaultInputClasses)
-))
+@{bodyHtml
+    .map{ body =>
+        HtmlContent(HtmlFormat.fill(immutable.Seq(
+            label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg),
+            body,
+            govukInput(Input(
+                id = field.id,
+                name = field.name,
+                value = field.value,
+                hint = hintContent,
+                errorMessage = helper.getAnyErrorMessages(field),
+                classes = helper.defineInputClasses(defaultInputClasses, inputClasses)
+            ))
+        ))).asHtml
+    }
+    .getOrElse{
+        govukInput(Input(
+            id = field.id,
+            name = field.name,
+            value = field.value,
+            label = helper.getLabelForField(isPageHeading, labelKey, labelArg, headingClasses, labelClasses, sectionHeaderKey),
+            hint = hintContent,
+            errorMessage = helper.getAnyErrorMessages(field),
+            classes = helper.defineInputClasses(defaultInputClasses, inputClasses)
+        ))
+    }
+}

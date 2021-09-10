@@ -54,7 +54,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
       messages must haveTranslationFor("declaration.additionalDocument.table.multiple.heading")
       messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode")
       messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier")
-      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.hint")
+      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.body")
       messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.error")
       messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason")
       messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason.error")
