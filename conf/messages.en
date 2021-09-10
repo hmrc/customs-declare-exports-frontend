@@ -1025,7 +1025,8 @@ declaration.additionalDocumentsRequired.inset.text1 = How do I know if my goods 
 declaration.additionalDocumentsRequired.inset.text2 = The {0} will list any requirements in the ‘Exports’ tab in the column ‘Conditions that apply’.
 declaration.additionalDocumentsRequired.inset.link2 = Tariff entry for {0}, the code you entered (opens in new tab)
 declaration.additionalDocumentsRequired.inset.link2Alt = Tariff entry for your commodity (opens in new tab)
-declaration.additionalDocumentsRequired.inset.link3 = Find out more about licences and certificates (opens in new tab)
+declaration.additionalDocumentsRequired.inset.text3 = If you are unsure if your commodity requires a licence or allows an exemption, see as an example, {0}. This requires a C673 certificate, or a Y927 exemption.
+declaration.additionalDocumentsRequired.inset.link3 = commodity code 0306310010 (opens in new tab)
 declaration.additionalDocumentsRequired.empty = Select yes if you want to declare additional documents
 
 declaration.additionalDocument.title = Declare each additional document required for this item

@@ -66,7 +66,7 @@
         call = Call("GET", appConfig.licensesForExportingGoods),
         text = messages("declaration.additionalDocumentsRequired.inset.link3"),
         target = "_blank"
-    )&#46;
+    )
 }
 
 @insetSection = {
@@ -74,7 +74,7 @@
 
     @paragraph(messages("declaration.additionalDocumentsRequired.inset.text2", commodityCodeLink))
 
-    @paragraph(licenseAndCertificates.toString)
+    @paragraph(messages("declaration.additionalDocumentsRequired.inset.text3", licenseAndCertificates))
 }
 
 @govukLayout(
