@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.declaration.routes
 @import forms.declaration.AdditionalInformation
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -25,11 +26,11 @@
 @import views.components.gds.ActionItemBuilder._
 
 @this(
-        govukTable: GovukTable,
-        changeLink: link,
-        spanVisuallyHidden: spanVisuallyHidden,
-        linkContent: linkContent,
-        summaryList: summary_list
+    govukTable: GovukTable,
+    link: link,
+    spanVisuallyHidden: spanVisuallyHidden,
+    linkContent: linkContent,
+    summaryList: summary_list
 )
 
 @(
@@ -43,10 +44,10 @@
 @change(information: AdditionalInformation) = {
     @{
         if(actionsEnabled)
-            changeLink(
+            link(
                 messages("site.change"),
-                Some(messages("declaration.summary.items.item.additionalInformation.change", information.code, itemNo)),
-                controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
+                routes.AdditionalInformationController.displayPage(mode, itemId),
+                textHidden = Some(messages("declaration.summary.items.item.additionalInformation.change", information.code, itemNo))
             )
         else
             ""
@@ -99,7 +100,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(mode, itemId).url,
+                        href = routes.AdditionalInformationRequiredController.displayPage(mode, itemId).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalInformation.changeAll"))
                     )

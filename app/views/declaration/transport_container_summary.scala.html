@@ -34,7 +34,7 @@
     govukLayout: gdsMainTemplate,
     sectionHeader: sectionHeader,
     govukFieldset: GovukFieldset,
-    changeLink: link,
+    link: link,
     yesNoRadios: yesNoRadios,
     govukButton: GovukButton,
     govukTable: GovukTable,
@@ -62,11 +62,19 @@
                         attributes = Map("id" -> s"containers-row$index-seals")
                     ),
                     TableRow(
-                        content = HtmlContent(changeLink(messages("declaration.transportInformation.containers.change"), Some(messages("declaration.transportInformation.containers.change.hint", container.id)),SealController.displaySealSummary(mode, container.id))),
+                        content = HtmlContent(link(
+                            messages("declaration.transportInformation.containers.change"),
+                            SealController.displaySealSummary(mode, container.id),
+                            textHidden = Some(messages("declaration.transportInformation.containers.change.hint", container.id))
+                        )),
                         attributes = Map("id" -> s"containers-row$index-change_button")
                     ),
                     TableRow(
-                        content = HtmlContent(changeLink(messages("site.remove"), Some(messages("declaration.transportInformation.containers.remove.hint", container.id)), TransportContainerController.submitContainerRemove(mode, container.id))),
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            TransportContainerController.submitContainerRemove(mode, container.id),
+                            textHidden = Some(messages("declaration.transportInformation.containers.remove.hint", container.id))
+                        )),
                         attributes = Map("id" -> s"containers-row$index-remove_button")
                     )
                 )

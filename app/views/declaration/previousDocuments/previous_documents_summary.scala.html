@@ -32,21 +32,21 @@
 @import scala.collection.immutable
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukButton: GovukButton,
-        govukTable : GovukTable,
-        govukRadios: GovukRadios,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        spanVisuallyHidden: spanVisuallyHidden,
-        addAnotherQuestion: addAnotherQuestion,
-        link: link,
-        saveButtons: saveButtons,
-        formHelper: FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukButton: GovukButton,
+    govukTable : GovukTable,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    spanVisuallyHidden: spanVisuallyHidden,
+    addAnotherQuestion: addAnotherQuestion,
+    link: link,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[YesNoAnswer], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
@@ -72,24 +72,30 @@
                         content = Text(document.goodsItemIdentifier.getOrElse(""))
                     ),
                     TableRow(
-                        content = HtmlContent(
-                            link(
-                                messages("site.change"),
-                                Some(messages("declaration.previousDocuments.change.hint", index+1, DocumentType.documentCodesMap(document.documentType).asTextWithBrackets, document.documentReference)),
-                                routes.PreviousDocumentsChangeController.displayPage(mode, createId(index, document))
-                            )
-                        ),
+                        content = HtmlContent(link(
+                            messages("site.change"),
+                            routes.PreviousDocumentsChangeController.displayPage(mode, createId(index, document)),
+                            textHidden = Some(messages(
+                                "declaration.previousDocuments.change.hint",
+                                index + 1,
+                                DocumentType.documentCodesMap(document.documentType).asTextWithBrackets,
+                                document.documentReference
+                            )),
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"previous-document-$index-change_button")
                     ),
                     TableRow(
-                        content = HtmlContent(
-                            link(
-                                messages("site.remove"),
-                                Some(messages("declaration.previousDocuments.remove.hint", index+1, DocumentType.documentCodesMap(document.documentType).asTextWithBrackets, document.documentReference)),
-                                routes.PreviousDocumentsRemoveController.displayPage(mode, createId(index, document))
-                            )
-                        ),
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            routes.PreviousDocumentsRemoveController.displayPage(mode, createId(index, document)),
+                            textHidden = Some(messages(
+                                "declaration.previousDocuments.remove.hint",
+                                index + 1,
+                                DocumentType.documentCodesMap(document.documentType).asTextWithBrackets,
+                                document.documentReference
+                            )),
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"previous-document-$index-remove_button")
                     )

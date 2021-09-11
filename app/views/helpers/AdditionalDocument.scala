@@ -20,14 +20,13 @@ import javax.inject.{Inject, Singleton}
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHint, GovukInsetText}
+import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import views.html.components.gds.paragraphBody
 
 @Singleton
-class AdditionalDocument @Inject()(hintPartial: GovukHint, insetTextPartial: GovukInsetText, paragraphBody: paragraphBody) {
+class AdditionalDocument @Inject()(insetTextPartial: GovukInsetText, paragraphBody: paragraphBody) {
 
   def documentCodeText(implicit request: JourneyRequest[_]): String =
     if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments) "declaration.additionalDocument.documentTypeCode.text.fromAuthCode"

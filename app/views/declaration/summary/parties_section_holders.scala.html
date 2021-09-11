@@ -24,7 +24,7 @@
 
 @this(
     govukTable: GovukTable,
-    changeLink: link,
+    link: link,
     linkContent: linkContent,
     spanVisuallyHidden: spanVisuallyHidden,
     summaryList: summary_list,
@@ -49,10 +49,14 @@
 @change(holder: DeclarationHolder) = {
     @{
         if(actionsEnabled)
-            changeLink(
+            link(
                 messages("site.change"),
-                Some(messages("declaration.summary.parties.holders.change", holder.authorisationTypeCode.getOrElse(""), holderEori(holder))),
-                routes.AuthorisationProcedureCodeChoiceController.displayPage(mode)
+                routes.AuthorisationProcedureCodeChoiceController.displayPage(mode),
+                textHidden = Some(messages(
+                    "declaration.summary.parties.holders.change",
+                    holder.authorisationTypeCode.getOrElse(""),
+                    holderEori(holder)
+                ))
             )
         else
             ""

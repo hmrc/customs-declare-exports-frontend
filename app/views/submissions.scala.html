@@ -73,8 +73,8 @@
     HtmlContent(
         link(
             submission.mrn.getOrElse(""),
-            Some(messages("submissions.hidden.text", submission.ducr.getOrElse(""))),
-            routes.DeclarationDetailsController.displayPage(submission.uuid)
+            routes.DeclarationDetailsController.displayPage(submission.uuid),
+            textHidden = Some(messages("submissions.hidden.text", submission.ducr.getOrElse("")))
         )
     )
 }

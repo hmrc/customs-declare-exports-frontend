@@ -26,32 +26,32 @@
 
 @this(
     govukTable: GovukTable,
-    changeLink: link,
+    link: link,
     linkContent: linkContent,
     spanVisuallyHidden: spanVisuallyHidden,
     summaryList: summary_list
 )
 
 @(
-  mode: Mode,
-  itemId: String,
-  itemNo: Int,
-  additionalDocuments: AdditionalDocuments,
-  actionsEnabled: Boolean = true
+    mode: Mode,
+    itemId: String,
+    itemNo: Int,
+    additionalDocuments: AdditionalDocuments,
+    actionsEnabled: Boolean = true
 )(implicit messages: Messages)
 
 @change(document: AdditionalDocument) = {
     @{
         if(actionsEnabled)
-            changeLink(
+            link(
                 messages("site.change"),
-                Some(messages(
+                routes.AdditionalDocumentsController.displayPage(mode, itemId),
+                textHidden = Some(messages(
                     "declaration.summary.items.item.additionalDocuments.change",
                     document.documentTypeCode.getOrElse(""),
                     document.documentIdentifier.getOrElse(""),
                     itemNo
-                )),
-                routes.AdditionalDocumentsController.displayPage(mode, itemId)
+                ))
             )
         else
             ""

@@ -84,8 +84,9 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            Some(messages("declaration.additionalInformation.table.remove.hint", additionalReference.reference)),
-                            AdditionalFiscalReferencesRemoveController.displayPage(mode, itemId, createId(index, additionalReference)))),
+                            AdditionalFiscalReferencesRemoveController.displayPage(mode, itemId, createId(index, additionalReference)),
+                            textHidden = Some(messages("declaration.additionalInformation.table.remove.hint", additionalReference.reference))
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"additional_fiscal_references-row-$index-remove_button")
                     )
