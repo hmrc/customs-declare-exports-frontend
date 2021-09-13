@@ -14,33 +14,28 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes._
-@import controllers.navigation.Navigator
+@import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.NactCode
 @import forms.declaration.NactCode._
 @import models.requests.JourneyRequest
-@import views.helpers.{BackButton, Title}
-@import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
-@import controllers.navigation.ItemId
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        pageTitle: pageTitle,
-        appConfig: AppConfig,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig,
+    formHelper: FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[NactCode])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.tradeTariff.link")</a>}
 
 @govukLayout(
     title = Title("declaration.nationalAdditionalCode.addnext.header", "declaration.section.5"),

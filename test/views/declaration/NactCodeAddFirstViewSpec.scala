@@ -18,13 +18,13 @@ package views.declaration
 
 import base.Injector
 import config.AppConfig
+import controllers.declaration.routes.TaricCodeSummaryController
 import forms.declaration.NactCodeFirst
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
-import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.nact_code_add_first
@@ -33,52 +33,39 @@ import views.tags.ViewTest
 @ViewTest
 class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
+  private val appConfig = instanceOf[AppConfig]
+
+  private val prefix = "declaration.nationalAdditionalCode"
+
   private val itemId = "item1"
   private val form: Form[NactCodeFirst] = NactCodeFirst.form()
   private val page = instanceOf[nact_code_add_first]
-  private val appConfig = instanceOf[AppConfig]
 
-  private def createView(form: Form[NactCodeFirst] = form, maybeCombinedNomenclatureCode: Option[String] = None): Document =
-    page(Mode.Normal, itemId, form, maybeCombinedNomenclatureCode)(journeyRequest(), messages)
+  private def createView(form: Form[NactCodeFirst] = form): Document =
+    page(Mode.Normal, itemId, form)(journeyRequest(), messages)
 
   "Nact Code Add First View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.nationalAdditionalCode.addfirst.header")
+      view.getElementsByTag("h1") must containMessageForElements(s"$prefix.addfirst.header")
+    }
+
+    "display the expected body (the text under page's H1)" in {
+      val body = view.getElementsByClass("govuk-body").get(0)
+      body.text mustBe messages(s"$prefix.addfirst.body", messages(s"$prefix.addfirst.body.link"))
+
+      body.child(0) must haveHref(appConfig.nationalAdditionalCodes)
+    }
+
+    "display the expected radio hint" in {
+      val hint = view.getElementsByClass("govuk-hint").get(0)
+      hint.text mustBe messages(s"$prefix.addfirst.hint")
     }
 
     "display 'Back' button that links to 'taric codes' page" in {
-      val backLinkContainer = view.getElementById("back-link")
-
-      backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
-      )
-    }
-
-    "display the correct 'Tariff entry for' link" when {
-      "a commodity details has already been specified" in {
-        val commodityCode = "18062010"
-        val view = createView(maybeCombinedNomenclatureCode = Some(commodityCode))
-
-        val hintElement = view.getElementById("hasNact-hint")
-
-        val expectedLink = messages("declaration.nationalAdditionalCode.header.hint.withCommodity.link", commodityCode)
-        hintElement must containMessage("declaration.nationalAdditionalCode.header.hint.withCommodity", expectedLink)
-
-        val tariffLink = hintElement.getElementsByTag("a").first()
-        tariffLink.attr("href") mustBe s"${appConfig.tariffCommoditiesUrl}${commodityCode}00#export"
-      }
-
-      "a commodity details has not already been specified" in {
-        val hintElement = view.getElementById("hasNact-hint")
-
-        val expectedLink = messages("declaration.nationalAdditionalCode.header.hint.withoutCommodity.link")
-        hintElement must containMessage("declaration.nationalAdditionalCode.header.hint.withoutCommodity", expectedLink)
-
-        val tariffLink = hintElement.getElementsByTag("a").first()
-        tariffLink.attr("href") mustBe appConfig.tradeTariffUrl
-      }
+      val backLink = view.getElementById("back-link")
+      backLink.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(Mode.Normal, itemId))
     }
 
     "display 'Save and continue' button on page" in {
@@ -99,8 +86,7 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
-
-      view must containErrorElementWithMessageKey("declaration.nationalAdditionalCode.error.invalid")
+      view must containErrorElementWithMessageKey(s"$prefix.error.invalid")
     }
 
     "display errors when empty" in {
@@ -108,18 +94,13 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
-
-      view must containErrorElementWithMessageKey("declaration.nationalAdditionalCode.error.empty")
+      view must containErrorElementWithMessageKey(s"$prefix.error.empty")
     }
-
   }
 
   "Nact Code Add First View when filled" should {
-
     "display data in nact code input" in {
-
       val view = createView(NactCodeFirst.form().fill(NactCodeFirst(Some("VATR"))))
-
       view.getElementById("nactCode").attr("value") must be("VATR")
     }
   }

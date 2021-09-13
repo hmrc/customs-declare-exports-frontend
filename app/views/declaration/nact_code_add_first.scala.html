@@ -14,71 +14,63 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes._
-@import controllers.navigation.Navigator
+@import controllers.navigation.{ItemId, Navigator}
+@import forms.common.YesNoAnswer.YesNoAnswers
 @import forms.declaration.NactCodeFirst
 @import forms.declaration.NactCodeFirst._
 @import forms.declaration.NactCode._
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
 @import views.components.gds.Styles._
-@import views.html.components.gds._
-@import config.AppConfig
-@import forms.common.YesNoAnswer.YesNoAnswers
-@import controllers.navigation.ItemId
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        body: paragraphBody,
-        pageTitle: pageTitle,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        appConfig: AppConfig,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    link: link,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig,
+    formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[NactCodeFirst], maybeCombinedNomenclatureCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
-
-@hintContent = @{maybeCombinedNomenclatureCode.map { combinedNomenclatureCode =>
-    val tariffCommoditiesUrl = s"${appConfig.tariffCommoditiesUrl}${combinedNomenclatureCode}00#export"
-
-    HtmlContent(messages(
-        "declaration.nationalAdditionalCode.header.hint.withCommodity",
-        <a target="_blank" class="govuk-link" href={tariffCommoditiesUrl}>{messages("declaration.nationalAdditionalCode.header.hint.withCommodity.link", combinedNomenclatureCode)}</a>
-    ))
-}.getOrElse{
-    HtmlContent(messages(
-        "declaration.nationalAdditionalCode.header.hint.withoutCommodity",
-        <a target="_blank" class="govuk-link" href={appConfig.tradeTariffUrl}>{messages("declaration.nationalAdditionalCode.header.hint.withoutCommodity.link")}</a>
-    ))
-}}
+@(mode: Mode, itemId: String, form: Form[NactCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.nationalAdditionalCode.addfirst.header", "declaration.section.5"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCodeFirst, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCodeFirst, mode, ItemId(itemId))))
+) {
 
     @formHelper(action = NactCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasNactCodeKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
 
+        @pageTitle(messages("declaration.nationalAdditionalCode.addfirst.header"))
+
+        @paragraphBody(messages(
+            "declaration.nationalAdditionalCode.addfirst.body",
+            link(
+                messages("declaration.nationalAdditionalCode.addfirst.body.link"),
+                Call("GET", appConfig.nationalAdditionalCodes),
+                "_blank"
+            )
+        ))
+
         @govukRadios(Radios(
             name = hasNactCodeKey,
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.nationalAdditionalCode.addfirst.header")),
-                    classes = gdsPageLegend
-                ))
-            )),
-            hint = Some(Hint(content = hintContent)),
+            hint = Some(Hint(content = HtmlContent(messages("declaration.nationalAdditionalCode.addfirst.hint")))),
             items = Seq(
                 RadioItem(
                     id = Some("code_yes"),
