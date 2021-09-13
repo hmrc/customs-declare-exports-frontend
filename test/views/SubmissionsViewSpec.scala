@@ -156,7 +156,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
       "there are submissions requiring action" in {
         val warningText =
-          s"! ${messages("submissions.hint.action.needed.iconFallbackText")} ${messages("submissions.hint.action.needed.generic")}"
+          s"! ${messages("site.warning")} ${messages("submissions.hint.action.needed.generic")}"
         val view = createView(actionSubmissions = submissions(actionNotification))
 
         view.getElementsByClass("govuk-warning-text").text mustBe warningText
@@ -164,7 +164,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
       "there are submissions with DMSQRY notification" in {
         val warningText =
-          s"! ${messages("submissions.hint.action.needed.iconFallbackText")} ${messages("submissions.hint.action.needed.queryNotificationMessage")}"
+          s"! ${messages("site.warning")} ${messages("submissions.hint.action.needed.queryNotificationMessage")}"
         val view = createView(actionSubmissions = submissions(dmsQryNotification))
 
         view.getElementsByClass("govuk-warning-text").text mustBe warningText
@@ -172,7 +172,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
       "there are submissions requiring action and submissions with DMSQRY notification" in {
         val warningText =
-          s"! ${messages("submissions.hint.action.needed.iconFallbackText")} ${messages("submissions.hint.action.needed.queryNotificationMessage")}"
+          s"! ${messages("site.warning")} ${messages("submissions.hint.action.needed.queryNotificationMessage")}"
         val view = createView(
           actionSubmissions =
             Paginated(Seq(submission -> Seq(actionNotification), submissionWithDucr("ducr_2") -> Seq(dmsQryNotification)), Page(), 2)
