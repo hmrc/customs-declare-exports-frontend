@@ -109,6 +109,14 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
       continueLink.text() mustBe messages("rejected.notification.guidance.section.1.paragraph.1.link")
     }
 
+    "display all other expected content links" in {
+      val links = defaultView.getElementsByClass("govuk-link--no-visited-state")
+      links.size mustBe 3
+
+      links.get(1) must haveHref(routes.SavedDeclarationsController.displayDeclarations())
+      links.get(2) must haveHref(controllers.routes.GuidanceController.errorExplanation.url)
+    }
+
     "contain change error link" when {
 
       "link for the error exists" in {
