@@ -37,6 +37,7 @@
     govukButton: GovukButton,
     govukTable : GovukTable,
     govukRadios: GovukRadios,
+    govukWarningText: GovukWarningText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
@@ -55,6 +56,13 @@
   val documentsSize = documents.size
   if(documentsSize == 1) Text(messages("declaration.previousDocuments.summary.header.singular"))
   else Text(messages("declaration.previousDocuments.summary.header.plural", documentsSize))
+}
+
+@warning = {
+    @govukWarningText(WarningText(
+        iconFallbackText = messages("site.warning"),
+        content = Text(messages("declaration.previousDocuments.summary.warning.text"))
+    ))
 }
 
 @documentsTable = {
@@ -141,6 +149,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
+                warning,
                 documentsTable,
                 addAnotherQuestion("declaration.previousDocuments.addAnotherDocument", form),
                 saveButtons()

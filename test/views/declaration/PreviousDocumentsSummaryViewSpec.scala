@@ -56,6 +56,8 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
       messages must haveTranslationFor("declaration.previousDocuments.title")
       messages must haveTranslationFor("declaration.previousDocuments.addAnotherDocument")
       messages must haveTranslationFor("tariff.expander.title.common")
+      messages must haveTranslationFor("site.warning")
+      messages must haveTranslationFor("declaration.previousDocuments.summary.warning.text")
     }
 
     onEveryDeclarationJourney() { implicit request =>
@@ -76,6 +78,13 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
         val view = createView()
 
         view.getElementsByClass("govuk-fieldset__heading").first() must containMessage("declaration.previousDocuments.summary.header.plural", "2")
+      }
+
+      "display the warning" in {
+        val warningText =
+          s"! ${messages("site.warning")} ${messages("declaration.previousDocuments.summary.warning.text")}"
+
+        createView().getElementsByClass("govuk-warning-text").text mustBe warningText
       }
 
       "display table headings" in {
