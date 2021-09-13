@@ -31,18 +31,20 @@
 @import utils.ListItem._
 @import views.helpers.ErrorMapper.yesNoErrors
 
-@this(govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukTable : GovukTable,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        saveButtons: saveButtons,
-        appConfig: AppConfig,
-        spanVisuallyHidden: spanVisuallyHidden,
-        link: link,
-        addAnotherQuestion: addAnotherQuestion,
-        formHelper: FormWithCSRF)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    appConfig: AppConfig,
+    spanVisuallyHidden: spanVisuallyHidden,
+    link: link,
+    addAnotherQuestion: addAnotherQuestion,
+    formHelper: FormWithCSRF
+)
 
 @(mode: Mode, itemId: String, form: Form[YesNoAnswer], items: Seq[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -77,16 +79,18 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            Some(messages("declaration.additionalInformation.table.change.hint", item.code)),
-                            AdditionalInformationChangeController.displayPage(mode, itemId, createId(index, item)))),
+                            AdditionalInformationChangeController.displayPage(mode, itemId, createId(index, item)),
+                            textHidden = Some(messages("declaration.additionalInformation.table.change.hint", item.code))
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"additional_information-row$index-change_button")
                     ),
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            Some(messages("declaration.additionalInformation.table.remove.hint", item.code)),
-                            AdditionalInformationRemoveController.displayPage(mode, itemId, createId(index, item)))),
+                            AdditionalInformationRemoveController.displayPage(mode, itemId, createId(index, item)),
+                            textHidden = Some(messages("declaration.additionalInformation.table.remove.hint", item.code))
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"additional_information-row$index-remove_button")
                     )

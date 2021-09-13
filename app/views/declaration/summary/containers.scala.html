@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.declaration.routes
 @import models.declaration.Container
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -25,11 +26,11 @@
 @import views.components.gds.ActionItemBuilder._
 
 @this(
-        govukTable: GovukTable,
-        changeLink: link,
-        linkContent: linkContent,
-        summaryList: summary_list,
-        spanVisuallyHidden: spanVisuallyHidden
+    govukTable: GovukTable,
+    link: link,
+    linkContent: linkContent,
+    summaryList: summary_list,
+    spanVisuallyHidden: spanVisuallyHidden
 )
 
 @(mode: Mode, containers: Seq[Container], actionsEnabled: Boolean = true)(implicit messages: Messages)
@@ -37,10 +38,10 @@
 @change(container: Container) = {
     @{
         if(actionsEnabled)
-            changeLink(
+            link(
                 messages("site.change"),
-                Some(messages("declaration.summary.container.change", container.id)),
-                controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)
+                routes.TransportContainerController.displayContainerSummary(mode),
+                textHidden = Some(messages("declaration.summary.container.change", container.id))
             )
         else
             ""

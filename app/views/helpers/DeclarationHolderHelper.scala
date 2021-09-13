@@ -110,7 +110,7 @@ class DeclarationHolderHelper @Inject()(
     List(
       messages(
         s"declaration.declarationHolder.body.$key.1007",
-        link(messages("declaration.declarationHolder.body.1007.link"), None, Call("GET", appConfig.permanentExportOrDispatch.section), "_blank")
+        link(messages("declaration.declarationHolder.body.1007.link"), Call("GET", appConfig.permanentExportOrDispatch.section), "_blank")
       )
     )
 
@@ -123,13 +123,13 @@ class DeclarationHolderHelper @Inject()(
 
   private def insetTextForExciseRemovals(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
     val call1 = Call("GET", appConfig.permanentExportOrDispatch.authHolder)
-    val link1 = link(messages(s"$insetKey.excise.bullet1.link"), None, call1, "_blank")
+    val link1 = link(messages(s"$insetKey.excise.bullet1.link"), call1, "_blank")
 
     val call2 = Call("GET", appConfig.permanentExportOrDispatch.conditions)
-    val link2 = link(messages(s"$insetKey.excise.bullet2.link"), None, call2, "_blank")
+    val link2 = link(messages(s"$insetKey.excise.bullet2.link"), call2, "_blank")
 
     val call3 = Call("GET", appConfig.permanentExportOrDispatch.documents)
-    val link3 = link(messages(s"$insetKey.excise.bullet3.link"), None, call3, "_blank")
+    val link3 = link(messages(s"$insetKey.excise.bullet3.link"), call3, "_blank")
 
     insetText(
       bulletList(
@@ -145,7 +145,7 @@ class DeclarationHolderHelper @Inject()(
 
   private def insetTextForNonStandardProcedures(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
     val call1 = Call("GET", appConfig.previousProcedureCodesUrl)
-    val link1 = link(messages(s"$insetKey.special.bullet1.link"), None, call1, "_blank")
+    val link1 = link(messages(s"$insetKey.special.bullet1.link"), call1, "_blank")
 
     insetText(
       numberedList(

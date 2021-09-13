@@ -77,10 +77,13 @@
                 TableRow(
                     content = HtmlContent(link(
                         messages("site.remove"),
-                        Some(messages("declaration.additionalActors.table.remove.hint",
-                                messages(s"declaration.partyType.${actor.partyType.getOrElse("")}"), actor.eori.getOrElse(""))
-                        ),
-                        AdditionalActorsRemoveController.displayPage(mode, createId(index, actor)))),
+                        AdditionalActorsRemoveController.displayPage(mode, createId(index, actor)),
+                        textHidden = Some(messages(
+                            "declaration.additionalActors.table.remove.hint",
+                            messages(s"declaration.partyType.${actor.partyType.getOrElse("")}"),
+                            actor.eori.getOrElse("")
+                        ))
+                    )),
                     classes = "govuk-table__cell--numeric",
                     attributes = Map("id" -> s"actor-table-row$index-remove_button")
                 )

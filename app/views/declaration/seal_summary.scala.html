@@ -28,21 +28,21 @@
 @import models.requests.JourneyRequest
 
 @this(
-        govukLayout: gdsMainTemplate,
-        sectionHeader: sectionHeader,
-        headingContent: headingContent,
-        govukFieldset: GovukFieldset,
-        pageTitle: pageTitle,
-        changeLink: link,
-        govukButton: GovukButton,
-        govukTable: GovukTable,
-        errorSummary: errorSummary,
-        yesNoRadios: yesNoRadios,
-        tariffExpander: tariffExpander,
-        spanVisuallyHidden: spanVisuallyHidden,
-        saveButtons: saveButtons,
-        formHelper: FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    sectionHeader: sectionHeader,
+    headingContent: headingContent,
+    govukFieldset: GovukFieldset,
+    pageTitle: pageTitle,
+    link: link,
+    govukButton: GovukButton,
+    govukTable: GovukTable,
+    errorSummary: errorSummary,
+    yesNoRadios: yesNoRadios,
+    tariffExpander: tariffExpander,
+    spanVisuallyHidden: spanVisuallyHidden,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[YesNoAnswer], containerId: String, seals: Seq[Seal])(implicit request: JourneyRequest[_], messages: Messages)
@@ -57,7 +57,11 @@
                         attributes = Map("id" -> s"removable_elements-row$index-label")
                     ),
                     TableRow(
-                        content = HtmlContent(changeLink(messages("site.remove"), Some(messages("declaration.seal.remove.hint", seal.id)), SealController.submitSealRemove(mode, containerId, seal.id))),
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            SealController.submitSealRemove(mode, containerId, seal.id),
+                            textHidden = Some(messages("declaration.seal.remove.hint", seal.id))
+                        )),
                         attributes = Map("id" -> s"removable_elements-row$index-remove_button")
                     )
                 )

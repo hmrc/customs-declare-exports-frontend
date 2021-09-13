@@ -40,18 +40,18 @@
 @import views.helpers.ErrorMapper.radioGroupErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        govukTable : GovukTable,
-        errorSummary: errorSummary,
-        spanVisuallyHidden: spanVisuallyHidden,
-        sectionHeader: sectionHeader,
-        link: link,
-        saveButtons: saveButtons,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    govukTable : GovukTable,
+    errorSummary: errorSummary,
+    spanVisuallyHidden: spanVisuallyHidden,
+    sectionHeader: sectionHeader,
+    link: link,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF
 )
 
 @(mode: Mode, form: Form[Boolean], countriesOfRouting: Seq[Country])(implicit request: JourneyRequest[AnyContent], messages: Messages)
@@ -68,8 +68,9 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            Some(messages("declaration.routingCountries.summary.change.hint", country.countryName)),
-                            routes.RoutingCountriesSummaryController.displayChangeCountryPage(mode, country.countryCode))),
+                            routes.RoutingCountriesSummaryController.displayChangeCountryPage(mode, country.countryCode),
+                            textHidden = Some(messages("declaration.routingCountries.summary.change.hint", country.countryName))
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"country_of_routing_$index-change_button")
                     )
@@ -77,8 +78,9 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            Some(messages("declaration.routingCountries.summary.remove.hint", country.countryName)),
-                            routes.RoutingCountriesSummaryController.displayRemoveCountryPage(mode, country.countryCode))),
+                            routes.RoutingCountriesSummaryController.displayRemoveCountryPage(mode, country.countryCode),
+                            textHidden = Some(messages("declaration.routingCountries.summary.remove.hint", country.countryName))
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"country_of_routing_$index-remove_button")
                     )

@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import config.AppConfig
 import forms.declaration.StatisticalValue
 import models.Mode
 import models.declaration.ExportItem
@@ -32,8 +33,11 @@ import views.tags.ViewTest
 @ViewTest
 class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
+  private val appConfig = instanceOf[AppConfig]
+
   private val page = instanceOf[statistical_value]
   private val form: Form[StatisticalValue] = StatisticalValue.form()
+
   private def createView(
     mode: Mode = Mode.Normal,
     item: ExportItem = ExportItem(id = "itemId", sequenceId = 1),
@@ -46,12 +50,13 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
     val view: Document = createView()
 
     "have proper messages for labels" in {
-      messages must haveTranslationFor("declaration.statisticalValue.header")
-      messages must haveTranslationFor("declaration.statisticalValue.header.hint")
-      messages must haveTranslationFor("declaration.statisticalValue.header.hint.i1")
-      messages must haveTranslationFor("declaration.statisticalValue.header.hint.i2")
-      messages must haveTranslationFor("declaration.statisticalValue.header.hint.i3")
-      messages must haveTranslationFor("declaration.statisticalValue.inset.text")
+      messages must haveTranslationFor("declaration.statisticalValue.title")
+      messages must haveTranslationFor("declaration.statisticalValue.hint")
+      messages must haveTranslationFor("declaration.statisticalValue.hint.bullet.1")
+      messages must haveTranslationFor("declaration.statisticalValue.hint.bullet.2")
+      messages must haveTranslationFor("declaration.statisticalValue.hint.bullet.3")
+      messages must haveTranslationFor("declaration.statisticalValue.inset.text.1")
+      messages must haveTranslationFor("declaration.statisticalValue.inset.text.2")
       messages must haveTranslationFor("tariff.declaration.item.statisticalValue.common.text")
       messages must haveTranslationFor("tariff.declaration.item.statisticalValue.common.linkText.0")
     }
@@ -65,26 +70,32 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
     }
 
     "display page title" in {
-      view.getElementsByTag("h1") must containMessageForElements("declaration.statisticalValue.header")
+      view.getElementsByTag("h1") must containMessageForElements("declaration.statisticalValue.title")
     }
 
-    "display the expected hint paragraphs" in {
-      val hints = view.getElementsByClass("govuk-hint")
-      hints.get(0) must containMessage("declaration.statisticalValue.header.hint")
+    "display the expected hint paragraph" in {
+      val hints = view.getElementsByClass("govuk-body")
+      hints.get(0) must containMessage("declaration.statisticalValue.hint")
+    }
 
+    "display the expected bullet list" in {
       val indexedListOfMessages = List(
-        "declaration.statisticalValue.header.hint.i1",
-        "declaration.statisticalValue.header.hint.i2",
-        "declaration.statisticalValue.header.hint.i3"
+        "declaration.statisticalValue.hint.bullet.1",
+        "declaration.statisticalValue.hint.bullet.2",
+        "declaration.statisticalValue.hint.bullet.3"
       ).zipWithIndex
 
-      val bulletPoints = hints.get(1).children
+      val bulletPoints = view.getElementsByClass("govuk-list--bullet").get(0).children
       forAll(indexedListOfMessages)(t => bulletPoints.get(t._2) must containMessage(t._1))
     }
 
-    "display the expected inset paragraph" in {
-      val insetElement = view.getElementsByClass("govuk-inset-text").first
-      insetElement must containMessage("declaration.statisticalValue.inset.text")
+    "display the expected inset paragraphs" in {
+      val paragraphs = view.getElementsByClass("govuk-inset-text").get(0).children
+      paragraphs.first.text mustBe messages("declaration.statisticalValue.inset.text.1")
+
+      val text2 = messages("declaration.statisticalValue.inset.text.2", messages("declaration.statisticalValue.inset.text.2.link"))
+      paragraphs.last.text mustBe text2
+      paragraphs.last.child(0) must haveHref(appConfig.hmrcExchangeRatesFor2021)
     }
 
     "display empty input for Statistical Value" in {

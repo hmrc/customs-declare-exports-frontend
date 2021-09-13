@@ -36,6 +36,7 @@
     sectionHeader: sectionHeader,
     headingContent: headingContent,
     paragraphBody: paragraphBody,
+    link: link,
     legend: legend,
     bulletList: bulletList,
     insetText: exportsInsetText,
@@ -47,21 +48,27 @@
 
 @(mode: Mode, itemId: String, form: Form[StatisticalValue])(implicit request: JourneyRequest[_], messages: Messages)
 
-@hintSection = {
-    @paragraphBody(messages("declaration.statisticalValue.header.hint"), "govuk-body govuk-hint")
+@bodySection = {
+    @paragraphBody(messages("declaration.statisticalValue.hint"))
 
-    @bulletList(
-        items = Seq(
-            Html(messages("declaration.statisticalValue.header.hint.i1")),
-            Html(messages("declaration.statisticalValue.header.hint.i2")),
-            Html(messages("declaration.statisticalValue.header.hint.i3"))
-        ),
-        additionalListClasses = Some("govuk-hint")
-    )
+    @bulletList(List(
+        Html(messages("declaration.statisticalValue.hint.bullet.1")),
+        Html(messages("declaration.statisticalValue.hint.bullet.2")),
+        Html(messages("declaration.statisticalValue.hint.bullet.3"))
+    ))
+}
+
+@insetSection = {
+    @paragraphBody(messages("declaration.statisticalValue.inset.text.1"))
+
+    @paragraphBody(messages(
+        "declaration.statisticalValue.inset.text.2",
+        link(messages("declaration.statisticalValue.inset.text.2.link"), Call("GET", appConfig.hmrcExchangeRatesFor2021), "_blank")
+    ))
 }
 
 @govukLayout(
-    title = Title("declaration.statisticalValue.header", "declaration.section.5"),
+    title = Title("declaration.statisticalValue.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(StatisticalValue, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.StatisticalValueController.submitItemType(mode, itemId), 'autoComplete -> "off") {
@@ -69,11 +76,11 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
-        @legend(content = Text(messages("declaration.statisticalValue.header")), classes = gdsPageLegend)
+        @legend(content = Text(messages("declaration.statisticalValue.title")), classes = gdsPageLegend)
 
-        @hintSection
+        @bodySection
 
-        @insetText(content = HtmlContent(messages("declaration.statisticalValue.inset.text")))
+        @insetText(content = HtmlContent(insetSection))
 
         @hmrcCurrencyInput(CurrencyInput(
             id = "statisticalValue",

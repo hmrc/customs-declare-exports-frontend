@@ -424,6 +424,7 @@ object AppConfigSpec {
       |urls.checkCustomsDeclarationService="https://www.gov.uk/check-customs-declaration"
       |urls.nationalExportSystemGuidance="urls.nationalExportSystemGuidance"
       |urls.nationalClearanceHub="urls.nationalClearanceHub"
+      |urls.hmrcExchangeRatesFor2021="https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2021-monthly"
       |
       |urls.procedureCodes.removalOfGoodsFromExciseWarehouse = "https://www.gov.uk/guidance/receive-goods-into-and-remove-goods-from-an-excise-warehouse-excise-notice-197"
       |urls.procedureCodes.onwardSupplyRelief = "https://www.gov.uk/guidance/check-if-you-can-claim-vat-relief-on-goods-imported-into-northern-ireland-for-onward-supply-to-the-eu#onward-supply-relief-osr"

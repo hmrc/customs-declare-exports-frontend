@@ -109,16 +109,18 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
-                            Some(messages("declaration.itemsAdd.change.hint", item.sequenceId)),
-                            routes.ProcedureCodesController.displayPage(mode, item.id))),
+                            routes.ProcedureCodesController.displayPage(mode, item.id),
+                            textHidden = Some(messages("declaration.itemsAdd.change.hint", item.sequenceId))
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"item_$index--change")
                     ),
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            Some(messages("declaration.itemsAdd.remove.hint", item.sequenceId)),
-                            routes.ItemsSummaryController.displayRemoveItemConfirmationPage(mode, item.id))),
+                            routes.ItemsSummaryController.displayRemoveItemConfirmationPage(mode, item.id),
+                            textHidden = Some(messages("declaration.itemsAdd.remove.hint", item.sequenceId))
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"item_$index--remove")
                     )

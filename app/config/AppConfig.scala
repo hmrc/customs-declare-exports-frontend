@@ -106,6 +106,7 @@ class AppConfig @Inject()(
   val checkCustomsDeclarationService = loadConfig("urls.checkCustomsDeclarationService")
   val nationalExportSystemGuidance = loadConfig("urls.nationalExportSystemGuidance")
   val nationalClearanceHub = loadConfig("urls.nationalClearanceHub")
+  val hmrcExchangeRatesFor2021 = loadConfig("urls.hmrcExchangeRatesFor2021")
 
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   val giveFeedbackLink = {
