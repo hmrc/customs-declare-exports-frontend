@@ -34,6 +34,7 @@
         formGroupWrapper: formGroupWrapper,
         govukRadios: GovukRadios,
         govukTable : GovukTable,
+        paragraphBody: paragraphBody,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
@@ -60,12 +61,6 @@
     name = Some(messages("declaration.partyType.remove.hint")),
     value = value
 ))}
-
-@pageHint = {
-    <span class="govuk-hint">
-        @messages("declaration.additionalActors.title.hint")
-    </span>
-}
 
 @radios = {
     @formGroupWrapper(field = form(AdditionalActorsFormGroupId)){
@@ -103,7 +98,7 @@
                 RadioItem(
                     id = Some("no"),
                     value = Some("no"),
-                    content = Text(messages("site.no")),
+                    content = Text(messages("declaration.partyType.no")),
                     checked = form("partyType").value.contains("no")
                 )
             ),
@@ -128,7 +123,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-              pageHint,
+              paragraphBody(messages("declaration.additionalActors.body.text")),
               radios,
               tariffExpander(DeclarationAdditionalActors, request.declarationType)(messages, appConfig),
               saveButtons()

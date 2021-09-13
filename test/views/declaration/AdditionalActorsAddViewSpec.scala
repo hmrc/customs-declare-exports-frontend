@@ -47,7 +47,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
     "have correct message keys" in {
 
       messages must haveTranslationFor("declaration.additionalActors.title")
-      messages must haveTranslationFor("declaration.additionalActors.title.hint")
+      messages must haveTranslationFor("declaration.additionalActors.body.text")
       messages must haveTranslationFor("declaration.additionalActors.eori")
       messages must haveTranslationFor("declaration.eori.empty")
       messages must haveTranslationFor("declaration.additionalActors.partyType")
