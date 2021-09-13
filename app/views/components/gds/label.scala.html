@@ -16,18 +16,8 @@
 
 @this()
 
-@(
-  text: String,
-  call: Call,
-  target: String = "_self",
-  id: Option[String] = None,
-  classes: String = "govuk-link govuk-link--no-visited-state",
-  textHidden: Option[String] = None
-)
+@(labelKey: String, forFieldName: String, labelClasses: String = "govuk-label govuk-label--m", labelArg: String = "")(implicit messages: Messages)
 
-@hasHint = @{textHidden.exists(_.nonEmpty)}
-
-<a class="@classes" href="@call" target=@target @id.map{id => id="@id" }>
- <span @if(hasHint){aria-hidden="true"}>@text</span>
- @if(hasHint){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}
-</a>
+<label class="@labelClasses" for="@forFieldName">
+  @messages(labelKey, labelArg)
+</label>

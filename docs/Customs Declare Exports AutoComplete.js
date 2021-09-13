@@ -499,6 +499,7 @@ function setHoldersOfAuthorisation() {
 
 function holderOfAuthorisation(){
     if (currentPageIs('/customs-declare-exports/declaration/add-authorisation-required')) {
+        selectRadioOptionFromInputs(document.getElementsByName('eoriSource'), 1)
         switch(getDeclaration())
         {
             case 'C':

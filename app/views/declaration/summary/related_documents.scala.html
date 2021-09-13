@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.declaration.routes
 @import forms.declaration.Document
 @import services.DocumentType
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -25,11 +26,11 @@
 @import views.declaration.summary.TableCell
 
 @this(
-        govukTable: GovukTable,
-        changeLink: link,
-        linkContent: linkContent,
-        spanVisuallyHidden: spanVisuallyHidden,
-        summaryList: summary_list
+    govukTable: GovukTable,
+    link: link,
+    linkContent: linkContent,
+    spanVisuallyHidden: spanVisuallyHidden,
+    summaryList: summary_list
 )
 
 
@@ -38,10 +39,10 @@
   @change(document: Document) = {
   @{
     if(actionsEnabled)
-      changeLink(
+      link(
         messages("site.change"),
-        Some(messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference)),
-        controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(mode)
+        routes.PreviousDocumentsSummaryController.displayPage(mode),
+        textHidden = Some(messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference))
       )
     else
       ""
@@ -62,7 +63,7 @@
         actions = actions(Actions(
           items = Seq(
             actionItem(
-              href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
+              href = routes.PreviousDocumentsController.displayPage(mode).url,
               content = HtmlContent(linkContent(messages("site.change"))),
               visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
             )

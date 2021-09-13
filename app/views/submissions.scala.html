@@ -73,8 +73,8 @@
     HtmlContent(
         link(
             submission.mrn.getOrElse(""),
-            Some(messages("submissions.hidden.text", submission.ducr.getOrElse(""))),
-            routes.DeclarationDetailsController.displayPage(submission.uuid)
+            routes.DeclarationDetailsController.displayPage(submission.uuid),
+            textHidden = Some(messages("submissions.hidden.text", submission.ducr.getOrElse("")))
         )
     )
 }
@@ -164,7 +164,7 @@
 
             @if(submissionsPagesElements.actionSubmissions.elementsTotal > 0) {
                 @govukWarningText(WarningText(
-                    iconFallbackText = messages("submissions.hint.action.needed.iconFallbackText"),
+                    iconFallbackText = messages("site.warning"),
                     content = Text(warningText)
                 ))
             } else {

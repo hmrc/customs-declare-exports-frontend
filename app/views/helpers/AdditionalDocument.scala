@@ -20,14 +20,17 @@ import javax.inject.{Inject, Singleton}
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHint, GovukInsetText}
+import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import views.html.components.gds.paragraphBody
 
 @Singleton
-class AdditionalDocument @Inject()(hintPartial: GovukHint, insetTextPartial: GovukInsetText, paragraphBody: paragraphBody) {
+class AdditionalDocument @Inject()(insetTextPartial: GovukInsetText, paragraphBody: paragraphBody) {
+
+  def documentCodeText(implicit request: JourneyRequest[_]): String =
+    if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments) "declaration.additionalDocument.documentTypeCode.text.fromAuthCode"
+    else "declaration.additionalDocument.documentTypeCode.text"
 
   def documentCodeHint(implicit request: JourneyRequest[_]): String =
     if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments) "declaration.additionalDocument.documentTypeCode.hint.fromAuthCode"
@@ -42,20 +45,19 @@ class AdditionalDocument @Inject()(hintPartial: GovukHint, insetTextPartial: Gov
         )
       )
 
-      val insets = insetTextPartial(InsetText(content = HtmlContent(html)))
-      Some(insets)
+      Some(insetTextPartial(InsetText(content = HtmlContent(html))))
     } else None
 
-  def pageHint(implicit messages: Messages, request: JourneyRequest[_]): Html =
+  def pageBody(implicit messages: Messages, request: JourneyRequest[_]): Html =
     if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments)
       new Html(
         List(
-          hintPartial(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint.fromAuthCode.paragraph1")))),
-          hintPartial(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint.fromAuthCode.paragraph2"))))
+          paragraphBody(messages("declaration.additionalDocument.text.fromAuthCode.paragraph1")),
+          paragraphBody(messages("declaration.additionalDocument.text.fromAuthCode.paragraph2"))
         )
       )
     else
-      new Html(List(hintPartial(Hint(content = HtmlContent(messages("declaration.additionalDocument.hint"))))))
+      new Html(List(paragraphBody(messages("declaration.additionalDocument.text"))))
 }
 
 object AdditionalDocument {

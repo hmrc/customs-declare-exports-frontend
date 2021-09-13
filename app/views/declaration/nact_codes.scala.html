@@ -30,26 +30,26 @@
 @import views.helpers.ErrorMapper.yesNoErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukTable : GovukTable,
-        govukRadios: GovukRadios,
-        link: link,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        spanVisuallyHidden: spanVisuallyHidden,
-        addAnotherQuestion: addAnotherQuestion,
-        saveButtons: saveButtons,
-        appConfig: AppConfig,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    govukRadios: GovukRadios,
+    link: link,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    spanVisuallyHidden: spanVisuallyHidden,
+    addAnotherQuestion: addAnotherQuestion,
+    saveButtons: saveButtons,
+    appConfig: AppConfig,
+    formHelper: FormWithCSRF
 )
 
 @(
-        mode: Mode,
-        itemId: String,
-        form: Form[YesNoAnswer],
-        nactCodes: Seq[NactCode] = Seq.empty
+    mode: Mode,
+    itemId: String,
+    form: Form[YesNoAnswer],
+    nactCodes: Seq[NactCode] = Seq.empty
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
@@ -77,7 +77,11 @@
                         attributes = Map("id" -> s"nactCode-table-row$index-label")
                     ),
                     TableRow(
-                        content = HtmlContent(link(messages("site.remove"), Some(messages("declaration.nationalAdditionalCode.remove.hint", code.nactCode)), routes.NactCodeRemoveController.displayPage(mode, itemId, code.nactCode))),
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            routes.NactCodeRemoveController.displayPage(mode, itemId, code.nactCode),
+                            textHidden = Some(messages("declaration.nationalAdditionalCode.remove.hint", code.nactCode))
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"nactCode-table-row$index-remove_button")
                     )

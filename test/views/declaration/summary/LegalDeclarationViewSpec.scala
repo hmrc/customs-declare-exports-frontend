@@ -43,9 +43,9 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 
     "have legal declaration warning" in {
 
-      view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("legal.declaration.warning.icontext")
+      view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("site.warning")
       view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("legal.declaration.warning")
-      messages must haveTranslationFor("legal.declaration.warning.icontext")
+      messages must haveTranslationFor("site.warning")
       messages must haveTranslationFor("legal.declaration.warning")
     }
 

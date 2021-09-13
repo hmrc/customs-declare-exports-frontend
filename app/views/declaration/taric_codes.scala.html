@@ -30,20 +30,20 @@
 @import views.helpers.ErrorMapper.yesNoErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukTable : GovukTable,
-        govukRadios: GovukRadios,
-        addButton: addButton,
-        link: link,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        spanVisuallyHidden: spanVisuallyHidden,
-        addAnotherQuestion: addAnotherQuestion,
-        saveButtons: saveButtons,
-        appConfig: AppConfig,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    govukRadios: GovukRadios,
+    addButton: addButton,
+    link: link,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    spanVisuallyHidden: spanVisuallyHidden,
+    addAnotherQuestion: addAnotherQuestion,
+    saveButtons: saveButtons,
+    appConfig: AppConfig,
+    formHelper: FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[YesNoAnswer], taricCodes: Seq[TaricCode] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
@@ -73,7 +73,11 @@
                         attributes = Map("id" -> s"taricCode-table-row$index-label")
                     ),
                     TableRow(
-                        content = HtmlContent(link(messages("site.remove"), Some(messages("declaration.taricAdditionalCodes.remove.hint", code.taricCode)), routes.TaricCodeRemoveController.displayPage(mode, itemId, code.taricCode))),
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            routes.TaricCodeRemoveController.displayPage(mode, itemId, code.taricCode),
+                            textHidden = Some(messages("declaration.taricAdditionalCodes.remove.hint", code.taricCode))
+                        )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"taricCode-table-row$index-remove_button")
                     )
