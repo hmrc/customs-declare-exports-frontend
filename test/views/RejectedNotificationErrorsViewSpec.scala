@@ -44,7 +44,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
     "have proper messages for labels" in {
       messages must haveTranslationFor("rejected.notification.ducr")
       messages must haveTranslationFor("rejected.notification.title")
-      messages must haveTranslationFor("rejected.notification.continue")
+      messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.1.link")
     }
 
     "have correct title" in {
@@ -106,7 +106,15 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
         .getElementById("continue-checking-answers")
         .getElementsByAttributeValue("href", routes.SubmissionsController.amend(declaration.id).url)
 
-      continueLink.text() mustBe messages("rejected.notification.continue")
+      continueLink.text() mustBe messages("rejected.notification.guidance.section.1.paragraph.1.link")
+    }
+
+    "display all other expected content links" in {
+      val links = defaultView.getElementsByClass("govuk-link--no-visited-state")
+      links.size mustBe 3
+
+      links.get(1) must haveHref(routes.SavedDeclarationsController.displayDeclarations())
+      links.get(2) must haveHref(controllers.routes.GuidanceController.errorExplanation.url)
     }
 
     "contain change error link" when {
