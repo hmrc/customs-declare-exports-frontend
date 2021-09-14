@@ -34,7 +34,6 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
 
   private val appConfig = instanceOf[AppConfig]
 
-  private val prefix = "declaration.taricAdditionalCodes"
   private val itemId = "item1"
 
   private val form: Form[TaricCodeFirst] = TaricCodeFirst.form()
@@ -47,7 +46,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1") must containMessageForElements(s"$prefix.addfirst.header")
+      view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.addfirst.header")
     }
 
     "display the expected body (the text under page's H1)" when {
@@ -56,14 +55,17 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
         val commodityCode = "46021910"
         val body = createView(commodityCode = Some(commodityCode)).getElementsByClass("govuk-body").get(0)
 
-        body.text mustBe messages(s"$prefix.addfirst.body", messages(s"$prefix.addfirst.body.link", commodityCode))
+        body.text mustBe messages(
+          "declaration.taricAdditionalCodes.addfirst.body",
+          messages("declaration.taricAdditionalCodes.addfirst.body.link", commodityCode)
+        )
         body.child(0) must haveHref(appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode))
       }
 
       "a commodity code has not been entered" in {
         val body = createView().getElementsByClass("govuk-body").get(0)
 
-        body must containMessage(s"$prefix.addfirst.body", messages(s"$prefix.addfirst.body.altlink"))
+        body must containMessage("declaration.taricAdditionalCodes.addfirst.body", messages("declaration.taricAdditionalCodes.addfirst.body.altlink"))
         body.child(0) must haveHref(appConfig.tradeTariffUrl)
       }
     }
@@ -71,7 +73,8 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
     "display the expected inset paragraph" in {
       val paragraph = view.getElementsByClass("govuk-inset-text").get(0)
 
-      val text = messages(s"$prefix.addfirst.inset.text", messages(s"$prefix.addfirst.inset.text.link"))
+      val text =
+        messages("declaration.taricAdditionalCodes.addfirst.inset.text", messages("declaration.taricAdditionalCodes.addfirst.inset.text.link"))
       removeBlanksIfAnyBeforeDot(paragraph.text) mustBe text
       paragraph.child(0) must haveHref(appConfig.commodityCode9306909000)
     }
@@ -102,7 +105,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
 
-      view must containErrorElementWithMessageKey(s"$prefix.error.invalid")
+      view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.invalid")
     }
 
     "display errors when empty" in {
@@ -111,7 +114,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
 
-      view must containErrorElementWithMessageKey(s"$prefix.error.empty")
+      view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.empty")
     }
 
   }
