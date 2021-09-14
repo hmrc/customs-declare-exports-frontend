@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes._
+@import controllers.declaration.routes.TaricCodeAddController
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.common.YesNoAnswer.YesNoAnswers
 @import forms.declaration.TaricCodeFirst
@@ -36,9 +36,11 @@
     govukDetails : GovukDetails,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    exportsInputText: exportsInputText,
-    body: paragraphBody,
     pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    link: link,
+    insetText: exportsInsetText,
+    exportsInputText: exportsInputText,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     appConfig: AppConfig,
@@ -47,17 +49,21 @@
 
 @(mode: Mode, itemId: String, maybeCommodityCode: Option[String], form: Form[TaricCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tradeTariffLink = {
+@bodySection = {
     @maybeCommodityCode.fold {
-        <a href=@appConfig.tradeTariffUrl
-           id="link-no-commodity-code" class="govuk-link govuk-link--no-visited-state" target="_blank">
-            @messages("declaration.taricAdditionalCodes.addfirst.altlink")
-        </a>
+        @paragraphBody(messages(
+            "declaration.taricAdditionalCodes.addfirst.body",
+            link(messages("declaration.taricAdditionalCodes.addfirst.body.altlink"), Call("GET", appConfig.tradeTariffUrl), "_blank")
+        ))
     } { commodityCode =>
-        <a href=@appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode)
-           id="link-for-commodity-code" class="govuk-link govuk-link--no-visited-state" target="_blank">
-            @messages("declaration.taricAdditionalCodes.addfirst.link", commodityCode)
-        </a>
+        @paragraphBody(messages(
+            "declaration.taricAdditionalCodes.addfirst.body",
+            link(
+                messages("declaration.taricAdditionalCodes.addfirst.body.link", commodityCode),
+                Call("GET", appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode)),
+                "_blank"
+            )
+        ))
     }
 }
 
@@ -70,15 +76,21 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
+        @pageTitle(messages("declaration.taricAdditionalCodes.addfirst.header"))
+
+        @bodySection
+
+        @insetText(content = HtmlContent(messages(
+            "declaration.taricAdditionalCodes.addfirst.inset.text",
+            link(
+                messages("declaration.taricAdditionalCodes.addfirst.inset.text.link"),
+                Call("GET", appConfig.commodityCode9306909000),
+                "_blank"
+           )
+        )))
+
         @govukRadios(Radios(
             name = hasTaricCodeKey,
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.taricAdditionalCodes.addfirst.header")),
-                    classes = gdsPageLegend
-                ))
-            )),
-            hint = Some(Hint(content = HtmlContent(messages("declaration.taricAdditionalCodes.addfirst.hint", tradeTariffLink)))),
             items = Seq(
                 RadioItem(
                     id = Some("code_yes"),

@@ -26,7 +26,8 @@ import views.tags.ViewTest
 @ViewTest
 class CompleteDeclarationViewSpec extends UnitViewSpec with Injector {
 
-  private val guidance = instanceOf[AppConfig].guidance
+  private val appConfig = instanceOf[AppConfig]
+  private val guidance = appConfig.guidance
 
   private val completeDeclarationPage = instanceOf[complete_declaration]
   private val view = completeDeclarationPage()(request, messages)
@@ -65,7 +66,7 @@ class CompleteDeclarationViewSpec extends UnitViewSpec with Injector {
 
       links.get(0) must haveHref(guidance.cdsTariffCompletionGuide)
       links.get(1) must haveHref(guidance.commodityCodes)
-      links.get(2) must haveHref(guidance.commodityCode9306909000)
+      links.get(2) must haveHref(appConfig.commodityCode9306909000)
       links.get(3) must haveHref(guidance.commodityCodes)
       links.get(4) must haveHref(guidance.vatRatingForStandardExport)
       links.get(5) must haveHref(guidance.vatOnGoodsExportedFromUK)
