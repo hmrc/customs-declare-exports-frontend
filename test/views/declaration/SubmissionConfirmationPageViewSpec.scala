@@ -58,16 +58,21 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with BeforeAndAfte
     super.afterEach()
   }
 
-  "Confirmation Page View on empty page" should {
+  "Confirmation Page View always" should {
 
-    "display header with default" in {
-      val highlightBox = getHighlightBox(createView())
-      highlightBox must containText("Declaration has been submitted")
-      highlightBox mustNot containText("The LRN is")
+    "display start again link" in {
+      val button = createView().getElementById("back-to-start-link")
+      button must haveHref(controllers.routes.ChoiceController.displayPage().url)
+      button must containMessage("declaration.confirmation.submitAnotherDeclaration")
+    }
+
+    "display Exit Survey link" in {
+      val exitSurvey = createView().getElementById("exit-survey")
+
+      exitSurvey must containMessage("declaration.exitSurvey.header")
     }
 
     "display Google Form feedback link" when {
-
       "GoogleFormFeedbackLinkConfig returns non-empty Option" in {
         when(googleFormFeedbackLinkConfig.googleFormFeedbackLink).thenReturn(Some(googleFormFeedbackLink))
 
@@ -79,69 +84,50 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with BeforeAndAfte
     }
 
     "not display Google Form feedback link" when {
-
       "GoogleFormFeedbackLinkConfig return empty Option" in {
         createView().getElementById("feedback-link") mustBe null
       }
     }
+  }
 
-    "display declaration status" in {
-      val declarationInfo = createView().getElementById("submissions-link")
-      declarationInfo must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
+  "Confirmation Page View when LRN & DecId are missing in flash cookie" should {
+
+    "display header with no reference to submitted declaration's LRN" in {
+      val highlightBox = getHighlightBox(createView())
+
+      highlightBox must containMessage("declaration.confirmation.title")
+      highlightBox mustNot containMessage("declaration.confirmation.lrn")
     }
 
-    "display start again link" in {
-      val button = createView().getElementById("back-to-start-link")
-      button must haveHref(controllers.routes.ChoiceController.displayPage().url)
-      button must containText("Create a new declaration")
-    }
+    "display inset text with expected generic content and link" in {
+      val view = createView()
 
-    "display Exit Survey link" in {
-      val exitSurvey = createView().getElementById("exit-survey")
+      view.getElementsByClass("govuk-inset-text").get(0) must containMessage(
+        "declaration.confirmation.decision.paragraph1",
+        messages("declaration.confirmation.decision.genericLink.text")
+      )
 
-      exitSurvey must containMessage("declaration.exitSurvey.header")
+      getDecisionLink(view) must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions().url)
     }
   }
-  "Confirmation Page View when filled" should {
 
-    "display header with declaration type Standard and LRN" in {
+  "Confirmation Page View when LRN & DecId are present in flash cookie" should {
+
+    "display header with reference to submitted declaration's LRN" in {
+      val highlightBox = getHighlightBox(createView(withFlash(DeclarationType.STANDARD, "lrn1", "dec1")))
+
+      highlightBox must containMessage("declaration.confirmation.title")
+      highlightBox must containMessage("declaration.confirmation.lrn", "lrn1")
+    }
+
+    "display inset text with expected specific content and link" in {
       val view = createView(withFlash(DeclarationType.STANDARD, "lrn1", "dec1"))
-      val highlightBox = getHighlightBox(view)
-      highlightBox must containText("Standard declaration has been submitted")
-      highlightBox must containText("Your LRN is lrn1")
+
+      view.getElementsByClass("govuk-inset-text").get(0) must containMessage(
+        "declaration.confirmation.decision.paragraph1",
+        messages("declaration.confirmation.decision.directLink.text")
+      )
       getDecisionLink(view) must haveHref(controllers.routes.DeclarationDetailsController.displayPage("dec1").url)
-    }
-
-    "display header with declaration type Simplified and LRN" in {
-      val view = createView(withFlash(DeclarationType.SIMPLIFIED, "lrn2", "dec2"))
-      val highlightBox = getHighlightBox(view)
-      highlightBox must containText("Simplified declaration has been submitted")
-      highlightBox must containText("Your LRN is lrn2")
-      getDecisionLink(view) must haveHref(controllers.routes.DeclarationDetailsController.displayPage("dec2").url)
-    }
-
-    "display header with declaration type Supplementary and LRN" in {
-      val view = createView(withFlash(DeclarationType.SUPPLEMENTARY, "lrn3", "dec3"))
-      val highlightBox = getHighlightBox(view)
-      highlightBox must containText("Supplementary declaration has been submitted")
-      highlightBox must containText("Your LRN is lrn3")
-      getDecisionLink(view) must haveHref(controllers.routes.DeclarationDetailsController.displayPage("dec3").url)
-    }
-
-    "display header with declaration type Occasional and LRN" in {
-      val view = createView(withFlash(DeclarationType.OCCASIONAL, "lrn4", "dec4"))
-      val highlightBox = getHighlightBox(view)
-      highlightBox must containText("Simplified declaration for occasional use has been submitted")
-      highlightBox must containText("Your LRN is lrn4")
-      getDecisionLink(view) must haveHref(controllers.routes.DeclarationDetailsController.displayPage("dec4").url)
-    }
-
-    "display header with declaration type Clearance and LRN" in {
-      val view = createView(withFlash(DeclarationType.CLEARANCE, "lrn5", "dec5"))
-      val highlightBox = getHighlightBox(view)
-      highlightBox must containText("Customs clearance request has been submitted")
-      highlightBox must containText("Your LRN is lrn5")
-      getDecisionLink(view) must haveHref(controllers.routes.DeclarationDetailsController.displayPage("dec5").url)
     }
   }
 }
