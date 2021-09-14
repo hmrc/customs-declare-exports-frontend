@@ -1283,17 +1283,17 @@ declaration.taricAdditionalCodes.error.duplicate = Additional code already added
 declaration.taricAdditionalCodes.table.header = Additional code
 declaration.taricAdditionalCodes.remove.hint = Remove additional code {0}.
 
-declaration.nationalAdditionalCode.addfirst.header = Is there a national additional code?
+declaration.nationalAdditionalCode.addfirst.header = Do you need to add a national additional code?
+declaration.nationalAdditionalCode.addfirst.body = Add a national additional code from {0} if exemptions or reduced rates of taxes are applicable.
+declaration.nationalAdditionalCode.addfirst.body.link = Appendix 19 (opens in new tab)
+declaration.nationalAdditionalCode.addfirst.hint = For example VATZ, to indicate that the goods are being zero-rated for VAT.
 declaration.nationalAdditionalCode.addfirst.label = National additional code
+
 declaration.nationalAdditionalCode.addnext.header = What is the next national additional code?
 declaration.nationalAdditionalCode.remove.header = Are you sure you want to remove this national additional code?
 
 declaration.nationalAdditionalCode.header.singular = You have added 1 national additional code
 declaration.nationalAdditionalCode.header.plural = You have added {0} national additional codes
-declaration.nationalAdditionalCode.header.hint.withCommodity = The {0} will list a national additional code if exemptions or reduced rates of taxes may be applicable. It will be a code of one letter (X or V) and 3 numbers or letters, shown in the ''Exports'' tab under the heading ''Measure''.
-declaration.nationalAdditionalCode.header.hint.withCommodity.link = Tariff entry for {0}, the code you entered (opens in new tab)
-declaration.nationalAdditionalCode.header.hint.withoutCommodity = The {0} will list a national additional code if exemptions or reduced rates of taxes may be applicable. It will be a code of one letter (X or V) and 3 numbers or letters, shown in the ''Exports'' tab under the heading ''Measure''.
-declaration.nationalAdditionalCode.header.hint.withoutCommodity.link = Tariff entry for your commodity (opens in new tab)
 declaration.nationalAdditionalCode.label = Do you need to add another national additional code?
 declaration.nationalAdditionalCode.answer.empty = Select yes if there is a national additional code
 declaration.nationalAdditionalCode.add.answer.empty = Select yes if you need to add another national additional code
