@@ -20,7 +20,7 @@ import com.codahale.metrics.Timer
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import connectors.exchange.ExportsDeclarationExchange
-import forms.CancelDeclaration
+import forms.{CancelDeclaration, Lrn}
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
@@ -130,6 +130,10 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       .GET[Seq[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.submissions}", Seq("id" -> id))
       .map(_.headOption)
 
+  def findSubmissionsByLrn(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
+    httpClient
+      .GET[Seq[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.submissions}", Seq("lrn" -> lrn.value))
+
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient
       .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}/submission/notifications/$id")
@@ -159,7 +163,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       .GET[Option[VerifiedEmailAddress]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchVerifiedEmail}/${eori.value}")
       .map { maybeVerifiedEmail =>
         maybeVerifiedEmail match {
-          case Some(verifiedEmailAddress) =>
+          case Some(_) =>
             logger.debug(s"Found verified email for eori: $eori")
           case None =>
             logger.info(s"No verified email for eori: $eori")

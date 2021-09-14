@@ -230,6 +230,26 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
     }
   }
 
+  "Find Submissions by Lrn" should {
+    "return Ok" in {
+      val lrn = Lrn(submission.lrn)
+      val submission_2 = submission.copy(uuid = "id2", ducr = Some("ducr"))
+      stubForExports(
+        get(s"/submissions?lrn=${lrn.value}")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(Seq(submission, submission_2)))
+          )
+      )
+
+      val response = await(connector.findSubmissionsByLrn(lrn))
+
+      response mustBe Seq(submission, submission_2)
+      verify(getRequestedFor(urlEqualTo(s"/submissions?lrn=${lrn.value}")))
+    }
+  }
+
   "Find Notifications" should {
     "return Ok" in {
       stubForExports(

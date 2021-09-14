@@ -16,12 +16,15 @@
 
 package models.declaration.submissions
 
-import java.time.{ZoneId, ZonedDateTime}
+import models.declaration.submissions.Action.defaultDateTimeZone
 
+import java.time.{ZoneId, ZonedDateTime}
 import play.api.libs.json.Json
 
-case class Action(id: String, requestType: RequestType, requestTimestamp: ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC")))
+case class Action(id: String, requestType: RequestType, requestTimestamp: ZonedDateTime = ZonedDateTime.now(defaultDateTimeZone))
 
 object Action {
   implicit val format = Json.format[Action]
+
+  val defaultDateTimeZone: ZoneId = ZoneId.of("UTC")
 }

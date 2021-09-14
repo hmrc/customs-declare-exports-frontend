@@ -20,7 +20,7 @@ import base.ControllerSpec
 import base.ExportsTestData.eidrDateStamp
 import forms.declaration.ConsignmentReferences
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
-import forms.{Ducr, Lrn}
+import forms.{Ducr, Lrn, LrnValidator}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -33,14 +33,18 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.consignment_references
 
+import scala.concurrent.Future
+
 class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
-  val consignmentReferencesPage = mock[consignment_references]
+  private val lrnValidator = mock[LrnValidator]
+  private val consignmentReferencesPage = mock[consignment_references]
 
   val controller = new ConsignmentReferencesController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
+    lrnValidator,
     navigator,
     stubMessagesControllerComponents(),
     consignmentReferencesPage
@@ -50,13 +54,14 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
+    when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(false))
     when(consignmentReferencesPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
 
-    reset(consignmentReferencesPage)
+    reset(lrnValidator, consignmentReferencesPage)
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
@@ -100,13 +105,26 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
   "ConsignmentReferencesController on submitConsignmentReferences" should {
 
     onEveryDeclarationJourney() { request =>
-      "return 400 (BAD_REQUEST)" in {
-        withNewCaching(request.cacheModel)
-        val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Lrn("")))
+      "return 400 (BAD_REQUEST)" when {
 
-        val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(incorrectForm))
+        "user enters incorrect data" in {
+          withNewCaching(request.cacheModel)
+          val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Lrn("")))
 
-        status(result) must be(BAD_REQUEST)
+          val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) must be(BAD_REQUEST)
+        }
+
+        "LrnValidator returns false" in {
+          when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(true))
+          withNewCaching(request.cacheModel)
+          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
+
+          val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
+
+          status(result) must be(BAD_REQUEST)
+        }
       }
     }
 
@@ -124,26 +142,29 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
     }
 
     onJourney(SUPPLEMENTARY) { req =>
-      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page for SUPPLEMENTARY_SIMPLIFIED" in {
-        val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)))
-        withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, Some(MRN)))
+      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" when {
 
-        val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
+        "for SUPPLEMENTARY_SIMPLIFIED" in {
+          val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)))
+          withNewCaching(request.cacheModel)
+          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, Some(MRN)))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage()
-      }
+          val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
-      "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page for SUPPLEMENTARY_EIDR" in {
-        val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_EIDR)))
-        withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, None, Some(eidrDateStamp)))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage()
+        }
 
-        val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
+        "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page for SUPPLEMENTARY_EIDR" in {
+          val request = journeyRequest(aDeclaration(withType(req.declarationType), withAdditionalDeclarationType(SUPPLEMENTARY_EIDR)))
+          withNewCaching(request.cacheModel)
+          val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, None, Some(eidrDateStamp)))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage()
+          val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.DeclarantExporterController.displayPage()
+        }
       }
     }
   }

@@ -18,6 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import forms.LrnValidator
 import forms.declaration.ConsignmentReferences
 import forms.declaration.ConsignmentReferences.form
 import models.DeclarationType.SUPPLEMENTARY
@@ -36,6 +37,7 @@ class ConsignmentReferencesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  lrnValidator: LrnValidator,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
@@ -51,8 +53,12 @@ class ConsignmentReferencesController @Inject()(
   }
 
   def submitConsignmentReferences(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form(request.declarationType, request.cacheModel.additionalDeclarationType).bindFromRequest()
-    boundForm.fold(formWithErrors => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))), updateCacheAndContinue(mode, _))
+    form(request.declarationType, request.cacheModel.additionalDeclarationType)
+      .bindFromRequest()
+      .verifyLrnValidity(lrnValidator)
+      .flatMap(
+        _.fold(formWithErrors => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))), updateCacheAndContinue(mode, _))
+      )
   }
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
