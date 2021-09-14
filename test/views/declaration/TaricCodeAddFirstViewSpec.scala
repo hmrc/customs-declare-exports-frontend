@@ -24,7 +24,6 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
-import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.taric_code_add_first
@@ -33,7 +32,11 @@ import views.tags.ViewTest
 @ViewTest
 class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
+  private val appConfig = instanceOf[AppConfig]
+
+  private val prefix = "declaration.taricAdditionalCodes"
   private val itemId = "item1"
+
   private val form: Form[TaricCodeFirst] = TaricCodeFirst.form()
   private val page = instanceOf[taric_code_add_first]
 
@@ -44,7 +47,33 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
     val view = createView()
 
     "display page title" in {
-      view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.taricAdditionalCodes.addfirst.header")
+      view.getElementsByTag("h1") must containMessageForElements(s"$prefix.addfirst.header")
+    }
+
+    "display the expected body (the text under page's H1)" when {
+
+      "a commodity code has been entered" in {
+        val commodityCode = "46021910"
+        val body = createView(commodityCode = Some(commodityCode)).getElementsByClass("govuk-body").get(0)
+
+        body.text mustBe messages(s"$prefix.addfirst.body", messages(s"$prefix.addfirst.body.link", commodityCode))
+        body.child(0) must haveHref(appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode))
+      }
+
+      "a commodity code has not been entered" in {
+        val body = createView().getElementsByClass("govuk-body").get(0)
+
+        body must containMessage(s"$prefix.addfirst.body", messages(s"$prefix.addfirst.body.altlink"))
+        body.child(0) must haveHref(appConfig.tradeTariffUrl)
+      }
+    }
+
+    "display the expected inset paragraph" in {
+      val paragraph = view.getElementsByClass("govuk-inset-text").get(0)
+
+      val text = messages(s"$prefix.addfirst.inset.text", messages(s"$prefix.addfirst.inset.text.link"))
+      removeBlanksIfAnyBeforeDot(paragraph.text) mustBe text
+      paragraph.child(0) must haveHref(appConfig.commodityCode9306909000)
     }
 
     "display 'Back' button that links to 'UN Dangerous Goods' page" in {
@@ -63,31 +92,6 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
       val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
-
-    "display the expected hint" when {
-
-      val appConfig = instanceOf[AppConfig]
-
-      "a commodity code has been entered" in {
-        val commodityCode = "46021910"
-        val hint = createView(commodityCode = Some(commodityCode)).getElementById("hasTaric-hint")
-
-        hint must containMessage(
-          "declaration.taricAdditionalCodes.addfirst.hint",
-          messages("declaration.taricAdditionalCodes.addfirst.link", commodityCode)
-        )
-
-        hint.child(0) must haveHref(appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode))
-      }
-
-      "a commodity code has not been entered" in {
-        val hint = createView().getElementById("hasTaric-hint")
-
-        hint must containMessage("declaration.taricAdditionalCodes.addfirst.hint", messages("declaration.taricAdditionalCodes.addfirst.altlink"))
-
-        hint.child(0) must haveHref(appConfig.tradeTariffUrl)
-      }
-    }
   }
 
   "Taric Code Add First View for invalid input" should {
@@ -98,7 +102,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
 
-      view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.invalid")
+      view must containErrorElementWithMessageKey(s"$prefix.error.invalid")
     }
 
     "display errors when empty" in {
@@ -107,7 +111,7 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#taricCode")
 
-      view must containErrorElementWithMessageKey("declaration.taricAdditionalCodes.error.empty")
+      view must containErrorElementWithMessageKey(s"$prefix.error.empty")
     }
 
   }

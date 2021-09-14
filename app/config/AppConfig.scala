@@ -108,6 +108,7 @@ class AppConfig @Inject()(
   val nationalClearanceHub = loadConfig("urls.nationalClearanceHub")
   val hmrcExchangeRatesFor2021 = loadConfig("urls.hmrcExchangeRatesFor2021")
   val nationalAdditionalCodes = loadConfig("urls.nationalAdditionalCodes")
+  val commodityCode9306909000 = loadConfig("urls.commodityCode9306909000")
 
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   val giveFeedbackLink = {

@@ -426,6 +426,7 @@ object AppConfigSpec {
       |urls.nationalClearanceHub="urls.nationalClearanceHub"
       |urls.hmrcExchangeRatesFor2021="https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2021-monthly"
       |urls.nationalAdditionalCodes="https://www.gov.uk/government/publications/national-additional-codes-to-declare-with-data-element-617-of-the-customs-declaration-service"
+      |urls.commodityCode9306909000 = "https://www.trade-tariff.service.gov.uk/xi/commodities/9306909000?country=KP#export"
       |
       |urls.procedureCodes.removalOfGoodsFromExciseWarehouse = "https://www.gov.uk/guidance/receive-goods-into-and-remove-goods-from-an-excise-warehouse-excise-notice-197"
       |urls.procedureCodes.onwardSupplyRelief = "https://www.gov.uk/guidance/check-if-you-can-claim-vat-relief-on-goods-imported-into-northern-ireland-for-onward-supply-to-the-eu#onward-supply-relief-osr"
@@ -478,7 +479,6 @@ object AppConfigSpec {
       |guidance.clearingGoodsFromToUK = "https://www.gov.uk/guidance/national-clearance-hub-for-goods-entering-leaving-or-transiting-the-eu"
       |guidance.commodityCode0306310010 = "https://www.trade-tariff.service.gov.uk/commodities/0306310010#export"
       |guidance.commodityCode2208303000 = "https://www.trade-tariff.service.gov.uk/commodities/2208303000#import"
-      |guidance.commodityCode9306909000 = "https://www.trade-tariff.service.gov.uk/xi/commodities/9306909000?country=KP#export"
       |guidance.commodityCodes = "https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports"
       |guidance.eoriService = "https://www.gov.uk/eori"
       |guidance.exportingByPost = "https://www.gov.uk/government/publications/notice-143-a-guide-for-international-post-users/notice-143-a-guide-for-international-post-users"
