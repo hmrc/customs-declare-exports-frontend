@@ -269,7 +269,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
     }
 
     "have fetchSubmissions URL" in {
-      validAppConfig.fetchSubmissions must be("/submissions")
+      validAppConfig.submissions must be("/submissions")
     }
 
     "have selfBaseUrl" in {
@@ -354,7 +354,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
       }
 
       "fetchSubmissions uri is missing" in {
-        intercept[Exception](missingAppConfig.fetchSubmissions).getMessage must be(
+        intercept[Exception](missingAppConfig.submissions).getMessage must be(
           "Missing configuration for Customs Declaration Exports fetch submission URI"
         )
       }

@@ -117,24 +117,25 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
     httpClient
-      .POSTEmpty[Submission](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}/$id/submission")
-
-  def findSubmission(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
-    httpClient
-      .GET[Option[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}/$id/submission")
-
-  def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
-    httpClient
-      .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}/$id/submission/notifications")
-
-  def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
-    httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchNotifications}")
+      .POSTEmpty[Submission](s"${appConfig.customsDeclareExportsBaseUrl}/submission/$id")
 
   def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
-    httpClient.GET[Seq[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchSubmissions}").map { response =>
+    httpClient.GET[Seq[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.submissions}").map { response =>
       logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
       response
     }
+
+  def findSubmission(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
+    httpClient
+      .GET[Seq[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.submissions}", Seq("id" -> id))
+      .map(_.headOption)
+
+  def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
+    httpClient
+      .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}/submission/notifications/$id")
+
+  def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
+    httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchNotifications}")
 
   def fetchMrnStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[MrnStatus]] = {
     val fetchStopwatch = fetchTimer.time()

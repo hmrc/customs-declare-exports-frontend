@@ -118,7 +118,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
           |}
         """.stripMargin
       stubForExports(
-        post(s"/declarations/$id/submission")
+        post(s"/submission/$id")
           .willReturn(
             aResponse()
               .withStatus(Status.CREATED)
@@ -131,7 +131,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
       response.actions must not be empty
 
       verify(
-        postRequestedFor(urlEqualTo(s"/declarations/id/submission"))
+        postRequestedFor(urlEqualTo(s"/submission/$id"))
           .withRequestBody(absent())
       )
     }
@@ -215,25 +215,25 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
   "Find Submission" should {
     "return Ok" in {
       stubForExports(
-        get(s"/declarations/$id/submission")
+        get(s"/submissions?id=${submission.uuid}")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(submission))
+              .withBody(json(Seq(submission)))
           )
       )
 
       val response = await(connector.findSubmission(id))
 
       response mustBe Some(submission)
-      verify(getRequestedFor(urlEqualTo(s"/declarations/$id/submission")))
+      verify(getRequestedFor(urlEqualTo(s"/submissions?id=${submission.uuid}")))
     }
   }
 
   "Find Notifications" should {
     "return Ok" in {
       stubForExports(
-        get(s"/declarations/$id/submission/notifications")
+        get(s"/submission/notifications/$id")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -244,7 +244,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
       val response = await(connector.findNotifications(id))
 
       response mustBe Seq(notification)
-      verify(getRequestedFor(urlEqualTo(s"/declarations/$id/submission/notifications")))
+      verify(getRequestedFor(urlEqualTo(s"/submission/notifications/$id")))
     }
   }
 
