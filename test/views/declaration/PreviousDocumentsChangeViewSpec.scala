@@ -19,7 +19,6 @@ package views.declaration
 import base.Injector
 import forms.declaration.Document
 import models.Mode
-import models.declaration.DocumentCategory.SimplifiedDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import utils.ListItem
@@ -29,8 +28,8 @@ import views.html.declaration.previousDocuments.previous_documents_change
 class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
 
   private val page = instanceOf[previous_documents_change]
-  private val document = Document("750", "reference", SimplifiedDeclaration, Some("3"))
-  private val form = Document.form().fill(document)
+  private val document = Document("750", "reference", Some("3"))
+  private val form = Document.form.fill(document)
 
   private def createView(mode: Mode = Mode.Normal, documentId: String = ListItem.createId(0, document), form: Form[Document] = form)(
     implicit request: JourneyRequest[_]
@@ -41,16 +40,12 @@ class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
     "have all messages defined" in {
       messages must haveTranslationFor("declaration.previousDocuments.title")
       messages must haveTranslationFor("declaration.previousDocuments.hint")
-      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.error.empty")
-      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.error.incorrect")
       messages must haveTranslationFor("declaration.previousDocuments.documentType.error")
       messages must haveTranslationFor("declaration.previousDocuments.documentType.empty")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference.hint")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference.error")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference.empty")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.label")
-      messages must haveTranslationFor("declaration.previousDocuments.Y")
-      messages must haveTranslationFor("declaration.previousDocuments.Z")
       messages must haveTranslationFor("declaration.previousDocuments.documentType")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier")
@@ -71,17 +66,6 @@ class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
       "display section header" in {
 
         view.getElementById("section-header") must containMessage("declaration.section.4")
-      }
-
-      "display two radio buttons with description" in {
-
-        val view = createView()
-
-        view.getElementById("simplified-declaration") must beSelected
-        view.getElementsByAttributeValue("for", "simplified-declaration") must containMessageForElements("declaration.previousDocuments.Y")
-
-        view.getElementById("related-document") mustNot beSelected
-        view.getElementsByAttributeValue("for", "related-document") must containMessageForElements("declaration.previousDocuments.Z")
       }
 
       "display input with label for Previous document code" in {

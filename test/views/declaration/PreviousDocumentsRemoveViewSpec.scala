@@ -20,7 +20,6 @@ import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.Document
 import models.Mode
-import models.declaration.DocumentCategory.SimplifiedDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import utils.ListItem
@@ -31,8 +30,8 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
 
   private val page = instanceOf[previous_documents_remove]
   private val form = YesNoAnswer.form()
-  private val documentWithRelatesTo = Document("355", "reference", SimplifiedDeclaration, Some("3"))
-  private val documentWithoutRelatesTo = Document("355", "reference", SimplifiedDeclaration, None)
+  private val documentWithRelatesTo = Document("355", "reference", Some("3"))
+  private val documentWithoutRelatesTo = Document("355", "reference", None)
 
   private def createView(
     mode: Mode = Mode.Normal,
@@ -47,9 +46,6 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
       messages must haveTranslationFor("tariff.declaration.addPreviousDocument.clearance.text")
       messages must haveTranslationFor("declaration.previousDocuments.documentType.label")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference.summary.label")
-      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.summary.label")
-      messages must haveTranslationFor("declaration.previousDocuments.Y")
-      messages must haveTranslationFor("declaration.previousDocuments.Z")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.summary.label")
       messages must haveTranslationFor("declaration.previousDocuments.title")
       messages must haveTranslationFor("declaration.previousDocuments.remove.title")
@@ -84,12 +80,10 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
         view.getElementsByClass("govuk-summary-list__value").get(0).text() mustBe ("Entry Summary Declaration (ENS) (355)")
         view.getElementsByClass("govuk-summary-list__key").get(1) must containMessage("declaration.previousDocuments.documentReference.summary.label")
         view.getElementsByClass("govuk-summary-list__value").get(1).text() mustBe ("reference")
-        view.getElementsByClass("govuk-summary-list__key").get(2) must containMessage("declaration.previousDocuments.documentCategory.summary.label")
-        view.getElementsByClass("govuk-summary-list__value").get(2) must containMessage("declaration.previousDocuments.Y")
-        view.getElementsByClass("govuk-summary-list__key").get(3) must containMessage(
+        view.getElementsByClass("govuk-summary-list__key").get(2) must containMessage(
           "declaration.previousDocuments.goodsItemIdentifier.summary.label"
         )
-        view.getElementsByClass("govuk-summary-list__value").get(3).text() mustBe "3"
+        view.getElementsByClass("govuk-summary-list__value").get(2).text() mustBe "3"
       }
 
       "display summary list when document doesn't contain Relates to" in {
@@ -100,13 +94,11 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
         view.getElementsByClass("govuk-summary-list__value").get(0).text() mustBe "Entry Summary Declaration (ENS) (355)"
         view.getElementsByClass("govuk-summary-list__key").get(1) must containMessage("declaration.previousDocuments.documentReference.summary.label")
         view.getElementsByClass("govuk-summary-list__value").get(1).text() mustBe "reference"
-        view.getElementsByClass("govuk-summary-list__key").get(2) must containMessage("declaration.previousDocuments.documentCategory.summary.label")
-        view.getElementsByClass("govuk-summary-list__value").get(2) must containMessage("declaration.previousDocuments.Y")
         intercept[IndexOutOfBoundsException] {
-          view.getElementsByClass("govuk-summary-list__key").get(3).text()
+          view.getElementsByClass("govuk-summary-list__key").get(2).text()
         }
         intercept[IndexOutOfBoundsException] {
-          view.getElementsByClass("govuk-summary-list__value").get(3).text()
+          view.getElementsByClass("govuk-summary-list__value").get(2).text()
         }
       }
 

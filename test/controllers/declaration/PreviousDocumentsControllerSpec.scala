@@ -18,7 +18,6 @@ package controllers.declaration
 
 import base.ControllerWithoutFormSpec
 import forms.declaration.{Document, DocumentSpec, PreviousDocumentsData}
-import models.declaration.DocumentCategory.SimplifiedDeclaration
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -82,22 +81,12 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
     "return 400 (BAD_REQUEST)" when {
 
-      "user put incorrect data" in {
-
-        val incorrectForm = DocumentSpec.json("355", "reference", "incorrect", "")
-
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-        verifyPage()
-      }
-
       "user put duplicated item" in {
 
-        val document = Document("355", "reference", SimplifiedDeclaration, Some("123"))
+        val document = Document("355", "reference", Some("123"))
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
-        val duplicatedForm = Json.toJson(Document("355", "reference", SimplifiedDeclaration, Some("123")))
+        val duplicatedForm = Json.toJson(Document("355", "reference", Some("123")))
 
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(duplicatedForm))
 
@@ -107,10 +96,10 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
       "user reach maximum amount of items" in {
 
-        val document = Document("355", "reference", SimplifiedDeclaration, Some("123"))
+        val document = Document("355", "reference", Some("123"))
         withNewCaching(aDeclaration(withPreviousDocuments(PreviousDocumentsData(Seq.fill(PreviousDocumentsData.maxAmountOfItems)(document)))))
 
-        val correctForm = Json.toJson(Document("355", "reference", SimplifiedDeclaration, None))
+        val correctForm = Json.toJson(Document("355", "reference", None))
 
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(correctForm))
 
@@ -123,7 +112,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
       "user put correct data" in {
 
-        val correctForm = Json.toJson(Document("355", "reference", SimplifiedDeclaration, None))
+        val correctForm = Json.toJson(Document("355", "reference", None))
 
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(correctForm))
 
@@ -137,7 +126,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
         withNewCaching(aDeclaration(withoutPreviousDocuments()))
 
-        val emptyForm = DocumentSpec.json("", "", "", "")
+        val emptyForm = DocumentSpec.json("", "", "")
         ()
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(emptyForm))
 

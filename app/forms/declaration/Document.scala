@@ -17,20 +17,15 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
-import models.declaration.DocumentCategory
-import models.declaration.DocumentCategory.{RelatedDocument, SimplifiedDeclaration}
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, FormError, Forms}
-import play.api.libs.json.{JsValue, Json}
+import play.api.data.{Form, FormError, Forms, Mapping}
+import play.api.libs.json.Json
 import services.DocumentType
 import utils.validators.forms.FieldValidator._
 
-case class Document(documentType: String, documentReference: String, documentCategory: DocumentCategory, goodsItemIdentifier: Option[String]) {
-  def toJson: JsValue = Json.toJson(this)(Document.format)
-}
+case class Document(documentType: String, documentReference: String, goodsItemIdentifier: Option[String])
 
 object Document extends DeclarationPage {
 
@@ -38,18 +33,14 @@ object Document extends DeclarationPage {
 
   val formId = "PreviousDocuments"
 
-  val correctDocumentCategories = Set(SimplifiedDeclaration.value, RelatedDocument.value)
+  val mapping = Forms.mapping(documentTypeMapping, documentReferenceMapping, goodsIdentifierMapping)(Document.apply)(Document.unapply)
 
-  val mapping =
-    Forms.mapping(documentTypeMapping, documentReferenceMapping, documentCategoryMapping, goodsIdentifierMapping)(Document.apply)(Document.unapply)
-
-  def form(): Form[Document] = Form(mapping)
+  def form: Form[Document] = Form(mapping)
 
   def treatLikeOptional(document: Form[Document]): Form[Document] = {
     val errorsToIgnore = Seq(
       FormError("documentType", "declaration.previousDocuments.documentType.empty"),
-      FormError("documentReference", "declaration.previousDocuments.documentReference.empty"),
-      FormError("documentCategory", "declaration.previousDocuments.documentCategory.error.empty")
+      FormError("documentReference", "declaration.previousDocuments.documentReference.empty")
     )
 
     if (document.errors == errorsToIgnore && document.data.get("goodsItemIdentifier").getOrElse("").isEmpty)
@@ -57,19 +48,12 @@ object Document extends DeclarationPage {
     else document
   }
 
-  private def goodsIdentifierMapping =
-    "goodsItemIdentifier" -> optional(text().verifying("declaration.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
+  private def documentTypeMapping: (String, Mapping[String]) =
+    "documentType" -> text()
+      .verifying("declaration.previousDocuments.documentType.empty", nonEmpty)
+      .verifying("declaration.previousDocuments.documentType.error", isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code)))
 
-  private def documentCategoryMapping =
-    "documentCategory" -> requiredRadio("declaration.previousDocuments.documentCategory.error.empty")
-      .verifying("declaration.previousDocuments.documentCategory.error.empty", nonEmpty)
-      .verifying("declaration.previousDocuments.documentCategory.error.incorrect", isEmpty or isContainedIn(correctDocumentCategories))
-      .transform[DocumentCategory]({
-        case SimplifiedDeclaration.value => SimplifiedDeclaration
-        case RelatedDocument.value       => RelatedDocument
-      }, category => category.value)
-
-  private def documentReferenceMapping =
+  private def documentReferenceMapping: (String, Mapping[String]) =
     "documentReference" -> text()
       .verifying("declaration.previousDocuments.documentReference.empty", nonEmpty)
       .verifying(
@@ -77,10 +61,8 @@ object Document extends DeclarationPage {
         isEmpty or (isAlphanumericWithSpecialCharacters(Set('-', '/', ':')) and noLongerThan(35))
       )
 
-  private def documentTypeMapping =
-    "documentType" -> text()
-      .verifying("declaration.previousDocuments.documentType.empty", nonEmpty)
-      .verifying("declaration.previousDocuments.documentType.error", isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code)))
+  private def goodsIdentifierMapping: (String, Mapping[Option[String]]) =
+    "goodsItemIdentifier" -> optional(text.verifying("declaration.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.addPreviousDocument.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

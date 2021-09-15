@@ -16,12 +16,15 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
 import controllers.navigation.Navigator
 import controllers.util._
 import forms.declaration.Document._
 import forms.declaration.{Document, PreviousDocumentsData}
+import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -29,9 +32,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.previousDocuments.previous_documents
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class PreviousDocumentsController @Inject()(
   authenticate: AuthAction,
@@ -44,18 +44,18 @@ class PreviousDocumentsController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(previousDocumentsPage(mode, form()))
+    Ok(previousDocumentsPage(mode, form))
   }
 
   def savePreviousDocuments(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = if (isFirstPreviousDocument) Document.treatLikeOptional(form().bindFromRequest()) else form().bindFromRequest()
-
-    val cache = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty))
+    val boundForm = if (isFirstPreviousDocument) Document.treatLikeOptional(form.bindFromRequest) else form.bindFromRequest
 
     if (boundForm.value.isEmpty && boundForm.errors.isEmpty)
       updateCache(PreviousDocumentsData(Seq.empty)).map { _ =>
-        navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
-      } else
+        navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage)
+      } else {
+      val cache = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty))
+
       MultipleItemsHelper
         .add(
           boundForm,
@@ -68,14 +68,16 @@ class PreviousDocumentsController @Inject()(
           formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors))),
           updatedCache =>
             updateCache(PreviousDocumentsData(updatedCache))
-              .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage))
+              .map(_ => navigator.continueTo(mode, routes.PreviousDocumentsSummaryController.displayPage))
         )
+    }
   }
 
-  private def updateCache(formData: PreviousDocumentsData)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(formData: PreviousDocumentsData)(implicit req: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(previousDocuments = Some(formData)))
 
-  private def isFirstPreviousDocument()(implicit request: JourneyRequest[AnyContent]): Boolean = !request.cacheModel.hasPreviousDocuments
+  private def isFirstPreviousDocument(implicit request: JourneyRequest[AnyContent]): Boolean =
+    !request.cacheModel.hasPreviousDocuments
 }
 
 object PreviousDocumentsController {

@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
+@import controllers.declaration.routes.PreviousDocumentsController
 @import controllers.navigation.Navigator
 @import forms.declaration.Document
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.{BackButton, Title}
-@import views.html.components.gds._
+@import views.html.components.gds.gdsMainTemplate
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -39,5 +39,4 @@
 
         @editContent(mode, form)
     }
-
 }

@@ -19,7 +19,6 @@ package views.declaration
 import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.Document
-import models.declaration.DocumentCategory.{RelatedDocument, SimplifiedDeclaration}
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import play.api.data.Form
@@ -31,8 +30,8 @@ class PreviousDocumentsSummaryViewSpec extends UnitViewSpec with ExportsDeclarat
 
   private val page = instanceOf[previous_documents_summary]
   private val form = YesNoAnswer.form()
-  private val document1 = Document("355", "reference1", SimplifiedDeclaration, Some("3"))
-  private val document2 = Document("740", "reference2", RelatedDocument, None)
+  private val document1 = Document("355", "reference1", Some("3"))
+  private val document2 = Document("740", "reference2", None)
   private val documents = Seq(document1, document2)
 
   private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = form, documents: Seq[Document] = documents)(

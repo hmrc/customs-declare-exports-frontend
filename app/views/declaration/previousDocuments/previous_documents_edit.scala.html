@@ -14,27 +14,22 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
 @import forms.declaration.Document
 @import models.requests.JourneyRequest
-@import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
+@import play.twirl.api.HtmlFormat
 @import services.DocumentType
 @import services.view.AutoCompleteItem
-@import views.components.gds.Styles._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles.gdsPageLegend
 @import views.html.components.gds._
-@import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
-@import models.declaration.DocumentCategory._
-@import views.helpers.ErrorMapper.radioGroupErrors
-@import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
     formGroupWrapper: formGroupWrapper,
     govukButton: GovukButton,
-    govukRadios: GovukRadios,
-    errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
     exportsInputText: exportsInputText,
@@ -50,34 +45,6 @@
     <span class="govuk-hint">
         @messages("declaration.previousDocuments.hint")
     </span>
-}
-
-@documentCategory = {
-    @govukRadios(Radios(
-        name = "documentCategory",
-        fieldset = Some(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages("declaration.previousDocuments.reasonQuestion")),
-                isPageHeading = false,
-                classes = "govuk-label--m"
-            ))
-        )),
-        items = Seq(
-            RadioItem(
-                id = Some("simplified-declaration"),
-                value = Some(SimplifiedDeclaration.value),
-                content = Text(messages("declaration.previousDocuments.Y")),
-                checked = form("documentCategory").value.contains(SimplifiedDeclaration.value)
-            ),
-            RadioItem(
-                id = Some("related-document"),
-                value = Some(RelatedDocument.value),
-                content = Text(messages("declaration.previousDocuments.Z")),
-                checked = form("documentCategory").value.contains(RelatedDocument.value)
-            )
-        ),
-        errorMessage = form("documentCategory").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-    ))
 }
 
 @documentType = {
@@ -112,12 +79,9 @@
         @pageHint
         @documentType
         @documentReference
-        @documentCategory
         @goodsItemIdentifier
     }
 }
-
-@errorSummary(radioGroupErrors("documentCategory", "simplified-declaration", form.errors))
 
 @sectionHeader(messages("declaration.section.4"))
 
@@ -127,7 +91,7 @@
         classes = gdsPageLegend,
         isPageHeading = true
     )),
-    html = HtmlFormat.fill(immutable.Seq(
+    html = HtmlFormat.fill(List(
         pageFields,
         tariffExpander(Document, request.declarationType)(messages, appConfig),
         saveButtons()

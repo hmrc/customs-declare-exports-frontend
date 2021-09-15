@@ -19,7 +19,6 @@ package views.declaration.summary
 import base.Injector
 import forms.declaration.Document
 import models.Mode
-import models.declaration.DocumentCategory.{RelatedDocument, SimplifiedDeclaration}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.related_documents
@@ -49,7 +48,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with In
 
       "documents exists" in {
 
-        val data = Seq(Document("325", "123456", RelatedDocument, None), Document("271", "654321", SimplifiedDeclaration, None))
+        val data = Seq(Document("325", "123456", None), Document("271", "654321", None))
 
         val view = section(Mode.Change, data)(messages)
         val table = view.getElementById("previous-documents")

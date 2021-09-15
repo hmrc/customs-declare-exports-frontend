@@ -18,7 +18,6 @@ package views.declaration
 import base.Injector
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.{Document, PreviousDocumentsData}
-import models.declaration.DocumentCategory.{RelatedDocument, SimplifiedDeclaration}
 import models.declaration.Locations
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
@@ -33,7 +32,7 @@ import views.tags.ViewTest
 class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   private val page = instanceOf[previous_documents]
-  private val form: Form[Document] = Document.form()
+  private val form: Form[Document] = Document.form
 
   private def createView(mode: Mode = Mode.Normal, form: Form[Document] = form)(implicit request: JourneyRequest[_]): JsonDocument =
     page(mode, form)(request, messages)
@@ -43,16 +42,12 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.previousDocuments.title")
       messages must haveTranslationFor("declaration.previousDocuments.hint")
-      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.error.empty")
-      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.error.incorrect")
       messages must haveTranslationFor("declaration.previousDocuments.documentType.error")
       messages must haveTranslationFor("declaration.previousDocuments.documentType.empty")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference.hint")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference.error")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference.empty")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.label")
-      messages must haveTranslationFor("declaration.previousDocuments.Y")
-      messages must haveTranslationFor("declaration.previousDocuments.Z")
       messages must haveTranslationFor("declaration.previousDocuments.documentType")
       messages must haveTranslationFor("declaration.previousDocuments.documentReference")
       messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier")
@@ -69,17 +64,6 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
       "display section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.4")
-      }
-
-      "display two radio buttons with description (not selected)" in {
-
-        val view = createView(form = Document.form.bindFromRequest(Map.empty))
-
-        view.getElementById("simplified-declaration") mustNot beSelected
-        view.getElementsByAttributeValue("for", "simplified-declaration").text() mustBe messages("declaration.previousDocuments.Y")
-
-        view.getElementById("related-document") mustNot beSelected
-        view.getElementsByAttributeValue("for", "related-document").text() mustBe messages("declaration.previousDocuments.Z")
       }
 
       "display empty input with label for Previous document code" in {
@@ -130,7 +114,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
         "there are documents in the cache" in {
 
-          val previousDocuments = PreviousDocumentsData(Seq(Document("MCR", "reference", SimplifiedDeclaration, None)))
+          val previousDocuments = PreviousDocumentsData(Seq(Document("MCR", "reference", None)))
           val requestWithPreviousDocuments = journeyRequest(request.cacheModel.copy(previousDocuments = Some(previousDocuments)))
 
           val backButton = createView()(requestWithPreviousDocuments).getElementById("back-link")
@@ -158,25 +142,8 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
   "Previous Documents View when filled" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      "display selected second radio button - Simplified Declaration (Y)" in {
-
-        val view = createView(form = Document.form.fill(Document("", "", SimplifiedDeclaration, Some(""))))
-
-        view.getElementById("simplified-declaration") must beSelected
-        view.getElementById("related-document") mustNot beSelected
-      }
-
-      "display selected third radio button - Previous Documents (Z)" in {
-
-        val view = createView(form = Document.form.fill(Document("", "", RelatedDocument, Some(""))))
-
-        view.getElementById("simplified-declaration") mustNot beSelected
-        view.getElementById("related-document") must beSelected
-      }
-
       "display data in Document type input" in {
-
-        val view = createView(form = Document.form.fill(Document("Test", "", RelatedDocument, Some(""))))
+        val view = createView(form = Document.form.fill(Document("Test", "", Some(""))))
 
         view.getElementById("documentType").attr("value") must be("Test")
         view.getElementById("documentReference").attr("value") mustBe empty
@@ -184,8 +151,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
       }
 
       "display data in Previous DUCR or MUCR input" in {
-
-        val view = createView(form = Document.form.fill(Document("", "Test", RelatedDocument, Some(""))))
+        val view = createView(form = Document.form.fill(Document("", "Test", Some(""))))
 
         view.getElementById("documentType").attr("value") mustBe empty
         view.getElementById("documentReference").attr("value") must be("Test")
@@ -194,7 +160,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
       "display data in Previous Goods Identifier input" in {
 
-        val view = createView(form = Document.form.fill(Document("", "", RelatedDocument, Some("Test"))))
+        val view = createView(form = Document.form.fill(Document("", "", Some("Test"))))
 
         view.getElementById("documentType").attr("value") mustBe empty
         view.getElementById("documentReference").attr("value") mustBe empty
@@ -203,10 +169,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
 
       "display all data entered" in {
 
-        val view = createView(form = Document.form.fill(Document("Test", "Test", SimplifiedDeclaration, Some("Test"))))
-
-        view.getElementById("simplified-declaration") must beSelected
-        view.getElementById("related-document") mustNot beSelected
+        val view = createView(form = Document.form.fill(Document("Test", "Test", Some("Test"))))
 
         view.getElementById("documentType").attr("value") must be("Test")
         view.getElementById("documentReference").attr("value") must be("Test")
