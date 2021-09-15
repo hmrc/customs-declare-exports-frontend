@@ -16,14 +16,11 @@
 
 package connectors
 
-import java.time.{ZoneOffset, ZonedDateTime}
-import java.util.UUID
-
 import base.TestHelper._
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
-import forms.{CancelDeclaration, Ducr, Lrn}
+import forms.{CancelDeclaration, Lrn}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
@@ -34,6 +31,9 @@ import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
 import play.api.test.Helpers._
 import services.cache.ExportsDeclarationBuilder
+
+import java.time.{ZoneOffset, ZonedDateTime}
+import java.util.UUID
 
 class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with ExportsDeclarationBuilder with ScalaFutures {
 
@@ -227,25 +227,6 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
 
       response mustBe Some(submission)
       verify(getRequestedFor(urlEqualTo(s"/declarations/$id/submission")))
-    }
-  }
-
-  "Find Submission by Ducr" should {
-    "return Ok" in {
-      val ducr = Ducr("3FO796245431353-7")
-      stubForExports(
-        get(s"/declarations/${ducr.ducr}/submission/ducr")
-          .willReturn(
-            aResponse()
-              .withStatus(Status.OK)
-              .withBody(json(submission))
-          )
-      )
-
-      val response = await(connector.findSubmissionByDucr(ducr))
-
-      response mustBe Some(submission)
-      verify(getRequestedFor(urlEqualTo(s"/declarations/${ducr.ducr}/submission/ducr")))
     }
   }
 

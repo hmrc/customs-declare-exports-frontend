@@ -16,29 +16,26 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
-import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ConsignmentReferences
-import forms.declaration.ConsignmentReferences.{ducrId, form}
-import javax.inject.Inject
+import forms.declaration.ConsignmentReferences.form
 import models.DeclarationType.SUPPLEMENTARY
 import models.Mode
 import models.requests.JourneyRequest
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.consignment_references
 
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
+
 class ConsignmentReferencesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
-  exportsConnector: CustomsDeclareExportsConnector,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
@@ -55,10 +52,7 @@ class ConsignmentReferencesController @Inject()(
 
   def submitConsignmentReferences(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form(request.declarationType, request.cacheModel.additionalDeclarationType).bindFromRequest()
-    boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
-      verifyDucrDuplicationIfNotSupplementary(mode, boundForm, _)
-    )
+    boundForm.fold(formWithErrors => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))), updateCacheAndContinue(mode, _))
   }
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
@@ -69,20 +63,4 @@ class ConsignmentReferencesController @Inject()(
     updateExportsDeclarationSyncDirect(_.copy(consignmentReferences = Some(formData)))
       .map(_ => navigator.continueTo(mode, nextPage))
 
-  private def verifyDucrDuplicationIfNotSupplementary(mode: Mode, form: Form[ConsignmentReferences], consignmentReferences: ConsignmentReferences)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    if (request.declarationType == SUPPLEMENTARY) updateCacheAndContinue(mode, consignmentReferences)
-    else verifyDucrDuplication(mode, form, consignmentReferences)
-
-  private def verifyDucrDuplication(mode: Mode, form: Form[ConsignmentReferences], consignmentReferences: ConsignmentReferences)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    exportsConnector.findSubmissionByDucr(consignmentReferences.ducr).flatMap {
-      _.fold(updateCacheAndContinue(mode, consignmentReferences)) { _ =>
-        val data = Map(ducrId -> consignmentReferences.ducr.ducr, "lrn" -> consignmentReferences.lrn.value)
-        val formWithErrors = form.copy(data = data, errors = ConsignmentReferences.duplicatedDucr)
-        Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors)))
-      }
-    }
 }

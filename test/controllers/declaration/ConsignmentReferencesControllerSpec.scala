@@ -16,8 +16,6 @@
 
 package controllers.declaration
 
-import scala.concurrent.Future
-
 import base.ControllerSpec
 import base.ExportsTestData.eidrDateStamp
 import forms.declaration.ConsignmentReferences
@@ -33,7 +31,6 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import testdata.SubmissionsTestData.submission
 import views.html.declaration.consignment_references
 
 class ConsignmentReferencesControllerSpec extends ControllerSpec {
@@ -44,7 +41,6 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
-    mockCustomsDeclareExportsConnector,
     navigator,
     stubMessagesControllerComponents(),
     consignmentReferencesPage
@@ -120,26 +116,10 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
       "return 303 (SEE_OTHER) and redirect to 'Link DUCR to MUCR' page" in {
         withNewCaching(request.cacheModel)
 
-        when(mockCustomsDeclareExportsConnector.findSubmissionByDucr(any[Ducr])(any(), any()))
-          .thenReturn(Future.successful(None))
-
         val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage()
-      }
-
-      "return 400 (BAD_REQUEST)" when {
-        "a user enters a DUCR that they have submitted before" in {
-          withNewCaching(request.cacheModel)
-
-          when(mockCustomsDeclareExportsConnector.findSubmissionByDucr(any[Ducr])(any(), any()))
-            .thenReturn(Future.successful(Some(submission)))
-
-          val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
-
-          status(result) mustBe BAD_REQUEST
-        }
       }
     }
 
