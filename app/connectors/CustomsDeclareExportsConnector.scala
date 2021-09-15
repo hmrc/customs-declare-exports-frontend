@@ -44,7 +44,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   }
 
   def deleteDraftDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
-    httpClient.DELETE[Unit](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}/$id")
+    httpClient.DELETE[Unit](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarationsPath}/$id")
 
   private val createTimer: Timer = metrics.defaultRegistry.timer("declaration.create.timer")
 
@@ -53,7 +53,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     val createStopwatch = createTimer.time()
     httpClient
       .POST[ExportsDeclarationExchange, ExportsDeclarationExchange](
-        s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}",
+        s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarationsPath}",
         declaration
       )
       .andThen {
@@ -73,7 +73,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     val updateStopwatch = updateTimer.time()
     httpClient
       .PUT[ExportsDeclarationExchange, ExportsDeclarationExchange](
-        s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}/${declaration.id}",
+        s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarationsPath}/${declaration.id}",
         ExportsDeclarationExchange(declaration)
       )
       .andThen {
@@ -89,7 +89,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   def findDeclarations(page: Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = Page.bindable.unbind("page", page)
     httpClient
-      .GET[Paginated[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}?$pagination")
+      .GET[Paginated[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarationsPath}?$pagination")
       .map(_.map(_.toExportsDeclaration))
   }
 
@@ -98,7 +98,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
     httpClient
       .GET[Paginated[ExportsDeclarationExchange]](
-        s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}?status=DRAFT&$pagination&$sort"
+        s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarationsPath}?status=DRAFT&$pagination&$sort"
       )
       .map(_.map(_.toExportsDeclaration))
   }
@@ -108,7 +108,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   def findDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
     val fetchStopwatch = fetchTimer.time()
     httpClient
-      .GET[Option[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}/$id")
+      .GET[Option[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarationsPath}/$id")
       .map(_.map(_.toExportsDeclaration))
       .andThen {
         case _ => fetchStopwatch.stop()
@@ -117,34 +117,34 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
     httpClient
-      .POSTEmpty[Submission](s"${appConfig.customsDeclareExportsBaseUrl}/submission/$id")
+      .POSTEmpty[Submission](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.singleSubmissionPath}/$id")
 
   def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
-    httpClient.GET[Seq[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.submissions}").map { response =>
+    httpClient.GET[Seq[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.submissionsPath}").map { response =>
       logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
       response
     }
 
   def findSubmission(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient
-      .GET[Seq[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.submissions}", Seq("id" -> id))
+      .GET[Seq[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.submissionsPath}", Seq("id" -> id))
       .map(_.headOption)
 
   def findSubmissionsByLrn(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
     httpClient
-      .GET[Seq[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.submissions}", Seq("lrn" -> lrn.value))
+      .GET[Seq[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.submissionsPath}", Seq("lrn" -> lrn.value))
 
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient
-      .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}/submission/notifications/$id")
+      .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.singleSubmissionPath}${appConfig.notificationsPath}/$id")
 
   def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
-    httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchNotifications}")
+    httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.notificationsPath}")
 
   def fetchMrnStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[MrnStatus]] = {
     val fetchStopwatch = fetchTimer.time()
     httpClient
-      .GET[Option[MrnStatus]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchMrnStatus}/$mrn")
+      .GET[Option[MrnStatus]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchMrnStatusPath}/$mrn")
       .andThen {
         case _ => fetchStopwatch.stop()
       }
@@ -153,14 +153,14 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   def createCancellation(cancellation: CancelDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     logPayload("Create Cancellation Request", cancellation)
     httpClient
-      .POST[CancelDeclaration, HttpResponse](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.cancelDeclaration}", cancellation)
+      .POST[CancelDeclaration, HttpResponse](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.cancelDeclarationPath}", cancellation)
       .filter(_.status == Status.OK)
       .map(_ => (): Unit)
   }
 
   def getVerifiedEmailAddress(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[VerifiedEmailAddress]] =
     httpClient
-      .GET[Option[VerifiedEmailAddress]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchVerifiedEmail}/${eori.value}")
+      .GET[Option[VerifiedEmailAddress]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchVerifiedEmailPath}/${eori.value}")
       .map { maybeVerifiedEmail =>
         maybeVerifiedEmail match {
           case Some(_) =>

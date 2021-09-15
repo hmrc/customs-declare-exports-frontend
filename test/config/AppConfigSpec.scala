@@ -17,8 +17,6 @@
 package config
 
 import base.UnitWithMocksSpec
-
-import java.util.concurrent.TimeUnit
 import com.typesafe.config.{Config, ConfigFactory}
 import config.AppConfigSpec.configBareMinimum
 import forms.Choice
@@ -26,6 +24,7 @@ import models.DeclarationType
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.FiniteDuration
 
 class AppConfigSpec extends UnitWithMocksSpec {
@@ -33,8 +32,7 @@ class AppConfigSpec extends UnitWithMocksSpec {
   private val environment = Environment.simple()
 
   private val validConfig: Config =
-    ConfigFactory.parseString(
-      configBareMinimum + """
+    ConfigFactory.parseString(configBareMinimum + """
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
         |google-analytics.host=localhostGoogle
@@ -49,16 +47,15 @@ class AppConfigSpec extends UnitWithMocksSpec {
         |microservice.services.customs-declare-exports.submit-declaration=/declaration
         |microservice.services.customs-declare-exports.declarations=/v2/declaration
         |microservice.services.customs-declare-exports.cancel-declaration=/cancellations
-        |microservice.services.customs-declare-exports.fetch-notifications=/notifications
-        |microservice.services.customs-declare-exports.fetch-submissions=/submissions
-        |microservice.services.customs-declare-exports.fetch-submission-notifications=/submission-notifications
+        |microservice.services.customs-declare-exports.notifications=/notifications
+        |microservice.services.customs-declare-exports.submission=/submission
+        |microservice.services.customs-declare-exports.submissions=/submissions
         |microservice.services.customs-declare-exports.fetch-ead=/ead
         |microservice.services.customs-declare-exports-movements.host=localhost
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
         |platform.frontend.host="self/base-url"
-      """.stripMargin
-    )
+      """.stripMargin)
 
   private val validServicesConfiguration = Configuration(validConfig)
   private val missingValuesServicesConfiguration = Configuration(ConfigFactory.parseString(configBareMinimum))
@@ -253,23 +250,27 @@ class AppConfigSpec extends UnitWithMocksSpec {
     }
 
     "have submit declaration URL" in {
-      validAppConfig.declarations must be("/v2/declaration")
+      validAppConfig.declarationsPath must be("/v2/declaration")
     }
 
     "have cancel declaration URL" in {
-      validAppConfig.cancelDeclaration must be("/cancellations")
+      validAppConfig.cancelDeclarationPath must be("/cancellations")
     }
 
     "have ead URL" in {
-      validAppConfig.fetchMrnStatus must be("/ead")
+      validAppConfig.fetchMrnStatusPath must be("/ead")
     }
 
-    "have fetch notification URL" in {
-      validAppConfig.fetchNotifications must be("/notifications")
+    "have Notifications URL" in {
+      validAppConfig.notificationsPath must be("/notifications")
     }
 
-    "have fetchSubmissions URL" in {
-      validAppConfig.submissions must be("/submissions")
+    "have single Submission URL" in {
+      validAppConfig.singleSubmissionPath must be("/submission")
+    }
+
+    "have Submissions URL" in {
+      validAppConfig.submissionsPath must be("/submissions")
     }
 
     "have selfBaseUrl" in {
@@ -336,32 +337,38 @@ class AppConfigSpec extends UnitWithMocksSpec {
       }
 
       "submit declaration uri is missing" in {
-        intercept[Exception](missingAppConfig.declarations).getMessage must be(
-          "Missing configuration for Customs Declarations Exports submit declaration URI"
+        intercept[Exception](missingAppConfig.declarationsPath).getMessage must be(
+          "Missing configuration for Customs Declarations Exports declaration URI"
         )
       }
 
       "cancel declaration uri is missing" in {
-        intercept[Exception](missingAppConfig.cancelDeclaration).getMessage must be(
+        intercept[Exception](missingAppConfig.cancelDeclarationPath).getMessage must be(
           "Missing configuration for Customs Declaration Export cancel declaration URI"
         )
       }
 
       "fetch mrn status uri is missing" in {
-        intercept[Exception](missingAppConfig.fetchMrnStatus).getMessage must be(
+        intercept[Exception](missingAppConfig.fetchMrnStatusPath).getMessage must be(
           "Missing configuration for Customs Declaration Export fetch mrn status URI"
         )
       }
 
-      "fetchSubmissions uri is missing" in {
-        intercept[Exception](missingAppConfig.submissions).getMessage must be(
-          "Missing configuration for Customs Declaration Exports fetch submission URI"
+      "Submissions uri is missing" in {
+        intercept[Exception](missingAppConfig.submissionsPath).getMessage must be(
+          "Missing configuration for Customs Declaration Exports submissions URI"
         )
       }
 
-      "fetch notifications uri is missing" in {
-        intercept[Exception](missingAppConfig.fetchNotifications).getMessage must be(
-          "Missing configuration for Customs Declarations Exports fetch notification URI"
+      "Single Submission uri is missing" in {
+        intercept[Exception](missingAppConfig.singleSubmissionPath).getMessage must be(
+          "Missing configuration for Customs Declaration Exports single submission URI"
+        )
+      }
+
+      "Notifications uri is missing" in {
+        intercept[Exception](missingAppConfig.notificationsPath).getMessage must be(
+          "Missing configuration for Customs Declarations Exports notifications URI"
         )
       }
     }

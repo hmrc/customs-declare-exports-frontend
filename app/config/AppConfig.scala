@@ -120,32 +120,37 @@ class AppConfig @Inject()(
 
   val guidance = Guidance(loadConfig)
 
-  lazy val declarations = servicesConfig.getConfString(
+  lazy val declarationsPath = servicesConfig.getConfString(
     "customs-declare-exports.declarations",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports declaration URI")
   )
 
-  lazy val submissions = servicesConfig.getConfString(
-    "customs-declare-exports.fetch-submissions",
-    throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch submission URI")
+  lazy val singleSubmissionPath = servicesConfig.getConfString(
+    "customs-declare-exports.submission",
+    throw new IllegalStateException("Missing configuration for Customs Declaration Exports single submission URI")
   )
 
-  lazy val fetchNotifications = servicesConfig.getConfString(
-    "customs-declare-exports.fetch-notifications",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI")
+  lazy val submissionsPath = servicesConfig.getConfString(
+    "customs-declare-exports.submissions",
+    throw new IllegalStateException("Missing configuration for Customs Declaration Exports submissions URI")
   )
 
-  lazy val cancelDeclaration = servicesConfig.getConfString(
+  lazy val notificationsPath = servicesConfig.getConfString(
+    "customs-declare-exports.notifications",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports notifications URI")
+  )
+
+  lazy val cancelDeclarationPath = servicesConfig.getConfString(
     "customs-declare-exports.cancel-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declaration Export cancel declaration URI")
   )
 
-  lazy val fetchMrnStatus = servicesConfig.getConfString(
+  lazy val fetchMrnStatusPath = servicesConfig.getConfString(
     "customs-declare-exports.fetch-ead",
     throw new IllegalStateException("Missing configuration for Customs Declaration Export fetch mrn status URI")
   )
 
-  lazy val fetchVerifiedEmail = servicesConfig.getConfString(
+  lazy val fetchVerifiedEmailPath = servicesConfig.getConfString(
     "customs-declare-exports.fetch-verified-email",
     throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch verified email URI")
   )
