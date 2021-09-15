@@ -16,15 +16,11 @@
 
 package connectors
 
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
-
 import com.codahale.metrics.Timer
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import connectors.exchange.ExportsDeclarationExchange
-import forms.{CancelDeclaration, Ducr}
-import javax.inject.{Inject, Singleton}
+import forms.CancelDeclaration
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
@@ -34,6 +30,10 @@ import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 @Singleton
 class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, metrics: Metrics) extends Logging {
@@ -122,10 +122,6 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   def findSubmission(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient
       .GET[Option[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}/$id/submission")
-
-  def findSubmissionByDucr(ducr: Ducr)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
-    httpClient
-      .GET[Option[Submission]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.declarations}/${ducr.ducr}/submission/ducr")
 
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient
