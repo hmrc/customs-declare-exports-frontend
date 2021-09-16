@@ -26,21 +26,23 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    insetText: exportsInsetText,
+    paragraphBody: paragraphBody,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[NatureOfTransaction])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.natureOfTransaction.title", "declaration.section.4"),
+    title = Title("declaration.natureOfTransaction.heading", "declaration.section.4"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NatureOfTransaction, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.NatureOfTransactionController.saveTransactionType(mode), 'autoComplete -> "off") {
@@ -52,7 +54,7 @@
             name = "natureType",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.natureOfTransaction.title")),
+                    content = Text(messages("declaration.natureOfTransaction.heading")),
                     classes = gdsPageLegend
                 ))
             )),
@@ -96,32 +98,32 @@
                     id = Some("NationalPurposes"),
                     value = Some(NationalPurposes),
                     content = Text(messages("declaration.natureOfTransaction.nationalPurposes")),
-                    hint = Some(Hint(content = Text(messages("declaration.natureOfTransaction.nationalPurposes.hint")))),
                     checked = form("natureType").value.contains(NationalPurposes)
                 ),
                 RadioItem(
                     id = Some("Military"),
                     value = Some(Military),
                     content = Text(messages("declaration.natureOfTransaction.military")),
-                    hint = Some(Hint(content = Text(messages("declaration.natureOfTransaction.military.hint")))),
                     checked = form("natureType").value.contains(Military)
                 ),
                 RadioItem(
                     id = Some("Construction"),
                     value = Some(Construction),
                     content = Text(messages("declaration.natureOfTransaction.construction")),
-                    hint = Some(Hint(content = Text(messages("declaration.natureOfTransaction.construction.hint")))),
                     checked = form("natureType").value.contains(Construction)
                 ),
                 RadioItem(
                     id = Some("Other"),
                     value = Some(Other),
                     content = Text(messages("declaration.natureOfTransaction.other")),
+                    hint = Some(Hint(content = Text(messages("declaration.natureOfTransaction.other.hint")))),
                     checked = form("natureType").value.contains(Other)
                 )
             ),
             errorMessage = form("natureType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+
+        @insetText(content = HtmlContent(paragraphBody(messages("declaration.natureOfTransaction.inset.text"))))
 
         @tariffExpander(NatureOfTransaction, request.declarationType)(messages, appConfig)
 

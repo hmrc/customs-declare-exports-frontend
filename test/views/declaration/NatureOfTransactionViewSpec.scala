@@ -42,24 +42,30 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
   "Nature Of Transaction View on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
       "have proper messages for labels" in {
-        messages must haveTranslationFor("declaration.natureOfTransaction.title")
-        messages must haveTranslationFor("declaration.natureOfTransaction.header")
+        messages must haveTranslationFor("declaration.natureOfTransaction.heading")
         messages must haveTranslationFor("declaration.natureOfTransaction.sale")
+        messages must haveTranslationFor("declaration.natureOfTransaction.sale.hint")
         messages must haveTranslationFor("declaration.natureOfTransaction.return")
+        messages must haveTranslationFor("declaration.natureOfTransaction.return.hint")
         messages must haveTranslationFor("declaration.natureOfTransaction.donation")
+        messages must haveTranslationFor("declaration.natureOfTransaction.donation.hint")
         messages must haveTranslationFor("declaration.natureOfTransaction.processing")
+        messages must haveTranslationFor("declaration.natureOfTransaction.processing.hint")
         messages must haveTranslationFor("declaration.natureOfTransaction.processed")
+        messages must haveTranslationFor("declaration.natureOfTransaction.processed.hint")
         messages must haveTranslationFor("declaration.natureOfTransaction.nationalPurposes")
         messages must haveTranslationFor("declaration.natureOfTransaction.military")
         messages must haveTranslationFor("declaration.natureOfTransaction.construction")
         messages must haveTranslationFor("declaration.natureOfTransaction.other")
+        messages must haveTranslationFor("declaration.natureOfTransaction.other.hint")
         messages must haveTranslationFor("declaration.natureOfTransaction.empty")
         messages must haveTranslationFor("declaration.natureOfTransaction.error")
+        messages must haveTranslationFor("declaration.natureOfTransaction.inset.text")
       }
 
       val view = createView()
       "display page title" in {
-        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.natureOfTransaction.title")
+        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.natureOfTransaction.heading")
       }
 
       "display section header" in {
@@ -101,6 +107,11 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
       "display radio button with Other option" in {
         view.getElementById("Other").attr("value") mustBe Other
         view.getElementsByAttributeValue("for", "Other") must containMessageForElements("declaration.natureOfTransaction.other")
+      }
+
+      "display inset text" in {
+        val insetTextSection = view.getElementsByClass("govuk-inset-text").first()
+        insetTextSection must containMessage("declaration.natureOfTransaction.inset.text")
       }
 
       "display 'Back' button that links to 'Total Number Of Items' page" in {
