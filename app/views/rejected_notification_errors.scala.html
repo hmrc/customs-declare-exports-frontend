@@ -31,6 +31,7 @@
     link: link,
     govukTable: GovukTable,
     govukSummaryList : GovukSummaryList,
+    govukWarningText: GovukWarningText,
     appConfig: AppConfig,
     changeErrorLinkConfig: ChangeErrorLinkConfig
 )
@@ -90,6 +91,11 @@
 
             @sectionHeader(messages("rejected.notification.ducr", declaration.ducr.getOrElse(messages("rejected.notification.ducr.missing"))))
             @pageTitle(text = messages("rejected.notification.title"))
+
+            @govukWarningText(WarningText(
+                iconFallbackText = messages("site.warning"),
+                content = Text(messages("rejected.notification.warning"))
+            ))
 
             @govukSummaryList(SummaryList(
                 rows = summaryRows
