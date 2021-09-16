@@ -20,14 +20,22 @@ import base.ExportsTestData._
 import base.{JourneyTypeTestRunner, TestHelper}
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
-import forms.{Ducr, Lrn}
+import forms.{Ducr, Lrn, LrnValidator}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}
+import uk.gov.hmrc.http.HeaderCarrier
 
-class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with ScalaFutures {
 
   import ConsignmentReferencesSpec._
 
@@ -77,9 +85,11 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
           val form = getBoundedForm(emptyJSON)
 
           form.hasErrors mustBe true
-          form.errors.length must equal(2)
-          form.errors(0).message must equal("error.required")
-          form.errors(1).message must equal("error.required")
+          form.errors.length mustBe 2
+          form.errors(0).key mustBe "ducr.ducr"
+          form.errors(0).message mustBe "error.required"
+          form.errors(1).key mustBe "lrn"
+          form.errors(1).message mustBe "error.required"
         }
       }
 
@@ -88,20 +98,22 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
           val form = getBoundedForm(emptyJSON, Some(SUPPLEMENTARY_SIMPLIFIED))
 
           form.hasErrors mustBe true
-          form.errors.length must equal(3)
-          form.errors(0).message must equal("error.required")
-          form.errors(1).message must equal("error.required")
-          form.errors(2).message must equal("declaration.consignmentReferences.supplementary.mrn.error.empty")
+          form.errors.length mustBe 3
+          form.errors(0).key mustBe "ducr.ducr"
+          form.errors(0).message mustBe "error.required"
+          form.errors(1).message mustBe "error.required"
+          form.errors(2).message mustBe "declaration.consignmentReferences.supplementary.mrn.error.empty"
         }
 
         "provided with empty input for SUPPLEMENTARY with additionalDecType of SUPPLEMENTARY_EIDR" in {
           val form = getBoundedForm(emptyJSON, Some(SUPPLEMENTARY_EIDR))
 
           form.hasErrors mustBe true
-          form.errors.length must equal(3)
-          form.errors(0).message must equal("error.required")
-          form.errors(1).message must equal("error.required")
-          form.errors(2).message must equal("declaration.consignmentReferences.supplementary.eidr.error.empty")
+          form.errors.length mustBe 3
+          form.errors(0).key mustBe "ducr.ducr"
+          form.errors(0).message mustBe "error.required"
+          form.errors(1).message mustBe "error.required"
+          form.errors(2).message mustBe "declaration.consignmentReferences.supplementary.eidr.error.empty"
         }
       }
 
@@ -110,48 +122,54 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
           val form = getBoundedForm(consignmentReferencesNoDucrJSON)
 
           form.hasErrors mustBe true
-          form.errors.length must equal(1)
-          form.errors.last.message must equal("declaration.consignmentReferences.ducr.error.empty")
+          form.errors.length mustBe 1
+          form.errors.head.key mustBe "ducr.ducr"
+          form.errors.head.message mustBe "declaration.consignmentReferences.ducr.error.empty"
         }
 
         "provided with valid input (lowercase DUCR)" in {
           val form = getBoundedForm(correctConsignmentReferencesLowercaseDucrJSON)
 
           form.hasErrors mustBe true
-          form.errors.length must equal(1)
-          form.errors(0).message must equal("declaration.consignmentReferences.ducr.error.invalid")
+          form.errors.length mustBe 1
+          form.errors.head.key mustBe "ducr.ducr"
+          form.errors.head.message mustBe "declaration.consignmentReferences.ducr.error.invalid"
         }
 
         "provided with invalid input (no LRN)" in {
           val form = getBoundedForm(consignmentReferencesNoLrnJSON)
 
           form.hasErrors mustBe true
-          form.errors.length must equal(1)
-          form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.empty")
+          form.errors.length mustBe 1
+          form.errors.head.key mustBe "lrn"
+          form.errors.head.message mustBe "declaration.consignmentReferences.lrn.error.empty"
         }
 
         "provided with invalid input (invalid chars in LRN)" in {
           val form = getBoundedForm(consignmentReferencesBadLrnJSON)
 
           form.hasErrors mustBe true
-          form.errors.length must equal(1)
-          form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.specialCharacter")
+          form.errors.length mustBe 1
+          form.errors.head.key mustBe "lrn"
+          form.errors.head.message mustBe "declaration.consignmentReferences.lrn.error.specialCharacter"
         }
 
         "provided with invalid input (LRN too long)" in {
           val form = getBoundedForm(consignmentReferencesLrnTooLongJSON)
 
           form.hasErrors mustBe true
-          form.errors.length must equal(1)
-          form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.length")
+          form.errors.length mustBe 1
+          form.errors.head.key mustBe "lrn"
+          form.errors.head.message mustBe "declaration.consignmentReferences.lrn.error.length"
         }
 
         "provided with invalid input (LRN invalid chars and too long) only show invalid char error" in {
           val form = getBoundedForm(consignmentReferencesLrnBadAndTooLongJSON)
 
           form.hasErrors mustBe true
-          form.errors.length must equal(1)
-          form.errors.last.message must equal("declaration.consignmentReferences.lrn.error.specialCharacter")
+          form.errors.length mustBe 1
+          form.errors.head.key mustBe "lrn"
+          form.errors.head.message mustBe "declaration.consignmentReferences.lrn.error.specialCharacter"
         }
       }
 
@@ -160,16 +178,18 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
           val form = getBoundedForm(addMrnToJSON(correctConsignmentReferencesJSON, mrn))
 
           form.hasErrors mustBe true
-          form.errors.length must equal(1)
-          form.errors.last.message must equal("error.notRequired")
+          form.errors.length mustBe 1
+          form.errors.head.key mustBe "mrn"
+          form.errors.head.message mustBe "error.notRequired"
         }
 
         "provided with invalid input (EIDR date stamp present when should not be)" in {
           val form = getBoundedForm(addEidrToJSON(correctConsignmentReferencesJSON, eidrDateStamp))
 
           form.hasErrors mustBe true
-          form.errors.length must equal(1)
-          form.errors.last.message must equal("error.notRequired")
+          form.errors.length mustBe 1
+          form.errors.head.key mustBe "eidrDateStamp"
+          form.errors.head.message mustBe "error.notRequired"
         }
       }
 
@@ -179,8 +199,9 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
             val form = getBoundedForm(correctConsignmentReferencesJSON, Some(SUPPLEMENTARY_SIMPLIFIED))
 
             form.hasErrors mustBe true
-            form.errors.length must equal(1)
-            form.errors(0).message must equal("declaration.consignmentReferences.supplementary.mrn.error.empty")
+            form.errors.length mustBe 1
+            form.errors.head.key mustBe "mrn"
+            form.errors.head.message mustBe "declaration.consignmentReferences.supplementary.mrn.error.empty"
           }
 
           "provided with invalid input (MRN too long)" in {
@@ -190,8 +211,9 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
             )
 
             form.hasErrors mustBe true
-            form.errors.length must equal(1)
-            form.errors(0).message must equal("declaration.consignmentReferences.supplementary.mrn.error.invalid")
+            form.errors.length mustBe 1
+            form.errors.head.key mustBe "mrn"
+            form.errors.head.message mustBe "declaration.consignmentReferences.supplementary.mrn.error.invalid"
           }
 
           "provided with invalid input (EIDR Date Stamp present when should not be)" in {
@@ -199,8 +221,9 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
               getBoundedForm(addEidrToJSON(addMrnToJSON(correctConsignmentReferencesJSON, mrn), eidrDateStamp), Some(SUPPLEMENTARY_SIMPLIFIED))
 
             form.hasErrors mustBe true
-            form.errors.length must equal(1)
-            form.errors.last.message must equal("error.notRequired")
+            form.errors.length mustBe 1
+            form.errors.head.key mustBe "eidrDateStamp"
+            form.errors.head.message mustBe "error.notRequired"
           }
         }
 
@@ -209,8 +232,9 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
             val form = getBoundedForm(correctConsignmentReferencesJSON, Some(SUPPLEMENTARY_EIDR))
 
             form.hasErrors mustBe true
-            form.errors.length must equal(1)
-            form.errors(0).message must equal("declaration.consignmentReferences.supplementary.eidr.error.empty")
+            form.errors.length mustBe 1
+            form.errors.head.key mustBe "eidrDateStamp"
+            form.errors.head.message mustBe "declaration.consignmentReferences.supplementary.eidr.error.empty"
           }
 
           "provided with invalid input (EIDR Date Stamp too long)" in {
@@ -218,20 +242,68 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
               getBoundedForm(addEidrToJSON(correctConsignmentReferencesJSON, TestHelper.createRandomNumericString(9)), Some(SUPPLEMENTARY_EIDR))
 
             form.hasErrors mustBe true
-            form.errors.length must equal(1)
-            form.errors(0).message must equal("declaration.consignmentReferences.supplementary.eidr.error.invalid")
+            form.errors.length mustBe 1
+            form.errors.head.key mustBe "eidrDateStamp"
+            form.errors.head.message mustBe "declaration.consignmentReferences.supplementary.eidr.error.invalid"
           }
 
           "provided with invalid input (MRN present when should not be)" in {
             val form = getBoundedForm(addEidrToJSON(addMrnToJSON(correctConsignmentReferencesJSON, mrn), eidrDateStamp), Some(SUPPLEMENTARY_EIDR))
 
             form.hasErrors mustBe true
-            form.errors.length must equal(1)
-            form.errors.last.message must equal("error.notRequired")
+            form.errors.length mustBe 1
+            form.errors.head.key mustBe "mrn"
+            form.errors.head.message mustBe "error.notRequired"
           }
         }
       }
     }
+  }
+
+  "ConsignmentReferencesForm on verifyLrnValidity" should {
+
+    import forms.declaration.ConsignmentReferences.ConsignmentReferencesFormEnhanced
+
+    implicit val hc: HeaderCarrier = HeaderCarrier()
+
+    onEveryDeclarationJourney() { implicit request =>
+      "return form without errors" when {
+
+        "LrnValidator returns false" in {
+
+          val lrnValidator = mock[LrnValidator]
+          when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(false))
+
+          val form = getBoundedForm(correctConsignmentReferencesJSON)
+
+          val result = form.verifyLrnValidity(lrnValidator).futureValue
+
+          result.hasErrors mustBe false
+        }
+      }
+
+      "return form with errors" when {
+
+        "LrnValidator returns true" in {
+
+          val lrnValidator = mock[LrnValidator]
+          when(lrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any(), any())).thenReturn(Future.successful(true))
+
+          val form = getBoundedForm(correctConsignmentReferencesJSON)
+
+          val result = form.verifyLrnValidity(lrnValidator).futureValue
+
+          result.hasErrors mustBe true
+          result.errors.length mustBe 1
+          result.errors.head.key mustBe "lrn"
+          result.errors.head.message mustBe "declaration.consignmentReferences.lrn.error.notExpiredYet"
+        }
+      }
+    }
+  }
+
+  "ConsignmentReferences" when {
+    testTariffContentKeys(ConsignmentReferences, "tariff.declaration.consignmentReferences")
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
@@ -251,10 +323,6 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
       TariffContentKey(s"${messageKey}.2.common"),
       TariffContentKey(s"${messageKey}.3.common")
     )
-
-  "ConsignmentReferences" when {
-    testTariffContentKeys(ConsignmentReferences, "tariff.declaration.consignmentReferences")
-  }
 }
 
 object ConsignmentReferencesSpec {

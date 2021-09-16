@@ -118,7 +118,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
           |}
         """.stripMargin
       stubForExports(
-        post(s"/declarations/$id/submission")
+        post(s"/submission/$id")
           .willReturn(
             aResponse()
               .withStatus(Status.CREATED)
@@ -131,7 +131,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
       response.actions must not be empty
 
       verify(
-        postRequestedFor(urlEqualTo(s"/declarations/id/submission"))
+        postRequestedFor(urlEqualTo(s"/submission/$id"))
           .withRequestBody(absent())
       )
     }
@@ -215,25 +215,45 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
   "Find Submission" should {
     "return Ok" in {
       stubForExports(
-        get(s"/declarations/$id/submission")
+        get(s"/submissions?id=${submission.uuid}")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(submission))
+              .withBody(json(Seq(submission)))
           )
       )
 
       val response = await(connector.findSubmission(id))
 
       response mustBe Some(submission)
-      verify(getRequestedFor(urlEqualTo(s"/declarations/$id/submission")))
+      verify(getRequestedFor(urlEqualTo(s"/submissions?id=${submission.uuid}")))
+    }
+  }
+
+  "Find Submissions by Lrn" should {
+    "return Ok" in {
+      val lrn = Lrn(submission.lrn)
+      val submission_2 = submission.copy(uuid = "id2", ducr = Some("ducr"))
+      stubForExports(
+        get(s"/submissions?lrn=${lrn.value}")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(Seq(submission, submission_2)))
+          )
+      )
+
+      val response = await(connector.findSubmissionsByLrn(lrn))
+
+      response mustBe Seq(submission, submission_2)
+      verify(getRequestedFor(urlEqualTo(s"/submissions?lrn=${lrn.value}")))
     }
   }
 
   "Find Notifications" should {
     "return Ok" in {
       stubForExports(
-        get(s"/declarations/$id/submission/notifications")
+        get(s"/submission/notifications/$id")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -244,7 +264,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
       val response = await(connector.findNotifications(id))
 
       response mustBe Seq(notification)
-      verify(getRequestedFor(urlEqualTo(s"/declarations/$id/submission/notifications")))
+      verify(getRequestedFor(urlEqualTo(s"/submission/notifications/$id")))
     }
   }
 

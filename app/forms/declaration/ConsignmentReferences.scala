@@ -16,15 +16,18 @@
 
 package forms.declaration
 
-import forms.{DeclarationPage, Ducr, Lrn, Mrn}
+import forms._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationType.{CLEARANCE, DeclarationType, SUPPLEMENTARY}
 import models.viewmodels.TariffContentKey
-import play.api.data.{Form, FormError}
 import play.api.data.Forms.{mapping, optional, text}
+import play.api.data.{Form, FormError}
 import play.api.libs.json.Json
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.validators.forms.FieldValidator._
+
+import scala.concurrent.{ExecutionContext, Future}
 
 case class ConsignmentReferences(ducr: Ducr, lrn: Lrn, mrn: Option[Mrn] = None, eidrDateStamp: Option[String] = None)
 
@@ -69,11 +72,22 @@ object ConsignmentReferences extends DeclarationPage {
     Form(
       mapping(
         "ducr" -> Ducr.mapping,
-        "lrn" -> Lrn.mapping("declaration.consignmentReferences.lrn"),
+        "lrn" -> Lrn.mapping("declaration.consignmentReferences.lrn").verifying(),
         "mrn" -> mrnMapping,
         "eidrDateStamp" -> eidrMapping
       )(form2Model)(model2Form)
     )
+  }
+
+  implicit class ConsignmentReferencesFormEnhanced(form: Form[ConsignmentReferences]) {
+
+    def verifyLrnValidity(lrnValidator: LrnValidator)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Form[ConsignmentReferences]] =
+      form.value.fold(Future.successful(form)) { consignmentReferences =>
+        lrnValidator.hasBeenSubmittedInThePast48Hours(consignmentReferences.lrn).map {
+          case true  => form.copy(errors = Seq(FormError("lrn", "declaration.consignmentReferences.lrn.error.notExpiredYet")))
+          case false => form
+        }
+      }
   }
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
