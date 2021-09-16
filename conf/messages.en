@@ -1803,6 +1803,7 @@ legal.declaration.confirmation.missing=You must confirm the information is corre
 rejected.notification.ducr = DUCR {0}
 rejected.notification.ducr.missing = No DUCR
 rejected.notification.title = Declaration errors
+rejected.notification.warning = You need to fix these errors and resubmit your declaration when you have finished.
 rejected.notification.description.format = {0} Error code {1}.
 
 rejected.notification.guidance.section.1.paragraph.1 = When you have fixed each error, you can resubmit your declaration from the {0}.
