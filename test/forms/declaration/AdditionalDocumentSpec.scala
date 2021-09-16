@@ -116,6 +116,32 @@ class AdditionalDocumentSpec extends UnitSpec {
         }
       }
 
+      "the user does not enters a Document Status Reason" when {
+        val documentTypeCodeRequiringAReason = "Y900"
+        val documentStatusRequiringAReason = "XX"
+
+        "they entered a Document code requiring a Status Reason" in {
+          val input = Map(documentTypeCodeKey -> documentTypeCodeRequiringAReason, documentStatusKey -> "A4")
+          val expectedErrors = Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.required.forDocumentCode"))
+
+          testFailedValidationErrors(input, expectedErrors)
+        }
+
+        "they entered a Status code requiring a Status Reason" in {
+          val input = Map(documentTypeCodeKey -> "AB12", documentStatusKey -> documentStatusRequiringAReason)
+          val expectedErrors = Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.required.forStatusCode"))
+
+          testFailedValidationErrors(input, expectedErrors)
+        }
+
+        "they entered a Document code and a Status code that both requiring a Status Reason" in {
+          val input = Map(documentTypeCodeKey -> documentTypeCodeRequiringAReason, documentStatusKey -> documentStatusRequiringAReason)
+          val expectedErrors = Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.required.forDocumentCode"))
+
+          testFailedValidationErrors(input, expectedErrors)
+        }
+      }
+
       "the user enters a Document Status Reason" which {
 
         "is longer than 35 characters" in {
@@ -192,6 +218,11 @@ class AdditionalDocumentSpec extends UnitSpec {
         form.errors mustBe empty
       }
 
+      "the user enters only required form fields" in {
+        val form = AdditionalDocument.form(declaration).bind(bareMinimumAdditionalDocument)
+        form.errors mustBe empty
+      }
+
       "the user enters an Issuing Authority Name containing special characters" in {
         val input = Map(documentTypeCodeKey -> "AB12", issuingAuthorityNameKey -> "Issuing Authority Name with ''' added")
         val form = AdditionalDocument.form(declaration).bind(input)
@@ -244,6 +275,19 @@ object AdditionalDocumentSpec {
     issuingAuthorityName = Some("Issuing Authority Name"),
     dateOfValidity = Some(correctDate),
     documentWriteOff = Some(correctDocumentWriteOff)
+  )
+
+  val bareMinimumAdditionalDocument: Map[String, String] = Map(
+    documentTypeCodeKey -> (categoryCode + typeCode),
+    documentIdentifierKey -> "ABCDEF1234567890",
+    documentStatusKey -> "",
+    documentStatusReasonKey -> "",
+    issuingAuthorityNameKey -> "",
+    s"$dateOfValidityKey.$yearKey" -> "",
+    s"$dateOfValidityKey.$monthKey" -> "",
+    s"$dateOfValidityKey.$dayKey" -> "",
+    s"$documentWriteOffKey.$measurementUnitKey" -> "",
+    s"$documentWriteOffKey.$documentQuantityKey" -> ""
   )
 
   val correctAdditionalDocumentMap: Map[String, String] = Map(

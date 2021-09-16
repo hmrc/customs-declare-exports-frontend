@@ -16,16 +16,17 @@
 
 package forms.declaration.additionaldocuments
 
-import forms.DeclarationPage
+import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
 import forms.common.Date
 import forms.declaration.additionaldocuments.DocumentWriteOff._
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsDeclaration
 import models.viewmodels.TariffContentKey
-import play.api.data.Forms._
 import play.api.data.{Form, FormError, Forms, Mapping}
+import play.api.data.Forms._
 import play.api.libs.json.{JsValue, Json}
-import utils.validators.forms.FieldValidator._
+import uk.gov.voa.play.form.ConditionalMappings.isAnyOf
+import utils.validators.forms.FieldValidator.{nonEmpty, _}
 
 case class AdditionalDocument(
   documentTypeCode: Option[String],
@@ -74,6 +75,8 @@ object AdditionalDocument extends DeclarationPage {
         .verifying("declaration.additionalDocument.documentTypeCode.error", isEmpty or (hasSpecificLength(4) and isAlphanumeric))
     ).verifying(keyWhenDocumentTypeCodeEmpty, isPresent)
 
+    val nonEmptyOptionString = (input: Option[String]) => nonEmpty(input.getOrElse(""))
+
     Forms
       .mapping(
         documentTypeCodeKey -> documentTypeCodeRequired,
@@ -86,9 +89,23 @@ object AdditionalDocument extends DeclarationPage {
             )
         ),
         documentStatusKey -> optional(text().verifying("declaration.additionalDocument.documentStatus.error", noLongerThan(2) and isAlphabetic)),
-        documentStatusReasonKey -> optional(
-          text()
-            .verifying("declaration.additionalDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
+        documentStatusReasonKey -> AdditionalConstraintsMapping(
+          optional(
+            text()
+              .verifying("declaration.additionalDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
+          ),
+          Seq(
+            ConditionalConstraint(
+              isAnyOf(documentTypeCodeKey, documentCodesRequiringAReason),
+              "declaration.additionalDocument.documentStatusReason.required.forDocumentCode",
+              nonEmptyOptionString
+            ),
+            ConditionalConstraint(
+              isAnyOf(documentStatusKey, statusCodesRequiringAReason),
+              "declaration.additionalDocument.documentStatusReason.required.forStatusCode",
+              nonEmptyOptionString
+            )
+          )
         ),
         issuingAuthorityNameKey -> optional(
           text()
@@ -141,4 +158,80 @@ object AdditionalDocument extends DeclarationPage {
         )
       case _ => Seq(TariffContentKey("tariff.declaration.item.additionalDocuments.common"))
     }
+
+  val statusCodesRequiringAReason = Seq("UA", "UE", "UP", "US", "XX", "XW")
+
+  val documentCodesRequiringAReason = Seq(
+    "Y036",
+    "Y037",
+    "Y082",
+    "Y083",
+    "Y105",
+    "Y107",
+    "Y108",
+    "Y109",
+    "Y115",
+    "Y200",
+    "Y201",
+    "Y202",
+    "Y203",
+    "Y204",
+    "Y205",
+    "Y206",
+    "Y207",
+    "Y208",
+    "Y209",
+    "Y210",
+    "Y211",
+    "Y212",
+    "Y213",
+    "Y214",
+    "Y215",
+    "Y216",
+    "Y217",
+    "Y218",
+    "Y219",
+    "Y220",
+    "Y221",
+    "Y222",
+    "Y300",
+    "Y301",
+    "Y900",
+    "Y901",
+    "Y902",
+    "Y903",
+    "Y904",
+    "Y906",
+    "Y907",
+    "Y909",
+    "Y916",
+    "Y917",
+    "Y918",
+    "Y920",
+    "Y921",
+    "Y922",
+    "Y923",
+    "Y924",
+    "Y927",
+    "Y932",
+    "Y934",
+    "Y935",
+    "Y939",
+    "Y945",
+    "Y946",
+    "Y947",
+    "Y948",
+    "Y949",
+    "Y952",
+    "Y953",
+    "Y957",
+    "Y961",
+    "Y966",
+    "Y967",
+    "Y968",
+    "Y969",
+    "Y970",
+    "Y971",
+    "Y999"
+  )
 }
