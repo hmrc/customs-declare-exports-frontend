@@ -46,7 +46,7 @@
 @(mode: Mode, form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
 
 @isSupplementaryPlusSimplified = @{
-    request.declarationType == DeclarationType.SUPPLEMENTARY && request.cacheModel.additionalDeclarationType.getOrElse("") == SUPPLEMENTARY_SIMPLIFIED
+    request.declarationType == DeclarationType.SUPPLEMENTARY && request.cacheModel.additionalDeclarationType.contains(SUPPLEMENTARY_SIMPLIFIED)
 }
 
 @ducrHintSectionSupplementary = {
