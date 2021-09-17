@@ -31,7 +31,6 @@ class NotEligibleViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
   "Not Eligible View on empty page" should {
     "have proper messages for labels" in {
-      messages must haveTranslationFor("declaration.natureOfTransaction.title")
       messages must haveTranslationFor("notEligible.title")
       messages must haveTranslationFor("notEligible.titleLineTwo")
       messages must haveTranslationFor("notEligible.description")
