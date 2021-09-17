@@ -58,14 +58,14 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
       messages must haveTranslationFor("declaration.consignmentReferences.header")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.info")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint1")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint.bullet1")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint.bullet2")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint.bullet3")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint.bullet4")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint.bullet5")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint2")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.inset")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet1")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet2")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet3")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet4")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet5")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint")
+      messages must haveTranslationFor("declaration.consignmentReferences.ducr.inset.1")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.duplicate")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.empty")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.invalid")
@@ -112,19 +112,22 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       "display empty input with label for DUCR" in {
-        val view = createView()
-        val expectedHintText = Seq(
-          messages("declaration.consignmentReferences.ducr.hint1"),
-          messages("declaration.consignmentReferences.ducr.hint.bullet1"),
-          messages("declaration.consignmentReferences.ducr.hint.bullet2"),
-          messages("declaration.consignmentReferences.ducr.hint.bullet3"),
-          messages("declaration.consignmentReferences.ducr.hint.bullet4"),
-          messages("declaration.consignmentReferences.ducr.hint.bullet5"),
-          messages("declaration.consignmentReferences.ducr.hint2")
-        ).mkString(" ")
 
-        view.getElementsByAttributeValue("for", "ducr_ducr").text() mustBe messages("declaration.consignmentReferences.ducr.info")
-        view.getElementById("ducr_ducr-hint").text() mustBe expectedHintText
+        val expectedBodyTextListMessageKeys = Seq(
+          "declaration.consignmentReferences.ducr.paragraph.bullet1",
+          "declaration.consignmentReferences.ducr.paragraph.bullet2",
+          "declaration.consignmentReferences.ducr.paragraph.bullet3",
+          "declaration.consignmentReferences.ducr.paragraph.bullet4",
+          "declaration.consignmentReferences.ducr.paragraph.bullet5"
+        )
+        val view = createView()
+
+        view.getElementsByAttributeValue("for", "ducr_ducr").text mustBe messages("declaration.consignmentReferences.ducr.info")
+        view.getElementsByClass("govuk-body").get(0).text mustBe messages("declaration.consignmentReferences.ducr.paragraph")
+        expectedBodyTextListMessageKeys.foreach { messageKey =>
+          view.getElementsByClass("govuk-list").get(0) must containMessage(messageKey)
+        }
+        view.getElementById("ducr_ducr-hint").text mustBe messages("declaration.consignmentReferences.ducr.hint")
         view.getElementById("ducr_ducr").attr("value") mustBe empty
       }
 
@@ -141,7 +144,10 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       }
 
       "display inset text for DUCR" in {
-        createView().getElementsByClass("govuk-inset-text").get(0).text() mustBe messages("declaration.consignmentReferences.ducr.inset")
+        val expectedInsetText =
+          Seq(messages("declaration.consignmentReferences.ducr.inset.1"), messages("declaration.consignmentReferences.ducr.inset.2")).mkString(" ")
+
+        createView().getElementsByClass("govuk-inset-text").get(0).text mustBe expectedInsetText
       }
 
       "display inset text for LRN" in {
@@ -156,7 +162,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         "display empty input with label for DUCR" in {
           val view = createView()
           val expectedHintText =
-            Seq(messages("declaration.consignmentReferences.supplementary.ducr.hint1"), messages("declaration.consignmentReferences.ducr.hint2"))
+            Seq(messages("declaration.consignmentReferences.supplementary.ducr.hint1"), messages("declaration.consignmentReferences.ducr.hint"))
               .mkString(" ")
 
           view.getElementsByAttributeValue("for", "ducr_ducr").text() mustBe messages("declaration.consignmentReferences.ducr.info")
@@ -195,7 +201,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         "display empty input with label for DUCR" in {
           val view = createView()
           val expectedHintText =
-            Seq(messages("declaration.consignmentReferences.supplementary.ducr.hint1"), messages("declaration.consignmentReferences.ducr.hint2"))
+            Seq(messages("declaration.consignmentReferences.supplementary.ducr.hint1"), messages("declaration.consignmentReferences.ducr.hint"))
               .mkString(" ")
 
           view.getElementsByAttributeValue("for", "ducr_ducr").text() mustBe messages("declaration.consignmentReferences.ducr.info")
