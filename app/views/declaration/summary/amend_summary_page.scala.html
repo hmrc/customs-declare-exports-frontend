@@ -21,9 +21,11 @@
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{linkButton, _}
 @import views.html.declaration.summary._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
         govukLayout: gdsMainTemplate,
+        govukWarningText: GovukWarningText,
         pageTitle: pageTitle,
         paragraphBody: paragraphBody,
         draftInfoSection: draft_info_section,
@@ -35,7 +37,8 @@
         items_section: items_section,
         warehouse_section: warehouse_section,
         transport_section: transport_section,
-        linkButton: linkButton
+        label: label,
+        link: link
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -64,8 +67,19 @@
 
  @transport_section(Mode.ChangeAmend, request.cacheModel)
 
+ <br/>
 
- @paragraphBody(messages("summary.amend.information"))
+ @label("declaration.summary.ammend.label", "to-continue")
+ @paragraphBody(messages("declaration.summary.ammend.body"), id = Some("to-continue"))
 
- @linkButton("site.continue", routes.DeclarationChoiceController.displayPage(Mode.Amend))
+ @govukWarningText(WarningText(
+  iconFallbackText = messages("site.warning"),
+  content = Text(messages("declaration.summary.warning"))
+ ))
+
+ @paragraphBody(message = link(
+  text = messages("declaration.summary.continue.link"),
+  call = routes.DeclarationChoiceController.displayPage(Mode.Amend),
+  id = Some("continue-link")).toString
+ )
 }

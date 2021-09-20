@@ -21,11 +21,15 @@
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{linkButton, _}
 @import views.html.declaration.summary._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
         govukLayout: gdsMainTemplate,
+        govukWarningText: GovukWarningText,
         pageTitle: pageTitle,
         paragraphBody: paragraphBody,
+        link: link,
+        label: label,
         draftInfoSection: draft_info_section,
         references_section: references_section,
         countries_section: countries_section,
@@ -34,8 +38,7 @@
         transaction_section: transaction_section,
         items_section: items_section,
         warehouse_section: warehouse_section,
-        transport_section: transport_section,
-        linkButton: linkButton
+        transport_section: transport_section
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -66,8 +69,19 @@
 
     @transport_section(Mode.Draft, request.cacheModel)
 
+    <br/>
 
-    @paragraphBody(messages("saved.declarations.summary.paragraph"))
+    @label("declaration.summary.saved.label", "")
+    @paragraphBody(messages("declaration.summary.saved.body"), id = Some("to-continue"))
 
-    @linkButton("saved.declarations.summary.continue", routes.AdditionalDeclarationTypeController.displayPage(Mode.Draft))
+    @govukWarningText(WarningText(
+        iconFallbackText = messages("site.warning"),
+        content = Text(messages("declaration.summary.warning"))
+    ))
+
+    @paragraphBody(message = link(
+        text = messages("declaration.summary.continue.link"),
+        call = routes.AdditionalDeclarationTypeController.displayPage(Mode.Draft),
+        id = Some("continue-link")).toString
+    )
 }

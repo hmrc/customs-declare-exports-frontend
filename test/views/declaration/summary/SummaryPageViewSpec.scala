@@ -17,126 +17,88 @@
 package views.declaration.summary
 
 import base.Injector
-import config.AppConfig
-import forms.declaration.{CommodityDetails, LegalDeclaration, WarehouseIdentification}
+import forms.declaration.{CommodityDetails, WarehouseIdentification}
 import models.ExportsDeclaration
-import models.Mode._
 import org.jsoup.nodes.Document
-import org.mockito.Mockito.when
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary._
 
-import scala.concurrent.duration.FiniteDuration
+trait SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
-class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
-
-  val appConfig = mock[AppConfig]
-  when(appConfig.draftTimeToLive).thenReturn(FiniteDuration(30, "day"))
-  val draftInfoPage = instanceOf[draft_info_section]
-
-  val normal_summaryPage = instanceOf[normal_summary_page]
-  def view(declaration: ExportsDeclaration = aDeclaration()): Document =
-    normal_summaryPage(LegalDeclaration.form())(journeyRequest(declaration), messages, minimalAppConfig)
-
-  "Summary page" should {
-
-    val document = view()
-
-    "should display correct title" in {
-
-      document.getElementById("title").text() mustBe messages("declaration.summary.normal-header")
-    }
-
-    "should display correct back link" in {
-
-      val backButton = document.getElementById("back-link")
-
-      backButton.text() mustBe messages("site.back")
-      backButton must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Normal))
-    }
-
+  def commonBehaviour(document: Document) =
     "have references section" in {
-
       document.getElementById("declaration-references-summary").text() mustNot be(empty)
     }
 
-    "not have parties section" in {
+  def displayWarning(document: Document) =
+    "warning text should be displayed" in {
+      val warningText = s"! ${messages("site.warning")} ${messages("declaration.summary.warning")}"
+      document.getElementsByClass("govuk-warning-text").text mustBe warningText
+    }
 
-      view().getElementById("declaration-parties-summary") mustBe null
+  def sectionsVisiblity(view: (ExportsDeclaration) => Document) = {
+    "not have parties section" in {
+      view(aDeclaration()).getElementById("declaration-parties-summary") mustBe null
     }
 
     "have parties section" in {
-
-      view(declaration = aDeclaration(withExporterDetails())).getElementById("declaration-parties-summary").text() mustNot be(empty)
+      view(aDeclaration(withExporterDetails())).getElementById("declaration-parties-summary").text() mustNot be(empty)
     }
 
     "not have countries section" in {
-
-      view().getElementById("declaration-countries-summary") mustBe null
+      view(aDeclaration()).getElementById("declaration-countries-summary") mustBe null
     }
 
     "have countries section" in {
-
-      view(declaration = aDeclaration(withDestinationCountry())).getElementById("declaration-countries-summary").text() mustNot be(empty)
+      view(aDeclaration(withDestinationCountry())).getElementById("declaration-countries-summary").text() mustNot be(empty)
     }
 
     "not have locations section" in {
-
-      view().getElementById("declaration-locations-summary") mustBe null
+      view(aDeclaration()).getElementById("declaration-locations-summary") mustBe null
     }
 
     "have locations section with UK office of exit" in {
-
-      view(declaration = aDeclaration(withOfficeOfExit(officeId = "office-Id")))
+      view(aDeclaration(withOfficeOfExit(officeId = "office-Id")))
         .getElementById("declaration-locations-summary")
         .text() must include("office-Id")
     }
 
     "not have transaction section" in {
-
-      view().getElementById("declaration-transaction-summary") mustBe null
+      view(aDeclaration()).getElementById("declaration-transaction-summary") mustBe null
     }
 
     "have transaction section" in {
-
-      view(declaration = aDeclaration(withNatureOfTransaction("1"))).getElementById("declaration-transaction-summary").text() mustNot be(empty)
+      view(aDeclaration(withNatureOfTransaction("1"))).getElementById("declaration-transaction-summary").text() mustNot be(empty)
     }
 
     "not have items section" in {
-
-      view().getElementById("declaration-items-summary") mustBe null
+      view(aDeclaration()).getElementById("declaration-items-summary") mustBe null
     }
 
     "have items section" in {
-
       val details = CommodityDetails(Some("12345678"), Some("Description"))
-      view(declaration = aDeclaration(withItem(anItem(withCommodityDetails(details)))))
+      view(aDeclaration(withItem(anItem(withCommodityDetails(details)))))
         .getElementById("declaration-items-summary-0")
         .text() mustNot be(empty)
     }
 
     "not have warehouse section" in {
-
-      view().getElementById("declaration-warehouse-summary") mustBe null
+      view(aDeclaration()).getElementById("declaration-warehouse-summary") mustBe null
     }
 
     "have warehouse section" in {
-
-      view(declaration = aDeclaration(withWarehouseIdentification(Some(WarehouseIdentification(Some("12345"))))))
+      view(aDeclaration(withWarehouseIdentification(Some(WarehouseIdentification(Some("12345"))))))
         .getElementById("declaration-warehouse-summary")
         .text() mustNot be(empty)
     }
 
     "not have transport section" in {
-
-      view().getElementById("declaration-transport-summary") mustBe null
+      view(aDeclaration()).getElementById("declaration-transport-summary") mustBe null
     }
 
     "have transport section" in {
-
-      view(declaration = aDeclaration(withBorderTransport())).getElementById("declaration-transport-summary").text() mustNot be(empty)
+      view(aDeclaration(withBorderTransport())).getElementById("declaration-transport-summary").text() mustNot be(empty)
     }
   }
 }
