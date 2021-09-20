@@ -65,10 +65,6 @@
         insetText(content = HtmlContent(insetSection))
 }
 
-@tradeTariffLink = {
-    <a target="_blank" href="@appConfig.tradeTariffVol3ForCds2Url">@messages("declaration.declarationHolderRequired.tradeTariff.link")</a>
-}
-
 @govukLayout(
     title = Title("declaration.declarationHolderRequired.title", "declaration.section.2"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolderRequired, mode)))) {

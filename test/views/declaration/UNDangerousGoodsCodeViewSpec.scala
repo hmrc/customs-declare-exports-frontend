@@ -72,7 +72,9 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
 
       "display inset text" in {
         val inset = view.getElementsByClass("govuk-inset-text")
-        inset.get(0) must containText(messages("declaration.unDangerousGoodsCode.inset", messages("declaration.unDangerousGoodsCode.inset.link")))
+        val expectedInsetText = messages("declaration.unDangerousGoodsCode.inset", messages("declaration.unDangerousGoodsCode.inset.link") + " ")
+
+        inset.get(0).text mustBe expectedInsetText
       }
 
       "display 'Back' button that links to 'Commodity Details' page" in {

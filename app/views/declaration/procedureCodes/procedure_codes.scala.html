@@ -21,11 +21,9 @@
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.components.gds.Styles._
-@import play.twirl.api.HtmlFormat
 @import services.ProcedureCodeService
 @import services.view.AutoCompleteItem
 
-@import scala.collection.immutable
 @import config.AppConfig
 @import forms.declaration.procedurecodes.ProcedureCode
 @import forms.declaration.procedurecodes.ProcedureCode.procedureCodeKey
@@ -39,6 +37,7 @@
   insetText: exportsInsetText,
   paragraphBody: paragraphBody,
   tariffExpander: tariffExpander,
+  tariffLink: tariffLink,
   saveButtons: saveButtons,
   formHelper: FormWithCSRF,
   procedureCodeService: ProcedureCodeService,

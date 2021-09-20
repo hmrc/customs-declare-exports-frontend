@@ -19,8 +19,12 @@
 @import forms.DeclarationPage
 @import models.DeclarationType.DeclarationType
 @import models.DeclarationType.CLEARANCE
+@import views.html.components.gds._
 
-@this(govukDetails : GovukDetails)
+@this(
+  govukDetails : GovukDetails,
+  tariffLink: tariffLink
+)
 
 @(page: DeclarationPage, journey: DeclarationType)(implicit messages: Messages, appConfig: AppConfig)
 
@@ -28,7 +32,7 @@
     page.defineTariffContentKeys(journey).map { key =>
         val linkCount = """\{[0-9]*\}""".r.findAllIn( messages(key.getTextKey()) ).length
         val links = (0 until linkCount).map { idx =>
-            components.gds.tariffLink(key.getLinkText(idx), key.getUrl(idx))
+            tariffLink(key.getLinkText(idx), key.getUrl(idx))
         }
 
         messages(key.getTextKey(), links:_ *)

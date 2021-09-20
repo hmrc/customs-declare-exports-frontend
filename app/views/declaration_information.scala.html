@@ -76,10 +76,12 @@
 }
 
 @sfusInboxLink = {
-    <a id="has-dmsdoc-notification"
-       class="govuk-link govuk-link--no-visited-state"
-       href="@Call("GET", secureMessagingInboxConfig.sfusInboxLink)"
-       target="_blank">@messages("submissions.sfus.inbox.link")</a>.
+  @link(
+    text = messages("submissions.sfus.inbox.link"),
+    id = Some("has-dmsdoc-notification"),
+    call = Call("GET", secureMessagingInboxConfig.sfusInboxLink),
+    target = "_blank"
+  )
 }
 
 @govukLayout(
