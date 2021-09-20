@@ -45,8 +45,8 @@
         .orElse( hintHtml.map(hint => Hint(content = HtmlContent(hint))))
 }
 
-@{bodyHtml
-    .map{ body =>
+@{ bodyHtml
+    .map { body =>
         HtmlContent(HtmlFormat.fill(immutable.Seq(
             label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg),
             body,
@@ -60,7 +60,7 @@
             ))
         ))).asHtml
     }
-    .getOrElse{
+    .getOrElse {
         govukInput(Input(
             id = field.id,
             name = field.name,

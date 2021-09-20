@@ -22,6 +22,7 @@
   label: String,
   labelClass: Option[String],
   section: Option[String] = None,
+  bodyHtml: Option[Html] = None,
   hintParagraphs: List[String] = List.empty,
   emptySelectValue: String,
   items: List[AutoCompleteItem],
@@ -62,6 +63,8 @@ To avoid problems, we need to remove [] from field.
     @if(isPageHeading) {</h1>}
 
     @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@error</span> }
+
+    @bodyHtml.map(identity)
 
     @hintParagraphs.map { hint =>
         <p class="govuk-hint" id="@(fieldNameWithoutBrackets)-hint">@hint</p>

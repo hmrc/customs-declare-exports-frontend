@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package views.declaration
+package views.declaration.previousDocuments
 
 import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.Document
 import models.Mode
 import models.requests.JourneyRequest
-import play.api.data.Form
+import play.twirl.api.Html
 import utils.ListItem
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previousDocuments.previous_documents_remove
@@ -33,98 +33,80 @@ class PreviousDocumentsRemoveViewSpec extends UnitViewSpec with Injector {
   private val documentWithRelatesTo = Document("355", "reference", Some("3"))
   private val documentWithoutRelatesTo = Document("355", "reference", None)
 
-  private def createView(
-    mode: Mode = Mode.Normal,
-    documentId: String = ListItem.createId(0, documentWithRelatesTo),
-    document: Document = documentWithRelatesTo,
-    form: Form[YesNoAnswer] = form
-  )(implicit request: JourneyRequest[_]) = page(mode, documentId, document, form)(request, messages)
+  private def createView(document: Document = documentWithRelatesTo)(implicit request: JourneyRequest[_]): Html =
+    page(Mode.Normal, ListItem.createId(0, documentWithRelatesTo), document, form)(request, messages)
 
   "Previous Documents Remove page" should {
 
     "have all messages defined" in {
+      messages must haveTranslationFor("declaration.previousDocuments.remove.title")
+      messages must haveTranslationFor("declaration.previousDocuments.summary.documentCode.label")
+      messages must haveTranslationFor("declaration.previousDocuments.summary.documentReference.label")
+      messages must haveTranslationFor("declaration.previousDocuments.summary.goodsItemIdentifier.label")
       messages must haveTranslationFor("tariff.declaration.addPreviousDocument.clearance.text")
-      messages must haveTranslationFor("declaration.previousDocuments.documentType.label")
-      messages must haveTranslationFor("declaration.previousDocuments.documentReference.summary.label")
-      messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.summary.label")
-      messages must haveTranslationFor("declaration.previousDocuments.title")
-      messages must haveTranslationFor("declaration.previousDocuments.remove.title")
-      messages must haveTranslationFor("declaration.previousDocuments.remove.title")
     }
 
     onEveryDeclarationJourney() { implicit request =>
       "display section header" in {
-
         createView().getElementById("section-header") must containMessage("declaration.section.4")
       }
 
       "display same page title as header" in {
-
-        val viewWithMessage = createView()
-
-        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+        val view = createView()
+        createView().title must include(view.getElementsByTag("h1").text())
       }
 
-      "display header" in {
-
-        val view = createView()
-
-        view.getElementsByClass("govuk-fieldset__heading").first() must containMessage("declaration.previousDocuments.remove.title")
+      "display the expected page title" in {
+        createView().getElementsByTag("h1").text mustBe messages("declaration.previousDocuments.remove.title")
       }
 
       "display summary list when document contains Relates to" in {
-
         val view = createView()
 
-        view.getElementsByClass("govuk-summary-list__key").get(0) must containMessage("declaration.previousDocuments.documentType.label")
-        view.getElementsByClass("govuk-summary-list__value").get(0).text() mustBe ("Entry Summary Declaration (ENS) (355)")
-        view.getElementsByClass("govuk-summary-list__key").get(1) must containMessage("declaration.previousDocuments.documentReference.summary.label")
-        view.getElementsByClass("govuk-summary-list__value").get(1).text() mustBe ("reference")
-        view.getElementsByClass("govuk-summary-list__key").get(2) must containMessage(
-          "declaration.previousDocuments.goodsItemIdentifier.summary.label"
-        )
-        view.getElementsByClass("govuk-summary-list__value").get(2).text() mustBe "3"
+        val keyClasses = view.getElementsByClass("govuk-summary-list__key")
+        keyClasses.size mustBe 3
+        keyClasses.get(0) must containMessage("declaration.previousDocuments.summary.documentCode.label")
+        keyClasses.get(1) must containMessage("declaration.previousDocuments.summary.documentReference.label")
+        keyClasses.get(2) must containMessage("declaration.previousDocuments.summary.goodsItemIdentifier.label")
+
+        val valueClasses = view.getElementsByClass("govuk-summary-list__value")
+        valueClasses.size mustBe 3
+        valueClasses.get(0).text() mustBe ("Entry Summary Declaration (ENS) (355)")
+        valueClasses.get(1).text() mustBe ("reference")
+        valueClasses.get(2).text() mustBe "3"
       }
 
       "display summary list when document doesn't contain Relates to" in {
-
         val view = createView(document = documentWithoutRelatesTo)
 
-        view.getElementsByClass("govuk-summary-list__key").get(0) must containMessage("declaration.previousDocuments.documentType.label")
-        view.getElementsByClass("govuk-summary-list__value").get(0).text() mustBe "Entry Summary Declaration (ENS) (355)"
-        view.getElementsByClass("govuk-summary-list__key").get(1) must containMessage("declaration.previousDocuments.documentReference.summary.label")
-        view.getElementsByClass("govuk-summary-list__value").get(1).text() mustBe "reference"
-        intercept[IndexOutOfBoundsException] {
-          view.getElementsByClass("govuk-summary-list__key").get(2).text()
-        }
-        intercept[IndexOutOfBoundsException] {
-          view.getElementsByClass("govuk-summary-list__value").get(2).text()
-        }
+        val keyClasses = view.getElementsByClass("govuk-summary-list__key")
+        keyClasses.size mustBe 2
+        keyClasses.get(0) must containMessage("declaration.previousDocuments.summary.documentCode.label")
+        keyClasses.get(1) must containMessage("declaration.previousDocuments.summary.documentReference.label")
+
+        val valueClasses = view.getElementsByClass("govuk-summary-list__value")
+        valueClasses.size mustBe 2
+        valueClasses.get(0).text() mustBe "Entry Summary Declaration (ENS) (355)"
+        valueClasses.get(1).text() mustBe "reference"
       }
 
       "display radio buttons" in {
-
         val view = createView()
-
         view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
       }
 
       "display 'Back' link to 'Previous Documents Summary' page" in {
-
         val backButton = createView().getElementById("back-link")
-
         backButton must containMessage("site.back")
         backButton must haveHref(controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage(Mode.Normal))
       }
 
       "display 'Save and continue' button on page" in {
-
         createView().getElementById("submit") must containMessage("site.save_and_continue")
       }
 
       "display 'Save and return' button on page" in {
-
         createView().getElementById("submit_and_return") must containMessage("site.save_and_come_back_later")
       }
     }

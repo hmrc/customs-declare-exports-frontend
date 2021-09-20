@@ -23,76 +23,62 @@
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles.gdsPageLegend
+@import views.helpers.PreviousDocumentsHelper
+@import views.html.components.fields.field_accessible_autocomplete
 @import views.html.components.gds._
 
 @this(
+    templateHelper: PreviousDocumentsHelper,
     govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
-    formGroupWrapper: formGroupWrapper,
     govukButton: GovukButton,
+    govukFieldset: GovukFieldset,
+    errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
+    formGroupWrapper: formGroupWrapper,
     exportsInputText: exportsInputText,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
-    formHelper: FormWithCSRF,
     appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
-@pageHint = {
-    <span class="govuk-hint">
-        @messages("declaration.previousDocuments.hint")
-    </span>
-}
+@formFields = {
+    @formGroupWrapper(field = form(PreviousDocumentsFormGroupId)) {
 
-@documentType = {
-    @components.fields.field_accessible_autocomplete(
-        field = form("documentType"),
-        label = messages("declaration.previousDocuments.documentType"),
-        labelClass = Some("govuk-label--m"),
-        emptySelectValue = messages("declaration.previousDocuments.documentType.empty"),
-        items = AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
-    )
-}
+        @field_accessible_autocomplete(
+            field = form("documentType"),
+            label = messages("declaration.previousDocuments.documentCode"),
+            labelClass = Some("govuk-label--m"),
+            bodyHtml = Some(templateHelper.helpForDocumentCode),
+            emptySelectValue = messages("declaration.previousDocuments.documentCode.empty"),
+            items = AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
+        )
 
-@documentReference = {
-    @exportsInputText(
-        field = form("documentReference"),
-        labelKey = "declaration.previousDocuments.documentReference",
-        hintKey = Some("declaration.previousDocuments.documentReference.hint")
-    )
-}
+        @exportsInputText(
+            field = form("documentReference"),
+            labelKey = "declaration.previousDocuments.documentReference",
+            bodyHtml = Some(templateHelper.helpForDocumentReference)
+        )
 
-@goodsItemIdentifier = {
-    @exportsInputText(
-        field = form("goodsItemIdentifier"),
-        labelKey = "declaration.previousDocuments.goodsItemIdentifier",
-        hintKey = Some("declaration.previousDocuments.goodsItemIdentifier.hint"),
-        inputClasses = Some("govuk-input--width-2")
-    )
-}
-
-@pageFields = {
-    @formGroupWrapper(field = form(PreviousDocumentsFormGroupId)){
-        @pageHint
-        @documentType
-        @documentReference
-        @goodsItemIdentifier
+        @templateHelper.itemNumber(form)
     }
 }
 
+@errorSummary(form.errors)
+
 @sectionHeader(messages("declaration.section.4"))
 
+@pageTitle(messages(templateHelper.title))
+
+@templateHelper.bodyUnderTitle
+
+@templateHelper.insetText(appConfig)
+
 @govukFieldset(Fieldset(
-    legend = Some(Legend(
-        content = Text(messages("declaration.previousDocuments.title")),
-        classes = gdsPageLegend,
-        isPageHeading = true
-    )),
     html = HtmlFormat.fill(List(
-        pageFields,
+        formFields,
         tariffExpander(Document, request.declarationType)(messages, appConfig),
         saveButtons()
     ))

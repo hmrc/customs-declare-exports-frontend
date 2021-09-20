@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import forms.declaration.{Document, DocumentSpec, PreviousDocumentsData}
+import forms.declaration.{Document, PreviousDocumentsData}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -81,27 +81,54 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
     "return 400 (BAD_REQUEST)" when {
 
-      "user put duplicated item" in {
+      "user doesn't provide the Document type" in {
+        withNewCaching(aDeclaration(withoutPreviousDocuments()))
 
+        val emptyForm = Json.toJson(Document("", "reference", Some("123")))
+        val result = controller.submit(Mode.Normal)(postRequest(emptyForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyPage()
+      }
+
+      "user doesn't provide the Document reference" in {
+        withNewCaching(aDeclaration(withoutPreviousDocuments()))
+
+        val emptyForm = Json.toJson(Document("355", "", Some("123")))
+        val result = controller.submit(Mode.Normal)(postRequest(emptyForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyPage()
+      }
+
+      "user doesn't provide Document type and Document reference" in {
+        withNewCaching(aDeclaration(withoutPreviousDocuments()))
+
+        val emptyForm = Json.toJson(Document("", "", Some("123")))
+        val result = controller.submit(Mode.Normal)(postRequest(emptyForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyPage()
+      }
+
+      "user put duplicated item" in {
         val document = Document("355", "reference", Some("123"))
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
         val duplicatedForm = Json.toJson(Document("355", "reference", Some("123")))
-
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(duplicatedForm))
+        val result = controller.submit(Mode.Normal)(postRequest(duplicatedForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
       }
 
       "user reach maximum amount of items" in {
-
         val document = Document("355", "reference", Some("123"))
         withNewCaching(aDeclaration(withPreviousDocuments(PreviousDocumentsData(Seq.fill(PreviousDocumentsData.maxAmountOfItems)(document)))))
 
         val correctForm = Json.toJson(Document("355", "reference", None))
 
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
@@ -110,11 +137,10 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
     "return 303 (SEE_OTHER)" when {
 
-      "user put correct data" in {
-
+      "user fills in Document type and Document reference" in {
         val correctForm = Json.toJson(Document("355", "reference", None))
 
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
@@ -122,16 +148,13 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
         verifyPage(0)
       }
 
-      "user doesn't provide any information and it's first document" in {
+      "user fills in all fields" in {
+        val correctForm = Json.toJson(Document("355", "reference", Some("123")))
 
-        withNewCaching(aDeclaration(withoutPreviousDocuments()))
-
-        val emptyForm = DocumentSpec.json("", "", "")
-        ()
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequest(emptyForm))
+        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayAddItemPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
 
         verifyPage(0)
       }

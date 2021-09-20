@@ -23,15 +23,16 @@
 @import play.twirl.api.HtmlFormat
 @import services.DocumentType
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
-@import views.components.gds.Styles._
-@import views.html.components.gds._
 @import utils.ListItem._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, PreviousDocumentsHelper, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
 
 @import scala.collection.immutable
 
 @this(
+    templateHelper: PreviousDocumentsHelper,
     govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
     govukButton: GovukButton,
@@ -70,15 +71,12 @@
         @govukTable(Table(
             rows = documents.zipWithIndex.map { case (document, index) =>
                 Seq(
-                    TableRow(
-                        content = Text(DocumentType.documentCodesMap(document.documentType).asTextWithBrackets)
-                    ),
-                    TableRow(
-                        content = Text(document.documentReference)
-                    ),
-                    TableRow(
-                        content = Text(document.goodsItemIdentifier.getOrElse(""))
-                    ),
+                    TableRow(content = Text(DocumentType.documentCodesMap(document.documentType).asTextWithBrackets)),
+
+                    TableRow(content = Text(document.documentReference)),
+
+                    TableRow(content = Text(document.goodsItemIdentifier.getOrElse(""))),
+
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
@@ -110,32 +108,26 @@
                 )
             },
             head = Some(List(
-                HeadCell(
-                    content = Text(messages("declaration.previousDocuments.documentType.summary.label"))
+                HeadCell(content = Text(messages("declaration.previousDocuments.summary.documentCode.label"))),
+
+                HeadCell(content = Text(messages("declaration.previousDocuments.summary.documentReference.label"))),
+
+                HeadCell(content =
+                    if (templateHelper.versionSelection == 1) Empty
+                    else Text(messages("declaration.previousDocuments.summary.goodsItemIdentifier.label"))
                 ),
-                HeadCell(
-                    content = Text(messages("declaration.previousDocuments.documentReference.summary.label"))
-                ),
-                HeadCell(
-                    content = Text(messages("declaration.previousDocuments.goodsItemIdentifier.summary.label"))
-                ),
-                HeadCell(
-                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
-                ),
-                HeadCell(
-                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
-                )
+                HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))),
+
+                HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
             ))
         ))
     }
 }
 
-
 @govukLayout(
-    title = Title("declaration.previousDocuments.title", "declaration.section.4"),
+    title = Title(templateHelper.title, "declaration.section.4"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentSummary, mode)))
 ) {
-
     @formHelper(action = routes.PreviousDocumentsSummaryController.submit(mode), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
@@ -155,6 +147,5 @@
                 saveButtons()
             ))
         ))
-
     }
 }

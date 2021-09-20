@@ -362,8 +362,7 @@ object Navigator {
     else routes.MucrController.displayPage(mode)
 
   private def previousDocumentsPreviousPageDefault(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.hasPreviousDocuments)
-      routes.PreviousDocumentsSummaryController.displayPage(mode)
+    if (cacheModel.hasPreviousDocuments) routes.PreviousDocumentsSummaryController.displayPage(mode)
     else routes.NatureOfTransactionController.displayPage(mode)
 
   private def consigneeDetailsSupplementaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
@@ -414,10 +413,8 @@ object Navigator {
       routes.FiscalInformationController.displayPage(mode, itemId)
 
   private def previousDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.hasPreviousDocuments)
-      routes.PreviousDocumentsSummaryController.displayPage(mode)
-    else
-      routes.OfficeOfExitController.displayPage(mode)
+    if (cacheModel.hasPreviousDocuments) routes.PreviousDocumentsSummaryController.displayPage(mode)
+    else routes.OfficeOfExitController.displayPage(mode)
 
   private def exporterEoriNumberClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords)

@@ -36,7 +36,7 @@ import views.html.components.gds.{bulletList, link, numberedList, paragraphBody}
 @Singleton
 class DeclarationHolderHelper @Inject()(
   bulletList: bulletList,
-  insetTextPartial: GovukInsetText,
+  govukInsetText: GovukInsetText,
   link: link,
   numberedList: numberedList,
   paragraphBody: paragraphBody
@@ -118,7 +118,7 @@ class DeclarationHolderHelper @Inject()(
 
   private def insetText(appendable: Html, key: String)(implicit messages: Messages): Option[Html] = {
     val html = new Html(List(paragraphBody(messages(s"$insetKey.$key.title"), "govuk-label--s"), appendable))
-    Some(insetTextPartial(InsetText(content = HtmlContent(html))))
+    Some(govukInsetText(InsetText(content = HtmlContent(html))))
   }
 
   private def insetTextForExciseRemovals(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {

@@ -244,7 +244,7 @@ POST        /inland-transport-details            controllers.declaration.InlandT
 
 GET         /add-previous-document               controllers.declaration.PreviousDocumentsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /add-previous-document               controllers.declaration.PreviousDocumentsController.savePreviousDocuments(mode: models.Mode ?= models.Mode.Normal)
+POST        /add-previous-document               controllers.declaration.PreviousDocumentsController.submit(mode: models.Mode ?= models.Mode.Normal)
 
 GET         /previous-documents-list             controllers.declaration.PreviousDocumentsSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 

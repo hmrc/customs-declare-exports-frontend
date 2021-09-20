@@ -20,7 +20,7 @@ import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, FormError, Forms, Mapping}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import services.DocumentType
 import utils.validators.forms.FieldValidator._
@@ -37,21 +37,10 @@ object Document extends DeclarationPage {
 
   def form: Form[Document] = Form(mapping)
 
-  def treatLikeOptional(document: Form[Document]): Form[Document] = {
-    val errorsToIgnore = Seq(
-      FormError("documentType", "declaration.previousDocuments.documentType.empty"),
-      FormError("documentReference", "declaration.previousDocuments.documentReference.empty")
-    )
-
-    if (document.errors == errorsToIgnore && document.data.get("goodsItemIdentifier").getOrElse("").isEmpty)
-      document.copy(errors = Seq.empty)
-    else document
-  }
-
   private def documentTypeMapping: (String, Mapping[String]) =
     "documentType" -> text()
-      .verifying("declaration.previousDocuments.documentType.empty", nonEmpty)
-      .verifying("declaration.previousDocuments.documentType.error", isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code)))
+      .verifying("declaration.previousDocuments.documentCode.empty", nonEmpty)
+      .verifying("declaration.previousDocuments.documentCode.error", isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code)))
 
   private def documentReferenceMapping: (String, Mapping[String]) =
     "documentReference" -> text()

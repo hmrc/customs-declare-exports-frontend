@@ -49,16 +49,16 @@
     @govukSummaryList(SummaryList(
         rows = Seq(
             SummaryListRow(
-                Key(Text(messages("declaration.previousDocuments.documentType.label"))),
+                Key(Text(messages("declaration.previousDocuments.summary.documentCode.label"))),
                 Value(Text(DocumentType.documentCodesMap(document.documentType).asTextWithBrackets))
             ),
             SummaryListRow(
-                Key(Text(messages("declaration.previousDocuments.documentReference.summary.label"))),
+                Key(Text(messages("declaration.previousDocuments.summary.documentReference.label"))),
                 Value(Text(document.documentReference))
             )
         ) ++ document.goodsItemIdentifier.map { identifier =>
             Seq(SummaryListRow(
-                Key(Text(messages("declaration.previousDocuments.goodsItemIdentifier.summary.label"))),
+                Key(Text(messages("declaration.previousDocuments.summary.goodsItemIdentifier.label"))),
                 Value(Text(identifier))
             ))
         }.getOrElse(Seq.empty)
@@ -69,7 +69,6 @@
     title = Title("declaration.previousDocuments.remove.title", "declaration.section.4"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentChangeOrRemove, mode)))
 ) {
-
     @formHelper(action = PreviousDocumentsRemoveController.submit(mode, documentId), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
@@ -88,6 +87,5 @@
                 saveButtons()
             ))
         ))
-
     }
 }

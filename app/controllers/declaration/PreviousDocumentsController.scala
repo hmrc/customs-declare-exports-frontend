@@ -21,9 +21,10 @@ import scala.concurrent.{ExecutionContext, Future}
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
 import controllers.navigation.Navigator
-import controllers.util._
-import forms.declaration.Document._
+import controllers.util.MultipleItemsHelper
+import forms.declaration.Document.form
 import forms.declaration.{Document, PreviousDocumentsData}
+import forms.declaration.PreviousDocumentsData.maxAmountOfItems
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -47,37 +48,19 @@ class PreviousDocumentsController @Inject()(
     Ok(previousDocumentsPage(mode, form))
   }
 
-  def savePreviousDocuments(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = if (isFirstPreviousDocument) Document.treatLikeOptional(form.bindFromRequest) else form.bindFromRequest
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val documents = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty)).documents
 
-    if (boundForm.value.isEmpty && boundForm.errors.isEmpty)
-      updateCache(PreviousDocumentsData(Seq.empty)).map { _ =>
-        navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage)
-      } else {
-      val cache = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty))
-
-      MultipleItemsHelper
-        .add(
-          boundForm,
-          cache.documents,
-          PreviousDocumentsData.maxAmountOfItems,
-          fieldId = PreviousDocumentsFormGroupId,
-          "declaration.previousDocuments"
-        )
-        .fold(
-          formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors))),
-          updatedCache =>
-            updateCache(PreviousDocumentsData(updatedCache))
-              .map(_ => navigator.continueTo(mode, routes.PreviousDocumentsSummaryController.displayPage))
-        )
-    }
+    MultipleItemsHelper
+      .add(form.bindFromRequest, documents, maxAmountOfItems, PreviousDocumentsFormGroupId, "declaration.previousDocuments")
+      .fold(
+        formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(mode, routes.PreviousDocumentsSummaryController.displayPage))
+      )
   }
 
-  private def updateCache(formData: PreviousDocumentsData)(implicit req: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(previousDocuments = Some(formData)))
-
-  private def isFirstPreviousDocument(implicit request: JourneyRequest[AnyContent]): Boolean =
-    !request.cacheModel.hasPreviousDocuments
+  private def updateCache(documents: Seq[Document])(implicit req: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(previousDocuments = Some(PreviousDocumentsData(documents))))
 }
 
 object PreviousDocumentsController {

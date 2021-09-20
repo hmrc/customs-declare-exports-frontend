@@ -683,26 +683,16 @@ function natureOfTransaction(){
     }
 }
 
-function previousDocuments(){
+function previousDocuments() {
     if (currentPageIs('/customs-declare-exports/declaration/add-previous-document')) {
-        switch(getDeclaration()){
-            case 'A':
-            case 'C':
-            case 'D':
-            case 'E':
-            case 'F':
-            case 'K':
-            case 'Y':
-            case 'Z':
-                break;
-            case 'J':
-                selectFromAutoPredict(document.getElementById('documentType-container'), "IF3");
-                document.getElementById('documentReference').value ='101SHIP2';
-                break;
-            default:
-                selectFromAutoPredict(document.getElementById('documentType-container'), "DCS");
-                document.getElementById('documentReference').value ='9GB123456782317-BH1433A61';
+        if (getDeclaration() == 'J') {
+            selectFromAutoPredict(document.getElementById('documentType-container'), "IF3");
+            document.getElementById('documentReference').value ='101SHIP2';
+        } else {
+            selectFromAutoPredict(document.getElementById('documentType-container'), "DCS");
+            document.getElementById('documentReference').value ='9GB123456782317-BH1433A61';
         }
+
         document.getElementById('submit').click()
     }
 }
