@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
@@ -21,20 +22,16 @@
 @import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        pageTitle: pageTitle,
-        formHelper: FormWithCSRF,
-        link: link
+  govukLayout: gdsMainTemplate,
+  pageTitle: pageTitle,
+  formHelper: FormWithCSRF,
+  link: link,
+  appConfig: AppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@paragraph1Link = {<a href=@controllers.routes.RootController.displayPage.url>@messages("notDeclarent.paragraph1Link")</a>}
-@paragraph2Link = {<a href="https://www.gov.uk/guidance/dispatching-your-goods-within-the-eu">@messages("notDeclarent.paragraph2Link")</a>}
 @supportPhone = {<b>0300 200 3700</b>}
-@enquiriesLink = {
-  @link(text = messages("general.inquiries.help.link"), call = Call("GET", "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries"), target = "_blank")
-}
 
 @govukLayout(
     title = Title("notDeclarent.title"),
@@ -44,11 +41,11 @@
 @pageTitle(messages("notDeclarent.title"))
 
 <p class="govuk-body">
-    @Html(messages("notDeclarent.paragraph1", paragraph1Link))
+  @Html(messages("notDeclarent.paragraph1", link(text = messages("notDeclarent.paragraph1Link"), call = Call("GET", controllers.routes.RootController.displayPage.url))))
 </p>
 
 <p class="govuk-body">
-@Html(messages("notDeclarent.paragraph2", paragraph2Link))
+  @Html(messages("notDeclarent.paragraph2", link(text = messages("notDeclarent.paragraph2Link"), call = Call("GET", appConfig.notDeclarantEoriContactTeamUrl))))
 </p>
 
 <h2 class="govuk-heading-m">@messages("notDeclarent.referenceTitle")</h2>
@@ -58,6 +55,6 @@
 </p>
 
 <p class="govuk-body">
-    @enquiriesLink
+    @link(text = messages("general.inquiries.help.link"), call = Call("GET", appConfig.generalEnquiriesHelpUrl), target = "_blank")
 </p>
 }

@@ -452,6 +452,9 @@ object AppConfigSpec {
       |urls.unDangerousGoods = "http://unDangerousGoods"
       |urls.licensesForExportingGoods = "https://www.gov.uk/export-goods"
       |
+      |urls.notDeclarant.eoriContactTeam=eoriContactTeamUrl
+      |urls.generalEnquiriesHelp=generalEnquiriesHelpUrl
+      |
       |files.codelists.holderOfAuthorisationCodes="holderOfAuthorisationCodes"
       |files.codelists.procedureCodes="procedureCodes"
       |files.codelists.procedureCodesC21="procedureCodesC21"

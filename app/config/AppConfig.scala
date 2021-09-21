@@ -77,6 +77,9 @@ class AppConfig @Inject()(
 
   val additionalProcedureCodesOfCDs = loadConfig("urls.additionalProcedureCodesOfCDs")
 
+  val notDeclarantEoriContactTeamUrl = loadConfig("urls.notDeclarant.eoriContactTeam")
+  val generalEnquiriesHelpUrl = loadConfig("urls.generalEnquiriesHelp")
+
   lazy val customsDeclareExportsBaseUrl = servicesConfig.baseUrl("customs-declare-exports")
 
   val emailFrontendUrl: String = loadConfig("urls.emailFrontendUrl")

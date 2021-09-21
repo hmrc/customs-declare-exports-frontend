@@ -44,8 +44,6 @@ trait ControllerSpec
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
-  protected val config: AppConfig = mock[AppConfig]
-
   protected def addActionUrlEncoded(field: String = ""): (String, String) = if (field.isEmpty) (Add.toString, field) else (AddField.toString, field)
 
   protected val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
