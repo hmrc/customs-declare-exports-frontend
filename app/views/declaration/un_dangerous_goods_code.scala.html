@@ -46,11 +46,6 @@
 
 @(mode: Mode, itemId: String, form: Form[UNDangerousGoodsCode])(implicit request: JourneyRequest[_], messages: Messages)
 
-@unDangerousGoodsLink = {
-  @link(text = messages("declaration.unDangerousGoodsCode.inset.link"), call = Call("GET", appConfig.unDangerousGoodsUrl), target = "_blank")
-}
-
-
 @govukLayout(
     title = Title("declaration.unDangerousGoodsCode.header", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(UNDangerousGoodsCode, mode, ItemId(itemId))))) {
@@ -91,7 +86,7 @@
             errorMessage = form(hasDangerousGoodsCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @insetText(content = HtmlContent(messages("declaration.unDangerousGoodsCode.inset", unDangerousGoodsLink)))
+        @insetText(content = HtmlContent(messages("declaration.unDangerousGoodsCode.inset", link(text = messages("declaration.unDangerousGoodsCode.inset.link"), call = Call("GET", appConfig.unDangerousGoodsUrl), target = "_blank"))))
 
         @tariffExpander(UNDangerousGoodsCode, request.declarationType)(messages, appConfig)
 

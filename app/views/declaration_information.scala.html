@@ -76,12 +76,14 @@
 }
 
 @sfusInboxLink = {
-  @link(
-    text = messages("submissions.sfus.inbox.link"),
-    id = Some("has-dmsdoc-notification"),
-    call = Call("GET", secureMessagingInboxConfig.sfusInboxLink),
-    target = "_blank"
-  )
+  @if(secureMessagingInboxConfig.isSfusSecureMessagingEnabled) {
+    @Html(messages("submissions.content.on.dmsdoc.sfus", link(
+      text = messages("submissions.sfus.inbox.link"),
+      id = Some("has-dmsdoc-notification"),
+      call = Call("GET", secureMessagingInboxConfig.sfusInboxLink),
+      target = "_blank"
+    )))
+  }
 }
 
 @govukLayout(
@@ -129,12 +131,7 @@
                 <h2 class="govuk-heading-m">@messages("submissions.timeline")</h2>
 
                 @if(notifications.exists(_.status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)) {
-                    <p id="content-on-dmsdoc" class="govuk-body">
-                        @messages("submissions.content.on.dmsdoc")
-                        @if(secureMessagingInboxConfig.isSfusSecureMessagingEnabled) {
-                            @Html(messages("submissions.content.on.dmsdoc.sfus", sfusInboxLink))
-                        }
-                    </p>
+                    <p id="content-on-dmsdoc" class="govuk-body">@messages("submissions.content.on.dmsdoc")@sfusInboxLink</p>
                 }
 
                 @govukTable(Table(

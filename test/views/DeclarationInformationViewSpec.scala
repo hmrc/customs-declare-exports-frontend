@@ -305,7 +305,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     "display the paragraph below Timeline, including the link to the SFUS Messaging Inbox" when {
       "additional documents are required and the 'SFUS Secure Messaging' flag is enabled" in {
         val link = messages("submissions.sfus.inbox.link")
-        val paragraph = s"${messages("submissions.content.on.dmsdoc")} ${messages("submissions.content.on.dmsdoc.sfus", link + " ")}"
+        val paragraph = s"${messages("submissions.content.on.dmsdoc")} ${messages("submissions.content.on.dmsdoc.sfus", link)}"
         viewWithFeatures.getElementById("content-on-dmsdoc").text mustBe paragraph
 
         val element = viewWithFeatures.getElementById("has-dmsdoc-notification")

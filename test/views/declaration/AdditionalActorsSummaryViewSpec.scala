@@ -102,10 +102,14 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
         // check row
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe messages("declaration.partyType.CS")
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB56523343784324"
-        view
-          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint", messages(s"declaration.partyType.${additionalActor1.partyType.get}"), additionalActor1.eori.get.value)}"
 
+        val removeLink = view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").get(0)
+        removeLink must containMessage("site.remove")
+        removeLink must containMessage(
+          "declaration.additionalActors.table.remove.hint",
+          messages(s"declaration.partyType.${additionalActor1.partyType.get}"),
+          additionalActor1.eori.get.value
+        )
       }
 
       "display two rows with data in table" in {
@@ -120,15 +124,25 @@ class AdditionalActorsSummaryViewSpec extends UnitViewSpec with ExportsTestData 
         // check rows
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe messages("declaration.partyType.CS")
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB56523343784324"
-        view
-          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint", messages(s"declaration.partyType.${additionalActor1.partyType.get}"), additionalActor1.eori.get.value)}"
+
+        val removeLink1 = view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").get(0)
+        removeLink1 must containMessage("site.remove")
+        removeLink1 must containMessage(
+          "declaration.additionalActors.table.remove.hint",
+          messages(s"declaration.partyType.${additionalActor1.partyType.get}"),
+          additionalActor1.eori.get.value
+        )
 
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe messages("declaration.partyType.MF")
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "GB56523399999999"
-        view
-          .select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalActors.table.remove.hint", messages(s"declaration.partyType.${additionalActor2.partyType.get}"), additionalActor2.eori.get.value)}"
+
+        val removeLink2 = view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)").get(0)
+        removeLink2 must containMessage("site.remove")
+        removeLink2 must containMessage(
+          "declaration.additionalActors.table.remove.hint",
+          messages(s"declaration.partyType.${additionalActor2.partyType.get}"),
+          additionalActor2.eori.get.value
+        )
       }
     }
   }
