@@ -71,9 +71,9 @@ class RejectionReasonSpec extends UnitWithMocksSpec with ExportsTestData with Jo
 
   "All Errors" should {
 
-    "have 199 errors" in {
+    "have 162 errors" in {
 
-      reasons.allRejectionReasons.length mustBe 199
+      reasons.allRejectionReasons.length mustBe 162
     }
 
     "contain code for every error" in {
