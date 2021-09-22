@@ -38,6 +38,7 @@
   betaBannerConfig: BetaBannerConfig,
   hmrcHead: HmrcHead,
   hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+  hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
   hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
   hmrcFooter: HmrcStandardFooter,
   appConfig: AppConfig
@@ -62,6 +63,8 @@
                 countdown = Some(timeoutDialogConfig.countdown.toSeconds.toInt)
             ))
         )
+    } else {
+        @hmrcTrackingConsentSnippet()
     }
 
     <link rel="shortcut icon" href='@Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
