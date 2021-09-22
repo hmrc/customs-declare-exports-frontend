@@ -51,10 +51,10 @@
   navigationBanner: Html = HtmlFormat.empty
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-@useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
+@userIsSignedIn = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
 
 @head = {
-    @if(useTimeoutDialog) {
+    @if(userIsSignedIn) {
         @hmrcHead(
             headBlock = Some(hmrcTimeoutDialogHelper(
                 signOutUrl = SignOutController.signOut(models.SignOutReason.SessionTimeout).url,
