@@ -48,6 +48,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
     val data = Paginated(declarations, Page(page, pageSize), total)
     savedDeclarationsPage(data)(request, messages)
   }
+
   "Saved Declarations View" should {
 
     "display empty declaration list " in {
@@ -69,9 +70,11 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
 
       numberOfTableRows(view) mustBe 1
 
-      tableCell(view)(1, 0).text() mustBe s"${messages("saved.declarations.noDucr")} ${messages("saved.declarations.continue.hidden", noDucrLabel)}"
+      tableCell(view)(1, 0) must containMessage("saved.declarations.noDucr")
+      tableCell(view)(1, 0) must containMessage("saved.declarations.continue.hidden", noDucrLabel)
       tableCell(view)(1, 1).text() mustBe "1 January 2019 at 9:45am"
-      tableCell(view)(1, 2).text() mustBe s"${messages("site.remove")} ${messages("saved.declarations.remove.hidden", noDucrLabel)}"
+      tableCell(view)(1, 2) must containMessage("site.remove")
+      tableCell(view)(1, 2) must containMessage("saved.declarations.remove.hidden", noDucrLabel)
 
       view.getElementsByClass("ceds-pagination") mustNot be(empty)
     }
@@ -86,9 +89,11 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
 
       numberOfTableRows(view) mustBe 1
 
-      tableCell(view)(1, 0).text() mustBe s"${messages("saved.declarations.noDucr")} ${messages("saved.declarations.continue.hidden", noDucrLabel)}"
+      tableCell(view)(1, 0) must containMessage("saved.declarations.noDucr")
+      tableCell(view)(1, 0) must containMessage("saved.declarations.continue.hidden", noDucrLabel)
       tableCell(view)(1, 1).text() mustBe "1 May 2019 at 10:45am"
-      tableCell(view)(1, 2).text() mustBe s"${messages("site.remove")} ${messages("saved.declarations.remove.hidden", noDucrLabel)}"
+      tableCell(view)(1, 2) must containMessage("site.remove")
+      tableCell(view)(1, 2) must containMessage("saved.declarations.remove.hidden", noDucrLabel)
 
       view.getElementsByClass("ceds-pagination") mustNot be(empty)
     }

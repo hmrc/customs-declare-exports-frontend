@@ -89,13 +89,13 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
         }
 
         "display inset text" in {
-          val inset = view.getElementsByClass("govuk-inset-text")
+          val inset = view.getElementsByClass("govuk-inset-text").get(0)
           val expected = messages(
             "declaration.additionalProcedureCodes.inset",
             AutoCompleteItem.formatProcedureCode(sampleProcedureCode),
-            s"${messages("declaration.additionalProcedureCodes.inset.linkText")} "
+            s"${messages("declaration.additionalProcedureCodes.inset.linkText")}"
           )
-          inset.get(0) must containText(expected)
+          inset.text must include(expected)
         }
 
         "display 'Save and continue' button on page" in {

@@ -36,6 +36,7 @@
         exportsInputText: exportsInputText,
         insetText: exportsInsetText,
         body: paragraphBody,
+        link: link,
         pageTitle: pageTitle,
         saveButtons: saveButtons,
         tariffExpander: tariffExpander,
@@ -44,9 +45,6 @@
 )
 
 @(mode: Mode, itemId: String, form: Form[UNDangerousGoodsCode])(implicit request: JourneyRequest[_], messages: Messages)
-
-    @unDangerousGoodsLink = {<a target="_blank" class="govuk-link" href=@appConfig.unDangerousGoodsUrl>@messages("declaration.unDangerousGoodsCode.inset.link")</a>}
-
 
 @govukLayout(
     title = Title("declaration.unDangerousGoodsCode.header", "declaration.section.5"),
@@ -88,7 +86,7 @@
             errorMessage = form(hasDangerousGoodsCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @insetText(content = HtmlContent(messages("declaration.unDangerousGoodsCode.inset", unDangerousGoodsLink)))
+        @insetText(content = HtmlContent(messages("declaration.unDangerousGoodsCode.inset", link(text = messages("declaration.unDangerousGoodsCode.inset.link"), call = Call("GET", appConfig.unDangerousGoodsUrl), target = "_blank"))))
 
         @tariffExpander(UNDangerousGoodsCode, request.declarationType)(messages, appConfig)
 

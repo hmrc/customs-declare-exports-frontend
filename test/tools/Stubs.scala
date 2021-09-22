@@ -76,6 +76,8 @@ trait Stubs {
       |urls.tradeTariff=tradeTariff
       |urls.classificationHelp=classificationHelp
       |urls.ecicsTool=ecicsTool
+      |urls.notDeclarant.eoriContactTeam=eoriContactTeamUrl
+      |urls.generalEnquiriesHelp=generalEnquiriesHelpUrl
     """.stripMargin)
 
   val minimalConfiguration = Configuration(minimalConfig)

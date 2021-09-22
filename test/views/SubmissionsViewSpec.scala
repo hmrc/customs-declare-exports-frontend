@@ -249,7 +249,9 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
       "all fields are populated with timestamp before BST" in {
         val view = tab("other", createView(otherSubmissions = submissions()))
 
-        tableCell(view)(1, 0).text() mustBe s"mrn ${messages("submissions.hidden.text", "ducr")}"
+        val mrnLink = tableCell(view)(1, 0)
+        mrnLink must containText("mrn")
+        mrnLink must containMessage("submissions.hidden.text", "ducr")
         tableCell(view)(1, 1).text() mustBe "ducr"
         tableCell(view)(1, 2).text() mustBe "lrn"
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 12:00pm"
@@ -271,7 +273,9 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
         )
         val view = tab("other", createView(otherSubmissions = Paginated(Seq(bstSubmission -> Seq(acceptedNotification)), Page(), 1)))
 
-        tableCell(view)(1, 0).text() mustBe s"mrn ${messages("submissions.hidden.text", "ducr")}"
+        val mrnLink = tableCell(view)(1, 0)
+        mrnLink must containText("mrn")
+        mrnLink must containMessage("submissions.hidden.text", "ducr")
         tableCell(view)(1, 1).text() mustBe "ducr"
         tableCell(view)(1, 2).text() mustBe "lrn"
         tableCell(view)(1, 3).text() mustBe "1 May 2019 at 1:45pm"

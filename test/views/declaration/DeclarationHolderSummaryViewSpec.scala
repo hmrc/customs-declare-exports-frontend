@@ -141,12 +141,14 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         // check row
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() must include("ACE")
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB123456543"
-        view
-          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint", "ACE-GB123456543")}"
-        view
-          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(4)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint", "ACE-GB123456543")}"
+
+        val changeLink = view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").get(0)
+        changeLink must containMessage("site.change")
+        changeLink must containMessage("declaration.declarationHolders.table.change.hint", "ACE-GB123456543")
+
+        val removeLink = view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(4)").get(0)
+        removeLink must containMessage("site.remove")
+        removeLink must containMessage("declaration.declarationHolders.table.remove.hint", "ACE-GB123456543")
       }
 
       "display two rows with data in table" in {
@@ -162,21 +164,25 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         // check rows
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() must include("ACE")
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB123456543"
-        view
-          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint", "ACE-GB123456543")}"
-        view
-          .select(".govuk-table__body > tr:nth-child(1) > td:nth-child(4)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint", "ACE-GB123456543")}"
+
+        val changeLink1 = view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").get(0)
+        changeLink1 must containMessage("site.change")
+        changeLink1 must containMessage("declaration.declarationHolders.table.change.hint", "ACE-GB123456543")
+
+        val removeLink1 = view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(4)").get(0)
+        removeLink1 must containMessage("site.remove")
+        removeLink1 must containMessage("declaration.declarationHolders.table.remove.hint", "ACE-GB123456543")
 
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() must include("CVA")
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "GB6543253678"
-        view
-          .select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)")
-          .text() mustBe s"${messages("site.change")} ${messages("declaration.declarationHolders.table.change.hint", "CVA-GB6543253678")}"
-        view
-          .select(".govuk-table__body > tr:nth-child(2) > td:nth-child(4)")
-          .text() mustBe s"${messages("site.remove")} ${messages("declaration.declarationHolders.table.remove.hint", "CVA-GB6543253678")}"
+
+        val changeLink2 = view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)").get(0)
+        changeLink2 must containMessage("site.change")
+        changeLink2 must containMessage("declaration.declarationHolders.table.change.hint", "CVA-GB6543253678")
+
+        val removeLink2 = view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(4)").get(0)
+        removeLink2 must containMessage("site.remove")
+        removeLink2 must containMessage("declaration.declarationHolders.table.remove.hint", "CVA-GB6543253678")
       }
     }
   }

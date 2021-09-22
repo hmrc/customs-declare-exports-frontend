@@ -35,13 +35,12 @@
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
+    tariffLink: tariffLink,
     appConfig: AppConfig,
     formHelper: FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[CommodityDetails])(implicit request: JourneyRequest[_], messages: Messages)
-
-@commodityCodeHelpLink = {<a class="govuk-link govuk-link--no-visited-state" target="_blank" href=@appConfig.commodityCodeHelpUrl>@messages("declaration.commodityDetails.inset.linkText")</a>}
 
 @govukLayout(
     title = Title("declaration.commodityDetails.title", "declaration.section.5"),
@@ -61,7 +60,7 @@
         )
 
         @insetText(
-            content = HtmlContent(messages("declaration.commodityDetails.inset.text", commodityCodeHelpLink))
+            content = HtmlContent(messages("declaration.commodityDetails.inset.text", tariffLink(linkText = messages("declaration.commodityDetails.inset.linkText"), linkUrl = appConfig.commodityCodeHelpUrl)))
         )
 
         @characterCount(

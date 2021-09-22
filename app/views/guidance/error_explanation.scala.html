@@ -21,7 +21,8 @@
 @this(
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
-    paragraphBody: paragraphBody
+    paragraphBody: paragraphBody,
+    link: link
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -533,7 +534,7 @@
             <td class="govuk-table__cell">
             <p><strong>You declared 2 values that cannot be declared both together</strong></p>
 
-            <p>Check the <a href="https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide" target="_blank">CDS data element completion guide (opens in new tab)</a>.</p>
+            <p>Check the @link(text = "CDS data element completion guide (opens in new tab)", call = Call("GET", "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide"), target = "_blank").</p>
             </td>
         </tr>
 
@@ -557,7 +558,7 @@
             header level or item level, but if you use both header and item level you may
             cause an invalidation.</p>
 
-            <p>Check the <a href="https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide" target="_blank">CDS data element completion guide (opens in new tab)</a>.</p>
+            <p>Check the @link(text = "CDS data element completion guide (opens in new tab)", call = Call("GET", "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide"), target="_blank").</p>
             </td>
         </tr>
 

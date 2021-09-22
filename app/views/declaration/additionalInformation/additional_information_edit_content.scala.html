@@ -34,13 +34,12 @@
         exportsInputTextArea: exportsInputTextArea,
         characterCount: exportsInputCharacterCount,
         tariffExpander: tariffExpander,
+        tariffLink: tariffLink,
         saveButtons: saveButtons,
         appConfig: AppConfig
 )
 
 @(mode: Mode, itemId: String, form: Form[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
-
-@tradeTariffLink = {<a target="_blank" class="govuk-link" href=@appConfig.tradeTariffUrl>@messages("declaration.additionalInformationRequired.hint.link")</a>}
 
 @pageFields = {
     @formGroupWrapper(field = form(AdditionalInformationFormGroupId)){
@@ -49,7 +48,7 @@
             labelKey = "declaration.additionalInformation.code",
             inputClasses = Some("govuk-input--width-4"),
             hintKey = Some("declaration.additionalInformation.code.hint"),
-            hintKeyLinks = Seq(tradeTariffLink)
+            hintKeyLinks = Seq(tariffLink(linkText = messages("declaration.additionalInformationRequired.hint.link"), linkUrl = appConfig.tradeTariffUrl))
         )
         @characterCount(
             field = form(AdditionalInformation.descriptionKey),

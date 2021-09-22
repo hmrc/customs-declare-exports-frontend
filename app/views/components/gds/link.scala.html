@@ -27,7 +27,6 @@
 
 @hasHint = @{textHidden.exists(_.nonEmpty)}
 
-<a class="@classes" href="@call" target=@target @id.map{id => id="@id" }>
- <span @if(hasHint){aria-hidden="true"}>@text</span>
- @if(hasHint){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}
-</a>
+@* The <a> tag is split on purpose - to avoid inline-block whitespace problem *@
+<a class="@classes" href="@call" target=@target @id.map{id => id="@id" } @if(target == "_blank"){rel="noopener noreferrer"}
+  ><span @if(hasHint){aria-hidden="true"}>@text</span>@if(hasHint){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}</a>

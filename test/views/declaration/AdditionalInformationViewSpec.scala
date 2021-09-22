@@ -146,7 +146,10 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
         "have change link" in {
           val removeLink = row.select(".govuk-link").get(0)
-          removeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.additionalInformation.table.change.hint", "12345")}"
+
+          removeLink must containMessage("site.change")
+          removeLink must containMessage("declaration.additionalInformation.table.change.hint", "12345")
+
           removeLink must haveHref(
             controllers.declaration.routes.AdditionalInformationChangeController
               .displayPage(Mode.Normal, itemId, ListItem.createId(0, additionalInformation))
@@ -155,7 +158,10 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
         "have remove link" in {
           val removeLink = row.select(".govuk-link").get(1)
-          removeLink.text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalInformation.table.remove.hint", "12345")}"
+
+          removeLink must containMessage("site.remove")
+          removeLink must containMessage("declaration.additionalInformation.table.remove.hint", "12345")
+
           removeLink must haveHref(
             controllers.declaration.routes.AdditionalInformationRemoveController
               .displayPage(Mode.Normal, itemId, ListItem.createId(0, additionalInformation))

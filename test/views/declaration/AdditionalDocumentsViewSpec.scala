@@ -171,7 +171,9 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
 
           "have change link" in {
             val removeLink = row.select(".govuk-link").get(0)
-            removeLink.text() mustBe s"${messages("site.change")} ${messages("declaration.additionalDocument.table.change.hint", "ABCDEF1234567890")}"
+
+            removeLink must containMessage("site.change")
+            removeLink must containMessage("declaration.additionalDocument.table.change.hint", "ABCDEF1234567890")
             removeLink must haveHref(
               routes.AdditionalDocumentChangeController.displayPage(Mode.Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
             )
@@ -179,7 +181,9 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
 
           "have remove link" in {
             val removeLink = row.select(".govuk-link").get(1)
-            removeLink.text() mustBe s"${messages("site.remove")} ${messages("declaration.additionalDocument.table.remove.hint", "ABCDEF1234567890")}"
+
+            removeLink must containMessage("site.remove")
+            removeLink must containMessage("declaration.additionalDocument.table.remove.hint", "ABCDEF1234567890")
             removeLink must haveHref(
               routes.AdditionalDocumentRemoveController.displayPage(Mode.Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
             )
