@@ -51,10 +51,10 @@
   navigationBanner: Html = HtmlFormat.empty
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-@useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
+@userIsSignedIn = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
 
 @head = {
-    @if(useTimeoutDialog) {
+    @if(userIsSignedIn) {
         @hmrcHead(
             headBlock = Some(hmrcTimeoutDialogHelper(
                 signOutUrl = SignOutController.signOut(models.SignOutReason.SessionTimeout).url,
@@ -63,9 +63,9 @@
                 countdown = Some(timeoutDialogConfig.countdown.toSeconds.toInt)
             ))
         )
+    } else {
+        @hmrcTrackingConsentSnippet()
     }
-
-    @hmrcTrackingConsentSnippet()
 
     <link rel="shortcut icon" href='@Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
     <link rel="shortcut icon" href='@Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")' rel="stylesheet" type="text/css" />
