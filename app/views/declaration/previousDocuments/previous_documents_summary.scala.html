@@ -125,7 +125,7 @@
 }
 
 @govukLayout(
-    title = Title(templateHelper.title, "declaration.section.4"),
+    title = Title("declaration.previousDocuments.summary.title", "declaration.section.4"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentSummary, mode)))
 ) {
     @formHelper(action = routes.PreviousDocumentsSummaryController.submit(mode), 'autoComplete -> "off") {

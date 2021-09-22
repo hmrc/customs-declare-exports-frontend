@@ -1382,6 +1382,7 @@ declaration.previousDocuments.goodsItemIdentifier.error = The item number must b
 
 declaration.previousDocuments.change.hint = Change document {0} type {1} reference {2}.
 declaration.previousDocuments.remove.hint = Remove document {0} type {1} reference {2}.
+declaration.previousDocuments.summary.title = What documents are you using to make this declaration?
 declaration.previousDocuments.summary.header.singular = You have added 1 document
 declaration.previousDocuments.summary.header.plural = You have added {0} documents
 declaration.previousDocuments.summary.documentCode.label = Code
