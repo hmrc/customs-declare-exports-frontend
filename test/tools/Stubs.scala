@@ -126,7 +126,6 @@ trait Stubs {
     betaBannerConfig = betaBannerConfig,
     hmrcHead = new HmrcHead(hmrcTrackingConsentSnippet, new AssetsConfig),
     hmrcTimeoutDialogHelper = hmrcTimeoutDialogHelper,
-    hmrcTrackingConsentSnippet = hmrcTrackingConsentSnippet,
     hmrcReportTechnicalIssue = hmrcReportTechnicalIssue,
     hmrcFooter = hmrcFooter,
     appConfig = minimalAppConfig
