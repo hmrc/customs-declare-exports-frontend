@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, STANDARD_PRE_LODGED}
 import models.DeclarationType._
 import models.Mode
 import models.declaration.Parties
@@ -54,6 +54,8 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
       messages must haveTranslationFor(s"$prefix.body.standard.prelodged.1040")
       messages must haveTranslationFor(s"$prefix.body.occasional.1")
       messages must haveTranslationFor(s"$prefix.body.occasional.2")
+      messages must haveTranslationFor(s"$prefix.body.occasional.bullet.1")
+      messages must haveTranslationFor(s"$prefix.body.occasional.bullet.2")
       messages must haveTranslationFor(s"$prefix.body.standard.prelodged.others")
       messages must haveTranslationFor(s"$prefix.inset.para1")
       messages must haveTranslationFor(s"$prefix.inset.para2")
@@ -104,7 +106,7 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
       }
     }
 
-    onJourney(OCCASIONAL) { implicit request =>
+    onOccasional { implicit request =>
       "not display inset text" in {
         view.getElementsByClass("govuk-inset-text").size() mustBe 0
       }
@@ -140,10 +142,24 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
         }
       }
 
-      onOccasional { implicit request =>
-        "content is correct for that journey " in {
+      onOccasional(aDeclaration(withType(OCCASIONAL), withAdditionalDeclarationType(OCCASIONAL_PRE_LODGED))) { implicit request =>
+        "content is correct for OCCASIONAL_PRE_LODGED journey " in {
           view.getElementsByClass("govuk-body").get(0) must containText(messages(s"$prefix.body.occasional.1"))
           view.getElementsByClass("govuk-body").get(1) must containText(messages(s"$prefix.body.occasional.2"))
+          view.getElementsByClass("govuk-list--bullet").size mustBe 0
+        }
+      }
+
+      onOccasional(aDeclaration(withType(OCCASIONAL), withAdditionalDeclarationType(OCCASIONAL_FRONTIER))) { implicit request =>
+        "content is correct for OCCASIONAL_FRONTIER journey " in {
+          view.getElementsByClass("govuk-body").get(0) must containText(messages(s"$prefix.body.occasional.1"))
+          view.getElementsByClass("govuk-body").get(1) must containText(messages(s"$prefix.body.occasional.2"))
+
+          view.getElementsByClass("govuk-list--bullet").size mustBe 1
+
+          val bulletPoints = view.getElementsByClass("govuk-list--bullet").get(0).children
+          bulletPoints.get(0) must containMessage(s"$prefix.body.occasional.bullet.1")
+          bulletPoints.get(1) must containMessage(s"$prefix.body.occasional.bullet.2")
         }
       }
     }
