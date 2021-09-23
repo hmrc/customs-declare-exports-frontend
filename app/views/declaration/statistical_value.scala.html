@@ -85,9 +85,12 @@
         @hmrcCurrencyInput(CurrencyInput(
             id = "statisticalValue",
             name = "statisticalValue",
-            describedBy = Some("statisticalValue-units-hint"),
             value = form("statisticalValue").value,
             classes = "govuk-input--width-10",
+            label = Label(
+                content = Text(messages("declaration.statisticalValue.title")),
+                classes = "govuk-visually-hidden"
+            ),
             errorMessage = form("statisticalValue").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 

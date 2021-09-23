@@ -51,6 +51,10 @@
         name = field.name,
         value = field.value,
         classes = s"govuk-!-width-two-thirds ${if(field.hasErrors) "govuk-input--error"}",
+        label = Label(
+            content = Text(messages("declaration.goodsLocation.title")),
+            classes = "govuk-visually-hidden"
+        ),
         errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
     ))
 }
