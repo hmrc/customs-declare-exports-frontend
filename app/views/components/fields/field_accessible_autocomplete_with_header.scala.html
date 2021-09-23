@@ -63,7 +63,7 @@ To avoid problems, we need to remove [] from field.
 
     @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@error</span> }
 
-    @if(hintParagraphs) {
+    @if(hintParagraphs.nonEmpty) {
         <div id="@(fieldNameWithoutBrackets)-hint">
             @hintParagraphs.map { hint =>
                 <p class="govuk-hint">@hint</p>
