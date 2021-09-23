@@ -24,12 +24,11 @@ import forms.declaration.{Document, PreviousDocumentsData}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
 import views.html.declaration.previousDocuments.previous_documents_change
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,7 +44,7 @@ class PreviousDocumentsChangeController @Inject()(
 
   def displayPage(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findDocument(id) match {
-      case Some(document) => Ok(changePage(mode, id, Document.form().fill(document).withSubmissionErrors()))
+      case Some(document) => Ok(changePage(mode, id, Document.form.fill(document).withSubmissionErrors))
       case _              => returnToSummary(mode)
     }
   }
@@ -53,7 +52,7 @@ class PreviousDocumentsChangeController @Inject()(
   def submit(mode: Mode, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findDocument(id) match {
       case Some(existingDocument) =>
-        val boundForm = Document.form().bindFromRequest()
+        val boundForm = Document.form.bindFromRequest
         val documentsWithoutExisting = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty).filterNot(_ == existingDocument)
 
         MultipleItemsHelper
@@ -64,10 +63,7 @@ class PreviousDocumentsChangeController @Inject()(
             PreviousDocumentsFormGroupId,
             "declaration.previousDocuments"
           )
-          .fold(
-            formWithErrors => Future.successful(BadRequest(changePage(mode, id, formWithErrors))),
-            updatedDocuments => updateCache(updatedDocuments).map(_ => returnToSummary(mode))
-          )
+          .fold(formWithErrors => Future.successful(BadRequest(changePage(mode, id, formWithErrors))), updateCache(_).map(_ => returnToSummary(mode)))
 
       case _ => Future.successful(returnToSummary(mode))
     }
@@ -76,11 +72,9 @@ class PreviousDocumentsChangeController @Inject()(
   private def findDocument(id: String)(implicit request: JourneyRequest[AnyContent]): Option[Document] =
     ListItem.findById(id, request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty))
 
-  private def returnToSummary(mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
+  private def returnToSummary(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(mode, routes.PreviousDocumentsSummaryController.displayPage)
 
   private def updateCache(updatedDocuments: Seq[Document])(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
-      model.updatePreviousDocuments(updatedDocuments)
-    })
+    updateExportsDeclarationSyncDirect(_.updatePreviousDocuments(updatedDocuments))
 }

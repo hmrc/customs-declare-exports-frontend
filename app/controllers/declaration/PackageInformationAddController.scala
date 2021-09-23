@@ -30,7 +30,6 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.package_information_add
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,14 +44,16 @@ class PackageInformationAddController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val items = request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
-    Ok(packageInformationPage(mode, itemId, form().withSubmissionErrors(), items))
+    Ok(packageInformationPage(mode, itemId, form().withSubmissionErrors(), cachedPackageInformation(itemId)))
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit authRequest =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
-    saveInformation(mode, itemId, boundForm, authRequest.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(Seq.empty))
+    saveInformation(mode, itemId, boundForm, cachedPackageInformation(itemId))
   }
+
+  private def cachedPackageInformation(itemId: String)(implicit request: JourneyRequest[_]): Seq[PackageInformation] =
+    request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
 
   private def saveInformation(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]

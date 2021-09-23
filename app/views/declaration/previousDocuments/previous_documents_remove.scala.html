@@ -14,7 +14,8 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
+@import config.AppConfig
+@import controllers.declaration.routes.PreviousDocumentsRemoveController
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer
 @import forms.declaration.{Document, DocumentChangeOrRemove}
@@ -25,23 +26,21 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.helpers.{BackButton, Title}
-@import scala.collection.immutable
 @import views.helpers.ErrorMapper.yesNoErrors
-@import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        sectionHeader: sectionHeader,
-        govukFieldset: GovukFieldset,
-        pageTitle: pageTitle,
-        govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList,
-        errorSummary: errorSummary,
-        addAnotherQuestion: addAnotherQuestion,
-        saveButtons: saveButtons,
-        yesNoRadios: yesNoRadios,
-        formHelper: FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukButton: GovukButton,
+    govukSummaryList: GovukSummaryList,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    errorSummary: errorSummary,
+    addAnotherQuestion: addAnotherQuestion,
+    saveButtons: saveButtons,
+    yesNoRadios: yesNoRadios,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, documentId: String, document: Document, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
@@ -50,20 +49,16 @@
     @govukSummaryList(SummaryList(
         rows = Seq(
             SummaryListRow(
-                Key(Text(messages("declaration.previousDocuments.documentType.label"))),
+                Key(Text(messages("declaration.previousDocuments.summary.documentCode.label"))),
                 Value(Text(DocumentType.documentCodesMap(document.documentType).asTextWithBrackets))
             ),
             SummaryListRow(
-                Key(Text(messages("declaration.previousDocuments.documentReference.summary.label"))),
+                Key(Text(messages("declaration.previousDocuments.summary.documentReference.label"))),
                 Value(Text(document.documentReference))
-            ),
-            SummaryListRow(
-                Key(Text(messages(s"declaration.previousDocuments.documentCategory.summary.label"))),
-                Value(Text(messages(s"declaration.previousDocuments.${document.documentCategory.value}")))
             )
         ) ++ document.goodsItemIdentifier.map { identifier =>
             Seq(SummaryListRow(
-                Key(Text(messages("declaration.previousDocuments.goodsItemIdentifier.summary.label"))),
+                Key(Text(messages("declaration.previousDocuments.summary.goodsItemIdentifier.label"))),
                 Value(Text(identifier))
             ))
         }.getOrElse(Seq.empty)
@@ -74,7 +69,6 @@
     title = Title("declaration.previousDocuments.remove.title", "declaration.section.4"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentChangeOrRemove, mode)))
 ) {
-
     @formHelper(action = PreviousDocumentsRemoveController.submit(mode, documentId), 'autoComplete -> "off") {
 
         @errorSummary(yesNoErrors(form.errors))
@@ -87,12 +81,11 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 documentTable,
                 addAnotherQuestion("", form),
                 saveButtons()
             ))
         ))
-
     }
 }
