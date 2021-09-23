@@ -17,42 +17,17 @@
 package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
-import models.declaration.DocumentCategory.RelatedDocument
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class DocumentSpec extends DeclarationPageBaseSpec {
 
   "Document mapping used for binding data" should {
 
-    "return form with errors" when {
-
-      "provided with unknown document category" in {
-        val documentInputData = JsObject(
-          Map(
-            "documentCategory" -> JsString("Unknown category"),
-            "documentType" -> JsString("MCR"),
-            "documentReference" -> JsString("DocumentReference"),
-            "goodsItemIdentifier" -> JsString("123")
-          )
-        )
-        val form = Document.form.bind(documentInputData)
-
-        form.hasErrors mustBe true
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.previousDocuments.documentCategory.error.incorrect")
-      }
-    }
-
     "return form without errors" when {
       "provided with valid input" in {
 
         val correctPreviousDocumentsJSON: JsValue = JsObject(
-          Map(
-            "documentCategory" -> JsString(RelatedDocument.value),
-            "documentType" -> JsString("MCR"),
-            "documentReference" -> JsString("DocumentReference"),
-            "goodsItemIdentifier" -> JsString("123")
-          )
+          Map("documentType" -> JsString("MCR"), "documentReference" -> JsString("DocumentReference"), "goodsItemIdentifier" -> JsString("123"))
         )
 
         val form = Document.form.bind(correctPreviousDocumentsJSON)
@@ -64,7 +39,6 @@ class DocumentSpec extends DeclarationPageBaseSpec {
 
         val correctJson = JsObject(
           Map(
-            "documentCategory" -> JsString(RelatedDocument.value),
             "documentType" -> JsString("MCR"),
             "documentReference" -> JsString("GB/239355053000-PATYR8987"),
             "goodsItemIdentifier" -> JsString("123")
@@ -77,7 +51,7 @@ class DocumentSpec extends DeclarationPageBaseSpec {
 
       "provided document reference with :" in {
 
-        val correctJson = DocumentSpec.json("MCR", "A:12345645", RelatedDocument.value, "123")
+        val correctJson = DocumentSpec.json("MCR", "A:12345645", "123")
         val form = Document.form.bind(correctJson)
 
         form.errors mustBe empty
@@ -96,12 +70,7 @@ class DocumentSpec extends DeclarationPageBaseSpec {
 
 object DocumentSpec {
 
-  def json(`type`: String, reference: String, catagory: String, identifier: String) = JsObject(
-    Map(
-      "documentCategory" -> JsString(catagory),
-      "documentType" -> JsString(`type`),
-      "documentReference" -> JsString(reference),
-      "goodsItemIdentifier" -> JsString(identifier)
-    )
+  def json(`type`: String, reference: String, identifier: String) = JsObject(
+    Map("documentType" -> JsString(`type`), "documentReference" -> JsString(reference), "goodsItemIdentifier" -> JsString(identifier))
   )
 }

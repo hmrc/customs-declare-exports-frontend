@@ -14,16 +14,17 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
+@import controllers.declaration.routes.PreviousDocumentsChangeController
 @import controllers.navigation.Navigator
 @import forms.declaration.Document
 @import forms.declaration.DocumentChangeOrRemove
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import views.helpers.{BackButton, Title}
-@import views.html.components.gds._
+@import views.helpers.{BackButton, PreviousDocumentsHelper, Title}
+@import views.html.components.gds.gdsMainTemplate
 
 @this(
+    templateHelper: PreviousDocumentsHelper,
     govukLayout: gdsMainTemplate,
     editContent: previous_documents_edit,
     formHelper: FormWithCSRF
@@ -31,15 +32,12 @@
 
 @(mode: Mode, id: String, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
-
 @govukLayout(
-    title = Title("declaration.previousDocuments.title", "declaration.section.4"),
+    title = Title(templateHelper.title, "declaration.section.4"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentChangeOrRemove, mode)))
 ) {
-
     @formHelper(action = PreviousDocumentsChangeController.submit(mode, id), 'autoComplete -> "off") {
 
       @editContent(mode, form)
-
     }
 }

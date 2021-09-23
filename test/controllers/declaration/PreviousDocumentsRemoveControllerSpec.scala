@@ -20,7 +20,6 @@ import base.ControllerWithoutFormSpec
 import forms.common.YesNoAnswer
 import forms.declaration.Document
 import models.Mode
-import models.declaration.DocumentCategory.{RelatedDocument, SimplifiedDeclaration}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.{JsObject, JsString, Json}
@@ -55,7 +54,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
     super.afterEach()
   }
 
-  private val document = Document("355", "reference", SimplifiedDeclaration, None)
+  private val document = Document("355", "reference", None)
   private val documentId = ListItem.createId(0, document)
 
   "Previous Documents Remove Controller" should {
@@ -100,7 +99,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
       "user answer Yes and there are some documents in cache" in {
 
-        withNewCaching(aDeclaration(withPreviousDocuments(document, Document("355", "reference", RelatedDocument, None))))
+        withNewCaching(aDeclaration(withPreviousDocuments(document, Document("355", "reference", None))))
 
         val correctForm = JsObject(Seq("yesNo" -> JsString("Yes")))
 

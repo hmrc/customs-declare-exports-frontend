@@ -14,121 +14,71 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
 @import forms.declaration.Document
 @import models.requests.JourneyRequest
-@import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
+@import play.twirl.api.HtmlFormat
 @import services.DocumentType
 @import services.view.AutoCompleteItem
-@import views.components.gds.Styles._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles.gdsPageLegend
+@import views.helpers.PreviousDocumentsHelper
+@import views.html.components.fields.field_accessible_autocomplete
 @import views.html.components.gds._
-@import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
-@import models.declaration.DocumentCategory._
-@import views.helpers.ErrorMapper.radioGroupErrors
-@import config.AppConfig
 
 @this(
+    templateHelper: PreviousDocumentsHelper,
     govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
-    formGroupWrapper: formGroupWrapper,
     govukButton: GovukButton,
-    govukRadios: GovukRadios,
+    govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
+    formGroupWrapper: formGroupWrapper,
     exportsInputText: exportsInputText,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
-    formHelper: FormWithCSRF,
     appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
-@pageHint = {
-    <span class="govuk-hint">
-        @messages("declaration.previousDocuments.hint")
-    </span>
-}
+@formFields = {
+    @formGroupWrapper(field = form(PreviousDocumentsFormGroupId)) {
 
-@documentCategory = {
-    @govukRadios(Radios(
-        name = "documentCategory",
-        fieldset = Some(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages("declaration.previousDocuments.reasonQuestion")),
-                isPageHeading = false,
-                classes = "govuk-label--m"
-            ))
-        )),
-        items = Seq(
-            RadioItem(
-                id = Some("simplified-declaration"),
-                value = Some(SimplifiedDeclaration.value),
-                content = Text(messages("declaration.previousDocuments.Y")),
-                checked = form("documentCategory").value.contains(SimplifiedDeclaration.value)
-            ),
-            RadioItem(
-                id = Some("related-document"),
-                value = Some(RelatedDocument.value),
-                content = Text(messages("declaration.previousDocuments.Z")),
-                checked = form("documentCategory").value.contains(RelatedDocument.value)
-            )
-        ),
-        errorMessage = form("documentCategory").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-    ))
-}
+        @field_accessible_autocomplete(
+            field = form("documentType"),
+            label = messages("declaration.previousDocuments.documentCode"),
+            labelClass = Some("govuk-label--m"),
+            bodyHtml = Some(templateHelper.helpForDocumentCode),
+            emptySelectValue = messages("declaration.previousDocuments.documentCode.empty"),
+            items = AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
+        )
 
-@documentType = {
-    @components.fields.field_accessible_autocomplete(
-        field = form("documentType"),
-        label = messages("declaration.previousDocuments.documentType"),
-        labelClass = Some("govuk-label--m"),
-        emptySelectValue = messages("declaration.previousDocuments.documentType.empty"),
-        items = AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
-    )
-}
+        @exportsInputText(
+            field = form("documentReference"),
+            labelKey = "declaration.previousDocuments.documentReference",
+            bodyHtml = Some(templateHelper.helpForDocumentReference)
+        )
 
-@documentReference = {
-    @exportsInputText(
-        field = form("documentReference"),
-        labelKey = "declaration.previousDocuments.documentReference",
-        hintKey = Some("declaration.previousDocuments.documentReference.hint")
-    )
-}
-
-@goodsItemIdentifier = {
-    @exportsInputText(
-        field = form("goodsItemIdentifier"),
-        labelKey = "declaration.previousDocuments.goodsItemIdentifier",
-        hintKey = Some("declaration.previousDocuments.goodsItemIdentifier.hint"),
-        inputClasses = Some("govuk-input--width-2")
-    )
-}
-
-@pageFields = {
-    @formGroupWrapper(field = form(PreviousDocumentsFormGroupId)){
-        @pageHint
-        @documentType
-        @documentReference
-        @documentCategory
-        @goodsItemIdentifier
+        @templateHelper.itemNumber(form)
     }
 }
 
-@errorSummary(radioGroupErrors("documentCategory", "simplified-declaration", form.errors))
+@errorSummary(form.errors)
 
 @sectionHeader(messages("declaration.section.4"))
 
+@pageTitle(messages(templateHelper.title))
+
+@templateHelper.bodyUnderTitle
+
+@templateHelper.insetText(appConfig)
+
 @govukFieldset(Fieldset(
-    legend = Some(Legend(
-        content = Text(messages("declaration.previousDocuments.title")),
-        classes = gdsPageLegend,
-        isPageHeading = true
-    )),
-    html = HtmlFormat.fill(immutable.Seq(
-        pageFields,
+    html = HtmlFormat.fill(List(
+        formFields,
         tariffExpander(Document, request.declarationType)(messages, appConfig),
         saveButtons()
     ))
