@@ -1236,10 +1236,10 @@ declaration.transportInformation.containers.inset.bullet3 = swap bodies and semi
 declaration.transportInformation.error.duplicate = Container ID already added
 
 declaration.invoice.details.title = Invoice and exchange rate details
-declaration.totalAmountInvoiced.error = Enter the total amount invoiced in numbers only
+declaration.totalAmountInvoiced.error = Total amount invoiced must contain only numbers, commas and a single full stop
 declaration.totalAmountInvoiced = Total amount invoiced
 declaration.totalAmountInvoiced.hint = This is the total amount of all items added to the declaration. Declare this in the currency it was invoiced in, for example USD. If multiple currencies were used, declare in GBP.
-declaration.exchangeRate.error = Enter an exchange rate in numbers only
+declaration.exchangeRate.error = Rate of exchange must contain only numbers, commas and a single full stop
 declaration.exchangeRate = Contractually agreed fixed rate of exchange
 declaration.exchangeRate.hint = This is the agreed contract rate of exchange between buyer and seller. If you need to declare this, you must enter document code 9WKS in the item’s documents page. If one wasn’t agreed, leave this question blank and continue.
 
