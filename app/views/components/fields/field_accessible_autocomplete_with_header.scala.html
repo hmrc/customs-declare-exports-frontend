@@ -66,8 +66,12 @@ To avoid problems, we need to remove [] from field.
 
     @bodyHtml.map(identity)
 
-    @hintParagraphs.map { hint =>
-        <p class="govuk-hint" id="@(fieldNameWithoutBrackets)-hint">@hint</p>
+    @if(hintParagraphs.nonEmpty) {
+        <div id="@(fieldNameWithoutBrackets)-hint">
+            @hintParagraphs.map { hint =>
+                <p class="govuk-hint">@hint</p>
+            }
+        </div>
     }
 
     @input_accessible_autocomplete(
