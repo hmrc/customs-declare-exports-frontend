@@ -107,7 +107,7 @@ class DeclarationHolderHelper @Inject()(
     val model = request.cacheModel
     model.additionalDeclarationType match {
       case Some(STANDARD_FRONTIER) | Some(SIMPLIFIED_FRONTIER) | Some(OCCASIONAL_FRONTIER) | Some(CLEARANCE_FRONTIER) =>
-        textForEoriRadiosWhenEXRR(model.parties)
+        paragraphForEoriRadiosWhenEXRR(model.parties)
 
       case _ => HtmlFormat.empty
     }
@@ -179,13 +179,7 @@ class DeclarationHolderHelper @Inject()(
       )
     )
 
-  private def paragraph(key: String)(implicit messages: Messages): Html = paragraphBody(messages(key))
-
-  private def row(key: String)(implicit messages: Messages): Html = Html(messages(key))
-
-  private val eoriKey = "declaration.declarationHolder.eori"
-
-  private def textForEoriRadiosWhenEXRR(parties: Parties)(implicit messages: Messages): Html =
+  private def paragraphForEoriRadiosWhenEXRR(parties: Parties)(implicit messages: Messages): Html =
     parties.declarantIsExporter.fold {
       paragraph(s"$eoriKey.body.exrr.v2")
     } { declarantIsExporter =>
@@ -195,6 +189,12 @@ class DeclarationHolderHelper @Inject()(
         paragraph(s"$eoriKey.body.exrr.$version")
       }
     }
+
+  private def paragraph(key: String)(implicit messages: Messages): Html = paragraphBody(messages(key))
+
+  private def row(key: String)(implicit messages: Messages): Html = Html(messages(key))
+
+  private val eoriKey = "declaration.declarationHolder.eori"
 
   private def valuesToMatch(model: ExportsDeclaration) =
     (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice, model.parties.isEntryIntoDeclarantsRecords)
