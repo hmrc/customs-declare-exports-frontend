@@ -23,6 +23,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import javax.inject.{Inject, Singleton}
 import models.DeclarationType._
 import models.ExportsDeclaration
+import models.declaration.Parties
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -44,18 +45,18 @@ class DeclarationHolderHelper @Inject()(
 
   def bodyForDeclarationHolderEditPage(appConfig: AppConfig)(implicit messages: Messages, request: JourneyRequest[_]): Option[Html] = {
     val messageList = valuesToMatch(request.cacheModel) match {
-      case (STANDARD, Some(STANDARD_FRONTIER), _, _)                             => content("body.exrr.roro.exports")
-      case (OCCASIONAL, Some(OCCASIONAL_FRONTIER), _, _)                         => content("body.exrr.roro.exports")
-      case (SUPPLEMENTARY, _, _, _)                                              => content("body.supplementary")
-      case (SIMPLIFIED, Some(SIMPLIFIED_PRE_LODGED), _, _)                       => content("body.simplified")
-      case (SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Choice1040 | ChoiceOthers, _) => bodyForSimplifiedArrived
-      case (SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Choice1007, _)                => bodyWithLinkFor1007(appConfig, "simplified.arrived")
-      case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), Choice1040, Yes)              => content("body.clearance.eidr.1040")
-      case (CLEARANCE, Some(CLEARANCE_FRONTIER), Choice1040, Yes)                => bodyForClearanceArrived1040
-      case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), ChoiceOthers, Yes)            => content("body.clearance.eidr.others")
-      case (CLEARANCE, Some(CLEARANCE_FRONTIER), ChoiceOthers, Yes)              => bodyForClearanceArrivedOthers
-      case (CLEARANCE, Some(CLEARANCE_FRONTIER), _, No)                          => content("body.exrr.roro.exports")
-      case (CLEARANCE, _, Choice1007, Yes)                                       => bodyWithLinkFor1007(appConfig, "clearance.eidr")
+      case (STANDARD, Some(STANDARD_FRONTIER), _, _)                             => listOfMessages("body.exrr.roro.exports")
+      case (OCCASIONAL, Some(OCCASIONAL_FRONTIER), _, _)                         => listOfMessages("body.exrr.roro.exports")
+      case (SUPPLEMENTARY, _, _, _)                                              => listOfMessages("body.supplementary")
+      case (SIMPLIFIED, Some(SIMPLIFIED_PRE_LODGED), _, _)                       => listOfMessages("body.simplified")
+      case (SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Choice1040 | ChoiceOthers, _) => messagesForSimplifiedArrived
+      case (SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Choice1007, _)                => messagesWithLinkFor1007(appConfig, "simplified.arrived")
+      case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), Choice1040, Yes)              => listOfMessages("body.clearance.eidr.1040")
+      case (CLEARANCE, Some(CLEARANCE_FRONTIER), Choice1040, Yes)                => messagesForClearanceArrived1040
+      case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), ChoiceOthers, Yes)            => listOfMessages("body.clearance.eidr.others")
+      case (CLEARANCE, Some(CLEARANCE_FRONTIER), ChoiceOthers, Yes)              => messagesForClearanceArrivedOthers
+      case (CLEARANCE, Some(CLEARANCE_FRONTIER), _, No)                          => listOfMessages("body.exrr.roro.exports")
+      case (CLEARANCE, _, Choice1007, Yes)                                       => messagesWithLinkFor1007(appConfig, "clearance.eidr")
       case _                                                                     => List.empty
     }
 
@@ -66,21 +67,19 @@ class DeclarationHolderHelper @Inject()(
   private val bodyKey = "declaration.declarationHolderRequired.body"
 
   def bodyForDeclarationHolderRequiredPage(implicit messages: Messages, request: JourneyRequest[_]): Html = {
-    def paragraph(key: String)(implicit messages: Messages): Html = paragraphBody(messages(s"$bodyKey.$key"))
-
     val model = request.cacheModel
     val body = (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice) match {
-      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040)   => List(paragraph("standard.prelodged.1040"))
-      case (STANDARD, Some(STANDARD_PRE_LODGED), ChoiceOthers) => List(paragraph("standard.prelodged.others"))
+      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040)   => List(paragraph(s"$bodyKey.standard.prelodged.1040"))
+      case (STANDARD, Some(STANDARD_PRE_LODGED), ChoiceOthers) => List(paragraph(s"$bodyKey.standard.prelodged.others"))
 
       case (OCCASIONAL, Some(OCCASIONAL_PRE_LODGED), _) =>
-        List(paragraph("occasional.1"), paragraph("occasional.2"))
+        List(paragraph(s"$bodyKey.occasional.1"), paragraph(s"$bodyKey.occasional.2"))
 
       case (OCCASIONAL, Some(OCCASIONAL_FRONTIER), _) =>
-        val bullets = bulletList(List(Html(messages(s"$bodyKey.occasional.bullet.1")), Html(messages(s"$bodyKey.occasional.bullet.2"))))
-        List(paragraph("occasional.1"), paragraph("occasional.2"), bullets)
+        val bullets = bulletList(List(row(s"$bodyKey.occasional.bullet.1"), row(s"$bodyKey.occasional.bullet.2")))
+        List(paragraph(s"$bodyKey.occasional.1"), paragraph(s"$bodyKey.occasional.2"), bullets)
 
-      case _ => List(paragraph("default"))
+      case _ => List(paragraph(s"$bodyKey.default"))
     }
 
     HtmlFormat.fill(body)
@@ -88,10 +87,10 @@ class DeclarationHolderHelper @Inject()(
 
   def hintForAuthorisationCode(implicit messages: Messages, request: JourneyRequest[_]): List[String] =
     valuesToMatch(request.cacheModel) match {
-      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1007, _)   => content("authCode.hint.standard.prelodged.1007")
-      case (STANDARD, Some(STANDARD_PRE_LODGED), ChoiceOthers, _) => content("authCode.hint.standard.prelodged.others")
-      case (STANDARD, _, Choice1040, _)                           => content("authCode.hint.standard.1040")
-      case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), _, No)         => content("authCode.hint.clearance")
+      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1007, _)   => listOfMessages("authCode.hint.standard.prelodged.1007")
+      case (STANDARD, Some(STANDARD_PRE_LODGED), ChoiceOthers, _) => listOfMessages("authCode.hint.standard.prelodged.others")
+      case (STANDARD, _, Choice1040, _)                           => listOfMessages("authCode.hint.standard.1040")
+      case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), _, No)         => listOfMessages("authCode.hint.clearance")
       case _                                                      => List.empty
     }
 
@@ -104,25 +103,15 @@ class DeclarationHolderHelper @Inject()(
       case _                                                        => None
     }
 
-  private def bodyForClearanceArrived1040(implicit messages: Messages): List[String] =
-    content("body.clearance.eidr.1040") ++ content("body.exrr.roro.exports")
+  def textForEoriRadiosWhenEXRR(implicit messages: Messages, request: JourneyRequest[_]): Html = {
+    val model = request.cacheModel
+    model.additionalDeclarationType match {
+      case Some(STANDARD_FRONTIER) | Some(SIMPLIFIED_FRONTIER) | Some(OCCASIONAL_FRONTIER) | Some(CLEARANCE_FRONTIER) =>
+        paragraphForEoriRadiosWhenEXRR(model.parties)
 
-  private def bodyForClearanceArrivedOthers(implicit messages: Messages): List[String] =
-    content("body.clearance.eidr.others") ++ content("body.exrr.roro.exports")
-
-  private def bodyForSimplifiedArrived(implicit messages: Messages): List[String] =
-    content("body.simplified") ++ content("body.exrr.roro.exports")
-
-  private def bodyWithLinkFor1007(appConfig: AppConfig, key: String)(implicit messages: Messages): List[String] =
-    List(
-      messages(
-        s"declaration.declarationHolder.body.$key.1007",
-        link(messages("declaration.declarationHolder.body.1007.link"), Call("GET", appConfig.permanentExportOrDispatch.section), "_blank")
-      )
-    )
-
-  private def content(key: String)(implicit messages: Messages): List[String] =
-    List(messages(s"declaration.declarationHolder.$key"))
+      case _ => HtmlFormat.empty
+    }
+  }
 
   private val insetKey = "declaration.declarationHolder.authCode.inset"
 
@@ -169,6 +158,43 @@ class DeclarationHolderHelper @Inject()(
       "special"
     )
   }
+
+  private def listOfMessages(key: String)(implicit messages: Messages): List[String] =
+    List(messages(s"declaration.declarationHolder.$key"))
+
+  private def messagesForClearanceArrived1040(implicit messages: Messages): List[String] =
+    listOfMessages("body.clearance.eidr.1040") ++ listOfMessages("body.exrr.roro.exports")
+
+  private def messagesForClearanceArrivedOthers(implicit messages: Messages): List[String] =
+    listOfMessages("body.clearance.eidr.others") ++ listOfMessages("body.exrr.roro.exports")
+
+  private def messagesForSimplifiedArrived(implicit messages: Messages): List[String] =
+    listOfMessages("body.simplified") ++ listOfMessages("body.exrr.roro.exports")
+
+  private def messagesWithLinkFor1007(appConfig: AppConfig, key: String)(implicit messages: Messages): List[String] =
+    List(
+      messages(
+        s"declaration.declarationHolder.body.$key.1007",
+        link(messages("declaration.declarationHolder.body.1007.link"), Call("GET", appConfig.permanentExportOrDispatch.section), "_blank")
+      )
+    )
+
+  private def paragraphForEoriRadiosWhenEXRR(parties: Parties)(implicit messages: Messages): Html =
+    parties.declarantIsExporter.fold {
+      paragraph(s"$eoriKey.body.exrr.v2")
+    } { declarantIsExporter =>
+      if (declarantIsExporter.isExporter) paragraph(s"$eoriKey.body.exrr.v1")
+      else {
+        val version = if (parties.exporterDetails.flatMap(_.details.eori).isDefined) "v2" else "v3"
+        paragraph(s"$eoriKey.body.exrr.$version")
+      }
+    }
+
+  private def paragraph(key: String)(implicit messages: Messages): Html = paragraphBody(messages(key))
+
+  private def row(key: String)(implicit messages: Messages): Html = Html(messages(key))
+
+  private val eoriKey = "declaration.declarationHolder.eori"
 
   private def valuesToMatch(model: ExportsDeclaration) =
     (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice, model.parties.isEntryIntoDeclarantsRecords)
