@@ -30,18 +30,37 @@ object TotalNumberOfItems extends DeclarationPage {
   implicit val format = Json.format[TotalNumberOfItems]
 
   val formId = "TotalNumberOfItems"
+  val exchangeRate = "exchangeRate"
+  val totalAmountInvoiced = "totalAmountInvoiced"
 
-  val totalAmountInvoicedPattern = "[0-9]{1,14}|[0-9]{1,14}[.][0-9]{1,2}"
-  val exchangeRatePattern = "[0-9]{1,12}|[[0-9]{1,7}[.][0-9]{1,5}]{3,13}"
+  val rateFieldErrorKey = "declaration.exchangeRate.error"
+  val invoiceFieldErrorKey = "declaration.totalAmountInvoiced.error"
 
+  val totalAmountInvoicedPattern = Seq("[0-9]{0,16}[.]{0,1}", "[0-9]{0,15}[.][0-9]{1}", "[0-9]{0,14}[.][0-9]{1,2}").mkString("|")
+
+  val exchangeRatePattern = Seq(
+    "[0-9]{0,12}[.]{0,1}",
+    "[0-9]{0,11}[.][0-9]{1}",
+    "[0-9]{0,10}[.][0-9]{1,2}",
+    "[0-9]{0,9}[.][0-9]{1,3}",
+    "[0-9]{0,8}[.][0-9]{1,4}",
+    "[0-9]{0,7}[.][0-9]{1,5}"
+  ).mkString("|")
+
+  val removeCommasFirst = (validator: String => Boolean) => (input: String) => validator(input.replaceAll(",", ""))
+  val notJustCommas = (input: String) => !input.forall(_.equals(','))
+
+  //We allow the user to enter commas when specifying these optional numerical values but we strip out the commas with `removeCommasFirst` before validating
+  //the number of digits. To prevent the validation from allowing an invalid value like ",,,," we also must use the `notJustCommas`
+  //function to specifically guard against this.
   val mapping = Forms.mapping(
-    "exchangeRate" -> optional(
+    exchangeRate -> optional(
       text()
-        .verifying("declaration.exchangeRate.error", isEmpty or ofPattern(exchangeRatePattern))
+        .verifying(rateFieldErrorKey, isEmpty or (notJustCommas and removeCommasFirst(ofPattern(exchangeRatePattern))))
     ),
-    "totalAmountInvoiced" -> optional(
+    totalAmountInvoiced -> optional(
       text()
-        .verifying("declaration.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern))
+        .verifying(invoiceFieldErrorKey, isEmpty or (notJustCommas and removeCommasFirst(ofPattern(totalAmountInvoicedPattern))))
     )
   )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
 
