@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import forms.common.YesNoAnswer.Yes
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
@@ -80,9 +81,10 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
     verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543443")), Some(EoriSource.OtherEori))
+  val declarationHolder_2: DeclarationHolder = DeclarationHolder(Some("ACF"), Some(Eori("GB123456543445")), Some(EoriSource.OtherEori))
   val id = declarationHolder.id
 
-  "DeclarationHolder Remove Controller" must {
+  "DeclarationHolderRemoveController on displayPage" must {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {
@@ -110,8 +112,17 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
         }
+      }
+    }
+  }
 
-        "submit page method is invoked with invalid holderId" in {
+  "DeclarationHolderRemoveController on submitForm" should {
+
+    onEveryDeclarationJourney() { request =>
+      "return 400 (BAD_REQUEST)" when {
+
+        "provided with invalid holderId" in {
+
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody = Seq("yesNo" -> "Yes")
@@ -131,21 +142,65 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
           verifyRemovePageInvoked()
         }
       }
+    }
+  }
 
-      "return 303 (SEE_OTHER)" when {
-        "user submits 'Yes' answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
+  "DeclarationHolderRemoveController on submitForm" when {
 
-          val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+    onEveryDeclarationJourney() { request =>
+      "user submits 'Yes' answer" when {
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
+        "after removal, cache still contains at least one DeclarationHolder" should {
+          "redirect to DeclarationHolderSummaryController" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder, declarationHolder_2)))
 
-          theCacheModelUpdated.parties.declarationHoldersData mustBe Some(DeclarationHoldersData(Seq.empty))
+            val requestBody = Seq("yesNo" -> "Yes")
+            val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
+
+            theCacheModelUpdated.parties.declarationHoldersData mustBe Some(DeclarationHoldersData(Seq(declarationHolder_2)))
+          }
         }
 
-        "user submits 'No' answer" in {
+        "after removal, cache contains NO DeclarationHolder" when {
+
+          "cache contains DeclarationHoldersData.isRequired field" should {
+
+            "redirect to DeclarationHolderRequiredController" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(DeclarationHoldersData(Seq(declarationHolder), Yes))))
+
+              val requestBody = Seq("yesNo" -> "Yes")
+              val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
+
+              theCacheModelUpdated.parties.declarationHoldersData mustBe Some(DeclarationHoldersData(Seq.empty, Yes))
+            }
+          }
+
+          "cache does NOT contain DeclarationHoldersData.isRequired field" should {
+
+            "redirect to DeclarationHolderSummaryController" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(DeclarationHoldersData(Seq(declarationHolder), None))))
+
+              val requestBody = Seq("yesNo" -> "Yes")
+              val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
+
+              theCacheModelUpdated.parties.declarationHoldersData mustBe Some(DeclarationHoldersData(Seq.empty))
+            }
+          }
+        }
+      }
+
+      "user submits 'No' answer" should {
+
+        "redirect to DeclarationHolderSummaryController" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody = Seq("yesNo" -> "No")

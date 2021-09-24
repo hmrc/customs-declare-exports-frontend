@@ -29,7 +29,7 @@ object DeclarationHoldersData {
   implicit val format = Json.format[DeclarationHoldersData]
 
   def apply(holders: Seq[DeclarationHolder]): DeclarationHoldersData =
-    new DeclarationHoldersData(holders, if (holders.isEmpty) No else Yes)
+    new DeclarationHoldersData(holders, None)
 
   val formId = "DeclarationHoldersData"
 

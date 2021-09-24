@@ -24,7 +24,6 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.declarationHolder.DeclarationHolder
 import handlers.ErrorHandler
-import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -68,7 +67,7 @@ class DeclarationHolderRemoveController @Inject()(
             formData.answer match {
               case YesNoAnswers.yes =>
                 updateExportsCache(holderToRemove)
-                  .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+                  .map(declarationAfterRemoval => navigator.continueTo(mode, nextPageAfterRemoval(declarationAfterRemoval)))
               case YesNoAnswers.no =>
                 Future.successful(navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
             }
@@ -83,8 +82,18 @@ class DeclarationHolderRemoveController @Inject()(
     holderToRemove: DeclarationHolder
   )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      val updatedHolders = DeclarationHolderHelper.cachedHolders.filterNot(_ == holderToRemove)
-      val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(updatedHolders)))
+      val updatedHolders =
+        model.parties.declarationHoldersData.map(_.copy(holders = DeclarationHolderHelper.cachedHolders.filterNot(_ == holderToRemove)))
+      val updatedParties = model.parties.copy(declarationHoldersData = updatedHolders)
       model.copy(parties = updatedParties)
     })
+
+  private def nextPageAfterRemoval(declarationAfterRemoval: Option[ExportsDeclaration]): Mode => Call = {
+    val holdersData = declarationAfterRemoval.flatMap(_.parties.declarationHoldersData)
+    if (holdersData.exists(_.holders.isEmpty) && holdersData.exists(_.isRequired.isDefined))
+      routes.DeclarationHolderRequiredController.displayPage
+    else
+      routes.DeclarationHolderSummaryController.displayPage
+  }
+
 }
