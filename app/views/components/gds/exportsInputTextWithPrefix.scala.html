@@ -41,14 +41,12 @@
 
 @hint(hintText: Option[String], prefixText: Option[String]) = {
  @if(hintText.isDefined || prefixText.isDefined){
-  <span id=@{s"${field.id}-hint"}>
    @prefixText.map{ text =>
     <span class="govuk-visually-hidden">@text</span>
    }
    @hintText.map{ text =>
     <span class="govuk-hint">@text</span>
    }
-  </span>
   }
 }
 

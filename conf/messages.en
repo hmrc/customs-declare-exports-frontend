@@ -1326,6 +1326,7 @@ declaration.nationalAdditionalCode.table.header = National additional code
 declaration.nationalAdditionalCode.remove.hint = Remove national additional code {0}.
 
 declaration.statisticalValue.title = What is the statistical value of this item?
+declaration.statisticalValue.label = Statistical value
 declaration.statisticalValue.hint = The statistical value is defined as the value in GBP of the item plus expenses for the UK portion of the journey. Add together:
 declaration.statisticalValue.hint.bullet.1 = the amount paid (if there is a sale)
 declaration.statisticalValue.hint.bullet.2 = the amount the goods could reasonably be sold for (if there is no sale)
