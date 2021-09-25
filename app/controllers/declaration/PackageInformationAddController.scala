@@ -19,7 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
 import controllers.navigation.Navigator
-import controllers.util.MultipleItemsHelper
+import controllers.helpers.MultipleItemsHelper
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
 import models.requests.JourneyRequest

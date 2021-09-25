@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.util.SaveAndContinue
+import controllers.helpers.SaveAndContinue
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{apply => _, values => _, _}
 import models.DeclarationType._
 import models.Mode

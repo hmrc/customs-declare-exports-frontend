@@ -20,7 +20,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.{FormAction, SaveAndReturn, SupervisingCustomsOfficeHelper}
+import controllers.helpers.{FormAction, SaveAndReturn, SupervisingCustomsOfficeHelper}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject

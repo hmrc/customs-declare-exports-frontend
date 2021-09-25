@@ -19,7 +19,7 @@ package views.declaration
 import base.{Injector, TestHelper}
 import base.ExportsTestData._
 import controllers.declaration.routes
-import controllers.util.SaveAndReturn
+import controllers.helpers.SaveAndReturn
 import forms.{Ducr, Lrn, Mrn}
 import forms.declaration.ConsignmentReferences
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}

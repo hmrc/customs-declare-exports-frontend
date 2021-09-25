@@ -19,7 +19,7 @@ package views.declaration
 import base.{Injector, TestHelper}
 import base.ExportsTestData.eori
 import controllers.declaration.routes
-import controllers.util.SaveAndReturn
+import controllers.helpers.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode

@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.util.SaveAndReturn
+import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import forms.declaration.DeclarantEoriConfirmation.form

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.util
+package controllers.helpers
 
 import base.UnitSpec
-import controllers.util.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
+import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 

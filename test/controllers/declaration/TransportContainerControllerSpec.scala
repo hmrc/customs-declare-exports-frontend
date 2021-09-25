@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.{ControllerSpec, Injector}
-import controllers.util.Remove
+import controllers.helpers.Remove
 import forms.common.YesNoAnswer
 import forms.declaration.{ContainerAdd, ContainerFirst, Seal}
 import mock.ErrorHandlerMocks

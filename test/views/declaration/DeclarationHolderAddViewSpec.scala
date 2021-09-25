@@ -18,7 +18,7 @@ package views.declaration
 
 import base.{Injector, TestHelper}
 import base.ExportsTestData._
-import controllers.util.SaveAndReturn
+import controllers.helpers.SaveAndReturn
 import forms.common.Eori
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.declarationHolder.DeclarationHolder

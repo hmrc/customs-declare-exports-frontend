@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.util.{Remove, SaveAndContinue, SaveAndReturn}
+import controllers.helpers.{Remove, SaveAndContinue, SaveAndReturn}
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import mock.ErrorHandlerMocks

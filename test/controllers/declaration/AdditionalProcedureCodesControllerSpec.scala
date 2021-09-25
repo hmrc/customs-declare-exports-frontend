@@ -19,7 +19,7 @@ package controllers.declaration
 import java.util.{Locale, UUID}
 
 import base.ControllerSpec
-import controllers.util.Remove
+import controllers.helpers.Remove
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode.additionalProcedureCodeKey

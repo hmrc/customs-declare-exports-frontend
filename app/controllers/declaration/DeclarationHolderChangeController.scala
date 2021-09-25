@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.DeclarationHolderHelper._
-import controllers.util.MultipleItemsHelper
+import controllers.helpers.DeclarationHolderHelper._
+import controllers.helpers.MultipleItemsHelper
 import forms.declaration.declarationHolder.DeclarationHolder.form
 import forms.declaration.declarationHolder.DeclarationHolder
 import handlers.ErrorHandler

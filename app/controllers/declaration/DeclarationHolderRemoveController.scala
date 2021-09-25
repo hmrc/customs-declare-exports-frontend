@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.DeclarationHolderHelper
-import controllers.util.DeclarationHolderHelper.cachedHolders
+import controllers.helpers.DeclarationHolderHelper
+import controllers.helpers.DeclarationHolderHelper.cachedHolders
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.declarationHolder.DeclarationHolder

@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.util.{SaveAndContinue, SaveAndReturn}
+import controllers.helpers.{SaveAndContinue, SaveAndReturn}
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
 import models.requests.JourneyRequest

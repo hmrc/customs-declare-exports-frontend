@@ -19,7 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.AdditionalInformationAddController.AdditionalInformationFormGroupId
 import controllers.navigation.Navigator
-import controllers.util._
+import controllers.helpers._
 import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.form
 import models.declaration.AdditionalInformationData

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.util
+package controllers.helpers
 
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.requests.JourneyRequest

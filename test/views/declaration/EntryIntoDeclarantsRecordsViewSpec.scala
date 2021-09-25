@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.util.SaveAndReturn
+import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{No, Yes, YesNoAnswers}
 import forms.declaration.EntryIntoDeclarantsRecords

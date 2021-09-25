@@ -17,7 +17,7 @@
 package views.declaration.fiscalInformation
 
 import base.Injector
-import controllers.util.{SaveAndContinue, SaveAndReturn}
+import controllers.helpers.{SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalFiscalReference
 import models.DeclarationType._
 import models.Mode
