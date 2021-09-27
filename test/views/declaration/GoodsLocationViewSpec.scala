@@ -55,21 +55,16 @@ class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs
       messages must haveTranslationFor(s"$prefix.inset.bullet3")
       messages must haveTranslationFor(s"$prefix.expander.title")
       messages must haveTranslationFor(s"$prefix.expander.intro01")
-      messages must haveTranslationFor(s"$prefix.expander.intro03")
       messages must haveTranslationFor(s"$prefix.expander.paragraph01.title")
       messages must haveTranslationFor(s"$prefix.expander.paragraph02.title")
       messages must haveTranslationFor(s"$prefix.expander.paragraph03.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph03.text")
       messages must haveTranslationFor(s"$prefix.expander.paragraph04.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph04.text")
       messages must haveTranslationFor(s"$prefix.expander.paragraph05.title")
       messages must haveTranslationFor(s"$prefix.expander.paragraph06.title")
       messages must haveTranslationFor(s"$prefix.expander.paragraph07.title")
       messages must haveTranslationFor(s"$prefix.expander.paragraph08.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph09.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph10.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph10.text")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph11.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph08.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph09.text")
       messages must haveTranslationFor("tariff.declaration.locationOfGoods.clearance.text")
     }
 
@@ -114,15 +109,14 @@ class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs
       val details = expander.last
 
       val children = details.children
-      children.size mustBe 23
+      children.size mustBe 18
       children.get(0).text mustBe messages(s"$prefix.expander.intro01")
-      children.get(5).text mustBe messages(s"$prefix.expander.intro03")
 
-      val titles = details.getElementsByClass("govuk-label--s")
-      titles.size mustBe 10
+      val titles = details.getElementsByClass("govuk-heading-s")
+      titles.size mustBe 8
 
       val links = details.getElementsByTag("a")
-      links.size mustBe 13
+      links.size mustBe 11
 
       val hints = details.getElementsByClass("govuk-hint")
       hints.size mustBe 9
