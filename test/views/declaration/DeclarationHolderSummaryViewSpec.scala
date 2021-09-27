@@ -22,7 +22,7 @@ import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.Mode
-import models.declaration.{EoriSource, Parties}
+import models.declaration.{DeclarationHoldersData, EoriSource, ExportDeclarationTestData, Parties}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -54,13 +54,51 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
   }
 
   "DeclarationHolder Summary View back link" should {
+
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
-      "display back link" in {
-        val view = createView()
-        view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
-        )
+      Seq(Yes, No).foreach { answer =>
+        s"cache contains DeclarationHoldersData.isRequired field with '${answer.get.answer}' answer" when {
+
+          "cache contains empty DeclarationHoldersData.holders field" should {
+
+            "display back link to Declaration Holder Required page" in {
+              val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, answer)))
+              val req = journeyRequest(request.cacheModel.copy(parties = parties))
+
+              val view = createView()(req)
+              view must containElementWithID("back-link")
+              view.getElementById("back-link") must haveHref(
+                controllers.declaration.routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
+              )
+            }
+          }
+
+          "cache contains non-empty DeclarationHoldersData.holders field" should {
+
+            "display back link to Authorisation Procedure Code Choice page" in {
+              val parties =
+                Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq(ExportDeclarationTestData.correctDeclarationHolder), answer)))
+              val req = journeyRequest(request.cacheModel.copy(parties = parties))
+
+              val view = createView()(req)
+              view must containElementWithID("back-link")
+              view.getElementById("back-link") must haveHref(
+                controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
+              )
+            }
+          }
+        }
+
+      }
+
+      "cache does NOT contain DeclarationHoldersData.isRequired field" should {
+        "display back link to Authorisation Procedure Code Choice page" in {
+          val view = createView()
+          view must containElementWithID("back-link")
+          view.getElementById("back-link") must haveHref(
+            controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
+          )
+        }
       }
     }
 

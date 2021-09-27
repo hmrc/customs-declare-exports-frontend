@@ -18,10 +18,12 @@ package views.declaration.destinationCountries
 
 import base.Injector
 import controllers.declaration.routes
+import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}
 import models.DeclarationType._
 import models.Mode
+import models.declaration.{DeclarationHoldersData, Parties}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.twirl.api.Html
@@ -90,16 +92,46 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     }
   }
 
-  onJourney(SIMPLIFIED, OCCASIONAL) { implicit request =>
+  onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
     "Destination country view spec" should {
 
-      s"display back button that links to `Declaration holder` page for ${request.declarationType}" in {
+      "display back button" that {
 
-        val view = destinationCountryPage(Mode.Normal, form(request))(request, messages)
-        val backButton = view.getElementById("back-link")
+        s"links to 'Declaration Holder Summary' page for ${request.declarationType}" when {
 
-        backButton.text() mustBe messages("site.back")
-        backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
+          "cache contains DeclarationHoldersData.isRequired field with 'Yes' answer" in {
+
+            val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, Yes)))
+            val req = journeyRequest(request.cacheModel.copy(parties = parties))
+
+            val backButton = view(req).getElementById("back-link")
+
+            backButton.text() mustBe messages("site.back")
+            backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
+          }
+
+          "cache does NOT contain DeclarationHoldersData.isRequired field" in {
+
+            val backButton = view(request).getElementById("back-link")
+
+            backButton.text() mustBe messages("site.back")
+            backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
+          }
+        }
+
+        s"links to 'Declaration Holder Required' page for ${request.declarationType}" when {
+
+          "cache contains DeclarationHoldersData.isRequired field with 'No' answer" in {
+
+            val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, No)))
+            val req = journeyRequest(request.cacheModel.copy(parties = parties))
+
+            val backButton = view(req).getElementById("back-link")
+
+            backButton.text() mustBe messages("site.back")
+            backButton must haveHref(routes.DeclarationHolderRequiredController.displayPage())
+          }
+        }
       }
     }
   }
