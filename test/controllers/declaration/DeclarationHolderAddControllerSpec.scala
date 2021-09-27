@@ -18,20 +18,22 @@ package controllers.declaration
 
 import base.{ControllerSpec, ExportsTestData}
 import forms.common.Eori
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.DeclarationHolder
+import models.DeclarationType._
 import models.Mode
 import models.declaration.{DeclarationHoldersData, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatest.OptionValues
+import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
-import play.twirl.api.HtmlFormat
+import play.twirl.api.{Html, HtmlFormat}
 import views.html.declaration.declarationHolder.declaration_holder_add
 
-class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValues {
+class DeclarationHolderAddControllerSpec extends ControllerSpec with GivenWhenThen with OptionValues {
 
   val mockAddPage = mock[declaration_holder_add]
 
@@ -67,18 +69,16 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
     captor.getValue
   }
 
-  private def verifyAddPageInvoked(numberOfTimes: Int = 1) =
+  private def verifyAddPageInvoked(numberOfTimes: Int = 1): Html =
     verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
+  val declarationHolder = DeclarationHolder(Some("ACE"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
 
   "DeclarationHolder Add Controller" must {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {
-
         "display page method is invoked" in {
-
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -88,7 +88,6 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
 
           theDeclarationHolder.value mustBe None
         }
-
       }
 
       "return 400 (BAD_REQUEST)" when {
@@ -105,7 +104,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
         "user submits invalid data" in {
           withNewCaching(request.cacheModel)
 
-          val requestBody = Seq("authorisationTypeCode" -> "inva!id", "eori" -> "inva!id")
+          val requestBody = List("authorisationTypeCode" -> "inva!id", "eori" -> "inva!id")
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
@@ -116,7 +115,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
           val requestBody =
-            Seq("authorisationTypeCode" -> declarationHolder.authorisationTypeCode.get, "eori" -> declarationHolder.eori.map(_.value).get)
+            List("authorisationTypeCode" -> declarationHolder.authorisationTypeCode.get, "eori" -> declarationHolder.eori.map(_.value).get)
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
@@ -128,7 +127,7 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(DeclarationHoldersData(holders))))
 
           val requestBody =
-            Seq("authorisationTypeCode" -> declarationHolder.authorisationTypeCode.get, "eori" -> declarationHolder.eori.map(_.value).get)
+            List("authorisationTypeCode" -> declarationHolder.authorisationTypeCode.get, "eori" -> declarationHolder.eori.map(_.value).get)
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
@@ -137,14 +136,10 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
 
         "user adds mutually exclusive data" when {
           "attempted to add EXRR when already having CSE present" in {
-            withNewCaching(
-              aDeclarationAfter(
-                request.cacheModel,
-                withDeclarationHolders(DeclarationHolder(Some("CSE"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori)))
-              )
-            )
+            val holder = DeclarationHolder(Some("CSE"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
+            withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(holder)))
 
-            val requestBody = Seq("authorisationTypeCode" -> "EXRR", "eori" -> ExportsTestData.eori)
+            val requestBody = List("authorisationTypeCode" -> "EXRR", "eori" -> ExportsTestData.eori)
             val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
             status(result) mustBe BAD_REQUEST
@@ -152,14 +147,10 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
           }
 
           "attempted to add CSE when already having EXRR present" in {
-            withNewCaching(
-              aDeclarationAfter(
-                request.cacheModel,
-                withDeclarationHolders(DeclarationHolder(Some("EXRR"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori)))
-              )
-            )
+            val holder = DeclarationHolder(Some("EXRR"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
+            withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(holder)))
 
-            val requestBody = Seq("authorisationTypeCode" -> "CSE", "eori" -> ExportsTestData.eori)
+            val requestBody = List("authorisationTypeCode" -> "CSE", "eori" -> ExportsTestData.eori)
             val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
             status(result) mustBe BAD_REQUEST
@@ -173,21 +164,41 @@ class DeclarationHolderAddControllerSpec extends ControllerSpec with OptionValue
         "user submits valid data" in {
           withNewCaching(request.cacheModel)
 
-          val requestBody =
-            Seq(
-              "authorisationTypeCode" -> declarationHolder.authorisationTypeCode.get,
-              "eori" -> declarationHolder.eori.map(_.value).get,
-              "eoriSource" -> "OtherEori"
-            )
+          val requestBody = List(
+            "authorisationTypeCode" -> declarationHolder.authorisationTypeCode.get,
+            "eori" -> declarationHolder.eori.map(_.value).get,
+            "eoriSource" -> "OtherEori"
+          )
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
 
           val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
-          savedHolder mustBe Some(DeclarationHoldersData(Seq(declarationHolder)))
+          savedHolder mustBe Some(DeclarationHoldersData(List(declarationHolder)))
         }
+      }
+    }
 
+    "return 400 (BAD_REQUEST)" when {
+
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
+        "the user enters 'EXRR' as authorisationTypeCode" in {
+          And("the declaration is of type PRE_LODGED")
+          val additionalDeclarationType = request.declarationType match {
+            case STANDARD   => STANDARD_PRE_LODGED
+            case SIMPLIFIED => SIMPLIFIED_PRE_LODGED
+            case OCCASIONAL => OCCASIONAL_PRE_LODGED
+            case CLEARANCE  => CLEARANCE_PRE_LODGED
+          }
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAdditionalDeclarationType(additionalDeclarationType)))
+
+          val requestBody = List("authorisationTypeCode" -> "EXRR", "eori" -> ExportsTestData.eori, "eoriSource" -> "OtherEori")
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          status(result) mustBe BAD_REQUEST
+          verifyAddPageInvoked()
+        }
       }
     }
   }

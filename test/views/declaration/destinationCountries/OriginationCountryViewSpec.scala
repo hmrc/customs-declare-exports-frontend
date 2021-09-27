@@ -18,7 +18,6 @@ package views.declaration.destinationCountries
 
 import base.Injector
 import controllers.declaration.routes
-import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.countries.Countries.OriginationCountryPage
 import forms.declaration.countries.{Countries, Country}

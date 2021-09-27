@@ -17,7 +17,6 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.declarationHolder.DeclarationHolder
 import play.api.libs.json.Json
 

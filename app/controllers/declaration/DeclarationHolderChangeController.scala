@@ -16,25 +16,26 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.DeclarationHolderHelper._
 import controllers.helpers.MultipleItemsHelper
-import forms.declaration.declarationHolder.DeclarationHolder.form
+import controllers.navigation.Navigator
 import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolder.form
 import handlers.ErrorHandler
+import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
+import models.declaration.DeclarationHoldersData.limitOfHolders
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_change
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationHolderChangeController @Inject()(
   authenticate: AuthAction,
@@ -73,21 +74,29 @@ class DeclarationHolderChangeController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
 
-    val holdersWithoutExisting: Seq[DeclarationHolder] = cachedHolders.filterNot(_ == existingHolder)
+    val sourceHolders = cachedHolders
+    val holdersWithoutExisting: Seq[DeclarationHolder] = sourceHolders.filterNot(_ == existingHolder)
 
     MultipleItemsHelper
-      .add(boundForm, holdersWithoutExisting, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
+      .add(boundForm, holdersWithoutExisting, limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderChangePage(mode, existingHolder.id, formWithErrors, request.eori))),
         _ => {
-          val updatedHolders = cachedHolders.map(holder => if (holder == existingHolder) newHolder else holder)
-          updateExportsCache(updatedHolders)
-            .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+          validateAuthCode(boundForm.value) match {
+            case Some(error) =>
+              val formWithError = boundForm.copy(errors = Seq(error))
+              Future.successful(BadRequest(declarationHolderChangePage(mode, existingHolder.id, formWithError, request.eori)))
+
+            case _ =>
+              val updatedHolders = sourceHolders.map(holder => if (holder == existingHolder) newHolder else holder)
+              updateExportsCache(updatedHolders)
+                .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
+          }
         }
       )
   }
 
-  private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val isRequired = model.parties.declarationHoldersData.flatMap(_.isRequired)
       val updatedParties =
