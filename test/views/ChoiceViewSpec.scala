@@ -136,10 +136,10 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
     "secureMessagingInbox flag is set to 'sfus'" should {
       "display SFUS link description text" in {
         withSecureMessagingFeatureStatus(SFUS)
-        val h3s = createView().getElementsByTag("h3")
+        val h2s = createView().getElementsByTag("h2")
 
-        h3s.size mustBe 1
-        h3s.first().text() mustBe messages("declaration.choice.link.sfus.description")
+        h2s.size mustBe 2
+        h2s.first().text() mustBe messages("declaration.choice.link.sfus.description")
       }
 
       "display SFUS upload documents link" in {
@@ -162,10 +162,10 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
     "secureMessagingInbox flag is set to 'exports'" should {
       "display Exports link description text" in {
         withSecureMessagingFeatureStatus(EXPORTS)
-        val h3s = createView().getElementsByTag("h3")
+        val h2s = createView().getElementsByTag("h2")
 
-        h3s.size mustBe 1
-        h3s.first().text() mustBe messages("declaration.choice.link.exports.description")
+        h2s.size mustBe 2
+        h2s.first().text() mustBe messages("declaration.choice.link.exports.description")
       }
 
       "display SFUS upload documents link" in {
@@ -180,8 +180,8 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
     "secureMessagingInbox flag is set to 'disabled'" should {
       "not display SFUS or Exports link description text" in {
         withSecureMessagingFeatureStatus(DISABLED)
-        val h3s = createView().getElementsByTag("h3")
-        h3s.size mustBe 0
+        val h2s = createView().getElementsByTag("h2")
+        h2s.size mustBe 1
       }
 
       "not display SFUS upload documents link" in {
