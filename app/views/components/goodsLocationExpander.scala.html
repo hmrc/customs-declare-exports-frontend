@@ -23,6 +23,7 @@
     govukHint: GovukHint,
     paragraphBody: paragraphBody,
     paragraph: paragraph,
+    heading: heading,
     link: link,
     appConfig: AppConfig
 )
@@ -34,91 +35,79 @@
 @expanderContent = {
     @paragraphBody(text("intro01"))
 
-    @paragraphBody(text("paragraph01.title"), "govuk-label--s")
-    @paragraph(link(text = text("paragraph01.link"), call = Call("GET", appConfig.rollOnRollOffPorts), target = "_blank"))
-
-    @paragraphBody(text("paragraph02.title"), "govuk-label--s")
-    @paragraph(link(text = text("paragraph02.link"), call = Call("GET", appConfig.railLocationCodes), target = "_blank"))
-
-    @paragraphBody(text("intro03"))
-
-    @paragraphBody(text("paragraph03.title"), "govuk-label--s")
-    @govukHint(Hint(
-        content = HtmlContent(text("paragraph03.text",
-            link(
-                text = text("paragraph03.link"),
-                call = Call("GET", appConfig.customsDecCompletionRequirements),
-                target = "_blank"
-            )
-        ))
-    ))
-
-    @paragraphBody(text("paragraph04.title"), "govuk-label--s")
-    @govukHint(Hint(
-        content = HtmlContent(text("paragraph04.text",
-            link(
-                text = text("paragraph04.link"),
-                call = Call("GET", appConfig.customsDecCompletionRequirements),
-                target = "_blank"
-            )
-        ))
-    ))
-
-    @paragraphBody(text("paragraph05.title"), "govuk-label--s")
+    @heading(text("paragraph01.title"), "govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1", "h2")
     @govukHint(Hint(
         content = HtmlContent(link(
-            text = text("paragraph05.link"),
+            text = text("paragraph01.link"),
+            call = Call("GET", appConfig.rollOnRollOffPorts),
+            target = "_blank"
+        ))
+    ))
+
+    @heading(text("paragraph02.title"), "govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1", "h2")
+    @govukHint(Hint(
+        content = HtmlContent(link(
+            text = text("paragraph02.link"),
+            call = Call("GET", appConfig.railLocationCodes),
+            target = "_blank"
+        ))
+    ))
+
+    @heading(text("paragraph03.title"), "govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1", "h2")
+    @govukHint(Hint(
+        content = HtmlContent(link(
+            text = text("paragraph03.link"),
             call = Call("GET", appConfig.locationCodeForAirports),
             target = "_blank"
         ))
     ))
 
-    @paragraphBody(text("paragraph06.title"), "govuk-label--s")
+    @heading(text("paragraph04.title"), "govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1", "h2")
     @govukHint(Hint(
         content = HtmlContent(link(
-            text = text("paragraph06.link"),
+            text = text("paragraph04.link"),
             call = Call("GET", appConfig.certificateOfAgreementAirports),
             target = "_blank"
         ))
     ))
 
-    @paragraphBody(text("paragraph07.title"), "govuk-label--s")
+    @heading(text("paragraph05.title"), "govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1", "h2")
     @govukHint(Hint(
         content = HtmlContent(link(
-            text = text("paragraph07.link"),
+            text = text("paragraph05.link"),
             call = Call("GET", appConfig.locationCodeForMaritimePorts),
             target = "_blank"
         ))
     ))
 
-    @paragraphBody(text("paragraph08.title"), "govuk-label--s")
+    @heading(text("paragraph06.title"), "govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1", "h2")
     @govukHint(Hint(
         content = HtmlContent(link(
-            text = text("paragraph08.link"),
+            text = text("paragraph06.link"),
             call = Call("GET", appConfig.locationCodeForTempStorage),
             target = "_blank"
         ))
     ))
 
-    @paragraphBody(text("paragraph09.title"), "govuk-label--s")
+    @heading(text("paragraph07.title"), "govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1", "h2")
     @govukHint(Hint(
         content = HtmlContent(link(
-            text = text("paragraph09.link"),
+            text = text("paragraph07.link"),
             call = Call("GET", appConfig.designatedExportPlaceCodes),
             target = "_blank"
         ))
     ))
 
-    @paragraphBody(text("paragraph10.title"), "govuk-label--s")
+    @heading(text("paragraph08.title"), "govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1", "h2")
     @govukHint(Hint(
-        content = HtmlContent(text("paragraph10.text",
+        content = HtmlContent(text("paragraph08.text",
             link(
-                text = text("paragraph10.link1"),
+                text = text("paragraph08.link1"),
                 call = Call("GET", appConfig.locationCodesForCsePremises),
                 target = "_blank"
             ),
             link(
-                text = text("paragraph10.link2"),
+                text = text("paragraph08.link2"),
                 call = Call("GET", appConfig.previousProcedureCodesUrl),
                 target = "_blank"
             )
@@ -126,14 +115,14 @@
     ))
 
     @govukHint(Hint(
-        content = HtmlContent(text("paragraph11.text",
+        content = HtmlContent(text("paragraph09.text",
             link(
-                text = text("paragraph11.link1"),
+                text = text("paragraph09.link1"),
                 call = Call("GET", appConfig.goodsLocationCodesForDataElement),
                 target = "_blank"
             ),
             link(
-                text = text("paragraph11.link2"),
+                text = text("paragraph09.link2"),
                 call = Call("GET", appConfig.tariffCdsChiefSupplement),
                 target = "_blank"
             )
