@@ -26,6 +26,8 @@
     govukButton: GovukButton,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
+    heading: heading,
+    paragraph: paragraph,
     saveAndContinue: saveAndContinue,
     link: link,
     sfusConfig: SfusConfig,
@@ -90,16 +92,20 @@
 
         @if(secureMessagingInboxConfig.isSfusSecureMessagingEnabled) {
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
-            <h3>@messages("declaration.choice.link.sfus.description")</h3>
 
-            <p>@link(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = Call("GET", s"${sfusConfig.sfusUploadLink}"), target = "_blank")</p>
-            <p>@link(id = Some("sfusInboxLink"), text = messages("declaration.choice.link.sfusInbox.txt"), call = Call("GET", s"${secureMessagingInboxConfig.sfusInboxLink}"), target = "_blank")</p>
+            @heading(messages("declaration.choice.link.sfus.description"), "govuk-heading-s", "h2")
+
+            @paragraph(link(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = Call("GET", s"${sfusConfig.sfusUploadLink}"), target = "_blank"))
+            @paragraph(link(id = Some("sfusInboxLink"), text = messages("declaration.choice.link.sfusInbox.txt"), call = Call("GET", s"${secureMessagingInboxConfig.sfusInboxLink}"), target = "_blank"))
+
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
         }
         @if(secureMessagingInboxConfig.isExportsSecureMessagingEnabled) {
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
-            <h3>@messages("declaration.choice.link.exports.description")</h3>
-            <p>@link(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = Call("GET", s"${sfusConfig.sfusUploadLink}"), target = "_blank")</p>
+
+            @heading(messages("declaration.choice.link.exports.description"), "govuk-heading-s", "h2")
+            @paragraph(link(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = Call("GET", s"${sfusConfig.sfusUploadLink}"), target = "_blank"))
+
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
         }
     }
