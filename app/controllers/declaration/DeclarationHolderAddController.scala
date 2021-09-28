@@ -82,7 +82,7 @@ class DeclarationHolderAddController @Inject()(
     val mutuallyExclusiveAuthTypeCodes = Seq("CSE", "EXRR")
 
     boundForm.value match {
-      case Some(DeclarationHolder(Some(code), _, _)) if (mutuallyExclusiveAuthTypeCodes.contains(code)) =>
+      case Some(DeclarationHolder(Some(code), _, _)) if mutuallyExclusiveAuthTypeCodes.contains(code) =>
         val mustNotAlreadyContainCodes = mutuallyExclusiveAuthTypeCodes.filter(_ != code)
 
         if (holders.map(_.authorisationTypeCode.getOrElse("")).containsSlice(mustNotAlreadyContainCodes))
@@ -95,7 +95,9 @@ class DeclarationHolderAddController @Inject()(
 
   private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders)))
+      val isRequired = model.parties.declarationHoldersData.flatMap(_.isRequired)
+      val updatedParties =
+        model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders, isRequired)))
       model.copy(parties = updatedParties)
     })
 }
