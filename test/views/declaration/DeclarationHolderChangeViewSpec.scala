@@ -16,14 +16,15 @@
 
 package views.declaration
 
-import base.{Injector, TestHelper}
 import base.ExportsTestData.eori
+import base.Injector
+import base.TestHelper.createRandomAlphanumericString
 import controllers.declaration.routes
 import controllers.helpers.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.Mode
-import models.declaration.EoriSource
+import models.declaration.EoriSource.{OtherEori, UserEori}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -36,29 +37,33 @@ import views.tags.ViewTest
 @ViewTest
 class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")), Some(EoriSource.OtherEori))
+  val declarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB42354735346235")), Some(OtherEori))
   val id = "ACE-GB42354735346235"
 
   private val declarationHolderPage = instanceOf[declaration_holder_change]
+
+  private def createForm(implicit request: JourneyRequest[_]): Form[DeclarationHolder] =
+    DeclarationHolder.form(eori, request.cacheModel.additionalDeclarationType)
+
   private def createView(form: Form[DeclarationHolder])(implicit request: JourneyRequest[_]): Document =
     declarationHolderPage(Mode.Normal, id, form, eori)(request, messages)
 
   "Declaration Holder View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
-      val view = createView(DeclarationHolder.form(eori).fill(declarationHolder))
+      val view = createView(createForm.fill(declarationHolder))
 
       "display page title" in {
-        view.getElementsByTag("h1").text() mustBe messages("declaration.declarationHolder.title")
+        view.getElementsByTag("h1").text mustBe messages("declaration.declarationHolder.title")
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() must include(messages("declaration.section.2"))
+        view.getElementById("section-header").text must include(messages("declaration.section.2"))
       }
 
       "display 'Back' button that links to 'Summary' page" in {
         val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe messages(backCaption)
+        backButton.text mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.DeclarationHolderSummaryController.displayPage().url
       }
 
@@ -67,27 +72,29 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       }
 
       "display data UserEori checked" in {
-        val view = createView(DeclarationHolder.form(eori).fill(DeclarationHolder(Some("test"), Some(Eori("test1")), Some(EoriSource.UserEori))))
+        val declarationHolder = DeclarationHolder(Some("test"), Some(Eori("test1")), Some(UserEori))
+        val view = createView(createForm.fill(declarationHolder))
 
         view.getElementById("conditional-OtherEori").attr("class").contains("hidden") mustBe true
-        view.getElementById("UserEori").getElementsByAttribute("checked").size() mustBe 1
+        view.getElementById("UserEori").getElementsByAttribute("checked").size mustBe 1
       }
 
       "display data OtherEori checked and data is present in EORI input" in {
-        val view = createView(DeclarationHolder.form(eori).fill(DeclarationHolder(None, Some(Eori("test")), Some(EoriSource.OtherEori))))
+        val declarationHolder = DeclarationHolder(None, Some(Eori("test")), Some(OtherEori))
+        val view = createView(createForm.fill(declarationHolder))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe empty
         view.getElementById("conditional-OtherEori").attr("class").contains("hidden") mustBe false
-        view.getElementById("OtherEori").getElementsByAttribute("checked").size() mustBe 1
+        view.getElementById("OtherEori").getElementsByAttribute("checked").size mustBe 1
         view.getElementById("eori").attr("value") mustBe "test"
       }
 
       "display 'Save and continue' button on page" in {
         val saveAndContinueButton = view.getElementById("submit")
-        saveAndContinueButton.text() mustBe messages(saveAndContinueCaption)
+        saveAndContinueButton.text mustBe messages(saveAndContinueCaption)
 
         val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton.text() mustBe messages(saveAndReturnCaption)
+        saveAndReturnButton.text mustBe messages(saveAndReturnCaption)
         saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
       }
     }
@@ -100,12 +107,9 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
        * no point to distinguish them and move to controller test
        */
       "display error for empty Authorisation code" in {
-
-        val view = createView(
-          DeclarationHolder
-            .form(eori)
-            .fillAndValidate(DeclarationHolder(None, Some(Eori(TestHelper.createRandomAlphanumericString(17))), Some(EoriSource.OtherEori)))
-        )
+        val eori = Eori(createRandomAlphanumericString(17))
+        val declarationHolder = DeclarationHolder(None, Some(eori), Some(OtherEori))
+        val view = createView(createForm.fillAndValidate(declarationHolder))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#authorisationTypeCode")
@@ -114,12 +118,9 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       }
 
       "display error for incorrect EORI" in {
-
-        val view = createView(
-          DeclarationHolder
-            .form(eori)
-            .fillAndValidate(DeclarationHolder(Some("ACE"), Some(Eori(TestHelper.createRandomAlphanumericString(18))), Some(EoriSource.OtherEori)))
-        )
+        val eori = Eori(createRandomAlphanumericString(18))
+        val declarationHolder = DeclarationHolder(Some("ACE"), Some(eori), Some(OtherEori))
+        val view = createView(createForm.fillAndValidate(declarationHolder))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#eori")
@@ -128,11 +129,9 @@ class DeclarationHolderChangeViewSpec extends UnitViewSpec with CommonMessages w
       }
 
       "display error for both incorrect fields" in {
-        val view = createView(
-          DeclarationHolder
-            .form(eori)
-            .fillAndValidate(DeclarationHolder(None, Some(Eori(TestHelper.createRandomAlphanumericString(18))), Some(EoriSource.OtherEori)))
-        )
+        val eori = Eori(createRandomAlphanumericString(18))
+        val declarationHolder = DeclarationHolder(None, Some(eori), Some(OtherEori))
+        val view = createView(createForm.fillAndValidate(declarationHolder))
 
         view must haveGovukGlobalErrorSummary
 

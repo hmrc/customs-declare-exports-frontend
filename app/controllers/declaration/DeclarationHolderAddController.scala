@@ -19,11 +19,10 @@ package controllers.declaration
 import scala.concurrent.{ExecutionContext, Future}
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.helpers.DeclarationHolderHelper.{cachedHolders, validateAuthCode, DeclarationHolderFormGroupId}
+import controllers.helpers.DeclarationHolderHelper._
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import forms.declaration.declarationHolder.DeclarationHolder
-import forms.declaration.declarationHolder.DeclarationHolder.form
 import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
@@ -47,51 +46,37 @@ class DeclarationHolderAddController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(declarationHolderPage(mode, form(request.eori).withSubmissionErrors(), request.eori))
+    Ok(declarationHolderPage(mode, form.withSubmissionErrors, request.eori))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form(request.eori).bindFromRequest()
+    val boundForm = form.bindFromRequest
 
-    boundForm.fold(formWithErrors => {
-      Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, request.eori)))
-    }, _ => saveHolder(mode, boundForm))
+    boundForm.fold(
+      formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, request.eori))),
+      _ => saveHolder(mode, boundForm)
+    )
   }
 
   private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedHolders, limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
+      .add(boundForm, declarationHolders, limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, r.eori))),
-        holders => {
-          validateAuthCode(boundForm.value) match {
+        updatedHolders => {
+          validateMutuallyExclusiveAuthCodes(boundForm.value, declarationHolders) match {
             case Some(error) =>
               val formWithError = boundForm.copy(errors = Seq(error))
               Future.successful(BadRequest(declarationHolderPage(mode, formWithError, r.eori)))
 
             case _ =>
-              updateExportsCache(holders)
+              updateExportsCache(updatedHolders)
                 .map(_ => navigator.continueTo(mode, routes.DeclarationHolderSummaryController.displayPage))
           }
         }
       )
 
-  private def validateMutuallyExclusiveAuthTypeCodes(boundForm: Form[DeclarationHolder], holders: Seq[DeclarationHolder]): Option[FormError] = {
-    val mutuallyExclusiveAuthTypeCodes = Seq("CSE", "EXRR")
-
-    boundForm.value match {
-      case Some(DeclarationHolder(Some(code), _, _)) if (mutuallyExclusiveAuthTypeCodes.contains(code)) =>
-        val mustNotAlreadyContainCodes = mutuallyExclusiveAuthTypeCodes.filter(_ != code)
-
-        if (holders.map(_.authorisationTypeCode.getOrElse("")).containsSlice(mustNotAlreadyContainCodes))
-          Some(FormError(DeclarationHolderFormGroupId, s"declaration.declarationHolder.${code}.error.exclusive"))
-        else
-          None
-      case _ => None
-    }
-  }
-
-  private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val isRequired = model.parties.declarationHoldersData.flatMap(_.isRequired)
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders, isRequired)))

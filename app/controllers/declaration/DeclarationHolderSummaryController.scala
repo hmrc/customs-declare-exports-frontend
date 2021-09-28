@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.helpers.DeclarationHolderHelper.declarationHolders
 import controllers.navigation.Navigator
-import controllers.helpers.DeclarationHolderHelper.cachedHolders
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
@@ -30,7 +30,6 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_summary
-
 import javax.inject.Inject
 
 class DeclarationHolderSummaryController @Inject()(
@@ -43,22 +42,16 @@ class DeclarationHolderSummaryController @Inject()(
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (cachedHolders.isEmpty) navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
-    else Ok(declarationHolderPage(mode, addAnotherYesNoForm.withSubmissionErrors(), cachedHolders))
+    if (declarationHolders.isEmpty) navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
+    else Ok(declarationHolderPage(mode, addAnotherYesNoForm.withSubmissionErrors, declarationHolders))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val holders = cachedHolders
-    addAnotherYesNoForm
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(declarationHolderPage(mode, formWithErrors, holders)),
-        validYesNo =>
-          validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
-            case YesNoAnswers.no  => navigator.continueTo(mode, nextPage)
-        }
-      )
+    addAnotherYesNoForm.bindFromRequest
+      .fold(formWithErrors => BadRequest(declarationHolderPage(mode, formWithErrors, declarationHolders)), _.answer match {
+        case YesNoAnswers.yes => navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
+        case YesNoAnswers.no  => navigator.continueTo(mode, nextPage)
+      })
   }
 
   private def addAnotherYesNoForm: Form[YesNoAnswer] =

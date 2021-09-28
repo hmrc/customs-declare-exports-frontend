@@ -143,38 +143,6 @@ class DeclarationHolderChangeControllerSpec extends ControllerSpec with ErrorHan
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
         }
-
-        "user adds mutually exclusive data" when {
-
-          "attempted to change to EXRR when already having CSE present" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder1, declarationHolder2)))
-
-            val requestBody = List(
-              "authorisationTypeCode" -> "EXRR",
-              "eori" -> declarationHolder1.eori.map(_.value).value,
-              "eoriSource" -> declarationHolder1.eoriSource.map(_.toString).value
-            )
-            val result = controller.submitForm(Mode.Normal, declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-            status(result) mustBe BAD_REQUEST
-            verifyChangePageInvoked()
-          }
-
-          "attempted to change to CSE when already having EXRR present" in {
-            val declarationHolder3 = declarationHolder2.copy(authorisationTypeCode = Some("EXRR"))
-            withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder1, declarationHolder3)))
-
-            val requestBody = List(
-              "authorisationTypeCode" -> "CSE",
-              "eori" -> declarationHolder1.eori.map(_.value).value,
-              "eoriSource" -> declarationHolder1.eoriSource.map(_.toString).value
-            )
-            val result = controller.submitForm(Mode.Normal, declarationHolder1.id)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-            status(result) mustBe BAD_REQUEST
-            verifyChangePageInvoked()
-          }
-        }
       }
 
       "return 303 (SEE_OTHER)" when {
