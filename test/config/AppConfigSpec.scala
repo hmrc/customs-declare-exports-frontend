@@ -455,6 +455,8 @@ object AppConfigSpec {
       |
       |urls.notDeclarant.eoriContactTeam=eoriContactTeamUrl
       |urls.generalEnquiriesHelp=generalEnquiriesHelpUrl
+      |urls.currencyCodesForDataElement410=currencyCodesForDataElement410
+      |urls.exchangeRatesForCustoms=exchangeRatesForCustoms
       |
       |files.codelists.holderOfAuthorisationCodes="holderOfAuthorisationCodes"
       |files.codelists.procedureCodes="procedureCodes"

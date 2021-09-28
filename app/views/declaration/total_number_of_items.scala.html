@@ -17,7 +17,9 @@
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
 @import forms.declaration.TotalNumberOfItems
+@import forms.declaration.TotalNumberOfItems._
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
@@ -26,6 +28,8 @@
 @this(
     govukLayout: gdsMainTemplate,
     govukButton: GovukButton,
+    govukInput: GovukInput,
+    govukFieldset: GovukFieldset,
     govukDetails : GovukDetails,
     pageTitle: pageTitle,
     exportsInputText: exportsInputText,
@@ -33,11 +37,107 @@
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
+    link: link,
+    paragraphBody: paragraphBody,
+    bulletList: bulletList,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[TotalNumberOfItems])(implicit request: JourneyRequest[_], messages: Messages)
+
+@input(field: Field, labelKey: String, inputClasses: String) = {
+    @govukInput(Input(
+        id = field.id,
+        name = field.name,
+        value = field.value,
+        label = Label(content = Text(messages(labelKey)), classes = "govuk-label"),
+        classes = s"$inputClasses ${if(field.hasErrors) "govuk-input--error"}"
+    ))
+}
+
+@totalAmountInvoicedField = @{form(totalAmountInvoiced)}
+@totalAmountInvoicedCurrencyField = @{form(totalAmountInvoicedCurrency)}
+@totalAmountInvoicedErrors = @{totalAmountInvoicedField.errors ++ totalAmountInvoicedCurrencyField.errors}
+
+@currencyCodeAndAmountContent = {
+
+    @paragraphBody(messages("declaration.totalAmountInvoiced.paragraph1.text",
+        link(
+            text = messages("declaration.totalAmountInvoiced.paragraph1.link.text"),
+            call = Call("GET", appConfig.currencyCodesForDataElement410),
+            target = "_blank"
+        )
+    ))
+
+    @paragraphBody(messages("declaration.totalAmountInvoiced.paragraph2.text",
+        link(
+            text = messages("declaration.totalAmountInvoiced.paragraph2.link.text"),
+            call = Call("GET", appConfig.exchangeRatesForCustoms),
+            target = "_blank"
+        )
+    ))
+
+    <span class="govuk-hint" id="totalAmountInvoiced-hint">
+        @Html(messages("declaration.totalAmountInvoiced.hint"))
+    </span>
+
+
+    @if(totalAmountInvoicedErrors.nonEmpty){
+        <span class="govuk-error-message">
+            <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
+            @Html(totalAmountInvoicedErrors.map(err => messages(err.message, err.args:_*)).mkString("<br>"))
+        </span>
+    }
+
+    <div class="govuk-date-input">
+        <div class="govuk-date-input__item">
+        @input(
+            field = totalAmountInvoicedCurrencyField,
+            labelKey = "declaration.totalAmountInvoiced.currency.label",
+            inputClasses = "govuk-input--width-2"
+        )
+        </div>
+        <div class="govuk-date-input__item">
+        @input(
+            field = totalAmountInvoicedField,
+            labelKey = "declaration.totalAmountInvoiced.amount.label",
+            inputClasses = "govuk-input--width-15"
+        )
+        </div>
+    </div>
+}
+
+@currencyCodeAndAmount = {
+    <div class="govuk-form-group @if(totalAmountInvoicedErrors.nonEmpty){govuk-form-group--error}">
+
+    @govukFieldset(Fieldset(
+        legend = Some(Legend(
+            content = Text(messages("declaration.totalAmountInvoiced")),
+            classes = "govuk-fieldset__legend--m"
+        )),
+        attributes = Map("id" -> "currencyCodeAndAmount"),
+        html = HtmlFormat.fill(List(currencyCodeAndAmountContent))
+    ))
+    </div>
+}
+
+@exchangeRateContent = @{HtmlFormat.fill(List(
+    paragraphBody(messages("declaration.exchangeRate.paragraph1.text")),
+    bulletList(
+        List(
+            Html(messages("declaration.exchangeRate.bullet1.text")),
+            Html(messages("declaration.exchangeRate.bullet2.text"))
+        )
+    ),
+    paragraphBody(messages("declaration.exchangeRate.paragraph2.text",
+        link(
+            text = messages("declaration.exchangeRate.paragraph2.link.text"),
+            call = Call("GET", appConfig.exchangeRatesForCustoms),
+            target = "_blank"
+        )
+    ))
+))}
 
 @govukLayout(
     title = Title("declaration.invoice.details.title", "declaration.section.4"),
@@ -50,18 +150,14 @@
         @pageTitle(messages("declaration.invoice.details.title"))
 
         @exportsInputText(
-            field = form("exchangeRate"),
+            field = form(exchangeRate),
             labelKey = "declaration.exchangeRate",
+            bodyHtml = Some(exchangeRateContent),
             hintKey = Some("declaration.exchangeRate.hint"),
             inputClasses = Some("govuk-input--width-10")
         )
 
-        @exportsInputText(
-            field = form("totalAmountInvoiced"),
-            labelKey = "declaration.totalAmountInvoiced",
-            hintKey = Some("declaration.totalAmountInvoiced.hint"),
-            inputClasses = Some("govuk-input--width-10")
-        )
+        @currencyCodeAndAmount
 
         @tariffExpander(TotalNumberOfItems, request.declarationType)(messages, appConfig)
 

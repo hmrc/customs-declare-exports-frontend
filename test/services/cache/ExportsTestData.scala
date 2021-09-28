@@ -39,7 +39,7 @@ trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder 
     withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCode.Rail)))),
     withOfficeOfExit("id"),
     withContainerData(Container("id", Seq.empty)),
-    withTotalNumberOfItems(Some("123"), Some("123")),
+    withTotalNumberOfItems(Some("123"), Some("123"), Some("GBP")),
     withNatureOfTransaction("nature"),
     withItem(anItem())
   )

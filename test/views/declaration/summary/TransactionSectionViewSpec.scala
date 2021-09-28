@@ -25,7 +25,7 @@ import views.html.declaration.summary.transaction_section
 class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(
-    withTotalNumberOfItems(Some("123"), Some("1.23")),
+    withTotalNumberOfItems(Some("123"), Some("1.23"), Some("GBP")),
     withTotalPackageQuantity("12"),
     withNatureOfTransaction("2"),
     withPreviousDocuments()
@@ -42,7 +42,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
       val row = view.getElementsByClass("item-amount-row")
 
       row must haveSummaryKey(messages("declaration.summary.transaction.itemAmount"))
-      row must haveSummaryValue("123")
+      row must haveSummaryValue("GBP 123")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.itemAmount.change")
 
@@ -55,6 +55,18 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
 
       row must haveSummaryKey(messages("declaration.summary.transaction.exchangeRate"))
       row must haveSummaryValue("1.23")
+
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.exchangeRate.change")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
+    }
+
+    "have exchange rate value displayed as 'No' if no exchange rate present" in {
+      val view = section(Mode.Normal, aDeclaration(withTotalNumberOfItems(Some("123"), None, Some("GBP"))))(messages)
+      val row = view.getElementsByClass("exchange-rate-row")
+
+      row must haveSummaryKey(messages("declaration.summary.transaction.exchangeRate"))
+      row must haveSummaryValue("No")
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.exchangeRate.change")
 

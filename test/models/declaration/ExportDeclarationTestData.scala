@@ -131,7 +131,7 @@ object ExportDeclarationTestData {
           Some(List(PackageInformation("pkgAA", Some("AA"), Some(2), Some("mark1")), PackageInformation("pkgBB", Some("AB"), Some(4), Some("mark2"))))
       )
     ),
-    totalNumberOfItems = Some(TotalNumberOfItems(Some("1212312.12"), Some("1212121.12345"))),
+    totalNumberOfItems = Some(TotalNumberOfItems(Some("1212312.12"), Some("1212121.12345"), Some("GBP"))),
     totalPackageQuantity = Some(TotalPackageQuantity(Some("123"))),
     parties = Parties(
       exporterDetails = Some(correctExporterDetails),

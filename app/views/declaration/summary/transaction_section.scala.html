@@ -40,31 +40,12 @@
     @summaryList("declaration-transaction-summary", Some(messages("declaration.summary.transaction")), Seq(
         declarationData.totalNumberOfItems.map(totalNumberOfItems =>
             SummaryListRow(
-                classes = "item-amount-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.transaction.itemAmount"))
-                ),
-                value = Value(
-                    content = Text(totalNumberOfItems.totalAmountInvoiced.getOrElse(""))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionItem(
-                            href = controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
-                        )
-                    ))
-                ))
-        ),
-        declarationData.totalNumberOfItems.map(totalNumberOfItems =>
-            SummaryListRow(
                 classes = "exchange-rate-row",
                 key = Key(
                     content = Text(messages("declaration.summary.transaction.exchangeRate"))
                 ),
                 value = Value(
-                    content = Text(totalNumberOfItems.exchangeRate.getOrElse(""))
+                    content = Text(totalNumberOfItems.exchangeRate.getOrElse(messages("site.no")))
                 ),
                 actions = actions(Actions(
                     items = Seq(
@@ -72,6 +53,28 @@
                             href = controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.exchangeRate.change"))
+                        )
+                    ))
+                ))
+        ),
+        declarationData.totalNumberOfItems.flatMap(_.totalAmountInvoiced).map(totalAmountInvoiced =>
+            SummaryListRow(
+                classes = "item-amount-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.transaction.itemAmount"))
+                ),
+                value = Value(
+                    content = Text({
+                        val currencyCode = declarationData.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency).getOrElse("")
+                        s"$currencyCode $totalAmountInvoiced"
+                    })
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionItem(
+                            href = controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
                         )
                     ))
                 ))

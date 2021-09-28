@@ -16,15 +16,16 @@
 
 package forms.declaration
 
-import forms.DeclarationPage
+import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
-import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
+import uk.gov.voa.play.form.Condition
 import utils.validators.forms.FieldValidator._
 
-case class TotalNumberOfItems(exchangeRate: Option[String], totalAmountInvoiced: Option[String])
+case class TotalNumberOfItems(exchangeRate: Option[String], totalAmountInvoiced: Option[String], totalAmountInvoicedCurrency: Option[String])
 
 object TotalNumberOfItems extends DeclarationPage {
   implicit val format = Json.format[TotalNumberOfItems]
@@ -32,9 +33,13 @@ object TotalNumberOfItems extends DeclarationPage {
   val formId = "TotalNumberOfItems"
   val exchangeRate = "exchangeRate"
   val totalAmountInvoiced = "totalAmountInvoiced"
+  val totalAmountInvoicedCurrency = "totalAmountInvoicedCurrency"
 
   val rateFieldErrorKey = "declaration.exchangeRate.error"
   val invoiceFieldErrorKey = "declaration.totalAmountInvoiced.error"
+  val invoiceCurrencyFieldErrorKey = "declaration.totalAmountInvoicedCurrency.error.empty"
+  val invoiceCurrencyFieldWithExchangeRateErrorKey = "declaration.totalAmountInvoicedCurrency.exchangeRatePresent.error.invalid"
+  val invoiceCurrencyFieldWithoutExchangeRateErrorKey = "declaration.totalAmountInvoicedCurrency.exchangeRateMissing.error.invalid"
 
   val totalAmountInvoicedPattern = Seq("[0-9]{0,16}[.]{0,1}", "[0-9]{0,15}[.][0-9]{1}", "[0-9]{0,14}[.][0-9]{1,2}").mkString("|")
 
@@ -50,6 +55,14 @@ object TotalNumberOfItems extends DeclarationPage {
   val removeCommasFirst = (validator: String => Boolean) => (input: String) => validator(input.replaceAll(",", ""))
   val notJustCommas = (input: String) => !input.forall(_.equals(','))
 
+  val equalsIgnoreCaseOptionString = (value: String) => (input: Option[String]) => input.map(_.equalsIgnoreCase(value)).getOrElse(false)
+  val isEmptyOptionString = (input: Option[String]) => isEmpty(input.getOrElse(""))
+  val isAlphabeticOptionString = (input: Option[String]) => isAlphabetic(input.getOrElse(""))
+  val lengthInRangeOptionString = (min: Int) => (max: Int) => (input: Option[String]) => lengthInRange(min)(max)(input.getOrElse(""))
+
+  def isFieldEmpty(field: String): Condition = _.get(field).map(_.isEmpty()).getOrElse(true)
+  def isFieldNotEmpty(field: String): Condition = _.get(field).map(!_.isEmpty()).getOrElse(false)
+
   //We allow the user to enter commas when specifying these optional numerical values but we strip out the commas with `removeCommasFirst` before validating
   //the number of digits. To prevent the validation from allowing an invalid value like ",,,," we also must use the `notJustCommas`
   //function to specifically guard against this.
@@ -61,7 +74,28 @@ object TotalNumberOfItems extends DeclarationPage {
     totalAmountInvoiced -> optional(
       text()
         .verifying(invoiceFieldErrorKey, isEmpty or (notJustCommas and removeCommasFirst(ofPattern(totalAmountInvoicedPattern))))
-    )
+    ),
+    totalAmountInvoicedCurrency ->
+      AdditionalConstraintsMapping(
+        optional(text()),
+        Seq(
+          ConditionalConstraint(
+            isFieldEmpty(totalAmountInvoicedCurrency) and isFieldNotEmpty(totalAmountInvoiced),
+            invoiceCurrencyFieldErrorKey,
+            (input: Option[String]) => false
+          ),
+          ConditionalConstraint(
+            isFieldNotEmpty(exchangeRate),
+            invoiceCurrencyFieldWithExchangeRateErrorKey,
+            isEmptyOptionString or equalsIgnoreCaseOptionString("GBP")
+          ),
+          ConditionalConstraint(
+            isFieldEmpty(exchangeRate),
+            invoiceCurrencyFieldWithoutExchangeRateErrorKey,
+            isEmptyOptionString or (isAlphabeticOptionString and lengthInRangeOptionString(3)(3))
+          )
+        )
+      )
   )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
 
   def form(): Form[TotalNumberOfItems] = Form(mapping)
