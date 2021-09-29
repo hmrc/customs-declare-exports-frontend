@@ -22,7 +22,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import base.{MockExportCacheService, RequestBuilder, UnitWithMocksSpec}
 import config.AppConfig
-import controllers.util._
+import controllers.helpers._
 import forms.declaration.carrier.CarrierDetails
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys

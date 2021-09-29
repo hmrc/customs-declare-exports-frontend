@@ -17,7 +17,7 @@
 package models
 
 import config.PaginationConfig
-import controllers.util.SubmissionDisplayHelper.filterSubmissions
+import controllers.helpers.SubmissionDisplayHelper.filterSubmissions
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
 

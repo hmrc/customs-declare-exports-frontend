@@ -18,7 +18,7 @@ package views.declaration
 
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
-import controllers.util.{SaveAndContinue, SaveAndReturn}
+import controllers.helpers.{SaveAndContinue, SaveAndReturn}
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import models.DeclarationType._

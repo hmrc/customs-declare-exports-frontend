@@ -21,7 +21,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PreviousDocumentsController.PreviousDocumentsFormGroupId
 import controllers.navigation.Navigator
-import controllers.util.MultipleItemsHelper
+import controllers.helpers.MultipleItemsHelper
 import forms.declaration.Document.form
 import forms.declaration.{Document, PreviousDocumentsData}
 import forms.declaration.PreviousDocumentsData.maxAmountOfItems

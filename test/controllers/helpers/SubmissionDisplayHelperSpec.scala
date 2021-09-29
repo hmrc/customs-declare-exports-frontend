@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.util
+package controllers.helpers
 
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}

@@ -17,7 +17,7 @@
 package views.declaration.fiscalInformation
 
 import base.Injector
-import controllers.util.SaveAndReturn
+import controllers.helpers.SaveAndReturn
 import forms.declaration.FiscalInformation
 import models.Mode
 import models.requests.JourneyRequest

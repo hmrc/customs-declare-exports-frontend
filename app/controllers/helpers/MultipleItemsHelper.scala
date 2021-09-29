@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.util
+package controllers.helpers
 
 import play.api.data.{Form, FormError}
 

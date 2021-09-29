@@ -20,9 +20,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.MultipleItemsHelper.remove
-import controllers.util.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
-import controllers.util._
+import controllers.helpers.MultipleItemsHelper.remove
+import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
+import controllers.helpers._
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode._
 import javax.inject.Inject

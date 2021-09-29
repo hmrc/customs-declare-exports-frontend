@@ -22,7 +22,7 @@ import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.util.SubmissionDisplayHelper
+import controllers.helpers.SubmissionDisplayHelper
 import javax.inject.Inject
 import models.Mode.ErrorFix
 import models._

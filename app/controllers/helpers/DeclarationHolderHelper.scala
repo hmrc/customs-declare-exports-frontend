@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.util
+package controllers.helpers
 
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.requests.JourneyRequest
+import play.api.data.{Form, FormError}
 
 object DeclarationHolderHelper {
 
-  val DeclarationHolderFormGroupId: String = "declarationHolder"
+  def declarationHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] = request.cacheModel.declarationHolders
 
-  def cachedHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] =
-    request.cacheModel.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+  def form(implicit request: JourneyRequest[_]): Form[DeclarationHolder] =
+    DeclarationHolder.form(request.eori, request.cacheModel.additionalDeclarationType)
 }

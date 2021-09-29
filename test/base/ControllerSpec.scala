@@ -18,7 +18,7 @@ package base
 
 import scala.concurrent.{ExecutionContext, Future}
 
-import controllers.util.{Add, AddField, SaveAndContinue, SaveAndReturn}
+import controllers.helpers.{Add, AddField, SaveAndContinue, SaveAndReturn}
 import mock.{JourneyActionMocks, VerifiedEmailMocks}
 import models.ExportsDeclaration
 import models.requests.{ExportsSessionKeys, JourneyRequest}

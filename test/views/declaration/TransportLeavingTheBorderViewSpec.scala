@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.util.SaveAndReturn
+import controllers.helpers.SaveAndReturn
 import forms.declaration.TransportLeavingTheBorder
 import models.DeclarationType._
 import models.Mode

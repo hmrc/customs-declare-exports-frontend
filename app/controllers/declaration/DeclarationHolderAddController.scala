@@ -16,24 +16,25 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.helpers.DeclarationHolderHelper._
+import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
-import controllers.util.DeclarationHolderHelper._
-import controllers.util._
 import forms.declaration.declarationHolder.DeclarationHolder
-import forms.declaration.declarationHolder.DeclarationHolder.form
+import forms.declaration.declarationHolder.DeclarationHolder.{validateMutuallyExclusiveAuthCodes, DeclarationHolderFormGroupId}
+import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
+import models.declaration.DeclarationHoldersData.limitOfHolders
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_add
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationHolderAddController @Inject()(
   authenticate: AuthAction,
@@ -46,30 +47,28 @@ class DeclarationHolderAddController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(declarationHolderPage(mode, form(request.eori).withSubmissionErrors(), request.eori))
+    Ok(declarationHolderPage(mode, form.withSubmissionErrors, request.eori))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form(request.eori).bindFromRequest()
+    val boundForm = form.bindFromRequest
 
-    boundForm.fold(formWithErrors => {
-      Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, request.eori)))
-    }, _ => saveHolder(mode, boundForm, cachedHolders))
+    boundForm.fold(
+      formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, request.eori))),
+      _ => saveHolder(mode, boundForm)
+    )
   }
 
-  private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
+  private def saveHolder(mode: Mode, boundForm: Form[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, holders, DeclarationHoldersData.limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
+      .add(boundForm, declarationHolders, limitOfHolders, DeclarationHolderFormGroupId, "declaration.declarationHolder")
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, request.eori))),
+        formWithErrors => Future.successful(BadRequest(declarationHolderPage(mode, formWithErrors, r.eori))),
         updatedHolders => {
-
-          validateMutuallyExclusiveAuthTypeCodes(boundForm, holders) match {
+          validateMutuallyExclusiveAuthCodes(boundForm.value, declarationHolders) match {
             case Some(error) =>
               val formWithError = boundForm.copy(errors = Seq(error))
-              Future.successful(BadRequest(declarationHolderPage(mode, formWithError, request.eori)))
+              Future.successful(BadRequest(declarationHolderPage(mode, formWithError, r.eori)))
 
             case _ =>
               updateExportsCache(updatedHolders)
@@ -78,26 +77,10 @@ class DeclarationHolderAddController @Inject()(
         }
       )
 
-  private def validateMutuallyExclusiveAuthTypeCodes(boundForm: Form[DeclarationHolder], holders: Seq[DeclarationHolder]): Option[FormError] = {
-    val mutuallyExclusiveAuthTypeCodes = Seq("CSE", "EXRR")
-
-    boundForm.value match {
-      case Some(DeclarationHolder(Some(code), _, _)) if mutuallyExclusiveAuthTypeCodes.contains(code) =>
-        val mustNotAlreadyContainCodes = mutuallyExclusiveAuthTypeCodes.filter(_ != code)
-
-        if (holders.map(_.authorisationTypeCode.getOrElse("")).containsSlice(mustNotAlreadyContainCodes))
-          Some(FormError(DeclarationHolderFormGroupId, s"declaration.declarationHolder.${code}.error.exclusive"))
-        else
-          None
-      case _ => None
-    }
-  }
-
-  private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val isRequired = model.parties.declarationHoldersData.flatMap(_.isRequired)
-      val updatedParties =
-        model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders, isRequired)))
+      val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders, isRequired)))
       model.copy(parties = updatedParties)
     })
 }

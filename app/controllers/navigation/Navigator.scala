@@ -18,8 +18,8 @@ package controllers.navigation
 
 import config.AppConfig
 import controllers.declaration.routes
-import controllers.util.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
-import controllers.util._
+import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
+import controllers.helpers._
 import forms.Choice.AllowedChoiceValues
 import forms.common.YesNoAnswer
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}

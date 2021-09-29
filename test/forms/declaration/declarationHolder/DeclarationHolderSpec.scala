@@ -19,37 +19,41 @@ package forms.declaration.declarationHolder
 import base.ExportsTestData._
 import base.JourneyTypeTestRunner
 import forms.common.{DeclarationPageBaseSpec, Eori}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.declaration.declarationHolder.DeclarationHolder._
 import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.correctDeclarationHolder
+import org.scalatest.Inspectors.forAll
+import play.api.data.FormError
 
 class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 
   private val eoriSource = EoriSource.OtherEori.toString
+  private val authorisationTypeCode = correctDeclarationHolder.authorisationTypeCode.get
 
   "DeclarationHolder mandatoryMapping" should {
 
-    val mapping = DeclarationHolder.mapping(eori)
+    val mapping = DeclarationHolder.mapping(eori, Some(STANDARD_PRE_LODGED))
 
     "mapping.bind return no errors" when {
       "provided with all fields" in {
-        val input = Map("authorisationTypeCode" -> correctDeclarationHolder.authorisationTypeCode.get, "eori" -> eori, "eoriSource" -> eoriSource)
-
+        val input = Map("authorisationTypeCode" -> authorisationTypeCode, "eori" -> eori, "eoriSource" -> eoriSource)
         mapping.bind(input).isRight mustBe true
       }
 
       "provided with a authorisationTypeCode and eoriSource of 'UserEori' but no eori value, set eori value to users eori" in {
-        val input = Map("authorisationTypeCode" -> correctDeclarationHolder.authorisationTypeCode.get, "eoriSource" -> EoriSource.UserEori.toString)
-
+        val input = Map("authorisationTypeCode" -> authorisationTypeCode, "eoriSource" -> EoriSource.UserEori.toString)
         val boundForm = mapping.bind(input)
 
         boundForm.isRight mustBe true
-        boundForm.right.get.authorisationTypeCode mustBe Some(correctDeclarationHolder.authorisationTypeCode.get)
+        boundForm.right.get.authorisationTypeCode mustBe Some(authorisationTypeCode)
         boundForm.right.get.eori mustBe Some(Eori(eori))
         boundForm.right.get.eoriSource mustBe Some(EoriSource.UserEori)
       }
     }
 
     "mapping.bind return errors" when {
+
       "provided with no values" in {
         val input = Map.empty[String, String]
         val result = mapping.bind(input)
@@ -73,7 +77,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
       }
 
       "provided with code only" in {
-        val input = Map("authorisationTypeCode" -> correctDeclarationHolder.authorisationTypeCode.get)
+        val input = Map("authorisationTypeCode" -> authorisationTypeCode)
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
@@ -115,7 +119,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
       }
 
       "provided with a authorisationTypeCode and eoriSource of 'OtherEori' but no eori value" in {
-        val input = Map("authorisationTypeCode" -> correctDeclarationHolder.authorisationTypeCode.get, "eoriSource" -> eoriSource)
+        val input = Map("authorisationTypeCode" -> authorisationTypeCode, "eoriSource" -> eoriSource)
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
@@ -125,7 +129,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
       }
 
       "provided with a authorisationTypeCode and eori but no eoriSource value" in {
-        val input = Map("authorisationTypeCode" -> correctDeclarationHolder.authorisationTypeCode.get, "eori" -> eori)
+        val input = Map("authorisationTypeCode" -> authorisationTypeCode, "eori" -> eori)
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
@@ -135,14 +139,25 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
       }
 
       "provided with incorrect eori" in {
-        val input =
-          Map("authorisationTypeCode" -> correctDeclarationHolder.authorisationTypeCode.get, "eori" -> "INCORRECT_EORI", "eoriSource" -> eoriSource)
+        val input = Map("authorisationTypeCode" -> authorisationTypeCode, "eori" -> "INCORRECT_EORI", "eoriSource" -> eoriSource)
         val result = mapping.bind(input)
 
         result.isLeft mustBe true
         val errors = result.left.get
         errors.size mustBe 1
         errors.head.message mustBe "declaration.eori.error.format"
+      }
+
+      "provided with 'EXRR' as authorisationTypeCode with a pre-lodged declaration" in {
+        val input = Map("authorisationTypeCode" -> "EXRR", "eori" -> eori, "eoriSource" -> eoriSource)
+        forAll(nonExrrAdditionalDeclarationTypes) { additionalDeclarationType =>
+          val result = DeclarationHolder.mapping(eori, Some(additionalDeclarationType)).bind(input)
+
+          result.isLeft mustBe true
+          val errors = result.left.get
+          errors.size mustBe 1
+          errors.head.message mustBe "declaration.declarationHolder.EXRR.error.prelodged"
+        }
       }
     }
 
@@ -180,6 +195,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
   }
 
   "DeclarationHolder on requireAdditionalDocumentation" should {
+
     "return true" when {
       AuthorizationTypeCodes.CodesRequiringDocumentation.foreach { code =>
         s"authorisationTypeCode contains $code code" in {
@@ -202,5 +218,31 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
 
   "DeclarationHolderRequired" when {
     testTariffContentKeys(DeclarationHolderRequired, "tariff.declaration.isAuthorisationRequired")
+  }
+
+  "DeclarationHolder.validateMutuallyExclusiveAuthCodes" when {
+    def holder(code: String) = DeclarationHolder(Some(code), None, None)
+    def error(code: String) = FormError(DeclarationHolderFormGroupId, s"declaration.declarationHolder.${code}.error.exclusive")
+
+    "the user enters a new 'CSE' authorisation and the cache already includes an 'EXRR' one" should {
+      "return a FormError" in {
+        val result = validateMutuallyExclusiveAuthCodes(Some(holder("CSE")), List(holder("EXRR")))
+        result.get mustBe error("CSE")
+      }
+    }
+
+    "the user enters a new 'EXRR' authorisation and the cache already includes a 'CSE' one" should {
+      "return a FormError" in {
+        val result = validateMutuallyExclusiveAuthCodes(Some(holder("EXRR")), List(holder("CSE")))
+        result.get mustBe error("EXRR")
+      }
+    }
+
+    "the user does not enter an authorisation code" should {
+      "return None" in {
+        validateMutuallyExclusiveAuthCodes(None, List(holder("CSE"))) mustBe None
+        validateMutuallyExclusiveAuthCodes(None, List(holder("EXRR"))) mustBe None
+      }
+    }
   }
 }

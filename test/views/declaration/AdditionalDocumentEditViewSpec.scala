@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.{Injector, TestHelper}
-import controllers.util.SaveAndReturn
+import controllers.helpers.SaveAndReturn
 import forms.common.Date.{dayKey, monthKey, yearKey}
 import forms.common.Eori
 import forms.declaration.AdditionalDocumentSpec._

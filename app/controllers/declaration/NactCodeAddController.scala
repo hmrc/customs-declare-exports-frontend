@@ -20,7 +20,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.MultipleItemsHelper
+import controllers.helpers.MultipleItemsHelper
 import forms.declaration.NactCode.nactCodeLimit
 import forms.declaration.{NactCode, NactCodeFirst}
 import javax.inject.Inject

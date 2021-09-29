@@ -20,7 +20,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.SupervisingCustomsOfficeHelper
+import controllers.helpers.SupervisingCustomsOfficeHelper
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.SupervisingCustomsOffice.form
 import javax.inject.Inject

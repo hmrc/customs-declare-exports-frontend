@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util._
+import controllers.helpers._
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.additionaldocuments.AdditionalDocument._
 import models.declaration.AdditionalDocuments

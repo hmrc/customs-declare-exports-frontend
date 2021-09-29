@@ -93,8 +93,10 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
 
     val declarationHolderPage = instanceOf[declaration_holder_edit_content]
 
-    def createPartial(implicit request: JourneyRequest[_]): Document =
-      declarationHolderPage(Mode.Normal, DeclarationHolder.form(eori), eori)(request, messages)
+    def createPartial(implicit request: JourneyRequest[_]): Document = {
+      val form = DeclarationHolder.form(eori, request.cacheModel.additionalDeclarationType)
+      declarationHolderPage(Mode.Normal, form, eori)(request, messages)
+    }
 
     "display the expected body (the text under page's H1)" when {
 
@@ -224,7 +226,7 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
       ) { implicit request =>
         And("the Procedure Code is 1007")
 
-        val insetText = createPartial.getElementsByClass(insetId).get(0).children()
+        val insetText = createPartial.getElementsByClass(insetId).get(0).children
         insetText.get(0).text mustBe messages(s"$prefix.authCode.inset.special.title")
 
         val list = insetText.get(1).child(0)
@@ -245,7 +247,7 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
       def verifyInsetTextForExciseRemovals(implicit request: JourneyRequest[_]): Assertion = {
         And("the Procedure Code is 1007")
 
-        val insetText = createPartial.getElementsByClass(insetId).get(0).children()
+        val insetText = createPartial.getElementsByClass(insetId).get(0).children
         insetText.get(0).text mustBe messages(s"$prefix.authCode.inset.excise.title")
 
         val list = insetText.get(1).child(0)

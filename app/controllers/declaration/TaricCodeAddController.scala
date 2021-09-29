@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.MultipleItemsHelper
+import controllers.helpers.MultipleItemsHelper
 import forms.declaration.TaricCode.taricCodeLimit
 import forms.declaration.{TaricCode, TaricCodeFirst}
 import models.requests.JourneyRequest

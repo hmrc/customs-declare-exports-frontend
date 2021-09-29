@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.util
+package controllers.helpers
 
 import base.UnitSpec
 import play.api.data.Forms.{mapping, text}

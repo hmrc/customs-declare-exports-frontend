@@ -20,7 +20,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import base.ControllerWithoutFormSpec
-import controllers.util.SaveAndReturn
+import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers

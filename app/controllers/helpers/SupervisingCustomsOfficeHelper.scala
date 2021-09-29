@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.util
+package controllers.helpers
 
 import controllers.declaration.routes
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE

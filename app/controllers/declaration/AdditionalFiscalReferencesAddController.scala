@@ -19,7 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.AdditionalFiscalReferencesAddController.AdditionalFiscalReferencesFormGroupId
 import controllers.navigation.Navigator
-import controllers.util.MultipleItemsHelper
+import controllers.helpers.MultipleItemsHelper
 import forms.declaration.AdditionalFiscalReference.form
 import forms.declaration.AdditionalFiscalReferencesData._
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}

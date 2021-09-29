@@ -16,7 +16,7 @@
 
 package base
 
-import controllers.util.{Add, Remove, SaveAndContinue}
+import controllers.helpers.{Add, Remove, SaveAndContinue}
 
 import scala.util.Random
 
