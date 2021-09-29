@@ -53,7 +53,12 @@ case class AdditionalConstraintsMapping[T](
 
   def unbind(value: T): Map[String, String] = baseMappings.unbind(value)
 
-  def unbindAndValidate(value: T): (Map[String, String], Seq[FormError]) = baseMappings.unbindAndValidate(value)
+  def unbindAndValidate(value: T): (Map[String, String], Seq[FormError]) = {
+    val data = unbind(value)
+    val validateResults = bind(data)
+
+    (data, validateResults.left.getOrElse(Seq.empty))
+  }
 
   def withPrefix(prefix: String): Mapping[T] = copy(baseMappings = baseMappings.withPrefix(prefix))
 

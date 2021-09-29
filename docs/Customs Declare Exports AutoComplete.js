@@ -662,8 +662,9 @@ function officeOfExit(){
 }
 
 function totalNumberOfItems(){
-    if (currentPageIs('/customs-declare-exports/declaration/total-numbers-of-items')) {
+    if (currentPageIs('/customs-declare-exports/declaration/invoices-and-exchange-rate')) {
         document.getElementById('exchangeRate').value ='1.49';
+        document.getElementById('totalAmountInvoicedCurrency').value ='GBP';
         document.getElementById('totalAmountInvoiced').value ='56764';
         document.getElementById('submit').click();
     }
@@ -1119,7 +1120,7 @@ function inlandTransportDetails(){
 
 function departureTransport(){
     if (currentPageIs('/customs-declare-exports/declaration/departure-transport')) {
-        selectRadioOptionFromInputs(document.getElementsByName('meansOfTransportOnDepartureType'), 1)
+        selectRadioOptionFromInputs(document.getElementsByName('meansOfTransportOnDepartureType'), 2)
         document.getElementById('meansOfTransportOnDepartureIDNumber_11').value = 'SHIP1'
         document.getElementById('submit').click();
     }

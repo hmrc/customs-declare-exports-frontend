@@ -79,6 +79,8 @@ class AppConfig @Inject()(
 
   val notDeclarantEoriContactTeamUrl = loadConfig("urls.notDeclarant.eoriContactTeam")
   val generalEnquiriesHelpUrl = loadConfig("urls.generalEnquiriesHelp")
+  val currencyCodesForDataElement410 = loadConfig("urls.currencyCodesForDataElement410")
+  val exchangeRatesForCustoms = loadConfig("urls.exchangeRatesForCustoms")
 
   lazy val customsDeclareExportsBaseUrl = servicesConfig.baseUrl("customs-declare-exports")
 

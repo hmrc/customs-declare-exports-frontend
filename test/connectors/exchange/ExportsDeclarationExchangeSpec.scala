@@ -42,7 +42,7 @@ class ExportsDeclarationExchangeSpec extends UnitWithMocksSpec with ExportsDecla
   private val parties = Parties()
   private val locations = Locations()
   private val item = ExportItem("itemId")
-  private val totalItemExchange = TotalItemsExchange(None, None, None)
+  private val totalItemExchange = TotalItemsExchange(None, None, None, None)
   private val totalPackageQuantity = TotalPackageQuantity(None)
   private val previousDocuments = PreviousDocumentsData(Seq.empty)
   private val natureOfTransaction = NatureOfTransaction("")

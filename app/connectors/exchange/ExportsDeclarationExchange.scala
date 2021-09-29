@@ -27,7 +27,12 @@ import models.ExportsDeclaration
 import models.declaration._
 import play.api.libs.json.{Format, Json}
 
-case class TotalItemsExchange(totalAmountInvoiced: Option[String], exchangeRate: Option[String], totalPackage: Option[String])
+case class TotalItemsExchange(
+  totalAmountInvoiced: Option[String],
+  totalAmountInvoicedCurrency: Option[String],
+  exchangeRate: Option[String],
+  totalPackage: Option[String]
+)
 
 object TotalItemsExchange {
   implicit val format: Format[TotalItemsExchange] = Json.format[TotalItemsExchange]
@@ -68,9 +73,10 @@ case class ExportsDeclarationExchange(
     locations = this.locations,
     items = this.items,
     totalNumberOfItems = this.totalNumberOfItems.flatMap { exchange =>
-      (exchange.totalAmountInvoiced, exchange.exchangeRate) match {
-        case (None, None)                        => None
-        case (totalAmountInvoiced, exchangeRate) => Some(TotalNumberOfItems(exchangeRate, totalAmountInvoiced))
+      (exchange.totalAmountInvoiced, exchange.totalAmountInvoicedCurrency, exchange.exchangeRate) match {
+        case (None, None, None) => None
+        case (totalAmountInvoiced, totalAmountInvoicedCurrency, exchangeRate) =>
+          Some(TotalNumberOfItems(exchangeRate, totalAmountInvoiced, totalAmountInvoicedCurrency))
       }
     },
     totalPackageQuantity = this.totalNumberOfItems.map(exchange => TotalPackageQuantity(exchange.totalPackage)),
@@ -105,6 +111,7 @@ object ExportsDeclarationExchange {
         Some(
           TotalItemsExchange(
             declaration.totalNumberOfItems.flatMap(_.totalAmountInvoiced),
+            declaration.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency),
             declaration.totalNumberOfItems.flatMap(_.exchangeRate),
             declaration.totalPackageQuantity.flatMap(_.totalPackage)
           )
