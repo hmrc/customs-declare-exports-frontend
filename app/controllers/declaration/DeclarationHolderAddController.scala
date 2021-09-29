@@ -23,6 +23,7 @@ import controllers.helpers.DeclarationHolderHelper._
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import forms.declaration.declarationHolder.DeclarationHolder
+import forms.declaration.declarationHolder.DeclarationHolder.{validateMutuallyExclusiveAuthCodes, DeclarationHolderFormGroupId}
 import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders

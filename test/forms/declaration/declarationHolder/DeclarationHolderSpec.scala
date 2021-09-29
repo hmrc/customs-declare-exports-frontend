@@ -20,10 +20,11 @@ import base.ExportsTestData._
 import base.JourneyTypeTestRunner
 import forms.common.{DeclarationPageBaseSpec, Eori}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
-import forms.declaration.declarationHolder.DeclarationHolder.nonExrrAdditionalDeclarationTypes
+import forms.declaration.declarationHolder.DeclarationHolder._
 import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.correctDeclarationHolder
 import org.scalatest.Inspectors.forAll
+import play.api.data.FormError
 
 class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
 
@@ -217,5 +218,31 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
 
   "DeclarationHolderRequired" when {
     testTariffContentKeys(DeclarationHolderRequired, "tariff.declaration.isAuthorisationRequired")
+  }
+
+  "DeclarationHolder.validateMutuallyExclusiveAuthCodes" when {
+    def holder(code: String) = DeclarationHolder(Some(code), None, None)
+    def error(code: String) = FormError(DeclarationHolderFormGroupId, s"declaration.declarationHolder.${code}.error.exclusive")
+
+    "the user enters a new 'CSE' authorisation and the cache already includes an 'EXRR' one" should {
+      "return a FormError" in {
+        val result = validateMutuallyExclusiveAuthCodes(Some(holder("CSE")), List(holder("EXRR")))
+        result.get mustBe error("CSE")
+      }
+    }
+
+    "the user enters a new 'EXRR' authorisation and the cache already includes a 'CSE' one" should {
+      "return a FormError" in {
+        val result = validateMutuallyExclusiveAuthCodes(Some(holder("EXRR")), List(holder("CSE")))
+        result.get mustBe error("EXRR")
+      }
+    }
+
+    "the user does not enter an authorisation code" should {
+      "return None" in {
+        validateMutuallyExclusiveAuthCodes(None, List(holder("CSE"))) mustBe None
+        validateMutuallyExclusiveAuthCodes(None, List(holder("EXRR"))) mustBe None
+      }
+    }
   }
 }

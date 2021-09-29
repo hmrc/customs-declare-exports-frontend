@@ -22,23 +22,8 @@ import play.api.data.{Form, FormError}
 
 object DeclarationHolderHelper {
 
-  val DeclarationHolderFormGroupId: String = "declarationHolder"
-
   def declarationHolders(implicit request: JourneyRequest[_]): Seq[DeclarationHolder] = request.cacheModel.declarationHolders
 
   def form(implicit request: JourneyRequest[_]): Form[DeclarationHolder] =
     DeclarationHolder.form(request.eori, request.cacheModel.additionalDeclarationType)
-
-  private val mutuallyExclusiveAuthorisationCodes = List("CSE", "EXRR")
-
-  def validateMutuallyExclusiveAuthCodes(maybeHolder: Option[DeclarationHolder], holders: Seq[DeclarationHolder]): Option[FormError] =
-    maybeHolder match {
-      case Some(DeclarationHolder(Some(code), _, _)) if mutuallyExclusiveAuthorisationCodes.contains(code) =>
-        val mustNotAlreadyContainCodes = mutuallyExclusiveAuthorisationCodes.filter(_ != code)
-
-        if (!holders.map(_.authorisationTypeCode.getOrElse("")).containsSlice(mustNotAlreadyContainCodes)) None
-        else Some(FormError(DeclarationHolderFormGroupId, s"declaration.declarationHolder.${code}.error.exclusive"))
-
-      case _ => None
-    }
 }

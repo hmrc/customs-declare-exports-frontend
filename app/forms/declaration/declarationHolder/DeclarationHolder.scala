@@ -25,7 +25,7 @@ import models.declaration.EoriSource
 import models.declaration.EoriSource.UserEori
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
@@ -42,20 +42,20 @@ object DeclarationHolder extends DeclarationPage {
 
   implicit val format = Json.format[DeclarationHolder]
 
-  val authorisationTypeCode = "authorisationTypeCode"
+  val DeclarationHolderFormGroupId: String = "declarationHolder"
+
   val eoriSource = "eoriSource"
-  val eori = "eori"
 
   def form(eori: String, additionalDeclarationType: Option[AdditionalDeclarationType]): Form[DeclarationHolder] =
     Form(mapping(eori, additionalDeclarationType))
 
   def mapping(userEori: String, additionalDeclarationType: Option[AdditionalDeclarationType]): Mapping[DeclarationHolder] =
     Forms.mapping(
-      authorisationTypeCode ->
+      "authorisationTypeCode" ->
         optional(text())
           .verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined)
           .verifying("declaration.declarationHolder.EXRR.error.prelodged", nonExrrSelectedForPrelodgedDecl(_, additionalDeclarationType)),
-      eori -> mandatoryIfEqual(eoriSource, EoriSource.OtherEori.toString, Eori.mapping("declaration.declarationHolder.eori.other.error.empty")),
+      "eori" -> mandatoryIfEqual(eoriSource, EoriSource.OtherEori.toString, Eori.mapping("declaration.declarationHolder.eori.other.error.empty")),
       eoriSource -> requiredRadio("declaration.declarationHolder.eori.error.radio", EoriSource.values.map(_.toString))
     )(applyDeclarationHolder(userEori))(unapplyDeclarationHolder)
 
@@ -90,6 +90,20 @@ object DeclarationHolder extends DeclarationPage {
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.addAuthorisationRequired.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
+
+  private val mutuallyExclusiveAuthorisationCodes = List("CSE", "EXRR")
+
+  // Note that this validation takes places only when adding a new authorisation, not when changing one.
+  def validateMutuallyExclusiveAuthCodes(maybeHolder: Option[DeclarationHolder], holders: Seq[DeclarationHolder]): Option[FormError] =
+    maybeHolder match {
+      case Some(DeclarationHolder(Some(code), _, _)) if mutuallyExclusiveAuthorisationCodes.contains(code) =>
+        val mustNotAlreadyContainCodes: List[String] = mutuallyExclusiveAuthorisationCodes.filter(_ != code)
+
+        if (!holders.map(_.authorisationTypeCode.getOrElse("")).containsSlice(mustNotAlreadyContainCodes)) None
+        else Some(FormError(DeclarationHolderFormGroupId, s"declaration.declarationHolder.${code}.error.exclusive"))
+
+      case _ => None
+    }
 }
 
 object DeclarationHolderRequired extends DeclarationPage {
