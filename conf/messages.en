@@ -1122,16 +1122,21 @@ declaration.totalPackageQuantity.empty = Enter a total number of packages
 declaration.totalPackageQuantity.error = Total number of packages must be 99999999 or fewer
 
 declaration.transport.leavingTheBorder.title = What mode of transport will the goods leave the UK on?
-declaration.transport.leavingTheBorder.hint = This means the ‘active’ mode of transport, so if a container is loaded on to a ship select ‘Sea transport’. If a truck goes by ferry or Eurotunnel, select ‘Roll on Roll off (RoRo)’. If goods are Eurotunnel Freight, select ‘Rail transport’.
+declaration.transport.leavingTheBorder.hint = This means the ‘active’ mode of transport, so if a container is loaded on to a cargo ship select ‘Sea transport’. If a truck or container goes by ferry or Eurotunnel, select ‘Roll on roll off (RoRo) transport’.
+declaration.transport.leavingTheBorder.inset = For more help with an export being transported by RoRo, see {0}.
+declaration.transport.leavingTheBorder.inset.link = Sending goods for export from roll on roll off ports or via Eurotunnel (opens in new tab)
 declaration.transport.leavingTheBorder.transportMode.sea = Sea transport
-declaration.transport.leavingTheBorder.transportMode.ferry = Roll on Roll off (RoRo)
+declaration.transport.leavingTheBorder.transportMode.ferry = Roll on roll off (RoRo) transport
 declaration.transport.leavingTheBorder.transportMode.rail = Rail transport
 declaration.transport.leavingTheBorder.transportMode.road = Road transport
 declaration.transport.leavingTheBorder.transportMode.air = Air transport
-declaration.transport.leavingTheBorder.transportMode.postalOrMail = Postal or mail
-declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations = Fixed transport installations
+declaration.transport.leavingTheBorder.transportMode.postalOrMail = Postal
+declaration.transport.leavingTheBorder.transportMode.postalOrMail.hint = Only applicable where the exporter is an authorised postal operator.
+declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations = Fixed transport installation
+declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations.hint = Pipe-line for electricity, gas or oil.
 declaration.transport.leavingTheBorder.transportMode.inlandWaterway = Inland waterway transport
-declaration.transport.leavingTheBorder.transportMode.unknown = Mode unknown, for example own propulsion
+declaration.transport.leavingTheBorder.transportMode.unknown = Own propulsion
+declaration.transport.leavingTheBorder.transportMode.unknown.hint = For example, goods carried by a passenger.
 declaration.transport.leavingTheBorder.transportMode.empty = I don’t know
 
 declaration.transportInformation.active.title = Transport leaving the border

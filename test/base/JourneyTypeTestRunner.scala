@@ -16,6 +16,7 @@
 
 package base
 
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
@@ -59,11 +60,18 @@ trait JourneyTypeTestRunner extends UnitSpec with services.cache.ExportsTestData
     }
   }
 
+  def onEveryAdditionalType(additionalModifiers: ExportsDeclarationModifier*)(f: JourneyRequest[_] => Unit): Unit =
+    AdditionalDeclarationType.values.toList.foreach { additionalDeclarationType =>
+      val declarationType = AdditionalDeclarationType.declarationType(additionalDeclarationType)
+      val modifiers = withAdditionalDeclarationType(additionalDeclarationType) :: additionalModifiers.toList
+      onJourney(List(declarationType): _*)(aDeclaration(modifiers: _*))(f)
+    }
+
   def onStandard(f: JourneyRequest[_] => Unit): Unit =
     onStandard(simpleStandardDeclaration)(f)
 
   def onStandard(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
-    "on Standard journey" when {
+    s"on Standard journey${additionalType(declaration)}" when {
       f(journeyRequest(declaration))
     }
 
@@ -71,7 +79,7 @@ trait JourneyTypeTestRunner extends UnitSpec with services.cache.ExportsTestData
     onSimplified(simpleSimplifiedDeclaration)(f)
 
   def onSimplified(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
-    "on Simplified journey" when {
+    s"on Simplified journey${additionalType(declaration)}" when {
       f(journeyRequest(declaration))
     }
 
@@ -79,7 +87,7 @@ trait JourneyTypeTestRunner extends UnitSpec with services.cache.ExportsTestData
     onSupplementary(simpleSupplementaryDeclaration)(f)
 
   def onSupplementary(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
-    "on Supplementary journey" when {
+    s"on Supplementary journey${additionalType(declaration)}" when {
       f(journeyRequest(declaration))
     }
 
@@ -87,7 +95,7 @@ trait JourneyTypeTestRunner extends UnitSpec with services.cache.ExportsTestData
     onOccasional(simpleOccasionalDeclaration)(f)
 
   def onOccasional(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
-    "on Occasional journey" when {
+    s"on Occasional journey${additionalType(declaration)}" when {
       f(journeyRequest(declaration))
     }
 
@@ -95,7 +103,10 @@ trait JourneyTypeTestRunner extends UnitSpec with services.cache.ExportsTestData
     onClearance(simpleClearanceDeclaration)(f)
 
   def onClearance(declaration: ExportsDeclaration)(f: JourneyRequest[_] => Unit): Unit =
-    "on Clearance journey" when {
+    s"on Clearance journey${additionalType(declaration)}" when {
       f(journeyRequest(declaration))
     }
+
+  def additionalType(declaration: ExportsDeclaration): String =
+    declaration.additionalDeclarationType.fold("")(at => s" and $at as additional declaration type")
 }
