@@ -18,7 +18,7 @@ package controllers.helpers
 
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.requests.JourneyRequest
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 
 object DeclarationHolderHelper {
 

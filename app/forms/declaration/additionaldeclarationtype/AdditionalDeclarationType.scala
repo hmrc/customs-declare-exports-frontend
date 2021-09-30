@@ -16,10 +16,13 @@
 
 package forms.declaration.additionaldeclarationtype
 
+import models.DeclarationType._
 import play.api.libs.json.{Format, JsString, Reads, Writes}
 
 object AdditionalDeclarationType extends Enumeration {
+
   type AdditionalDeclarationType = Value
+
   implicit val format: Format[AdditionalDeclarationType.Value] =
     Format(
       Reads(
@@ -42,4 +45,31 @@ object AdditionalDeclarationType extends Enumeration {
   val CLEARANCE_PRE_LODGED = Value("K")
 
   def from(string: String): Option[AdditionalDeclarationType] = AdditionalDeclarationType.values.find(_.toString == string)
+
+  def declarationType(additionalDeclarationType: AdditionalDeclarationType): DeclarationType =
+    additionalDeclarationType match {
+      case STANDARD_FRONTIER | STANDARD_PRE_LODGED       => STANDARD
+      case SUPPLEMENTARY_EIDR | SUPPLEMENTARY_SIMPLIFIED => SUPPLEMENTARY
+      case SIMPLIFIED_FRONTIER | SIMPLIFIED_PRE_LODGED   => SIMPLIFIED
+      case OCCASIONAL_FRONTIER | OCCASIONAL_PRE_LODGED   => OCCASIONAL
+      case CLEARANCE_FRONTIER | CLEARANCE_PRE_LODGED     => CLEARANCE
+    }
+
+  def isArrived(additionalDeclarationType: Option[AdditionalDeclarationType]): Boolean =
+    additionalDeclarationType.fold(false)(isArrived)
+
+  def isArrived(additionalDeclarationType: AdditionalDeclarationType): Boolean =
+    additionalDeclarationType match {
+      case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER | OCCASIONAL_FRONTIER | CLEARANCE_FRONTIER => true
+      case _                                                                                  => false
+    }
+
+  def isPreLodged(additionalDeclarationType: Option[AdditionalDeclarationType]): Boolean =
+    additionalDeclarationType.fold(false)(isPreLodged)
+
+  def isPreLodged(additionalDeclarationType: AdditionalDeclarationType): Boolean =
+    additionalDeclarationType match {
+      case STANDARD_PRE_LODGED | SIMPLIFIED_PRE_LODGED | OCCASIONAL_PRE_LODGED | CLEARANCE_PRE_LODGED => true
+      case _                                                                                          => false
+    }
 }
