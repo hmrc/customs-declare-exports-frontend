@@ -1238,6 +1238,7 @@ declaration.transportInformation.containers.inset.bullet3 = swap bodies and semi
 declaration.transportInformation.error.duplicate = Container ID already added
 
 declaration.invoice.details.title = Invoice and exchange rate details
+declaration.invoice.details.body = You only need to declare the total amount invoiced for amounts of £100,000 or more in value.
 declaration.totalAmountInvoiced.error = Total amount invoiced must contain only numbers, commas and a single full stop
 declaration.totalAmountInvoicedCurrency.error.empty = Enter a currency code
 declaration.totalAmountInvoicedCurrency.exchangeRateMissing.error.invalid = Currency code must be 3 letters
