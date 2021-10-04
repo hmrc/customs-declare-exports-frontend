@@ -18,6 +18,7 @@ error.notRequired = Value not expected
 error.summary.title = There is a problem
 error.summary.text = Check the following
 error.yesNo.required = Select yes or no
+error.unknown = Unknown error
 
 site.back = Back
 site.backToSelectionPage = Back to selection page

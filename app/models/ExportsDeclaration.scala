@@ -25,8 +25,8 @@ import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
 import play.api.libs.json._
-import java.time.{Clock, Instant}
 
+import java.time.{Clock, Instant}
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.DeclarationHolder
 
@@ -113,6 +113,8 @@ case class ExportsDeclaration(
   def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
 
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
+
+  def itemBySequenceNo(seqNo: String): Option[ExportItem] = items.find(_.sequenceId.toString == seqNo)
 
   def requiresWarehouseId: Boolean = items.exists(_.requiresWarehouseId)
 

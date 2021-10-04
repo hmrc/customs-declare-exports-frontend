@@ -41,6 +41,7 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
     when(appConfig.procedureCodesForC21ListFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.additionalProcedureCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.dmsErrorCodes).thenReturn("/code-lists/manyCodes.json")
   }
 
   "HolderOfAuthorisationCodes.getCodeDescription" should {

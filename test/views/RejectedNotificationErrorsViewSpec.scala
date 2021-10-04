@@ -67,7 +67,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
 
     "must contain notifications" when {
       val reason =
-        RejectionReason("rejectionCode", "rejectionDescription", None, None, Some(Pointer("declaration.consignmentReferences.lrn")))
+        RejectionReason("rejectionCode", Some(Pointer("declaration.consignmentReferences.lrn")), None)
 
       val testMessages = stubMessages()
 
@@ -83,13 +83,8 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
       }
 
       "pointer " in {
-        val reason = RejectionReason(
-          "rejectionCode",
-          "rejectionDescription",
-          None,
-          None,
-          Some(Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id"))
-        )
+        val reason =
+          RejectionReason("rejectionCode", Some(Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id")), None)
 
         val doc: Document = view(Seq(reason), testMessages)
 
@@ -118,7 +113,6 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
     }
 
     "contain change error link" when {
-
       "link for the error exists" in {
 
         val itemId = "12sd31"
@@ -129,14 +123,14 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
         val pointerPattern = "declaration.items.#1.additionalDocument.#1.documentStatus"
         val urlPattern = "declaration.items.$.additionalDocument.$.documentStatus"
 
-        val reason = RejectionReason("CDS40045", "rejectionDescription", Some(expectedUrl), Some("page-error-message"), Some(Pointer(pointerPattern)))
+        val reason = RejectionReason("CDS40045", Some(Pointer(pointerPattern)), Some(expectedUrl))
 
         val view: Document = page(declaration, Seq(reason))(request, messages)
 
         val changeLink = view.getElementsByClass("govuk-link").get(1)
 
         changeLink must haveHref(
-          controllers.routes.SubmissionsController.amendErrors(declaration.id, reason.url.get, urlPattern, "page-error-message").url
+          controllers.routes.SubmissionsController.amendErrors(declaration.id, reason.url.get, urlPattern, "Missing document.").url
         )
       }
     }

@@ -78,7 +78,10 @@ private class AllMessageKeysAreMandatoryMessages(msg: Messages) extends Messages
   override def apply(key: String, args: Any*): String =
     if (msg.isDefinedAt(key))
       msg.apply(key, args: _*)
-    else throw new AssertionError(s"Message Key is not configured for {$key}")
+    else {
+      new AssertionError(s"Message Key is not configured for {$key}").printStackTrace()
+      throw new AssertionError(s"Message Key is not configured for {$key}")
+    }
 
   override def apply(keys: Seq[String], args: Any*): String =
     if (keys.exists(key => !msg.isDefinedAt(key)))

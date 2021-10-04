@@ -21,6 +21,7 @@
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
+@import connectors.CodeListConnector
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -33,27 +34,32 @@
     govukSummaryList : GovukSummaryList,
     govukWarningText: GovukWarningText,
     appConfig: AppConfig,
+    codeListConnector: CodeListConnector,
     changeErrorLinkConfig: ChangeErrorLinkConfig
 )
 
 @(declaration: ExportsDeclaration, errors: Seq[RejectionReason])(implicit request: Request[_], messages: Messages)
 
-@errorDesciption(error: RejectionReason) = @{
-  val description = error.summaryErrorMessage
+@errorDesciption(reason: RejectionReason) = @{
+  val description = codeListConnector
+          .getDmsErrorCodesMap(messages.lang.toLocale)
+          .get(reason.errorCode)
+          .map(dmsErrorCode => dmsErrorCode.description)
+          .getOrElse(messages("error.unknown"))
   if(description.endsWith(".")) description else s"$description."
 }
 
-@errorChangeAction(error: RejectionReason) = @{
-  if(changeErrorLinkConfig.isEnabled && error.url.exists(_.nonEmpty)) {
-    val urlToPageWithError = RejectionReason.url(error.url.get, declaration, error.pointer)
-    val errorPattern = error.pointer.map(_.pattern).getOrElse("")
-    val errorMessage = error.pageErrorMessage.getOrElse("")
+@errorChangeAction(reason: RejectionReason) = @{
+  if(changeErrorLinkConfig.isEnabled && reason.url.exists(_.nonEmpty)) {
+    val urlToPageWithError = RejectionReason.specialiseUrl(reason.url.get, declaration, reason.pointer)
+    val errorPattern = reason.pointer.map(_.pattern).getOrElse("")
+    val errorMessage = errorDesciption(reason)
     val url = routes.SubmissionsController.amendErrors(declaration.id, urlToPageWithError, errorPattern, errorMessage).url
 
     val action = actionItem(
       href = url,
       content = Text(messages("site.change")),
-      visuallyHiddenText = Some(error.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse(""))
+      visuallyHiddenText = Some(reason.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse(""))
     )
 
     Some(Actions(items = Seq(action)))
@@ -71,7 +77,7 @@
                     classes = s"rejected-field-name rejected_notifications-row-$index-name"
                 ),
                 value = Value(
-                    content = Text(messages("rejected.notification.description.format", errorDesciption(error), error.code)),
+                    content = Text(messages("rejected.notification.description.format", errorDesciption(error), error.errorCode)),
                     classes = s"rejected_notifications-row-$index-description"
                 ),
                 actions = errorChangeAction(error)
