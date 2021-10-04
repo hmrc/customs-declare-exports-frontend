@@ -40,16 +40,31 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       messages must haveTranslationFor("declaration.transportInformation.active.title")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.crossingTheBorder.header")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfVessel")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.header")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfVessel")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfVessel.label")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfVessel.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber.label")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber.label")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.label")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.label")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel.label")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel.hint")
     }
 
     "display page title" in {
@@ -91,12 +106,6 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
           .getElementById("borderTransportType-fieldSet")
           .getElementsByClass("govuk-fieldset__legend")
           .first() must containMessage("declaration.transportInformation.meansOfTransport.crossingTheBorder.header")
-      }
-      "has hint" in {
-        view
-          .getElementById("borderTransportType-hint") must containMessage(
-          "declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint"
-        )
       }
       "has 'Ship' section" in {
         hasSectionFor(view, "IMOShipIDNumber")
