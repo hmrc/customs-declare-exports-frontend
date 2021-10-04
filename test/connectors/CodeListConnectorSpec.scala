@@ -39,6 +39,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.procedureCodesForC21ListFile).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.additionalProcedureCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.dmsErrorCodes).thenReturn("/code-lists/manyCodes.json")
   }
 
   private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)

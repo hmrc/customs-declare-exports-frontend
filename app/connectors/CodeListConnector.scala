@@ -19,12 +19,12 @@ package connectors
 import akka.util.Helpers.Requiring
 import com.google.inject.ImplementedBy
 import config.AppConfig
-import models.codes.{AdditionalProcedureCode, CommonCode, HolderOfAuthorisationCode, ProcedureCode}
+import models.codes.{AdditionalProcedureCode, CommonCode, DmsErrorCode, HolderOfAuthorisationCode, ProcedureCode}
 import play.api.libs.json.{Json, OFormat}
 import utils.JsonFile
+
 import java.util.Locale
 import java.util.Locale._
-
 import javax.inject.{Inject, Singleton}
 import scala.collection.immutable.ListMap
 
@@ -50,6 +50,7 @@ trait CodeListConnector {
   def getProcedureCodesForC21(locale: Locale): ListMap[String, ProcedureCode]
   def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode]
   def getAdditionalProcedureCodesMapForC21(locale: Locale): ListMap[String, AdditionalProcedureCode]
+  def getDmsErrorCodesMap(locale: Locale): ListMap[String, DmsErrorCode]
 
   val WELSH = new Locale("cy", "GB", "");
   val supportedLanguages = Seq(ENGLISH, WELSH)
@@ -57,20 +58,6 @@ trait CodeListConnector {
 
 @Singleton
 class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeListConnector {
-
-  private def loadCommonCodesAsOrderedMap[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T): CodeMap[T] = {
-    val codeList = JsonFile.getJsonArrayFromFile(srcFile, CodeItem.formats)
-
-    val langCodes = supportedLanguages.map { locale =>
-      val commonCodeList = codeList
-        .map(factory(_, locale))
-        .map(commonCode => (commonCode.code, commonCode))
-
-      (locale.getLanguage -> ListMap(commonCodeList: _*))
-    }
-
-    ListMap(langCodes: _*)
-  }
 
   private val holderOfAuthorisationCodeListsByLang = loadCommonCodesAsOrderedMap(
     appConfig.holderOfAuthorisationCodes,
@@ -97,6 +84,11 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
     (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
+  private val dmsErrorCodeMapsByLang = loadCommonCodesAsOrderedMap(
+    standardOrCustomErrorDefinitionFile,
+    (codeItem: CodeItem, locale: Locale) => DmsErrorCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
   def getHolderOfAuthorisationCodes(locale: Locale): ListMap[String, HolderOfAuthorisationCode] =
     holderOfAuthorisationCodeListsByLang.getOrElse(locale.getLanguage, holderOfAuthorisationCodeListsByLang.value.head._2)
 
@@ -111,4 +103,33 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
 
   def getAdditionalProcedureCodesMapForC21(locale: Locale): ListMap[String, AdditionalProcedureCode] =
     additionalProcedureCodeForC21MapsByLang.getOrElse(locale.getLanguage, additionalProcedureCodeForC21MapsByLang.value.head._2)
+
+  def getDmsErrorCodesMap(locale: Locale): ListMap[String, DmsErrorCode] =
+    dmsErrorCodeMapsByLang.getOrElse(locale.getLanguage, dmsErrorCodeMapsByLang.value.head._2)
+
+  private def loadCommonCodesAsOrderedMap[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T): CodeMap[T] = {
+    val codeList = JsonFile.getJsonArrayFromFile(srcFile, CodeItem.formats)
+
+    val langCodes = supportedLanguages.map { locale =>
+      val commonCodeList = codeList
+        .map(factory(_, locale))
+        .map(commonCode => (commonCode.code, commonCode))
+
+      (locale.getLanguage -> ListMap(commonCodeList: _*))
+    }
+
+    ListMap(langCodes: _*)
+  }
+
+  private lazy val standardOrCustomErrorDefinitionFile =
+    if (appConfig.isUsingImprovedErrorMessages) {
+      val pathParts = appConfig.dmsErrorCodes.split('.')
+
+      val customFilePath = for {
+        start <- pathParts.headOption
+        end <- pathParts.lastOption
+      } yield s"${start}-customised.${end}"
+
+      customFilePath.getOrElse(appConfig.dmsErrorCodes)
+    } else appConfig.dmsErrorCodes
 }
