@@ -28,7 +28,8 @@
   items: List[AutoCompleteItem],
   isPageHeading: Boolean,
   args: List[(Symbol, Any)] = List.empty,
-  rightElement: Option[Html] = None
+  rightElement: Option[Html] = None,
+  selectClasses: String = ""
 )(implicit messages: Messages)
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
@@ -78,6 +79,7 @@ To avoid problems, we need to remove [] from field.
         field = field,
         emptySelectValue = emptySelectValue,
         items = items,
-        rightElement = rightElement
+        rightElement = rightElement,
+        selectClasses = selectClasses
     )
 </div>

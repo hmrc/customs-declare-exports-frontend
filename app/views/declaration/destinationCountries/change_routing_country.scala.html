@@ -15,13 +15,12 @@
  *@
 
 @import config.AppConfig
+@import controllers.declaration.routes.RoutingCountriesSummaryController
 @import controllers.navigation.Navigator
-@import forms.declaration.countries.Countries._
+@import forms.declaration.countries.Countries.CountryPage
 @import forms.declaration.countries.Country
 @import forms.declaration.RoutingCountryQuestionYesNo.ChangeCountryPage
 @import models.requests.JourneyRequest
-@import services.Countries
-@import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles
 @import views.helpers.{BackButton, Title}
@@ -29,12 +28,7 @@
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukRadios: GovukRadios,
-    govukDetails : GovukDetails,
-    govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
@@ -47,16 +41,14 @@
     title = Title(s"declaration.routingCountry.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ChangeCountryPage, mode)))){
 
-    @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitChangeCountry(mode, countryToChange), 'autoComplete -> "off") {
+    @formHelper(action = RoutingCountriesSummaryController.submitChangeCountry(mode, countryToChange), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @components.fields.field_accessible_autocomplete_with_header(
+        @components.fields.country_autocomplete(
             field = form("countryCode"),
             label = messages(s"declaration.${page.id}.question"),
             labelClass = Some(Styles.gdsPageLabel),
             section = Some("declaration.section.3"),
-            emptySelectValue = messages("declaration.routingCountry.empty"),
-            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
             isPageHeading = true
         )
 

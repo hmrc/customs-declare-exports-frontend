@@ -290,14 +290,6 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.giveFeedbackLink must be("/contact-frontend-url?service=DeclarationServiceId")
     }
 
-    "have countryCodesJsonFilename" in {
-      validAppConfig.countryCodesJsonFilename must be("code-lists/location-autocomplete-canonical-list.json")
-    }
-
-    "have countriesCsvFilename" in {
-      validAppConfig.countriesCsvFilename must be("code-lists/mdg-country-codes.csv")
-    }
-
     "have ttl lifetime" in {
       validAppConfig.cacheTimeToLive must be(FiniteDuration(24, "h"))
     }
@@ -466,8 +458,6 @@ object AppConfigSpec {
       |files.codelists.procedureCodeToAdditionalProcedureCodesLink="procedureCodeToAdditionalProcedureCodesLink"
       |files.codelists.procedureCodeToAdditionalProcedureCodesC21Link="procedureCodeToAdditionalProcedureCodesC21Link"
       |
-      |countryCodesCsvFilename=code-lists/mdg-country-codes.csv
-      |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs
       |microservice.services.nrs.port=7654

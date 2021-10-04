@@ -14,26 +14,20 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import controllers.declaration.routes.OriginationCountryController
 @import controllers.navigation.Navigator
 @import forms.declaration.countries.Countries.OriginationCountryPage
 @import forms.declaration.countries.Country
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds._
 @import models.requests.JourneyRequest
-@import services.Countries
-@import services.view.AutoCompleteItem
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles
 @import views.helpers.{BackButton, Title}
-@import views.components.gds.Styles._
-@import config.AppConfig
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukRadios: GovukRadios,
-    govukDetails : GovukDetails,
-    govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
@@ -46,17 +40,14 @@
     title = Title("declaration.originationCountry.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OriginationCountryPage, mode)))){
 
-    @formHelper(action = controllers.declaration.routes.OriginationCountryController.submit(mode), 'autoComplete -> "off") {
+    @formHelper(action = OriginationCountryController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.section.3"))
-
-        @components.fields.field_accessible_autocomplete_with_header(
+        @components.fields.country_autocomplete(
             field = form("countryCode"),
             label = messages("declaration.originationCountry.title"),
-            labelClass = Some(gdsPageLabel),
-            emptySelectValue = messages("declaration.originationCountry.empty"),
-            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            labelClass = Some(Styles.gdsPageLabel),
+            section = Some("declaration.section.3"),
             isPageHeading = true
         )
 

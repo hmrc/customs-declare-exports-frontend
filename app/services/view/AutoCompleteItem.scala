@@ -17,7 +17,7 @@
 package services.view
 
 import models.codes.{AdditionalProcedureCode, ProcedureCode}
-import services.DocumentType
+import services.{Countries, DocumentType}
 import services.model.{Country, CustomsOffice, OfficeOfExit, PackageType}
 
 case class AutoCompleteItem(label: String, value: String)
@@ -26,7 +26,7 @@ object AutoCompleteItem {
 
   def formatProcedureCode(pc: ProcedureCode) = s"${pc.code} - ${pc.description}"
 
-  def fromCountry(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] =
+  def fromCountry(countries: List[Country] = Countries.allCountries, value: Country => String = _.countryName): List[AutoCompleteItem] =
     countries map (c => AutoCompleteItem(s"${c.countryName} - ${c.countryCode}", value(c)))
 
   def fromPackageType(packageTypes: List[PackageType]): List[AutoCompleteItem] =

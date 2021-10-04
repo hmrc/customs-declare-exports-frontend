@@ -14,29 +14,24 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes
-@import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
-@import services.Countries
+@import config.AppConfig
 @import controllers.declaration.AdditionalFiscalReferencesAddController.AdditionalFiscalReferencesFormGroupId
-@import services.view.AutoCompleteItem
+@import controllers.declaration.routes.AdditionalFiscalReferencesAddController
 @import controllers.navigation.{Navigator, ItemId}
+@import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 @import models.requests.JourneyRequest
-@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
-@import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
-@import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
-    govukButton: GovukButton,
     formGroupWrapper: formGroupWrapper,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    pageTitle: pageTitle,
     exportsInputText: exportsInputText,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
@@ -48,12 +43,10 @@
 
 @inputFields = {
     @formGroupWrapper(field = form(AdditionalFiscalReferencesFormGroupId)){
-        @components.fields.field_accessible_autocomplete(
+        @components.fields.country_autocomplete(
             field = form("country"),
             label = messages("declaration.additionalFiscalReferences.country"),
-            labelClass = Some("govuk-label--m"),
-            emptySelectValue = messages("declaration.additionalFiscalReferences.country.empty"),
-            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+            labelClass = Some("govuk-label--m")
         )
 
         @exportsInputText(
@@ -68,7 +61,7 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalFiscalReference, mode, ItemId(itemId))))
 ) {
 
-    @formHelper(action = routes.AdditionalFiscalReferencesAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalFiscalReferencesAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))
@@ -79,7 +72,7 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 inputFields,
                 tariffExpander(AdditionalFiscalReference, request.declarationType)(messages, appConfig),
                 saveButtons()

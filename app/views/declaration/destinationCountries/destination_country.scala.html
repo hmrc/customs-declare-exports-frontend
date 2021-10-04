@@ -15,25 +15,20 @@
  *@
 
 @import config.AppConfig
+@import controllers.declaration.routes.DestinationCountryController
 @import controllers.navigation.Navigator
 @import forms.declaration.countries.Countries.DestinationCountryPage
 @import forms.declaration.countries.Country
 @import models.requests.JourneyRequest
 @import services.Countries
-@import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.Styles._
+@import views.components.gds.Styles
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukRadios: GovukRadios,
-    govukDetails : GovukDetails,
-    govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
@@ -46,21 +41,19 @@
     title = Title("declaration.destinationCountry.title", "declaration.section.3"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DestinationCountryPage, mode)))){
 
-    @formHelper(action = controllers.declaration.routes.DestinationCountryController.submit(mode), 'autoComplete -> "off") {
+    @formHelper(action = DestinationCountryController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.section.3"))
-
-        @components.fields.field_accessible_autocomplete_with_header(
+        @components.fields.country_autocomplete(
             field = form("countryCode"),
             label = messages("declaration.destinationCountry.title"),
-            labelClass = Some(gdsPageLabel),
-            emptySelectValue = messages("declaration.destinationCountry.empty"),
-            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            labelClass = Some(Styles.gdsPageLabel),
+            section = Some("declaration.section.3"),
             isPageHeading = true
         )
 
         @tariffExpander(DestinationCountryPage, request.declarationType)(messages, appConfig)
+
         @saveButtons()
     }
 }

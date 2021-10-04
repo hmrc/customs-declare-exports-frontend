@@ -14,9 +14,6 @@
  * limitations under the License.
  *@
 
-@import services.Countries
-@import services.view.AutoCompleteItem
-
 @this(exportsInputText: exportsInputText)
 
 @(form: Form[_], labelPrefix: String = "", addressPrefix: String = "")(implicit request: Request[_], messages: Messages)
@@ -49,9 +46,7 @@
     defaultInputClasses = "govuk-input govuk-input--width-10"
 )
 
-@components.fields.field_accessible_autocomplete(
+@components.fields.country_autocomplete(
     field = form(s"${addressPrefix}.country"),
-    label = messages(s"$labelPrefix.country"),
-    emptySelectValue = messages("declaration.address.country.empty"),
-    items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryName)
+    label = messages(s"$labelPrefix.country")
 )

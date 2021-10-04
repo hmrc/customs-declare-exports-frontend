@@ -25,23 +25,15 @@ class CountriesSpec extends UnitWithMocksSpec {
   "Countries" should {
 
     "give all countries with codes in alphabetical order of country name" in {
-      val threeCountries =
-        allCountries.filter(c => c.countryName == "Afghanistan" || c.countryName.startsWith("Mayotte") || c.countryName == "Zimbabwe")
-      threeCountries must contain inOrderOnly (Country("Afghanistan", "AF"), Country("Mayotte - Grande-Terre and Pamandzi", "YT"), Country(
-        "Zimbabwe",
-        "ZW"
-      ))
-    }
+      val threeCountries = allCountries.filter { c =>
+        c.countryName == "Afghanistan" || c.countryName.startsWith("Mayotte") || c.countryName == "Zimbabwe"
+      }
 
-    "give list of EU countries" in {
-      euCountries must not be empty
-      euCountries must contain("France")
-      euCountries must not contain "UK"
-    }
-
-    "give territories with special fiscal status" in {
-      euSpecialFiscalTerritories must not be empty
-      euSpecialFiscalTerritories must contain("Turkey")
+      threeCountries must contain inOrderOnly(
+        Country("Afghanistan", "AF"),
+        Country("Mayotte - Grande-Terre and Pamandzi", "YT"),
+        Country("Zimbabwe", "ZW")
+      )
     }
   }
 }

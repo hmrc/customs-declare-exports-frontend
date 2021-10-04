@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType._
-import models.Mode
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -28,7 +28,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.carrier_details
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,7 +51,8 @@ class CarrierDetailsController @Inject()(
       }
     }
 
-  private def form()(implicit request: JourneyRequest[_]) = CarrierDetails.form(request.declarationType).withSubmissionErrors()
+  private def form()(implicit request: JourneyRequest[_]): Form[CarrierDetails] =
+    CarrierDetails.form(request.declarationType).withSubmissionErrors()
 
   def saveAddress(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
@@ -67,7 +67,7 @@ class CarrierDetailsController @Inject()(
         )
     }
 
-  private def updateCache(formData: CarrierDetails)(implicit req: JourneyRequest[AnyContent]) =
+  private def updateCache(formData: CarrierDetails)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(carrierDetails = Some(formData))
       model.copy(parties = updatedParties)

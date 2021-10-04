@@ -15,25 +15,18 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes
-@import forms.declaration.countries.Countries._
+@import controllers.declaration.routes.RoutingCountriesController
+@import forms.declaration.countries.Countries.CountryPage
 @import forms.declaration.countries.Country
 @import models.requests.JourneyRequest
-@import services.Countries
-@import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.Styles._
+@import views.components.gds.Styles
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukRadios: GovukRadios,
-    govukDetails : GovukDetails,
-    govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
@@ -44,19 +37,16 @@
 
 @govukLayout(
     title = Title(s"declaration.${page.id}.question", "declaration.section.3"),
-    backButton = Some(BackButton(messages("site.back"), routes.RoutingCountriesController.displayRoutingQuestion()))){
+    backButton = Some(BackButton(messages("site.back"), RoutingCountriesController.displayRoutingQuestion()))){
 
-    @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
+    @formHelper(action = RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.section.3"))
-
-        @components.fields.field_accessible_autocomplete_with_header(
+        @components.fields.country_autocomplete(
             field = form("countryCode"),
             label = messages(s"declaration.${page.id}.question"),
-            labelClass = Some(gdsPageLabel),
-            emptySelectValue = messages("declaration.routingCountry.empty"),
-            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            labelClass = Some(Styles.gdsPageLabel),
+            section = Some("declaration.section.3"),
             isPageHeading = true
         )
 

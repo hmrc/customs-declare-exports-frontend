@@ -79,8 +79,27 @@
 
     <script src='@Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
     <script src='@Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-    <script>window.HMRCFrontend.initAll();</script>
-    <script>window.GOVUKFrontend.initAll();</script>
+    <script type='text/javascript'>window.HMRCFrontend.initAll();</script>
+    <script type='text/javascript'>window.GOVUKFrontend.initAll();</script>
+
+    <!--script src='@Assets.versioned("javascripts/location-autocomplete/location-autocomplete.min.js")'></script>
+
+    <script type='text/javascript'>
+        $('.country-autocomplete').each(function() {
+            openregisterLocationPicker({
+              additionalSynonyms: [
+                 { name: 'America', code: 'country:US' },
+                 { name: 'England', code: 'country:GB' },
+                 { name: 'Scotland', code: 'country:GB' },
+                 { name: 'UK', code: 'country:GB' },
+                 { name: 'USA', code: "country:US"},
+                 { name: 'Wales', code: 'country:GB' }
+              ],
+              selectElement: this,
+              url: '@Assets.versioned("/javascripts/location-autocomplete/location-autocomplete-graph.json")'
+            })
+        });
+    </script-->
 }
 
 @beforeContentBlock = {

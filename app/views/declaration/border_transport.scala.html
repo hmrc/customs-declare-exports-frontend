@@ -14,29 +14,23 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
+@import config.AppConfig
+@import controllers.declaration.routes.BorderTransportController
+@import controllers.navigation.Navigator
 @import forms.declaration.BorderTransport
 @import forms.declaration.TransportCodes._
 @import models.requests.JourneyRequest
-@import services.Countries
-@import services.view.AutoCompleteItem
-@import controllers.navigation.Navigator
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
-@import views.components.gds.Styles._
-@import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
-@import scala.collection.immutable
 @import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
-@import config.AppConfig
+@import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
 
 @this(
     govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
-    govukButton: GovukButton,
-    govukDetails : GovukDetails,
     govukRadios: GovukRadios,
-    pageTitle: pageTitle,
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
@@ -90,11 +84,9 @@
 }
 
 @borderTransportNationality = {
-    @components.fields.field_accessible_autocomplete(
+    @components.fields.country_autocomplete(
         field = form("borderTransportNationality"),
-        label = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header"),
-        emptySelectValue = messages("declaration.address.country.empty"),
-        items = AutoCompleteItem.fromCountry(Countries.allCountries)
+        label = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header")
     )
 }
 
@@ -113,7 +105,7 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 borderTransportType,
                 borderTransportNationality,
                 tariffExpander(BorderTransport, request.declarationType)(messages, appConfig),
