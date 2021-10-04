@@ -48,7 +48,7 @@ To avoid problems, we need to remove [] from field.
 </script>
 
 <div id="@(fieldNameWithoutBrackets)-container">
-    <select class="form-control" id="@(fieldNameWithoutBrackets)" name="@field.name" @if(field.value.nonEmpty) {value="@field.value"}>
+    <select class="form-control" id="@(fieldNameWithoutBrackets)" @if(field.name.nonEmpty) {name="@field.name"} @if(field.value.nonEmpty) {value="@field.value"}>
         <option value="">@emptySelectValue</option>
         @items.map { i =>
             <option value="@i.value" @if(selectedValue == i.value) {selected="selected"}>@i.label</option>
