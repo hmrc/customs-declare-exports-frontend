@@ -48,19 +48,19 @@
 
 @(mode: Mode, form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
-@inputField(transportType: String, labelKey: String) = @{Some(exportsInputText(
+@inputField(transportType: String, key: String) = @{Some(exportsInputText(
     field = form(s"borderTransportReference_$transportType"),
     labelClasses = "govuk-label",
     inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
-    labelKey = labelKey
-))
-}
+    labelKey = s"$key.label",
+    hintKey = Some(s"$key.hint"))
+)}
 
 @radioOption(id: String, value: String) = @{RadioItem(
     id = Some(id),
     value = Some(value),
     content = Text(messages(s"declaration.transportInformation.meansOfTransport.$id")),
-    conditionalHtml = inputField(id, s"declaration.transportInformation.meansOfTransport.$id.label"),
+    conditionalHtml = inputField(id, s"declaration.transportInformation.meansOfTransport.$id"),
     checked = form("borderTransportType").value.contains(value))}
 
 @borderTransportType = {
@@ -72,18 +72,15 @@
                 content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header"))
             ))
         )),
-        hint = Some(Hint(
-            content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint"))
-        )),
         items = Seq(
             radioOption("IMOShipIDNumber", IMOShipIDNumber),
             radioOption("nameOfVessel", NameOfVessel),
             radioOption("wagonNumber", WagonNumber),
-            radioOption("vehicleRegistrationNumber", VehicleRegistrationNumber),
             radioOption("IATAFlightNumber", IATAFlightNumber),
             radioOption("aircraftRegistrationNumber", AircraftRegistrationNumber),
             radioOption("europeanVesselIDNumber", EuropeanVesselIDNumber),
-            radioOption("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel)
+            radioOption("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel),
+            radioOption("vehicleRegistrationNumber", VehicleRegistrationNumber)
         ),
         errorMessage = form("borderTransportType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
     ))
