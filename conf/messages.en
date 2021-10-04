@@ -18,6 +18,7 @@ error.notRequired = Value not expected
 error.summary.title = There is a problem
 error.summary.text = Check the following
 error.yesNo.required = Select yes or no
+error.unknown = Unknown error
 
 site.back = Back
 site.backToSelectionPage = Back to selection page
@@ -1139,7 +1140,7 @@ declaration.transport.leavingTheBorder.transportMode.unknown = Own propulsion
 declaration.transport.leavingTheBorder.transportMode.unknown.hint = For example, goods carried by a passenger.
 declaration.transport.leavingTheBorder.transportMode.empty = I don’t know
 
-declaration.transportInformation.active.title = Transport leaving the border
+declaration.transportInformation.active.title = What are the details for the transport leaving the UK border?
 declaration.transportInformation.borderTransportMode.error.empty = Select the mode of transport at the border
 declaration.transportInformation.borderTransportMode.error.empty.optional = Select the mode of transport at the border or I don’t know
 declaration.transportInformation.borderTransportMode.error.incorrect = Select the mode of transport at the border
@@ -1166,8 +1167,7 @@ declaration.transportInformation.meansOfTransport.departure.error.incorrect = En
 declaration.transportInformation.meansOfTransport.departure.paragraph1 = For RoRo exports including Eurotunnel, enter the holding truck or trailer’s registration number. For unaccompanied freight enter the details for the holding transport - ship, plane or rail.
 declaration.transportInformation.meansOfTransport.departure.paragraph2 = You must make a selection, but you can enter ‘Unknown’ if you do not know the details when you submit the declaration.
 
-declaration.transportInformation.meansOfTransport.crossingTheBorder.header = What are the details for the transport that left the border?
-declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint = If the transport at the border was loaded onto another mode of transport, we need to know that mode of transport. For example, in the case of a lorry on a sea-going vessel, the active means of transport is the sea-going vessel.
+declaration.transportInformation.meansOfTransport.crossingTheBorder.header = Select and then enter the details. You must make a selection, but you can enter ‘Unknown’ if you do not know the details at the time when you must submit the declaration.
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty = Select a means of transport
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect = Select a means of transport
 declaration.transportInformation.meansOfTransport.reference.header = Reference
@@ -1176,16 +1176,16 @@ declaration.transportInformation.meansOfTransport.reference.error.empty = Enter 
 declaration.transportInformation.meansOfTransport.reference.error.length = Reference must contain 35 characters or fewer
 declaration.transportInformation.meansOfTransport.reference.error.invalid = Reference must contain only letters and numbers
 
-declaration.transportInformation.meansOfTransport.IMOShipIDNumber = Ship IMO number
+declaration.transportInformation.meansOfTransport.IMOShipIDNumber = Ship or RoRo ferry IMO number
 declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label = IMO identification number
 declaration.transportInformation.meansOfTransport.IMOShipIDNumber.hint = For example, 1234567
 declaration.transportInformation.meansOfTransport.nameOfVessel = Ship or RoRo ferry name
 declaration.transportInformation.meansOfTransport.nameOfVessel.label = Name of vessel
 declaration.transportInformation.meansOfTransport.nameOfVessel.hint = For example, Seraphim.
-declaration.transportInformation.meansOfTransport.wagonNumber = Rail details
+declaration.transportInformation.meansOfTransport.wagonNumber = Eurotunnel or other rail details
 declaration.transportInformation.meansOfTransport.wagonNumber.label = Wagon number
 declaration.transportInformation.meansOfTransport.wagonNumber.hint = For example, 6767.
-declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber = Vehicle or trailer registration
+declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber = Vehicle registration number (at the Republic of Ireland border crossing only)
 declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label = Vehicle registration number
 declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.hint = For example, HY49 8PA.
 declaration.transportInformation.meansOfTransport.IATAFlightNumber = Flight number and date of flight
