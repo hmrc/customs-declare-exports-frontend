@@ -79,6 +79,8 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       "have LRN with change button" in {
 
+        val view = section(Mode.Change, data.copy(`type` = request.declarationType))(messages)
+
         val row = view.getElementsByClass("lrn-row")
         row must haveSummaryKey(messages("declaration.summary.references.lrn"))
         row must haveSummaryValue("LRN")
@@ -92,7 +94,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
     onJourney(SUPPLEMENTARY) { implicit request =>
       "have LRN with change button" in {
 
-        val view = section(Mode.Change, data.copy(`type` = SUPPLEMENTARY))(messages)
+        val view = section(Mode.Change, data.copy(`type` = request.declarationType))(messages)
 
         val row = view.getElementsByClass("lrn-row")
         row must haveSummaryKey(messages("declaration.summary.references.supplementary.lrn"))
