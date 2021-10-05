@@ -71,6 +71,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.invalid")
       messages must haveTranslationFor("declaration.consignmentReferences.supplementary.ducr.hint1")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.info")
+      messages must haveTranslationFor("declaration.consignmentReferences.supplementary.lrn.info")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.hint")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.inset")
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.error.empty")
@@ -185,7 +186,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         "display empty input with label for LRN" in {
           val view = createView()
 
-          view.getElementsByAttributeValue("for", "lrn").text() mustBe messages("declaration.consignmentReferences.lrn.info")
+          view.getElementsByAttributeValue("for", "lrn").text() mustBe messages("declaration.consignmentReferences.supplementary.lrn.info")
           view.getElementById("lrn-hint").text() mustBe messages("declaration.consignmentReferences.supplementary.lrn.hint")
           view.getElementById("lrn").attr("value") mustBe empty
         }
@@ -220,7 +221,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         "display empty input with label for LRN" in {
           val view = createView()
 
-          view.getElementsByAttributeValue("for", "lrn").text() mustBe messages("declaration.consignmentReferences.lrn.info")
+          view.getElementsByAttributeValue("for", "lrn").text() mustBe messages("declaration.consignmentReferences.supplementary.lrn.info")
           view.getElementById("lrn-hint").text() mustBe messages("declaration.consignmentReferences.supplementary.lrn.hint")
           view.getElementById("lrn").attr("value") mustBe empty
         }
