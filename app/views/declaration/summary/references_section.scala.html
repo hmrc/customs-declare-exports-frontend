@@ -29,6 +29,13 @@
     else None
 }
 
+@lrnLabelText = @{
+    if (declarationData.`type` == DeclarationType.SUPPLEMENTARY)
+        "declaration.summary.references.supplementary.lrn"
+    else
+        "declaration.summary.references.lrn"
+}
+
 @summaryList("declaration-references-summary", Some(messages("declaration.summary.references")), Seq(
         Some(SummaryListRow(
             classes = "declarationType-row",
@@ -132,7 +139,7 @@
             SummaryListRow(
                 classes = "lrn-row",
                 key = Key(
-                    content = Text(messages("declaration.summary.references.lrn"))
+                    content = Text(messages(lrnLabelText))
                 ),
                 value = Value(
                     content = Text(refs.lrn.value)

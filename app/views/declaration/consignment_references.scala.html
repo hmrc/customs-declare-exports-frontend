@@ -90,6 +90,13 @@
     @paragraphBody(messages("declaration.consignmentReferences.ducr.hint"), "govuk-hint")
 }
 
+@lrnLabelText = @{
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+        "declaration.consignmentReferences.supplementary.lrn.info"
+    else
+        "declaration.consignmentReferences.lrn.info"
+}
+
 @optionalLrnInsetText = @{
     if (request.declarationType == DeclarationType.SUPPLEMENTARY)
         HtmlFormat.empty
@@ -157,7 +164,7 @@
             inputClasses = Some("govuk-input"),
             bodyHtml = Some(optionalLrnInsetText),
             hintHtml = Some(lrnHintSection),
-            labelKey = "declaration.consignmentReferences.lrn.info"
+            labelKey = lrnLabelText
         )
 
         @tariffExpander(ConsignmentReferences, request.declarationType)(messages, appConfig)

@@ -21,6 +21,7 @@ import controllers.declaration.routes
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.{DeclarationType, Mode}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.references_section
@@ -75,15 +76,34 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
       row must haveSummaryActionsHref(routes.ConsignmentReferencesController.displayPage(Mode.Change))
     }
 
-    "have LRN with change button" in {
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
+      "have LRN with change button" in {
 
-      val row = view.getElementsByClass("lrn-row")
-      row must haveSummaryKey(messages("declaration.summary.references.lrn"))
-      row must haveSummaryValue("LRN")
+        val view = section(Mode.Change, data.copy(`type` = request.declarationType))(messages)
 
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
+        val row = view.getElementsByClass("lrn-row")
+        row must haveSummaryKey(messages("declaration.summary.references.lrn"))
+        row must haveSummaryValue("LRN")
 
-      row must haveSummaryActionsHref(routes.ConsignmentReferencesController.displayPage(Mode.Change))
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
+
+        row must haveSummaryActionsHref(routes.ConsignmentReferencesController.displayPage(Mode.Change))
+      }
+    }
+
+    onJourney(SUPPLEMENTARY) { implicit request =>
+      "have LRN with change button" in {
+
+        val view = section(Mode.Change, data.copy(`type` = request.declarationType))(messages)
+
+        val row = view.getElementsByClass("lrn-row")
+        row must haveSummaryKey(messages("declaration.summary.references.supplementary.lrn"))
+        row must haveSummaryValue("LRN")
+
+        row must haveSummaryActionsTexts("site.change", "declaration.summary.references.lrn.change")
+
+        row must haveSummaryActionsHref(routes.ConsignmentReferencesController.displayPage(Mode.Change))
+      }
     }
 
     "have 'Link to a MUCR' with change button" in {
