@@ -81,6 +81,8 @@
     <script src='@Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
     <script>window.HMRCFrontend.initAll();</script>
     <script>window.GOVUKFrontend.initAll();</script>
+
+    <script src='@Assets.versioned("javascripts/preventMultipleFormSubmissions.js")'></script>
 }
 
 @beforeContentBlock = {
@@ -132,4 +134,4 @@
     )(content)
 }
 
-<script src='@Assets.versioned("javascripts/preventMultipleFormSubmissions.js")'></script>
+
