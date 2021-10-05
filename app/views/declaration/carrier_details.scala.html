@@ -37,7 +37,6 @@
     link: link,
     group_address: group_address,
     exportsInputText: exportsInputText,
-    pageTitle: pageTitle,
     formHelper: FormWithCSRF,
     tariffExpander: tariffExpander,
     appConfig: AppConfig
@@ -46,7 +45,11 @@
 @(mode: Mode, form: Form[CarrierDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hintLink = {
-  @link(text = messages("declaration.carrierAddress.hint.2.link"), call = Call("GET", appConfig.companyInformationRegister))
+    @link(
+        text = messages("declaration.carrierAddress.hint.2.link"),
+        call = Call("GET", appConfig.companyInformationRegister),
+        target = "_blank"
+    )
 }
 
 @govukLayout(

@@ -89,7 +89,9 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
         val hints = view.getElementsByClass("govuk-hint")
 
         hints.first() must containMessage("declaration.carrierAddress.hint.1")
-        hints.get(1).getElementsByClass("govuk-link").first() must haveHref("https://find-and-update.company-information.service.gov.uk")
+        val link = hints.get(1).getElementsByClass("govuk-link").first
+        link must haveHref("https://find-and-update.company-information.service.gov.uk")
+        link.attr("target") mustBe "_blank"
       }
 
       "display empty input with label for Full name" in {
