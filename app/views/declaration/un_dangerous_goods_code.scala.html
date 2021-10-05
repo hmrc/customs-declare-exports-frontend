@@ -34,7 +34,7 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
-        insetText: exportsInsetText,
+        heading: heading,
         body: paragraphBody,
         link: link,
         pageTitle: pageTitle,
@@ -55,12 +55,16 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
+        @heading(messages("declaration.unDangerousGoodsCode.header"))
+
+        @body(messages("declaration.unDangerousGoodsCode.inset", link(text = messages("declaration.unDangerousGoodsCode.inset.link"), call = Call("GET", appConfig.unDangerousGoodsUrl), target = "_blank")))
+
         @govukRadios(Radios(
             name = hasDangerousGoodsCodeKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.unDangerousGoodsCode.header")),
-                    classes = gdsPageLegend
+                    classes = "govuk-visually-hidden"
                 ))
             )),
             items = Seq(
@@ -85,8 +89,6 @@
             ),
             errorMessage = form(hasDangerousGoodsCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @insetText(content = HtmlContent(messages("declaration.unDangerousGoodsCode.inset", link(text = messages("declaration.unDangerousGoodsCode.inset.link"), call = Call("GET", appConfig.unDangerousGoodsUrl), target = "_blank"))))
 
         @tariffExpander(UNDangerousGoodsCode, request.declarationType)(messages, appConfig)
 

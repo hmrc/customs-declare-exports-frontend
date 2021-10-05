@@ -1275,7 +1275,7 @@ declaration.commodityDetails.inset.linkText = how to get the right commodity cod
 
 declaration.unDangerousGoodsCode.header = Is there a UN dangerous goods code for this item?
 declaration.unDangerousGoodsCode.inset = You can check this from the list in the {0}.
-declaration.unDangerousGoodsCode.inset.link = UN Recommendations on the transport of Dangerous Goods - Model regulations (opens in new tab)
+declaration.unDangerousGoodsCode.inset.link = UN Recommendations on the transport of Dangerous Goods (opens in new tab)
 declaration.unDangerousGoodsCode.label = UN dangerous goods code
 declaration.unDangerousGoodsCode.hasCode = Yes
 declaration.unDangerousGoodsCode.noCode = No
