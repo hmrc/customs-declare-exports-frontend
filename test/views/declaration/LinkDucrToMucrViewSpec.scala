@@ -58,8 +58,8 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
         view.getElementsByTag("h1").first() must containMessage("declaration.linkDucrToMucr.title")
       }
 
-      "display the hint paragraph" in {
-        view.getElementsByClass("govuk-hint").first must containMessage("declaration.linkDucrToMucr.hint")
+      "display the body paragraph" in {
+        view.getElementsByClass("govuk-body").first must containMessage("declaration.linkDucrToMucr.paragraph")
       }
 
       "display two Yes/No radio buttons" in {
