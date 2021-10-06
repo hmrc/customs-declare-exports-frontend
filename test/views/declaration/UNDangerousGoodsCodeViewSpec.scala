@@ -44,8 +44,8 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
     onEveryDeclarationJourney() { implicit request =>
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.header")
-        messages must haveTranslationFor("declaration.unDangerousGoodsCode.inset")
-        messages must haveTranslationFor("declaration.unDangerousGoodsCode.inset.link")
+        messages must haveTranslationFor("declaration.unDangerousGoodsCode.paragraph")
+        messages must haveTranslationFor("declaration.unDangerousGoodsCode.paragraph.link")
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.hasCode")
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.noCode")
         messages must haveTranslationFor("declaration.unDangerousGoodsCode.label")
@@ -54,7 +54,7 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
 
       val view = createView()
       "display page title" in {
-        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.unDangerousGoodsCode.header")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.unDangerousGoodsCode.header")
       }
 
       "display section header" in {
@@ -70,11 +70,11 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.unDangerousGoodsCode.noCode")
       }
 
-      "display inset text" in {
-        val inset = view.getElementsByClass("govuk-inset-text")
-        val expectedInsetText = messages("declaration.unDangerousGoodsCode.inset", messages("declaration.unDangerousGoodsCode.inset.link"))
+      "display body text" in {
+        val para = view.getElementsByClass("govuk-body")
+        val expectedParaText = messages("declaration.unDangerousGoodsCode.paragraph", messages("declaration.unDangerousGoodsCode.paragraph.link"))
 
-        inset.get(0).text mustBe expectedInsetText
+        para.get(0).text mustBe expectedParaText
       }
 
       "display 'Back' button that links to 'Commodity Details' page" in {
