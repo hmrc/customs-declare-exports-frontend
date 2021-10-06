@@ -541,8 +541,8 @@ declaration.linkDucrToMucr.details.hint2 = You can do more complex associating, 
 declaration.linkDucrToMucr.details.hint2.link = Arrive or depart CDS exports service (opens in new tab)
 
 declaration.mucr.title = Enter the MUCR
-declaration.mucr.hint = To check the correct format, see the ‘Notes’ section on {0}.
-declaration.mucr.hint.link = data element 2/1 Previous Documents (opens in new tab)
+declaration.mucr.paragraph = To check the correct format, see the ‘Notes’ section on {0}.
+declaration.mucr.paragraph.link = data element 2/1 Previous Documents (opens in new tab)
 declaration.mucr.error.empty = Enter a MUCR
 declaration.mucr.error.invalid = MUCR must contain only letters, numbers, hyphens, colon and slash
 declaration.mucr.error.length = MUCR must be 35 characters or fewer

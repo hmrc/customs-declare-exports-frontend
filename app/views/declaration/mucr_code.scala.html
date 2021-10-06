@@ -28,6 +28,8 @@
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
     exportsInputText: exportsInputText,
+    heading: heading,
+    body: paragraphBody,
     link: link,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
@@ -47,17 +49,15 @@
 
         @sectionHeader(messages("declaration.section.1"))
 
+        @heading(messages("declaration.mucr.title"))
+
+        @body(messages("declaration.mucr.paragraph", link(text = messages("declaration.mucr.paragraph.link"), call = Call("GET", appConfig.notesForMucrConsolidationUrl), target = "_blank")))
+
         @exportsInputText(
             field = form(Mucr.MUCR),
             labelKey = "declaration.mucr.title",
-            hintKey = Some("declaration.mucr.hint"),
-            hintKeyLinks = List(link(
-                text = messages("declaration.mucr.hint.link"),
-                call = Call("GET", appConfig.notesForMucrConsolidationUrl),
-                target = "_blank"
-            )),
-            isPageHeading = true,
-            headingClasses = gdsPageLabel,
+            isPageHeading = false,
+            labelClasses = "govuk-visually-hidden",
             sectionHeaderKey = None
         )
 

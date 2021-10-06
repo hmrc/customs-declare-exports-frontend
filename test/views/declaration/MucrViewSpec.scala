@@ -63,11 +63,11 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
         view.getElementsByTag("h1").first() must containMessage("declaration.mucr.title")
       }
 
-      "display the hint paragraph" in {
-        val hint = view.getElementsByClass("govuk-hint").first
-        hint.child(0) must haveHref(appConfig.notesForMucrConsolidationUrl)
+      "display the body paragraph" in {
+        val para = view.getElementsByClass("govuk-body").first
+        para.child(0) must haveHref(appConfig.notesForMucrConsolidationUrl)
 
-        removeBlanksIfAnyBeforeDot(hint.text) mustBe messages("declaration.mucr.hint", messages("declaration.mucr.hint.link"))
+        removeBlanksIfAnyBeforeDot(para.text) mustBe messages("declaration.mucr.paragraph", messages("declaration.mucr.paragraph.link"))
       }
 
       "display the input field where to enter the MUCR" in {
