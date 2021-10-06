@@ -34,6 +34,8 @@
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    heading: heading,
+    body: paragraphBody,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
@@ -41,9 +43,6 @@
 )
 
 @(mode: Mode, form: Form[CarrierEoriNumber])(implicit request: JourneyRequest[_], messages: Messages)
-
-@hintParagraph1 = { <span class="govuk-hint">@messages("declaration.carrierEori.hint.1")</span> }
-@hintParagraph2 = { <span class="govuk-hint">@messages("declaration.carrierEori.hint.2")</span> }
 
 @eoriInput = {
     @exportsInputText(
@@ -61,15 +60,19 @@
 
         @sectionHeader(messages("declaration.section.2"))
 
+        @heading(messages("declaration.carrierEori.title"))
+
+        @body(messages("declaration.carrierEori.paragraph.1"))
+
+        @body(messages("declaration.carrierEori.paragraph.2"))
+
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.carrierEori.title")),
-                classes = gdsPageLegend,
-                isPageHeading = true
+                classes = "govuk-visually-hidden",
+                isPageHeading = false
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                hintParagraph1,
-                hintParagraph2,
                 govukRadios(Radios(
                     name = "hasEori",
                     items = Seq(
