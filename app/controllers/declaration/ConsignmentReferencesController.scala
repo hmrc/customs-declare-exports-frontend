@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.LrnValidator
+import forms.{Ducr, LrnValidator}
 import forms.declaration.ConsignmentReferences
 import forms.declaration.ConsignmentReferences.form
 import models.DeclarationType.SUPPLEMENTARY
@@ -29,7 +29,6 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.consignment_references
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,8 +64,12 @@ class ConsignmentReferencesController @Inject()(
     if (request.declarationType == SUPPLEMENTARY) routes.DeclarantExporterController.displayPage
     else routes.LinkDucrToMucrController.displayPage
 
-  private def updateCacheAndContinue(mode: Mode, formData: ConsignmentReferences)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    updateExportsDeclarationSyncDirect(_.copy(consignmentReferences = Some(formData)))
+  private def updateCacheAndContinue(mode: Mode, consignmentReferences: ConsignmentReferences)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] =
+    updateExportsDeclarationSyncDirect(_.copy(consignmentReferences = Some(capitaliseDucr(consignmentReferences))))
       .map(_ => navigator.continueTo(mode, nextPage))
 
+  private def capitaliseDucr(consignmentReferences: ConsignmentReferences): ConsignmentReferences =
+    consignmentReferences.copy(ducr = Ducr(consignmentReferences.ducr.ducr.toUpperCase))
 }

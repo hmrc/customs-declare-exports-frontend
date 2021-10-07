@@ -1013,6 +1013,7 @@ class FieldValidatorSpec extends UnitSpec {
         isValidDucr("9GB123456789012-1") mustBe true
         isValidDucr("0GB123456664559-1234567890123456789") mustBe true
         isValidDucr("9GB123456789012-AB12/(1)") mustBe true
+        isValidDucr("9gb123456789012-ab12/(1)") mustBe true
       }
     }
 
@@ -1051,7 +1052,6 @@ class FieldValidatorSpec extends UnitSpec {
         }
 
         withClue("Invalid character present in trader ref") {
-          isValidDucr("9GB123456789012-aB12")
           isValidDucr("91B123456664559-AB12$") mustBe false
           isValidDucr("9GB123456664559-AB12-") mustBe false
           isValidDucr("9GB123456664559-AB12ö") mustBe false

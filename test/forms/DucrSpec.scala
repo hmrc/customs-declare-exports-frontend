@@ -24,7 +24,6 @@ class DucrSpec extends UnitWithMocksSpec {
   "Ducr" should {
 
     "correctly convert DUCR to upper case characters" in {
-
       Ducr.form2Data("9gb123456664559-1abc") mustBe Ducr("9GB123456664559-1ABC")
     }
   }
