@@ -42,7 +42,6 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Injec
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.procedureCodes.title")
       messages must haveTranslationFor("declaration.procedureCodes.hint")
-      messages must haveTranslationFor("declaration.procedureCodes.empty")
       messages must haveTranslationFor("declaration.procedureCodes.error.empty")
       messages must haveTranslationFor("declaration.procedureCodes.error.invalid")
 

@@ -861,7 +861,6 @@ declaration.routingCountryQuestion.remove.empty = Select yes if you want to remo
 
 declaration.routingCountry.title = Routing country
 declaration.routingCountry.question = Where will the goods be sent through next?
-declaration.routingCountry.empty = Select the next country the goods will pass through
 declaration.firstRoutingCountry.question = Where will the goods be sent through first?
 declaration.firstRoutingCountry.empty = Select the first country the goods will pass through
 
@@ -916,7 +915,6 @@ declaration.goodsLocation.expander.paragraph09.link2 = Tariff Volume 3 Great Bri
 
 declaration.procedureCodes.title = What is the procedure code for this item?
 declaration.procedureCodes.hint = Select the 4-digit procedure code that describes your requested customs treatment and status of the goods.
-declaration.procedureCodes.empty = Select a procedure code from the list
 declaration.procedureCodes.error.empty = Select a procedure code
 declaration.procedureCodes.error.invalid = Procedure code must be 4 digits, containing only numbers
 declaration.procedureCodes.inset.title = Details about 1040 - the standard export procedure
@@ -980,7 +978,6 @@ declaration.warehouse.supervisingCustomsOffice.title = Where is the HMRC supervi
 declaration.warehouse.supervisingCustomsOffice.hint.1 = If you quoted a specific authorisation for any of your declared items, select the office that granted this authorisation.
 declaration.warehouse.supervisingCustomsOffice.hint.2 = Authorisations may cover previous import reliefs such as Processing or Warehousing.
 declaration.warehouse.supervisingCustomsOffice.hint.3 = For excise, enter the code for the supervising office for the excise warehouse.
-declaration.warehouse.supervisingCustomsOffice.label = Select a customs supervising office
 declaration.warehouse.supervisingCustomsOffice.error = Select a customs supervising office from the list
 
 declaration.warehouse.inlandTransportDetails.title = What mode of transport took the goods from the warehouse to the border?

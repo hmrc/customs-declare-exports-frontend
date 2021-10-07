@@ -52,7 +52,6 @@
             field = form("country"),
             label = messages("declaration.additionalFiscalReferences.country"),
             labelClass = Some("govuk-label--m"),
-            emptySelectValue = messages("declaration.additionalFiscalReferences.country.empty"),
             items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
         )
 

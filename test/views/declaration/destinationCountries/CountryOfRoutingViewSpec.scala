@@ -53,7 +53,6 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
       val messages = realMessagesApi.preferred(request)
       messages must haveTranslationFor("declaration.routingCountry.title")
       messages must haveTranslationFor("declaration.routingCountry.question")
-      messages must haveTranslationFor("declaration.routingCountry.empty")
       messages must haveTranslationFor("declaration.firstRoutingCountry.question")
       messages must haveTranslationFor("declaration.firstRoutingCountry.empty")
       messages must haveTranslationFor("tariff.expander.title.clearance")

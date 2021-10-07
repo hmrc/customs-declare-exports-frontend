@@ -85,7 +85,6 @@
             field = form(procedureCodeKey),
             label = messages("declaration.procedureCodes.title"),
             labelClass = Some(gdsPageLabel),
-            emptySelectValue = messages("declaration.procedureCodes.empty"),
             items = AutoCompleteItem.fromProcedureCodes(procedureCodeService.getProcedureCodesFor(
                 request.declarationType, request.cacheModel.isEntryIntoDeclarantsRecords, messages.lang.toLocale
             ).toList),

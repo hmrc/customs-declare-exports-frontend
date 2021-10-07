@@ -90,7 +90,6 @@
       field = form(additionalProcedureCodeKey),
       label = messages("declaration.additionalProcedureCodes.title", procedureCode.code),
       labelClass = Some(gdsPageLabel),
-      emptySelectValue = messages("declaration.additionalProcedureCodes.error.empty"),
       items = AutoCompleteItem.fromAdditionalProcedureCodes(validAdditionalProcedureCodes.toList),
       isPageHeading = true,
       hintParagraphs = List(messages("declaration.additionalProcedureCodes.hint")),
