@@ -32,11 +32,12 @@
 @this(
         govukLayout: gdsMainTemplate,
         govukFieldset: GovukFieldset,
-        govukHint: GovukHint,
         pageTitle: pageTitle,
         inputText: exportsInputText,
         inputTextArea: exportsInputTextArea,
         errorSummary: errorSummary,
+        heading: heading,
+        body:paragraphBody,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
         tariffExpander: tariffExpander,
@@ -56,14 +57,16 @@
 
         @sectionHeader(messages("declaration.section.2"))
 
+        @heading(messages("declaration.consignee.title"))
+
+        @body(messages("declaration.consignee.paragraph"))
+
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.consignee.title")),
-                classes = gdsPageLabel,
-                isPageHeading = true
+                classes = "govuk-visually-hidden"
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                govukHint(Hint(content = Text(messages("declaration.consignee.hint")))),
                 group_address(form, "declaration.address", "details.address")
             ))
         ))

@@ -553,7 +553,7 @@ declaration.declarant.exporter.answer.no = No, I’m representing the exporter
 declaration.declarant.exporter.error = Select yes if you are the exporter
 
 declaration.consignee.title = What address are the goods being sent to?
-declaration.consignee.hint = This is the address of the person receiving the goods, technically known as the consignee.
+declaration.consignee.paragraph = This is the address of the person receiving the goods, technically known as the consignee.
 
 declaration.consignorEori.title = Does the consignor have an EORI number?
 declaration.consignorEori.eori.label = EORI number
