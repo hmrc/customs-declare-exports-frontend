@@ -31,7 +31,7 @@ class DeclarantIsExporterSpec extends DeclarationPageBaseSpec {
 
       "provided with empty input" in {
 
-        val form = DeclarantIsExporter.form().bind(emptyJSON)
+        val form = DeclarantIsExporter.form().bind(emptyJSON, JsonBindMaxChars)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
@@ -40,7 +40,7 @@ class DeclarantIsExporterSpec extends DeclarationPageBaseSpec {
 
       "provided with invalid input" in {
 
-        val form = DeclarantIsExporter.form().bind(invalidJSON)
+        val form = DeclarantIsExporter.form().bind(invalidJSON, JsonBindMaxChars)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
@@ -49,7 +49,7 @@ class DeclarantIsExporterSpec extends DeclarationPageBaseSpec {
 
       "provided with valid input" in {
 
-        val form = DeclarantIsExporter.form().bind(validJSON)
+        val form = DeclarantIsExporter.form().bind(validJSON, JsonBindMaxChars)
 
         form.hasErrors mustBe false
       }

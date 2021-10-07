@@ -30,7 +30,7 @@ class DocumentSpec extends DeclarationPageBaseSpec {
           Map("documentType" -> JsString("MCR"), "documentReference" -> JsString("DocumentReference"), "goodsItemIdentifier" -> JsString("123"))
         )
 
-        val form = Document.form.bind(correctPreviousDocumentsJSON)
+        val form = Document.form.bind(correctPreviousDocumentsJSON, JsonBindMaxChars)
 
         form.errors mustBe empty
       }
@@ -44,7 +44,7 @@ class DocumentSpec extends DeclarationPageBaseSpec {
             "goodsItemIdentifier" -> JsString("123")
           )
         )
-        val form = Document.form.bind(correctJson)
+        val form = Document.form.bind(correctJson, JsonBindMaxChars)
 
         form.errors mustBe empty
       }
@@ -52,7 +52,7 @@ class DocumentSpec extends DeclarationPageBaseSpec {
       "provided document reference with :" in {
 
         val correctJson = DocumentSpec.json("MCR", "A:12345645", "123")
-        val form = Document.form.bind(correctJson)
+        val form = Document.form.bind(correctJson, JsonBindMaxChars)
 
         form.errors mustBe empty
       }

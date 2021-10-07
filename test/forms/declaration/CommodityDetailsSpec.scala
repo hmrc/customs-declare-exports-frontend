@@ -32,25 +32,25 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec {
 
       s"return form with errors for $decType" when {
         "provided with invalid commodity code" in {
-          val form = CommodityDetails.form(decType).bind(formData("A123456789", "description"))
+          val form = CommodityDetails.form(decType).bind(formData("A123456789", "description"), JsonBindMaxChars)
 
           form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         }
 
         "provided with commodity code too long" in {
-          val form = CommodityDetails.form(decType).bind(formData("12345678901", "description"))
+          val form = CommodityDetails.form(decType).bind(formData("12345678901", "description"), JsonBindMaxChars)
 
           form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
         }
 
         "provided with commodity code too short" in {
-          val form = CommodityDetails.form(decType).bind(formData("1234", "description"))
+          val form = CommodityDetails.form(decType).bind(formData("1234", "description"), JsonBindMaxChars)
 
           form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
         }
 
         "provided with invalid commodity code that is too long" in {
-          val form = CommodityDetails.form(decType).bind(formData("ABCDE123456789", "description"))
+          val form = CommodityDetails.form(decType).bind(formData("ABCDE123456789", "description"), JsonBindMaxChars)
 
           form.errors mustBe Seq(
             FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"),
@@ -59,13 +59,13 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec {
         }
 
         "provided with missing commodity code" in {
-          val form = CommodityDetails.form(decType).bind(formData("", "some text"))
+          val form = CommodityDetails.form(decType).bind(formData("", "some text"), JsonBindMaxChars)
 
           form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.empty"))
         }
 
         "provided with missing description" in {
-          val form = CommodityDetails.form(decType).bind(formData("1234567890", ""))
+          val form = CommodityDetails.form(decType).bind(formData("1234567890", ""), JsonBindMaxChars)
 
           form.errors mustBe Seq(FormError(descriptionOfGoodsKey, "declaration.commodityDetails.description.error.empty"))
         }
@@ -73,7 +73,7 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec {
 
       s"return form without errors for $decType" when {
         "provided with valid input" in {
-          val form = CommodityDetails.form(decType).bind(formData("1234567809", "description"))
+          val form = CommodityDetails.form(decType).bind(formData("1234567809", "description"), JsonBindMaxChars)
 
           form.hasErrors must be(false)
         }
@@ -87,7 +87,7 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec {
 
       s"return form with errors for $decType" when {
         "provided with invalid commodity code" in {
-          val form = CommodityDetails.form(decType).bind(formData("#1234", "description"))
+          val form = CommodityDetails.form(decType).bind(formData("#1234", "description"), JsonBindMaxChars)
 
           form.errors mustBe Seq(
             FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"),
@@ -96,19 +96,19 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec {
         }
 
         "provided with commodity code too short" in {
-          val form = CommodityDetails.form(decType).bind(formData("12345", "description"))
+          val form = CommodityDetails.form(decType).bind(formData("12345", "description"), JsonBindMaxChars)
 
           form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
         }
 
         "provided with commodity code too long" in {
-          val form = CommodityDetails.form(decType).bind(formData("12345678901", "description"))
+          val form = CommodityDetails.form(decType).bind(formData("12345678901", "description"), JsonBindMaxChars)
 
           form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
         }
 
         "provided with missing description" in {
-          val form = CommodityDetails.form(decType).bind(formData("1234567890", ""))
+          val form = CommodityDetails.form(decType).bind(formData("1234567890", ""), JsonBindMaxChars)
 
           form.hasErrors must be(false)
         }
@@ -116,19 +116,19 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec {
 
       s"return form without errors for $decType" when {
         "provided with valid input" in {
-          val form = CommodityDetails.form(decType).bind(formData("1234567890", "description"))
+          val form = CommodityDetails.form(decType).bind(formData("1234567890", "description"), JsonBindMaxChars)
 
           form.hasErrors must be(false)
         }
 
         "provided with missing commodity code" in {
-          val form = CommodityDetails.form(decType).bind(formData("", "description"))
+          val form = CommodityDetails.form(decType).bind(formData("", "description"), JsonBindMaxChars)
 
           form.hasErrors must be(false)
         }
 
         "provided with both missing commodity code and commodity description" in {
-          val form = CommodityDetails.form(decType).bind(formData("", ""))
+          val form = CommodityDetails.form(decType).bind(formData("", ""), JsonBindMaxChars)
 
           form.hasErrors must be(false)
         }

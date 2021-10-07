@@ -30,31 +30,31 @@ class TaricCodeSpec extends DeclarationPageBaseSpec {
 
     "return form with errors" when {
       "provided with empty code" in {
-        val form = TaricCode.form.bind(JsObject(Map(taricCodeKey -> JsString(""))))
+        val form = TaricCode.form.bind(JsObject(Map(taricCodeKey -> JsString(""))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.empty"))
       }
 
       "provided with code too long" in {
-        val form = TaricCode.form.bind(formData(Some("12345")))
+        val form = TaricCode.form.bind(formData(Some("12345")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.invalid"))
       }
 
       "provided with code too short" in {
-        val form = TaricCode.form.bind(formData(Some("123")))
+        val form = TaricCode.form.bind(formData(Some("123")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.invalid"))
       }
 
       "provided with non-alphanumeric code" in {
-        val form = TaricCode.form.bind(formData(Some("!234")))
+        val form = TaricCode.form.bind(formData(Some("!234")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.invalid"))
       }
 
       "provided with non-alphanumeric code and too long" in {
-        val form = TaricCode.form.bind(formData(Some("!23456789")))
+        val form = TaricCode.form.bind(formData(Some("!23456789")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.invalid"))
       }
@@ -62,7 +62,7 @@ class TaricCodeSpec extends DeclarationPageBaseSpec {
 
     "return form without errors" when {
       "provided with valid input" in {
-        val form = TaricCode.form.bind(formData(Some("1234")))
+        val form = TaricCode.form.bind(formData(Some("1234")), JsonBindMaxChars)
 
         form.errors mustBe empty
       }

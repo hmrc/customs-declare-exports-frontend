@@ -30,25 +30,25 @@ class UnDangerousGoodsCodeSpec extends DeclarationPageBaseSpec {
 
     "return form with errors" when {
       "provided with code too long" in {
-        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("12345")))
+        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("12345")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(dangerousGoodsCodeKey, "declaration.unDangerousGoodsCode.error.invalid"))
       }
 
       "provided with non-numeric code" in {
-        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("12E4")))
+        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("12E4")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(dangerousGoodsCodeKey, "declaration.unDangerousGoodsCode.error.invalid"))
       }
 
       "provided with non-numeric code that is too long" in {
-        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("12E4QWERTY")))
+        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("12E4QWERTY")), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(dangerousGoodsCodeKey, "declaration.unDangerousGoodsCode.error.invalid"))
       }
 
       "provided with no code when user said yes" in {
-        val form = UNDangerousGoodsCode.form.bind(formData("Yes", None))
+        val form = UNDangerousGoodsCode.form.bind(formData("Yes", None), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError(dangerousGoodsCodeKey, "declaration.unDangerousGoodsCode.error.empty"))
       }
@@ -56,13 +56,13 @@ class UnDangerousGoodsCodeSpec extends DeclarationPageBaseSpec {
 
     "return form without errors" when {
       "provided with valid input when user said Yes" in {
-        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("1234")))
+        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("1234")), JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }
 
       "provided with no input when user said No" in {
-        val form = UNDangerousGoodsCode.form.bind(formData("No", None))
+        val form = UNDangerousGoodsCode.form.bind(formData("No", None), JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }

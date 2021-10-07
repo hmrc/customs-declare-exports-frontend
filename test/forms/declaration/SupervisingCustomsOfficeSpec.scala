@@ -29,14 +29,16 @@ class SupervisingCustomsOfficeSpec extends DeclarationPageBaseSpec with LightFor
       val incorrectWarehouseOffice: JsValue =
         JsObject(Map("supervisingCustomsOffice" -> JsString("SOMEWRONGCODE")))
 
-      form().bind(incorrectWarehouseOffice).errors.map(_.message) must contain("declaration.warehouse.supervisingCustomsOffice.error")
+      form().bind(incorrectWarehouseOffice, JsonBindMaxChars).errors.map(_.message) must contain(
+        "declaration.warehouse.supervisingCustomsOffice.error"
+      )
     }
 
     "accept a valid supervising customs office" in {
       val incorrectSupervisingCustomsOffice: JsValue =
         JsObject(Map("supervisingCustomsOffice" -> JsString("12345678")))
 
-      form().bind(incorrectSupervisingCustomsOffice) mustBe errorless
+      form().bind(incorrectSupervisingCustomsOffice, JsonBindMaxChars) mustBe errorless
     }
   }
 

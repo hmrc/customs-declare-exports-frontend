@@ -24,7 +24,7 @@ class YesNoAnswerSpec extends UnitSpec {
 
     "attach errors to form" when {
       "provided with empty input" in {
-        val form = YesNoAnswer.form().bind(emptyYesNoAnswerJSON)
+        val form = YesNoAnswer.form().bind(emptyYesNoAnswerJSON, JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -32,7 +32,7 @@ class YesNoAnswerSpec extends UnitSpec {
       }
 
       "provided with an incorrect value" in {
-        val form = YesNoAnswer.form().bind(incorrectYesNoAnswerJSON)
+        val form = YesNoAnswer.form().bind(incorrectYesNoAnswerJSON, JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -42,7 +42,7 @@ class YesNoAnswerSpec extends UnitSpec {
 
     "not attach any error" when {
       "provided with valid input" in {
-        val form = YesNoAnswer.form().bind(correctYesNoAnswerJSON)
+        val form = YesNoAnswer.form().bind(correctYesNoAnswerJSON, JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }
