@@ -16,26 +16,28 @@
 
 @import forms.declaration.CommodityDetails
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.Styles._
+@import views.components.gds.Styles
 
 @this(govukCharacterCount: GovukCharacterCount)
 
 @(
   field: Field,
-  labelKey: String,
+  labelKey: Option[String] = None,
   hintKey: Option[String] = None,
   isPageHeading: Boolean = false,
-  headingClasses: String = gdsPageLabel,
+  headingClasses: String = Styles.gdsPageLabel,
   labelClasses: String = "govuk-label--m",
   inputClasses: String = "",
   maxLength: Option[Int] = None
 )(implicit messages: Messages)
 
 @buildLabel = @{
-  if(isPageHeading) {
-    Label(content = Text(messages(labelKey)), isPageHeading = true, classes = headingClasses)
-  } else {
-    Label(content = Text(messages(labelKey)), classes = labelClasses)
+  labelKey.fold(Label()) { label =>
+    if (isPageHeading) {
+      Label(content = Text(messages(label)), isPageHeading = true, classes = headingClasses)
+    } else {
+      Label(content = Text(messages(label)), classes = labelClasses)
+    }
   }
 }
 

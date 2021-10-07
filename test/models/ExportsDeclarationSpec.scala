@@ -137,7 +137,7 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
 
     "return true" when {
       "CommodityCode contains one of the prefixed arguments" in {
-        val commodityDetails = CommodityDetails(Some("3800"), None)
+        val commodityDetails = CommodityDetails(Some("3800123456"), None)
         val item = anItem(withCommodityDetails(commodityDetails))
         val declaration = aDeclaration(withType(DeclarationType.STANDARD), withItem(item))
 
@@ -147,7 +147,7 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
 
     "return false" when {
       "no prefixed arguments are supplied" in {
-        val commodityDetails = CommodityDetails(Some("3100"), None)
+        val commodityDetails = CommodityDetails(Some("3100123456"), None)
         val item = anItem(withCommodityDetails(commodityDetails))
         val declaration = aDeclaration(withType(DeclarationType.STANDARD), withItem(item))
 
@@ -171,7 +171,7 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
       }
 
       "CommodityCode contains none of the prefixed arguments" in {
-        val commodityDetails = CommodityDetails(Some("3100"), None)
+        val commodityDetails = CommodityDetails(Some("3100123456"), None)
         val item = anItem(withCommodityDetails(commodityDetails))
         val declaration = aDeclaration(withType(DeclarationType.STANDARD), withItem(item))
 

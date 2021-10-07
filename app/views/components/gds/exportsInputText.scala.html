@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import scala.collection.immutable
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.html.components.gds._
@@ -47,7 +46,7 @@
 
 @{ bodyHtml
     .map { body =>
-        HtmlContent(HtmlFormat.fill(immutable.Seq(
+        HtmlContent(HtmlFormat.fill(List(
             label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg),
             body,
             govukInput(Input(

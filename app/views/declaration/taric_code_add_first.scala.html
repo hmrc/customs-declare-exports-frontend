@@ -18,6 +18,7 @@
 @import controllers.declaration.routes.TaricCodeAddController
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.common.YesNoAnswer.YesNoAnswers
+@import forms.declaration.CommodityDetails
 @import forms.declaration.TaricCodeFirst
 @import forms.declaration.TaricCodeFirst._
 @import forms.declaration.TaricCode._
@@ -60,7 +61,7 @@
             "declaration.taricAdditionalCodes.addfirst.body",
             link(
                 messages("declaration.taricAdditionalCodes.addfirst.body.link", commodityCode),
-                Call("GET", appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode)),
+                Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)),
                 "_blank"
             )
         ))

@@ -89,7 +89,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache contains data" in {
 
-        val details = CommodityDetails(Some("12345678"), Some("Description"))
+        val details = CommodityDetails(Some("1234567809"), Some("Description"))
         val item = anItem(withCommodityDetails(details))
         withNewCaching(aDeclaration(withItems(item)))
 
@@ -122,7 +122,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
 
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
+        val correctForm = Json.toJson(CommodityDetails(Some("1234567809"), Some("Description")))
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
@@ -154,7 +154,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
             withItem(anItem(withItemId(itemId), withProcedureCodes(Some(procedureCode))))
           )
         )
-        val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
+        val correctForm = Json.toJson(CommodityDetails(Some("1234567809"), Some("Description")))
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
@@ -194,7 +194,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       val cusCode = CusCode(Some("11111111"))
       withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withCUSCode(cusCode)))))
 
-      val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
+      val correctForm = Json.toJson(CommodityDetails(Some("1234567809"), Some("Description")))
       val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
@@ -207,7 +207,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       val cusCode = CusCode(Some("11111111"))
       withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withCUSCode(cusCode)))))
 
-      val correctForm = Json.toJson(CommodityDetails(Some("28000000"), Some("Description")))
+      val correctForm = Json.toJson(CommodityDetails(Some("2800000000"), Some("Description")))
       val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage

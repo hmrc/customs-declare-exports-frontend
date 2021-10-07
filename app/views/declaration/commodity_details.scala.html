@@ -19,20 +19,20 @@
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.CommodityDetails
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukHint, Hint, Text}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    govukDetails : GovukDetails,
+    govukHint: GovukHint,
+    sectionHeader: sectionHeader,
     pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
     inputText: exportsInputText,
-    insetText: exportsInsetText,
+    label: label,
     characterCount: exportsInputCharacterCount,
     errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     tariffLink: tariffLink,
@@ -41,6 +41,13 @@
 )
 
 @(mode: Mode, itemId: String, form: Form[CommodityDetails])(implicit request: JourneyRequest[_], messages: Messages)
+
+@commodityCodeBody = {
+    @paragraphBody(messages(
+        "declaration.commodityDetails.combinedNomenclatureCode.body",
+        tariffLink(messages("declaration.commodityDetails.combinedNomenclatureCode.body.link"), appConfig.commodityCodeHelpUrl)
+    ))
+}
 
 @govukLayout(
     title = Title("declaration.commodityDetails.title", "declaration.section.5"),
@@ -54,19 +61,20 @@
 
         @inputText(
             field = form(CommodityDetails.combinedNomenclatureCodeKey),
-            labelKey = "declaration.commodityDetails.combinedNomenclatureCode.header",
-            hintKey = Some("declaration.commodityDetails.combinedNomenclatureCode.header.hint"),
+            labelKey = "declaration.commodityDetails.combinedNomenclatureCode.label",
+            bodyHtml = Some(commodityCodeBody),
+            hintKey = Some("declaration.commodityDetails.combinedNomenclatureCode.hint"),
             inputClasses = Some("govuk-input--width-10")
         )
 
-        @insetText(
-            content = HtmlContent(messages("declaration.commodityDetails.inset.text", tariffLink(linkText = messages("declaration.commodityDetails.inset.linkText"), linkUrl = appConfig.commodityCodeHelpUrl)))
-        )
+        @label("declaration.commodityDetails.description.label", form(CommodityDetails.descriptionOfGoodsKey).id)
+
+        @paragraphBody(messages("declaration.commodityDetails.description.body"))
+
+        @govukHint(Hint(content = Text(messages("declaration.commodityDetails.description.hint"))))
 
         @characterCount(
             field = form(CommodityDetails.descriptionOfGoodsKey),
-            labelKey = "declaration.commodityDetails.description.header",
-            hintKey = Some("declaration.commodityDetails.description.header.hint"),
             maxLength = Some(CommodityDetails.descriptionOfGoodsMaxLength)
         )
 

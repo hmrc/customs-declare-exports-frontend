@@ -246,7 +246,7 @@ object ExportsDeclarationExchangeSpec {
       |        "statisticalValue": "1000"
       |      },
       |      "commodityDetails": {
-      |        "combinedNomenclatureCode": "46021910",
+      |        "combinedNomenclatureCode": "4602191000",
       |        "descriptionOfGoods": "Straw for bottles"
       |      },
       |      "dangerousGoodsCode": {

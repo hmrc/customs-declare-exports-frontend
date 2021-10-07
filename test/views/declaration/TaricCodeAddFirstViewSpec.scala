@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import config.AppConfig
-import forms.declaration.TaricCodeFirst
+import forms.declaration.{CommodityDetails, TaricCodeFirst}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -52,14 +52,15 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
     "display the expected body (the text under page's H1)" when {
 
       "a commodity code has been entered" in {
-        val commodityCode = "46021910"
+        val commodityCode = "4602191000"
         val body = createView(commodityCode = Some(commodityCode)).getElementsByClass("govuk-body").get(0)
 
         body.text mustBe messages(
           "declaration.taricAdditionalCodes.addfirst.body",
           messages("declaration.taricAdditionalCodes.addfirst.body.link", commodityCode)
         )
-        body.child(0) must haveHref(appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode))
+        val href = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
+        body.child(0) must haveHref(href)
       }
 
       "a commodity code has not been entered" in {
