@@ -129,13 +129,16 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
           verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
         }
 
-        "accept submission and redirect for commodity code 28000000" in {
-          controllerRedirectsToNextPageForCommodityCode("28000000", controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId))
+        "accept submission and redirect for commodity code 2800000000" in {
+          controllerRedirectsToNextPageForCommodityCode(
+            "2800000000",
+            controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId)
+          )
         }
 
-        "accept submission and redirect for commodity code 21000000" in {
+        "accept submission and redirect for commodity code 2100000000" in {
           controllerRedirectsToNextPageForCommodityCode(
-            "21000000",
+            "2100000000",
             controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
           )
         }

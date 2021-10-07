@@ -15,6 +15,7 @@
  *@
 
 @import config.AppConfig
+@import forms.declaration.CommodityDetails
 @import forms.declaration.additionaldocuments.DocumentWriteOff._
 @import forms.declaration.additionaldocuments.AdditionalDocument
 @import forms.declaration.additionaldocuments.AdditionalDocument._
@@ -122,7 +123,7 @@
         @paragraphBody(messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.text",
             link(
                 text = messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.link1.text", commodityCode),
-                call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode)),
+                call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)),
                 target = "_blank"
             )
         ))

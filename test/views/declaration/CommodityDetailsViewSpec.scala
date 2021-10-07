@@ -29,6 +29,7 @@ import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.commodity_details
 import views.tags.ViewTest
+
 @ViewTest
 class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
@@ -45,17 +46,41 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
     val view = createView(commodityDetails.fold(form)(form.fill))(journeyRequest(declarationType))
 
     "display page title" in {
-      view.getElementById("title").text() mustBe messages("declaration.commodityDetails.title")
+      view.getElementById("title").text mustBe messages("declaration.commodityDetails.title")
     }
 
-    "display commodity code input field" in {
+    "display a body text for the commodity code input field" in {
+      val element = view.getElementsByClass("govuk-body").get(0)
+      removeBlanksIfAnyBeforeDot(element.text) mustBe messages(
+        "declaration.commodityDetails.combinedNomenclatureCode.body",
+        messages("declaration.commodityDetails.combinedNomenclatureCode.body.link")
+      )
+      element.child(0) must haveHref("https://www.gov.uk/guidance/using-the-trade-tariff-tool-to-find-a-commodity-code")
+    }
+
+    "display a hint text for the commodity code input field" in {
+      val element = view.getElementsByClass("govuk-hint").get(0)
+      element.text mustBe messages("declaration.commodityDetails.combinedNomenclatureCode.hint")
+    }
+
+    "display the commodity code input field" in {
       val expectedCode = commodityDetails.flatMap(_.combinedNomenclatureCode).getOrElse("")
       view.getElementById(CommodityDetails.combinedNomenclatureCodeKey).attr("value") mustBe expectedCode
     }
 
-    "display description textarea field" in {
+    "display a body text for the description textarea field" in {
+      val element = view.getElementsByClass("govuk-body").get(1)
+      element.text mustBe messages("declaration.commodityDetails.description.body")
+    }
+
+    "display a hint text for the description textarea field" in {
+      val element = view.getElementsByClass("govuk-hint").get(1)
+      element.text mustBe messages("declaration.commodityDetails.description.hint")
+    }
+
+    "display the description textarea field" in {
       val expectedDescription = commodityDetails.flatMap(_.descriptionOfGoods).getOrElse("")
-      view.getElementById(CommodityDetails.descriptionOfGoodsKey).text() mustBe expectedDescription
+      view.getElementById(CommodityDetails.descriptionOfGoodsKey).text mustBe expectedDescription
     }
 
     "display 'Back' button that links to 'Fiscal Information' page with 'fast-forward' enabled" in {
@@ -67,7 +92,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.select("#submit")
-      saveButton.text() mustBe messages(saveAndContinueCaption)
+      saveButton.text mustBe messages(saveAndContinueCaption)
     }
   }
 
@@ -82,7 +107,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
 
   "Commodity Details View on populated page" when {
 
-    val details = Some(CommodityDetails(Some("12345678"), Some("Description")))
+    val details = Some(CommodityDetails(Some("1234567890"), Some("Description")))
 
     for (decType <- DeclarationType.values) {
       s"we are on $decType journey" should {

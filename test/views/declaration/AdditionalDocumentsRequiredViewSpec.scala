@@ -90,7 +90,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
       "display the 2nd paragraph within the inset text and the expected link" when {
 
         "a commodity code was selected" in {
-          val commodityCode = "46021910"
+          val commodityCode = "4602191000"
           val commodityDetails = CommodityDetails(Some(commodityCode), None)
           val item = anItem(withItemId(itemId), withCommodityDetails(commodityDetails))
           val aDeclaration = aDeclarationAfter(request.cacheModel, withItem(item))
@@ -99,7 +99,9 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
 
           val paragraph = view.getElementsByClass("govuk-inset-text").get(0).children.get(1)
           paragraph.text mustBe messages(s"$msgKey.inset.text2", messages(s"$msgKey.inset.link2", commodityCode))
-          paragraph.child(0) must haveHref(appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode))
+
+          val href = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
+          paragraph.child(0) must haveHref(href)
         }
 
         "no commodity code was selected" in {

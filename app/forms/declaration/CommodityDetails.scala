@@ -30,30 +30,27 @@ object CommodityDetails extends DeclarationPage {
 
   implicit val format = Json.format[CommodityDetails]
 
+  val placeholder = "NNNNNNNNNN"
+
   val combinedNomenclatureCodeKey = "combinedNomenclatureCode"
   val descriptionOfGoodsKey = "descriptionOfGoods"
   val descriptionOfGoodsMaxLength = 280
   val commodityCodeChemicalPrefixes = Seq(28, 29, 38)
 
-  private val combinedNomenclatureCodeMaxLength = 8
+  private val combinedNomenclatureCodeMaxLength = 10
 
   private def mappingCombinedNomenclatureCodeRequired: Mapping[Option[String]] =
-    optional(
-      text()
-        .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", nonEmpty)
-        .verifying(
-          "declaration.commodityDetails.combinedNomenclatureCode.error.invalid",
-          isEmpty or (hasSpecificLength(combinedNomenclatureCodeMaxLength) and isNumeric)
-        )
-    ).verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", isPresent)
+    mappingCombinedNomenclatureCodeOptional
+      .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", isPresent)
 
   private def mappingCombinedNomenclatureCodeOptional: Mapping[Option[String]] =
     optional(
       text()
         .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", nonEmpty)
+        .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.invalid", isEmpty or isNumeric)
         .verifying(
-          "declaration.commodityDetails.combinedNomenclatureCode.error.invalid",
-          isEmpty or (hasSpecificLength(combinedNomenclatureCodeMaxLength) and isNumeric)
+          "declaration.commodityDetails.combinedNomenclatureCode.error.length",
+          isEmpty or hasSpecificLength(combinedNomenclatureCodeMaxLength)
         )
     )
 

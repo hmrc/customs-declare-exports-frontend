@@ -34,7 +34,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
     withFiscalInformation(FiscalInformation("Yes")),
     withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "1234")))),
     withStatisticalValue("123"),
-    withCommodityDetails(CommodityDetails(Some("231"), Some("description"))),
+    withCommodityDetails(CommodityDetails(Some("1234567890"), Some("description"))),
     withUNDangerousGoodsCode(UNDangerousGoodsCode(Some("345"))),
     withCUSCode(CusCode(Some("321"))),
     withTaricCodes(TaricCode("999"), TaricCode("888")),
@@ -112,7 +112,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
         val row = view.getElementsByClass("item-1-commodityCode-row")
         row must haveSummaryKey(messages("declaration.summary.items.item.commodityCode"))
-        row must haveSummaryValue("231")
+        row must haveSummaryValue("1234567890")
 
         row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.commodityCode.change", "1")
 
@@ -297,7 +297,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
         val row = view.getElementsByClass("item-1-commodityCode-row")
         row must haveSummaryKey(messages("declaration.summary.items.item.commodityCode"))
-        row must haveSummaryValue("231")
+        row must haveSummaryValue("1234567890")
 
         row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.commodityCode.change")
         row mustNot haveSummaryActionsHref(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemWithAnswers.id))
@@ -472,7 +472,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
         val row = view.getElementsByClass("item-1-commodityCode-row")
         row must haveSummaryKey(messages("declaration.summary.items.item.commodityCode"))
-        row must haveSummaryValue("231")
+        row must haveSummaryValue("1234567890")
 
         row mustNot haveSummaryActionsText("site.change declaration.summary.items.item.commodityCode.change")
         row mustNot haveSummaryActionsHref(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemWithAnswers.id))

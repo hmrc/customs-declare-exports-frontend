@@ -322,7 +322,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
 
   "additional_document_edit view on empty page" should {
     "display the top expander" when {
-      val commodityCode = "46021910"
+      val commodityCode = "4602191000"
       val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
 
       onEveryDeclarationJourney(withItem(item)) { implicit request =>

@@ -80,7 +80,7 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
               sequenceId = 1,
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code1"), Seq.empty)),
               statisticalValue = Some(StatisticalValue("")),
-              commodityDetails = Some(CommodityDetails(Some("item-type1"), Some(""))),
+              commodityDetails = Some(CommodityDetails(Some("1234567890"), Some(""))),
               packageInformation = Some(List(PackageInformation("pk1", None, Some(1), None)))
             ),
             ExportItem(
@@ -88,7 +88,7 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
               sequenceId = 2,
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code2"), Seq.empty)),
               statisticalValue = Some(StatisticalValue("")),
-              commodityDetails = Some(CommodityDetails(Some("item-type2"), Some(""))),
+              commodityDetails = Some(CommodityDetails(Some("1234567890"), Some(""))),
               packageInformation = Some(List(PackageInformation("pk2", None, Some(2), None)))
             )
           )
@@ -110,7 +110,7 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
         rows.get(1).getElementById("item_0--sequence_id") must containText("1")
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
-        rows.get(1).getElementById("item_0--item_type") must containText("item-type1")
+        rows.get(1).getElementById("item_0--item_type") must containText("1234567890")
         rows.get(1).getElementById("item_0--package_count").text() must be("1")
         rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0) must haveHref(
           routes.ProcedureCodesController.displayPage(Mode.Normal, "id1")
@@ -121,7 +121,7 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
         rows.get(2).getElementById("item_1--sequence_id") must containText("2")
         rows.get(2).getElementById("item_1--procedure_code") must containText("procedure-code2")
-        rows.get(2).getElementById("item_1--item_type") must containText("item-type2")
+        rows.get(2).getElementById("item_1--item_type") must containText("1234567890")
         rows.get(2).getElementById("item_1--package_count").text() must be("2")
         rows.get(2).getElementById("item_1--change").getElementsByTag("a").get(0) must haveHref(
           routes.ProcedureCodesController.displayPage(Mode.Normal, "id2")
@@ -140,7 +140,7 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
               sequenceId = 1,
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code1"), Seq.empty)),
               statisticalValue = Some(StatisticalValue("")),
-              commodityDetails = Some(CommodityDetails(Some("item-type1"), Some(""))),
+              commodityDetails = Some(CommodityDetails(Some("1234567890"), Some(""))),
               packageInformation =
                 Some(List(PackageInformation("pk1", None, Some(1), None), PackageInformation("pk2", None, None, Some("shipping-marks"))))
             )
@@ -163,7 +163,7 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
         rows.get(1).getElementById("item_0--sequence_id") must containText("1")
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
-        rows.get(1).getElementById("item_0--item_type") must containText("item-type1")
+        rows.get(1).getElementById("item_0--item_type") must containText("1234567890")
         rows.get(1).getElementById("item_0--package_count").text() must be("1")
         rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0) must haveHref(
           routes.ProcedureCodesController.displayPage(Mode.Normal, "id1")

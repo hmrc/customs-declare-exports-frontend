@@ -77,7 +77,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData w
     }
 
     "have items section" in {
-      val details = CommodityDetails(Some("12345678"), Some("Description"))
+      val details = CommodityDetails(Some("1234567890"), Some("Description"))
       view(aDeclaration(withItem(anItem(withCommodityDetails(details)))))
         .getElementById("declaration-items-summary-0")
         .text() mustNot be(empty)

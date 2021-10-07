@@ -127,7 +127,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
 
       "display the expander" when {
         "commodityCode is present" in {
-          val commodityCode = "46021910"
+          val commodityCode = "4602191000"
           val hintElement = createView(commodityCode = Some(commodityCode)).getElementById("supplementaryUnits-readMore")
 
           hintElement must containHtml(messages("declaration.commodityMeasure.expander.title"))

@@ -14,19 +14,20 @@
  * limitations under the License.
  *@
 
-@import forms.declaration. CommodityMeasure
+@import forms.declaration.CommodityDetails
+@import forms.declaration.CommodityMeasure
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import config.AppConfig
 
 @this(
-        inputText: exportsInputText,
-        inputTextUnits: exportsInputTextWithPrefix,
-        exportsInputCheckbox: exportsInputCheckbox,
-        govukDetails : GovukDetails,
-        govukHint: GovukHint,
-        link: link,
-        appConfig: AppConfig
+    inputText: exportsInputText,
+    inputTextUnits: exportsInputTextWithPrefix,
+    exportsInputCheckbox: exportsInputCheckbox,
+    govukDetails : GovukDetails,
+    govukHint: GovukHint,
+    link: link,
+    appConfig: AppConfig
 )
 
 @(form: Form[CommodityMeasure], maybeCommodityCode: Option[String])(implicit messages: Messages)
@@ -37,7 +38,7 @@
             content = HtmlContent(messages("declaration.commodityMeasure.expander.text",
                 link(
                     text = messages("declaration.commodityMeasure.expander.withCommodityCode.link.text", commodityCode),
-                    call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace("NNNNNNNN", commodityCode)),
+                    call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)),
                     target = "_blank"
                 )
             ))

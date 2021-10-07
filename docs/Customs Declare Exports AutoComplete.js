@@ -770,7 +770,7 @@ function commodityDetails(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/commodity-details')) {
         switch(getDeclaration()){
             case 'A':
-                document.getElementById("combinedNomenclatureCode").value = '29291000';
+                document.getElementById("combinedNomenclatureCode").value = '2929100000';
                 document.getElementById('descriptionOfGoods').value ='nonblockingdocumentary';
                 break;
             case 'B':
@@ -778,15 +778,15 @@ function commodityDetails(){
             case 'E':
             case 'F':
             case 'Y':
-                document.getElementById('combinedNomenclatureCode').value ='84111100';
+                document.getElementById('combinedNomenclatureCode').value ='8411110000';
                 document.getElementById('descriptionOfGoods').value ='Aircraft engine';
                 break;
             case 'Z':
-                document.getElementById('combinedNomenclatureCode').value ='85389099';
+                document.getElementById('combinedNomenclatureCode').value ='8538909900';
                 document.getElementById('descriptionOfGoods').value ='Oilwell equipment';
                 break;
             default:
-                document.getElementById('combinedNomenclatureCode').value ='46021910';
+                document.getElementById('combinedNomenclatureCode').value ='4602191000';
                 document.getElementById('descriptionOfGoods').value ='Straw for bottles';
         }
         document.getElementById('submit').click();
