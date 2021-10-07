@@ -74,7 +74,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with CommonMessages with 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
-        createView().getElementsByClass("govuk-fieldset__heading").first().text() mustBe messages("declaration.consignee.title")
+        createView().getElementsByTag("h1").first().text() mustBe messages("declaration.consignee.title")
       }
 
       "display section header" in {
