@@ -33,6 +33,7 @@
     yesNoRadios: yesNoRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    heading: heading,
     paragraph: paragraphBody,
     link: link,
     saveButtons: saveButtons,
@@ -71,16 +72,18 @@
 
         @sectionHeader(messages("declaration.section.1"))
 
+        @heading(messages("declaration.linkDucrToMucr.title"))
+
+        @paragraph(messages("declaration.linkDucrToMucr.paragraph"))
+
         @yesNoRadios(
             form = form,
             heading = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.linkDucrToMucr.title")),
-                    isPageHeading = true,
-                    classes = gdsPageLegend
+                    classes = "govuk-visually-hidden"
                 ))
-            )),
-            hint = Some(Hint(content = Text(messages("declaration.linkDucrToMucr.hint"))))
+            ))
         )
 
         @govukDetails(Details(
