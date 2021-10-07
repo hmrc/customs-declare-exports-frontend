@@ -63,7 +63,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with S
       }
 
       "display page title" in {
-        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.carrierEori.title")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.carrierEori.title")
       }
 
       "display section header" in {

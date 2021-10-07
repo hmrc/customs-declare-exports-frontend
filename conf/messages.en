@@ -563,8 +563,8 @@ declaration.consignorEori.hasEori.empty = Select yes if the exporter has an EORI
 declaration.consignorAddress.title = What is the consignor’s name and address?
 
 declaration.carrierEori.title = Do you know the EORI number of your carrier?
-declaration.carrierEori.hint.1 = Enter the EORI number of the airline, ferry, shipping or freight company carrying your goods, if you know it.
-declaration.carrierEori.hint.2 = If you do not know it, you can enter their registered business address on the next page instead.
+declaration.carrierEori.paragraph.1 = Enter the EORI number of the airline, ferry, shipping or freight company carrying your goods, if you know it.
+declaration.carrierEori.paragraph.2 = If you do not know it, you can enter their registered business address on the next page instead.
 declaration.carrierEori.eori.label = Carrier’s EORI number
 declaration.carrierEori.eori.empty = Enter the carrier’s EORI number
 declaration.carrierEori.hasEori.empty = Select yes if you know the EORI number of your carrier
