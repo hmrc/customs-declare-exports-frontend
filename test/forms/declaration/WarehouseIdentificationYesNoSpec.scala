@@ -32,19 +32,21 @@ class WarehouseIdentificationYesNoSpec extends UnitWithMocksSpec with LightFormM
     "validate - no answer" in {
       val incorrectWarehouseDetails = formData("", "")
 
-      formYesNo().bind(incorrectWarehouseDetails).errors.map(_.message) must contain("declaration.warehouse.identification.answer.error")
+      formYesNo().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(
+        "declaration.warehouse.identification.answer.error"
+      )
     }
 
     "validate - more than 35 characters after type code" in {
       val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCode + createRandomAlphanumericString(36))
 
-      formYesNo().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
+      formYesNo().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(identificationNumberError)
     }
 
     "validate - missing identification number" in {
       val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCode)
 
-      formYesNo().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(
+      formYesNo().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(
         "declaration.warehouse.identification.identificationNumber.error"
       )
     }
@@ -52,32 +54,32 @@ class WarehouseIdentificationYesNoSpec extends UnitWithMocksSpec with LightFormM
     "validate - missing warehouse type" in {
       val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseId)
 
-      formYesNo().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
+      formYesNo().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(identificationNumberError)
     }
 
     "validate - invalid warehouse type" in {
       val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCodeInvalid + warehouseId)
 
-      formYesNo().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
+      formYesNo().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(identificationNumberError)
     }
 
     "validate correct empty identification" in {
       val correctWarehouseDetails = formData(YesNoAnswers.no, "")
 
-      formYesNo().bind(correctWarehouseDetails) mustBe errorless
+      formYesNo().bind(correctWarehouseDetails, JsonBindMaxChars) mustBe errorless
     }
 
     "validate correct ware house type and number" in {
       val correctWarehouseDetails = formData(YesNoAnswers.yes, "R" + warehouseId)
 
-      formYesNo().bind(correctWarehouseDetails) mustBe errorless
+      formYesNo().bind(correctWarehouseDetails, JsonBindMaxChars) mustBe errorless
     }
 
     "validate lowercase ware house type and number" in {
       val id = "r" + warehouseId.toLowerCase
       val correctWarehouseDetails = formData(YesNoAnswers.yes, id)
 
-      val boundForm = formYesNo().bind(correctWarehouseDetails)
+      val boundForm = formYesNo().bind(correctWarehouseDetails, JsonBindMaxChars)
       boundForm mustBe errorless
       boundForm.value.flatMap(_.identificationNumber) mustBe Some(id.toUpperCase)
     }
@@ -85,7 +87,7 @@ class WarehouseIdentificationYesNoSpec extends UnitWithMocksSpec with LightFormM
     "validate max length" in {
       val correctWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCode + createRandomAlphanumericString(35))
 
-      formYesNo().bind(correctWarehouseDetails) mustBe errorless
+      formYesNo().bind(correctWarehouseDetails, JsonBindMaxChars) mustBe errorless
     }
   }
 }

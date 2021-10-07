@@ -16,11 +16,10 @@
 
 package forms.declaration.additionaldocuments
 
-import base.TestHelper
+import base.{TestHelper, UnitSpec}
 import forms.declaration.additionaldocuments.DocumentWriteOff._
-import base.UnitSpec
 import play.api.data.FormError
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json._
 
 class DocumentWriteOffSpec extends UnitSpec {
 
@@ -75,7 +74,7 @@ class DocumentWriteOffSpec extends UnitSpec {
       }
 
       def testFailedValidationErrors(input: JsValue, expectedErrors: Seq[FormError]): Unit = {
-        val form = DocumentWriteOff.form().bind(input)
+        val form = DocumentWriteOff.form().bind(input, JsonBindMaxChars)
         expectedErrors.foreach(form.errors must contain(_))
       }
     }

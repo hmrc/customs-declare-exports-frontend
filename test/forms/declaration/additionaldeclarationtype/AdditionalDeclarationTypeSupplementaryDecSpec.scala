@@ -16,8 +16,8 @@
 
 package forms.declaration.additionaldeclarationtype
 
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes._
 import base.UnitSpec
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class AdditionalDeclarationTypeSupplementaryDecSpec extends UnitSpec {
@@ -28,7 +28,7 @@ class AdditionalDeclarationTypeSupplementaryDecSpec extends UnitSpec {
     "return form with errors" when {
       "provided with empty input" in {
         val form =
-          AdditionalDeclarationTypeSupplementaryDec.form().bind(emptyAdditionalDeclarationTypeSupplementaryDecJSON)
+          AdditionalDeclarationTypeSupplementaryDec.form().bind(emptyAdditionalDeclarationTypeSupplementaryDecJSON, JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -37,7 +37,7 @@ class AdditionalDeclarationTypeSupplementaryDecSpec extends UnitSpec {
 
       "provided with a value not defined in AllowedAdditionalDeclarationTypes" in {
         val form =
-          AdditionalDeclarationTypeSupplementaryDec.form().bind(incorrectAdditionalDeclarationTypeSupplementaryDecJSON)
+          AdditionalDeclarationTypeSupplementaryDec.form().bind(incorrectAdditionalDeclarationTypeSupplementaryDecJSON, JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -48,7 +48,7 @@ class AdditionalDeclarationTypeSupplementaryDecSpec extends UnitSpec {
     "return form without errors" when {
       "provided with valid input" in {
         val form =
-          AdditionalDeclarationTypeSupplementaryDec.form().bind(correctAdditionalDeclarationTypeSupplementaryDecJSON)
+          AdditionalDeclarationTypeSupplementaryDec.form().bind(correctAdditionalDeclarationTypeSupplementaryDecJSON, JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }

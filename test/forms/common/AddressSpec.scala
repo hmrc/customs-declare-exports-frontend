@@ -104,7 +104,7 @@ class AddressSpec extends UnitSpec {
       "provided with full input" in {
         val expectedAddress = validAddress
 
-        val form = Address.form().bind(correctAddressJSON)
+        val form = Address.form().bind(correctAddressJSON, JsonBindMaxChars)
 
         form.errors must be(empty)
         form.value must be(defined)

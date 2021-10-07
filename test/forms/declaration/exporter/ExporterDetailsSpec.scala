@@ -43,7 +43,7 @@ class ExporterDetailsSpec extends UnitSpec with LightFormMatchers with JourneyTy
 
           val cachedModel: ExportsDeclaration = aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.yes))
 
-          val errors = form(Some(cachedModel)).bind(emptyExporterDetailsJSON).errors
+          val errors = form(Some(cachedModel)).bind(emptyExporterDetailsJSON, JsonBindMaxChars).errors
           EntityDetailsSpec.assertEmptyDetails(errors)
         }
       }
@@ -53,7 +53,7 @@ class ExporterDetailsSpec extends UnitSpec with LightFormMatchers with JourneyTy
 
           val cachedModel = aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.no))
 
-          val result = form(Some(cachedModel)).bind(emptyExporterDetailsJSON)
+          val result = form(Some(cachedModel)).bind(emptyExporterDetailsJSON, JsonBindMaxChars)
           result mustBe errorless
         }
       }

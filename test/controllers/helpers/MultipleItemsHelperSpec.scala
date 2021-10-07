@@ -158,6 +158,6 @@ object MultipleItemsHelperSpec {
 
   val testForm: Form[TestForm] = Form(testMapping)
 
-  val correctForm = testForm.bind(correctJson)
-  val incorrectForm = testForm.bind(incorrectJson)
+  val correctForm = testForm.bind(correctJson, UnitSpec.JsonBindMaxChars)
+  val incorrectForm = testForm.bind(incorrectJson, UnitSpec.JsonBindMaxChars)
 }
