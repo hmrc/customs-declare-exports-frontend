@@ -69,8 +69,7 @@
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.carrierEori.title")),
-                classes = "govuk-visually-hidden",
-                isPageHeading = false
+                classes = "govuk-visually-hidden"
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 govukRadios(Radios(
