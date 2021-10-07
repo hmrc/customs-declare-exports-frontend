@@ -64,8 +64,7 @@
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.consignee.title")),
-                classes = "govuk-visually-hidden",
-                isPageHeading = false
+                classes = "govuk-visually-hidden"
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 group_address(form, "declaration.address", "details.address")
