@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import scala.concurrent.Future
+
 import base.ControllerSpec
 import base.ExportsTestData.eidrDateStamp
 import forms.declaration.ConsignmentReferences
@@ -26,6 +28,7 @@ import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.GivenWhenThen
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -33,9 +36,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.consignment_references
 
-import scala.concurrent.Future
-
-class ConsignmentReferencesControllerSpec extends ControllerSpec {
+class ConsignmentReferencesControllerSpec extends ControllerSpec with GivenWhenThen {
 
   private val lrnValidator = mock[LrnValidator]
   private val consignmentReferencesPage = mock[consignment_references]
@@ -82,20 +83,16 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
-
           status(result) must be(OK)
         }
 
         "display page method is invoked and cache contains data" in {
-
           withNewCaching(aDeclaration(withConsignmentReferences()))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
-
           status(result) must be(OK)
         }
       }
@@ -112,7 +109,6 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
           val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Lrn("")))
 
           val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(incorrectForm))
-
           status(result) must be(BAD_REQUEST)
         }
 
@@ -122,9 +118,22 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
           val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
 
           val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
-
           status(result) must be(BAD_REQUEST)
         }
+      }
+
+      "change to uppercase any lowercase letter entered in the DUCR field" in {
+        withNewCaching(request.cacheModel)
+
+        val ducr = "9gb123456664559-1abc"
+        val correctForm = Json.toJson(ConsignmentReferences(Ducr(ducr), LRN))
+        val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
+
+        And("return 303 (SEE_OTHER)")
+        await(result) mustBe aRedirectToTheNextPage
+
+        val declaration = theCacheModelUpdated
+        declaration.consignmentReferences.head.ducr.ducr mustBe ducr.toUpperCase
       }
     }
 

@@ -49,30 +49,38 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
 
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
         s"provided with valid input for ${request.declarationType}" in {
-          val form = getBoundedForm(correctConsignmentReferencesJSON)
+          getBoundedForm(correctConsignmentReferencesJSON).hasErrors mustBe false
+        }
 
-          form.hasErrors mustBe false
+        "provided with valid input (lowercase DUCR)" in {
+          getBoundedForm(correctConsignmentReferencesLowercaseDucrJSON).hasErrors mustBe false
         }
       }
 
       onJourney(SUPPLEMENTARY) { implicit request =>
         "with additionalDeclarationType of SUPPLEMENTARY_SIMPLIFIED" when {
+
           "provided with valid input for SUPPLEMENTARY with additionalDecType of SUPPLEMENTARY_SIMPLIFIED" in {
-
             val data = addMrnToJSON(correctConsignmentReferencesJSON, mrn)
-            val form = getBoundedForm(data, Some(SUPPLEMENTARY_SIMPLIFIED))
+            getBoundedForm(data, Some(SUPPLEMENTARY_SIMPLIFIED)).hasErrors mustBe false
+          }
 
-            form.hasErrors mustBe false
+          "provided with valid input (lowercase DUCR) for SUPPLEMENTARY with additionalDecType of SUPPLEMENTARY_SIMPLIFIED" in {
+            val data = addMrnToJSON(correctConsignmentReferencesLowercaseDucrJSON, mrn)
+            getBoundedForm(data, Some(SUPPLEMENTARY_SIMPLIFIED)).hasErrors mustBe false
           }
         }
 
         "with additionalDeclarationType of SUPPLEMENTARY_EIDR" when {
+
           "provided with valid input for SUPPLEMENTARY with additionalDecType of SUPPLEMENTARY_EIDR" in {
-
             val data = addEidrToJSON(correctConsignmentReferencesJSON, eidrDateStamp)
-            val form = getBoundedForm(data, Some(SUPPLEMENTARY_EIDR))
+            getBoundedForm(data, Some(SUPPLEMENTARY_EIDR)).hasErrors mustBe false
+          }
 
-            form.hasErrors mustBe false
+          "provided with valid input (lowercase DUCR) for SUPPLEMENTARY with additionalDecType of SUPPLEMENTARY_EIDR" in {
+            val data = addEidrToJSON(correctConsignmentReferencesLowercaseDucrJSON, eidrDateStamp)
+            getBoundedForm(data, Some(SUPPLEMENTARY_EIDR)).hasErrors mustBe false
           }
         }
       }
@@ -125,15 +133,6 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
           form.errors.length mustBe 1
           form.errors.head.key mustBe "ducr.ducr"
           form.errors.head.message mustBe "declaration.consignmentReferences.ducr.error.empty"
-        }
-
-        "provided with valid input (lowercase DUCR)" in {
-          val form = getBoundedForm(correctConsignmentReferencesLowercaseDucrJSON)
-
-          form.hasErrors mustBe true
-          form.errors.length mustBe 1
-          form.errors.head.key mustBe "ducr.ducr"
-          form.errors.head.message mustBe "declaration.consignmentReferences.ducr.error.invalid"
         }
 
         "provided with invalid input (no LRN)" in {
