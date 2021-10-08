@@ -18,11 +18,11 @@ package controllers
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
+import models.declaration.notifications.Notification
 
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.model.RejectionReason
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.rejected_notification_errors
 
@@ -42,9 +42,13 @@ class RejectedNotificationsController @Inject()(
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
-          Ok(rejectedNotificationPage(declaration, RejectionReason.fromNotifications(notifications)))
+          Ok(rejectedNotificationPage(declaration, getRejectedNotificationErrors(notifications)))
         }
+
       case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }
   }
+
+  private def getRejectedNotificationErrors(notifications: Seq[Notification]) =
+    notifications.find(_.isStatusDMSRej).map(_.errors).getOrElse(Seq.empty)
 }

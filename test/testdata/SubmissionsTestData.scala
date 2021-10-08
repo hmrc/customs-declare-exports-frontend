@@ -71,7 +71,7 @@ object SubmissionsTestData {
   val functionCode_2: String = randomResponseFunctionCode
   val functionCode_3: String = randomResponseFunctionCode
   val nameCode: Option[String] = None
-  val errors = Seq(NotificationError(validationCode = "CDS12056", pointer = Some(Pointer("42A.26B")), url = None))
+  val errors = Seq(NotificationError(validationCode = "CDS12056", pointer = Some(Pointer("42A.26B"))))
 
   private val payloadExemplaryLength = 300
   val payload = createRandomAlphanumericString(payloadExemplaryLength)
