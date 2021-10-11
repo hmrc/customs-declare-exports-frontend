@@ -17,13 +17,15 @@
 package views
 
 import base.Injector
+import controllers.declaration.{routes => decRoutes}
 import controllers.routes
 import models.Pointer
+import models.declaration.notifications.NotificationError
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
-import services.model.RejectionReason
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.rejected_notification_errors
@@ -31,16 +33,14 @@ import views.html.rejected_notification_errors
 class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[rejected_notification_errors]
-
   private val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"))
 
-  private def view(reasons: Seq[RejectionReason] = Seq.empty, testMessages: Messages = messages): Document =
+  private def view(reasons: Seq[NotificationError] = Seq.empty, testMessages: Messages = messages): Document =
     page(declaration, reasons)(request, testMessages)
 
   val defaultView: Document = view()
 
   "Rejected notification errors page" should {
-
     "have proper messages for labels" in {
       messages must haveTranslationFor("rejected.notification.ducr")
       messages must haveTranslationFor("rejected.notification.title")
@@ -48,17 +48,14 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
     }
 
     "have correct title" in {
-
       defaultView.getElementById("title").text() mustBe messages("rejected.notification.title")
     }
 
     "have correct section header" in {
-
       defaultView.getElementById("section-header").text() mustBe messages("rejected.notification.ducr", "DUCR")
     }
 
     "have correct back link" in {
-
       val backLink = defaultView.getElementById("back-link")
 
       backLink.text() mustBe messages("site.back")
@@ -67,7 +64,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
 
     "must contain notifications" when {
       val reason =
-        RejectionReason("rejectionCode", Some(Pointer("declaration.consignmentReferences.lrn")), None)
+        NotificationError("rejectionCode", Some(Pointer("declaration.consignmentReferences.lrn")))
 
       val testMessages = stubMessages()
 
@@ -84,7 +81,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
 
       "pointer " in {
         val reason =
-          RejectionReason("rejectionCode", Some(Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id")), None)
+          NotificationError("rejectionCode", Some(Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id")))
 
         val doc: Document = view(Seq(reason), testMessages)
 
@@ -114,23 +111,22 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
 
     "contain change error link" when {
       "link for the error exists" in {
-
         val itemId = "12sd31"
         val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"), withItem(anItem(withSequenceId(1), withItemId(itemId))))
 
-        val expectedUrl = s"/customs-declare-exports/declaration/items/$itemId/add-document"
+        val expectedUrl = decRoutes.AdditionalDocumentsController.displayPage(Normal, itemId)
 
         val pointerPattern = "declaration.items.#1.additionalDocument.#1.documentStatus"
         val urlPattern = "declaration.items.$.additionalDocument.$.documentStatus"
 
-        val reason = RejectionReason("CDS40045", Some(Pointer(pointerPattern)), Some(expectedUrl))
+        val noteError = NotificationError("CDS40045", Some(Pointer(pointerPattern)))
 
-        val view: Document = page(declaration, Seq(reason))(request, messages)
+        val view: Document = page(declaration, Seq(noteError))(request, messages)
 
         val changeLink = view.getElementsByClass("govuk-link").get(1)
 
         changeLink must haveHref(
-          controllers.routes.SubmissionsController.amendErrors(declaration.id, reason.url.get, urlPattern, "Missing document.").url
+          controllers.routes.SubmissionsController.amendErrors(declaration.id, expectedUrl.url, urlPattern, "Missing document.").url
         )
       }
     }
