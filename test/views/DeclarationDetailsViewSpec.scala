@@ -248,16 +248,20 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       lrn.getElementsByClass("govuk-summary-list__value").text mustBe submission.lrn
     }
 
-    "always contain the view-declaration link, regardless of the notification's status" when {
-      def verifyDeclarationLink(notification: Notification): Assertion = {
-        val view = page(submission, List(notification))(verifiedEmailRequest(), messages)
+    SubmissionStatus.values.filter(_ != REJECTED) foreach { status =>
+      s"contain the view-declaration link when notification's status is ${status}" in {
+        val view = page(submission, List(dmsdocNotification.copy(status = status)))(verifiedEmailRequest(), messages)
 
         val declarationLink = view.getElementById("view-declaration")
         declarationLink must containMessage("submissions.viewDeclaration")
         declarationLink must haveHref(routes.SubmissionsController.viewDeclaration(submission.uuid))
       }
+    }
 
-      SubmissionStatus.values foreach (status => verifyDeclarationLink(dmsdocNotification.copy(status = status)))
+    s"not contain the view-declaration link when notification's status is REJECTED" in {
+      val view = page(submission, List(dmsdocNotification.copy(status = REJECTED)))(verifiedEmailRequest(), messages)
+
+      Option(view.getElementById("view-declaration")) mustBe None
     }
 
     "display the Declaration Timeline when there is at least one notification for the declaration" in {

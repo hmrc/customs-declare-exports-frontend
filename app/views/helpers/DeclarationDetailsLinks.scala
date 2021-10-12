@@ -28,4 +28,6 @@ object DeclarationDetailsLinks {
       val hasEadAcceptableStatus = notifications.headOption.map(_.status).exists(eadAcceptableStatuses.contains)
       if (hasEadAcceptableStatus) submission.mrn else None
     } else None
+
+  def displayViewDeclarationLink(notifications: Seq[Notification]): Boolean = !notifications.exists(_.isStatusDMSRej)
 }
