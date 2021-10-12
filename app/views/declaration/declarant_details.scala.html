@@ -67,6 +67,7 @@
 
         @govukRadios(Radios(
             name = isEoriKey,
+            classes = "govuk-radios--inline",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.declarant.titleQuestion", request.eori)),

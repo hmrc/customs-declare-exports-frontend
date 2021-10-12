@@ -82,7 +82,10 @@
             )),
             html = HtmlFormat.fill(List(
                 declarationHolder.bodyForDeclarationHolderRequiredPage,
-                yesNoRadios(form),
+                yesNoRadios(
+                    form,
+                    inline = true
+                ),
                 maybeInset,
                 tariffExpander(DeclarationHolderRequired, request.declarationType)(messages, appConfig),
                 saveButtons()

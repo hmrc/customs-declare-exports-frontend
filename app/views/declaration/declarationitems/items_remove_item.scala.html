@@ -60,7 +60,7 @@
         )),
         html = HtmlFormat.fill(immutable.Seq(
           itemSection(mode, item, request.declarationType, actionsEnabled = false),
-          yesNoRadios(form),
+          yesNoRadios(form, inline = true),
           saveButtons()
         ))
       ))

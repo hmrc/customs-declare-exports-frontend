@@ -55,7 +55,8 @@
                       content = Text(messages("declaration.additionalInformationRequired.title")),
                       classes = gdsPageLegend
                   ))
-              ))
+              )),
+              inline = true
         )
 
         @tariffExpander(AdditionalInformationRequired, request.declarationType)(messages, appConfig)
