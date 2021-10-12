@@ -19,7 +19,7 @@
 @import models.declaration.submissions.Submission
 @import models.requests.VerifiedEmailRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.DeclarationDetailsLinks.mrnIfEadStatus
+@import views.helpers.DeclarationDetailsLinks._
 @import views.helpers.{BackButton, TimelineEvents, Title, ViewDates}
 @import views.html.components.gds._
 
@@ -63,6 +63,7 @@
 }
 
 @viewDeclarationLink = {
+  @if(displayViewDeclarationLink(notifications)){
     <div>
         @link(
             id = Some("view-declaration"),
@@ -70,6 +71,7 @@
             call = routes.SubmissionsController.viewDeclaration(submission.uuid)
         )
     </div>
+  }
 }
 
 @documentsRequiredDetailsContent = {
