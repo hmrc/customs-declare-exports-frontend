@@ -51,8 +51,8 @@ case class ExportsDeclaration(
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
 
-  lazy val lrn: Option[String] = consignmentReferences.map(_.lrn.value)
-  lazy val ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
+  def lrn: Option[String] = consignmentReferences.map(_.lrn.value)
+  def ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
 
   def additionalDocumentsIfAny(itemId: String): Option[AdditionalDocuments] =
     itemBy(itemId).flatMap(_.additionalDocuments)

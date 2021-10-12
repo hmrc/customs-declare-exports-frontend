@@ -14,9 +14,8 @@
  * limitations under the License.
  *@
 
-@import models.responses.FlashKeys
-
 @import config.GoogleFormFeedbackLinkConfig
+@import models.requests.ExportsSessionKeys.{submission_lrn, submission_uuid}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.Title
 @import views.html.components.gds._
@@ -34,16 +33,19 @@
   exitSurvey: exit_survey
 )
 
-@()(implicit request: Request[_], flash: Flash, messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
-@lrnMessage(lrn: String) = {<div class="font-large">@messages("declaration.confirmation.lrn")</div> <div id="lrn-number" class="font-large bold">@lrn</div>}
+@lrnMessage(lrn: String) = {
+    <div class="font-large">@messages("declaration.confirmation.lrn")</div>
+    <div id="lrn-number" class="font-large bold">@lrn</div>
+}
 
 @decLink = @{
-    flash.get(FlashKeys.decId).map { decId =>
+    request.session.data.get(submission_uuid).map { declarationId =>
         link(
             id = Some("decision-link"),
             text = messages("declaration.confirmation.decision.directLink.text"),
-            call = routes.DeclarationDetailsController.displayPage(decId)
+            call = routes.DeclarationDetailsController.displayPage(declarationId)
         )
     }.getOrElse {
         link(
@@ -64,7 +66,7 @@
 
     @govukPanel(Panel(
         title = Text(messages("declaration.confirmation.title")),
-        content = HtmlContent(flash.get(FlashKeys.lrn).map(lrn => lrnMessage(lrn)).getOrElse(HtmlFormat.empty))
+        content = HtmlContent(request.session.data.get(submission_lrn).map(lrn => lrnMessage(lrn)).getOrElse(HtmlFormat.empty))
     ))
 
     @govukInsetText(InsetText(

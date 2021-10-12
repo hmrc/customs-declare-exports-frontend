@@ -17,9 +17,7 @@
 package models.responses
 
 object FlashKeys {
-  val lrn: String = "LRN"
-  val decId: String = "DecId"
-  val decType: String = "DecType"
+
   val expiryDate: String = "ExpiryDate"
   val errorMessage: String = "ErrorMessage"
   val fieldName: String = "FieldName"
