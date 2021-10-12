@@ -30,23 +30,17 @@
 
 @govukLayout(title = Title("declaration.confirmation.holding.title")) {
 
-    <form method="GET" novalidate action="@{ConfirmationController.displaySubmissionConfirmation.url}">
-        @pageTitle(messages("declaration.confirmation.holding.title"))
+    @pageTitle(messages("declaration.confirmation.holding.title"))
 
-        @paragraph(messages("declaration.confirmation.holding.paragraph"))
+    @paragraph(messages("declaration.confirmation.holding.paragraph"), "govuk-body govuk-label--m")
 
-        <div class="section">
-            <button id="continue" class="govuk-button">@messages("site.continue")</button>
-        </div>
-    </form>
+    <div class="ccms-loader"></div>
 }
 
 <script type="text/javascript">
   document.addEventListener('DOMContentLoaded', function() {
-    var button = document.getElementById("continue");
-    button.disabled = true;
     setTimeout(function() {
-        button.disabled = false;
+        window.location.href = "@{ConfirmationController.displaySubmissionConfirmation.url}";
     }, 6000);
   }, false);
 </script>

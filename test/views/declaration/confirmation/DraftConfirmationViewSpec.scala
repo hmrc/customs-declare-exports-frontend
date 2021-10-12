@@ -43,7 +43,7 @@ class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with St
       }
 
       "missing from flash" in {
-        createView().getElementById("draft_confirmation-expiry") mustBe (null)
+        Option(createView().getElementById("draft_confirmation-expiry")) mustBe None
       }
     }
 

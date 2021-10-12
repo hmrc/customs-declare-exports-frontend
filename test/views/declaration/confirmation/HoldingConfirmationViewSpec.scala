@@ -16,6 +16,8 @@
 
 package views.declaration.confirmation
 
+import scala.collection.JavaConverters.asScalaIteratorConverter
+
 import base.Injector
 import controllers.declaration.routes.ConfirmationController
 import views.declaration.spec.UnitViewSpec
@@ -32,24 +34,25 @@ class HoldingConfirmationViewSpec extends UnitViewSpec with Injector {
     onEveryDeclarationJourney() { implicit request =>
       val view = holdingConfirmationPage()(request, messages)
 
-      "wrap all elements by a form" in {
-        val htmlForm = view.getElementsByTag("form").get(0)
-        htmlForm.attr("method") mustBe "GET"
-        htmlForm.attr("action") mustBe ConfirmationController.displaySubmissionConfirmation.url
-      }
-
       "display page title" in {
         view.getElementsByTag("h1").text mustBe messages("declaration.confirmation.holding.title")
       }
 
-      "display the expected paragraph body" in {
-        view.getElementsByClass("govuk-body").get(0).text mustBe messages("declaration.confirmation.holding.paragraph")
+      "display the expected paragraph body (h2)" in {
+        val processing = messages("declaration.confirmation.holding.paragraph")
+        view.getElementsByClass("govuk-label--m").get(0).text mustBe processing
       }
 
-      "display a 'Continue' button" in {
-        val continueButton = view.getElementById("continue")
-        continueButton.text mustBe messages("site.continue")
-        continueButton.attr("class") mustBe "govuk-button"
+      "display the expected Spinner widget" in {
+        view.getElementsByClass("ccms-loader").size mustBe 1
+        view.getElementsByTag("script").iterator.asScala.toList.filter(_.text.contains("window.location.href"))
+      }
+
+      "include the expected redirection script" in {
+        val allScripts = view.getElementsByTag("script").iterator.asScala.toList
+        val scripts = allScripts.filter(_.toString.contains("window.location.href"))
+        scripts.size mustBe 1
+        assert(scripts(0).toString.contains(ConfirmationController.displaySubmissionConfirmation.url))
       }
     }
   }
