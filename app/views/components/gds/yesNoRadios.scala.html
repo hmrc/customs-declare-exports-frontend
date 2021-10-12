@@ -20,13 +20,18 @@
 
 @this(govukRadios: GovukRadios)
 
-@(form: Form[_], heading: Option[Fieldset] = None, hint: Option[Hint] = None)(implicit messages: Messages)
+@(form: Form[_], heading: Option[Fieldset] = None, hint: Option[Hint] = None, inline: Boolean = false)(implicit messages: Messages)
+
+@classes = @{
+    if(inline) "govuk-radios--inline" else ""
+}
 
 
 @govukRadios(Radios(
     name = "yesNo",
     fieldset = heading,
     hint = hint,
+    classes = classes,
     items = Seq(
         RadioItem(
             id = Some("code_yes"),

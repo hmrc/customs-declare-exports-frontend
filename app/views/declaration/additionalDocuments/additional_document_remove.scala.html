@@ -107,7 +107,7 @@ formHelper: FormWithCSRF
             )),
             html = HtmlFormat.fill(immutable.Seq(
                 holderTable,
-                yesNoRadios(form),
+                yesNoRadios(form, inline = true),
                 saveButtons()
             ))
         ))

@@ -39,6 +39,10 @@
     } else None
 }
 
-@yesNoRadios(form, Some(Fieldset(
-    legend = legend
-)))
+@yesNoRadios(
+    form,
+    Some(Fieldset(
+        legend = legend
+    )),
+    inline = true
+)
