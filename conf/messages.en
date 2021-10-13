@@ -526,8 +526,7 @@ declaration.exs.title = Do you need to give us safety and security information?
 declaration.exs.hint = This is also known as an exit summary declaration (EXS).
 declaration.exs.error = Select yes if you need to give us safety and security information
 
-declaration.declarant.title = Is this your EORI number?
-declaration.declarant.titleQuestion = Is your EORI number {0}?
+declaration.declarant.title = Is your EORI number {0}?
 declaration.declarant.hint = By selecting yes you are confirming that this EORI number belongs to the declarant of this export declaration.
 declaration.declarant.error = Select yes if this is your EORI number
 declaration.declarant.change.eori = No, I need to change my EORI
