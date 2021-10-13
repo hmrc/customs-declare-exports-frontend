@@ -57,7 +57,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       "display page title" in {
 
         createView(form())
-          .getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.declarant.titleQuestion", request.eori)
+          .getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.declarant.title", request.eori)
       }
 
       "display radio button with Yes option" in {
