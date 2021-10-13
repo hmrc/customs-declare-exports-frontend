@@ -45,6 +45,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
   "Declarant Details View on empty page" should {
 
     "have correct message keys" in {
+      messages must haveTranslationFor("declaration.declarant.title")
       messages must haveTranslationFor("declaration.eori.error.format")
       messages must haveTranslationFor("declaration.eori.empty")
     }
