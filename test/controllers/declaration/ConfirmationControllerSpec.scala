@@ -21,43 +21,59 @@ import scala.concurrent.Future
 import base.{ControllerWithoutFormSpec, Injector}
 import play.api.mvc.{AnyContentAsEmpty, Flash, Request, Result}
 import play.api.test.Helpers._
-import views.html.declaration.{draft_confirmation_page, submission_confirmation_page}
+import views.html.declaration.confirmation._
 
 class ConfirmationControllerSpec extends ControllerWithoutFormSpec with Injector {
 
   trait SetUp {
-    val submissionConfirmationPage = instanceOf[submission_confirmation_page]
     val draftConfirmationPage = instanceOf[draft_confirmation_page]
+    val holdingConfirmationPage = instanceOf[holding_confirmation_page]
+    val submissionConfirmationPage = instanceOf[submission_confirmation_page]
 
-    val controller =
-      new ConfirmationController(mockAuthAction, stubMessagesControllerComponents(), submissionConfirmationPage, draftConfirmationPage)
+    val controller = new ConfirmationController(
+      mockAuthAction,
+      stubMessagesControllerComponents(),
+      draftConfirmationPage,
+      holdingConfirmationPage,
+      submissionConfirmationPage
+    )
 
     authorizedUser()
   }
 
-  "GET submission confirmation" should {
+  "GET draft confirmation" should {
     "return 200 status code" in new SetUp {
-
       val request: Request[AnyContentAsEmpty.type] = getRequest()
-      val result: Future[Result] = controller.displaySubmissionConfirmation()(request)
+      val result: Future[Result] = controller.displayDraftConfirmation(request)
 
-      status(result) must be(OK)
-      viewOf(result) must be(
-        submissionConfirmationPage()(getAuthenticatedRequest(), Flash(), stubMessagesControllerComponents().messagesApi.preferred(request))
+      status(result) mustBe OK
+      viewOf(result) mustBe draftConfirmationPage()(
+        getAuthenticatedRequest(),
+        Flash(),
+        stubMessagesControllerComponents().messagesApi.preferred(request)
       )
     }
   }
 
-  "GET draft confirmation" should {
+  "GET holding confirmation" should {
     "return 200 status code" in new SetUp {
-
       val request: Request[AnyContentAsEmpty.type] = getRequest()
-      val result: Future[Result] = controller.displayDraftConfirmation()(request)
+      val result: Future[Result] = controller.displayHoldingConfirmation(request)
 
-      status(result) must be(OK)
-      viewOf(result) must be(
-        draftConfirmationPage()(getAuthenticatedRequest(), Flash(), stubMessagesControllerComponents().messagesApi.preferred(request))
-      )
+      status(result) mustBe OK
+      val view = viewOf(result)
+      val expectedView = holdingConfirmationPage()(getAuthenticatedRequest(), stubMessagesControllerComponents().messagesApi.preferred(request))
+      view mustBe expectedView
+    }
+  }
+
+  "GET submission confirmation" should {
+    "return 200 status code" in new SetUp {
+      val request: Request[AnyContentAsEmpty.type] = getRequest()
+      val result: Future[Result] = controller.displaySubmissionConfirmation(request)
+
+      status(result) mustBe OK
+      viewOf(result) mustBe submissionConfirmationPage()(getAuthenticatedRequest(), stubMessagesControllerComponents().messagesApi.preferred(request))
     }
   }
 }

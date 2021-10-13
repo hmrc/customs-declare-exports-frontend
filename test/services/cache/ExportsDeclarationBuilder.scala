@@ -54,6 +54,8 @@ trait ExportsDeclarationBuilder {
     sourceId = None
   )
 
+  private def uuid: String = UUID.randomUUID.toString
+
   def aDeclaration(modifiers: ExportsDeclarationModifier*): ExportsDeclaration =
     modifiers.foldLeft(modelWithDefaults)((current, modifier) => modifier(current))
 
@@ -150,8 +152,6 @@ trait ExportsDeclarationBuilder {
 
   def withItems(count: Int): ExportsDeclarationModifier =
     cache => cache.copy(items = cache.items ++ (1 to count).map(index => ExportItem(id = uuid, sequenceId = index)).toSet)
-
-  private def uuid: String = UUID.randomUUID().toString
 
   def withEntryIntoDeclarantsRecords(isEidr: String = YesNoAnswers.yes): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(isEntryIntoDeclarantsRecords = Some(YesNoAnswer(isEidr))))

@@ -16,10 +16,13 @@
 
 package controllers
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-
+import controllers.declaration.routes.SummaryController
+import controllers.routes.SavedDeclarationsController
 import javax.inject.Inject
 import models.requests.ExportsSessionKeys
 import models.{Mode, Page}
@@ -27,8 +30,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.saved_declarations
-
-import scala.concurrent.{ExecutionContext, Future}
 
 class SavedDeclarationsController @Inject()(
   authenticate: AuthAction,
@@ -50,10 +51,10 @@ class SavedDeclarationsController @Inject()(
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(_) =>
         Future.successful(
-          Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Draft))
+          Redirect(SummaryController.displayPage(Mode.Draft))
             .addingToSession(ExportsSessionKeys.declarationId -> id)
         )
-      case None => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+      case None => Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
     }
   }
 }

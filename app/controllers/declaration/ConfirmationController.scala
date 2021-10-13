@@ -20,22 +20,27 @@ import controllers.actions.AuthAction
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.{draft_confirmation_page, submission_confirmation_page}
+import views.html.declaration.confirmation._
 
 import javax.inject.Inject
 
 class ConfirmationController @Inject()(
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
-  submissionConfirmationPage: submission_confirmation_page,
-  draftConfirmationPage: draft_confirmation_page
+  draftConfirmationPage: draft_confirmation_page,
+  holdingConfirmationPage: holding_confirmation_page,
+  submissionConfirmationPage: submission_confirmation_page
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def displaySubmissionConfirmation(): Action[AnyContent] = authenticate { implicit request =>
-    Ok(submissionConfirmationPage())
+  val displayDraftConfirmation: Action[AnyContent] = authenticate { implicit request =>
+    Ok(draftConfirmationPage())
   }
 
-  def displayDraftConfirmation(): Action[AnyContent] = authenticate { implicit request =>
-    Ok(draftConfirmationPage())
+  val displayHoldingConfirmation: Action[AnyContent] = authenticate { implicit request =>
+    Ok(holdingConfirmationPage())
+  }
+
+  val displaySubmissionConfirmation: Action[AnyContent] = authenticate { implicit request =>
+    Ok(submissionConfirmationPage())
   }
 }

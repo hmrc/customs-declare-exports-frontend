@@ -1831,6 +1831,9 @@ declaration.seal.error.duplicate = Seal number already added
 declaration.transport.sealId.empty.error = Enter a seal ID
 declaration.transport.sealId.error.invalid = Seal ID must contain only letters and numbers
 
+declaration.confirmation.holding.title = Submit your declaration
+declaration.confirmation.holding.paragraph = We are checking your declaration, please wait
+
 declaration.confirmation.title = Declaration is being checked
 declaration.confirmation.lrn = Your LRN is
 declaration.confirmation.decision.paragraph1 = Go to {0} to find out the status of this declaration and see if you need to take any action.

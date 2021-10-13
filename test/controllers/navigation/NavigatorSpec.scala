@@ -78,7 +78,7 @@ class NavigatorSpec extends UnitWithMocksSpec with MockExportCacheService with B
       val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(SaveAndReturn))), hc)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.declaration.routes.ConfirmationController.displayDraftConfirmation().url)
+      redirectLocation(result) mustBe Some(controllers.declaration.routes.ConfirmationController.displayDraftConfirmation.url)
       flash(result).get(FlashKeys.expiryDate) mustBe Some(expiryDate.atStartOfDay(ZoneOffset.UTC).toInstant.toEpochMilli.toString)
       session(result).get(ExportsSessionKeys.declarationId) mustBe None
 
