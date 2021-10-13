@@ -69,7 +69,6 @@ class SubmissionServiceSpec
 
     "submit to the back end" when {
       "valid declaration" in {
-        // Given
         val declaration =
           aDeclaration(
             withId("id"),
