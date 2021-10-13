@@ -28,8 +28,16 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title("declaration.confirmation.holding.title")) {
+@submissionConfirmationUrl = @{ ConfirmationController.displaySubmissionConfirmation.url }
 
+@headContentOnJavaScriptDisabled = {
+    <meta http-equiv="refresh" content="5; url=@submissionConfirmationUrl" />
+}
+
+@govukLayout(
+    title = Title("declaration.confirmation.holding.title"),
+    headContentOnJavaScriptDisabled = Some(headContentOnJavaScriptDisabled)
+) {
     @pageTitle(messages("declaration.confirmation.holding.title"))
 
     @paragraph(messages("declaration.confirmation.holding.paragraph"), "govuk-body govuk-label--m")
@@ -40,7 +48,7 @@
 <script type="text/javascript">
   document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
-        window.location.href = "@{ConfirmationController.displaySubmissionConfirmation.url}";
-    }, 6000);
+        window.location.href = "@submissionConfirmationUrl";
+    }, 5000);
   }, false);
 </script>
