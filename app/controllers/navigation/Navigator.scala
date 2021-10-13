@@ -65,7 +65,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
     val updatedDateTime = req.cacheModel.updatedDateTime
     val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)
     Results
-      .Redirect(routes.ConfirmationController.displayDraftConfirmation)
+      .Redirect(routes.ConfirmationController.displayDraftConfirmation())
       .flashing(FlashKeys.expiryDate -> expiry.toEpochMilli.toString)
       .removingFromSession(ExportsSessionKeys.declarationId)
   }

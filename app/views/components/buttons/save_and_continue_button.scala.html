@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.responses
+@import controllers.helpers.SaveAndContinue
 
-object FlashKeys {
-  val lrn: String = "LRN"
-  val decId: String = "DecId"
-  val decType: String = "DecType"
-  val expiryDate: String = "ExpiryDate"
-  val errorMessage: String = "ErrorMessage"
-  val fieldName: String = "FieldName"
-}
+@(messageKey: String = "site.save_and_continue")(implicit messages: Messages)
+
+<button id="submit" class="button" name="@SaveAndContinue.toString">@messages(messageKey)</button>

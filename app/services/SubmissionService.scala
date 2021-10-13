@@ -27,7 +27,6 @@ import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
-import models.declaration.submissions.Submission
 import play.api.Logging
 import services.audit.{AuditService, AuditTypes, EventData}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,7 +38,7 @@ class SubmissionService @Inject()(exportsConnector: CustomsDeclareExportsConnect
   def submit(eori: String, exportsDeclaration: ExportsDeclaration, legalDeclaration: LegalDeclaration)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[Option[Submission]] = {
+  ): Future[Option[String]] = {
     val timerContext = exportsMetrics.startTimer(submissionMetric)
     auditService.auditAllPagesUserInput(AuditTypes.SubmissionPayload, exportsDeclaration)
 
@@ -55,7 +54,6 @@ class SubmissionService @Inject()(exportsConnector: CustomsDeclareExportsConnect
           )
           exportsMetrics.incrementCounter(submissionMetric)
           timerContext.stop()
-
         case Failure(exception) =>
           logProgress(exportsDeclaration, "Submission Failed")
           logger.error(s"Error response from backend $exception")
@@ -64,7 +62,7 @@ class SubmissionService @Inject()(exportsConnector: CustomsDeclareExportsConnect
             auditData(eori, exportsDeclaration.`type`, exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Failure.toString)
           )
       }
-      .map(Some(_))
+      .map(_ => exportsDeclaration.lrn)
   }
 
   private def logProgress(declaration: ExportsDeclaration, message: String): Unit =

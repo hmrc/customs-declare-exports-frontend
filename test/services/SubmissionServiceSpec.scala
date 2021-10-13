@@ -16,16 +16,13 @@
 
 package services
 
-import scala.concurrent.ExecutionContext.global
-import scala.concurrent.Future
-
 import base.{Injector, MockConnectors, MockExportCacheService, UnitWithMocksSpec}
 import com.kenshoo.play.metrics.Metrics
 import connectors.CustomsDeclareExportsConnector
 import forms.declaration.LegalDeclaration
 import metrics.{ExportsMetrics, MetricIdentifiers}
-import models.declaration.submissions.{Action, Submission}
 import models.{DeclarationStatus, DeclarationType}
+import models.declaration.submissions.{Action, Submission}
 import org.mockito.ArgumentMatchers.{any, eq => equalTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
@@ -34,8 +31,11 @@ import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 
+import scala.concurrent.ExecutionContext.global
+import scala.concurrent.Future
+
 class SubmissionServiceSpec
-    extends UnitWithMocksSpec with Injector with MockExportCacheService with MockConnectors with OptionValues with ScalaFutures
+    extends UnitWithMocksSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector
     with SubmissionBuilder {
 
   private val auditService = mock[AuditService]
@@ -69,22 +69,19 @@ class SubmissionServiceSpec
 
     "submit to the back end" when {
       "valid declaration" in {
-        val eori = "eori"
-        val lrn = "123LRN"
+        // Given
         val declaration =
           aDeclaration(
             withId("id"),
             withStatus(DeclarationStatus.DRAFT),
             withType(DeclarationType.STANDARD),
-            withConsignmentReferences(ducr = "ducr", lrn = lrn)
+            withConsignmentReferences(ducr = "ducr", lrn = "123LRN")
           )
-        val expectedSubmission = Submission(uuid = "id", eori = eori, lrn = lrn, actions = Seq.empty[Action])
-        when(connector.submitDeclaration(any[String])(any(), any())).thenReturn(Future.successful(expectedSubmission))
+        val submission = Submission(uuid = "id", eori = "eori", lrn = "lrn", actions = Seq.empty[Action])
+        when(connector.submitDeclaration(any[String])(any(), any())).thenReturn(Future.successful(submission))
 
         // When
-        val actualSubmission = submissionService.submit("eori", declaration, legal)(hc, global).futureValue.value
-        actualSubmission.eori mustBe eori
-        actualSubmission.lrn mustBe lrn
+        submissionService.submit("eori", declaration, legal)(hc, global).futureValue.value mustBe "123LRN"
 
         // Then
         verify(connector).submitDeclaration(equalTo("id"))(equalTo(hc), any())

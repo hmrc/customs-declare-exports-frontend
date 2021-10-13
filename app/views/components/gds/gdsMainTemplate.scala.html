@@ -48,8 +48,7 @@
   title: Title,
   backButton: Option[BackButton] = None,
   useCustomContentWidth: Boolean = false,
-  navigationBanner: Html = HtmlFormat.empty,
-  headContentOnJavaScriptDisabled: Option[Html] = None
+  navigationBanner: Html = HtmlFormat.empty
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @userIsSignedIn = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
@@ -73,8 +72,6 @@
     <meta name="format-detection" content="telephone=no" />
     <!--[if lte IE 8]><link href='@Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
     <!--[if gt IE 8]><!--><link href='@Assets.versioned("stylesheets/customsdecexfrontend-app.css")' media="all" rel="stylesheet" type="text/css" /><!--<![endif]-->
-
-    @headContentOnJavaScriptDisabled.map { headContent => <noscript>@headContent</noscript> }
 }
 
 @scripts = {

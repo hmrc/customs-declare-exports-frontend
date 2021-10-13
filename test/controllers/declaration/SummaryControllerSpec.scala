@@ -16,15 +16,12 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import base.ControllerWithoutFormSpec
 import config.AppConfig
-import controllers.declaration.routes.ConfirmationController
 import forms.declaration.LegalDeclaration
 import mock.ErrorHandlerMocks
-import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys
+import models.responses.FlashKeys
 import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -34,6 +31,8 @@ import play.twirl.api.HtmlFormat
 import services.SubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.declaration.summary._
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
 
@@ -73,7 +72,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     super.afterEach()
   }
 
-  "SummaryController.displayPage" should {
+  "Display" should {
 
     "return 200 (OK)" when {
 
@@ -101,27 +100,39 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     }
   }
 
-  "SummaryController.submitDeclaration" should {
+  "Submit" should {
+    "return 500 (INTERNAL_SERVER_ERROR) during submission" when {
+      "lrn is not returned from submission service" in {
+        withNewCaching(aDeclaration())
+        when(mockSubmissionService.submit(any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
+
+        val correctForm = Seq(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
+        val result = controller.submitDeclaration()(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+        verify(normalSummaryPage, times(0)).apply(any())(any(), any(), any())
+        verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+      }
+    }
 
     "Redirect to confirmation" when {
       "valid submission" in {
         val declaration = aDeclaration()
         withNewCaching(declaration)
+        when(
+          mockSubmissionService
+            .submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
+        ).thenReturn(Future.successful(Some("123LRN")))
 
-        val expectedSubmission: Submission = Submission(eori = "GB123456", lrn = "123LRN", actions = List.empty)
-        when(mockSubmissionService.submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext]))
-          .thenReturn(Future.successful(Some(expectedSubmission)))
-
-        val formData = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
-        val result = controller.submitDeclaration(postRequestAsFormUrlEncoded(formData: _*))
+        val correctForm = Seq(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
+        val result = controller.submitDeclaration()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(ConfirmationController.displayHoldingConfirmation.url))
+        session(result).get(ExportsSessionKeys.declarationId) must be(None)
+        redirectLocation(result) must be(Some(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation().url))
 
-        val actualSession = session(result)
-        actualSession.get(ExportsSessionKeys.declarationId) must be(None)
-        actualSession.get(ExportsSessionKeys.submission_lrn) must be(Some(expectedSubmission.lrn))
-        actualSession.get(ExportsSessionKeys.submission_uuid) must be(Some(expectedSubmission.uuid))
+        flash(result).get(FlashKeys.lrn) must be(Some("123LRN"))
+        flash(result).get(FlashKeys.decType) must be(Some(declaration.`type`.toString))
 
         verify(mockSubmissionService).submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
       }
@@ -130,24 +141,11 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     "Return 400 (Bad Request) during submission" when {
       "missing legal declaration data" in {
         withNewCaching(aDeclaration())
-        val partialForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"))
-        val result = controller.submitDeclaration(postRequestAsFormUrlEncoded(partialForm: _*))
+        val partialForm = Seq(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"))
+        val result = controller.submitDeclaration()(postRequestAsFormUrlEncoded(partialForm: _*))
 
         status(result) must be(BAD_REQUEST)
-      }
-    }
 
-    "return 500 (INTERNAL_SERVER_ERROR) during submission" when {
-      "lrn is not returned from submission service" in {
-        withNewCaching(aDeclaration())
-        when(mockSubmissionService.submit(any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
-
-        val correctForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
-        val result = controller.submitDeclaration(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) mustBe INTERNAL_SERVER_ERROR
-        verify(normalSummaryPage, times(0)).apply(any())(any(), any(), any())
-        verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
       }
     }
   }

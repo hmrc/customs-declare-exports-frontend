@@ -496,14 +496,12 @@ GET         /amend-summary                       controllers.declaration.Summary
 
 GET         /saved-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.Draft)
 
-POST        /summary                             controllers.declaration.SummaryController.submitDeclaration
+POST        /summary                             controllers.declaration.SummaryController.submitDeclaration()
 
 # Confirmation
 
-GET         /holding                             controllers.declaration.ConfirmationController.displayHoldingConfirmation
+GET         /confirmation                        controllers.declaration.ConfirmationController.displaySubmissionConfirmation()
 
-GET         /confirmation                        controllers.declaration.ConfirmationController.displaySubmissionConfirmation
-
-GET         /draft-saved                         controllers.declaration.ConfirmationController.displayDraftConfirmation
+GET         /draft-saved                         controllers.declaration.ConfirmationController.displayDraftConfirmation()
 
 GET         /ead/:mrn                            controllers.pdf.EADController.generatePdf(mrn)

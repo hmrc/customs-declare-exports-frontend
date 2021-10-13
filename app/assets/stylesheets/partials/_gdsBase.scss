@@ -105,39 +105,3 @@ CSS to improve behaviour of table cells with large non-breaking content
   font-weight: bold;
   text-decoration: none;
 }
-
-/*
-====================================
- Spinner for submitted declarations
-====================================
-*/
-.ccms-loader {
-  border: 12px solid #DEE0E2;
-  border-radius: 50%;
-  border-top-color: #005EA5;
-  margin-bottom: 25px !important;
-  width: 40px;
-  height: 40px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-}
-
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}

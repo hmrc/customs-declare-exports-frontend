@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration.confirmation
-
-import java.time.{LocalDateTime, ZoneOffset}
+package views.declaration
 
 import base.Injector
 import models.responses.FlashKeys
@@ -25,8 +23,10 @@ import play.twirl.api.Html
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.declaration.confirmation.draft_confirmation_page
+import views.html.declaration.draft_confirmation_page
 import views.tags.ViewTest
+
+import java.time.{LocalDateTime, ZoneOffset}
 
 @ViewTest
 class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
@@ -43,7 +43,7 @@ class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with St
       }
 
       "missing from flash" in {
-        Option(createView().getElementById("draft_confirmation-expiry")) mustBe None
+        createView().getElementById("draft_confirmation-expiry") mustBe (null)
       }
     }
 

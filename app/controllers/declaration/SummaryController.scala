@@ -20,11 +20,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
-import controllers.declaration.routes.ConfirmationController
 import forms.declaration.LegalDeclaration
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.requests.ExportsSessionKeys.{declarationId, submission_lrn, submission_uuid}
+import models.requests.ExportsSessionKeys
+import models.responses.FlashKeys
 import models.{ExportsDeclaration, Mode}
 import play.api.Logging
 import play.api.data.Form
@@ -53,7 +53,7 @@ class SummaryController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
       mode match {
-        case Mode.Normal => Ok(normalSummaryPage(LegalDeclaration.form))
+        case Mode.Normal => Ok(normalSummaryPage(LegalDeclaration.form()))
         case Mode.Amend  => Ok(amendSummaryPage())
         case Mode.Draft  => Ok(draftSummaryPage())
         case _           => handleError("Invalid mode on summary page")
@@ -63,29 +63,28 @@ class SummaryController @Inject()(
     }
   }
 
-  val submitDeclaration: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    LegalDeclaration.form.bindFromRequest
+  private def containsMandatoryData(data: ExportsDeclaration, mode: Mode): Boolean =
+    mode.equals(Mode.Draft) || data.consignmentReferences.exists(references => references.lrn.nonEmpty)
+
+  def submitDeclaration(): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+    LegalDeclaration
+      .form()
+      .bindFromRequest()
       .fold(
         (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(normalSummaryPage(formWithErrors))),
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
-            case Some(submission) =>
-              Redirect(ConfirmationController.displayHoldingConfirmation)
-                .withSession(
-                  request.session
-                    - declarationId
-                    + (submission_uuid -> submission.uuid)
-                    + (submission_lrn -> submission.lrn) // Temporary. To remove with CEDS-3464
+            case Some(lrn) =>
+              Redirect(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation())
+                .flashing(
+                  Flash(Map(FlashKeys.lrn -> lrn, FlashKeys.decId -> request.cacheModel.id, FlashKeys.decType -> request.declarationType.toString()))
                 )
-
+                .removingFromSession(ExportsSessionKeys.declarationId)
             case _ => handleError(s"Error from Customs Declarations API")
           }
         }
       )
   }
-
-  private def containsMandatoryData(declaration: ExportsDeclaration, mode: Mode): Boolean =
-    mode.equals(Mode.Draft) || declaration.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
     logger.error(logMessage)
