@@ -55,6 +55,7 @@
             field = form("countryCode"),
             label = messages("declaration.destinationCountry.title"),
             labelClass = Some(gdsPageLabel),
+            emptySelectValue = messages("declaration.destinationCountry.empty"),
             items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
             isPageHeading = true
         )
