@@ -71,6 +71,7 @@
             label = messages("declaration.declarationHolder.authorisationCode"),
             labelClass = Some("govuk-label--m"),
             hintParagraphs = declHolderHelper.hintForAuthorisationCode,
+            emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
             items = holderOfAuthorisationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
         )
 

@@ -22,7 +22,7 @@
   labelClass: Option[String] = None,
   bodyHtml: Option[Html] = None,
   hintParagraphs: List[String] = List.empty,
-  emptySelectValue: Option[String] = None,
+  emptySelectValue: String,
   items: List[AutoCompleteItem],
   args: List[(Symbol, Any)] = List.empty
 )(implicit messages: Messages)

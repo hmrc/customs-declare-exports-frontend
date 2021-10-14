@@ -48,6 +48,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint.1")
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint.2")
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint.3")
+        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.label")
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.error")
       }
 

@@ -55,6 +55,7 @@
             label = messages(s"declaration.${page.id}.question"),
             labelClass = Some(Styles.gdsPageLabel),
             section = Some("declaration.section.3"),
+            emptySelectValue = messages("declaration.routingCountry.empty"),
             items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
             isPageHeading = true
         )
