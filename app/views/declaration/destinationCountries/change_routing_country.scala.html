@@ -18,9 +18,10 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.countries.Countries._
 @import forms.declaration.countries.Country
+@import connectors.CodeListConnector
 @import forms.declaration.RoutingCountryQuestionYesNo.ChangeCountryPage
 @import models.requests.JourneyRequest
-@import services.Countries
+@import services.Countries._
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles
@@ -39,7 +40,7 @@
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
-)
+)(implicit codeListConnector: CodeListConnector)
 
 @(mode: Mode, form: Form[Country], page: CountryPage, countryToChange: String)(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -56,7 +57,7 @@
             labelClass = Some(Styles.gdsPageLabel),
             section = Some("declaration.section.3"),
             emptySelectValue = messages("declaration.routingCountry.empty"),
-            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            items = AutoCompleteItem.fromCountry(getListOfAllCountries(), _.countryCode),
             isPageHeading = true
         )
 

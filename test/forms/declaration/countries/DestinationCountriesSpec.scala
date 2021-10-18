@@ -17,18 +17,42 @@
 package forms.declaration.countries
 
 import base.JourneyTypeTestRunner
+import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.countries.Countries._
 import models.DeclarationType._
 import models.viewmodels.TariffContentKey
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.FormError
+import play.api.i18n.Lang
+import play.api.test.Helpers.stubMessagesApi
+import models.codes.{Country => ModelCountry}
 
-class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
+import java.util.Locale
+import scala.collection.immutable.ListMap
+
+class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with MockitoSugar with BeforeAndAfterEach {
+
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+  implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any()))
+      .thenReturn(ListMap("GB" -> ModelCountry("United Kingdom", "GB"), "PL" -> ModelCountry("Poland", "PL")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
 
   "Destination Countries" should {
-
     "contains object to represent every page and contain correct Id" in {
-
       OriginationCountryPage.id mustBe "originationCountry"
       DestinationCountryPage.id mustBe "destinationCountry"
       FirstRoutingCountryPage.id mustBe "firstRoutingCountry"
@@ -36,49 +60,41 @@ class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeT
     }
   }
 
-  onEveryDeclarationJourney() { request =>
+  onEveryDeclarationJourney() { implicit request =>
     "Destination Countries" should {
-
       s"validate form with incorrect value for ${request.declarationType}" in {
-
-        val result = Countries.form(OriginationCountryPage)(request).fillAndValidate(Country(Some("incorrect")))
+        val result = Countries.form(OriginationCountryPage).fillAndValidate(Country(Some("incorrect")))
 
         result.errors mustBe Seq(FormError("countryCode", "declaration.originationCountry.error"))
       }
 
       s"validate form with invalid selection of GB for ${request.declarationType}" in {
-
-        val result = Countries.form(DestinationCountryPage)(request).fillAndValidate(Country(Some("GB")))
+        val result = Countries.form(DestinationCountryPage).fillAndValidate(Country(Some("GB")))
 
         result.errors mustBe Seq(FormError("countryCode", "declaration.destinationCountry.error.uk"))
       }
 
       s"check if the country is duplicated for ${request.declarationType}" in {
-
         val cachedCountries = Seq(Country(Some("PL")))
-        val result = Countries.form(NextRoutingCountryPage, cachedCountries)(request).fillAndValidate(Country(Some("PL")))
+        val result = Countries.form(NextRoutingCountryPage, cachedCountries).fillAndValidate(Country(Some("PL")))
 
         result.errors mustBe Seq(FormError("countryCode", "declaration.routingCountries.duplication"))
       }
 
       s"validate if country limit is reached for ${request.declarationType}" in {
-
         val cachedCountries = Seq.fill(99)(Country(Some("PL")))
-        val result = Countries.form(NextRoutingCountryPage, cachedCountries)(request).fillAndValidate(Country(Some("GB")))
+        val result = Countries.form(NextRoutingCountryPage, cachedCountries).fillAndValidate(Country(Some("GB")))
 
         result.errors mustBe Seq(FormError("countryCode", "declaration.routingCountries.limit"))
       }
     }
   }
 
-  onJourney(OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY) { request =>
+  onJourney(OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY) { implicit request =>
     "Destination Countries" should {
-
       "return error" when {
-
         s"there is no value for ${request.declarationType}" in {
-
-          val result = Countries.form(DestinationCountryPage)(request).fillAndValidate(Country(Some("")))
+          val result = Countries.form(DestinationCountryPage).fillAndValidate(Country(Some("")))
 
           result.errors mustBe Seq(FormError("countryCode", "declaration.destinationCountry.empty"))
         }
@@ -86,14 +102,11 @@ class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeT
     }
   }
 
-  onJourney(CLEARANCE) { request =>
+  onJourney(CLEARANCE) { implicit request =>
     "Destination Countries" should {
-
       "return no errors" when {
-
         s"field is not provided for ${request.declarationType}" in {
-
-          val result = Countries.form(DestinationCountryPage)(request).fillAndValidate(Country(None))
+          val result = Countries.form(DestinationCountryPage).fillAndValidate(Country(None))
 
           result.errors mustBe empty
         }

@@ -17,13 +17,15 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import connectors.CodeListConnector
 import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.IMOShipIDNumber
 import models.DeclarationType._
 import models.Mode
+import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -31,9 +33,12 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.border_transport
 
+import scala.collection.immutable.ListMap
+
 class BorderTransportControllerSpec extends ControllerSpec {
 
   val borderTransportPage = mock[border_transport]
+  val mockCodeListConnector = mock[CodeListConnector]
 
   val controller = new BorderTransportController(
     mockAuthAction,
@@ -42,7 +47,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     borderTransportPage
-  )(ec)
+  )(ec, mockCodeListConnector)
 
   def theResponseForm: Form[BorderTransport] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[BorderTransport]])
@@ -60,6 +65,12 @@ class BorderTransportControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     when(borderTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom, Great Britain, Northern Ireland", "GB")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(borderTransportPage, mockCodeListConnector)
+    super.afterEach()
   }
 
   private def nextPage(decType: DeclarationType) = decType match {

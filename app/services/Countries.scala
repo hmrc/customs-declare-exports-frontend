@@ -16,46 +16,32 @@
 
 package services
 
-import play.api.libs.json._
-import services.model.Country
-import utils.FileReader
+import connectors.CodeListConnector
+import models.codes.Country
+import play.api.i18n.Messages
 
 object Countries {
 
-  private val countries: List[Country] = {
-    val jsonFile = getClass.getResourceAsStream("/code-lists/location-autocomplete-canonical-list.json")
+  def findByCode(code: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Country =
+    codeListConnector.getCountryCodes(messages.lang.toLocale)(code)
 
-    def fromJsonFile: List[Country] =
-      Json.parse(jsonFile) match {
-        case JsArray(cs) =>
-          cs.toList.collect {
-            case JsArray(Seq(c: JsString, cc: JsString)) =>
-              Country(c.value, countryCode(cc.value))
-          }
-        case _ =>
-          throw new IllegalArgumentException("Could not read JSON array of countries from : " + jsonFile)
-      }
+  def findByCodes(codes: Seq[String])(implicit messages: Messages, codeListConnector: CodeListConnector): Seq[Country] = {
+    val codeToCountryMap = codeListConnector
+      .getCountryCodes(messages.lang.toLocale)
 
-    fromJsonFile.sortBy(_.countryName)
+    codes.map(codeToCountryMap(_))
   }
 
-  private def countryCode: String => String = cc => cc.split(":")(1).trim
+  def isValidCountryCode(countryCode: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Boolean =
+    codeListConnector
+      .getCountryCodes(messages.lang.toLocale)
+      .exists(codeCountryPair => codeCountryPair._2.countryCode == countryCode)
 
-  val allCountries: List[Country] = countries
+  def isValidCountryName(countryName: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Boolean =
+    codeListConnector
+      .getCountryCodes(messages.lang.toLocale)
+      .exists(codeCountryPair => codeCountryPair._2.countryName == countryName)
 
-  val countryCodeMap: Map[String, Country] = countries.map(country => (country.countryCode, country)).toMap
-
-  val countryNameMap: Map[String, Country] = countries.map(country => (country.countryName, country)).toMap
-
-  def findByCode(code: String): Country = countryCodeMap(code)
-
-  def findByName(name: String): Country = countryNameMap(name)
-
-  def findByCodes(codes: Seq[String]): Seq[Country] = codes.map(countryCodeMap(_))
-
-  lazy val euCountries: List[String] =
-    FileReader("code-lists/eu-countries.csv")
-
-  lazy val euSpecialFiscalTerritories: List[String] =
-    FileReader("code-lists/eu-special-fiscal-territories.csv")
+  def getListOfAllCountries()(implicit messages: Messages, codeListConnector: CodeListConnector): List[Country] =
+    codeListConnector.getCountryCodes(messages.lang.toLocale).values.toList.sortBy(_.countryName)
 }

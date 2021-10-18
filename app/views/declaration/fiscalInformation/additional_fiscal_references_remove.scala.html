@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import connectors.CodeListConnector
+@import services.Countries
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
 @import forms.declaration.AdditionalFiscalReference
@@ -36,7 +38,7 @@
     saveButtons: saveButtons,
     yesNoRadios: yesNoRadios,
     formHelper: FormWithCSRF
-)
+)(implicit codeListConnector: CodeListConnector)
 
 @(mode: Mode, itemId: String, referenceId: String, additionalReference: AdditionalFiscalReference, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
 
@@ -45,7 +47,7 @@
         rows = Seq(
             SummaryListRow(
                 Key(Text(messages("declaration.additionalFiscalReferences.country.header"))),
-                Value(Text(additionalReference.countryName))
+                Value(Text(Countries.findByCode(additionalReference.country).asString()))
             ),
             SummaryListRow(
                 Key(Text(messages("declaration.additionalFiscalReferences.numbers.header"))),

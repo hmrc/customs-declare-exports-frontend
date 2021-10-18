@@ -49,7 +49,6 @@ class AdditionalFiscalReferencesRemoveViewSpec extends UnitViewSpec with Exports
     }
 
     "display reference to remove" in {
-      view.getElementsByClass("govuk-summary-list__value").get(0).text() mustBe additionalReference.countryName
       view.getElementsByClass("govuk-summary-list__value").get(1).text() mustBe additionalReference.reference
     }
 

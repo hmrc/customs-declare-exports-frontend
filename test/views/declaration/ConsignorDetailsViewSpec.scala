@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import connectors.CodeListConnector
 import controllers.declaration.routes
 import controllers.helpers.SaveAndReturn
 import forms.common.{Address, AddressSpec}
@@ -25,8 +26,11 @@ import forms.declaration.consignor.ConsignorDetails
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
+import models.codes.Country
 import org.jsoup.nodes.Document
-import org.scalatest.Assertion
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import tools.Stubs
@@ -35,10 +39,24 @@ import views.helpers.CommonMessages
 import views.html.declaration.consignor_details
 import views.tags.ViewTest
 
+import scala.collection.immutable.ListMap
+
 @ViewTest
-class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with Stubs with Injector {
+class ConsignorDetailsViewSpec extends AddressViewSpec with CommonMessages with Stubs with Injector with BeforeAndAfterEach {
 
   private val consignorDetailsPage = instanceOf[consignor_details]
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
 
   private val form: Form[ConsignorDetails] = ConsignorDetails.form()
 

@@ -14,10 +14,11 @@
  * limitations under the License.
  *@
 
-@import services.Countries
+@import services.Countries._
 @import services.view.AutoCompleteItem
+@import connectors.CodeListConnector
 
-@this(exportsInputText: exportsInputText)
+@this(exportsInputText: exportsInputText)(implicit codeListConnector: CodeListConnector)
 
 @(form: Form[_], labelPrefix: String = "", addressPrefix: String = "")(implicit request: Request[_], messages: Messages)
 
@@ -54,5 +55,5 @@
     field = form(s"${addressPrefix}.country"),
     label = messages(s"$labelPrefix.country"),
     emptySelectValue = messages("declaration.address.country.empty"),
-    items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryName)
+    items = AutoCompleteItem.fromCountry(getListOfAllCountries(), _.countryName)
 )

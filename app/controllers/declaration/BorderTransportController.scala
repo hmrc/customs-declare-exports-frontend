@@ -16,8 +16,9 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
+import connectors.CodeListConnector
 
+import scala.concurrent.{ExecutionContext, Future}
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
@@ -40,7 +41,7 @@ class BorderTransportController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   borderTransport: border_transport
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)

@@ -16,11 +16,12 @@
 
 @import controllers.navigation.Navigator
 @import play.twirl.api.HtmlFormat
+
 @import scala.collection.immutable
 @import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 @import forms.declaration.RoutingCountryQuestionYesNo.RemoveCountryPage
+@import models.codes.Country
 @import models.requests.JourneyRequest
-@import services.model.Country
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Fieldset
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text

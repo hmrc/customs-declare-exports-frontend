@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package services.model
+package models.codes
 
 import play.api.libs.json.Json
 
-case object Country {
-  implicit val formats = Json.format[Country]
-}
-
-case class Country(countryName: String, countryCode: String) {
+case class Country(countryName: String, countryCode: String) extends CommonCode {
+  def code = countryCode
+  def description = countryName
 
   def asString(): String = s"$countryName ($countryCode)"
+}
+
+object Country {
+  implicit val formats = Json.format[Country]
 }

@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.declaration.countries.Country
+import connectors.CodeListConnector
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -27,12 +27,17 @@ import play.api.libs.json.{JsObject, JsString}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import forms.declaration.countries.{Country => FormCountry}
+import models.codes.Country
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
+
+import scala.collection.immutable.ListMap
 
 class RoutingCountriesControllerSpec extends ControllerSpec {
 
   val mockRoutingQuestionPage = mock[routing_country_question]
   val mockCountryOfRoutingPage = mock[country_of_routing]
+  val mockCodeListConnector = mock[CodeListConnector]
 
   val controller = new RoutingCountriesController(
     mockAuthAction,
@@ -42,7 +47,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
     stubMessagesControllerComponents(),
     mockRoutingQuestionPage,
     mockCountryOfRoutingPage
-  )(ec)
+  )(ec, mockCodeListConnector)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -50,10 +55,11 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
     authorizedUser()
     when(mockRoutingQuestionPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCountryOfRoutingPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockRoutingQuestionPage, mockCountryOfRoutingPage)
+    reset(mockRoutingQuestionPage, mockCountryOfRoutingPage, mockCodeListConnector)
 
     super.afterEach()
   }
@@ -131,7 +137,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
       "user submitted duplicated country in Routing Countries page" in {
 
-        withNewCaching(aDeclaration(withRoutingCountries(Seq(Country(Some("PL"))))))
+        withNewCaching(aDeclaration(withRoutingCountries(Seq(FormCountry(Some("PL"))))))
 
         val duplicatedForm = JsObject(Seq("countryCode" -> JsString("PL")))
 

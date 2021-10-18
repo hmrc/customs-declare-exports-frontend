@@ -17,9 +17,10 @@
 package controllers.declaration
 
 import scala.concurrent.ExecutionContext.global
-
 import base.ControllerSpec
+import connectors.CodeListConnector
 import forms.declaration.countries.Country
+import models.codes.{Country => ModelCountry}
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -32,9 +33,12 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.destinationCountries.origination_country
 
+import scala.collection.immutable.ListMap
+
 class OriginationCountryControllerSpec extends ControllerSpec {
 
   val originationCountryPage = mock[origination_country]
+  val mockCodeListConnector = mock[CodeListConnector]
 
   val controller = new OriginationCountryController(
     mockAuthAction,
@@ -43,17 +47,18 @@ class OriginationCountryControllerSpec extends ControllerSpec {
     navigator,
     stubMessagesControllerComponents(),
     originationCountryPage
-  )(global)
+  )(global, mockCodeListConnector)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
     when(originationCountryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("PL" -> ModelCountry("Poland", "PL")))
   }
 
   override protected def afterEach(): Unit = {
-    reset(originationCountryPage)
+    reset(originationCountryPage, mockCodeListConnector)
 
     super.afterEach()
   }

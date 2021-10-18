@@ -16,13 +16,16 @@
 
 package forms.declaration.countries
 
+import connectors.CodeListConnector
 import forms.DeclarationPage
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.{optional, text}
-import services.Countries.allCountries
+import play.api.i18n.Messages
+import utils.validators.forms.FieldValidator._
+import services.Countries.isValidCountryCode
 
 object Countries {
 
@@ -63,10 +66,13 @@ object Countries {
 
   private val invalidDestinationCountry = "GB"
 
-  private def mapping(page: CountryPage, cachedCountries: Seq[Country]): Mapping[String] = {
+  private def mapping(
+    page: CountryPage,
+    cachedCountries: Seq[Country]
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[String] = {
     val standardMapping = text()
       .verifying(s"declaration.${page.id}.empty", _.trim.nonEmpty)
-      .verifying(s"declaration.${page.id}.error", emptyOrValidCountry)
+      .verifying(s"declaration.${page.id}.error", isEmpty or isValidCountryCode _)
       .verifying(s"declaration.routingCountries.duplication", !cachedCountries.flatMap(_.code).contains(_))
       .verifying(s"declaration.routingCountries.limit", _ => cachedCountries.length < limit)
 
@@ -76,21 +82,28 @@ object Countries {
     }
   }
 
-  private def mandatoryMapping(page: CountryPage, cachedCountries: Seq[Country]): Mapping[Country] =
+  private def mandatoryMapping(
+    page: CountryPage,
+    cachedCountries: Seq[Country]
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Country] =
     Forms.mapping("countryCode" -> mapping(page, cachedCountries))(country => if (country.nonEmpty) Country(Some(country)) else Country(None))(
       country => country.code
     )
 
-  private def optionalForm(page: CountryPage, cachedCountries: Seq[Country]): Mapping[Country] =
+  private def optionalForm(
+    page: CountryPage,
+    cachedCountries: Seq[Country]
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Country] =
     Forms.mapping("countryCode" -> optional(mapping(page, cachedCountries)))(Country.apply)(Country.unapply)
 
-  def form(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty)(implicit request: JourneyRequest[_]): Form[Country] =
+  def form(
+    page: CountryPage,
+    cachedCountries: Seq[Country] = Seq.empty
+  )(implicit request: JourneyRequest[_], messages: Messages, codeListConnector: CodeListConnector): Form[Country] =
     request.declarationType match {
       case CLEARANCE => Form(optionalForm(page, cachedCountries))
       case _         => Form(mandatoryMapping(page, cachedCountries))
     }
 
   val limit = 99
-
-  private def emptyOrValidCountry: String => Boolean = input => input.isEmpty || allCountries.exists(_.countryCode == input)
 }

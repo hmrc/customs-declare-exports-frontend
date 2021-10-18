@@ -16,6 +16,7 @@
 
 package controllers.declaration
 
+import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.AdditionalFiscalReferencesAddController.AdditionalFiscalReferencesFormGroupId
 import controllers.navigation.Navigator
@@ -42,7 +43,7 @@ class AdditionalFiscalReferencesAddController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalFiscalReferencesPage: additional_fiscal_references_add
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

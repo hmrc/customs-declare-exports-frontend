@@ -16,35 +16,36 @@
 
 package forms.declaration
 
+import connectors.CodeListConnector
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
+import play.api.i18n.Messages
 import play.api.libs.json.Json
-import services.Countries.{allCountries, countryCodeMap}
+import services.Countries._
 import utils.validators.forms.FieldValidator._
 
 case class AdditionalFiscalReference(country: String, reference: String) {
   val asString: String = country + reference
-
-  val countryName = countryCodeMap(country).asString()
 }
 
 object AdditionalFiscalReference extends DeclarationPage {
   def build(country: String, reference: String): AdditionalFiscalReference = new AdditionalFiscalReference(country, reference.toUpperCase)
   implicit val format = Json.format[AdditionalFiscalReference]
 
-  val mapping = Forms.mapping(
-    "country" -> text()
-      .verifying("declaration.additionalFiscalReferences.country.empty", _.trim.nonEmpty)
-      .verifying("declaration.additionalFiscalReferences.country.error", input => input.isEmpty || allCountries.exists(_.countryCode == input)),
-    "reference" -> text()
-      .verifying("declaration.additionalFiscalReferences.reference.empty", _.trim.nonEmpty)
-      .verifying("declaration.additionalFiscalReferences.reference.error", isEmpty or (isAlphanumeric and noLongerThan(15)))
-  )(AdditionalFiscalReference.build)(AdditionalFiscalReference.unapply)
+  def mapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+    Forms.mapping(
+      "country" -> text()
+        .verifying("declaration.additionalFiscalReferences.country.empty", _.trim.nonEmpty)
+        .verifying("declaration.additionalFiscalReferences.country.error", input => input.isEmpty || isValidCountryCode(input)),
+      "reference" -> text()
+        .verifying("declaration.additionalFiscalReferences.reference.empty", _.trim.nonEmpty)
+        .verifying("declaration.additionalFiscalReferences.reference.error", isEmpty or (isAlphanumeric and noLongerThan(15)))
+    )(AdditionalFiscalReference.build)(AdditionalFiscalReference.unapply)
 
-  def form(): Form[AdditionalFiscalReference] = Form(mapping)
+  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[AdditionalFiscalReference] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.item.additionalFiscalReferences.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

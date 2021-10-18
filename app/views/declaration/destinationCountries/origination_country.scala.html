@@ -15,16 +15,17 @@
  *@
 
 @import controllers.navigation.Navigator
+@import connectors.CodeListConnector
 @import forms.declaration.countries.Countries.OriginationCountryPage
 @import forms.declaration.countries.Country
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
 @import models.requests.JourneyRequest
-@import services.Countries
 @import services.view.AutoCompleteItem
 @import views.helpers.{BackButton, Title}
 @import views.components.gds.Styles._
 @import config.AppConfig
+@import services.Countries._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -37,8 +38,8 @@
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
-    appConfig: AppConfig
-)
+    appConfig: AppConfig,
+)(implicit codeListConnector: CodeListConnector)
 
 @(mode: Mode, form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -56,7 +57,7 @@
             label = messages("declaration.originationCountry.title"),
             labelClass = Some(gdsPageLabel),
             emptySelectValue = messages("declaration.originationCountry.empty"),
-            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode),
+            items = AutoCompleteItem.fromCountry(getListOfAllCountries(), _.countryCode),
             isPageHeading = true
         )
 

@@ -16,11 +16,36 @@
 
 package forms.declaration
 
+import play.api.test.Helpers._
 import base.FormSpec
+import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
+import models.codes.Country
 import models.viewmodels.TariffContentKey
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.i18n.Lang
 
-class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec {
+import java.util.Locale
+import scala.collection.immutable.ListMap
+
+class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with MockitoSugar with BeforeAndAfterEach {
+
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+  implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom, Great Britain, Northern Ireland", "GB")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
 
   val form = BorderTransport.form
 
