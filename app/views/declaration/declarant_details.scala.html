@@ -31,6 +31,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     govukRadios: GovukRadios,
+    yesNoRadios: yesNoRadios,
     exportsInputText: exportsInputText,
     govukDetails : GovukDetails,
     saveButtons: saveButtons,
@@ -67,6 +68,7 @@
 
         @govukRadios(Radios(
             name = isEoriKey,
+            classes = "govuk-radios--inline",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.declarant.title", request.eori)),
