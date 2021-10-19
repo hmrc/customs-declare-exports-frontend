@@ -29,11 +29,17 @@ case class Notification(actionId: String, mrn: String, dateTimeIssued: ZonedDate
     else if (this.dateTimeIssued.isAfter(that.dateTimeIssued)) 1
     else -1
 
+  lazy val isStatusDMSAcc: Boolean = status == ACCEPTED
+
   lazy val isStatusDMSDocOrDMSCtl: Boolean = status == ADDITIONAL_DOCUMENTS_REQUIRED || status == UNDERGOING_PHYSICAL_CHECK
 
   lazy val isStatusDMSQry: Boolean = status == QUERY_NOTIFICATION_MESSAGE
 
+  lazy val isStatusDMSRcv: Boolean = status == RECEIVED
+
   lazy val isStatusDMSRej: Boolean = status == REJECTED
+
+  lazy val hasStatusForConfirmationPage: Boolean = isStatusDMSAcc || isStatusDMSRcv || isStatusDMSDocOrDMSCtl
 
   lazy val dateTimeIssuedInUK: ZonedDateTime = dateTimeIssued.withZoneSameInstant(ZoneId.of("Europe/London"))
 }

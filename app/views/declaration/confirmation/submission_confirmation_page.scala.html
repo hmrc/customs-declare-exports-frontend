@@ -14,82 +14,17 @@
  * limitations under the License.
  *@
 
-@import config.GoogleFormFeedbackLinkConfig
-@import models.requests.ExportsSessionKeys.{submission_lrn, submission_uuid}
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.Title
-@import views.html.components.gds._
-@import views.html.components.exit_survey
-@import play.twirl.api.HtmlFormat
+@import views.helpers.{Confirmation, ConfirmationHelper, Title}
+@import views.html.components.gds.gdsMainTemplate
 
 @this(
   govukLayout: gdsMainTemplate,
-  govukPanel : GovukPanel,
-  govukButton: GovukButton,
-  govukInsetText : GovukInsetText,
-  link: link,
-  formHelper: FormWithCSRF,
-  googleFormFeedbackLinkConfig: GoogleFormFeedbackLinkConfig,
-  exitSurvey: exit_survey
+  confirmationHelper: ConfirmationHelper
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(maybeConfirmation: Option[Confirmation])(implicit request: Request[_], messages: Messages)
 
-@lrnMessage(lrn: String) = {
-    <div class="font-large">@messages("declaration.confirmation.lrn")</div>
-    <div id="lrn-number" class="font-large bold">@lrn</div>
-}
+@govukLayout(title = Title(confirmationHelper.title(maybeConfirmation))) {
 
-@decLink = @{
-    request.session.data.get(submission_uuid).map { declarationId =>
-        link(
-            id = Some("decision-link"),
-            text = messages("declaration.confirmation.decision.directLink.text"),
-            call = routes.DeclarationDetailsController.displayPage(declarationId)
-        )
-    }.getOrElse {
-        link(
-            id = Some("decision-link"),
-            text = messages("declaration.confirmation.decision.genericLink.text"),
-            call = routes.SubmissionsController.displayListOfSubmissions()
-        )
-    } }
-
-@decisionContent() = {
-    @Html(messages("declaration.confirmation.decision.paragraph1", decLink))
-
-    @Html(messages("declaration.confirmation.decision.paragraph2"))
-}
-
-
-@govukLayout(title = Title("declaration.confirmation.title")) {
-
-    @govukPanel(Panel(
-        title = Text(messages("declaration.confirmation.title")),
-        content = HtmlContent(request.session.data.get(submission_lrn).map(lrn => lrnMessage(lrn)).getOrElse(HtmlFormat.empty))
-    ))
-
-    @govukInsetText(InsetText(
-        content = HtmlContent(decisionContent())
-    ))
-
-    @googleFormFeedbackLinkConfig.googleFormFeedbackLink.map { feedbackLink =>
-      <p class="govuk-body">
-        @Html(messages("declaration.confirmation.leaveFeedback.text", link(
-          id = Some("feedback-link"),
-          text = messages("declaration.confirmation.leaveFeedback.link"),
-          call = Call(method = "GET", url = feedbackLink),
-          target = "_blank"
-        )))
-      </p>
-    }
-
-    <p class="govuk-body">
-        @link(
-            id = Some("back-to-start-link"),
-            text = messages("declaration.confirmation.submitAnotherDeclaration"),
-            call = routes.ChoiceController.displayPage())
-    </p>
-
-    @exitSurvey()
+    @confirmationHelper.content(maybeConfirmation)
 }

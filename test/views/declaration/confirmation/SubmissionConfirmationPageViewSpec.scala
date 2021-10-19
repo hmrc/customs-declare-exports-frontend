@@ -21,7 +21,7 @@ import java.util.UUID
 import base.{MockAuthAction, OverridableInjector}
 import config.GoogleFormFeedbackLinkConfig
 import controllers.routes.{ChoiceController, DeclarationDetailsController, SubmissionsController}
-import models.requests.ExportsSessionKeys.{submission_lrn, submission_uuid}
+import models.requests.ExportsSessionKeys.{submissionDucr, submissionId}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.{Document, Element}
 import org.mockito.Mockito.when
@@ -105,7 +105,7 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with MockAuthActio
     "the session does include the LRN" should {
 
       val uuid = UUID.randomUUID.toString
-      val request = FakeRequest().withSession((submission_uuid -> uuid), (submission_lrn -> LRN.value))
+      val request = FakeRequest().withSession((submissionId -> uuid), (submissionDucr -> LRN.value))
       implicit val r = new JourneyRequest(buildAuthenticatedRequest(request, exampleUser), aDeclaration())
       val view = createView()
 

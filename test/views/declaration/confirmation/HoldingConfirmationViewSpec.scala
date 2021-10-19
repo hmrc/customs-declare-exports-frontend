@@ -48,7 +48,13 @@ class HoldingConfirmationViewSpec extends UnitViewSpec with Injector {
         view.getElementsByTag("script").iterator.asScala.toList.filter(_.text.contains("window.location.href"))
       }
 
-      "include the expected redirection script" in {
+      "include the expected redirection (no)script when javascript is disabled" in {
+        val meta = s"""<meta http-equiv="refresh" content="5; url=${ConfirmationController.displaySubmissionConfirmation.url}">"""
+        val noscripts = view.getElementsByTag("noscript").iterator.asScala.toList
+        noscripts.filter(_.child(0).toString == meta).size mustBe 1
+      }
+
+      "include the expected redirection script when javascript is enabled" in {
         val allScripts = view.getElementsByTag("script").iterator.asScala.toList
         val scripts = allScripts.filter(_.toString.contains("window.location.href"))
         scripts.size mustBe 1

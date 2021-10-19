@@ -19,6 +19,7 @@ package controllers.actions
 import scala.concurrent.{ExecutionContext, Future}
 
 import com.google.inject.Inject
+import controllers.routes.RootController
 import models.DeclarationType.DeclarationType
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.Logging
@@ -39,12 +40,14 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val ex
         cacheService.get(id).map {
           case Some(declaration) if types.isEmpty || types.contains(declaration.`type`) =>
             Right(new JourneyRequest(request, declaration))
+
           case _ =>
-            Left(Results.Redirect(controllers.routes.RootController.displayPage()))
+            logger.warn(s"Could not retrieve from cache, for eori ${request.user.eori}, the declaration with id $id")
+            Left(Results.Redirect(RootController.displayPage()))
         }
       case None =>
-        logger.warn(s"Could not obtain journey type for declaration ${request.declarationId}")
-        Future.successful(Left(Results.Redirect(controllers.routes.RootController.displayPage())))
+        logger.warn(s"Could not obtain the declaration's id for eori ${request.user.eori}")
+        Future.successful(Left(Results.Redirect(RootController.displayPage())))
     }
   }
 

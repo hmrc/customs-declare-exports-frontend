@@ -14,20 +14,23 @@
  * limitations under the License.
  *@
 
-@import views.html.components.gds._
 @import config.AppConfig
+@import views.html.components.gds.{link, paragraphBody}
 
-@this(paragraphBody: paragraphBody,
-        link: link,
-        appConfig: AppConfig)
+@this(
+    paragraphBody: paragraphBody,
+    link: link,
+    appConfig: AppConfig
+)
 
 @()(implicit messages: Messages)
 
 <h2 id="exit-survey" class="govuk-heading-m">@messages("declaration.exitSurvey.header")</h2>
-@paragraphBody(message = messages("declaration.exitSurvey.line.1"), id=Some("exit-survey-element-1"))
-@paragraphBody(message = messages("declaration.exitSurvey.line.2", link(
-    text = messages("declaration.exitSurvey.link"),
-    call = Call("GET", appConfig.exitSurveyUrl),
-    id=Some("exit-survey-element-2")
-)))
+
+@paragraphBody(messages("declaration.exitSurvey.line.1"), id = Some("exit-survey-element-1"))
+
+@paragraphBody(messages(
+    "declaration.exitSurvey.line.2",
+    link(messages("declaration.exitSurvey.link"), Call("GET", appConfig.exitSurveyUrl), id = Some("exit-survey-element-2"))
+))
 

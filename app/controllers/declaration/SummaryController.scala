@@ -20,11 +20,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
-import controllers.declaration.routes.ConfirmationController
 import forms.declaration.LegalDeclaration
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.requests.ExportsSessionKeys.{declarationId, submission_lrn, submission_uuid}
+import models.declaration.submissions.Submission
+import models.requests.ExportsSessionKeys._
 import models.{ExportsDeclaration, Mode}
 import play.api.Logging
 import play.api.data.Form
@@ -70,13 +70,7 @@ class SummaryController @Inject()(
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(submission) =>
-              Redirect(ConfirmationController.displayHoldingConfirmation)
-                .withSession(
-                  request.session
-                    - declarationId
-                    + (submission_uuid -> submission.uuid)
-                    + (submission_lrn -> submission.lrn) // Temporary. To remove with CEDS-3464
-                )
+              Redirect(routes.ConfirmationController.displayHoldingConfirmation).withSession(session(submission))
 
             case _ => handleError(s"Error from Customs Declarations API")
           }
@@ -91,4 +85,10 @@ class SummaryController @Inject()(
     logger.error(logMessage)
     InternalServerError(errorHandler.globalErrorPage())
   }
+
+  private def session(submission: Submission)(implicit request: Request[_]): Session =
+    request.session - declarationId +
+      (submissionId -> submission.uuid) +
+      (submissionDucr -> submission.ducr.fold("")(identity)) +
+      (submissionLrn -> submission.lrn)
 }

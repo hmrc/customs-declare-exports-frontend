@@ -120,8 +120,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
         val actualSession = session(result)
         actualSession.get(ExportsSessionKeys.declarationId) must be(None)
-        actualSession.get(ExportsSessionKeys.submission_lrn) must be(Some(expectedSubmission.lrn))
-        actualSession.get(ExportsSessionKeys.submission_uuid) must be(Some(expectedSubmission.uuid))
+        actualSession.get(ExportsSessionKeys.submissionDucr) must be(Some(expectedSubmission.lrn))
+        actualSession.get(ExportsSessionKeys.submissionId) must be(Some(expectedSubmission.uuid))
 
         verify(mockSubmissionService).submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
       }

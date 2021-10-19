@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.routes.Assets
 @import controllers.declaration.routes.ConfirmationController
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.Title
@@ -26,12 +27,10 @@
     paragraph : paragraphBody
 )
 
-@()(implicit request: Request[_], messages: Messages)
-
-@submissionConfirmationUrl = @{ ConfirmationController.displaySubmissionConfirmation.url }
+@(urlOnJavaScriptDisabled: String, urlOnJavaScriptEnabled: String)(implicit request: Request[_], messages: Messages)
 
 @headContentOnJavaScriptDisabled = {
-    <meta http-equiv="refresh" content="5; url=@submissionConfirmationUrl" />
+    <meta http-equiv="refresh" content="5; url=@urlOnJavaScriptDisabled" />
 }
 
 @govukLayout(
@@ -45,10 +44,18 @@
     <div class="ccms-loader"></div>
 }
 
+<script src='@Assets.versioned("javascripts/jquery-3.6.0.min.js")'></script>
+
 <script type="text/javascript">
+  function redirect() { window.location.href = "@{ConfirmationController.displaySubmissionConfirmation.url}"; }
+
+  function hasNotifications() {
+    $.ajax({ cache: false, timeout: 5000, url: "@urlOnJavaScriptEnabled" })
+      .done(function() { redirect(); })
+      .fail(function() { setTimeout(redirect(), 5000); });
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
-        window.location.href = "@submissionConfirmationUrl";
-    }, 5000);
+    setTimeout(hasNotifications, 5000);
   }, false);
 </script>

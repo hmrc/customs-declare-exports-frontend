@@ -16,17 +16,16 @@
 
 package controllers
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import models.declaration.notifications.Notification
-
 import javax.inject.{Inject, Singleton}
+import models.declaration.notifications.{Notification, NotificationError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.rejected_notification_errors
-
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RejectedNotificationsController @Inject()(
@@ -49,6 +48,6 @@ class RejectedNotificationsController @Inject()(
     }
   }
 
-  private def getRejectedNotificationErrors(notifications: Seq[Notification]) =
+  private def getRejectedNotificationErrors(notifications: Seq[Notification]): Seq[NotificationError] =
     notifications.find(_.isStatusDMSRej).map(_.errors).getOrElse(Seq.empty)
 }
