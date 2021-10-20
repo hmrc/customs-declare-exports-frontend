@@ -61,6 +61,8 @@ object FieldValidator {
 
   val noLongerThan: Int => String => Boolean = (length: Int) => (input: String) => input.length <= length
 
+  val noLongerThanAfterTrim: Int => String => Boolean = (length: Int) => (input: String) => input.trim.length <= length
+
   val noShorterThan: Int => String => Boolean = (length: Int) => (input: String) => input.length >= length
 
   val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
@@ -75,7 +77,7 @@ object FieldValidator {
 
   val isAlphabetic: String => Boolean = (input: String) => input.forall(_.isLetter)
 
-  val isAlphanumeric: String => Boolean = (input: String) => input.forall(_.isLetterOrDigit)
+  val isAlphanumeric: String => Boolean = (input: String) => input.trim.forall(_.isLetterOrDigit)
 
   val isNotAlphanumeric: String => Boolean = (input: String) => !isAlphanumeric(input)
 

@@ -55,6 +55,21 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
         "provided with valid input (lowercase DUCR)" in {
           getBoundedForm(correctConsignmentReferencesLowercaseDucrJSON).hasErrors mustBe false
         }
+
+
+        "provided with valid input (spaces top and tail of LRN)" in {
+          val form = getBoundedForm(correctConsignmentReferencesLrnWithUntrimmmedSpacesJSON)
+
+          println(form.errors)
+          form.hasErrors mustBe false
+        }
+
+        "provided with valid input (LRN with spaces)" in {
+          val form = getBoundedForm(correctConsignmentReferencesLrnWithSpacesJSON)
+
+          println(form.errors)
+          form.hasErrors mustBe false
+        }
       }
 
       onJourney(SUPPLEMENTARY) { implicit request =>
@@ -339,6 +354,8 @@ object ConsignmentReferencesSpec {
     data.asInstanceOf[JsObject].deepMerge(JsObject(Map("eidrDateStamp" -> JsString(eidrDateStamp))))
 
   val correctConsignmentReferencesJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString(lrn)))
+  val correctConsignmentReferencesLrnWithUntrimmmedSpacesJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString(s" $lrn ")))
+  val correctConsignmentReferencesLrnWithSpacesJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString(lrnWithSpaces)))
 
   val correctConsignmentReferencesLowercaseDucrJSON: JsValue = JsObject(
     Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr.toLowerCase))), "lrn" -> JsString(lrn))

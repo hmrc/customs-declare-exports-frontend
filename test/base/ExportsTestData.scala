@@ -46,6 +46,7 @@ object ExportsTestData extends ExportsDeclarationBuilder {
   val nrsDateOfBirth = Some(LocalDate.now().minusYears(25))
   val eori = "GB123456789012000"
   val lrn = "123LRN"
+  val lrnWithSpaces = "123 LRN"
   val ducr = "5GB123456789000-123ABC456DEFIIIII"
   val mrn = "20GB46J8TMJ4RFGVA0"
   val mucr = "CZYX123A"
