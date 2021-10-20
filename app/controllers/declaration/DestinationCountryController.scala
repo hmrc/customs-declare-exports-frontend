@@ -16,6 +16,7 @@
 
 package controllers.declaration
 
+import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.countries.Countries
@@ -39,7 +40,7 @@ class DestinationCountryController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   destinationCountryPage: destination_country
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

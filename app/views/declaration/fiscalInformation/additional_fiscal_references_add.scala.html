@@ -14,20 +14,22 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import connectors.CodeListConnector
 @import controllers.declaration.routes
-@import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
-@import services.Countries
 @import controllers.declaration.AdditionalFiscalReferencesAddController.AdditionalFiscalReferencesFormGroupId
-@import services.view.AutoCompleteItem
-@import controllers.navigation.{Navigator, ItemId}
+@import controllers.navigation.{ItemId, Navigator}
+@import forms.declaration.AdditionalFiscalReference
 @import models.requests.JourneyRequest
-@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+@import services.Countries._
+@import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
-@import play.twirl.api.HtmlFormat
+
 @import scala.collection.immutable
-@import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -42,7 +44,7 @@
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
-)
+)(implicit codeListConnector: CodeListConnector)
 
 @(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -53,7 +55,7 @@
             label = messages("declaration.additionalFiscalReferences.country"),
             labelClass = Some("govuk-label--m"),
             emptySelectValue = messages("declaration.additionalFiscalReferences.country.empty"),
-            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+            items = AutoCompleteItem.fromCountry(getListOfAllCountries(), _.countryCode)
         )
 
         @exportsInputText(

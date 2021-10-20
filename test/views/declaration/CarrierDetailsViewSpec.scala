@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import connectors.CodeListConnector
 import controllers.declaration.routes
 import controllers.helpers.SaveAndReturn
 import forms.common.{Address, AddressSpec}
@@ -24,9 +25,12 @@ import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.Mode
+import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.scalatest.Assertion
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import tools.Stubs
@@ -35,10 +39,24 @@ import views.helpers.CommonMessages
 import views.html.declaration.carrier_details
 import views.tags.ViewTest
 
+import scala.collection.immutable.ListMap
+
 @ViewTest
-class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with Stubs with Injector {
+class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with Stubs with Injector with BeforeAndAfterEach {
 
   private val carrierDetailsPage = instanceOf[carrier_details]
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
 
   private def form()(implicit request: JourneyRequest[_]): Form[CarrierDetails] = CarrierDetails.form(request.declarationType)
 

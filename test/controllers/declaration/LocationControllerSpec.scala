@@ -17,8 +17,10 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import connectors.CodeListConnector
 import forms.declaration.GoodsLocationForm
 import models.{DeclarationType, Mode}
+import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -30,9 +32,12 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.goods_location
 
+import scala.collection.immutable.ListMap
+
 class LocationControllerSpec extends ControllerSpec with OptionValues {
 
   val mockGoodsLocationPage = mock[goods_location]
+  val mockCodeListConnector = mock[CodeListConnector]
 
   val controller = new LocationController(
     mockAuthAction,
@@ -41,7 +46,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     mockGoodsLocationPage,
     mockExportsCacheService,
     navigator
-  )(ec)
+  )(ec, mockCodeListConnector)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -49,12 +54,13 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(mockGoodsLocationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("PL" -> Country("Poland", "PL")))
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
 
-    reset(mockGoodsLocationPage)
+    reset(mockGoodsLocationPage, mockCodeListConnector)
   }
 
   def theResponseForm: Form[GoodsLocationForm] = {

@@ -16,9 +16,9 @@
 
 package services.view
 
-import models.codes.{AdditionalProcedureCode, ProcedureCode}
+import models.codes.{AdditionalProcedureCode, Country, ProcedureCode}
 import services.DocumentType
-import services.model.{Country, CustomsOffice, OfficeOfExit, PackageType}
+import services.model.{CustomsOffice, OfficeOfExit, PackageType}
 
 case class AutoCompleteItem(label: String, value: String)
 

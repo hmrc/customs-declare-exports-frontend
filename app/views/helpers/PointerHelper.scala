@@ -158,7 +158,7 @@ object PointerHelper extends Logging {
     "declaration.previousDocuments.$.goodsItemIdentifier" -> routes.PreviousDocumentsSummaryController.displayPage, //?? PreviousDocumentsChangeController.displayPage
     "declaration.locations.warehouseIdentification.identificationNumber" -> routes.WarehouseIdentificationController.displayPage,
     "declaration.locations.warehouseIdentification.identificationType" -> routes.WarehouseIdentificationController.displayPage,
-    "declaration.locations.warehouseIdentification.supervisingCustomsOffice" -> routes.WarehouseIdentificationController.displayPage,
+    "declaration.locations.warehouseIdentification.supervisingCustomsOffice" -> routes.SupervisingCustomsOfficeController.displayPage,
     "declaration.consignmentReferences.ucr" -> routes.ConsignmentReferencesController.displayPage
   )
 }

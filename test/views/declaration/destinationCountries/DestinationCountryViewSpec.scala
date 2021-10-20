@@ -17,14 +17,19 @@
 package views.declaration.destinationCountries
 
 import base.Injector
+import connectors.CodeListConnector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}
+import models.codes.{Country => ModelCountry}
 import models.DeclarationType._
 import models.Mode
 import models.declaration.{DeclarationHoldersData, Parties}
 import models.requests.JourneyRequest
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.twirl.api.Html
 import services.cache.ExportsTestData
@@ -32,11 +37,27 @@ import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.destination_country
 
-class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+import scala.collection.immutable.ListMap
+
+class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector with BeforeAndAfterEach {
+
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> ModelCountry("United Kingdom", "GB")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
 
   private val destinationCountryPage = instanceOf[destination_country]
 
-  private def form(request: JourneyRequest[_]): Form[Country] = Countries.form(DestinationCountryPage)(request)
+  private def form(request: JourneyRequest[_]): Form[Country] =
+    Countries.form(DestinationCountryPage)(request, messages(request), mockCodeListConnector)
   private def view(implicit request: JourneyRequest[_]): Html = destinationCountryPage(Mode.Normal, form(request))(request, messages)
 
   "Destination country view spec" should {

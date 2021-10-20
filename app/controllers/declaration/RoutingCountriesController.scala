@@ -16,6 +16,7 @@
 
 package controllers.declaration
 
+import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingCountryQuestionYesNo._
@@ -25,8 +26,8 @@ import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.Countries.findByCode
 import services.cache.ExportsCacheService
+import services.{Countries => ServiceCountries}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
 
@@ -41,7 +42,7 @@ class RoutingCountriesController @Inject()(
   mcc: MessagesControllerComponents,
   routingQuestionPage: routing_country_question,
   countryOfRoutingPage: country_of_routing
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -49,7 +50,7 @@ class RoutingCountriesController @Inject()(
       navigator.continueTo(mode, routes.RoutingCountriesSummaryController.displayPage)
     } else {
       val destinationCountryCode = request.cacheModel.locations.destinationCountry.flatMap(_.code)
-      val destinationCountryName = destinationCountryCode.map(findByCode(_)).map(_.asString()).getOrElse("")
+      val destinationCountryName = destinationCountryCode.map(ServiceCountries.findByCode(_)).map(_.asString()).getOrElse("")
 
       val frm = formFirst().withSubmissionErrors()
       request.cacheModel.locations.hasRoutingCountries match {

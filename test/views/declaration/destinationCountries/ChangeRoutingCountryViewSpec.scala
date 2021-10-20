@@ -17,12 +17,17 @@
 package views.declaration.destinationCountries
 
 import base.Injector
+import connectors.CodeListConnector
 import controllers.declaration.routes
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import forms.declaration.countries.{Countries, Country}
+import models.codes.{Country => ModelCountry}
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.Mode
 import models.requests.JourneyRequest
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.twirl.api.Html
 import services.cache.ExportsTestData
@@ -30,15 +35,30 @@ import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.change_routing_country
 
-class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+import scala.collection.immutable.ListMap
+
+class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector with BeforeAndAfterEach {
+
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> ModelCountry("United Kingdom", "GB")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
 
   private val countryToChange = "GB"
   private val changeRoutingCountryPage = instanceOf[change_routing_country]
 
   private def firstRoutingForm(request: JourneyRequest[_]): Form[Country] =
-    Countries.form(FirstRoutingCountryPage)(request)
+    Countries.form(FirstRoutingCountryPage)(request, messages(request), mockCodeListConnector)
   private def nextRoutingForm(request: JourneyRequest[_]): Form[Country] =
-    Countries.form(NextRoutingCountryPage)(request)
+    Countries.form(NextRoutingCountryPage)(request, messages(request), mockCodeListConnector)
 
   private def firstRoutingView(implicit request: JourneyRequest[_]): Html =
     changeRoutingCountryPage(Mode.Normal, firstRoutingForm(request), FirstRoutingCountryPage, countryToChange)(request, messages)

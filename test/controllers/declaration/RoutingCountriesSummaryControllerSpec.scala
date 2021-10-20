@@ -17,8 +17,9 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import connectors.CodeListConnector
 import forms.declaration.countries.Country
-import models.{DeclarationType, Mode}
+import models.{codes, DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -29,11 +30,14 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.destinationCountries.{change_routing_country, remove_routing_country, routing_countries_summary}
 
+import scala.collection.immutable.ListMap
+
 class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
   val routingCountriesSummaryPage = mock[routing_countries_summary]
   val routingRemovePage = mock[remove_routing_country]
   val changeRoutingPage = mock[change_routing_country]
+  val mockCodeListConnector = mock[CodeListConnector]
 
   val controller = new RoutingCountriesSummaryController(
     mockAuthAction,
@@ -44,7 +48,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
     routingCountriesSummaryPage,
     routingRemovePage,
     changeRoutingPage
-  )(ec)
+  )(ec, mockCodeListConnector)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -53,10 +57,13 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
     when(routingCountriesSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(routingRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(changeRoutingPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(
+      ListMap("GB" -> codes.Country("United Kingdom", "GB"), "FR" -> codes.Country("France", "FR"), "PL" -> codes.Country("Poland", "PL"))
+    )
   }
 
   override protected def afterEach(): Unit = {
-    reset(routingCountriesSummaryPage, routingRemovePage, changeRoutingPage)
+    reset(routingCountriesSummaryPage, routingRemovePage, changeRoutingPage, mockCodeListConnector)
 
     super.afterEach()
   }
@@ -73,8 +80,8 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
     captor.getValue
   }
 
-  def theCountryToRemove: services.model.Country = {
-    val captor = ArgumentCaptor.forClass(classOf[services.model.Country])
+  def theCountryToRemove: codes.Country = {
+    val captor = ArgumentCaptor.forClass(classOf[codes.Country])
     verify(routingRemovePage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }

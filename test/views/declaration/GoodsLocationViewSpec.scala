@@ -17,12 +17,17 @@
 package views.declaration
 
 import base.{Injector, TestHelper}
+import connectors.CodeListConnector
 import controllers.declaration.routes
 import forms.declaration.GoodsLocationForm
 import models.DeclarationType._
 import models.{DeclarationType, Mode}
+import models.codes.Country
 import org.jsoup.nodes.Document
-import org.scalatest.Assertion
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.Call
 import services.cache.ExportsTestData
@@ -31,8 +36,23 @@ import views.declaration.spec.UnitViewSpec
 import views.html.declaration.goods_location
 import views.tags.ViewTest
 
+import scala.collection.immutable.ListMap
+
 @ViewTest
-class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with MockitoSugar with BeforeAndAfterEach {
+
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
 
   private val page = instanceOf[goods_location]
   private val form: Form[GoodsLocationForm] = GoodsLocationForm.form()

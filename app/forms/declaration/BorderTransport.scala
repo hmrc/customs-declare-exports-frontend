@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import connectors.CodeListConnector
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
 import forms.declaration.TransportCodes._
@@ -23,8 +24,9 @@ import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import services.Countries.allCountries
+import services.Countries._
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
@@ -51,30 +53,28 @@ object BorderTransport extends DeclarationPage {
         )
     )
 
-  val formMapping: Mapping[BorderTransport] = mapping(
-    "borderTransportNationality" -> optional(
-      text()
-        .verifying(
-          "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect",
-          isContainedIn(allCountries.map(_.countryName))
-        )
-    ),
-    "borderTransportType" -> requiredRadio("declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty")
-      .verifying(
-        "declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect",
-        isContainedIn(allowedMeansOfTransportTypeCodes)
+  def formMapping()(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[BorderTransport] =
+    mapping(
+      "borderTransportNationality" -> optional(
+        text()
+          .verifying("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect", isValidCountryName(_))
       ),
-    transportReferenceMapping("IMOShipIDNumber", IMOShipIDNumber),
-    transportReferenceMapping("nameOfVessel", NameOfVessel),
-    transportReferenceMapping("wagonNumber", WagonNumber),
-    transportReferenceMapping("vehicleRegistrationNumber", VehicleRegistrationNumber),
-    transportReferenceMapping("IATAFlightNumber", IATAFlightNumber),
-    transportReferenceMapping("aircraftRegistrationNumber", AircraftRegistrationNumber),
-    transportReferenceMapping("europeanVesselIDNumber", EuropeanVesselIDNumber),
-    transportReferenceMapping("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel)
-  )(form2Model)(model2Form)
+      "borderTransportType" -> requiredRadio("declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty")
+        .verifying(
+          "declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect",
+          isContainedIn(allowedMeansOfTransportTypeCodes)
+        ),
+      transportReferenceMapping("IMOShipIDNumber", IMOShipIDNumber),
+      transportReferenceMapping("nameOfVessel", NameOfVessel),
+      transportReferenceMapping("wagonNumber", WagonNumber),
+      transportReferenceMapping("vehicleRegistrationNumber", VehicleRegistrationNumber),
+      transportReferenceMapping("IATAFlightNumber", IATAFlightNumber),
+      transportReferenceMapping("aircraftRegistrationNumber", AircraftRegistrationNumber),
+      transportReferenceMapping("europeanVesselIDNumber", EuropeanVesselIDNumber),
+      transportReferenceMapping("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel)
+    )(form2Model)(model2Form)
 
-  def form(): Form[BorderTransport] = Form(BorderTransport.formMapping)
+  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[BorderTransport] = Form(BorderTransport.formMapping)
 
   private def form2Model: (
     Option[String],

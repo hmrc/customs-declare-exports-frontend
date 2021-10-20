@@ -17,11 +17,36 @@
 package forms.declaration
 
 import base.TestHelper
+import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
+import models.codes.Country
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
+import play.api.i18n.Lang
 import play.api.libs.json.{JsObject, JsString}
+import play.api.test.Helpers.stubMessagesApi
 
-class GoodsLocationFormSpec extends DeclarationPageBaseSpec {
+import java.util.Locale
+import scala.collection.immutable.ListMap
+
+class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar with BeforeAndAfterEach {
+
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+  implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
 
   private val validCode = "GBAUFXTFXTFXT"
 

@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
+@import connectors.CodeListConnector
 @import models.declaration.Locations
 @import services.Countries
-@import views.html.components.gds.linkContent
-@import views.html.components.gds.summary_list
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
+@import views.html.components.gds.{linkContent, summary_list}
 
-@this(summaryList: summary_list, linkContent: linkContent)
+@this(summaryList: summary_list, linkContent: linkContent)(implicit codeListConnector: CodeListConnector)
 
 @(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 

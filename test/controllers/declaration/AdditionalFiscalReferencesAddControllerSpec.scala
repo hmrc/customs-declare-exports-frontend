@@ -17,10 +17,12 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import connectors.CodeListConnector
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import mock.{ErrorHandlerMocks, ItemActionMocks}
 import models.declaration.ExportItem
 import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -30,11 +32,13 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.fiscalInformation.additional_fiscal_references_add
 
+import scala.collection.immutable.ListMap
 import scala.concurrent.Future
 
 class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with ItemActionMocks with ErrorHandlerMocks {
 
   val mockAddPage = mock[additional_fiscal_references_add]
+  val mockCodeListConnector = mock[CodeListConnector]
 
   val controller = new AdditionalFiscalReferencesAddController(
     mockAuthAction,
@@ -43,7 +47,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
     navigator,
     stubMessagesControllerComponents(),
     mockAddPage
-  )(ec)
+  )(ec, mockCodeListConnector)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -51,12 +55,13 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
     setupErrorHandler()
     authorizedUser()
     when(mockAddPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("PL" -> Country("Poland", "PL")))
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
 
-    reset(mockAddPage)
+    reset(mockAddPage, mockCodeListConnector)
   }
 
   def theResponseForm: Form[AdditionalFiscalReference] = {

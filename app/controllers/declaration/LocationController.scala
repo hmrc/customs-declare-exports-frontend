@@ -16,6 +16,7 @@
 
 package controllers.declaration
 
+import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.GoodsLocationForm
@@ -37,7 +38,7 @@ class LocationController @Inject()(
   goodsLocationPage: goods_location,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
   import forms.declaration.GoodsLocationForm._
 

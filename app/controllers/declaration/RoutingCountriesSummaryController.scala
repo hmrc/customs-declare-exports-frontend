@@ -16,6 +16,7 @@
 
 package controllers.declaration
 
+import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingCountryQuestionYesNo
@@ -25,7 +26,7 @@ import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.Countries.findByCodes
+import services.Countries.{findByCode, findByCodes}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.destinationCountries.{change_routing_country, remove_routing_country, routing_countries_summary}
@@ -42,7 +43,7 @@ class RoutingCountriesSummaryController @Inject()(
   routingCountriesSummaryPage: routing_countries_summary,
   removeRoutingCountryPage: remove_routing_country,
   changeRoutingCountryPage: change_routing_country
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -76,14 +77,14 @@ class RoutingCountriesSummaryController @Inject()(
 
   def displayRemoveCountryPage(mode: Mode, countryCode: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val isCountryPresentedInCache = request.cacheModel.locations.routingCountries.flatMap(_.code).contains(countryCode)
-    val country = services.Countries.countryCodeMap(countryCode)
+    val country = findByCode(countryCode)
 
     if (isCountryPresentedInCache) Ok(removeRoutingCountryPage(mode, RoutingCountryQuestionYesNo.formRemove(), country))
     else navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
   }
 
   def submitRemoveCountry(mode: Mode, countryCode: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val country = services.Countries.countryCodeMap(countryCode)
+    val country = findByCode(countryCode)
 
     RoutingCountryQuestionYesNo
       .formRemove()

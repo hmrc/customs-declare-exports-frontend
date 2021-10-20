@@ -16,9 +16,11 @@
 
 package forms.declaration
 
+import connectors.CodeListConnector
 import forms.common.{Address, Eori}
 import play.api.data.Forms.optional
 import play.api.data.{Forms, Mapping}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 
 case class EntityDetails(
@@ -29,9 +31,13 @@ case class EntityDetails(
 object EntityDetails {
   implicit val format = Json.format[EntityDetails]
 
-  val addressMapping: Mapping[EntityDetails] = Forms
-    .mapping("address" -> Address.mapping)(address => EntityDetails(None, Some(address)))(entityDetails => entityDetails.address)
+  def addressMapping()(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[EntityDetails] =
+    Forms
+      .mapping("address" -> Address.mapping())(address => EntityDetails(None, Some(address)))(entityDetails => entityDetails.address)
 
-  val optionalAddressMapping: Mapping[EntityDetails] = Forms
-    .mapping("address" -> optional(Address.mapping))(maybeAddress => EntityDetails(None, maybeAddress))(entityDetails => Some(entityDetails.address))
+  def optionalAddressMapping()(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[EntityDetails] =
+    Forms
+      .mapping("address" -> optional(Address.mapping()))(maybeAddress => EntityDetails(None, maybeAddress))(
+        entityDetails => Some(entityDetails.address)
+      )
 }

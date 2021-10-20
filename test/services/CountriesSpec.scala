@@ -16,32 +16,46 @@
 
 package services
 
-import base.UnitWithMocksSpec
-import services.Countries._
-import services.model.Country
+import base.UnitSpec
+import connectors.CodeListConnector
+import models.codes.Country
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.i18n.Lang
+import play.api.test.Helpers._
 
-class CountriesSpec extends UnitWithMocksSpec {
+import java.util.Locale
+import scala.collection.immutable.ListMap
 
-  "Countries" should {
+class CountriesSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
-    "give all countries with codes in alphabetical order of country name" in {
-      val threeCountries =
-        allCountries.filter(c => c.countryName == "Afghanistan" || c.countryName.startsWith("Mayotte") || c.countryName == "Zimbabwe")
-      threeCountries must contain inOrderOnly (Country("Afghanistan", "AF"), Country("Mayotte - Grande-Terre and Pamandzi", "YT"), Country(
-        "Zimbabwe",
-        "ZW"
-      ))
-    }
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+  implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
-    "give list of EU countries" in {
-      euCountries must not be empty
-      euCountries must contain("France")
-      euCountries must not contain "UK"
-    }
+  private val gb = Country("United Kingdom", "GB")
+  private val pl = Country("Poland", "PL")
 
-    "give territories with special fiscal status" in {
-      euSpecialFiscalTerritories must not be empty
-      euSpecialFiscalTerritories must contain("Turkey")
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> gb, "PL" -> pl))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
+
+  "Countries findByCodes" must {
+    "retain the order of the seq of country codes it is supplied" in {
+      val countryCodes = Seq("PL", "GB")
+
+      val result = Countries.findByCodes(countryCodes)
+
+      result.head mustBe pl
+      result.last mustBe gb
     }
   }
 }

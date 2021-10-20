@@ -16,11 +16,13 @@
 
 package forms.declaration.consignor
 
+import connectors.CodeListConnector
 import forms.DeclarationPage
 import forms.declaration.EntityDetails
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
 import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 
 case class ConsignorDetails(details: EntityDetails)
@@ -30,9 +32,10 @@ object ConsignorDetails extends DeclarationPage {
 
   val id = "ConsignorDetails"
 
-  val mapping = Forms.mapping("details" -> EntityDetails.addressMapping)(ConsignorDetails.apply)(ConsignorDetails.unapply)
+  def mapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+    Forms.mapping("details" -> EntityDetails.addressMapping())(ConsignorDetails.apply)(ConsignorDetails.unapply)
 
-  def form(): Form[ConsignorDetails] = Form(mapping)
+  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsignorDetails] = Form(mapping)
 
   def from(consignorEoriDetails: ConsignorEoriNumber, savedConsignorDetails: Option[ConsignorDetails]): ConsignorDetails =
     consignorEoriDetails.eori match {

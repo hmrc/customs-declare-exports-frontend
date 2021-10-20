@@ -17,12 +17,13 @@
 package controllers.declaration
 
 import scala.concurrent.ExecutionContext
-
 import base.ControllerSpec
+import connectors.CodeListConnector
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.exporter.ExporterDetails
 import models.{DeclarationType, Mode}
+import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -34,9 +35,12 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.exporter_address
 
+import scala.collection.immutable.ListMap
+
 class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   val exporter_address = mock[exporter_address]
+  val mockCodeListConnector = mock[CodeListConnector]
 
   val controller = new ExporterDetailsController(
     mockAuthAction,
@@ -45,7 +49,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
     navigator,
     stubMessagesControllerComponents(),
     exporter_address
-  )(ExecutionContext.global)
+  )(ExecutionContext.global, mockCodeListConnector)
 
   val address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "United Kingdom, Great Britain, Northern Ireland"))
   val eori = Some(Eori("GB213472539481923"))
@@ -66,10 +70,11 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
     super.beforeEach()
     authorizedUser()
     when(exporter_address.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom, Great Britain, Northern Ireland", "GB")))
   }
 
   override protected def afterEach(): Unit = {
-    reset(exporter_address)
+    reset(exporter_address, mockCodeListConnector)
     super.afterEach()
   }
 

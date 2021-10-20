@@ -16,12 +16,14 @@
 
 package forms.declaration.exporter
 
+import connectors.CodeListConnector
 import forms.DeclarationPage
 import forms.declaration.EntityDetails
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsDeclaration
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 
 case class ExporterDetails(details: EntityDetails)
@@ -29,14 +31,20 @@ case class ExporterDetails(details: EntityDetails)
 object ExporterDetails extends DeclarationPage {
   implicit val format = Json.format[ExporterDetails]
 
-  val defaultMapping = Forms.mapping("details" -> EntityDetails.addressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
+  def defaultMapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+    Forms.mapping("details" -> EntityDetails.addressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 
-  val optionalMapping = Forms.mapping("details" -> EntityDetails.optionalAddressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
+  def optionalMapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+    Forms.mapping("details" -> EntityDetails.optionalAddressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 
-  def form(declarationType: DeclarationType, cachedModel: Option[ExportsDeclaration] = None): Form[ExporterDetails] = declarationType match {
-    case CLEARANCE if cachedModel.exists(_.isNotEntryIntoDeclarantsRecords) => Form(optionalMapping)
-    case _                                                                  => Form(defaultMapping)
-  }
+  def form(
+    declarationType: DeclarationType,
+    cachedModel: Option[ExportsDeclaration] = None
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ExporterDetails] =
+    declarationType match {
+      case CLEARANCE if cachedModel.exists(_.isNotEntryIntoDeclarantsRecords) => Form(optionalMapping)
+      case _                                                                  => Form(defaultMapping)
+    }
 
   def from(exporterEoriNumber: ExporterEoriNumber, savedExporterDetails: Option[ExporterDetails]): ExporterDetails =
     exporterEoriNumber.eori match {

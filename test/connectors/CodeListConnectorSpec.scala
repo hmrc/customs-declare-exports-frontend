@@ -17,12 +17,10 @@
 package connectors
 
 import java.util.Locale.{ENGLISH, JAPANESE}
-
 import scala.collection.immutable.ListMap
-
 import base.UnitWithMocksSpec
 import config.AppConfig
-import models.codes.{AdditionalProcedureCode, HolderOfAuthorisationCode, ProcedureCode}
+import models.codes.{AdditionalProcedureCode, Country, DmsErrorCode, HolderOfAuthorisationCode, ProcedureCode}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 
@@ -40,6 +38,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.additionalProcedureCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.dmsErrorCodes).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.countryCodes).thenReturn("/code-lists/manyCodes.json")
   }
 
   private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
@@ -157,6 +156,34 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
         }
       }
     }
+
+    "return a map of 'DMS Error' codes" when {
+      "'ENGLISH' locale passed return codes with English descriptions" in {
+        codeListConnector.getDmsErrorCodesMap(ENGLISH) must be(sampleDmsErrorsEnglish)
+      }
+
+      "'WELSH' locale passed return codes with Welsh descriptions" in {
+        codeListConnector.getDmsErrorCodesMap(codeListConnector.WELSH) must be(sampleDmsErrorsWelsh)
+      }
+
+      "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
+        codeListConnector.getDmsErrorCodesMap(JAPANESE) must be(sampleDmsErrorsEnglish)
+      }
+    }
+
+    "return a map of 'Country' codes" when {
+      "'ENGLISH' locale passed return codes with English descriptions" in {
+        codeListConnector.getCountryCodes(ENGLISH) must be(sampleCountriesEnglish)
+      }
+
+      "'WELSH' locale passed return codes with Welsh descriptions" in {
+        codeListConnector.getCountryCodes(codeListConnector.WELSH) must be(sampleCountriesWelsh)
+      }
+
+      "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
+        codeListConnector.getCountryCodes(JAPANESE) must be(sampleCountriesEnglish)
+      }
+    }
   }
 
   private val samplePCsEnglish =
@@ -188,4 +215,15 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     "002" -> HolderOfAuthorisationCode("002", "Welsh"),
     "003" -> HolderOfAuthorisationCode("003", "Welsh")
   )
+
+  private val sampleDmsErrorsEnglish =
+    ListMap("001" -> DmsErrorCode("001", "English"), "002" -> DmsErrorCode("002", "English"), "003" -> DmsErrorCode("003", "English"))
+
+  private val sampleDmsErrorsWelsh =
+    ListMap("001" -> DmsErrorCode("001", "Welsh"), "002" -> DmsErrorCode("002", "Welsh"), "003" -> DmsErrorCode("003", "Welsh"))
+
+  private val sampleCountriesEnglish =
+    ListMap("001" -> Country("English", "001"), "002" -> Country("English", "002"), "003" -> Country("English", "003"))
+
+  private val sampleCountriesWelsh = ListMap("001" -> Country("Welsh", "001"), "002" -> Country("Welsh", "002"), "003" -> Country("Welsh", "003"))
 }

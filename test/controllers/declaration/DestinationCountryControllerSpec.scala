@@ -17,11 +17,12 @@
 package controllers.declaration
 
 import scala.concurrent.ExecutionContext.global
-
 import base.ControllerSpec
+import connectors.CodeListConnector
 import forms.declaration.countries.Country
 import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
+import models.codes.{Country => ModelCountry}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -32,9 +33,12 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.destinationCountries.destination_country
 
+import scala.collection.immutable.ListMap
+
 class DestinationCountryControllerSpec extends ControllerSpec {
 
   val destinationCountryPage = mock[destination_country]
+  val mockCodeListConnector = mock[CodeListConnector]
 
   val controller = new DestinationCountryController(
     mockAuthAction,
@@ -43,17 +47,18 @@ class DestinationCountryControllerSpec extends ControllerSpec {
     navigator,
     stubMessagesControllerComponents(),
     destinationCountryPage
-  )(global)
+  )(global, mockCodeListConnector)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
     when(destinationCountryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("PL" -> ModelCountry("Poland", "PL")))
   }
 
   override protected def afterEach(): Unit = {
-    reset(destinationCountryPage)
+    reset(destinationCountryPage, mockCodeListConnector)
 
     super.afterEach()
   }

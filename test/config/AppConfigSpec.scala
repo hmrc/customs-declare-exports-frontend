@@ -466,6 +466,7 @@ object AppConfigSpec {
       |files.codelists.procedureCodeToAdditionalProcedureCodesLink="procedureCodeToAdditionalProcedureCodesLink"
       |files.codelists.procedureCodeToAdditionalProcedureCodesC21Link="procedureCodeToAdditionalProcedureCodesC21Link"
       |files.codelists.dmsErrorCodes="/code-lists/dmsErrorCodes.json"
+      |files.codelists.countryCodes="/code-lists/countryCodes.json"
       |
       |countryCodesCsvFilename=code-lists/mdg-country-codes.csv
       |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
