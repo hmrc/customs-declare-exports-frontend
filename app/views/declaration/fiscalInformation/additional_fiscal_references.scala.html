@@ -14,14 +14,12 @@
  * limitations under the License.
  *@
 
+@import connectors.CodeListConnector
 @import controllers.declaration.routes._
-@import controllers.navigation.ItemId
-@import controllers.navigation.Navigator
+@import controllers.navigation.{ItemId, Navigator}
+@import forms.common.YesNoAnswer
 @import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, AdditionalFiscalReferencesSummary}
 @import services.Countries
-@import forms.common.YesNoAnswer
-@import services.view.AutoCompleteItem
-@import controllers.navigation.{Navigator, ItemId}
 @import models.requests.JourneyRequest
 @import views.components.gds.Styles._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -31,7 +29,6 @@
 @import scala.collection.immutable
 @import utils.ListItem._
 @import views.helpers.ErrorMapper.yesNoErrors
-@import config.AppConfig
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -49,7 +46,7 @@
         link: link,
         saveButtons: saveButtons,
         formHelper: FormWithCSRF
-)
+)(implicit codeListConnector: CodeListConnector)
 
 @(mode: Mode, itemId:String, form: Form[YesNoAnswer], additionalReferences: Seq[AdditionalFiscalReference])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -74,7 +71,7 @@
             rows = additionalReferences.zipWithIndex.map { case (additionalReference, index) =>
                 Seq(
                     TableRow(
-                        content = Text(additionalReference.countryName),
+                        content = Text(Countries.findByCode(additionalReference.country).asString()),
                         attributes = Map("id" -> s"additional_fiscal_references-row-$index-country")
                     ),
                     TableRow(

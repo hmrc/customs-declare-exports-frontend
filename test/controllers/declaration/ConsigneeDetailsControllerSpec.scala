@@ -17,11 +17,13 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import connectors.CodeListConnector
 import forms.common.Address
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import models.DeclarationType._
 import models.Mode
+import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -32,9 +34,12 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.consignee_details
 
+import scala.collection.immutable.ListMap
+
 class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
   val consigneeDetailsPage = mock[consignee_details]
+  val mockCodeListConnector = mock[CodeListConnector]
 
   val controller = new ConsigneeDetailsController(
     mockAuthAction,
@@ -43,17 +48,18 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     navigator,
     stubMessagesControllerComponents(),
     consigneeDetailsPage
-  )(ec)
+  )(ec, mockCodeListConnector)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
     when(consigneeDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom, Great Britain, Northern Ireland", "GB")))
   }
 
   override protected def afterEach(): Unit = {
-    reset(consigneeDetailsPage)
+    reset(consigneeDetailsPage, mockCodeListConnector)
 
     super.afterEach()
   }

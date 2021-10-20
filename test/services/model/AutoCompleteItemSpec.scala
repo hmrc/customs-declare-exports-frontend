@@ -17,7 +17,7 @@
 package services.model
 
 import base.UnitWithMocksSpec
-import models.codes.{AdditionalProcedureCode, ProcedureCode}
+import models.codes.{AdditionalProcedureCode, Country, ProcedureCode}
 import services.DocumentType
 import services.view.AutoCompleteItem
 

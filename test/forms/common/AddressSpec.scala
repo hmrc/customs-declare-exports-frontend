@@ -17,10 +17,34 @@
 package forms.common
 
 import base.{TestHelper, UnitSpec}
-import org.scalatest.Assertion
+import connectors.CodeListConnector
+import models.codes.Country
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.i18n.Lang
+import play.api.test.Helpers._
 
-class AddressSpec extends UnitSpec {
+import java.util.Locale
+import scala.collection.immutable.ListMap
+
+class AddressSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
   import AddressSpec._
+
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+  implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country(validAddress.country, "GB")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
 
   "Bound Form with Address mapping" should {
 

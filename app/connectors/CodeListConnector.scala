@@ -19,7 +19,7 @@ package connectors
 import akka.util.Helpers.Requiring
 import com.google.inject.ImplementedBy
 import config.AppConfig
-import models.codes.{AdditionalProcedureCode, CommonCode, DmsErrorCode, HolderOfAuthorisationCode, ProcedureCode}
+import models.codes.{AdditionalProcedureCode, CommonCode, Country, DmsErrorCode, HolderOfAuthorisationCode, ProcedureCode}
 import play.api.libs.json.{Json, OFormat}
 import utils.JsonFile
 
@@ -51,6 +51,7 @@ trait CodeListConnector {
   def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode]
   def getAdditionalProcedureCodesMapForC21(locale: Locale): ListMap[String, AdditionalProcedureCode]
   def getDmsErrorCodesMap(locale: Locale): ListMap[String, DmsErrorCode]
+  def getCountryCodes(locale: Locale): ListMap[String, Country]
 
   val WELSH = new Locale("cy", "GB", "");
   val supportedLanguages = Seq(ENGLISH, WELSH)
@@ -89,6 +90,11 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
     (codeItem: CodeItem, locale: Locale) => DmsErrorCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
+  private val countryListByLang = loadCommonCodesAsOrderedMap(
+    appConfig.countryCodes,
+    (codeItem: CodeItem, locale: Locale) => Country(codeItem.getDescriptionByLocale(locale), codeItem.code)
+  )
+
   def getHolderOfAuthorisationCodes(locale: Locale): ListMap[String, HolderOfAuthorisationCode] =
     holderOfAuthorisationCodeListsByLang.getOrElse(locale.getLanguage, holderOfAuthorisationCodeListsByLang.value.head._2)
 
@@ -106,6 +112,9 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
 
   def getDmsErrorCodesMap(locale: Locale): ListMap[String, DmsErrorCode] =
     dmsErrorCodeMapsByLang.getOrElse(locale.getLanguage, dmsErrorCodeMapsByLang.value.head._2)
+
+  def getCountryCodes(locale: Locale): ListMap[String, Country] =
+    countryListByLang.getOrElse(locale.getLanguage, countryListByLang.value.head._2)
 
   private def loadCommonCodesAsOrderedMap[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T): CodeMap[T] = {
     val codeList = JsonFile.getJsonArrayFromFile(srcFile, CodeItem.formats)

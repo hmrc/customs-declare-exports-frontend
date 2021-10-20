@@ -16,10 +16,35 @@
 
 package forms.declaration
 
+import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
+import models.codes.Country
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.i18n.Lang
+import play.api.test.Helpers.stubMessagesApi
 
-class AdditionalFiscalReferenceSpec extends DeclarationPageBaseSpec {
+import java.util.Locale
+import scala.collection.immutable.ListMap
+
+class AdditionalFiscalReferenceSpec extends DeclarationPageBaseSpec with MockitoSugar with BeforeAndAfterEach {
   import AdditionalFiscalReferenceSpec._
+
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+  implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("FR" -> Country("France", "FR")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
 
   "Bound form with AdditionalFiscalReference mapping" should {
 

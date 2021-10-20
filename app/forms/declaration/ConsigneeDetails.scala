@@ -15,10 +15,12 @@
  */
 
 package forms.declaration
+import connectors.CodeListConnector
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 
 case class ConsigneeDetails(details: EntityDetails)
@@ -28,9 +30,10 @@ object ConsigneeDetails extends DeclarationPage {
 
   val id = "ConsigneeDetails"
 
-  val mapping = Forms.mapping("details" -> EntityDetails.addressMapping)(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
+  def mapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+    Forms.mapping("details" -> EntityDetails.addressMapping())(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
 
-  def form(): Form[ConsigneeDetails] = Form(mapping)
+  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsigneeDetails] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.consigneeDetails.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

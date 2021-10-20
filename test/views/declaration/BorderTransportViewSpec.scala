@@ -17,10 +17,15 @@
 package views.declaration
 
 import base.Injector
+import connectors.CodeListConnector
 import forms.declaration.BorderTransport
 import models.Mode
+import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -29,10 +34,26 @@ import views.helpers.CommonMessages
 import views.html.declaration.border_transport
 import views.tags.ViewTest
 
+import scala.collection.immutable.ListMap
+
 @ViewTest
-class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with CommonMessages {
+class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with CommonMessages with BeforeAndAfterEach {
 
   private val page = instanceOf[border_transport]
+
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
+
   private val form: Form[BorderTransport] = BorderTransport.form()
 
   def borderView(view: Document): Unit = {

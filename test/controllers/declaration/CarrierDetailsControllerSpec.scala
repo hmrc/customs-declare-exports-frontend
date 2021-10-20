@@ -17,11 +17,13 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import connectors.CodeListConnector
 import forms.common.Address
 import forms.declaration.EntityDetails
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType._
 import models.Mode
+import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -32,9 +34,12 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.carrier_details
 
+import scala.collection.immutable.ListMap
+
 class CarrierDetailsControllerSpec extends ControllerSpec {
 
   val mockCarrierDetailsPage = mock[carrier_details]
+  val mockCodeListConnector = mock[CodeListConnector]
 
   val controller = new CarrierDetailsController(
     mockAuthAction,
@@ -43,19 +48,20 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
     navigator,
     stubMessagesControllerComponents(),
     mockCarrierDetailsPage
-  )(ec)
+  )(ec, mockCodeListConnector)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
     when(mockCarrierDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom, Great Britain, Northern Ireland", "GB")))
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
 
-    reset(mockCarrierDetailsPage)
+    reset(mockCarrierDetailsPage, mockCodeListConnector)
   }
 
   def theResponseForm: Form[CarrierDetails] = {

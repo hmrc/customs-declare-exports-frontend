@@ -16,11 +16,13 @@
 
 package forms.declaration.carrier
 
+import connectors.CodeListConnector
 import forms.DeclarationPage
 import forms.declaration.EntityDetails
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 
 case class CarrierDetails(details: EntityDetails)
@@ -30,13 +32,17 @@ object CarrierDetails extends DeclarationPage {
 
   val id = "CarrierDetails"
 
-  val defaultMapping = Forms.mapping("details" -> EntityDetails.addressMapping)(CarrierDetails.apply)(CarrierDetails.unapply)
-  val optionalMapping = Forms.mapping("details" -> EntityDetails.optionalAddressMapping)(CarrierDetails.apply)(CarrierDetails.unapply)
+  def defaultMapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+    Forms.mapping("details" -> EntityDetails.addressMapping())(CarrierDetails.apply)(CarrierDetails.unapply)
 
-  def form(declarationType: DeclarationType): Form[CarrierDetails] = declarationType match {
-    case CLEARANCE => Form(optionalMapping)
-    case _         => Form(defaultMapping)
-  }
+  def optionalMapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+    Forms.mapping("details" -> EntityDetails.optionalAddressMapping())(CarrierDetails.apply)(CarrierDetails.unapply)
+
+  def form(declarationType: DeclarationType)(implicit messages: Messages, codeListConnector: CodeListConnector): Form[CarrierDetails] =
+    declarationType match {
+      case CLEARANCE => Form(optionalMapping)
+      case _         => Form(defaultMapping)
+    }
 
   def from(carrierEoriDetails: CarrierEoriNumber, savedCarrierDetails: Option[CarrierDetails]): CarrierDetails =
     carrierEoriDetails.eori match {

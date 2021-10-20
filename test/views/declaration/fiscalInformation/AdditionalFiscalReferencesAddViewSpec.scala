@@ -17,12 +17,17 @@
 package views.declaration.fiscalInformation
 
 import base.Injector
+import connectors.CodeListConnector
 import controllers.helpers.{SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalFiscalReference
 import models.DeclarationType._
 import models.Mode
+import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import services.cache.{ExportItemIdGeneratorService, ExportsTestData}
 import tools.Stubs
@@ -31,8 +36,24 @@ import views.helpers.CommonMessages
 import views.html.declaration.fiscalInformation.additional_fiscal_references_add
 import views.tags.ViewTest
 
+import scala.collection.immutable.ListMap
+
 @ViewTest
-class AdditionalFiscalReferencesAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class AdditionalFiscalReferencesAddViewSpec
+    extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector with BeforeAndAfterEach {
+
+  implicit val mockCodeListConnector = mock[CodeListConnector]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockCodeListConnector)
+    super.afterEach()
+  }
 
   private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
 
