@@ -36,7 +36,7 @@ case class Confirmation(
   submissionId: String,
   ducr: Option[String],
   lrn: Option[String],
-  notification: Notification
+  notification: Option[Notification]
 )
 
 @Singleton
@@ -51,28 +51,28 @@ class ConfirmationHelper @Inject()(
   paragraph: paragraphBody
 ) {
 
-  def content(maybeConfirmation: Option[Confirmation])(implicit messages: Messages): Html = {
-    maybeConfirmation match {
-      case Some(confirmation) if confirmation.notification.isStatusDMSRcv         => received()(confirmation, messages)
-      case Some(confirmation) if confirmation.notification.isStatusDMSAcc         => accepted()(confirmation, messages)
-      case Some(confirmation) if confirmation.notification.isStatusDMSDocOrDMSCtl => needsDocuments()(confirmation, messages)
-      case _ => other
+  def content(confirmation: Confirmation)(implicit messages: Messages): Html = {
+    confirmation.notification match {
+      case Some(notification) if notification.isStatusDMSRcv         => received()(confirmation, notification, messages)
+      case Some(notification) if notification.isStatusDMSAcc         => accepted()(confirmation, notification, messages)
+      case Some(notification) if notification.isStatusDMSDocOrDMSCtl => needsDocuments()(confirmation, notification, messages)
+      case _ => other()(confirmation, messages)
     }
   }
 
-  def title(maybeConfirmation: Option[Confirmation]): String = {
-    maybeConfirmation match {
-      case Some(confirmation) if confirmation.notification.isStatusDMSRcv         => "declaration.confirmation.received.title"
-      case Some(confirmation) if confirmation.notification.isStatusDMSAcc         => "declaration.confirmation.accepted.title"
-      case Some(confirmation) if confirmation.notification.isStatusDMSDocOrDMSCtl => "declaration.confirmation.needsDocument.title"
+  def title(confirmation: Confirmation): String = {
+    confirmation.notification match {
+      case Some(notification) if notification.isStatusDMSRcv         => "declaration.confirmation.received.title"
+      case Some(notification) if notification.isStatusDMSAcc         => "declaration.confirmation.accepted.title"
+      case Some(notification) if notification.isStatusDMSDocOrDMSCtl => "declaration.confirmation.needsDocument.title"
       case _ => "declaration.confirmation.other.title"
     }
   }
 
-  private def accepted()(implicit confirmation: Confirmation, messages: Messages): Html =
+  private def accepted()(implicit confirmation: Confirmation, notification: Notification, messages: Messages): Html =
     new Html(List(panel, body, whatHappensNext, List(exitSurvey())).flatten)
 
-  private def needsDocuments()(implicit confirmation: Confirmation, messages: Messages): Html = {
+  private def needsDocuments()(implicit confirmation: Confirmation, notification: Notification, messages: Messages): Html = {
     val title = pageTitle(messages("declaration.confirmation.needsDocument.title"))
     val warning = govukWarningText(WarningText(
       iconFallbackText = messages("site.warning"),
@@ -82,10 +82,12 @@ class ConfirmationHelper @Inject()(
     new Html(List(title, warning, body1, body2))
   }
 
-  private def other(implicit messages: Messages): Html = {
+  private def other()(implicit confirmation: Confirmation, messages: Messages): Html = {
     val title = pageTitle(messages("declaration.confirmation.other.title"))
     val body1 = paragraph(messages(
       s"declaration.confirmation.other.body.1",
+      confirmation.ducr.fold("")(d => s" ${messages("declaration.confirmation.body.1.ducr", d)}"),
+      confirmation.lrn.fold("")(l => s" ${messages("declaration.confirmation.body.1.lrn", l)}"),
       link(messages("declaration.confirmation.other.body.1.link"), SubmissionsController.displayListOfSubmissions())
     ))
     val body2 = paragraph(messages(s"declaration.confirmation.other.body.2"))
@@ -93,35 +95,36 @@ class ConfirmationHelper @Inject()(
     new Html(List(title, body1, body2))
   }
 
-  private def received()(implicit confirmation: Confirmation, messages: Messages): Html =
+  private def received()(implicit confirmation: Confirmation, notification: Notification, messages: Messages): Html =
     new Html(List(panel, body, whatHappensNext, List(exitSurvey())).flatten)
 
-  private def body(implicit confirmation: Confirmation, messages: Messages): List[Html] = List(body1, body2)
+  private def body(implicit confirmation: Confirmation, notification: Notification, messages: Messages): List[Html] =
+    List(body1, body2)
 
-  private def body1(implicit confirmation: Confirmation, messages: Messages): Html =
+  private def body1(implicit confirmation: Confirmation, notification: Notification, messages: Messages): Html =
     paragraph(messages(
       "declaration.confirmation.body.1",
       confirmation.ducr.fold("")(ducr => s" ${messages("declaration.confirmation.body.1.ducr", ducr)}"),
       confirmation.lrn.fold("")(lrn => s" ${messages("declaration.confirmation.body.1.lrn", lrn)}"),
-      confirmation.notification.mrn
+      notification.mrn
     ))
 
-  private def body2(implicit confirmation: Confirmation, messages: Messages): Html =
+  private def body2(implicit confirmation: Confirmation, notification: Notification, messages: Messages): Html =
     paragraph(messages(
       s"declaration.confirmation$docOrCtl.body.2",
       link(messages("declaration.confirmation.declaration.details.link"), declarationDetailsRoute)
     ))
 
-  private def panel(implicit confirmation: Confirmation, messages: Messages): List[Html] =
+  private def panel(implicit confirmation: Confirmation, notification: Notification, messages: Messages): List[Html] =
     List(govukPanel(Panel(
       title = Text(messages(s"declaration.confirmation.$accOrRcv.title")),
-      content = HtmlContent(messages("declaration.confirmation.mrn", confirmation.notification.mrn))
+      content = HtmlContent(messages("declaration.confirmation.mrn", notification.mrn))
     )))
 
-  private def whatHappensNext(implicit confirmation: Confirmation, messages: Messages): List[Html] = {
+  private def whatHappensNext(implicit confirmation: Confirmation, notification: Notification, messages: Messages): List[Html] = {
     val acceptanceTime =
-      if (confirmation.notification.isStatusDMSRcv) None
-      else Some(formatTimeDate(confirmation.notification.dateTimeIssued))
+      if (notification.isStatusDMSRcv) None
+      else Some(formatTimeDate(notification.dateTimeIssued))
 
     val next2Args = List(
       acceptanceTime,
@@ -139,11 +142,11 @@ class ConfirmationHelper @Inject()(
     )
   }
 
-  private def accOrRcv(implicit confirmation: Confirmation): String =
-    if (confirmation.notification.isStatusDMSRcv) "received" else "accepted"
+  private def accOrRcv(implicit confirmation: Confirmation, notification: Notification): String =
+    if (notification.isStatusDMSRcv) "received" else "accepted"
 
-  private def docOrCtl(implicit confirmation: Confirmation): String =
-    if (confirmation.notification.isStatusDMSDocOrDMSCtl) ".needsDocument" else ""
+  private def docOrCtl(implicit confirmation: Confirmation, notification: Notification): String =
+    if (notification.isStatusDMSDocOrDMSCtl) ".needsDocument" else ""
 
   private def declarationDetailsRoute(implicit confirmation: Confirmation): Call =
     DeclarationDetailsController.displayPage(confirmation.submissionId)

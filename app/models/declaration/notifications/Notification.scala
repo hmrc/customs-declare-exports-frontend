@@ -39,8 +39,6 @@ case class Notification(actionId: String, mrn: String, dateTimeIssued: ZonedDate
 
   lazy val isStatusDMSRej: Boolean = status == REJECTED
 
-  lazy val hasStatusForConfirmationPage: Boolean = isStatusDMSAcc || isStatusDMSRcv || isStatusDMSDocOrDMSCtl
-
   lazy val dateTimeIssuedInUK: ZonedDateTime = dateTimeIssued.withZoneSameInstant(ZoneId.of("Europe/London"))
 }
 

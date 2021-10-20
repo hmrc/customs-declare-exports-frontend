@@ -82,11 +82,13 @@ class ConfirmationController @Inject()(
         case Some(notification) if notification.isStatusDMSRej =>
           Future.successful(Redirect(RejectedNotificationsController.displayPage(submissionId)))
 
-        case Some(notification) if notification.hasStatusForConfirmationPage =>
-          val confirmation = Confirmation(request.email, submissionId, extractDucr, extractLrn, notification)
-          Future.successful(Ok(submissionConfirmationPage(Some(confirmation))))
+        case Some(notification) =>
+          val confirmation = Confirmation(request.email, submissionId, extractDucr, extractLrn, Some(notification))
+          Future.successful(Ok(submissionConfirmationPage(confirmation)))
 
-        case _ => Future.successful(Ok(submissionConfirmationPage(None)))
+        case _ =>
+          val confirmation = Confirmation(request.email, submissionId, extractDucr, extractLrn, None)
+          Future.successful(Ok(submissionConfirmationPage(confirmation)))
       }
     }
   }

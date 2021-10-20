@@ -1847,7 +1847,7 @@ declaration.confirmation.needsDocument.warning = You need to upload documents re
 declaration.confirmation.needsDocument.body.2 = Check the requirements and upload documents from {0}.
 
 declaration.confirmation.other.title = Your declaration is still being checked
-declaration.confirmation.other.body.1 = Go to {0} to find out the status of this declaration and see if you need to take any action.
+declaration.confirmation.other.body.1 = Your declaration{0}{1} will be given a movement reference number shortly. Go to {2} to find out the status of this declaration and see if you need to take any action.
 declaration.confirmation.other.body.1.link = Your declarations
 declaration.confirmation.other.body.2 = The result should be available immediately or within a few minutes.
 

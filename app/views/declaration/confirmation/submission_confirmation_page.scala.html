@@ -22,9 +22,9 @@
   confirmationHelper: ConfirmationHelper
 )
 
-@(maybeConfirmation: Option[Confirmation])(implicit request: Request[_], messages: Messages)
+@(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title(confirmationHelper.title(maybeConfirmation))) {
+@govukLayout(title = Title(confirmationHelper.title(confirmation))) {
 
-    @confirmationHelper.content(maybeConfirmation)
+    @confirmationHelper.content(confirmation)
 }
