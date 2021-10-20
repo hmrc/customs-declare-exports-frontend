@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration.confirmation
+package views.declaration
 
 import java.time.{LocalDateTime, ZoneOffset}
 
@@ -25,13 +25,13 @@ import play.twirl.api.Html
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.declaration.confirmation.draft_confirmation_page
+import views.html.declaration.draft_declaration_page
 import views.tags.ViewTest
 
 @ViewTest
-class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class DraftDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val page = instanceOf[draft_confirmation_page]
+  private val page = instanceOf[draft_declaration_page]
   private def createView(flash: (String, String)*): Html = page()(request, Flash(Map(flash: _*)), messages)
 
   "View" should {

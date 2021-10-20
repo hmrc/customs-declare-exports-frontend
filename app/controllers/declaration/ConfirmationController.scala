@@ -30,7 +30,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.Confirmation
-import views.html.declaration.confirmation._
+import views.html.declaration.confirmation.{holding_confirmation_page, submission_confirmation_page}
 
 class ConfirmationController @Inject()(
   authenticate: AuthAction,
@@ -38,14 +38,9 @@ class ConfirmationController @Inject()(
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   errorHandler: ErrorHandler,
-  draftConfirmationPage: draft_confirmation_page,
   holdingConfirmationPage: holding_confirmation_page,
   submissionConfirmationPage: submission_confirmation_page
 )(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with Logging {
-
-  val displayDraftConfirmation: Action[AnyContent] = authenticate { implicit request =>
-    Ok(draftConfirmationPage())
-  }
 
   val displayHoldingConfirmation: Action[AnyContent] = authenticate.async { implicit request =>
     request.getQueryString(js) match {

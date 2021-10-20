@@ -29,8 +29,11 @@
 
 @(urlOnJavaScriptDisabled: String, urlOnJavaScriptEnabled: String)(implicit request: Request[_], messages: Messages)
 
+@pollingEverySeconds = @{ 5 }
+@pollingEveryMillisecs = @{ pollingEverySeconds * 1000 }
+
 @headContentOnJavaScriptDisabled = {
-    <meta http-equiv="refresh" content="5; url=@urlOnJavaScriptDisabled" />
+    <meta http-equiv="refresh" content="@pollingEverySeconds; url=@urlOnJavaScriptDisabled" />
 }
 
 @govukLayout(
@@ -50,12 +53,12 @@
   function redirect() { window.location.href = "@{ConfirmationController.displaySubmissionConfirmation.url}"; }
 
   function hasNotifications() {
-    $.ajax({ cache: false, timeout: 5000, url: "@urlOnJavaScriptEnabled" })
+    $.ajax({ cache: false, timeout: @pollingEveryMillisecs, url: "@urlOnJavaScriptEnabled" })
       .done(function() { redirect(); })
-      .fail(function() { setTimeout(redirect(), 5000); });
+      .fail(function() { setTimeout(redirect(), @pollingEveryMillisecs); });
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(hasNotifications, 5000);
+    setTimeout(hasNotifications, @pollingEveryMillisecs);
   }, false);
 </script>
