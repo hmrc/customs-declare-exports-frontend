@@ -70,6 +70,7 @@
             classes = "govuk-radios--inline",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
+                    isPageHeading = true,
                     content = Text(messages("declaration.declarant.title", request.eori)),
                     classes = gdsPageLegend
                 ))
