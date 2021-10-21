@@ -29,7 +29,7 @@ import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -54,6 +54,20 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
 
         "provided with valid input (lowercase DUCR)" in {
           getBoundedForm(correctConsignmentReferencesLowercaseDucrJSON).hasErrors mustBe false
+        }
+
+        "provided with valid input (spaces top and tail of LRN)" in {
+          val form = getBoundedForm(correctConsignmentReferencesLrnWithUntrimmmedSpacesJSON)
+
+          println(form.errors)
+          form.hasErrors mustBe false
+        }
+
+        "provided with valid input (LRN with spaces)" in {
+          val form = getBoundedForm(correctConsignmentReferencesLrnWithSpacesJSON)
+
+          println(form.errors)
+          form.hasErrors mustBe false
         }
       }
 
@@ -326,31 +340,29 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
 
 object ConsignmentReferencesSpec {
 
-  val emptyJSON: JsValue = JsObject(Map("" -> JsString("")))
+  val emptyJSON: JsValue = Json.obj("" -> "")
 
   val correctConsignmentReferences = ConsignmentReferences(ducr = Ducr(ducr = ducr), lrn = Lrn(lrn))
   val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(lrn))
   val emptyConsignmentReferences = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(""))
 
   def addMrnToJSON(data: JsValue, mrn: String): JsValue =
-    data.asInstanceOf[JsObject].deepMerge(JsObject(Map("mrn" -> JsString(mrn))))
+    data.asInstanceOf[JsObject].deepMerge(Json.obj("mrn" -> mrn))
 
   def addEidrToJSON(data: JsValue, eidrDateStamp: String): JsValue =
-    data.asInstanceOf[JsObject].deepMerge(JsObject(Map("eidrDateStamp" -> JsString(eidrDateStamp))))
+    data.asInstanceOf[JsObject].deepMerge(Json.obj("eidrDateStamp" -> eidrDateStamp))
 
-  val correctConsignmentReferencesJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString(lrn)))
+  val correctConsignmentReferencesJSON: JsValue = Json.obj("ducr" -> Json.obj("ducr" -> ducr), "lrn" -> lrn)
 
-  val correctConsignmentReferencesLowercaseDucrJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr.toLowerCase))), "lrn" -> JsString(lrn))
-  )
-  val consignmentReferencesNoDucrJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString(lrn)))
-  val consignmentReferencesNoLrnJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString("")))
-  val consignmentReferencesLrnTooLongJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString("12345678901234567890123"))
-  )
-  val consignmentReferencesBadLrnJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString(s"${lrn}*")))
-  val consignmentReferencesLrnBadAndTooLongJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(ducr))), "lrn" -> JsString("1234567890123456789012*"))
-  )
-  val emptyConsignmentReferencesJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString("")))
+  val correctConsignmentReferencesLrnWithUntrimmmedSpacesJSON: JsValue = Json.obj("ducr" -> Json.obj("ducr" -> ducr), "lrn" -> s" $lrn ")
+  val correctConsignmentReferencesLrnWithSpacesJSON: JsValue = Json.obj("ducr" -> Json.obj("ducr" -> ducr), "lrn" -> lrnWithSpaces)
+  val correctConsignmentReferencesLowercaseDucrJSON: JsValue = Json.obj("ducr" -> Json.obj("ducr" -> ducr.toLowerCase), "lrn" -> lrn)
+
+  val consignmentReferencesNoDucrJSON: JsValue = Json.obj("ducr" -> Json.obj("ducr" -> ""), "lrn" -> lrn)
+  val consignmentReferencesNoLrnJSON: JsValue = Json.obj("ducr" -> Json.obj("ducr" -> ducr), "lrn" -> "")
+  val consignmentReferencesBadLrnJSON: JsValue = Json.obj("ducr" -> Json.obj("ducr" -> ducr), "lrn" -> s"${lrn}*")
+  val consignmentReferencesLrnTooLongJSON: JsValue = Json.obj("ducr" -> Json.obj("ducr" -> ducr), "lrn" -> "12345678901234567890123")
+  val consignmentReferencesLrnBadAndTooLongJSON: JsValue = Json.obj("ducr" -> Json.obj("ducr" -> ducr), "lrn" -> "1234567890123456789012*")
+
+  val emptyConsignmentReferencesJSON: JsValue = Json.obj("ducr" -> Json.obj("ducr" -> ""), "lrn" -> "")
 }
