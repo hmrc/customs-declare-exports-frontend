@@ -94,26 +94,27 @@
     }
 
     @navigationBanner
+
+    <div class="govuk-back-link-div">
+        @backButton.map(back =>
+            govukBackLink(BackLink(
+                content = Text(back.title),
+                attributes = Map("id" -> "back-link"),
+                classes = "govuk-!-display-none-print",
+                href = back.call.url
+            ))
+        )
+    </div>
 }
 
 @content = {
-  <div class="govuk-back-link-div">
-    @backButton.map(back =>
-        govukBackLink(BackLink(
-            content = Text(back.title),
-            attributes = Map("id" -> "back-link"),
-            classes = "govuk-!-display-none-print",
-            href = back.call.url
-        ))
+    @contentBlock
+    @hmrcReportTechnicalIssue(
+        ReportTechnicalIssue(
+            serviceCode = appConfig.appName,
+            language = if(messages.lang.code == "en") En else Cy)
     )
-    </div>
-@contentBlock
-@hmrcReportTechnicalIssue(
-    ReportTechnicalIssue(
-        serviceCode = appConfig.appName,
-        language = if(messages.lang.code == "en") En else Cy)
-)
-    }
+}
 
 @if(useCustomContentWidth) {
     @govukFlexibleLayout(
