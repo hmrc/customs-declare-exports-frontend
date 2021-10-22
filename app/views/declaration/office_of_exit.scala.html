@@ -59,7 +59,8 @@
             labelClass = Some("govuk-visually-hidden"),
             hintParagraphs = List(messages("declaration.officeOfExit.hint")),
             emptySelectValue = messages("declaration.officeOfExit.empty"),
-            items = AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
+            items = AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all),
+            isPageHeading = false
         )
 
         @tariffExpander(OfficeOfExit, request.declarationType)(messages, appConfig)

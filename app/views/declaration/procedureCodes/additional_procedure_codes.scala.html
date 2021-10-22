@@ -96,6 +96,7 @@
       labelClass = Some("govuk-visually-hidden"),
       emptySelectValue = messages("declaration.additionalProcedureCodes.error.empty"),
       items = AutoCompleteItem.fromAdditionalProcedureCodes(validAdditionalProcedureCodes.toList),
+      isPageHeading = false,
       rightElement = Some(addButton(hiddenLabel = Some(messages("declaration.additionalProcedureCodes.add.hint"))))
     )
 
