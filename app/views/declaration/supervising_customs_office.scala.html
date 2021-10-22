@@ -60,8 +60,7 @@
             label = messages("declaration.warehouse.supervisingCustomsOffice.title"),
             labelClass = Some("govuk-visually-hidden"),
             emptySelectValue = messages("declaration.warehouse.supervisingCustomsOffice.label"),
-            items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all),
-            isPageHeading = false
+            items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all)
         )
 
         @tariffExpander(SupervisingCustomsOffice, request.declarationType)(messages, appConfig)

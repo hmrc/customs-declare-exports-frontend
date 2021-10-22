@@ -92,8 +92,7 @@
             emptySelectValue = messages("declaration.procedureCodes.empty"),
             items = AutoCompleteItem.fromProcedureCodes(procedureCodeService.getProcedureCodesFor(
                 request.declarationType, request.cacheModel.isEntryIntoDeclarantsRecords, messages.lang.toLocale
-            ).toList),
-            isPageHeading = false
+            ).toList)
         )
       
         @if(!(request.declarationType == DeclarationType.CLEARANCE && request.cacheModel.isNotEntryIntoDeclarantsRecords)) {
