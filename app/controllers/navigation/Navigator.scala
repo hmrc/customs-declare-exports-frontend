@@ -83,6 +83,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
 
 case class ItemId(id: String)
 
+// scalastyle: off
 object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {

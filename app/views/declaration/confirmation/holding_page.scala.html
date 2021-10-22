@@ -50,7 +50,7 @@
 <script src='@Assets.versioned("javascripts/jquery-3.6.0.min.js")'></script>
 
 <script type="text/javascript">
-  function redirect() { window.location.href = "@{ConfirmationController.displaySubmissionConfirmation.url}"; }
+  function redirect() { window.location.href = "@{ConfirmationController.displayConfirmationPage.url}"; }
 
   function hasNotifications() {
     $.ajax({ cache: false, timeout: @pollingEveryMillisecs, url: "@urlOnJavaScriptEnabled" })

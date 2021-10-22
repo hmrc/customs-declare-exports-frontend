@@ -70,7 +70,7 @@ class SummaryController @Inject()(
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(submission) =>
-              Redirect(routes.ConfirmationController.displayHoldingConfirmation).withSession(session(submission))
+              Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
 
             case _ => handleError(s"Error from Customs Declarations API")
           }

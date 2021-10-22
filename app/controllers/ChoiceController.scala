@@ -62,11 +62,11 @@ class ChoiceController @Inject()(
         (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors, availableJourneys)),
         choice =>
           (choice.value match {
-            case CreateDec =>    Redirect(declaration.routes.DeclarationChoiceController.displayPage())
-            case ContinueDec =>  Redirect(routes.SavedDeclarationsController.displayDeclarations())
-            case CancelDec =>    Redirect(routes.CancelDeclarationController.displayPage())
-            case Submissions =>  Redirect(routes.SubmissionsController.displayListOfSubmissions())
-            case Inbox =>        Redirect(routes.SecureMessagingController.displayInbox)
+            case CreateDec   => Redirect(declaration.routes.DeclarationChoiceController.displayPage())
+            case ContinueDec => Redirect(routes.SavedDeclarationsController.displayDeclarations())
+            case CancelDec   => Redirect(routes.CancelDeclarationController.displayPage())
+            case Submissions => Redirect(routes.SubmissionsController.displayListOfSubmissions())
+            case Inbox       => Redirect(routes.SecureMessagingController.displayInbox)
           }).removingFromSession(ExportsSessionKeys.declarationId)
       )
   }

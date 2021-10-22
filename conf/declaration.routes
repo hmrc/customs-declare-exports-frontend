@@ -500,9 +500,9 @@ POST        /summary                             controllers.declaration.Summary
 
 # Confirmation
 
-GET         /holding                             controllers.declaration.ConfirmationController.displayHoldingConfirmation
+GET         /holding                             controllers.declaration.ConfirmationController.displayHoldingPage
 
-GET         /confirmation                        controllers.declaration.ConfirmationController.displaySubmissionConfirmation
+GET         /confirmation                        controllers.declaration.ConfirmationController.displayConfirmationPage
 
 # Others
 

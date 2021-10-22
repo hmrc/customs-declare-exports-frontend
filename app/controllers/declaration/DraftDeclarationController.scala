@@ -23,11 +23,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.draft_declaration_page
 
-class DraftDeclarationController @Inject()(
-  authenticate: AuthAction,
-  mcc: MessagesControllerComponents,
-  draftDeclarationPage: draft_declaration_page
-) extends FrontendController(mcc) with I18nSupport {
+class DraftDeclarationController @Inject()(authenticate: AuthAction, mcc: MessagesControllerComponents, draftDeclarationPage: draft_declaration_page)
+    extends FrontendController(mcc) with I18nSupport {
 
   val displayPage: Action[AnyContent] = authenticate { implicit request =>
     Ok(draftDeclarationPage())

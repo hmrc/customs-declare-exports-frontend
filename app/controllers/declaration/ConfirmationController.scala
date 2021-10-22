@@ -30,7 +30,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.Confirmation
-import views.html.declaration.confirmation.{holding_confirmation_page, submission_confirmation_page}
+import views.html.declaration.confirmation.{confirmation_page, holding_page}
 
 class ConfirmationController @Inject()(
   authenticate: AuthAction,
@@ -38,37 +38,40 @@ class ConfirmationController @Inject()(
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   errorHandler: ErrorHandler,
-  holdingConfirmationPage: holding_confirmation_page,
-  submissionConfirmationPage: submission_confirmation_page
-)(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with Logging {
+  holdingPage: holding_page,
+  confirmationPage: confirmation_page
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with Logging {
 
-  val displayHoldingConfirmation: Action[AnyContent] = authenticate.async { implicit request =>
+  val displayHoldingPage: Action[AnyContent] = authenticate.async { implicit request =>
     request.getQueryString(js) match {
 
       // Show page at /holding and wait a few secs.
       case None =>
-        val holdingUrl = routes.ConfirmationController.displayHoldingConfirmation.url
-        Future.successful(Ok(holdingConfirmationPage(s"$holdingUrl?$js=$Disabled", s"$holdingUrl?$js=$Enabled")))
+        val holdingUrl = routes.ConfirmationController.displayHoldingPage.url
+        Future.successful(Ok(holdingPage(s"$holdingUrl?$js=$Disabled", s"$holdingUrl?$js=$Enabled")))
 
       // Javascript disabled. 1st check if at least 1 notification was sent in response of the submission.
-      case Some(Disabled) => hasNotification.map {
-        case true => Redirect(routes.ConfirmationController.displaySubmissionConfirmation)
-        case false => Ok(holdingConfirmationPage(routes.ConfirmationController.displaySubmissionConfirmation.url, ""))
-      }
+      case Some(Disabled) =>
+        hasNotification.map {
+          case true  => Redirect(routes.ConfirmationController.displayConfirmationPage)
+          case false => Ok(holdingPage(routes.ConfirmationController.displayConfirmationPage.url, ""))
+        }
 
       // Javascript enabled. 1st check if at least 1 notification was sent in response of the submission.
-      case Some(Enabled) => hasNotification.map {
-        case true => Ok("found")
-        case false => BadRequest("not confirmed yet")
-      }
+      case Some(Enabled) =>
+        hasNotification.map {
+          case true  => Ok("found")
+          case false => NotFound("not confirmed yet")
+        }
 
       case Some(_) =>
         logger.warn("Unknown value for query parameter 'js'. Can only be 'disabled' or 'enabled'.")
-        Future.successful(BadRequest(errorHandler.globalErrorPage))
+        errorHandler.displayErrorPage
     }
   }
 
-  val displaySubmissionConfirmation: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  val displayConfirmationPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     extractSubmissionId.fold {
       logger.warn("Session on /confirmation does not include the submission's uuid!?")
       Future.successful(Redirect(SubmissionsController.displayListOfSubmissions()))
@@ -79,11 +82,11 @@ class ConfirmationController @Inject()(
 
         case Some(notification) =>
           val confirmation = Confirmation(request.email, submissionId, extractDucr, extractLrn, Some(notification))
-          Future.successful(Ok(submissionConfirmationPage(confirmation)))
+          Future.successful(Ok(confirmationPage(confirmation)))
 
         case _ =>
           val confirmation = Confirmation(request.email, submissionId, extractDucr, extractLrn, None)
-          Future.successful(Ok(submissionConfirmationPage(confirmation)))
+          Future.successful(Ok(confirmationPage(confirmation)))
       }
     }
   }
