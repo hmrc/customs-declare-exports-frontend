@@ -81,7 +81,7 @@
             radioOption("aircraftRegistrationNumber", AircraftRegistrationNumber),
             radioOption("europeanVesselIDNumber", EuropeanVesselIDNumber),
             radioOption("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel),
-            radioOption("vehicleRegistrationNumber", VehicleRegistrationNumber)
+            radioOption("vehicleRegistrationNumberROI", VehicleRegistrationNumber)
         ),
         errorMessage = form("borderTransportType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
     ))
@@ -92,7 +92,7 @@
         field = form("borderTransportNationality"),
         label = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header"),
         emptySelectValue = messages("declaration.address.country.empty"),
-        items = AutoCompleteItem.fromCountry(getListOfAllCountries()))
+        items = AutoCompleteItem.fromCountry(getListOfAllCountries())
     )
 }
 
