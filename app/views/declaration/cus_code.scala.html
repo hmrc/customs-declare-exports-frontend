@@ -33,6 +33,7 @@
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
+        heading: heading,
         exportsInputText: exportsInputText,
         insetText: exportsInsetText,
         link: link,
@@ -54,17 +55,24 @@
         @errorSummary(radioGroupErrors(hasCusCodeKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
+        @heading(messages("declaration.cusCode.header"))
+
+        @body(messages(
+            "declaration.cusCode.paragraph",
+            link(
+                messages("declaration.cusCode.paragraph.link"),
+                Call("GET", appConfig.ecicsToolUrl),
+                "_blank"
+            )
+        ))
 
         @govukRadios(Radios(
             name = hasCusCodeKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.cusCode.header")),
-                    classes = gdsPageLegend
+                    classes = "govuk-visually-hidden"
                 ))
-            )),
-            hint = Some(Hint(
-                content = HtmlContent(Html(messages("declaration.cusCode.header.hint")))
             )),
             items = Seq(
                 RadioItem(
@@ -88,12 +96,6 @@
             ),
             errorMessage = form(hasCusCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @insetText(
-            content = HtmlContent(messages("declaration.cusCode.inset.text",
-                link(text = messages("declaration.cusCode.header.ecicsTool.link"), call = Call("GET", appConfig.ecicsToolUrl), target="_blank")
-            ))
-        )
 
         @tariffExpander(CusCode, request.declarationType)(messages, appConfig)
 

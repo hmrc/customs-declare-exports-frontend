@@ -45,16 +45,6 @@
 
 @(mode: Mode, form: Form[ExporterDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
-@pageHint = {
-    <span class="govuk-hint">
-        @messages("declaration.exporter-address.title.hint")
-    </span>
-}
-
-@or = {
-    <p class="govuk-body">Or</p>
-}
-
 @groupAddress = {
     @group_address(form,"declaration.address","details.address")
 }
@@ -69,8 +59,6 @@
         @sectionHeader(messages("declaration.section.2"))
 
         @pageTitle(messages("declaration.exporter-address.title"))
-
-        @pageHint
 
         @govukFieldset(Fieldset(
             attributes = Map("id" -> "details"),

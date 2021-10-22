@@ -44,7 +44,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
     val view = createView()
 
     "display page title" in {
-      view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.transportInformation.containers.first.title")
+      view.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.containers.first.title")
     }
 
     "display section header" in {
@@ -61,15 +61,22 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
       view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.transportInformation.containers.no")
     }
 
-    "display inset text" in {
-      val inset = view.getElementsByClass("govuk-inset-text")
+    "display paragraph text" in {
+      val para = view.getElementsByClass("govuk-body")
       val expected = Seq(
-        messages("declaration.transportInformation.containers.inset.title"),
-        messages("declaration.transportInformation.containers.inset.bullet1"),
-        messages("declaration.transportInformation.containers.inset.bullet2"),
-        messages("declaration.transportInformation.containers.inset.bullet3")
+        messages("declaration.transportInformation.containers.paragraph")
       ).mkString(" ")
-      inset.get(0) must containText(expected)
+      para.get(0) must containText(expected)
+    }
+
+    "display bullet list text" in {
+      val bullets = view.getElementsByClass("govuk-list--bullet")
+      val expected = Seq(
+        messages("declaration.transportInformation.containers.bullet1"),
+        messages("declaration.transportInformation.containers.bullet2"),
+        messages("declaration.transportInformation.containers.bullet3")
+      ).mkString(" ")
+      bullets.get(0) must containText(expected)
     }
 
     "display 'Back' button that links to 'transport payment' page" in {

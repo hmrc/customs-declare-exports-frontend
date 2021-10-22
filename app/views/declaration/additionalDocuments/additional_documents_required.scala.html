@@ -34,6 +34,7 @@
     sectionHeader: sectionHeader,
     yesNoRadios: yesNoRadios,
     insetText: exportsInsetText,
+    heading: heading,
     paragraph: paragraphBody,
     link: link,
     saveButtons: saveButtons,
@@ -86,6 +87,9 @@
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
+        @heading(messages("declaration.additionalDocumentsRequired.title"))
+
+        @paragraph(messages("declaration.additionalDocumentsRequired.paragraph"))
 
         @yesNoRadios(
               form = form,
@@ -93,11 +97,10 @@
               heading = Some(Fieldset(
                   legend = Some(Legend(
                       content = Text(messages("declaration.additionalDocumentsRequired.title")),
-                      classes = gdsPageLegend,
-                      isPageHeading = true
+                      classes = "govuk-visually-hidden",
+                      isPageHeading = false
                   ))
-              )),
-              hint = Some(Hint(content = Text(messages("declaration.additionalDocumentsRequired.hint"))))
+              ))
         )
 
         @insetText(content = HtmlContent(insetSection))

@@ -35,6 +35,7 @@
   govukDetails : GovukDetails,
   bulletList: bulletList,
   insetText: exportsInsetText,
+  heading: heading,
   paragraphBody: paragraphBody,
   tariffExpander: tariffExpander,
   tariffLink: tariffLink,
@@ -80,17 +81,19 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))
+        @heading(messages("declaration.procedureCodes.title"))
+
+        @paragraphBody(messages("declaration.procedureCodes.paragraph"))
 
         @components.fields.field_accessible_autocomplete_with_header(
             field = form(procedureCodeKey),
             label = messages("declaration.procedureCodes.title"),
-            labelClass = Some(gdsPageLabel),
+            labelClass = Some("govuk-visually-hidden"),
             emptySelectValue = messages("declaration.procedureCodes.empty"),
             items = AutoCompleteItem.fromProcedureCodes(procedureCodeService.getProcedureCodesFor(
                 request.declarationType, request.cacheModel.isEntryIntoDeclarantsRecords, messages.lang.toLocale
             ).toList),
-            isPageHeading = true,
-            hintParagraphs = List(messages("declaration.procedureCodes.hint"))
+            isPageHeading = false
         )
       
         @if(!(request.declarationType == DeclarationType.CLEARANCE && request.cacheModel.isNotEntryIntoDeclarantsRecords)) {

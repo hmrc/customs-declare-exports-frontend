@@ -33,6 +33,8 @@
     govukRadios: GovukRadios,
     exportsInputText: exportsInputText,
     govukDetails : GovukDetails,
+    heading: heading,
+    paragraphBody: paragraphBody,
     saveButtons: saveButtons,
     saveAndContinue: saveAndContinue,
     tariffExpander: tariffExpander,
@@ -64,6 +66,9 @@
         @errorSummary(radioGroupErrors(isEoriKey, "code_yes", form.errors))
 
         @sectionHeader(messages(sectionMessagesKey))
+        @heading(messages("declaration.declarant.title", request.eori))
+
+        @paragraphBody(messages("declaration.declarant.paragraph"))
 
         @govukRadios(Radios(
             name = isEoriKey,
@@ -71,10 +76,9 @@
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.declarant.title", request.eori)),
-                    classes = gdsPageLegend
+                    classes = "govuk-visually-hidden"
                 ))
             )),
-            hint = Some(Hint(content = Text(messages("declaration.declarant.hint")))),
             items = Seq(
                 RadioItem(
                     id = Some("code_yes"),

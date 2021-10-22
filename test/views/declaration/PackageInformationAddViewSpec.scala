@@ -64,9 +64,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
       "display the expected hint paragraphs" in {
         val indexedListOfMessages = List(
-          "declaration.packageInformation.hint",
           "declaration.packageInformation.typesOfPackages.hint.1",
-          "declaration.packageInformation.typesOfPackages.hint.2",
           "declaration.packageInformation.shippingMark.hint"
         ).zipWithIndex
 
