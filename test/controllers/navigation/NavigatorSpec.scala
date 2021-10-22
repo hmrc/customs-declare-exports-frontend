@@ -18,10 +18,13 @@ package controllers.navigation
 
 import java.time.{LocalDate, ZoneOffset}
 import java.util.concurrent.TimeUnit
+
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
+
 import base.{MockExportCacheService, RequestBuilder, UnitWithMocksSpec}
 import config.AppConfig
+import controllers.declaration.routes.DraftDeclarationController
 import controllers.helpers._
 import forms.declaration.carrier.CarrierDetails
 import models.requests.{ExportsSessionKeys, JourneyRequest}
@@ -78,7 +81,7 @@ class NavigatorSpec extends UnitWithMocksSpec with MockExportCacheService with B
       val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(SaveAndReturn))), hc)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.declaration.routes.ConfirmationController.displayDraftConfirmation.url)
+      redirectLocation(result) mustBe Some(DraftDeclarationController.displayPage.url)
       flash(result).get(FlashKeys.expiryDate) mustBe Some(expiryDate.atStartOfDay(ZoneOffset.UTC).toInstant.toEpochMilli.toString)
       session(result).get(ExportsSessionKeys.declarationId) mustBe None
 

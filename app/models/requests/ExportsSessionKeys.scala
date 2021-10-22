@@ -19,6 +19,7 @@ package models.requests
 object ExportsSessionKeys {
 
   val declarationId = "declarationId"
-  val submission_lrn = "submission.lrn" // Temporary. To remove with CEDS-3464
-  val submission_uuid = "submission.uuid"
+  val submissionDucr = "submission.ducr"
+  val submissionId = "submission.uuid"
+  val submissionLrn = "submission.lrn"
 }

@@ -138,6 +138,10 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     httpClient
       .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.singleSubmissionPath}${appConfig.notificationsPath}/$id")
 
+  def findLatestNotification(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Notification]] =
+    httpClient
+      .GET[Option[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.latestNotificationPath}/$id")
+
   def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.notificationsPath}")
 

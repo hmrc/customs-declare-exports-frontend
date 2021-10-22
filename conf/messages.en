@@ -1837,27 +1837,43 @@ declaration.transport.sealId.error.invalid = Seal ID must contain only letters a
 declaration.confirmation.holding.title = Submit your declaration
 declaration.confirmation.holding.paragraph = We are checking your declaration, please wait
 
-declaration.confirmation.title = Declaration is being checked
-declaration.confirmation.lrn = Your LRN is
-declaration.confirmation.decision.paragraph1 = Go to {0} to find out the status of this declaration and see if you need to take any action.
-declaration.confirmation.decision.paragraph2 = The result should be available immediately or within a few minutes.
-declaration.confirmation.decision.directLink.text = declaration information
-declaration.confirmation.decision.genericLink.text = Your declarations
-declaration.confirmation.submitAnotherDeclaration = Create a new declaration
-declaration.confirmation.leaveFeedback.text = Please leave feedback on the service in this {0}.
-declaration.confirmation.leaveFeedback.link = form here
+declaration.confirmation.accepted.title = Declaration accepted
+declaration.confirmation.accepted.next.1 = Further customs checks may be carried out. You will be notified about any action required on {0}, which is your registered CDS email address, and on {1}.
+declaration.confirmation.accepted.next.2 = If the status of your declaration has not changed within 2 hours from the time of this acceptance, {0}, you should {1}.
+
+declaration.confirmation.needsDocument.title = Your declaration needs documents attached
+declaration.confirmation.needsDocument.warning = You need to upload documents ready for checking at customs.
+declaration.confirmation.needsDocument.body.2 = Check the requirements and upload documents from {0}.
+
+declaration.confirmation.other.title = Your declaration is still being checked
+declaration.confirmation.other.body.1 = Your declaration{0}{1} will be given a movement reference number shortly. Go to {2} to find out the status of this declaration and see if you need to take any action.
+declaration.confirmation.other.body.1.link = Your declarations
+declaration.confirmation.other.body.2 = The result should be available immediately or within a few minutes.
+
+declaration.confirmation.received.title = Declaration is prelodged with HMRC
+declaration.confirmation.received.next.1 = Further customs checks will be carried out when the goods are arrived. You will be notified about any action required on {0}, which is your registered CDS email address, and on {1}.
+declaration.confirmation.received.next.2 = If the status of your declaration has not changed within 2 hours from when the goods are arrived, you should {0}.
+
+declaration.confirmation.mrn = Movement reference number {0}
+declaration.confirmation.body.1 = Your declaration{0}{1} has been validated and given a CDS movement reference number (MRN): {2}.
+declaration.confirmation.body.1.ducr = with DUCR {0}
+declaration.confirmation.body.1.lrn = (your reference {0})
+declaration.confirmation.body.2 = You can check the status of your declaration and print out the export accompanying document (EAD) on {0}.
+declaration.confirmation.declaration.details.link = Declaration details
+declaration.confirmation.next.2.link = contact the National Clearance Hub
+declaration.confirmation.what.happens.next = What happens next
 
 declaration.exitSurvey.header = Tell us what you think
 declaration.exitSurvey.line.1 = This is a new service and we want to know what you think of it.
 declaration.exitSurvey.line.2 = {0}. Your thoughts and ideas will help us to make improvements.
 declaration.exitSurvey.link = Send us your feedback
 
-confirmation.draft.title = Your declaration has been saved
-confirmation.draft.info = Your information is held until
-confirmation.draft.nextHeading = What you can do next
-confirmation.draft.nextText = You can {0} or you can {1}.
-confirmation.draft.nextContinueLink = continue a saved declaration
-confirmation.draft.nextStartFreshLink = start a new one
+declaration.draft.title = Your declaration has been saved
+declaration.draft.info = Your information is held until
+declaration.draft.nextHeading = What you can do next
+declaration.draft.nextText = You can {0} or you can {1}.
+declaration.draft.nextContinueLink = continue a saved declaration
+declaration.draft.nextStartFreshLink = start a new one
 
 legal.declaration.heading=Now submit your declaration
 legal.declaration.info=Before you proceed, ensure that you have fully reviewed the information you have provided above and ensure that it is correct.

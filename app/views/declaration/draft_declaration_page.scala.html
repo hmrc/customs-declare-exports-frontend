@@ -17,53 +17,50 @@
 @import java.time.{Instant, ZoneOffset}
 @import models.responses.FlashKeys
 @import play.twirl.api.HtmlFormat
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, HtmlContent, Panel, Text}
 @import views.helpers.{Title, ViewDates}
-@import views.html.components.gds._
+@import views.html.components.gds.{gdsMainTemplate, govUkLink, heading, link, paragraph}
 
 @this(
     govukLayout: gdsMainTemplate,
     govukPanel : GovukPanel,
-    govukButton: GovukButton,
-    govukInsetText : GovukInsetText,
     link: link,
     govUkLink: govUkLink,
-    formHelper: FormWithCSRF
+    heading: heading,
+    paragraph: paragraph
 )
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
 @expiresMessage(date: String) = {
     <div id="draft_confirmation-expiry" class="govuk-panel__body">
-        @messages("confirmation.draft.info")<br>
+        @messages("declaration.draft.info")<br>
         @ViewDates.formatDate(Instant.ofEpochMilli(date.toLong).atOffset(ZoneOffset.UTC))
     </div>
 }
 
 @whatNext = {
-    <h2 class="govuk-heading-m">@messages("confirmation.draft.nextHeading")</h2>
+    @heading(messages("declaration.draft.nextHeading"), "govuk-heading-m", "h2")
 
-    <p class="govuk-body">
-    @Html(messages(
-        "confirmation.draft.nextText",
+    @paragraph(Html(messages(
+        "declaration.draft.nextText",
         link(
             id = Some("draft_confirmation-continue_dec_link"),
-            text = messages("confirmation.draft.nextContinueLink"),
+            text = messages("declaration.draft.nextContinueLink"),
             call = routes.SavedDeclarationsController.displayDeclarations()
         ),
         link(
             id = Some("draft_confirmation-create_dec_link"),
-            text = messages("confirmation.draft.nextStartFreshLink"),
+            text = messages("declaration.draft.nextStartFreshLink"),
             call = routes.ChoiceController.displayPage()
         )
-    ))
-    </p>
+    )))
 }
 
-@govukLayout(title = Title("confirmation.draft.title")) {
+@govukLayout(title = Title("declaration.draft.title")) {
 
     @govukPanel(Panel(
-        title = Text(messages("confirmation.draft.title")),
+        title = Text(messages("declaration.draft.title")),
         content = HtmlContent(flash.get(FlashKeys.expiryDate).map(expires => expiresMessage(expires)).getOrElse(HtmlFormat.empty))
     ))
 

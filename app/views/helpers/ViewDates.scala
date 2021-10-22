@@ -22,16 +22,22 @@ import java.time.temporal.TemporalAccessor
 
 object ViewDates {
 
-  private val submissionDateTimeFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("d MMMM uuu 'at' h:mma").withZone(ZoneId.of("Europe/London"))
-
-  private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu").withZone(ZoneId.of("Europe/London"))
+  def formatDate(temporal: TemporalAccessor): String = dateFormatter.format(temporal)
 
   def formatDateAtTime(temporal: TemporalAccessor): String =
-    submissionDateTimeFormatter
+    dateTimeFormatter
       .format(temporal)
       .replace("AM", "am")
       .replace("PM", "pm")
 
-  def formatDate(temporal: TemporalAccessor): String = dateFormatter.format(temporal)
+  def formatTimeDate(temporal: TemporalAccessor): String = timeDateFormatter.format(temporal)
+
+  private val dateFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("d MMMM uuu").withZone(ZoneId.of("Europe/London"))
+
+  private val dateTimeFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("d MMMM uuu 'at' h:mma").withZone(ZoneId.of("Europe/London"))
+
+  private val timeDateFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("HH:mm, d MMMM uuu").withZone(ZoneId.of("Europe/London"))
 }

@@ -20,7 +20,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import base.ControllerWithoutFormSpec
 import config.AppConfig
-import controllers.declaration.routes.ConfirmationController
 import forms.declaration.LegalDeclaration
 import mock.ErrorHandlerMocks
 import models.declaration.submissions.Submission
@@ -108,7 +107,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         val declaration = aDeclaration()
         withNewCaching(declaration)
 
-        val expectedSubmission: Submission = Submission(eori = "GB123456", lrn = "123LRN", actions = List.empty)
+        val expectedSubmission: Submission = Submission(eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty)
         when(mockSubmissionService.submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext]))
           .thenReturn(Future.successful(Some(expectedSubmission)))
 
@@ -116,12 +115,13 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         val result = controller.submitDeclaration(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(ConfirmationController.displayHoldingConfirmation.url))
+        redirectLocation(result) must be(Some(routes.ConfirmationController.displayHoldingPage.url))
 
         val actualSession = session(result)
         actualSession.get(ExportsSessionKeys.declarationId) must be(None)
-        actualSession.get(ExportsSessionKeys.submission_lrn) must be(Some(expectedSubmission.lrn))
-        actualSession.get(ExportsSessionKeys.submission_uuid) must be(Some(expectedSubmission.uuid))
+        actualSession.get(ExportsSessionKeys.submissionDucr) must be(expectedSubmission.ducr)
+        actualSession.get(ExportsSessionKeys.submissionId) must be(Some(expectedSubmission.uuid))
+        actualSession.get(ExportsSessionKeys.submissionLrn) must be(Some(expectedSubmission.lrn))
 
         verify(mockSubmissionService).submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
       }
