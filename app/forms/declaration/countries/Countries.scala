@@ -70,9 +70,14 @@ object Countries {
     page: CountryPage,
     cachedCountries: Seq[Country]
   )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[String] = {
+    println(s"cachedCountries = ${cachedCountries}")
+
+    val printIt: String => Boolean = (input: String) => {println(s"input = '${input}' ${isValidCountryCode(input)}"); true}
+
     val standardMapping = text()
+      .verifying(s"declaration.${page.id}.empty", printIt)
       .verifying(s"declaration.${page.id}.empty", _.trim.nonEmpty)
-      .verifying(s"declaration.${page.id}.error", isEmpty or isValidCountryCode _)
+      .verifying(s"declaration.${page.id}.error", isEmpty or printIt or isValidCountryCode _)
       .verifying(s"declaration.routingCountries.duplication", !cachedCountries.flatMap(_.code).contains(_))
       .verifying(s"declaration.routingCountries.limit", _ => cachedCountries.length < limit)
 

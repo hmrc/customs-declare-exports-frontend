@@ -1,0 +1,84 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import services.view.AutoCompleteItem
+@import views.html.helper._
+@import views.html.components.inputs.input_accessible_location_autocomplete
+@import connectors.CodeListConnector
+
+@(field: Field,
+  label: String,
+  labelClass: Option[String],
+  section: Option[String] = None,
+  bodyHtml: Option[Html] = None,
+  hintParagraphs: List[String] = List.empty,
+  emptySelectValue: String,
+  items: List[AutoCompleteItem],
+  isPageHeading: Boolean,
+  args: List[(Symbol, Any)] = List.empty,
+  rightElement: Option[Html] = None
+)(implicit messages: Messages, codeListConnector: CodeListConnector)
+@*
+Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
+JQuery treats [] as element's attribute and tried evaluated this.
+To avoid problems, we need to remove [] from field.
+*@
+@fieldNameWithoutBrackets = @{
+    field.name.replace("[]", "").replace(".", "_")
+}
+
+@elements = @{
+    FieldElements(field.id, field, null, args.toMap, messages)
+}
+
+@allErrors = @{
+    elements.errors ++ args.flatMap {
+        case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
+        case _ => Seq.empty
+    }
+}
+
+<div id="@fieldNameWithoutBrackets-autocomplete-outer" class="govuk-form-group @if(allErrors.nonEmpty) {govuk-form-group--error}">
+
+    @section.map { key =>
+        <span id="section-header" class="govuk-caption-xl">@messages(key)</span>
+    }
+
+    @if(isPageHeading) {<h1 class="govuk-label-wrapper">}
+    <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="govuk-label@if(labelClass.nonEmpty){ @labelClass}" >
+        @label
+    </label>
+    @if(isPageHeading) {</h1>}
+
+    @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@error</span> }
+
+    @bodyHtml.map(identity)
+
+    @if(hintParagraphs.nonEmpty) {
+        <div id="@(fieldNameWithoutBrackets)-hint">
+            @hintParagraphs.map { hint =>
+                <p class="govuk-hint">@hint</p>
+            }
+        </div>
+    }
+
+    @input_accessible_location_autocomplete(
+        field = field,
+        emptySelectValue = emptySelectValue,
+        items = items,
+        rightElement = rightElement
+    )
+</div>

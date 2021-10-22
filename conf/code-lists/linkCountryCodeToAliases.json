@@ -1,0 +1,10 @@
+[
+  {
+    "parentCode": "GB",
+    "childCodes": ["UK", "England", "Wales", "Scotland"]
+  },
+  {
+    "parentCode": "US",
+    "childCodes": ["USA"]
+  }
+]

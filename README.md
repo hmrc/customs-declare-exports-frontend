@@ -85,7 +85,7 @@ Auto Complete Script to help speed through the form journey.
 
 These scripts can be found in the docs directory.
 
-### Updating Tariff Code lists
+### Updating Tariff Code lists (!!THIS IS NOW DEPRECATED!!)
 
 As per Exports Product Manager and CDS Stakeholders instructions, the [CDS Tariff](https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2) 
 is our source of truth for any CDS codes going forward, until further instructions or until we connect with a service that 

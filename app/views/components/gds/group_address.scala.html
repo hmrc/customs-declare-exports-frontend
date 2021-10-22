@@ -51,9 +51,11 @@
     defaultInputClasses = "govuk-input govuk-input--width-10"
 )
 
-@components.fields.field_accessible_autocomplete(
+@components.fields.field_accessible_location_autocomplete_with_header(
     field = form(s"${addressPrefix}.country"),
     label = messages(s"$labelPrefix.country"),
+    labelClass = None,
     emptySelectValue = messages("declaration.address.country.empty"),
-    items = AutoCompleteItem.fromCountry(getListOfAllCountries(), _.countryName)
+    items = AutoCompleteItem.fromCountry(getListOfAllCountries(), _.countryName),
+    isPageHeading = false
 )

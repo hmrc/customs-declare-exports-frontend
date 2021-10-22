@@ -90,9 +90,10 @@
 }
 
 @borderTransportNationality = {
-    @components.fields.field_accessible_autocomplete(
+    @components.fields.field_accessible_location_autocomplete_with_header(
         field = form("borderTransportNationality"),
         label = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header"),
+        labelClass = None,
         emptySelectValue = messages("declaration.address.country.empty"),
         items = AutoCompleteItem.fromCountry(getListOfAllCountries())
     )

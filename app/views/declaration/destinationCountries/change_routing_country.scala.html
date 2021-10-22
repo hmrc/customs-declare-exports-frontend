@@ -53,7 +53,7 @@
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitChangeCountry(mode, countryToChange), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @components.fields.field_accessible_autocomplete_with_header(
+        @components.fields.field_accessible_location_autocomplete_with_header(
             field = form("countryCode"),
             label = messages(s"declaration.${page.id}.question"),
             labelClass = Some(Styles.gdsPageLabel),

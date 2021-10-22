@@ -16,9 +16,12 @@
 
 package services
 
-import connectors.CodeListConnector
+import connectors.{CodeItem, CodeListConnector}
 import models.codes.Country
 import play.api.i18n.Messages
+import play.api.libs.json.{JsArray, JsObject, Json, JsString, OFormat}
+import utils.JsonFile
+import utils.JsonFile.{getClass, throwError}
 
 object Countries {
 
@@ -44,4 +47,47 @@ object Countries {
 
   def getListOfAllCountries()(implicit messages: Messages, codeListConnector: CodeListConnector): List[Country] =
     codeListConnector.getCountryCodes(messages.lang.toLocale).values.toList.sortBy(_.countryName)
+}
+
+
+case class Edges(from: Seq[String])
+
+object Edges{
+  implicit val format: OFormat[Edges] = Json.format[Edges]
+}
+
+case class Meta(canonical: Boolean, canonicalMask: Int, displayName: Boolean, stableName: Boolean)
+
+object Meta {
+  implicit val format: OFormat[Edges] = Json.format[Edges]
+}
+
+case class Names(cy: Boolean, enGB: String)
+
+object Names {
+  implicit val format: OFormat[Edges] = Json.format[Edges]
+}
+
+case class CountryGraph(edges: Edges, meta: Meta, names: Names)
+
+object CountryGraph{
+  implicit val format: OFormat[Edges] = Json.format[Edges]
+
+  def loadFromFile() = {
+
+    println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    val jsonInputStream = getClass.getResourceAsStream("/code-lists/location-autocomplete-graph.json")
+
+    Json.parse(jsonInputStream) match {
+      case JsArray(cs) =>
+        cs.toList.collect {
+          case _: JsArray =>
+            println("Array")
+        }
+      case obj: JsObject =>
+        val fields = obj.value
+        println(fields.get("country:AD"))
+      case x => println(s"Error ${x.getClass}")
+    }
+  }
 }
