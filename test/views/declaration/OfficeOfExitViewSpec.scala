@@ -44,7 +44,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       }
 
       "display page title" in {
-        view.getElementsByClass(Styles.gdsPageLabel) must containMessageForElements("declaration.officeOfExit.title")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.officeOfExit.title")
       }
 
       "have proper messages for labels" in {

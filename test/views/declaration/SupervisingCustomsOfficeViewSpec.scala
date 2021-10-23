@@ -64,13 +64,6 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
         view.getElementById("section-header") must containMessage("declaration.section.6")
       }
 
-      "display page paragraphs" in {
-        val paras = view.getElementsByClass("govuk-body").iterator.asScala.toList
-        paras.zipWithIndex.foreach {
-          case (para, ix) => para must containMessage(s"declaration.warehouse.supervisingCustomsOffice.paragraph.${ix + 1}")
-        }
-      }
-
       "display 'Save and continue' button on page" in {
         view.getElementById("submit") must containMessage("site.save_and_continue")
       }

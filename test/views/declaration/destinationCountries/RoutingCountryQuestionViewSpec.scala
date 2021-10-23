@@ -23,7 +23,6 @@ import models.Mode
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
-import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.routing_country_question
 
@@ -39,7 +38,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
     "have defined translation for used labels" in {
 
       messages must haveTranslationFor("declaration.routingCountryQuestion.title")
-      messages must haveTranslationFor("declaration.routingCountryQuestion.hint")
+      messages must haveTranslationFor("declaration.routingCountryQuestion.paragraph")
       messages must haveTranslationFor("declaration.routingCountryQuestion.empty")
       messages must haveTranslationFor("tariff.expander.title.clearance")
     }
@@ -51,11 +50,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
     "display the page question" in {
 
-      view.getElementsByClass(Styles.gdsPageLegend).text mustBe messages("declaration.routingCountryQuestion.title", countryOfDestination)
-    }
-
-    "display the page hint" in {
-      view.getElementById("answer-hint").text mustBe messages("declaration.routingCountryQuestion.hint")
+      view.getElementsByTag("h1").text mustBe messages("declaration.routingCountryQuestion.title", countryOfDestination)
     }
 
     "display Yes/No answers" in {
