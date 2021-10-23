@@ -63,9 +63,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
 
     "display paragraph text" in {
       val para = view.getElementsByClass("govuk-body")
-      val expected = Seq(
-        messages("declaration.transportInformation.containers.paragraph")
-      ).mkString(" ")
+      val expected = Seq(messages("declaration.transportInformation.containers.paragraph")).mkString(" ")
       para.get(0) must containText(expected)
     }
 
