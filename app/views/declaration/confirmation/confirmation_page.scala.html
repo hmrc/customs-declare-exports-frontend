@@ -14,23 +14,17 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-@import views.html.components.gds.{link, paragraphBody}
+@import views.helpers.{Confirmation, ConfirmationHelper, Title}
+@import views.html.components.gds.gdsMainTemplate
 
 @this(
-    paragraphBody: paragraphBody,
-    link: link,
-    appConfig: AppConfig
+  govukLayout: gdsMainTemplate,
+  confirmationHelper: ConfirmationHelper
 )
 
-@()(implicit messages: Messages)
+@(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
-<h2 id="exit-survey" class="govuk-heading-m">@messages("declaration.exitSurvey.header")</h2>
+@govukLayout(title = Title(confirmationHelper.title(confirmation))) {
 
-@paragraphBody(messages("declaration.exitSurvey.line.1"), id = Some("exit-survey-element-1"))
-
-@paragraphBody(messages(
-    "declaration.exitSurvey.line.2",
-    link(messages("declaration.exitSurvey.link"), Call("GET", appConfig.exitSurveyUrl), id = Some("exit-survey-element-2"))
-))
-
+    @confirmationHelper.content(confirmation)
+}

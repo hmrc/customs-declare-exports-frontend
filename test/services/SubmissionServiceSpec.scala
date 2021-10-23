@@ -69,6 +69,7 @@ class SubmissionServiceSpec
 
     "submit to the back end" when {
       "valid declaration" in {
+        // Given
         val eori = "eori"
         val lrn = "123LRN"
         val declaration =

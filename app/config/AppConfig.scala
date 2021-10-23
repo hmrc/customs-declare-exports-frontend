@@ -145,6 +145,11 @@ class AppConfig @Inject()(
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports notifications URI")
   )
 
+  lazy val latestNotificationPath = servicesConfig.getConfString(
+    "customs-declare-exports.latest-notification",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports latest-notification URI")
+  )
+
   lazy val cancelDeclarationPath = servicesConfig.getConfString(
     "customs-declare-exports.cancel-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declaration Export cancel declaration URI")

@@ -20,19 +20,25 @@ import scala.collection.JavaConverters.asScalaIteratorConverter
 
 import base.Injector
 import controllers.declaration.routes.ConfirmationController
+import org.scalatest.GivenWhenThen
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.confirmation.holding_confirmation_page
+import views.html.declaration.confirmation.holding_page
 import views.tags.ViewTest
 
 @ViewTest
-class HoldingConfirmationViewSpec extends UnitViewSpec with Injector {
+class HoldingViewSpec extends UnitViewSpec with GivenWhenThen with Injector {
 
-  private val holdingConfirmationPage = instanceOf[holding_confirmation_page]
+  private val holdingPage = instanceOf[holding_page]
+
+  private val confirmationPageUrl = ConfirmationController.displayConfirmationPage.url
+  private val holdingPageUrl = ConfirmationController.displayHoldingPage.url
+
+  private val expectedPollingTimeInSeconds = 5
 
   "Declaration Holder View" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      val view = holdingConfirmationPage()(request, messages)
+      val view = holdingPage(holdingPageUrl, confirmationPageUrl)(request, messages)
 
       "display page title" in {
         view.getElementsByTag("h1").text mustBe messages("declaration.confirmation.holding.title")
@@ -48,11 +54,26 @@ class HoldingConfirmationViewSpec extends UnitViewSpec with Injector {
         view.getElementsByTag("script").iterator.asScala.toList.filter(_.text.contains("window.location.href"))
       }
 
-      "include the expected redirection script" in {
+      "include the expected redirection (no)script when javascript is disabled" in {
+        val content = s"$expectedPollingTimeInSeconds; url=$holdingPageUrl"
+        val meta = s"""<meta http-equiv="refresh" content="$content">"""
+
+        val noscripts = view.getElementsByTag("noscript").iterator.asScala.toList
+        noscripts.filter(_.child(0).toString == meta).size mustBe 1
+      }
+
+      "include the expected redirection script when javascript is enabled" in {
         val allScripts = view.getElementsByTag("script").iterator.asScala.toList
         val scripts = allScripts.filter(_.toString.contains("window.location.href"))
         scripts.size mustBe 1
-        assert(scripts(0).toString.contains(ConfirmationController.displaySubmissionConfirmation.url))
+
+        val jsScript = scripts(0).toString
+        assert(jsScript.contains(confirmationPageUrl))
+
+        And("and which should include the expected 'polling' time")
+        val pattern = s"(.*)[Tt]imeout[:(](.*)${expectedPollingTimeInSeconds * 1000}(.*)"
+        val linesWithThePollingTime = jsScript.split("\n").filter(_.matches(pattern))
+        linesWithThePollingTime.size mustBe 3
       }
     }
   }

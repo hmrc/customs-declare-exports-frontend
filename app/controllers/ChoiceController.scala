@@ -22,6 +22,7 @@ import controllers.actions.{AuthAction, VerifiedEmailAction}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
+import javax.inject.Inject
 import models.requests.ExportsSessionKeys
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -29,8 +30,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
-
-import javax.inject.Inject
 
 class ChoiceController @Inject()(
   authenticate: AuthAction,
@@ -63,16 +62,11 @@ class ChoiceController @Inject()(
         (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors, availableJourneys)),
         choice =>
           (choice.value match {
-            case CreateDec =>
-              Redirect(controllers.declaration.routes.DeclarationChoiceController.displayPage())
-            case CancelDec =>
-              Redirect(controllers.routes.CancelDeclarationController.displayPage())
-            case ContinueDec =>
-              Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations())
-            case Submissions =>
-              Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
-            case Inbox =>
-              Redirect(controllers.routes.SecureMessagingController.displayInbox)
+            case CreateDec   => Redirect(declaration.routes.DeclarationChoiceController.displayPage())
+            case ContinueDec => Redirect(routes.SavedDeclarationsController.displayDeclarations())
+            case CancelDec   => Redirect(routes.CancelDeclarationController.displayPage())
+            case Submissions => Redirect(routes.SubmissionsController.displayListOfSubmissions())
+            case Inbox       => Redirect(routes.SecureMessagingController.displayInbox)
           }).removingFromSession(ExportsSessionKeys.declarationId)
       )
   }

@@ -57,15 +57,15 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
       case (ErrorFix, formAction) => handleErrorFixMode(factory, formAction, isErrorFixInProgress)
       case (_, SaveAndReturn) =>
         auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
-        goToDraftConfirmation()
+        goToDraftDeclaration
       case _ => Results.Redirect(factory(mode))
     }
 
-  private def goToDraftConfirmation()(implicit req: JourneyRequest[_]): Result = {
+  private def goToDraftDeclaration(implicit req: JourneyRequest[_]): Result = {
     val updatedDateTime = req.cacheModel.updatedDateTime
     val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)
     Results
-      .Redirect(routes.ConfirmationController.displayDraftConfirmation)
+      .Redirect(routes.DraftDeclarationController.displayPage)
       .flashing(FlashKeys.expiryDate -> expiry.toEpochMilli.toString)
       .removingFromSession(ExportsSessionKeys.declarationId)
   }
@@ -83,6 +83,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
 
 case class ItemId(id: String)
 
+// scalastyle: off
 object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
