@@ -36,7 +36,7 @@ class ItemsAddItemViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.itemsAdd.title")
-      messages must haveTranslationFor("declaration.itemsAdd.title.hint")
+      messages must haveTranslationFor("declaration.itemsAdd.paragraph")
     }
 
     val view = createView()
@@ -56,9 +56,9 @@ class ItemsAddItemViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       view.getElementsByClass("govuk-heading-xl").first() must containMessage("declaration.itemsAdd.title")
     }
 
-    "display page hint" in {
+    "display paragraph" in {
 
-      view.getElementsByClass("govuk-hint").first() must containMessage("declaration.itemsAdd.title.hint")
+      view.getElementsByClass("govuk-body").first() must containMessage("declaration.itemsAdd.paragraph")
     }
 
     "display 'Add item' button" in {

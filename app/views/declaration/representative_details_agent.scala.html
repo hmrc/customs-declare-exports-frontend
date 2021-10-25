@@ -31,6 +31,7 @@
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    heading: heading,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
@@ -47,13 +48,14 @@
         @errorSummary(radioGroupErrors("representingAgent", "agent_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
+        @heading(messages("declaration.representative.agent.title"))
 
         @govukRadios(Radios(
             name = "representingAgent",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.representative.agent.title")),
-                    classes = gdsPageLegend
+                    classes = "govuk-visually-hidden"
                 ))
             )),
             items = Seq(
@@ -66,8 +68,7 @@
                 RadioItem(
                     id = Some("agent_no"),
                     value = Some(YesNoAnswers.no),
-                    content = Text(messages("site.no")),
-                    hint = Some(Hint(content = Text(messages("declaration.representative.agent.no.hint")))),
+                    content = Text(messages("declaration.representative.agent.no")),
                     checked = form("representingAgent").value.contains(YesNoAnswers.no)
                 )
             ),

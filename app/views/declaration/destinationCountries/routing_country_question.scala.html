@@ -40,6 +40,8 @@
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
+        heading: heading,
+        paragraphBody: paragraphBody,
         saveButtons: saveButtons,
         tariffExpander: tariffExpander,
         formHelper: FormWithCSRF,
@@ -56,6 +58,9 @@
         @errorSummary(radioGroupErrors("answer", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.3"))
+        @heading(messages("declaration.routingCountryQuestion.title", countryOfDestination))
+
+        @paragraphBody(messages("declaration.routingCountryQuestion.paragraph"))
 
         @govukRadios(Radios(
             name = "answer",
@@ -63,10 +68,9 @@
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.routingCountryQuestion.title", countryOfDestination)),
-                    classes = gdsPageLegend
+                    classes = "govuk-visually-hidden"
                 ))
             )),
-            hint = Some(Hint(content = Text(messages("declaration.routingCountryQuestion.hint")))),
             items = Seq(
                 RadioItem(
                     id = Some("Yes"),

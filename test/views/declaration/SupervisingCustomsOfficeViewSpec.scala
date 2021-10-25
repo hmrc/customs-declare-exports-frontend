@@ -45,9 +45,9 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
 
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.title")
-        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint.1")
-        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint.2")
-        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint.3")
+        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.paragraph.1")
+        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.paragraph.2")
+        messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.paragraph.3")
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.label")
         messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.error")
       }
@@ -62,13 +62,6 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
 
       "display section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.6")
-      }
-
-      "display page hints" in {
-        val hints = view.getElementsByClass("govuk-hint").iterator.asScala.toList
-        hints.zipWithIndex.foreach {
-          case (hint, ix) => hint must containMessage(s"declaration.warehouse.supervisingCustomsOffice.hint.${ix + 1}")
-        }
       }
 
       "display 'Save and continue' button on page" in {

@@ -514,7 +514,7 @@ declaration.entryIntoDeclarantRecords.error = Select yes if this is an entry int
 declaration.personPresentingGoodsDetails.title = What is the EORI number of the person presenting the goods to customs?
 
 declaration.exporter-address.title = What is the exporter’s name and business address?
-declaration.exporter-address.title.hint = Enter the exporter’s name and business address.
+declaration.exporter-address.paragraph = Enter the exporter’s name and business address.
 declaration.exporter-address.addressHeading = Exporter’s name and address
 
 declaration.exporterEori.title = Does the exporter have an EORI number?
@@ -527,7 +527,7 @@ declaration.exs.hint = This is also known as an exit summary declaration (EXS).
 declaration.exs.error = Select yes if you need to give us safety and security information
 
 declaration.declarant.title = Is your EORI number {0}?
-declaration.declarant.hint = By selecting yes you are confirming that this EORI number belongs to the declarant of this export declaration.
+declaration.declarant.paragraph = By selecting yes you are confirming that this EORI number belongs to the declarant of this export declaration.
 declaration.declarant.error = Select yes if this is your EORI number
 declaration.declarant.change.eori = No, I need to change my EORI
 
@@ -574,8 +574,8 @@ declaration.carrierAddress.hint.2 = You can {0} for UK-registered companies, or 
 declaration.carrierAddress.hint.2.link = look up the registered business address (opens in new tab)
 
 declaration.representative.agent.title = Do you hold the contract to complete the customs formalities?
-declaration.representative.agent.no.hint = We work on behalf of another agent and they hold the contract with the exporter.
 declaration.representative.agent.error = Select yes if you hold the contract to complete the customs formalities
+declaration.representative.agent.no = No, we work on behalf of another agent, and they hold the contract with the exporter
 declaration.representative.entity.title = What is the EORI number of the other agent?
 declaration.representative.entity.eori.empty = Enter the EORI number of the agency you are representing
 declaration.representative.status.title = What type of representation will be used?
@@ -853,7 +853,7 @@ declaration.destinationCountry.error = Select a country of destination
 declaration.destinationCountry.error.uk = Select a final country the goods are destined for that is outside the UK
 
 declaration.routingCountryQuestion.title = Will the goods pass through any other countries before arriving in {0}?
-declaration.routingCountryQuestion.hint = You must enter all the countries where there are stop-overs or dockings that you are aware of. If goods are going by road or rail, enter the countries on the planned route in order.
+declaration.routingCountryQuestion.paragraph = You must enter all the countries where there are stop-overs or dockings that you are aware of. If goods are going by road or rail, enter the countries on the planned route in order.
 declaration.routingCountryQuestion.empty = Select yes if the goods will pass through any other countries
 declaration.routingCountryQuestion.add.empty = Select yes if you need to add another country
 declaration.routingCountryQuestion.remove.empty = Select yes if you want to remove this routing country
@@ -914,7 +914,7 @@ declaration.goodsLocation.expander.paragraph09.link1 = data element 5/23 of the 
 declaration.goodsLocation.expander.paragraph09.link2 = Tariff Volume 3 Great Britain Supplement CDS and CHIEF
 
 declaration.procedureCodes.title = What is the procedure code for this item?
-declaration.procedureCodes.hint = Select the 4-digit procedure code that describes your requested customs treatment and status of the goods.
+declaration.procedureCodes.paragraph = Select the 4-digit procedure code that describes your requested customs treatment and status of the goods.
 declaration.procedureCodes.empty = Select a procedure code from the list
 declaration.procedureCodes.error.empty = Select a procedure code
 declaration.procedureCodes.error.invalid = Procedure code must be 4 digits, containing only numbers
@@ -940,7 +940,7 @@ declaration.procedureCodes.readMoreExpander.temporaryExport.link.text = Temporar
 declaration.procedureCodes.readMoreExpander.reExportFollowingSpecialProcedure.link.text = Re-export following a special procedure
 
 declaration.additionalProcedureCodes.title = Add any additional procedure codes to {0}
-declaration.additionalProcedureCodes.hint = Add each code that applies to this item, or select and add the code ‘000’ which means that no other additional procedure codes apply.
+declaration.additionalProcedureCodes.paragraph = Add each code that applies to this item, or select and add the code ‘000’ which means that no other additional procedure codes apply. List shows all the permitted additional procedure codes for your selected procedure.
 declaration.additionalProcedureCodes.inset = List shows all the permitted additional procedure codes for {0}. For descriptions and conditions of each code, go to {1}.
 declaration.additionalProcedureCodes.inset.linkText = Appendix 2: DE 1/11: Additional Procedure Codes (opens in new tab)
 declaration.additionalProcedureCodes.table.header = Additional procedure codes
@@ -954,7 +954,8 @@ declaration.additionalProcedureCodes.error.tripleZero.alreadyPresent = Additiona
 declaration.additionalProcedureCodes.error.tripleZero.notFirstCode = Additional procedure code ‘000’ not permitted with any other additional procedure codes
 
 declaration.officeOfExit.title = Where is the customs office of exit?
-declaration.officeOfExit.hint = This is the office where goods are officially recorded as having left the UK.
+declaration.officeOfExit.paragraph = This is the place where goods are officially recorded as having left the UK.
+declaration.officeOfExit.hint = Type the place name to help find the correct office of exit.
 declaration.officeOfExit.empty = Select an office of exit from the list
 declaration.officeOfExit.length = Select an office of exit from the list
 declaration.officeOfExit.specialCharacters = Select an office of exit from the list
@@ -969,6 +970,7 @@ declaration.officeOfExitOutsideUk.format = Customs office code must be in the co
 
 declaration.warehouse.identification.optional.title =  Were the goods in a customs approved warehouse?
 declaration.warehouse.identification.required.title =  What is the customs approved warehouse number?
+declaration.warehouse.identification.required.paragraph = Enter the identifier for the approved warehouse premises you are using for your goods removal.
 declaration.warehouse.identification.label =  Warehouse identification number
 declaration.warehouse.identification.label.hint =  For example, R1234567GB.
 declaration.warehouse.identification.answer.error = Select yes if the goods were in a customs approved warehouse
@@ -976,9 +978,9 @@ declaration.warehouse.identification.identificationNumber.error = Customs wareho
 declaration.warehouse.identification.identificationNumber.empty = Enter the warehouse identification number
 
 declaration.warehouse.supervisingCustomsOffice.title = Where is the HMRC supervising customs office (SPOFF)?
-declaration.warehouse.supervisingCustomsOffice.hint.1 = If you quoted a specific authorisation for any of your declared items, select the office that granted this authorisation.
-declaration.warehouse.supervisingCustomsOffice.hint.2 = Authorisations may cover previous import reliefs such as Processing or Warehousing.
-declaration.warehouse.supervisingCustomsOffice.hint.3 = For excise, enter the code for the supervising office for the excise warehouse.
+declaration.warehouse.supervisingCustomsOffice.paragraph.1 = If you quoted a specific authorisation for any of your declared items, select the office that granted this authorisation.
+declaration.warehouse.supervisingCustomsOffice.paragraph.2 = Authorisations may cover previous import reliefs such as Processing or Warehousing.
+declaration.warehouse.supervisingCustomsOffice.paragraph.3 = For excise, enter the code for the supervising office for the excise warehouse.
 declaration.warehouse.supervisingCustomsOffice.label = Select a customs supervising office
 declaration.warehouse.supervisingCustomsOffice.error = Select a customs supervising office from the list
 
@@ -1023,7 +1025,7 @@ declaration.additionalFiscalReferences.remove.empty = Select yes if you want to 
 declaration.additionalFiscalReferences.error.duplicate = VAT details already added
 
 declaration.additionalDocumentsRequired.title = Do you need to declare any additional documents for this item?
-declaration.additionalDocumentsRequired.hint = These may include licences, permits or certificates for your goods, in addition to the documents that you already added to your declaration in section 4.
+declaration.additionalDocumentsRequired.paragraph = These may include licences, permits or certificates for your goods, in addition to the documents that you already added to your declaration in section 4.
 declaration.additionalDocumentsRequired.inset.text1 = How do I know if my goods require licences, certificates or exemptions?
 declaration.additionalDocumentsRequired.inset.text2 = The {0} will list any requirements in the ‘Exports’ tab in the column ‘Conditions that apply’.
 declaration.additionalDocumentsRequired.inset.link2 = Tariff entry for {0}, the code you entered (opens in new tab)
@@ -1119,7 +1121,8 @@ declaration.additionalDocument.remove.measurementUnitAndQualifier = Measurement 
 declaration.additionalDocument.remove.documentQuantity = Quantity of the measurement unit
 
 declaration.totalPackageQuantity.title = What is the total number of packages in this declaration?
-declaration.totalPackageQuantity.hint = Count up the smallest external package type that the goods have been packed in for export. For example, for cartons of books packed on a pallet in a container, the package type would be the pallet.
+declaration.totalPackageQuantity.paragraph = Count the smallest external package type that the goods have been packed in for export. Where two of your goods items have different commodity codes you cannot count a package that contains both of them as a single package.
+declaration.totalPackageQuantity.hint = For example, for cartons of books packed on pallets in a container, the package type would be the pallet.
 declaration.totalPackageQuantity.empty = Enter a total number of packages
 declaration.totalPackageQuantity.error = Total number of packages must be 99999999 or fewer
 
@@ -1147,7 +1150,7 @@ declaration.transportInformation.borderTransportMode.error.empty.optional = Sele
 declaration.transportInformation.borderTransportMode.error.incorrect = Select the mode of transport at the border
 
 declaration.transportInformation.expressConsignment.title = Is this an express consignment?
-declaration.transportInformation.expressConsignment.hint = This is when the goods are carried by an express courier or express cargo services.
+declaration.transportInformation.expressConsignment.paragraph = This is when the goods are carried by an express courier or express cargo services.
 declaration.transportInformation.expressConsignment.empty = Select yes if this is an express consignment
 
 declaration.transportInformation.transportPayment.paymentMethod = How did you pay for the express transport?
@@ -1232,10 +1235,10 @@ declaration.transportInformation.containers.first.title = Are the goods in a con
 declaration.transportInformation.containers.yes = Yes, the goods are in one or more containers
 declaration.transportInformation.containers.no = No, the goods are not in containers
 declaration.transportInformation.containerId = Enter container identification number. If you want to add this information later, enter 'Unknown' in the box.
-declaration.transportInformation.containers.inset.title = This includes:
-declaration.transportInformation.containers.inset.bullet1 = shipping containers
-declaration.transportInformation.containers.inset.bullet2 = air freight containers
-declaration.transportInformation.containers.inset.bullet3 = swap bodies and semi-trailers used for road and rail transport
+declaration.transportInformation.containers.paragraph = This includes:
+declaration.transportInformation.containers.bullet1 = shipping containers
+declaration.transportInformation.containers.bullet2 = air freight containers
+declaration.transportInformation.containers.bullet3 = swap bodies and semi-trailers used for road and rail transport
 declaration.transportInformation.error.duplicate = Container ID already added
 
 declaration.invoice.details.title = Invoice and exchange rate details
@@ -1286,9 +1289,8 @@ declaration.unDangerousGoodsCode.error.empty = Enter a UN dangerous goods code
 declaration.unDangerousGoodsCode.error.invalid = A UN dangerous goods code must be 4 digits exactly
 
 declaration.cusCode.header = Is there a CUS code for this item?
-declaration.cusCode.header.hint = A customs union and statistics number (CUS code) is required for chemicals classified in chapters 28, 29 and some in chapter 38 of the UK Trade Tariff.
-declaration.cusCode.inset.text = You can check this using the {0}
-declaration.cusCode.header.ecicsTool.link = ECICS chemical substance information tool (opens in new tab).
+declaration.cusCode.paragraph = A customs union and statistics number (CUS code) is required for chemicals classified in chapters 28, 29 and some in chapter 38 of the UK Trade Tariff. You can check this using the {0}.
+declaration.cusCode.paragraph.link = ECICS chemical substance information tool (opens in new tab)
 declaration.cusCode.label = CUS code
 declaration.cusCode.hasCode = Yes
 declaration.cusCode.noCode = No
@@ -1383,6 +1385,7 @@ declaration.previousDocuments.inset.text.3.link = Appendix 1 data element 2/1 (o
 
 declaration.previousDocuments.documentCode = Document code
 declaration.previousDocuments.v1.documentCode.body = Select the document code for the document type you want to add.
+declaration.previousDocuments.v1.documentCode.hint = To enter an invoice, type 'invoice' to see the document codes for an invoice.
 declaration.previousDocuments.v2.documentCode.body = Select a document type. For excise guarantee, select ZZZ. Select ZZZ a second time to enter the reference for the excise warehousing procedure where no excise duty was paid.
 declaration.previousDocuments.v3.documentCode.body = Select the document code from the list.
 declaration.previousDocuments.v3.documentCode.hint = For example, MRN for the previous declaration entering the goods to Inward Processing.
@@ -1394,9 +1397,9 @@ declaration.previousDocuments.documentCode.empty = Select a document code
 
 declaration.previousDocuments.documentReference = Document reference
 declaration.previousDocuments.v1.documentReference.body = Enter the unique invoice number or packing reference printed on the document.
-declaration.previousDocuments.v2.documentReference.body = For ZZZ, enter the excise guarantee reference. The second time enter the stock reference number against ZZZ for the excise warehousing procedure.
-declaration.previousDocuments.v3.documentReference.body = Enter the unique invoice number or packing reference printed on the document.
-declaration.previousDocuments.v3.documentReference.hint = For document code MRN, enter the movement reference number of the previous import declaration.
+declaration.previousDocuments.v2.documentReference.body = For excise, enter the excise guarantee reference or the stock reference number, as required.
+declaration.previousDocuments.v3.documentReference.body = For special procedures, enter the excise guarantee reference or the movement reference number of the previous declaration, as required.
+declaration.previousDocuments.v3.documentReference.hint = Enter the invoice or other reference using letters, numbers and standard alternative characters, but no spaces. For example, SMITH-321/890.
 declaration.previousDocuments.v4.documentReference.body = Enter a reference.
 declaration.previousDocuments.v4.documentReference.hint = For example, the unique invoice number or packing reference printed on the document.
 declaration.previousDocuments.v5.documentReference.body = Enter a reference.
@@ -1478,7 +1481,7 @@ declaration.natureOfTransaction.error = This sort of export is not allowed with 
 declaration.natureOfTransaction.inset.text = You cannot make a declaration where 2 different items have a different nature of transaction. If this is the case, make one declaration for each item and consolidate (group) them under a Master Unique Consignment Reference (MUCR) number.
 
 declaration.packageInformation.title = Enter the packing details for this item
-declaration.packageInformation.hint = You must select a package type. If any of the goods are in a different package type, add that type separately.
+declaration.packageInformation.paragraph = You must select a package type. If any of the goods are in a different package type, add that type separately.
 declaration.packageInformation.remove.title = Are you sure you want to remove this package type?
 declaration.packageInformation.remove.hint = Remove package type {0} shipping reference {1}.
 declaration.packageInformation.remove.typesOfPackages = Package type
@@ -1494,8 +1497,8 @@ declaration.packageInformation.table.heading.typesOfPackages = Type
 declaration.packageInformation.table.heading.numberOfPackages = Number
 declaration.packageInformation.table.heading.shippingMarks = Shipping marks
 declaration.packageInformation.typesOfPackages.label = Package type
-declaration.packageInformation.typesOfPackages.hint.1 = Select the smallest external package type that the goods have been packed in for their exportation. For example, for cartons of books packed on a pallet in a container, the package type would be the pallet.
-declaration.packageInformation.typesOfPackages.hint.2 = Start typing the package type (box, pallet, crate, container) to see the options.
+declaration.packageInformation.typesOfPackages.paragraph = Select the smallest external package type that the goods have been packed in for their exportation. For example, for cartons of books packed on a pallet in a container, the package type would be the pallet.
+declaration.packageInformation.typesOfPackages.hint.1 = Start typing the package type (box, pallet, crate, container) to see the options.
 declaration.packageInformation.typesOfPackages.error = Select a package type from the list
 declaration.packageInformation.typesOfPackages.empty = Select a package type
 declaration.packageInformation.numberOfPackages = Number of this package type
@@ -1803,7 +1806,7 @@ supplementary.startNewDec = Start a new declaration
 declaration.itemsAdd.title = Add declaration item 1
 declaration.itemsAdd.titleWithItem = You have declared {0} item
 declaration.itemsAdd.titleWithItems = You have declared {0} items
-declaration.itemsAdd.title.hint = A declaration can have multiple items. Each item is identified by a commodity code, which explains what type of goods are being added to the declaration, and a Union Customs Code procedure code.
+declaration.itemsAdd.paragraph = A declaration can have multiple items. Each item is identified by a commodity code, which explains what type of goods are being added to the declaration, and a CDS procedure code.
 declaration.itemsAdd.change.hint = Change item {0}.
 declaration.itemsAdd.remove.hint = Remove item {0}.
 declaration.itemsSummary.itemNumber = Declaration item

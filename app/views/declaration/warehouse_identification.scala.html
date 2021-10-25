@@ -31,7 +31,8 @@
         exportsInputText: exportsInputText,
         saveButtons: saveButtons,
         tariffExpander: tariffExpander,
-        pageTitle: pageTitle,
+        heading: heading,
+        paragraphBody: paragraphBody,
         formHelper: FormWithCSRF,
         sectionHeader: sectionHeader,
         appConfig: AppConfig
@@ -48,13 +49,15 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.6"))
+        @heading(messages("declaration.warehouse.identification.required.title"))
+
+        @paragraphBody(messages("declaration.warehouse.identification.required.paragraph"))
 
         @exportsInputText(
             field = form("identificationNumber"),
             labelKey = "declaration.warehouse.identification.required.title",
             hintKey = Some("declaration.warehouse.identification.label.hint"),
-            isPageHeading = true,
-            headingClasses = gdsPageLabel,
+            labelClasses = "govuk-visually-hidden",
             sectionHeaderKey = None
         )
 

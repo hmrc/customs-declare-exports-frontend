@@ -37,7 +37,8 @@
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
   exportsInputText: exportsInputText,
-  insetText: exportsInsetText,
+  heading: heading,
+  paragraphBody: paragraphBody,
   spanVisuallyHidden: spanVisuallyHidden,
   tariffExpander: tariffExpander,
   saveButtons: saveButtons,
@@ -85,26 +86,21 @@
     @errorSummary(form.errors)
 
     @sectionHeader(messages("declaration.section.5"))
+    @heading(messages("declaration.additionalProcedureCodes.title", procedureCode.code))
+
+    @paragraphBody(messages("declaration.additionalProcedureCodes.paragraph"))
 
     @components.fields.field_accessible_autocomplete_with_header(
       field = form(additionalProcedureCodeKey),
       label = messages("declaration.additionalProcedureCodes.title", procedureCode.code),
-      labelClass = Some(gdsPageLabel),
+      labelClass = Some("govuk-visually-hidden"),
       emptySelectValue = messages("declaration.additionalProcedureCodes.error.empty"),
       items = AutoCompleteItem.fromAdditionalProcedureCodes(validAdditionalProcedureCodes.toList),
-      isPageHeading = true,
-      hintParagraphs = List(messages("declaration.additionalProcedureCodes.hint")),
+      isPageHeading = false,
       rightElement = Some(addButton(hiddenLabel = Some(messages("declaration.additionalProcedureCodes.add.hint"))))
     )
 
     @additionalCodesTable
-
-    @insetText(
-      content = HtmlContent(messages("declaration.additionalProcedureCodes.inset",
-        AutoCompleteItem.formatProcedureCode(procedureCode),
-        link(text = messages("declaration.additionalProcedureCodes.inset.linkText"), call = Call("GET", appConfig.additionalProcedureCodesOfCDs), target="_blank")
-      ))
-    )
 
     @tariffExpander(AdditionalProcedureCode, request.declarationType)(messages, appConfig)
     @saveButtons()

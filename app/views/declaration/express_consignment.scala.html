@@ -32,6 +32,8 @@
     yesNoRadios: yesNoRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    heading: heading,
+    paragraphBody: paragraphBody,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
@@ -48,6 +50,9 @@
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
+        @heading(messages("declaration.transportInformation.expressConsignment.title"))
+
+        @paragraphBody(messages("declaration.transportInformation.expressConsignment.paragraph"))
 
         @yesNoRadios(
             form = form,
@@ -55,11 +60,9 @@
             heading = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.transportInformation.expressConsignment.title")),
-                    isPageHeading = true,
-                    classes = gdsPageLegend
+                    classes = "govuk-visually-hidden"
                 ))
-            )),
-            hint = Some(Hint(content = Text(messages("declaration.transportInformation.expressConsignment.hint"))))
+            ))
         )
 
         @tariffExpander(ExpressConsignment, request.declarationType)(messages, appConfig)

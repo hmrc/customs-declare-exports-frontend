@@ -28,7 +28,8 @@
         govukLayout: gdsMainTemplate,
         govukButton: GovukButton,
         errorSummary: errorSummary,
-        pageTitle: pageTitle,
+        heading: heading,
+        paragraphBody: paragraphBody,
         exportsInputText: exportsInputText,
         tariffExpander: tariffExpander,
         saveButtons: saveButtons,
@@ -48,12 +49,14 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.4"))
+        @heading(messages("declaration.totalPackageQuantity.title"))
+        
+        @paragraphBody(messages("declaration.totalPackageQuantity.paragraph"))
 
         @exportsInputText(
             labelKey = "declaration.totalPackageQuantity.title",
             field = form("totalPackage"),
-            isPageHeading = true,
-            headingClasses = gdsPageLabel,
+            labelClasses = "govuk-visually-hidden",
             inputClasses = Some("govuk-input--width-10"),
             sectionHeaderKey = None,
             hintKey = Some("declaration.totalPackageQuantity.hint")

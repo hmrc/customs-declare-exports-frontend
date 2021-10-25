@@ -41,7 +41,7 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Injec
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.procedureCodes.title")
-      messages must haveTranslationFor("declaration.procedureCodes.hint")
+      messages must haveTranslationFor("declaration.procedureCodes.paragraph")
       messages must haveTranslationFor("declaration.procedureCodes.empty")
       messages must haveTranslationFor("declaration.procedureCodes.error.empty")
       messages must haveTranslationFor("declaration.procedureCodes.error.invalid")
@@ -82,7 +82,6 @@ class ProcedureCodeViewSpec extends UnitViewSpec with ExportsTestData with Injec
 
         "display empty input with label for Procedure Code" in {
           view.getElementsByAttributeValue("for", "procedureCode") must containMessageForElements("declaration.procedureCodes.title")
-          view.getElementById("procedureCode-hint") must containMessage("declaration.procedureCodes.hint")
           view.getElementById("procedureCode").attr("value") mustBe empty
         }
 

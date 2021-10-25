@@ -33,6 +33,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
+    heading: heading,
     paragraphBody: paragraphBody,
     exportsInputText: exportsInputText,
     tariffExpander: tariffExpander,
@@ -62,16 +63,20 @@
 
         @sectionHeader(messages("declaration.section.5"))
         @pageTitle(text = messages("declaration.packageInformation.title"))
-        @paragraphBody(messages("declaration.packageInformation.hint"), "govuk-hint")
+
+        @paragraphBody(messages("declaration.packageInformation.paragraph"))
+
+        @heading(messages("declaration.packageInformation.typesOfPackages.label"), "h2")
+
+        @paragraphBody(messages("declaration.packageInformation.typesOfPackages.paragraph"))
 
         @formGroupWrapper(field = form(PackageInformationFormGroupId)){
             @components.fields.field_accessible_autocomplete(
               field = form("typesOfPackages"),
               label = messages("declaration.packageInformation.typesOfPackages.label"),
-              labelClass = Some("govuk-label--m"),
+              labelClass = Some("govuk-visually-hidden"),
               hintParagraphs = List(
-                messages("declaration.packageInformation.typesOfPackages.hint.1"),
-                messages("declaration.packageInformation.typesOfPackages.hint.2")
+                messages("declaration.packageInformation.typesOfPackages.hint.1")
               ),
               emptySelectValue = messages("declaration.packageInformation.typesOfPackages.empty"),
               items = AutoCompleteItem.fromPackageType(PackageTypes.all),
@@ -81,7 +86,6 @@
             @exportsInputText(
               field = form("numberOfPackages"),
               labelKey = "declaration.packageInformation.numberOfPackages",
-              isPageHeading = false,
               inputClasses = Some("govuk-input--width-10")
             )
 
@@ -89,7 +93,6 @@
               field = form("shippingMarks"),
               labelKey = "declaration.packageInformation.shippingMark",
               hintKey = Some("declaration.packageInformation.shippingMark.hint"),
-              isPageHeading = false,
               inputClasses = Some("govuk-input--width-20")
             )
         }

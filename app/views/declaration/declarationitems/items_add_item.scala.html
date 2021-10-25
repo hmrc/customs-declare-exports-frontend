@@ -50,8 +50,11 @@
 
     @sectionHeader(messages("declaration.section.5"))
     @pageTitle(messages("declaration.itemsAdd.title"))
-    @paragraphBody(messages("declaration.itemsAdd.title.hint"), "govuk-body govuk-hint")
+
+    @paragraphBody(messages("declaration.itemsAdd.paragraph"))
+
     @addButton(label = "site.add.item", hiddenLabel = Some(messages("site.add.item")))
+    
     @saveAsDraftButton
 
   }

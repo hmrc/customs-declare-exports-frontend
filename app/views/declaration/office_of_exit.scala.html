@@ -31,6 +31,8 @@
     govukButton: GovukButton,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    heading: heading,
+    paragraphBody: paragraphBody,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
@@ -47,15 +49,18 @@
         @errorSummary(radioGroupErrors("isUkOfficeOfExit", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.3"))
+        @heading(messages("declaration.officeOfExit.title"))
+        
+        @paragraphBody(messages("declaration.officeOfExit.paragraph"))
 
         @components.fields.field_accessible_autocomplete_with_header(
             field = form("officeId"),
             label = messages("declaration.officeOfExit.title"),
-            labelClass = Some(gdsPageLabel),
+            labelClass = Some("govuk-visually-hidden"),
             hintParagraphs = List(messages("declaration.officeOfExit.hint")),
             emptySelectValue = messages("declaration.officeOfExit.empty"),
             items = AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all),
-            isPageHeading = true
+            isPageHeading = false
         )
 
         @tariffExpander(OfficeOfExit, request.declarationType)(messages, appConfig)

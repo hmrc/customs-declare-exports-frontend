@@ -33,9 +33,9 @@
     govukDetails : GovukDetails,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    heading: heading,
     paragraphBody: paragraphBody,
     exportsInputText: exportsInputText,
-    insetText: exportsInsetText,
     bulletList: bulletList,
     body: paragraphBody,
     pageTitle: pageTitle,
@@ -47,19 +47,6 @@
 
 @(mode: Mode, form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
-@insetSection = {
-    @paragraphBody(messages("declaration.transportInformation.containers.inset.title"), "govuk-body govuk-hint")
-
-    @bulletList(
-        items = Seq(
-            Html(messages("declaration.transportInformation.containers.inset.bullet1")),
-            Html(messages("declaration.transportInformation.containers.inset.bullet2")),
-            Html(messages("declaration.transportInformation.containers.inset.bullet3"))
-        ),
-        additionalListClasses = Some("govuk-hint")
-    )
-}
-
 @govukLayout(
     title = Title("declaration.transportInformation.containers.first.title", "declaration.section.6"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ContainerFirst, mode)))) {
@@ -68,13 +55,24 @@
         @errorSummary(radioGroupErrors(hasContainerKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
+        @heading(messages("declaration.transportInformation.containers.first.title"))
+
+        @paragraphBody(messages("declaration.transportInformation.containers.paragraph"))
+
+        @bulletList(
+            items = Seq(
+                Html(messages("declaration.transportInformation.containers.bullet1")),
+                Html(messages("declaration.transportInformation.containers.bullet2")),
+                Html(messages("declaration.transportInformation.containers.bullet3"))
+            )
+        )
 
         @govukRadios(Radios(
             name = hasContainerKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.transportInformation.containers.first.title")),
-                    classes = gdsPageLegend
+                    classes = "govuk-visually-hidden"
                 ))
             )),
             items = Seq(
@@ -99,10 +97,6 @@
             ),
             errorMessage = form(hasContainerKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @insetText(
-            content = HtmlContent(insetSection)
-        )
 
         @tariffExpander(ContainerFirst, request.declarationType)(messages, appConfig)
 

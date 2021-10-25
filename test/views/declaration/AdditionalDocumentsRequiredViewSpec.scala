@@ -59,10 +59,6 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
         view.getElementsByTag("h1").first() must containMessage(s"$msgKey.title")
       }
 
-      "display the hint paragraph" in {
-        view.getElementsByClass("govuk-hint").first must containMessage(s"$msgKey.hint")
-      }
-
       "display two Yes/No radio buttons" in {
         val radios = view.getElementsByClass("govuk-radios").first.children
         radios.size mustBe 2

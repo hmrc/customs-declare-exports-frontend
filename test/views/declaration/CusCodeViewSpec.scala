@@ -26,7 +26,6 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
-import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.cus_code
 import views.tags.ViewTest
@@ -45,8 +44,7 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.cusCode.header")
-        messages must haveTranslationFor("declaration.cusCode.header.hint")
-        messages must haveTranslationFor("declaration.cusCode.inset.text")
+        messages must haveTranslationFor("declaration.cusCode.paragraph")
         messages must haveTranslationFor("declaration.cusCode.hasCode")
         messages must haveTranslationFor("declaration.cusCode.noCode")
         messages must haveTranslationFor("declaration.cusCode.label")
@@ -55,15 +53,11 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
 
       val view = createView()
       "display page title" in {
-        view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.cusCode.header")
+        view.getElementsByTag("h1") must containMessageForElements("declaration.cusCode.header")
       }
 
       "display section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.5")
-      }
-
-      "display hint text" in {
-        createView().getElementById("hasCusCode-hint").text() mustBe messages("declaration.cusCode.header.hint")
       }
 
       "display radio button with Yes option" in {
@@ -75,10 +69,10 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.cusCode.noCode")
       }
 
-      "display inset text" in {
-        createView().getElementsByClass("govuk-inset-text").get(0).text() mustBe messages(
-          "declaration.cusCode.inset.text",
-          messages("declaration.cusCode.header.ecicsTool.link")
+      "display link" in {
+        createView().getElementsByClass("govuk-body").get(0).text() mustBe messages(
+          "declaration.cusCode.paragraph",
+          messages("declaration.cusCode.paragraph.link")
         )
       }
 

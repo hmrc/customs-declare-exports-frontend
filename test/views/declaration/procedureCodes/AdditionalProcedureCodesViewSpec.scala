@@ -50,7 +50,7 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.additionalProcedureCodes.title")
-      messages must haveTranslationFor("declaration.additionalProcedureCodes.hint")
+      messages must haveTranslationFor("declaration.additionalProcedureCodes.paragraph")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.table.header")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.inset")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.inset.linkText")
@@ -69,7 +69,6 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
         }
 
         "display empty input with label for Additional Procedure Codes" in {
-          view.getElementById("additionalProcedureCode-hint") must containMessage("declaration.additionalProcedureCodes.hint")
           view.getElementById("additionalProcedureCode").attr("value") mustBe empty
         }
 
@@ -86,16 +85,6 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
           val addButton = view.getElementById("add")
           addButton.text() must include(messages("site.add"))
           addButton.text() must include(messages("declaration.additionalProcedureCodes.add.hint"))
-        }
-
-        "display inset text" in {
-          val inset = view.getElementsByClass("govuk-inset-text").get(0)
-          val expected = messages(
-            "declaration.additionalProcedureCodes.inset",
-            AutoCompleteItem.formatProcedureCode(sampleProcedureCode),
-            s"${messages("declaration.additionalProcedureCodes.inset.linkText")}"
-          )
-          inset.text must include(expected)
         }
 
         "display 'Save and continue' button on page" in {
