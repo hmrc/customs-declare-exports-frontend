@@ -71,7 +71,7 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber.label")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber.hint")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumberROI")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.hint")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber")
@@ -138,7 +138,7 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
         hasSectionFor(view, "wagonNumber")
       }
       "has 'Register Vehicle' section" in {
-        hasSectionFor(view, "vehicleRegistrationNumber")
+        hasSectionFor(view, "vehicleRegistrationNumberROI")
       }
       "has 'Flight number' section" in {
         hasSectionFor(view, "IATAFlightNumber")

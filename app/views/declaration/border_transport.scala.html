@@ -81,7 +81,7 @@
             radioOption("aircraftRegistrationNumber", AircraftRegistrationNumber),
             radioOption("europeanVesselIDNumber", EuropeanVesselIDNumber),
             radioOption("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel),
-            radioOption("vehicleRegistrationNumber", VehicleRegistrationNumber)
+            radioOption("vehicleRegistrationNumberROI", VehicleRegistrationNumber)
         ),
         errorMessage = form("borderTransportType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
     ))
