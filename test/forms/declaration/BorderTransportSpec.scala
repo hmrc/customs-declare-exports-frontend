@@ -110,7 +110,7 @@ class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with Moc
       "sending reference with special characters" in {
         form
           .bind(
-            Map("borderTransportType" -> TransportCodes.VehicleRegistrationNumber, "borderTransportReference_vehicleRegistrationNumber" -> "$#@!")
+            Map("borderTransportType" -> TransportCodes.VehicleRegistrationNumber, "borderTransportReference_vehicleRegistrationNumberROI" -> "$#@!")
           )
           .errors must contain("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid")
       }

@@ -67,7 +67,7 @@ object BorderTransport extends DeclarationPage {
       transportReferenceMapping("IMOShipIDNumber", IMOShipIDNumber),
       transportReferenceMapping("nameOfVessel", NameOfVessel),
       transportReferenceMapping("wagonNumber", WagonNumber),
-      transportReferenceMapping("vehicleRegistrationNumber", VehicleRegistrationNumber),
+      transportReferenceMapping("vehicleRegistrationNumberROI", VehicleRegistrationNumber),
       transportReferenceMapping("IATAFlightNumber", IATAFlightNumber),
       transportReferenceMapping("aircraftRegistrationNumber", AircraftRegistrationNumber),
       transportReferenceMapping("europeanVesselIDNumber", EuropeanVesselIDNumber),

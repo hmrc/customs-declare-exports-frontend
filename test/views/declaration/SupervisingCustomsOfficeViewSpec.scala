@@ -16,8 +16,6 @@
 
 package views.declaration
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
-
 import base.Injector
 import forms.declaration.SupervisingCustomsOffice
 import models.requests.JourneyRequest

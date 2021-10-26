@@ -24,7 +24,6 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
-import services.view.AutoCompleteItem
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.procedureCodes.additional_procedure_codes
