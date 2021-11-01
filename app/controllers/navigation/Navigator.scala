@@ -18,6 +18,7 @@ package controllers.navigation
 
 import config.AppConfig
 import controllers.declaration.routes
+import controllers.declaration.InlandTransportDetailsController.getSkipOtherTransportPagesValue
 import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
 import controllers.helpers._
 import forms.Choice.AllowedChoiceValues
@@ -83,7 +84,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
 
 case class ItemId(id: String)
 
-// scalastyle: off
+// scalastyle:off
 object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -92,7 +93,6 @@ object Navigator {
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
-    case ExpressConsignment          => routes.BorderTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case DestinationCountryPage      => routes.OriginationCountryController.displayPage
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
@@ -106,6 +106,7 @@ object Navigator {
     case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
+
   val standardItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation            => routes.StatisticalValueController.displayPage
     case AdditionalInformationRequired => routes.CommodityMeasureController.displayPage
@@ -161,6 +162,7 @@ object Navigator {
     case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
+
   val supplementaryItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation            => routes.StatisticalValueController.displayPage
     case AdditionalInformationRequired => routes.CommodityMeasureController.displayPage
@@ -189,6 +191,7 @@ object Navigator {
     case DocumentSummary             => routes.OfficeOfExitController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
+
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation            => routes.NactCodeSummaryController.displayPage
     case AdditionalInformationRequired => routes.PackageInformationSummaryController.displayPage
@@ -279,25 +282,27 @@ object Navigator {
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case CarrierEoriNumber         => carrierEoriNumberPreviousPage
-    case Document                  => previousDocumentsPreviousPageDefault
     case ConsigneeDetails          => consigneeDetailsPreviousPage
+    case ContainerFirst            => ifExpressConsignmentPreviousPage
+    case DeclarantIsExporter       => declarantIsExporterPreviousPage
+    case Document                  => previousDocumentsPreviousPageDefault
+    case ExpressConsignment        => inlandTransportDetailsPageOnCondition
+    case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
     case OriginationCountryPage    => originationCountryPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage
-    case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
-    case ContainerFirst            => ifExpressConsignmentPreviousPage
   }
 
   val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
 
   val supplementaryCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case ConsigneeDetails          => consigneeDetailsSupplementaryPreviousPage
-    case OriginationCountryPage    => originationCountryPreviousPage
+    case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault
-    case RepresentativeAgent       => representativeAgentPreviousPage
+    case ExpressConsignment        => inlandTransportDetailsPageOnCondition
     case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
+    case OriginationCountryPage    => originationCountryPreviousPage
+    case RepresentativeAgent       => representativeAgentPreviousPage
   }
 
   val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -523,6 +528,12 @@ object Navigator {
       routes.WarehouseIdentificationController.displayPage(mode)
     else
       warehouseIdentificationPreviousPage(cacheModel, mode)
+
+  private def inlandTransportDetailsPageOnCondition(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (getSkipOtherTransportPagesValue(Some(cacheModel)).isDefined)
+      routes.InlandTransportDetailsController.displayPage(mode)
+    else
+      routes.BorderTransportController.displayPage(mode)
 
   private def ifExpressConsignmentPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.transport.transportPayment.nonEmpty)
