@@ -16,22 +16,23 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{CarrierDetailsController, ConsigneeDetailsController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
+import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.carrier_eori_number
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class CarrierEoriNumberController @Inject()(
   authenticate: AuthAction,
@@ -46,34 +47,29 @@ class CarrierEoriNumberController @Inject()(
   val validJourneys = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
-    request.cacheModel.parties.carrierDetails match {
-      case Some(data) => Ok(carrierEoriDetailsPage(mode, form().fill(CarrierEoriNumber(data))))
-      case _          => Ok(carrierEoriDetailsPage(mode, form()))
+    carrierDetails match {
+      case Some(data) => Ok(carrierEoriDetailsPage(mode, form.fill(CarrierEoriNumber(data))))
+      case _          => Ok(carrierEoriDetailsPage(mode, form))
     }
   }
 
-  private def form()(implicit request: JourneyRequest[_]) = CarrierEoriNumber.form().withSubmissionErrors()
-
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
-    form()
-      .bindFromRequest()
+    form
+      .bindFromRequest
       .fold(
-        (formWithErrors: Form[CarrierEoriNumber]) => {
-          val formWithAdjustedErrors = formWithErrors
-          Future.successful(BadRequest(carrierEoriDetailsPage(mode, formWithAdjustedErrors)))
-        },
-        form =>
-          updateCache(form, request.cacheModel.parties.carrierDetails)
-            .map(_ => navigator.continueTo(mode, nextPage(form.hasEori)))
+        formWithErrors => Future.successful(BadRequest(carrierEoriDetailsPage(mode, formWithErrors))),
+        formData => updateCache(formData, carrierDetails).map(_ => navigator.continueTo(mode, nextPage(formData.hasEori)))
       )
   }
 
+  private def carrierDetails(implicit request: JourneyRequest[_]): Option[CarrierDetails] =
+    request.cacheModel.parties.carrierDetails
+
+  private def form(implicit request: JourneyRequest[_]): Form[CarrierEoriNumber] =
+    CarrierEoriNumber.form.withSubmissionErrors
+
   private def nextPage(hasEori: String): Mode => Call =
-    if (hasEori == YesNoAnswers.yes) {
-      controllers.declaration.routes.ConsigneeDetailsController.displayPage
-    } else {
-      controllers.declaration.routes.CarrierDetailsController.displayPage
-    }
+    if (hasEori == YesNoAnswers.yes) ConsigneeDetailsController.displayPage else CarrierDetailsController.displayPage
 
   private def updateCache(formData: CarrierEoriNumber, savedCarrierDetails: Option[CarrierDetails])(
     implicit r: JourneyRequest[AnyContent]

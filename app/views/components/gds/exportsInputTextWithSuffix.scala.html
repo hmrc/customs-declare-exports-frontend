@@ -23,7 +23,7 @@
     field: Field,
     labelKey: String,
     labelClass: String = "govuk-label--m",
-    prefixKey: String,
+    suffixKey: String,
     hintKey: Option[String] = None,
     tooltipKey: Option[String] = None,
     sectionHeaderKey: Option[String] = None
@@ -53,7 +53,7 @@
         ).flatten)))),
         classes = "govuk-input--width-10",
         spellcheck = Some(false),
-        prefix = Some(PrefixOrSuffix(content = Text(messages(prefixKey)))),
+        suffix = Some(PrefixOrSuffix(content = Text(messages(suffixKey)))),
         value = field.value
     ))
 </div>

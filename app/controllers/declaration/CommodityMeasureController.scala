@@ -16,20 +16,23 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{AdditionalInformationRequiredController, SupplementaryUnitsController}
 import controllers.navigation.Navigator
-import forms.declaration.CommodityMeasure
+import forms.declaration.commodityMeasure.CommodityMeasure
+import javax.inject.Inject
+import models.DeclarationType.CLEARANCE
+import models.declaration.{ExportItem, CommodityMeasure => CM}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.commodityMeasure.commodity_measure
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class CommodityMeasureController @Inject()(
   authenticate: AuthAction,
@@ -43,36 +46,38 @@ class CommodityMeasureController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
-      case Some(data) => Ok(commodityMeasurePage(mode, itemId, form().fill(data), commodityCode(itemId)))
-      case _          => Ok(commodityMeasurePage(mode, itemId, form(), commodityCode(itemId)))
+      case Some(data) => Ok(commodityMeasurePage(mode, itemId, form.fill(CommodityMeasure(data))))
+      case _          => Ok(commodityMeasurePage(mode, itemId, form))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[CommodityMeasure]) => {
-          Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors, commodityCode(itemId))))
-        },
-        validForm =>
-          updateExportsCache(itemId, validForm).map { _ =>
-            navigator
-              .continueTo(mode, controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(_, itemId))
-        }
+  def submitPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val test = form.bindFromRequest
+    test.fold(
+        formWithErrors => Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors))),
+        updateExportsCache(itemId, _).map(_ => navigator.continueTo(mode, nextPage(itemId)))
       )
   }
 
-  private def form()(implicit request: JourneyRequest[_]): Form[CommodityMeasure] =
-    CommodityMeasure.form(request.declarationType).withSubmissionErrors()
+  private def form(implicit request: JourneyRequest[_]): Form[CommodityMeasure] =
+    CommodityMeasure.form.withSubmissionErrors
 
-  private def commodityCode(itemId: String)(implicit request: JourneyRequest[_]): Option[String] =
-    request.cacheModel.commodityCodeOfItem(itemId)
+  private def nextPage(itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
+    if (request.declarationType == CLEARANCE) AdditionalInformationRequiredController.displayPage(_, itemId)
+    else SupplementaryUnitsController.displayPage(_, itemId)
 
-  private def updateExportsCache(itemId: String, updatedItem: CommodityMeasure)(
-    implicit r: JourneyRequest[AnyContent]
+  private def updateExportsCache(
+    itemId: String, updatedItem: CommodityMeasure)(implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
-      model.updatedItem(itemId, item => item.copy(commodityMeasure = Some(updatedItem)))
-    })
+    updateExportsDeclarationSyncDirect {
+      _.updatedItem(itemId, item => item.copy(commodityMeasure = updateCM(item, updatedItem)))
+    }
+
+  private def updateCM(item: ExportItem, updatedItem: CommodityMeasure): Option[CM] =
+    item.commodityMeasure match {
+      case Some(cm) =>
+        Some(CM(cm.supplementaryUnits, cm.supplementaryUnitsNotRequired, updatedItem.grossMass, updatedItem.netMass))
+
+      case _ => Some(CM(None, None, updatedItem.grossMass, updatedItem.netMass))
+    }
 }

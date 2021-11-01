@@ -17,7 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.declaration.{CommodityMeasure, PackageInformation}
+import forms.declaration.PackageInformation
+import forms.declaration.commodityMeasure.CommodityMeasure
 import models.declaration.ExportItem
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -104,7 +105,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
         val incorrectForm = Json.toJson(CommodityMeasure(None, None, None, None))
 
-        val result = controller.submitForm(Mode.Normal, "itemId")(postRequest(incorrectForm))
+        val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -119,7 +120,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
         val correctForm = Json.toJson(CommodityMeasure(None, Some(true), Some("1234.12"), Some("1234.12")))
 
-        val result = controller.submitForm(Mode.Normal, "itemId")(postRequest(correctForm))
+        val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")

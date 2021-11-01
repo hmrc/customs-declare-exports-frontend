@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
+@import controllers.declaration.routes
 @import models.declaration.ExportItem
 @import models.DeclarationType.DeclarationType
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.elements_in_separate_lines
-@import views.html.components.gds.linkContent
-@import views.html.components.gds.summary_list
 @import views.components.gds.ActionItemBuilder._
+@import views.html.components.elements_in_separate_lines
+@import views.html.components.gds.{linkContent, summary_list}
 
 @this(
     summaryList: summary_list,
@@ -51,7 +51,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.ProcedureCodesController.displayPage(mode, item.id).url,
+                        href = routes.ProcedureCodesController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.procedureCode.change", item.sequenceId))
                     )
@@ -71,7 +71,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.AdditionalProcedureCodesController.displayPage(mode, item.id).url,
+                        href = routes.AdditionalProcedureCodesController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalProcedureCodes.change", item.sequenceId))
                     )
@@ -91,7 +91,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.FiscalInformationController.displayPage(mode, item.id).url,
+                        href = routes.FiscalInformationController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.onwardSupplyRelief.change", item.sequenceId))
                     )
@@ -109,7 +109,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(mode, item.id).url,
+                        href = routes.AdditionalFiscalReferencesController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.VATdetails.change", item.sequenceId))
                     )
@@ -129,7 +129,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.CommodityDetailsController.displayPage(mode, item.id).url,
+                        href = routes.CommodityDetailsController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.commodityCode.change", item.sequenceId))
                     )
@@ -149,7 +149,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.CommodityDetailsController.displayPage(mode, item.id).url,
+                        href = routes.CommodityDetailsController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
                     )
@@ -169,7 +169,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(mode, item.id).url,
+                        href = routes.UNDangerousGoodsCodeController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", item.sequenceId))
                     )
@@ -189,7 +189,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.CusCodeController.displayPage(mode, item.id).url,
+                        href = routes.CusCodeController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.cusCode.change", item.sequenceId))
                     )
@@ -209,7 +209,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.TaricCodeSummaryController.displayPage(mode, item.id).url,
+                        href = routes.TaricCodeSummaryController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
                     )
@@ -229,7 +229,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.NactCodeSummaryController.displayPage(mode, item.id).url,
+                        href = routes.NactCodeSummaryController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.nationalAdditionalCodes.change", item.sequenceId))
                     )
@@ -249,7 +249,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.StatisticalValueController.displayPage(mode, item.id).url,
+                        href = routes.StatisticalValueController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.itemValue.change", item.sequenceId))
                     )
@@ -257,28 +257,6 @@
             ))
         )
     ),
-    if(Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL).contains(declarationType))
-        item.commodityMeasure.map(commodityMeasure =>
-            SummaryListRow(
-                classes = s"item-${item.sequenceId}-supplementaryUnits-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.items.item.supplementaryUnits"))
-                ),
-                value = Value(
-                    content = Text(commodityMeasure.supplementaryUnits.getOrElse(messages("declaration.summary.items.item.supplementaryUnitsNotRequired")))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionItem(
-                            href = controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.supplementaryUnits.change", item.sequenceId))
-                        )
-                    )
-                ))
-            )
-        )
-    else None,
     item.commodityMeasure.map(commodityMeasure =>
         SummaryListRow(
             classes = s"item-${item.sequenceId}-grossWeight-row",
@@ -291,7 +269,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id).url,
+                        href = routes.CommodityMeasureController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.grossWeight.change", item.sequenceId))
                     )
@@ -311,14 +289,36 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id).url,
+                        href = routes.CommodityMeasureController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.netWeight.change", item.sequenceId))
                     )
                 )
             ))
         )
-    )
+    ),
+    if(Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL).contains(declarationType))
+        item.commodityMeasure.map(commodityMeasure =>
+            SummaryListRow(
+                classes = s"item-${item.sequenceId}-supplementaryUnits-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.supplementaryUnits"))
+                ),
+                value = Value(
+                    content = Text(commodityMeasure.supplementaryUnits.getOrElse(messages("declaration.summary.items.item.supplementaryUnitsNotRequired")))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionItem(
+                            href = routes.SupplementaryUnitsController.displayPage(mode, item.id).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.items.item.supplementaryUnits.change", item.sequenceId))
+                        )
+                    )
+                ))
+            )
+        )
+    else None
 ),
     classes = "govuk-!-margin-bottom-3"
 )

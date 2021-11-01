@@ -20,6 +20,7 @@ import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldocuments.AdditionalDocument
+import forms.declaration.commodityMeasure.CommodityMeasure
 import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec

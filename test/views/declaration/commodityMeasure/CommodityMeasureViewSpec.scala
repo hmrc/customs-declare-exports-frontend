@@ -17,7 +17,8 @@
 package views.declaration.commodityMeasure
 
 import base.Injector
-import forms.declaration.{CommodityMeasure, IsExs}
+import forms.declaration.IsExs
+import forms.declaration.commodityMeasure.CommodityMeasure
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest

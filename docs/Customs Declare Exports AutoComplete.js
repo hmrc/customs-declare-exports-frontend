@@ -862,23 +862,16 @@ function packageInformationSummary(){
 
 function commodityMeasurements(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/commodity-measure')) {
-        switch(getDeclaration()){
-            case 'D':
-            case 'A':
-            case 'F':
-            case 'C':
-            case 'Y':
-            case 'Z':
-            case 'E':
-            case 'B':
-                document.getElementById('supplementaryUnits').value ='10';
-                document.getElementById('netMass').value ='500';
-                document.getElementById('grossMass').value ='700';
-                break;
-            default:
-                document.getElementById('netMass').value ='500';
-                document.getElementById('grossMass').value ='700';
-        }
+        document.getElementById('grossMass').value ='700';
+        document.getElementById('netMass').value ='500';
+        document.getElementById('submit').click()
+    }
+}
+
+function supplementaryUnits(){
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/supplementary-units')) {
+        document.getElementById('Yes').checked = 'checked';
+        document.getElementById('supplementaryUnits').value ='10';
         document.getElementById('submit').click()
     }
 }
@@ -1250,6 +1243,7 @@ function completeJourney() {
     addPackageInformation();
     packageInformationSummary();
     commodityMeasurements();
+    supplementaryUnits();
     additionalInformationSummary();
     isAdditionalInformationRequired();
     addAdditionalInformation();

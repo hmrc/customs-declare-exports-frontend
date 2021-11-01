@@ -386,7 +386,11 @@ POST        /items/:itemId/package-information/:code/remove    controllers.decla
 
 GET         /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.submitPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/supplementary-units                 controllers.declaration.SupplementaryUnitsController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/supplementary-units                 controllers.declaration.SupplementaryUnitsController.submitPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Additional information
 

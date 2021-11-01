@@ -24,6 +24,7 @@ import models.declaration.{AdditionalDocuments, AdditionalInformationData, Proce
 import scala.util.Random
 
 import forms.common.YesNoAnswer
+import forms.declaration.commodityMeasure.CommodityMeasure
 
 trait GoodsItemCachingData {
 

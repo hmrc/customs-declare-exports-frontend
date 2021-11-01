@@ -20,7 +20,6 @@
 @import forms.declaration.carrier.CarrierEoriNumber
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
@@ -73,7 +72,7 @@
                 content = Text(messages("declaration.carrierEori.title")),
                 classes = "govuk-visually-hidden"
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 govukRadios(Radios(
                     name = "hasEori",
                     items = Seq(

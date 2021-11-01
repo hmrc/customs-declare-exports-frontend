@@ -47,12 +47,13 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@inputField(transportType: String, labelKey: String, hintKey: String) = @{Some(exportsInputText(
-    field = form(s"meansOfTransportOnDepartureIDNumber_$transportType"),
-    labelClasses = "govuk-label",
-    inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
-    labelKey = labelKey,
-    hintKey = Some(hintKey)
+@inputField(transportType: String, labelKey: String, hintKey: String) = @{
+    Some(exportsInputText(
+        field = form(s"meansOfTransportOnDepartureIDNumber_$transportType"),
+        labelClasses = "govuk-label",
+        inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
+        labelKey = labelKey,
+        hintKey = Some(hintKey)
     ))
 }
 

@@ -30,6 +30,7 @@ import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.declaration.carrier.CarrierDetails
+import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.declaration.countries.Country
 import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.exporter.ExporterDetails

@@ -28,6 +28,7 @@ import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
 import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
+import forms.declaration.commodityMeasure.{CommodityMeasure, SupplementaryUnits}
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderRequired, DeclarationHolderSummary}
@@ -45,7 +46,6 @@ import models.{ExportsDeclaration, Mode}
 import play.api.mvc.{AnyContent, Call, Result, Results}
 import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.HeaderCarrier
-
 import javax.inject.Inject
 
 class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
@@ -110,8 +110,8 @@ object Navigator {
 
   val standardItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation            => routes.StatisticalValueController.displayPage
-    case AdditionalInformationRequired => routes.CommodityMeasureController.displayPage
-    case AdditionalInformationSummary  => routes.CommodityMeasureController.displayPage
+    case AdditionalInformationRequired => routes.SupplementaryUnitsController.displayPage
+    case AdditionalInformationSummary  => routes.SupplementaryUnitsController.displayPage
     case CusCode                       => routes.UNDangerousGoodsCodeController.displayPage
     case NactCode                      => routes.NactCodeSummaryController.displayPage
     case NactCodeFirst                 => routes.TaricCodeSummaryController.displayPage
@@ -165,8 +165,8 @@ object Navigator {
 
   val supplementaryItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation            => routes.StatisticalValueController.displayPage
-    case AdditionalInformationRequired => routes.CommodityMeasureController.displayPage
-    case AdditionalInformationSummary  => routes.CommodityMeasureController.displayPage
+    case AdditionalInformationRequired => routes.SupplementaryUnitsController.displayPage
+    case AdditionalInformationSummary  => routes.SupplementaryUnitsController.displayPage
     case CusCode                       => routes.UNDangerousGoodsCodeController.displayPage
     case NactCode                      => routes.NactCodeSummaryController.displayPage
     case NactCodeFirst                 => routes.TaricCodeSummaryController.displayPage
@@ -261,6 +261,7 @@ object Navigator {
     case UNDangerousGoodsCode              => routes.CommodityDetailsController.displayPage
     case TaricCode                         => routes.TaricCodeSummaryController.displayPage
     case StatisticalValue                  => routes.NactCodeSummaryController.displayPage
+    case SupplementaryUnits                => routes.CommodityMeasureController.displayPage
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {

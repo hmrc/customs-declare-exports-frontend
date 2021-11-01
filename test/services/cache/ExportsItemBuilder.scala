@@ -21,6 +21,7 @@ import java.util.UUID
 import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldocuments.AdditionalDocument
+import forms.declaration.commodityMeasure.CommodityMeasure
 import models.declaration._
 
 trait ExportsItemBuilder {

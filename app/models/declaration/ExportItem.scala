@@ -17,8 +17,18 @@
 package models.declaration
 
 import forms.DeclarationPage
+import forms.declaration.{
+  AdditionalFiscalReferencesData,
+  CommodityDetails,
+  CusCode,
+  FiscalInformation,
+  NactCode,
+  PackageInformation,
+  StatisticalValue,
+  TaricCode,
+  UNDangerousGoodsCode
+}
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
-import forms.declaration._
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey

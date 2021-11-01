@@ -19,6 +19,7 @@ package controllers.declaration
 import scala.concurrent.{ExecutionContext, Future}
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -47,7 +48,7 @@ class AdditionalInformationRequiredController @Inject()(
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     cachedItems(itemId) match {
       case items if items.isEmpty => Ok(additionalInfoReq(mode, itemId, previousAnswer(itemId).withSubmissionErrors()))
-      case _                      => navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId))
+      case _                      => navigator.continueTo(mode, AdditionalInformationController.displayPage(_, itemId))
     }
   }
 
@@ -84,9 +85,7 @@ class AdditionalInformationRequiredController @Inject()(
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
     yesNoAnswer.answer match {
-      case YesNoAnswers.yes =>
-        controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)
-      case YesNoAnswers.no =>
-        controllers.declaration.routes.AdditionalDocumentsController.displayPage(_, itemId)
+      case YesNoAnswers.yes => AdditionalInformationController.displayPage(_, itemId)
+      case YesNoAnswers.no  => AdditionalDocumentsController.displayPage(_, itemId)
     }
 }

@@ -25,6 +25,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration._
+import forms.declaration.commodityMeasure.CommodityMeasure
 import models.DeclarationType._
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.{DeclarationType, ExportsDeclaration, Mode}

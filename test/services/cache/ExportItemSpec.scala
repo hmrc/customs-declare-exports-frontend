@@ -18,7 +18,8 @@ package services.cache
 
 import base.UnitWithMocksSpec
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation}
+import forms.declaration.commodityMeasure.CommodityMeasure
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
 import models.DeclarationType
 
 class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
