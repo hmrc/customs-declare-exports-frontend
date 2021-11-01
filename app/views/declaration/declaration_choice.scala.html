@@ -78,6 +78,13 @@
                     checked = form("type").value.contains(DeclarationType.SIMPLIFIED.toString)
                 ),
                 RadioItem(
+                    id = Some(DeclarationType.CLEARANCE.toString),
+                    value = Some(DeclarationType.CLEARANCE.toString),
+                    content = Text(messages("declaration.type.clearance")),
+                    hint = Some(Hint(content = Text(messages("declaration.type.clearance.hint")))),
+                    checked = form("type").value.contains(DeclarationType.CLEARANCE.toString)
+                ),
+                RadioItem(
                     id = Some(DeclarationType.SUPPLEMENTARY.toString),
                     value = Some(DeclarationType.SUPPLEMENTARY.toString),
                     content = Text(messages("declaration.type.supplementary")),
@@ -90,16 +97,6 @@
                     content = Text(messages("declaration.type.occasional")),
                     hint = Some(Hint(content = Text(messages("declaration.type.occasional.hint")))),
                     checked = form("type").value.contains(DeclarationType.OCCASIONAL.toString)
-                ),
-                RadioItem(
-                    divider = Some(messages("declaration.type.or")),
-                    value = Some(RadioOption.dividerId)
-                ),
-                RadioItem(
-                    id = Some(DeclarationType.CLEARANCE.toString),
-                    value = Some(DeclarationType.CLEARANCE.toString),
-                    content = Text(messages("declaration.type.clearance")),
-                    checked = form("type").value.contains(DeclarationType.CLEARANCE.toString)
                 )
             ).filter(radioOption => radioOption.value.exists(appConfig.availableDeclarations().contains(_))),
             errorMessage = form("type").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
