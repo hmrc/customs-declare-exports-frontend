@@ -24,12 +24,16 @@
 @import views.helpers.{BackButton, Title}
 @import views.components.inputs.RadioOption
 @import views.helpers.ErrorMapper.radioGroupErrors
+@import play.twirl.api.HtmlFormat
 
 @this(
     govukLayout: gdsMainTemplate,
     govukButton: GovukButton,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
+    insetText: exportsInsetText,
+    paragraphBody: paragraphBody,
+    link: link,
     saveAndContinue: saveAndContinue,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
@@ -44,6 +48,14 @@
         case Mode.Draft => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
         case Mode.Normal => controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec)))
     }
+}
+
+@insetLink = @{
+    link(
+        text = messages("declaration.type.p1.linkText"),
+        call = Call("GET", appConfig.guidance.declareGoodsExported),
+        target = "_blank"
+    )
 }
 
 @govukLayout(
@@ -67,7 +79,6 @@
                     id = Some(DeclarationType.STANDARD.toString),
                     value = Some(DeclarationType.STANDARD.toString),
                     content = Text(messages("declaration.type.standard")),
-                    hint = Some(Hint(content = Text(messages("declaration.type.standard.hint")))),
                     checked = form("type").value.contains(DeclarationType.STANDARD.toString)
                 ),
                 RadioItem(
@@ -101,6 +112,12 @@
             ).filter(radioOption => radioOption.value.exists(appConfig.availableDeclarations().contains(_))),
             errorMessage = form("type").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+
+        @insetText(content = HtmlContent(HtmlFormat.fill(List(
+            paragraphBody(
+                s"${messages("declaration.type.p1.a")}  $insetLink  ${messages("declaration.type.p1.b")}"
+            )
+        ))))
 
         @saveAndContinue("site.continue")
     }

@@ -31,7 +31,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButto
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.components.gds.{errorSummary, saveAndContinue}
+import views.html.components.gds.{errorSummary, saveAndContinue, paragraphBody, link, exportsInsetText}
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest
 
@@ -138,12 +138,15 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
         instanceOf[GovukButton],
         instanceOf[GovukRadios],
         instanceOf[errorSummary],
+        instanceOf[exportsInsetText],
+        instanceOf[paragraphBody],
+        instanceOf[link],
         instanceOf[saveAndContinue],
         instanceOf[FormWithCSRF],
         appConfig
       )
 
-      val view = page(Mode.Normal, DeclarationChoice.form)(request, messages)
+      val view = page(Mode.Normal, DeclarationChoice.form())(request, messages)
 
       view.getElementsByTag("label").size mustBe 1
       view.getElementsByAttributeValue("for", "STANDARD") must containMessageForElements("declaration.type.standard")

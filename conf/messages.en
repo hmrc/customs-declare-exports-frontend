@@ -125,6 +125,9 @@ declaration.type.occasional = Simplified declaration (occasional use)
 declaration.type.occasional.hint = For export of personal effects, low value consignments and non statistical consignments. No SDE authorisation is required.
 declaration.type.clearance = Customs clearance request (C21)
 declaration.type.clearance.hint = For dispatches from locations with inventory links, including Notice of Presentation (NOP) for entry into declarant’s records (EIDR).
+declaration.type.p1.a = There is a now quick way to
+declaration.type.p1.linkText = declare low value commercial goods for export (opens in new tab).
+declaration.type.p1.b = It applies if you are using accompanied baggage or a small vehicle.
 declaration.type.error = Select a declaration type
 
 tariff.expander.title.common = Check the Export Declaration Completion Guide for CDS
