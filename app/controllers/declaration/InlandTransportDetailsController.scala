@@ -18,7 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.InlandModeOfTransportCode
+import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode}
+import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -42,8 +43,9 @@ class InlandTransportDetailsController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   import forms.declaration.InlandModeOfTransportCode._
+  import InlandTransportDetailsController._
 
-  private val validJourneys = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
+  private val validJourneys = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val frm = form().withSubmissionErrors()
@@ -61,19 +63,28 @@ class InlandTransportDetailsController @Inject()(
         formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))),
         form => {
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
+            .map(maybeCachedDec => navigator.continueTo(mode, nextPage(maybeCachedDec)))
         }
       )
   }
 
-  private def nextPage(declarationType: DeclarationType): Mode => Call =
-    declarationType match {
-      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
-        controllers.declaration.routes.DepartureTransportController.displayPage
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.BorderTransportController.displayPage
-    }
+  private def nextPage(maybeCachedDec: Option[ExportsDeclaration]): Mode => Call =
+    getSkipOtherTransportPagesValue(maybeCachedDec)
+      .map(_ => controllers.declaration.routes.ExpressConsignmentController.displayPage _)
+      .getOrElse(controllers.declaration.routes.DepartureTransportController.displayPage)
 
   private def updateCache(formData: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(formData))))
+}
+
+object InlandTransportDetailsController {
+  val invalidOtherTransportPagesValues = List(FixedTransportInstallations, PostalConsignment)
+
+  def getSkipOtherTransportPagesValue(maybeCachedDec: Option[ExportsDeclaration]): Option[ModeOfTransportCode] =
+    for {
+      dec <- maybeCachedDec
+      transport <- dec.locations.inlandModeOfTransportCode
+      inlandModeOfTransportCode <- transport.inlandModeOfTransportCode
+      if invalidOtherTransportPagesValues.contains(inlandModeOfTransportCode)
+    } yield inlandModeOfTransportCode
 }

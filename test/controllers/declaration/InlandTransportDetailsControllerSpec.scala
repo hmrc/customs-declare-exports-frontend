@@ -17,13 +17,14 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.InlandTransportDetailsController._
 import forms.declaration.InlandModeOfTransportCode
-import forms.declaration.ModeOfTransportCode.Maritime
+import forms.declaration.ModeOfTransportCode._
 import models.DeclarationType._
 import models.Mode
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
@@ -71,7 +72,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
   }
 
   "Inland Transport Details Controller on GET request" should {
-    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "return 200 OK" in {
         withNewCaching(request.cacheModel)
 
@@ -89,7 +90,8 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         verify(inlandTransportDetails).apply(any(), any())(any(), any())
       }
     }
-    onClearance { request =>
+
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "redirect to start" in {
         withNewCaching(request.cacheModel)
 
@@ -99,13 +101,14 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
     }
-
   }
-  "Inland Transport Details Controller on POST" when {
 
+  private val validOtherTransportPagesValues = meaningfulModeOfTransportCodes.filterNot(i => invalidOtherTransportPagesValues.contains(i))
+
+  "Inland Transport Details Controller on POST" when {
     val body = Json.obj("inlandModeOfTransportCode" -> JsString(exampleTransportMode.value))
 
-    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "update cache after successful bind" in {
         withNewCaching(request.cacheModel)
 
@@ -122,51 +125,44 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
 
         status(result) mustBe BAD_REQUEST
       }
-    }
 
-    onStandard { request =>
-      "redirect to Departure Transport" in {
-        withNewCaching(request.cacheModel)
+      validOtherTransportPagesValues.foreach { transportMode =>
+        s"transportMode '$transportMode' is selected" should {
+          "redirect to 'Departure Transport'" in {
+            withNewCaching(request.cacheModel)
 
-        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+            val body = Json.obj("inlandModeOfTransportCode" -> JsString(transportMode.value))
+            val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
-        result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage()
+            result mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage()
+          }
+        }
+      }
+
+      invalidOtherTransportPagesValues.foreach { transportMode =>
+        s"transportMode '$transportMode' is selected" should {
+          "redirect to 'Express Consignment'" in {
+            withNewCaching(request.cacheModel)
+
+            val body = Json.obj("inlandModeOfTransportCode" -> JsString(transportMode.value))
+            val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+
+            result mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe controllers.declaration.routes.ExpressConsignmentController.displayPage()
+          }
+        }
       }
     }
 
-    onSupplementary { request =>
-      "redirect to Departure Transport" in {
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
+      "redirect to start" in {
         withNewCaching(request.cacheModel)
 
-        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+        val response = controller.submit(Mode.Normal)(postRequest(body))
 
-        result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage()
+        status(response) must be(SEE_OTHER)
       }
     }
-
-    onSimplified { request =>
-      "redirect to Border Transport" in {
-        withNewCaching(request.cacheModel)
-
-        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
-
-        result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.BorderTransportController.displayPage()
-      }
-    }
-
-    onOccasional { request =>
-      "redirect to Border Transport" in {
-        withNewCaching(request.cacheModel)
-
-        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
-
-        result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.BorderTransportController.displayPage()
-      }
-    }
-
   }
 }

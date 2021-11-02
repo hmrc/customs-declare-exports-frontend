@@ -984,17 +984,23 @@ declaration.warehouse.supervisingCustomsOffice.paragraph.3 = For excise, enter t
 declaration.warehouse.supervisingCustomsOffice.label = Select a customs supervising office
 declaration.warehouse.supervisingCustomsOffice.error = Select a customs supervising office from the list
 
-declaration.warehouse.inlandTransportDetails.title = What mode of transport took the goods from the warehouse to the border?
-declaration.warehouse.inlandTransportDetails.hint = The type of transport that will move the goods from a warehouse to the port where they will depart the EU.
+declaration.warehouse.inlandTransportDetails.title = How will the goods be transported to the UK border?
+declaration.warehouse.inlandTransportDetails.body = What mode of transport will carry the goods to the port or airport where they will leave the UK?
 declaration.warehouse.inlandTransportDetails.error.incorrect = Select an inland mode of transport from the list
 declaration.warehouse.inlandTransportDetails.transportMode.sea = Sea transport
+declaration.warehouse.inlandTransportDetails.transportMode.sea.hint = Coastal within the UK.
 declaration.warehouse.inlandTransportDetails.transportMode.rail = Rail transport
 declaration.warehouse.inlandTransportDetails.transportMode.road = Road transport
+declaration.warehouse.inlandTransportDetails.transportMode.road.hint = For example, a truck bound for a RoRo port or Eurotunnel.
 declaration.warehouse.inlandTransportDetails.transportMode.air = Air transport
+declaration.warehouse.inlandTransportDetails.transportMode.air.hint = UK domestic flights.
 declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail = Postal or mail
+declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail.hint = Only applicable where the exporter is an authorised postal operator.
 declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations = Fixed transport installations
+declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations.hint = Pipe-line for electricity, gas or oil.
 declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway = Inland waterway transport
 declaration.warehouse.inlandTransportDetails.transportMode.unknown = Mode unknown, for example own propulsion
+declaration.warehouse.inlandTransportDetails.transportMode.unknown.hint = For example, goods carried by a passenger.
 
 declaration.fiscalInformation.title = Do you want to claim Onward Supply Relief (OSR)?
 declaration.fiscalInformation.onwardSupplyRelief.empty = Select yes if you want to claim onward supply relief
