@@ -45,10 +45,25 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       val view = createView()
 
-      "have proper messages for labels" in {
+      "have required messages" in {
         messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.title")
-        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.hint")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.body")
         messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.error.incorrect")
+
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.sea")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.sea.hint")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.rail")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.road")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.road.hint")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.air")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.air.hint")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail.hint")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations.hint")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.unknown")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.unknown.hint")
       }
 
       "display same page title as header" in {

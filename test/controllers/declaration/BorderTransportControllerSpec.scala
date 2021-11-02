@@ -163,6 +163,5 @@ class BorderTransportControllerSpec extends ControllerSpec {
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
     }
-
   }
 }
