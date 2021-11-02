@@ -31,7 +31,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButto
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.components.gds.{errorSummary, saveAndContinue, paragraphBody, link, exportsInsetText}
+import views.html.components.gds.{errorSummary, exportsInsetText, link, paragraphBody, saveAndContinue}
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest
 
