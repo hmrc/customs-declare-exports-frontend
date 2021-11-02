@@ -497,6 +497,7 @@ object AppConfigSpec {
       |guidance.commodityCodes = "https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports"
       |guidance.eoriService = "https://www.gov.uk/eori"
       |guidance.exportingByPost = "https://www.gov.uk/government/publications/notice-143-a-guide-for-international-post-users/notice-143-a-guide-for-international-post-users"
+      |guidance.declareGoodsExported = "https://www.gov.uk/guidance/declare-commercial-goods-youre-taking-out-of-great-britain-in-your-accompanied-baggage-or-small-vehicles"
       |guidance.manageYourEmailAddress = "https://www.gov.uk/guidance/manage-your-email-address-for-the-customs-declaration-service"
       |guidance.specialProcedures = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes"
       |guidance.takingCommercialGoodsOnYourPerson = "https://www.gov.uk/guidance/taking-commercial-goods-out-of-great-britain-in-your-baggage"
