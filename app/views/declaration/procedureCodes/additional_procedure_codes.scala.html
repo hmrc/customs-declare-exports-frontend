@@ -48,6 +48,8 @@
 
 @(mode: Mode, itemId: String, form: Form[AdditionalProcedureCode], procedureCode: ProcedureCode, validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 
 @additionalCodesTable = {
   @if(codes.nonEmpty) {
@@ -78,7 +80,7 @@
 
 
 @govukLayout(
-  title = Title("declaration.additionalProcedureCodes.title", "declaration.section.5", procedureCode.code),
+  title = Title("declaration.additionalProcedureCodes.title", "declaration.section.5", procedureCode.code, hasErrors = hasErrors),
   backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalProcedureCode, mode, ItemId(itemId))))) {
 
   @formHelper(action = controllers.declaration.routes.AdditionalProcedureCodesController.submitAdditionalProcedureCodes(mode, itemId), 'autoComplete -> "off") {

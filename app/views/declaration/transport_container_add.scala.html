@@ -39,8 +39,10 @@
 
 @(mode: Mode, form: Form[ContainerAdd])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.transportInformation.containers.add.title", "declaration.section.6"),
+    title = Title("declaration.transportInformation.containers.add.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ContainerAdd, mode)))) {
 
     @formHelper(action = TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {

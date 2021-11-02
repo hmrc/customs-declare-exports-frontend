@@ -50,8 +50,10 @@
 
 @(mode: Mode, form: Form[Boolean], countryOfDestination: String)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.routingCountryQuestion.title", "declaration.section.3", countryOfDestination),
+    title = Title("declaration.routingCountryQuestion.title", "declaration.section.3", countryOfDestination, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingCountryQuestionPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingAnswer(mode), 'autoComplete -> "off") {

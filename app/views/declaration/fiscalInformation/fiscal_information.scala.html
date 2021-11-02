@@ -43,6 +43,8 @@
 
 @(mode: Mode, itemId: String, form: Form[FiscalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @fiscalInformationDetails = {
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("declaration.fiscalInformation.details.item1")</li>
@@ -54,7 +56,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.fiscalInformation.title", "declaration.section.5"),
+    title = Title("declaration.fiscalInformation.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(FiscalInformation, mode, ItemId(itemId))))) {
 
     @formHelper(action = FiscalInformationController.saveFiscalInformation(mode, itemId), 'autoComplete -> "off") {

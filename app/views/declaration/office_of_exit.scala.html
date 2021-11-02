@@ -41,8 +41,10 @@
 
 @(mode: Mode, form: Form[OfficeOfExit])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.officeOfExit.title", "declaration.section.3"),
+    title = Title("declaration.officeOfExit.title", "declaration.section.3", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExit, mode)))){
 
     @formHelper(action = controllers.declaration.routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {

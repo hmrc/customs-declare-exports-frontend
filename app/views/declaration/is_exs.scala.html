@@ -38,8 +38,10 @@
 
 @(mode: Mode, form: Form[IsExs])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.exs.title", "declaration.section.2"),
+    title = Title("declaration.exs.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(IsExs, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.IsExsController.submit(mode), 'autoComplete -> "off") {

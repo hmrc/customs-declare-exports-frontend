@@ -48,6 +48,8 @@
 
 @(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @inputFields = {
     @formGroupWrapper(field = form(AdditionalFiscalReferencesFormGroupId)){
         @components.fields.field_accessible_autocomplete(
@@ -66,7 +68,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.additionalFiscalReferences.title", "declaration.section.5"),
+    title = Title("declaration.additionalFiscalReferences.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalFiscalReference, mode, ItemId(itemId))))
 ) {
 

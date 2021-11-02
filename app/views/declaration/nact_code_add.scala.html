@@ -37,8 +37,10 @@
 
 @(mode: Mode, itemId: String, form: Form[NactCode])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.nationalAdditionalCode.addnext.header", "declaration.section.5"),
+    title = Title("declaration.nationalAdditionalCode.addnext.header", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCode, mode, ItemId(itemId))))) {
 
     @formHelper(action = NactCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {

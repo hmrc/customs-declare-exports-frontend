@@ -41,8 +41,10 @@
 
 @(mode: Mode, form: Form[DeclarantIsExporter])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.declarant.exporter.title", "declaration.section.2"),
+    title = Title("declaration.declarant.exporter.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantIsExporter, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(mode), 'autoComplete -> "off") {

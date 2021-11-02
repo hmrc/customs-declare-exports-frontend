@@ -57,6 +57,8 @@
 
 @(mode: Mode, form: Form[Boolean], countriesOfRouting: Seq[Country])(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @routingCountriesTable = {
     @if(countriesOfRouting.nonEmpty) {
         @govukTable(Table(
@@ -142,7 +144,7 @@
 
 
 @govukLayout(
-    title = Title("declaration.routingCountries.summary.title", "declaration.section.3"),
+    title = Title("declaration.routingCountries.summary.title", "declaration.section.3", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingCountryQuestionPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submit(mode), 'autoComplete -> "off") {

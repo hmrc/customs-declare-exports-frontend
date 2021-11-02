@@ -47,8 +47,10 @@
 
 @(mode: Mode, itemId: String, form: Form[CusCode])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.cusCode.header", "declaration.section.5"),
+    title = Title("declaration.cusCode.header", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CusCode, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.CusCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {

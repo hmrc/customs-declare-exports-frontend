@@ -42,6 +42,8 @@
 
 @(mode: Mode, itemId: String, form: Form[CommodityDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @commodityCodeBody = {
     @paragraphBody(messages(
         "declaration.commodityDetails.combinedNomenclatureCode.body",
@@ -50,7 +52,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.commodityDetails.title", "declaration.section.5"),
+    title = Title("declaration.commodityDetails.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CommodityDetails, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.CommodityDetailsController.submitForm(mode, itemId), 'autoComplete -> "off") {

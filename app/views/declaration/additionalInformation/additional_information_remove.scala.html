@@ -40,6 +40,8 @@
 
 @(mode: Mode, itemId: String, informationId: String, information: AdditionalInformation, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @informationTable = {
 @govukSummaryList(SummaryList(
     rows = Seq(
@@ -56,7 +58,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.additionalInformation.remove.title", "declaration.section.5"),
+    title = Title("declaration.additionalInformation.remove.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), AdditionalInformationController.displayPage(mode, itemId)))) {
 
     @formHelper(action = AdditionalInformationRemoveController.submitForm(mode, itemId, informationId), 'autoComplete -> "off") {

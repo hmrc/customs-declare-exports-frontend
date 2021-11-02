@@ -39,8 +39,10 @@
 
 @(mode: Mode, form: Form[TransportPayment])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.transportInformation.transportPayment.paymentMethod", "declaration.section.6"),
+    title = Title("declaration.transportInformation.transportPayment.paymentMethod", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TransportPayment, mode)))) {
 
     @formHelper(action = TransportPaymentController.submitForm(mode), 'autoComplete -> "off") {

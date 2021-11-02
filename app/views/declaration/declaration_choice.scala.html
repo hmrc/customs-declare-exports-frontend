@@ -37,6 +37,8 @@
 
 @(mode: Mode, form: Form[_])(implicit request: Request[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @backCall = @{
     mode match {
         case Mode.Change => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
@@ -47,7 +49,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.type.description"),
+    title = Title("declaration.type.description", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), backCall))){
 
     @formHelper(action = controllers.declaration.routes.DeclarationChoiceController.submitChoice(mode), 'autoComplete -> "off") {

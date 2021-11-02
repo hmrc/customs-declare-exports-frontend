@@ -39,6 +39,8 @@
 
 @(mode: Mode, form: Form[ExporterEoriNumber])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @eoriInput = {
     @exportsInputText(
         field = form("eori"),
@@ -47,7 +49,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.exporterEori.title", "declaration.section.2"),
+    title = Title("declaration.exporterEori.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExporterEoriNumber, mode)))){
 
     @formHelper(action = controllers.declaration.routes.ExporterEoriNumberController.submit(mode), 'autoComplete -> "off") {

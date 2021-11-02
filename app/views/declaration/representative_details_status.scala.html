@@ -44,8 +44,10 @@
 
 @(mode: Mode, navigationForm: DeclarationPage, form: Form[RepresentativeStatus])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.representative.status.title", "declaration.section.2"),
+    title = Title("declaration.representative.status.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))) {
 
     @formHelper(action = RepresentativeStatusController.submitForm(mode), 'autoComplete -> "off") {
