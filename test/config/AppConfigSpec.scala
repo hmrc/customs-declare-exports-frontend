@@ -238,11 +238,11 @@ class AppConfigSpec extends UnitWithMocksSpec {
     }
 
     "have language map with English" in {
-      validAppConfig.languageMap.get("english").isDefined must be(true)
+      validAppConfig.languageMap.contains("english") must be(true)
     }
 
     "have language map with Cymraeg" in {
-      validAppConfig.languageMap.get("cymraeg").isDefined must be(true)
+      validAppConfig.languageMap.contains("cymraeg") must be(true)
     }
 
     "have customs declare exports URL" in {

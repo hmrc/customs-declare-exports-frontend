@@ -80,10 +80,10 @@
 @detailsText = @{
     HtmlContent(HtmlFormat.fill(List(
         paragraphBody(
-            messages("declaration.type.details.p1")  + detailsLink1
+            messages("declaration.type.details.p1", detailsLink1)
         ),
         paragraphBody(
-            messages("declaration.type.details.p2") +  detailsLink2
+            messages("declaration.type.details.p2", detailsLink2)
         )
     )))
 }
@@ -145,7 +145,7 @@
 
         @insetText(content = HtmlContent(HtmlFormat.fill(List(
             paragraphBody(
-                s"${messages("declaration.type.p1.a")}  $insetLink  ${messages("declaration.type.p1.b")}"
+                s"${messages("declaration.type.p1.a", insetLink)}  ${messages("declaration.type.p1.b")}"
             )
         ))))
 
