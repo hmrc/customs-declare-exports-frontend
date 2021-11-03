@@ -40,6 +40,8 @@
 
 @(mode: Mode, id: String, actor: DeclarationAdditionalActors, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @actorTable = {
     @govukSummaryList(SummaryList(
         rows = Seq(
@@ -56,7 +58,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.additionalActors.remove.title", "declaration.section.2"),
+    title = Title("declaration.additionalActors.remove.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), AdditionalActorsSummaryController.displayPage(mode)))) {
 
     @formHelper(action = AdditionalActorsRemoveController.submitForm(mode, id), 'autoComplete -> "off") {

@@ -47,6 +47,8 @@
 
 @(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @insetSection = {
     @paragraphBody(messages("declaration.declarationHolderRequired.inset.para1"))
 
@@ -66,7 +68,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.declarationHolderRequired.title", "declaration.section.2"),
+    title = Title("declaration.declarationHolderRequired.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolderRequired, mode)))) {
 
     @formHelper(action = routes.DeclarationHolderRequiredController.submitForm(mode), 'autoComplete -> "off") {

@@ -45,6 +45,8 @@
 
 @(mode: Mode, form: Form[DepartureTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @inputField(transportType: String, labelKey: String, hintKey: String) = @{Some(exportsInputText(
     field = form(s"meansOfTransportOnDepartureIDNumber_$transportType"),
     labelClasses = "govuk-label",
@@ -55,7 +57,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.transportInformation.meansOfTransport.departure.title", "declaration.section.6"),
+    title = Title("declaration.transportInformation.meansOfTransport.departure.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DepartureTransport, mode)))) {
 
     @formHelper(action = DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {

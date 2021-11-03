@@ -41,6 +41,8 @@
 
 @(mode: Mode, holder: DeclarationHolder, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @holderTable = {
     @govukSummaryList(SummaryList(
         rows = Seq(
@@ -57,7 +59,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.declarationHolder.remove.title", "declaration.section.2"),
+    title = Title("declaration.declarationHolder.remove.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), DeclarationHolderSummaryController.displayPage(mode)))) {
 
     @formHelper(action = DeclarationHolderRemoveController.submitForm(mode, holder.id), 'autoComplete -> "off") {

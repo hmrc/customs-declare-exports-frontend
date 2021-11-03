@@ -42,8 +42,10 @@
 
 @(mode: Mode, form: Form[YesNoAnswer], item: ExportItem)(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.itemsRemove.title", "declaration.section.5", item.sequenceId.toString),
+    title = Title("declaration.itemsRemove.title", "declaration.section.5", item.sequenceId.toString, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RemoveItem, mode)))) {
 
     @formHelper(action = routes.ItemsSummaryController.removeItem(mode, item.id), 'autoComplete -> "off") {

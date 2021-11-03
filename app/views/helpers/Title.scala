@@ -18,14 +18,21 @@ package views.helpers
 
 import play.api.i18n.Messages
 
-case class Title(headingKey: String, sectionKey: String = "", headingArg: String = "", headingArgs: Option[Seq[String]] = None) {
+case class Title(
+  headingKey: String,
+  sectionKey: String = "",
+  headingArg: String = "",
+  headingArgs: Option[Seq[String]] = None,
+  hasErrors: Boolean = false
+) {
 
   def toString(implicit messages: Messages): String = {
     def args = headingArgs.getOrElse(Seq(headingArg))
+    val key = if (hasErrors) ".hasErrors" else ""
     if (sectionKey.isEmpty) {
-      messages("title.format", messages(headingKey, args: _*), messages("service.name"))
+      messages(s"title$key.format", messages(headingKey, args: _*), messages("service.name"))
     } else {
-      messages("title.withSection.format", messages(headingKey, args: _*), messages(sectionKey), messages("service.name"))
+      messages(s"title$key.withSection.format", messages(headingKey, args: _*), messages(sectionKey), messages("service.name"))
     }
   }
 

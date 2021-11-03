@@ -29,8 +29,10 @@
 
 @(mode: Mode, id: String, form: Form[DeclarationHolder], userEori: String)(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.declarationHolder.title", "declaration.section.2"),
+    title = Title("declaration.declarationHolder.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), DeclarationHolderSummaryController.displayPage(mode)))
 ) {
 

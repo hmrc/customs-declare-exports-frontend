@@ -46,6 +46,8 @@
 
 @(mode: Mode, form: Form[TotalNumberOfItems])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @input(field: Field, labelKey: String, inputClasses: String) = {
     @govukInput(Input(
         id = field.id,
@@ -140,7 +142,7 @@
 ))}
 
 @govukLayout(
-    title = Title("declaration.invoice.details.title", "declaration.section.4"),
+    title = Title("declaration.invoice.details.title", "declaration.section.4", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TotalNumberOfItems, mode)))) {
 
     @formHelper(action = TotalNumberOfItemsController.saveNoOfItems(mode), 'autoComplete -> "off") {

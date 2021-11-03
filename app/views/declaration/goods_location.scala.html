@@ -44,6 +44,8 @@
 
 @(mode: Mode, form: Form[GoodsLocationForm])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 
 @goodsLocationInput(field: Field) = {
     @govukInput(Input(
@@ -70,7 +72,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.goodsLocation.title", "declaration.section.3"),
+    title = Title("declaration.goodsLocation.title", "declaration.section.3", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(GoodsLocationForm, mode)))) {
 
     @formHelper(action = routes.LocationController.saveLocation(mode), 'autoComplete -> "off") {

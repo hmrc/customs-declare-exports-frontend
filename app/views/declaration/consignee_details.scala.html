@@ -48,8 +48,10 @@
 
 @(mode: Mode, form: Form[ConsigneeDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.consignee.title", "declaration.section.2"),
+    title = Title("declaration.consignee.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsigneeDetails, mode)))) {
 
     @formHelper(action = ConsigneeDetailsController.saveAddress(mode), 'autoComplete -> "off") {

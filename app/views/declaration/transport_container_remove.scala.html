@@ -40,6 +40,8 @@
 
 @(mode: Mode, form: Form[YesNoAnswer], container: Container)(implicit request: Request[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @containersSummary = {
     @govukSummaryList(SummaryList(
         rows = Seq(
@@ -56,7 +58,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.transportInformation.container.remove.title", "declaration.section.6"),
+    title = Title("declaration.transportInformation.container.remove.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)))) {
 
     @formHelper(action = TransportContainerController.submitContainerRemove(mode, container.id), 'autoComplete -> "off") {

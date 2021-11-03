@@ -47,6 +47,8 @@
 
 @(form: Form[AuthorisationProcedureCodeChoice], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @insetSection = {
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.title"), "govuk-label--s")
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.paragraph1"))
@@ -111,7 +113,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.authorisations.procedureCodeChoice.title", "declaration.section.2"),
+    title = Title("declaration.authorisations.procedureCodeChoice.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AuthorisationProcedureCodeChoice, mode)))) {
     @formHelper(action = AuthorisationProcedureCodeChoiceController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(formFieldName, "Choice1040", form.errors))

@@ -43,6 +43,8 @@
 
 @(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @mucrDetails = {
     @paragraph(
         id = Some("link-ducr-to-mucr-hint1"),
@@ -64,7 +66,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.linkDucrToMucr.title", "declaration.section.1"),
+    title = Title("declaration.linkDucrToMucr.title", "declaration.section.1", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(LinkDucrToMucr, mode)))) {
 
     @formHelper(action = routes.LinkDucrToMucrController.submitForm(mode), 'autoComplete -> "off") {

@@ -41,8 +41,10 @@
 
 @(mode: Mode, form: Form[WarehouseIdentification])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.warehouse.identification.optional.title", "declaration.section.6"),
+    title = Title("declaration.warehouse.identification.optional.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(WarehouseIdentification, mode)))) {
 
     @formHelper(action = routes.WarehouseIdentificationController.saveIdentificationNumber(mode), 'autoComplete -> "off") {

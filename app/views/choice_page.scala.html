@@ -37,8 +37,10 @@
 
 @(form: Form[_], availableJourneys: Seq[String])(implicit request: Request[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.choice.description"),
+    title = Title("declaration.choice.description", hasErrors = hasErrors),
     backButton = None) {
 
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {

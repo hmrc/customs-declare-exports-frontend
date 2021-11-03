@@ -40,8 +40,10 @@
 
 @(mode: Mode, itemId: String, form: Form[CommodityMeasure], commodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.commodityMeasure.title", "declaration.section.5"),
+    title = Title("declaration.commodityMeasure.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CommodityMeasure, mode, ItemId(itemId))))) {
 
     @formHelper(action = CommodityMeasureController.submitForm(mode, itemId), 'autoComplete -> "off") {

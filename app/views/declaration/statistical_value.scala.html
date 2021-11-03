@@ -48,6 +48,8 @@
 
 @(mode: Mode, itemId: String, form: Form[StatisticalValue])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @bodySection = {
     @paragraphBody(messages("declaration.statisticalValue.hint"))
 
@@ -68,7 +70,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.statisticalValue.title", "declaration.section.5"),
+    title = Title("declaration.statisticalValue.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(StatisticalValue, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.StatisticalValueController.submitItemType(mode, itemId), 'autoComplete -> "off") {

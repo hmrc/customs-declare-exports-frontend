@@ -40,8 +40,10 @@
 
 @(mode: Mode, form: Form[RepresentativeAgent])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.representative.agent.title", "declaration.section.2"),
+    title = Title("declaration.representative.agent.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RepresentativeAgent, mode)))) {
 
     @formHelper(action = RepresentativeAgentController.submitForm(mode), 'autoComplete -> "off") {

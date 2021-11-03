@@ -45,6 +45,8 @@
 
 @(form: Form[TransportLeavingTheBorder], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @insetSectionIfAny = {
     @if(declarationHolders.exists(_.authorisationTypeCode.map(_ == "EXRR").getOrElse(false))) {
         @insetText(content = HtmlContent(messages(
@@ -59,7 +61,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.transport.leavingTheBorder.title", "declaration.section.6"),
+    title = Title("declaration.transport.leavingTheBorder.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TransportLeavingTheBorder, mode)))
 ) {
     @formHelper(action = TransportLeavingTheBorderController.submitForm(mode), 'autoComplete -> "off") {
