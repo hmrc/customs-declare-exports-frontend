@@ -20,9 +20,9 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode}
 import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
-import models.DeclarationType.DeclarationType
-import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.DeclarationType.{DeclarationType, SUPPLEMENTARY}
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -63,15 +63,18 @@ class InlandTransportDetailsController @Inject()(
         formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))),
         form => {
           updateCache(form)
-            .map(maybeCachedDec => navigator.continueTo(mode, nextPage(maybeCachedDec)))
+            .map(maybeCachedDec => navigator.continueTo(mode, nextPage(request.declarationType, maybeCachedDec)))
         }
       )
   }
 
-  private def nextPage(maybeCachedDec: Option[ExportsDeclaration]): Mode => Call =
-    getSkipOtherTransportPagesValue(maybeCachedDec)
-      .map(_ => controllers.declaration.routes.ExpressConsignmentController.displayPage _)
-      .getOrElse(controllers.declaration.routes.DepartureTransportController.displayPage)
+  private def nextPage(decType: DeclarationType, maybeCachedDec: Option[ExportsDeclaration]): Mode => Call =
+    getSkipOtherTransportPagesValue(maybeCachedDec).map { _ =>
+      decType match {
+        case SUPPLEMENTARY => controllers.declaration.routes.TransportContainerController.displayContainerSummary _
+        case _             => controllers.declaration.routes.ExpressConsignmentController.displayPage _
+      }
+    }.getOrElse(controllers.declaration.routes.DepartureTransportController.displayPage)
 
   private def updateCache(formData: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(formData))))
@@ -83,8 +86,7 @@ object InlandTransportDetailsController {
   def getSkipOtherTransportPagesValue(maybeCachedDec: Option[ExportsDeclaration]): Option[ModeOfTransportCode] =
     for {
       dec <- maybeCachedDec
-      transport <- dec.locations.inlandModeOfTransportCode
-      inlandModeOfTransportCode <- transport.inlandModeOfTransportCode
+      inlandModeOfTransportCode <- dec.inlandModeOfTransportCode
       if invalidOtherTransportPagesValues.contains(inlandModeOfTransportCode)
     } yield inlandModeOfTransportCode
 }
