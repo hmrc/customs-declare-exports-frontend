@@ -18,8 +18,8 @@ package services.cache
 
 import base.UnitWithMocksSpec
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
-import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
+import models.declaration.CommodityMeasure
 import models.DeclarationType
 
 class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
@@ -29,16 +29,12 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
     "return correct information about fiscal references" when {
 
       "item doesn't contain fiscal references" in {
-
         val itemWithoutFiscalReferences = anItem(withItemId("id"))
-
         itemWithoutFiscalReferences.hasFiscalReferences mustBe false
       }
 
       "item contains fiscal references" in {
-
         val itemWithFiscalReferences = anItem(withItemId("id"), withFiscalInformation(FiscalInformation("Yes")))
-
         itemWithFiscalReferences.hasFiscalReferences mustBe true
       }
     }
@@ -47,14 +43,11 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       "on Standard or Supplementary journey" when {
 
         "item is not completed" in {
-
           val notCompletedItem = anItem(withItemId("id"))
-
           notCompletedItem.isCompleted(DeclarationType.STANDARD) mustBe false
         }
 
         "item contain Yes in fiscal information but without additional fiscal references" in {
-
           val completedItem = anItem(
             withItemId("id"),
             withProcedureCodes(),
@@ -68,7 +61,6 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         }
 
         "item contain No in fiscal information and doesn't contain additional fiscal references" in {
-
           val completedItem = anItem(
             withItemId("id"),
             withProcedureCodes(),
@@ -82,7 +74,6 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         }
 
         "item does not contain procedure code '1042' and doesn't contain fiscal references" in {
-
           val completedItem = anItem(
             withItemId("id"),
             withProcedureCodes(Some("1040"), Seq("000")),
@@ -95,7 +86,6 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         }
 
         "item is completed" in {
-
           val completedItem = anItem(
             withItemId("id"),
             withProcedureCodes(),
@@ -112,14 +102,11 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       "on Simplified journey" when {
 
         "item is not completed" in {
-
           val notCompletedItem = anItem(withItemId("id"))
-
           notCompletedItem.isCompleted(DeclarationType.SIMPLIFIED) mustBe false
         }
 
         "item contain Yes in fiscal information but without additional fiscal references" in {
-
           val completedItem = anItem(
             withItemId("id"),
             withProcedureCodes(),
@@ -132,14 +119,11 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         }
 
         "item does not contain procedure code '1042' and doesn't contain fiscal references" in {
-
           val completedItem = anItem(withItemId("id"), withProcedureCodes(Some("1040"), Seq("000")), withPackageInformation())
-
           completedItem.isCompleted(DeclarationType.SIMPLIFIED) mustBe true
         }
 
         "item is completed" in {
-
           val completedItem = anItem(
             withItemId("id"),
             withProcedureCodes(),
@@ -155,30 +139,22 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
       "on Clearance journey" when {
 
         "item is empty" in {
-
           val notCompletedItem = anItem(withItemId("id"))
-
           notCompletedItem.isCompleted(DeclarationType.CLEARANCE) mustBe false
         }
 
         "item contains procedure code but no package references" in {
-
           val notCompletedItem = anItem(withItemId("id"), withProcedureCodes(Some("1234")))
-
           notCompletedItem.isCompleted(DeclarationType.CLEARANCE) mustBe false
         }
 
         "item contains '0019' procedure code and package references" in {
-
           val completedItem = anItem(withItemId("id"), withProcedureCodes(Some("0019")), withPackageInformation())
-
           completedItem.isCompleted(DeclarationType.CLEARANCE) mustBe false
         }
 
         "item is completed without package information for 0019 procedure code" in {
-
           val completedItem = anItem(withItemId("id"), withProcedureCodes(Some("0019")))
-
           completedItem.isCompleted(DeclarationType.CLEARANCE) mustBe true
         }
       }

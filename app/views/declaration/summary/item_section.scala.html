@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes
 @import models.declaration.ExportItem
-@import models.DeclarationType.DeclarationType
+@import models.DeclarationType.{DeclarationType, STANDARD, SUPPLEMENTARY}
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
@@ -297,7 +297,7 @@
             ))
         )
     ),
-    if(Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL).contains(declarationType))
+    if (List(STANDARD, SUPPLEMENTARY).contains(declarationType))
         item.commodityMeasure.map(commodityMeasure =>
             SummaryListRow(
                 classes = s"item-${item.sequenceId}-supplementaryUnits-row",

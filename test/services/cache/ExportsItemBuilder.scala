@@ -21,8 +21,8 @@ import java.util.UUID
 import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldocuments.AdditionalDocument
-import forms.declaration.commodityMeasure.CommodityMeasure
 import models.declaration._
+import models.declaration.{CommodityMeasure => CM}
 
 trait ExportsItemBuilder {
 
@@ -48,7 +48,7 @@ trait ExportsItemBuilder {
 
   def withoutAdditionalInformation(): ItemModifier = _.copy(additionalInformation = None)
 
-  def withCommodityMeasure(commodityMeasure: CommodityMeasure): ItemModifier =
+  def withCommodityMeasure(commodityMeasure: CM): ItemModifier =
     _.copy(commodityMeasure = Some(commodityMeasure))
 
   def withFiscalInformation(fiscalInformation: FiscalInformation): ItemModifier =

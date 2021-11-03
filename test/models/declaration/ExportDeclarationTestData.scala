@@ -30,7 +30,6 @@ import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.declaration.carrier.CarrierDetails
-import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.declaration.countries.Country
 import forms.declaration.declarationHolder.DeclarationHolder
 import forms.declaration.exporter.ExporterDetails
@@ -81,7 +80,7 @@ object ExportDeclarationTestData {
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),
       consigneeDetails = Some(ConsigneeDetails(EntityDetailsSpec.correctEntityDetails)),
-      representativeDetails = None, //Some(correctRepresentativeDetails),
+      representativeDetails = None, // Some(correctRepresentativeDetails),
       declarationAdditionalActorsData = Some(correctAdditionalActorsData),
       declarationHoldersData = Some(correctDeclarationHoldersData),
       carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
@@ -124,7 +123,7 @@ object ExportDeclarationTestData {
           )
         ),
         additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("code", "description")))),
-        commodityMeasure = Some(CommodityMeasure(Some("2"), Some(false), Some("90"), Some("100"))),
+        commodityMeasure = Some(CommodityMeasure(Some("2"), Some(false), Some("200"), Some("100"))),
         additionalFiscalReferencesData =
           Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321")))),
         procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("CC", "PR"))),

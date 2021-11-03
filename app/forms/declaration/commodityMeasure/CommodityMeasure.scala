@@ -35,10 +35,7 @@ object CommodityMeasure extends DeclarationPage {
     new CommodityMeasure(cm.grossMass, cm.netMass)
 
   def apply(grossMass: String, netMass: String): CommodityMeasure =
-    new CommodityMeasure(
-      if (grossMass.isEmpty) None else Some(grossMass),
-      if (netMass.isEmpty) None else Some(netMass)
-    )
+    new CommodityMeasure(if (grossMass.isEmpty) None else Some(grossMass), if (netMass.isEmpty) None else Some(netMass))
 
   def unapply(commodityMeasure: CommodityMeasure): Option[(String, String)] =
     Some((commodityMeasure.grossMass.getOrElse(""), commodityMeasure.netMass.getOrElse("")))
@@ -81,12 +78,14 @@ object CommodityMeasure extends DeclarationPage {
     }.getOrElse(false)
 
   override def defineTariffContentKeys(declarationType: DeclarationType): Seq[TariffContentKey] =
-    if (declarationType == CLEARANCE) Seq(
-      TariffContentKey("tariff.declaration.item.commodityMeasure.1.clearance"),
-      TariffContentKey("tariff.declaration.item.commodityMeasure.2.clearance")
-    )
-    else Seq(
-      TariffContentKey("tariff.declaration.item.commodityMeasure.1.common"),
-      TariffContentKey("tariff.declaration.item.commodityMeasure.2.common")
-    )
+    if (declarationType == CLEARANCE)
+      Seq(
+        TariffContentKey("tariff.declaration.item.commodityMeasure.1.clearance"),
+        TariffContentKey("tariff.declaration.item.commodityMeasure.2.clearance")
+      )
+    else
+      Seq(
+        TariffContentKey("tariff.declaration.item.commodityMeasure.1.common"),
+        TariffContentKey("tariff.declaration.item.commodityMeasure.2.common")
+      )
 }

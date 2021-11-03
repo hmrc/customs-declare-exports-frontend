@@ -29,7 +29,6 @@ import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api.HtmlFormat.Appendable
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.commodityMeasure.supplementary_units
@@ -47,22 +46,19 @@ class SupplementaryUnitsController @Inject()(
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
       case Some(data) if hasSupplementaryUnits(data) =>
-        Ok(supplementaryUnitsView(mode, itemId, form.fill(SupplementaryUnits(data))))
+        Ok(supplementaryUnitsPage(mode, itemId, form.fill(SupplementaryUnits(data))))
 
       case _ =>
-        Ok(supplementaryUnitsView(mode, itemId, form))
+        Ok(supplementaryUnitsPage(mode, itemId, form))
     }
   }
 
   def submitPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
-      .bindFromRequest
-      .fold(
-        formWithErrors => Future.successful(BadRequest(supplementaryUnitsView(mode, itemId, formWithErrors))),
-        updateExportsCache(itemId, _).map { _ =>
+    form.bindFromRequest
+      .fold(formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(mode, itemId, formWithErrors))), updateExportsCache(itemId, _).map {
+        _ =>
           navigator.continueTo(mode, AdditionalInformationRequiredController.displayPage(_, itemId))
-        }
-      )
+      })
   }
 
   private def form(implicit request: JourneyRequest[_]): Form[SupplementaryUnits] =
@@ -71,12 +67,8 @@ class SupplementaryUnitsController @Inject()(
   private def hasSupplementaryUnits(commodityMeasure: CommodityMeasure): Boolean =
     commodityMeasure.supplementaryUnits.isDefined || commodityMeasure.supplementaryUnitsNotRequired.isDefined
 
-  private def supplementaryUnitsView(
-    mode: Mode, itemId: String, form: Form[SupplementaryUnits])(implicit request: JourneyRequest[_]
-  ): Appendable =
-    supplementaryUnitsPage(mode, itemId, form, request.cacheModel.commodityCodeOfItem(itemId))
-
-  private def updateExportsCache(itemId: String, updatedItem: SupplementaryUnits)(implicit r: JourneyRequest[AnyContent]
+  private def updateExportsCache(itemId: String, updatedItem: SupplementaryUnits)(
+    implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect {
       _.updatedItem(itemId, item => item.copy(commodityMeasure = updateCommodityMeasure(item, updatedItem)))
@@ -85,12 +77,14 @@ class SupplementaryUnitsController @Inject()(
   private def updateCommodityMeasure(item: ExportItem, updatedItem: SupplementaryUnits): Option[CommodityMeasure] =
     item.commodityMeasure match {
       case Some(commodityMeasure) =>
-        Some(CommodityMeasure(
-          updatedItem.supplementaryUnits,
-          updatedItem.supplementaryUnits.fold(Some(true))(_ => Some(false)),
-          commodityMeasure.grossMass,
-          commodityMeasure.netMass
-        ))
+        Some(
+          CommodityMeasure(
+            updatedItem.supplementaryUnits,
+            updatedItem.supplementaryUnits.fold(Some(true))(_ => Some(false)),
+            commodityMeasure.grossMass,
+            commodityMeasure.netMass
+          )
+        )
 
       case _ =>
         Some(CommodityMeasure(updatedItem.supplementaryUnits, updatedItem.supplementaryUnits.map(_ => false), None, None))

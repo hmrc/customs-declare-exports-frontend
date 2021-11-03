@@ -44,15 +44,10 @@
     appConfig: AppConfig
 )
 
-@(
-    mode: Mode,
-    itemId: String,
-    form: Form[SupplementaryUnits],
-    maybeCommodityCode: Option[String]
-)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[SupplementaryUnits])(implicit request: JourneyRequest[_], messages: Messages)
 
 @linkForCommodityCode = {
-    @maybeCommodityCode.map { commodityCode =>
+    @request.cacheModel.commodityCodeOfItem(itemId).map { commodityCode =>
         @link(
             text = messages("declaration.supplementaryUnits.body.link.1", commodityCode),
             call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)),

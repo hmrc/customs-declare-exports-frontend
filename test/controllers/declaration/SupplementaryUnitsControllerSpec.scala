@@ -17,10 +17,11 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.declaration.commodityMeasure.CommodityMeasure
-import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
+import forms.declaration.commodityMeasure.SupplementaryUnits
+import forms.declaration.commodityMeasure.SupplementaryUnits.{hasSupplementaryUnits, supplementaryUnits}
+import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.Mode
-import models.declaration.{ExportItem, CommodityMeasure => CM}
+import models.declaration.{CommodityMeasure, ExportItem}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -29,37 +30,35 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.commodityMeasure.commodity_measure
+import views.html.declaration.commodityMeasure.supplementary_units
 
-class CommodityMeasureControllerSpec extends ControllerSpec {
+class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
-  private val format = Json.format[CommodityMeasure]
+  private val supplementaryUnitsPage = mock[supplementary_units]
 
-  private val commodityMeasurePage = mock[commodity_measure]
-
-  private val controller = new CommodityMeasureController(
+  private val controller = new SupplementaryUnitsController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    commodityMeasurePage
+    supplementaryUnitsPage
   )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(commodityMeasurePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(supplementaryUnitsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(commodityMeasurePage)
+    reset(supplementaryUnitsPage)
   }
 
-  def theResponseForm: Form[CommodityMeasure] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[CommodityMeasure]])
-    verify(commodityMeasurePage).apply(any(), any(), captor.capture())(any(), any())
+  def theResponseForm: Form[SupplementaryUnits] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[SupplementaryUnits]])
+    verify(supplementaryUnitsPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -69,10 +68,10 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
-  "Commodity Measure controller" should {
+  "Supplementary Units controller" should {
 
     "return 200 (OK) on displayPage" when {
-      onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+      onJourney(STANDARD, SUPPLEMENTARY) { request =>
         "display page method is invoked and commodity measure cache is empty" in {
           withNewCaching(request.cacheModel)
 
@@ -83,50 +82,39 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         }
 
         "display page method is invoked and commodity measure cache is not empty" in {
-          val item = ExportItem("itemId", commodityMeasure = Some(CM(None, None, Some("1000"), Some("500"))))
+          val commodityMeasure = CommodityMeasure(Some("100"), Some(false), Some("1000"), Some("500"))
+          val item = ExportItem("itemId", commodityMeasure = Some(commodityMeasure))
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
 
           val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
 
           status(result) must be(OK)
-          theResponseForm.value mustBe Some(CommodityMeasure(Some("1000"), Some("500")))
+          theResponseForm.value mustBe Some(SupplementaryUnits(Some("100")))
         }
       }
     }
 
     "return 400 (BAD_REQUEST) on submitPage" when {
-      onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+      onJourney(STANDARD, SUPPLEMENTARY) { request =>
         "form is incorrect" in {
           withNewCaching(aDeclaration(withType(request.declarationType)))
 
-          val incorrectForm = Json.toJson(CommodityMeasure(None, None))(format)
+          val incorrectForm = Json.obj(hasSupplementaryUnits -> "Yes", supplementaryUnits -> "abcd")
 
           val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
-          verify(commodityMeasurePage).apply(any(), any(), any())(any(), any())
+          verify(supplementaryUnitsPage).apply(any(), any(), any())(any(), any())
         }
       }
     }
 
     "return 303 (SEE_OTHER) on submitPage" when {
-
-      val correctForm = Json.toJson(CommodityMeasure(Some("1000"), Some("500")))(format)
-
       onJourney(STANDARD, SUPPLEMENTARY) { request =>
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.SupplementaryUnitsController.displayPage(Mode.Normal, "itemId")
-        }
-      }
-
-      onClearance { request =>
-        "information provided by user are correct" in {
-          withNewCaching(request.cacheModel)
+          val correctForm = Json.obj(hasSupplementaryUnits -> "Yes", supplementaryUnits -> "100")
 
           val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
 

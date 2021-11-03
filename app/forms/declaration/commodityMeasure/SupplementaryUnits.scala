@@ -18,7 +18,6 @@ package forms.declaration.commodityMeasure
 
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
-import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.declaration.{CommodityMeasure => CM}
 import play.api.data.Forms.text
@@ -26,14 +25,14 @@ import play.api.data.{Form, Forms, Mapping}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class SupplementaryUnits(supplementaryUnits: Option[String], hasSupplementaryUnits: String)
+case class SupplementaryUnits(supplementaryUnits: Option[String])
 
 object SupplementaryUnits extends DeclarationPage {
 
   def apply(commodityMeasure: CM): SupplementaryUnits =
     commodityMeasure.supplementaryUnits match {
-      case Some(supplementaryUnits) => SupplementaryUnits(Some(supplementaryUnits), YesNoAnswers.yes)
-      case _                        => SupplementaryUnits(None, YesNoAnswers.no)
+      case Some(supplementaryUnits) => SupplementaryUnits(Some(supplementaryUnits))
+      case _                        => SupplementaryUnits(None)
     }
 
   def form: Form[SupplementaryUnits] = Form(mapping)
@@ -42,16 +41,26 @@ object SupplementaryUnits extends DeclarationPage {
   val supplementaryUnits = "supplementaryUnits"
 
   private val mapping = Forms.mapping(
-    supplementaryUnits -> mandatoryIfEqual(hasSupplementaryUnits, YesNoAnswers.yes, supplementaryUnitsMapping),
-    hasSupplementaryUnits -> requiredRadio(
-      "declaration.supplementaryUnits.empty",
-      YesNoAnswer.allowedValues
-    )
-  )(SupplementaryUnits.apply)(SupplementaryUnits.unapply)
+    hasSupplementaryUnits -> requiredRadio("declaration.supplementaryUnits.empty"),
+    supplementaryUnits -> mandatoryIfEqual(hasSupplementaryUnits, YesNoAnswers.yes, supplementaryUnitsMapping)
+  )(form2Model)(model2Form)
+
+  private def form2Model: (String, Option[String]) => SupplementaryUnits = {
+    case (hasSupplementaryUnits, value) =>
+      hasSupplementaryUnits match {
+        case YesNoAnswers.yes => SupplementaryUnits(value)
+        case YesNoAnswers.no  => SupplementaryUnits(None)
+      }
+  }
+
+  private def model2Form: SupplementaryUnits => Option[(String, Option[String])] =
+    _.supplementaryUnits match {
+      case Some(value) => Some((YesNoAnswers.yes, Some(value)))
+      case None        => Some((YesNoAnswers.no, None))
+    }
 
   private def supplementaryUnitsMapping: Mapping[String] =
-    text()
+    text
       .verifying("declaration.supplementaryUnits.amount.empty", nonEmpty)
       .verifying("declaration.supplementaryUnits.amount.error", isEmpty or isNumeric)
 }
-

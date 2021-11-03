@@ -54,8 +54,7 @@ class CarrierEoriNumberController @Inject()(
   }
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
-    form
-      .bindFromRequest
+    form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(carrierEoriDetailsPage(mode, formWithErrors))),
         formData => updateCache(formData, carrierDetails).map(_ => navigator.continueTo(mode, nextPage(formData.hasEori)))

@@ -54,9 +54,9 @@ class CommodityMeasureController @Inject()(
   def submitPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val test = form.bindFromRequest
     test.fold(
-        formWithErrors => Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors))),
-        updateExportsCache(itemId, _).map(_ => navigator.continueTo(mode, nextPage(itemId)))
-      )
+      formWithErrors => Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors))),
+      updateExportsCache(itemId, _).map(_ => navigator.continueTo(mode, nextPage(itemId)))
+    )
   }
 
   private def form(implicit request: JourneyRequest[_]): Form[CommodityMeasure] =
@@ -66,8 +66,8 @@ class CommodityMeasureController @Inject()(
     if (request.declarationType == CLEARANCE) AdditionalInformationRequiredController.displayPage(_, itemId)
     else SupplementaryUnitsController.displayPage(_, itemId)
 
-  private def updateExportsCache(
-    itemId: String, updatedItem: CommodityMeasure)(implicit r: JourneyRequest[AnyContent]
+  private def updateExportsCache(itemId: String, updatedItem: CommodityMeasure)(
+    implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect {
       _.updatedItem(itemId, item => item.copy(commodityMeasure = updateCM(item, updatedItem)))
