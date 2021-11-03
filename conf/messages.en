@@ -1445,7 +1445,7 @@ declaration.previousDocuments.error.duplicate = You have already entered this do
 
 declaration.additionalInformationRequired.title = Do you need to add an Additional Information (AI) code?
 declaration.additionalInformationRequired.hint = These are {0} and are determined by the commodity code or procedure code used.
-declaration.additionalInformationRequired.hint.link = union and national AI codes
+declaration.additionalInformationRequired.hint.link = union and national AI codes (opens in new tab)
 declaration.additionalInformationRequired.error = Select yes if there are any AI codes
 declaration.additionalInformation.title = Additional information (AI)
 declaration.additionalInformation.code = What is the union or national AI code?
