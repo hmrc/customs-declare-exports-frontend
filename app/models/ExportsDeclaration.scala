@@ -53,6 +53,7 @@ case class ExportsDeclaration(
 
   def lrn: Option[String] = consignmentReferences.map(_.lrn.value)
   def ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
+  def inlandModeOfTransportCode: Option[ModeOfTransportCode] = locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode)
 
   def additionalDocumentsIfAny(itemId: String): Option[AdditionalDocuments] =
     itemBy(itemId).flatMap(_.additionalDocuments)
@@ -183,6 +184,5 @@ case class ExportsDeclaration(
 }
 
 object ExportsDeclaration {
-
   implicit val format: OFormat[ExportsDeclaration] = Json.format[ExportsDeclaration]
 }

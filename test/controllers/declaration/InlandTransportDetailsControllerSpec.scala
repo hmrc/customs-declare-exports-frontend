@@ -128,28 +128,36 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
 
       validOtherTransportPagesValues.foreach { transportMode =>
         s"transportMode '$transportMode' is selected" should {
-          "redirect to 'Departure Transport'" in {
+          val expectedRedirect = controllers.declaration.routes.DepartureTransportController.displayPage()
+          s"redirect to ${expectedRedirect.url}" in {
             withNewCaching(request.cacheModel)
 
             val body = Json.obj("inlandModeOfTransportCode" -> JsString(transportMode.value))
             val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage()
+            thePageNavigatedTo mustBe expectedRedirect
           }
         }
       }
 
       invalidOtherTransportPagesValues.foreach { transportMode =>
         s"transportMode '$transportMode' is selected" should {
-          "redirect to 'Express Consignment'" in {
+
+          val expectedRedirect =
+            if (request.declarationType == SUPPLEMENTARY)
+              controllers.declaration.routes.TransportContainerController.displayContainerSummary()
+            else
+              controllers.declaration.routes.ExpressConsignmentController.displayPage()
+
+          s"redirect to ${expectedRedirect.url}" in {
             withNewCaching(request.cacheModel)
 
             val body = Json.obj("inlandModeOfTransportCode" -> JsString(transportMode.value))
             val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe controllers.declaration.routes.ExpressConsignmentController.displayPage()
+            thePageNavigatedTo mustBe expectedRedirect
           }
         }
       }

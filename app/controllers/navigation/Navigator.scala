@@ -92,6 +92,7 @@ object Navigator {
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
+    case ExpressConsignment          => routes.BorderTransportController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case DestinationCountryPage      => routes.OriginationCountryController.displayPage
@@ -150,7 +151,6 @@ object Navigator {
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
-    case ContainerFirst              => routes.BorderTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case DestinationCountryPage      => routes.OriginationCountryController.displayPage
     case GoodsLocationForm           => routes.DestinationCountryController.displayPage
@@ -299,7 +299,7 @@ object Navigator {
     case ConsigneeDetails          => consigneeDetailsSupplementaryPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault
-    case ExpressConsignment        => inlandTransportDetailsPageOnCondition
+    case ContainerFirst            => inlandTransportDetailsPageOnCondition
     case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
     case OriginationCountryPage    => originationCountryPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage
