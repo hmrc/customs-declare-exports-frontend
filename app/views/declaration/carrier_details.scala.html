@@ -44,6 +44,8 @@
 
 @(mode: Mode, form: Form[CarrierDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @hintLink = {
     @link(
         text = messages("declaration.carrierAddress.hint.2.link"),
@@ -53,7 +55,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.carrierAddress.title", "declaration.section.2"),
+    title = Title("declaration.carrierAddress.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CarrierDetails, mode)))) {
 
     @formHelper(action = CarrierDetailsController.saveAddress(mode), 'autoComplete -> "off") {

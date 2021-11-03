@@ -30,8 +30,10 @@
 
 @(mode: Mode, itemId: String, form: Form[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title(AdditionalDocHelper.title, "declaration.section.5"),
+    title = Title(AdditionalDocHelper.title, "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalDocument, mode, ItemId(itemId))))) {
 
     @formHelper(action = AdditionalDocumentAddController.submitForm(mode, itemId), 'autoComplete -> "off") {

@@ -40,8 +40,10 @@
 
 @(mode: Mode, form: Form[Mucr])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.mucr.title", "declaration.section.1"),
+    title = Title("declaration.mucr.title", "declaration.section.1", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(Mucr, mode)))) {
 
     @formHelper(action = routes.MucrController.submitForm(mode), 'autoComplete -> "off") {

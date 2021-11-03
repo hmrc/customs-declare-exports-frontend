@@ -46,6 +46,8 @@
 
 @(mode: Mode, form: Form[YesNoAnswer], items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @titleMessageKey = @{
   if(items.size == 1) "declaration.itemsAdd.titleWithItem"
   else "declaration.itemsAdd.titleWithItems"
@@ -131,7 +133,7 @@
 }
 
 @govukLayout(
-    title = Title(titleMessageKey, "declaration.section.5", items.length.toString),
+    title = Title(titleMessageKey, "declaration.section.5", items.length.toString, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExportItem, mode))),
     useCustomContentWidth = true) {
 

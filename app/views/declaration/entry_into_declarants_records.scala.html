@@ -37,8 +37,10 @@
 
 @(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.entryIntoDeclarantRecords.title", "declaration.section.2"),
+    title = Title("declaration.entryIntoDeclarantRecords.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(EntryIntoDeclarantsRecords, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.EntryIntoDeclarantsRecordsController.submitForm(mode), 'autocomplete -> "off") {

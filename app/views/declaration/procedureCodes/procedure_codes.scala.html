@@ -47,6 +47,8 @@
 
 @(mode: Mode, itemId: String, form: Form[ProcedureCode])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @insetContent = {
     @paragraphBody(messages("declaration.procedureCodes.inset.title"), "govuk-label--s")
     @paragraphBody(messages("declaration.procedureCodes.inset.paragraph.1"))
@@ -73,7 +75,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.procedureCodes.title", "declaration.section.5"),
+    title = Title("declaration.procedureCodes.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ProcedureCode, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.ProcedureCodesController.submitProcedureCodes(mode, itemId), 'autoComplete -> "off") {

@@ -49,6 +49,8 @@
 
 @(mode: Mode, form: Form[Boolean], countryToRemove: Country)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @routingSummary = {
     @govukSummaryList(SummaryList(
         rows = Seq(
@@ -83,7 +85,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.routingCountries.remove.title", "declaration.section.3"),
+    title = Title("declaration.routingCountries.remove.title", "declaration.section.3", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RemoveCountryPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitRemoveCountry(mode, countryToRemove.countryCode), 'autoComplete -> "off") {

@@ -36,6 +36,8 @@
 
 @(declaration: ExportsDeclaration, form: Form[RemoveDraftDeclaration])(implicit request: Request[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @declarationTable = {
     @govukTable(Table(
         rows = Seq(
@@ -91,7 +93,7 @@
 }
 
 @govukLayout(
-    title = Title("saved.declarations.remove.title"),
+    title = Title("saved.declarations.remove.title", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), routes.SavedDeclarationsController.displayDeclarations()))) {
 
     @formHelper(action = RemoveSavedDeclarationsController.removeDeclaration(declaration.id), 'autoComplete -> "off") {

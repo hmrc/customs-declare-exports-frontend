@@ -42,8 +42,10 @@
 
 @(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.transportInformation.expressConsignment.title", "declaration.section.6"),
+    title = Title("declaration.transportInformation.expressConsignment.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExpressConsignment, mode)))) {
 
     @formHelper(action = routes.ExpressConsignmentController.submitForm(mode), 'autoComplete -> "off") {

@@ -32,8 +32,10 @@
 
 @(mode: Mode, id: String, form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title(templateHelper.title, "declaration.section.4"),
+    title = Title(templateHelper.title, "declaration.section.4", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentChangeOrRemove, mode)))
 ) {
     @formHelper(action = PreviousDocumentsChangeController.submit(mode, id), 'autoComplete -> "off") {

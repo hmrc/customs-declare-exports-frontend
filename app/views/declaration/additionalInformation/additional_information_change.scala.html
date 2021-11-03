@@ -29,9 +29,10 @@
 
 @(mode: Mode, itemId: String, documentId: String, form: Form[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
-    title = Title("declaration.additionalInformation.title", "declaration.section.5"),
+    title = Title("declaration.additionalInformation.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), AdditionalInformationController.displayPage(mode, itemId)))
 ) {
 

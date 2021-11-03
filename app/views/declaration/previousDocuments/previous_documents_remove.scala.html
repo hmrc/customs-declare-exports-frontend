@@ -45,6 +45,8 @@
 
 @(mode: Mode, documentId: String, document: Document, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @documentTable = {
     @govukSummaryList(SummaryList(
         rows = Seq(
@@ -66,7 +68,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.previousDocuments.remove.title", "declaration.section.4"),
+    title = Title("declaration.previousDocuments.remove.title", "declaration.section.4", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentChangeOrRemove, mode)))
 ) {
     @formHelper(action = PreviousDocumentsRemoveController.submit(mode, documentId), 'autoComplete -> "off") {

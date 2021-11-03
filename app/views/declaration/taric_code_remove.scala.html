@@ -41,6 +41,8 @@
 
 @(mode: Mode, itemId: String, code: String, form: Form[YesNoAnswer])(implicit request: Request[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @taricCodeSummary = {
     @govukSummaryList(SummaryList(
         rows = Seq(
@@ -53,7 +55,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.taricAdditionalCodes.remove.header", "declaration.section.5"),
+    title = Title("declaration.taricAdditionalCodes.remove.header", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TaricCodeSummaryController.displayPage(mode, itemId)))) {
 
     @formHelper(action = TaricCodeRemoveController.submitForm(mode, itemId, code), 'autoComplete -> "off") {

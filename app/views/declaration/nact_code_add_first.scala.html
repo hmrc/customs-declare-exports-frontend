@@ -47,8 +47,10 @@
 
 @(mode: Mode, itemId: String, form: Form[NactCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title("declaration.nationalAdditionalCode.addfirst.header", "declaration.section.5"),
+    title = Title("declaration.nationalAdditionalCode.addfirst.header", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCodeFirst, mode, ItemId(itemId))))
 ) {
 

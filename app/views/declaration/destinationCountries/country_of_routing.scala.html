@@ -43,8 +43,10 @@
 
 @(mode: Mode, form: Form[Country], page: CountryPage)(implicit request: JourneyRequest[_], messages: Messages))
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @govukLayout(
-    title = Title(s"declaration.${page.id}.question", "declaration.section.3"),
+    title = Title(s"declaration.${page.id}.question", "declaration.section.3", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), routes.RoutingCountriesController.displayRoutingQuestion()))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {

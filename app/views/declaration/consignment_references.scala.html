@@ -44,6 +44,8 @@
 
 @(mode: Mode, form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @isSupplementaryPlusSimplified = @{
     request.declarationType == DeclarationType.SUPPLEMENTARY && request.cacheModel.additionalDeclarationType.contains(SUPPLEMENTARY_SIMPLIFIED)
 }
@@ -140,7 +142,7 @@
 
 
 @govukLayout(
-    title = Title("declaration.consignmentReferences.header", "declaration.section.1"),
+    title = Title("declaration.consignmentReferences.header", "declaration.section.1", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsignmentReferences, mode)))) {
 
     @formHelper(action = ConsignmentReferencesController.submitConsignmentReferences(mode), 'autoComplete -> "off") {
