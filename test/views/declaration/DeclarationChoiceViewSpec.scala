@@ -27,7 +27,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.{Configuration, Environment}
 import tools.Stubs
-import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukRadios}
+import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukDetails, GovukRadios}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -135,6 +135,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
 
       val page = new declaration_choice(
         gdsMainTemplate,
+        instanceOf[GovukDetails],
         instanceOf[GovukButton],
         instanceOf[GovukRadios],
         instanceOf[errorSummary],

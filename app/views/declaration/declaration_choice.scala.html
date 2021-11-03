@@ -19,7 +19,7 @@
 @import forms.Choice.AllowedChoiceValues._
 @import models.DeclarationType
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
+@import views.html.components.gds._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
 @import views.components.inputs.RadioOption
@@ -28,6 +28,7 @@
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukDetails : GovukDetails,
     govukButton: GovukButton,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
@@ -56,6 +57,33 @@
         call = Call("GET", appConfig.guidance.declareGoodsExported),
         target = "_blank"
     )
+}
+
+@detailsLink1 = @{
+    link(
+        text = messages("declaration.type.details.p1.linkText"),
+        call = Call("GET", appConfig.guidance.additionalDeclarationType),
+        target = "_blank"
+    )
+}
+
+@detailsLink2 = @{
+    link(
+        text = messages("declaration.type.details.p2.linkText"),
+        call = Call("GET", appConfig.guidance.simplifiedDeclarationOccasionalUse),
+        target = "_blank"
+    )
+}
+
+@detailsText = @{
+    HtmlContent(HtmlFormat.fill(List(
+        paragraphBody(
+            messages("declaration.type.details.p1")  + detailsLink1
+        ),
+        paragraphBody(
+            messages("declaration.type.details.p2") +  detailsLink2
+        )
+    )))
 }
 
 @govukLayout(
@@ -118,6 +146,12 @@
                 s"${messages("declaration.type.p1.a")}  $insetLink  ${messages("declaration.type.p1.b")}"
             )
         ))))
+
+        @govukDetails(Details(
+            attributes = Map("id" -> "tariffReference"),
+            summary = Text(messages("tariff.expander.title.common")),
+            content = detailsText
+        ))
 
         @saveAndContinue("site.continue")
     }
