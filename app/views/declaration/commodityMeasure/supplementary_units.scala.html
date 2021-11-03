@@ -46,6 +46,8 @@
 
 @(mode: Mode, itemId: String, form: Form[SupplementaryUnits])(implicit request: JourneyRequest[_], messages: Messages)
 
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
 @linkForCommodityCode = {
     @request.cacheModel.commodityCodeOfItem(itemId).map { commodityCode =>
         @link(
@@ -66,12 +68,14 @@
     @exportsInputText(
         field = form(supplementaryUnits),
         labelKey = "declaration.supplementaryUnits.amount.label",
-        hintKey = Some("declaration.supplementaryUnits.amount.hint")
+        hintKey = Some("declaration.supplementaryUnits.amount.hint"),
+        labelClasses = "govuk-label",
+        inputClasses = Some("govuk-input govuk-input--width-10")
     )
 }
 
 @govukLayout(
-    title = Title("declaration.supplementaryUnits.title", "declaration.section.5"),
+    title = Title("declaration.supplementaryUnits.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(SupplementaryUnits, mode, ItemId(itemId))))) {
 
     @formHelper(action = SupplementaryUnitsController.submitPage(mode, itemId), 'autoComplete -> "off") {
@@ -83,34 +87,32 @@
 
         @body(messages("declaration.supplementaryUnits.body", linkForCommodityCode))
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages("declaration.supplementaryUnits.title")),
-                classes = "govuk-visually-hidden"
+        @govukRadios(Radios(
+            name = hasSupplementaryUnits,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.supplementaryUnits.title")),
+                    classes = "govuk-visually-hidden"
+                ))
             )),
-            html = HtmlFormat.fill(List(
-                govukRadios(Radios(
-                    name = hasSupplementaryUnits,
-                    items = Seq(
-                        RadioItem(
-                            id = Some("Yes"),
-                            value = Some(yes),
-                            content = Text(messages("site.yes")),
-                            conditionalHtml = Some(amountInputField),
-                            checked = form(hasSupplementaryUnits).value.contains("Yes")
-                        ),
-                        RadioItem(
-                            id = Some("No"),
-                            value = Some(no),
-                            content = Text(messages("site.no")),
-                            checked = form(hasSupplementaryUnits).value.contains("No")
-                        )
-                    ),
-                    attributes = Map("id" -> hasSupplementaryUnits),
-                    errorMessage = form(hasSupplementaryUnits).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-                )),
-                saveButtons()
-            ))
+            items = Seq(
+                RadioItem(
+                    id = Some("Yes"),
+                    value = Some(yes),
+                    content = Text(messages("site.yes")),
+                    conditionalHtml = Some(amountInputField),
+                    checked = form(hasSupplementaryUnits).value.contains(yes)
+                ),
+                RadioItem(
+                    id = Some("No"),
+                    value = Some(no),
+                    content = Text(messages("site.no")),
+                    checked = form(hasSupplementaryUnits).value.contains(no)
+                )
+            ),
+            errorMessage = form(hasSupplementaryUnits).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+
+        @saveButtons()
     }
 }

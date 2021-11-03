@@ -19,7 +19,7 @@ package forms.declaration.commodityMeasure
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.declaration.{CommodityMeasure => CM}
+import models.declaration.{CommodityMeasure => CommodityMeasureModel}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -29,7 +29,7 @@ case class SupplementaryUnits(supplementaryUnits: Option[String])
 
 object SupplementaryUnits extends DeclarationPage {
 
-  def apply(commodityMeasure: CM): SupplementaryUnits =
+  def apply(commodityMeasure: CommodityMeasureModel): SupplementaryUnits =
     commodityMeasure.supplementaryUnits match {
       case Some(supplementaryUnits) => SupplementaryUnits(Some(supplementaryUnits))
       case _                        => SupplementaryUnits(None)

@@ -24,7 +24,7 @@ import controllers.navigation.Navigator
 import forms.declaration.commodityMeasure.CommodityMeasure
 import javax.inject.Inject
 import models.DeclarationType.CLEARANCE
-import models.declaration.{ExportItem, CommodityMeasure => CM}
+import models.declaration.{ExportItem, CommodityMeasure => CommodityMeasureModel}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -70,14 +70,21 @@ class CommodityMeasureController @Inject()(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect {
-      _.updatedItem(itemId, item => item.copy(commodityMeasure = updateCM(item, updatedItem)))
+      _.updatedItem(itemId, item => item.copy(commodityMeasure = updateComodityMeasureModel(item, updatedItem)))
     }
 
-  private def updateCM(item: ExportItem, updatedItem: CommodityMeasure): Option[CM] =
+  private def updateComodityMeasureModel(item: ExportItem, updatedItem: CommodityMeasure): Option[CommodityMeasureModel] =
     item.commodityMeasure match {
-      case Some(cm) =>
-        Some(CM(cm.supplementaryUnits, cm.supplementaryUnitsNotRequired, updatedItem.grossMass, updatedItem.netMass))
+      case Some(commodityMeasure) =>
+        Some(
+          CommodityMeasureModel(
+            commodityMeasure.supplementaryUnits,
+            commodityMeasure.supplementaryUnitsNotRequired,
+            updatedItem.grossMass,
+            updatedItem.netMass
+          )
+        )
 
-      case _ => Some(CM(None, None, updatedItem.grossMass, updatedItem.netMass))
+      case _ => Some(CommodityMeasureModel(None, None, updatedItem.grossMass, updatedItem.netMass))
     }
 }

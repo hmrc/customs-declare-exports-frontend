@@ -16,8 +16,9 @@
 
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInput, Hint, HtmlContent, Input, PrefixOrSuffix, Text}
+@import views.helpers.InputTextHelper
 
-@this(sectionHeader: sectionHeader, govukInput: GovukInput)
+@this(sectionHeader: sectionHeader, govukInput: GovukInput, helper: InputTextHelper)
 
 @(
     field: Field,
@@ -47,14 +48,15 @@
     @govukInput(Input(
         id = field.id,
         name = field.id,
+        value = field.value,
         hint = Some(Hint(content = HtmlContent(HtmlFormat.fill(List(
             hint(hintKey, "govuk-hint"),
             hint(tooltipKey, "govuk-visually-hidden")
         ).flatten)))),
-        classes = "govuk-input--width-10",
+        errorMessage = helper.getAnyErrorMessages(field),
+        classes = "govuk-input govuk-input--width-10",
         spellcheck = Some(false),
-        prefix = Some(PrefixOrSuffix(content = Text(messages(prefixKey)))),
-        value = field.value
+        prefix = Some(PrefixOrSuffix(content = Text(messages(prefixKey))))
     ))
 </div>
 

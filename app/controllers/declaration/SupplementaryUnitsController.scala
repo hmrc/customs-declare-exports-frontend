@@ -44,13 +44,12 @@ class SupplementaryUnitsController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
-      case Some(data) if hasSupplementaryUnits(data) =>
-        Ok(supplementaryUnitsPage(mode, itemId, form.fill(SupplementaryUnits(data))))
-
-      case _ =>
-        Ok(supplementaryUnitsPage(mode, itemId, form))
+    val formWithDataIfAny = request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
+      case Some(commodityMeasure) if hasSupplementaryUnits(commodityMeasure) => form.fill(SupplementaryUnits(commodityMeasure))
+      case _                                                                 => form
     }
+
+    Ok(supplementaryUnitsPage(mode, itemId, formWithDataIfAny))
   }
 
   def submitPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
