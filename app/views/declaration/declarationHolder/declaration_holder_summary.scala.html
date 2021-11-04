@@ -36,7 +36,7 @@
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    pageTitle: pageTitle,
+    heading: heading,
     exportsInputText: exportsInputText,
     spanVisuallyHidden: spanVisuallyHidden,
     link: link,
@@ -57,9 +57,9 @@
 
 @header = @{
     if(holders.size == 1)
-        Text(messages("declaration.declarationHolders.table.heading"))
+        messages("declaration.declarationHolders.table.heading")
     else
-        Text(messages("declaration.declarationHolders.table.multiple.heading", holders.size))
+        messages("declaration.declarationHolders.table.multiple.heading", holders.size)
 }
 
 @holdersTable = {
@@ -125,14 +125,12 @@
 
         @sectionHeader(messages("declaration.section.2"))
 
+        @heading(header, tier = "h1")
+
+        @holdersTable
+
         @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = header,
-                classes = gdsPageLegend,
-                isPageHeading = true
-            )),
             html = HtmlFormat.fill(immutable.Seq(
-                holdersTable,
                 addAnotherQuestion("declaration.declarationHolders.add.another", form),
                 saveButtons()
             ))
