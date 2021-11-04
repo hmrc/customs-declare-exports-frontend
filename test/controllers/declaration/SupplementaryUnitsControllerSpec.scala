@@ -19,7 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.declaration.commodityMeasure.SupplementaryUnits
 import forms.declaration.commodityMeasure.SupplementaryUnits.{hasSupplementaryUnits, supplementaryUnits}
-import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.declaration.{CommodityMeasure, ExportItem}
 import org.mockito.ArgumentCaptor
@@ -120,6 +120,28 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
+        }
+      }
+    }
+
+    "redirect to the Choice page at '/'" when {
+      onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED) { request =>
+        "the journey is not valid for displayPage" in {
+          withNewCaching(request.cacheModel)
+
+          val response = controller.displayPage(Mode.Normal, "itemId").apply(getRequest())
+
+          status(response) must be(SEE_OTHER)
+          redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
+        }
+
+        "the journey is not valid for submitPage" in {
+          withNewCaching(request.cacheModel)
+
+          val response = controller.submitPage(Mode.Normal, "itemId").apply(getRequest())
+
+          status(response) must be(SEE_OTHER)
+          redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
         }
       }
     }

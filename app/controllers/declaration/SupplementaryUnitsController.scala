@@ -23,6 +23,7 @@ import controllers.declaration.routes.AdditionalInformationRequiredController
 import controllers.navigation.Navigator
 import forms.declaration.commodityMeasure.SupplementaryUnits
 import javax.inject.Inject
+import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.declaration.{CommodityMeasure, ExportItem}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -43,7 +44,9 @@ class SupplementaryUnitsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
+
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val formWithDataIfAny = request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
       case Some(commodityMeasure) if hasSupplementaryUnits(commodityMeasure) => form.fill(SupplementaryUnits(commodityMeasure))
       case _                                                                 => form
@@ -52,7 +55,7 @@ class SupplementaryUnitsController @Inject()(
     Ok(supplementaryUnitsPage(mode, itemId, formWithDataIfAny))
   }
 
-  def submitPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     form.bindFromRequest
       .fold(formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(mode, itemId, formWithErrors))), updateExportsCache(itemId, _).map {
         _ =>

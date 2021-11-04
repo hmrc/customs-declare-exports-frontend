@@ -23,7 +23,7 @@ import controllers.declaration.routes.{AdditionalInformationRequiredController, 
 import controllers.navigation.Navigator
 import forms.declaration.commodityMeasure.CommodityMeasure
 import javax.inject.Inject
-import models.DeclarationType.CLEARANCE
+import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import models.declaration.{ExportItem, CommodityMeasure => CommodityMeasureModel}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -44,14 +44,16 @@ class CommodityMeasureController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
+
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
       case Some(data) => Ok(commodityMeasurePage(mode, itemId, form.fill(CommodityMeasure(data))))
       case _          => Ok(commodityMeasurePage(mode, itemId, form))
     }
   }
 
-  def submitPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val test = form.bindFromRequest
     test.fold(
       formWithErrors => Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors))),

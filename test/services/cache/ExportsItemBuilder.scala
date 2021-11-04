@@ -22,7 +22,7 @@ import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldocuments.AdditionalDocument
 import models.declaration._
-import models.declaration.{CommodityMeasure => CM}
+import models.declaration.{CommodityMeasure => CommodityMeasureModel}
 
 trait ExportsItemBuilder {
 
@@ -48,7 +48,7 @@ trait ExportsItemBuilder {
 
   def withoutAdditionalInformation(): ItemModifier = _.copy(additionalInformation = None)
 
-  def withCommodityMeasure(commodityMeasure: CM): ItemModifier =
+  def withCommodityMeasure(commodityMeasure: CommodityMeasureModel): ItemModifier =
     _.copy(commodityMeasure = Some(commodityMeasure))
 
   def withFiscalInformation(fiscalInformation: FiscalInformation): ItemModifier =
