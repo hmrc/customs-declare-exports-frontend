@@ -64,12 +64,10 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-
         createView().getElementsByTag("h1") must containMessageForElements("declaration.additionalInformation.table.multiple.heading", "0")
       }
 
       "display section header" in {
-
         createView().getElementById("section-header") must containMessage("declaration.section.5")
       }
 
@@ -85,9 +83,17 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.CLEARANCE, DeclarationType.SUPPLEMENTARY) { implicit request =>
-      "display 'Back' button that links to 'Commodity measure' page" in {
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
+      "display 'Back' button that links to 'Supplementary Units' page" in {
+        val backButton = createView().getElementById("back-link")
 
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.SupplementaryUnitsController.displayPage(Mode.Normal, itemId).url
+      }
+    }
+
+    onClearance { implicit request =>
+      "display 'Back' button that links to 'Commodity measure' page" in {
         val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
@@ -97,7 +103,6 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
       "display 'Back' button that links to 'Package information' page" in {
-
         val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)

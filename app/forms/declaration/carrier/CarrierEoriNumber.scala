@@ -29,6 +29,7 @@ import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 case class CarrierEoriNumber(eori: Option[Eori], hasEori: String)
 
 object CarrierEoriNumber extends DeclarationPage {
+
   implicit val format: OFormat[CarrierEoriNumber] = Json.format[CarrierEoriNumber]
 
   private val hasEori = "hasEori"

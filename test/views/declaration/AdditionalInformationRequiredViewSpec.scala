@@ -81,7 +81,15 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
 
   "Additional Information Required View back link" should {
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.CLEARANCE, DeclarationType.SUPPLEMENTARY) { implicit request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
+      "display 'Back' button that links to the 'Supplementary Units' page" in {
+        val backButton = createView.getElementById("back-link")
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.SupplementaryUnitsController.displayPage(Mode.Normal, itemId))
+      }
+    }
+
+    onClearance { implicit request =>
       "display 'Back' button that links to the 'Commodity Measure' page" in {
         val backButton = createView.getElementById("back-link")
         backButton must containMessage(backCaption)

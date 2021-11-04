@@ -14,36 +14,32 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes._
+@import controllers.navigation.Navigator
 @import forms.declaration.ConsigneeDetails
 @import models.requests.JourneyRequest
-@import controllers.navigation.Navigator
-@import config.AppConfig
-@import views.helpers.{BackButton, Title}
-@import views.html.components.gds._
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 @import views.components.gds.Styles._
-@import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        pageTitle: pageTitle,
-        inputText: exportsInputText,
-        inputTextArea: exportsInputTextArea,
-        errorSummary: errorSummary,
-        heading: heading,
-        body:paragraphBody,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        appConfig: AppConfig,
-        group_address: group_address,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    formHelper: FormWithCSRF,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    heading: heading,
+    body:paragraphBody,
+    group_address: group_address,
+    tariffExpander: tariffExpander,
+    saveButtons: saveButtons,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[ConsigneeDetails])(implicit request: JourneyRequest[_], messages: Messages)
@@ -68,7 +64,7 @@
                 content = Text(messages("declaration.consignee.title")),
                 classes = "govuk-visually-hidden"
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 group_address(form, "declaration.address", "details.address")
             ))
         ))
@@ -76,6 +72,5 @@
         @tariffExpander(ConsigneeDetails, request.declarationType)(messages, appConfig)
 
         @saveButtons()
-
     }
 }

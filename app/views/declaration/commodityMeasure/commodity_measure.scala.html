@@ -14,31 +14,28 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
+@import config.AppConfig
+@import controllers.declaration.routes.CommodityMeasureController
 @import controllers.navigation.{ItemId, Navigator}
-@import forms.declaration.CommodityMeasure
+@import forms.declaration.commodityMeasure.CommodityMeasure
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
-@import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        pageTitle: pageTitle,
-        inputFields: commodity_measure_default,
-        inputFieldsClearance: commodity_measure_clearance,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    inputTextUnits: exportsInputTextWithSuffix,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[CommodityMeasure], commodityCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[CommodityMeasure])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -46,18 +43,28 @@
     title = Title("declaration.commodityMeasure.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CommodityMeasure, mode, ItemId(itemId))))) {
 
-    @formHelper(action = CommodityMeasureController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = CommodityMeasureController.submitPage(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))
+
         @pageTitle(messages("declaration.commodityMeasure.title"))
 
-        @{
-            if(request.declarationType == DeclarationType.CLEARANCE)
-                inputFieldsClearance(form)
-            else
-                inputFields(form, commodityCode)
-        }
+        @inputTextUnits(
+            field = form("grossMass"),
+            labelKey = "declaration.commodityMeasure.grossMass.label",
+            suffixKey = "declaration.commodityMeasure.units",
+            hintKey = Some("declaration.commodityMeasure.grossMass.hint"),
+            tooltipKey = Some("declaration.commodityMeasure.units.hint")
+        )
+
+        @inputTextUnits(
+            field = form("netMass"),
+            labelKey = "declaration.commodityMeasure.netMass.label",
+            suffixKey = "declaration.commodityMeasure.units",
+            hintKey = Some("declaration.commodityMeasure.netMass.hint"),
+            tooltipKey = Some("declaration.commodityMeasure.units.hint")
+        )
 
         @tariffExpander(CommodityMeasure, request.declarationType)(messages, appConfig)
 

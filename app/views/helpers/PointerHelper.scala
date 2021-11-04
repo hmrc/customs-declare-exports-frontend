@@ -93,7 +93,7 @@ object PointerHelper extends Logging {
     "declaration.items.$.dangerousGoodsCode.dangerousGoodsCode" -> routes.UNDangerousGoodsCodeController.displayPage,
     "declaration.items.$.commodityMeasure.grossMass" -> routes.CommodityMeasureController.displayPage,
     "declaration.items.$.commodityMeasure.netMass" -> routes.CommodityMeasureController.displayPage,
-    "declaration.items.$.commodityMeasure.supplementaryUnits" -> routes.CommodityMeasureController.displayPage,
+    "declaration.items.$.commodityMeasure.supplementaryUnits" -> routes.SupplementaryUnitsController.displayPage,
     "declaration.items.$.additionalFiscalReferences.$.id" -> routes.AdditionalFiscalReferencesController.displayPage, //?? AdditionalFiscalReferencesRemoveController.displayPage
     "declaration.items.$.additionalFiscalReferences.$.roleCode" -> routes.AdditionalFiscalReferencesController.displayPage, //?? AdditionalFiscalReferencesRemoveController.displayPage
     "declaration.items.$.procedureCodes.procedureCode.current" -> routes.ProcedureCodesController.displayPage,

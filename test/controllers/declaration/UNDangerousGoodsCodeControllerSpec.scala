@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
 import forms.declaration.UNDangerousGoodsCode.{dangerousGoodsCodeKey, hasDangerousGoodsCodeKey}
+import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -26,7 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsEmpty, Call, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -70,14 +70,14 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
     captor.getValue
   }
 
-  private def formData(code: String) = JsObject(Map(dangerousGoodsCodeKey -> JsString(code), hasDangerousGoodsCodeKey -> JsString("Yes")))
+  private def formData(code: String): JsObject =
+    Json.obj(dangerousGoodsCodeKey -> code, hasDangerousGoodsCodeKey -> "Yes")
 
   "UNDangerousGoodsCode controller" should {
 
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-
         val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe OK
@@ -98,13 +98,11 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
         theResponseForm.value mustBe Some(dangerousGoodsCode)
       }
-
     }
 
     "return 400 (BAD_REQUEST)" when {
 
       "form is incorrect" in {
-
         val incorrectForm = formData("Invalid Code")
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(incorrectForm))
@@ -130,17 +128,11 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
         }
 
         "accept submission and redirect for commodity code 2800000000" in {
-          controllerRedirectsToNextPageForCommodityCode(
-            "2800000000",
-            controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId)
-          )
+          controllerRedirectsToNextPageForCommodityCode("2800000000", routes.CusCodeController.displayPage(Mode.Normal, itemId))
         }
 
         "accept submission and redirect for commodity code 2100000000" in {
-          controllerRedirectsToNextPageForCommodityCode(
-            "2100000000",
-            controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
-          )
+          controllerRedirectsToNextPageForCommodityCode("2100000000", routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId))
         }
       }
 
@@ -158,18 +150,11 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
         }
 
         "accept submission and redirect for procedure code 0019" in {
-
-          controllerRedirectsToNextPageForProcedureCode(
-            "0019",
-            controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemId)
-          )
+          controllerRedirectsToNextPageForProcedureCode("0019", routes.CommodityMeasureController.displayPage(Mode.Normal, itemId))
         }
 
         "accept submission and redirect for procedure code 1234" in {
-          controllerRedirectsToNextPageForProcedureCode(
-            "1234",
-            controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
-          )
+          controllerRedirectsToNextPageForProcedureCode("1234", routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId))
         }
       }
     }

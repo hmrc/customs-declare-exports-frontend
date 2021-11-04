@@ -99,7 +99,6 @@ trait ControllerSpec
 
   "Controller" should {
     "return form with submission errors" in {
-
       val form = getFormForDisplayRequest(getRequestWithSubmissionErrors)
       form.errors mustBe Seq(submissionFormError)
     }

@@ -23,10 +23,10 @@ import base.ControllerWithoutFormSpec
 import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
-import forms.declaration._
 import models.DeclarationType._
-import models.declaration.{ExportItem, ProcedureCodesData}
+import models.declaration.{CommodityMeasure, ExportItem, ProcedureCodesData}
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
