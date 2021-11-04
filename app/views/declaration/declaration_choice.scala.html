@@ -55,7 +55,7 @@
 
 @insetLink = @{
     link(
-        text = messages("declaration.type.p1.linkText"),
+        text = messages("declaration.type.insetText.linkText"),
         call = Call("GET", appConfig.guidance.declareGoodsExported),
         target = "_blank"
     )
@@ -145,7 +145,7 @@
 
         @insetText(content = HtmlContent(HtmlFormat.fill(List(
             paragraphBody(
-                s"${messages("declaration.type.p1.a", insetLink)}  ${messages("declaration.type.p1.b")}"
+                s"${messages("declaration.type.insetText.p1", insetLink)}  ${messages("declaration.type.insetText.p2")}"
             )
         ))))
 
