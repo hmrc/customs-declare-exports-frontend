@@ -45,7 +45,7 @@ class AdditionalDocumentsController @Inject()(
     if (additionalDocuments.nonEmpty) {
       val frm = yesNoForm.withSubmissionErrors()
       Ok(additionalDocumentsPage(mode, itemId, frm, additionalDocuments))
-    } else navigator.continueTo(mode, redirectIfNoDocuments(itemId))
+    } else navigator.continueTo(mode, redirectIfNoDocuments(mode, itemId), mode.isErrorFix)
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -66,7 +66,8 @@ class AdditionalDocumentsController @Inject()(
     if (yesNoAnswer.answer == YesNoAnswers.yes) routes.AdditionalDocumentAddController.displayPage(_, itemId)
     else routes.ItemsSummaryController.displayItemsSummaryPage
 
-  private def redirectIfNoDocuments(itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
-    if (request.cacheModel.isAuthCodeRequiringAdditionalDocuments) routes.AdditionalDocumentAddController.displayPage(_, itemId)
+  private def redirectIfNoDocuments(mode: Mode, itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
+    if (mode.isErrorFix || request.cacheModel.isAuthCodeRequiringAdditionalDocuments)
+      routes.AdditionalDocumentAddController.displayPage(_, itemId)
     else routes.AdditionalDocumentsRequiredController.displayPage(_, itemId)
 }
