@@ -126,6 +126,16 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
         }
+
+        "the authorisation code does not require additional documents but mode is 'ErrorFix'" in {
+          val declarationHolder = DeclarationHolder(Some("EXRR"), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
+          withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
+
+          val result = controller.displayPage(Mode.ErrorFix, itemId)(getRequest())
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.ErrorFix, itemId)
+        }
       }
 
       "user submits valid Yes answer" in {

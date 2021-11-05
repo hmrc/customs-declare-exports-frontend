@@ -56,9 +56,11 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
   ): Result =
     (mode, FormAction.bindFromRequest) match {
       case (ErrorFix, formAction) => handleErrorFixMode(factory, formAction, isErrorFixInProgress)
+
       case (_, SaveAndReturn) =>
         auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
         goToDraftDeclaration
+
       case _ => Results.Redirect(factory(mode))
     }
 
