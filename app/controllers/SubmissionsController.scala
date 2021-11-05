@@ -80,15 +80,15 @@ class SubmissionsController @Inject()(
     }
   }
 
-  def amendErrors(id: String, redirectUrl: String, pattern: String, messageKey: String): Action[AnyContent] =
+  def amendErrors(id: String, redirectUrl: String, pattern: String, message: String): Action[AnyContent] =
     (authenticate andThen verifyEmail).async { implicit request =>
       val redirectUrlWithMode = redirectUrl + ErrorFix.queryParameter
       val fieldName = FieldNamePointer.getFieldName(pattern)
       val flashData = fieldName match {
-        case Some(name) if messageKey.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> messageKey)
-        case Some(name)                        => Map(FlashKeys.fieldName -> name)
-        case None if messageKey.nonEmpty       => Map(FlashKeys.errorMessage -> messageKey)
-        case _                                 => Map.empty[String, String]
+        case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
+        case Some(name)                     => Map(FlashKeys.fieldName -> name)
+        case None if message.nonEmpty       => Map(FlashKeys.errorMessage -> message)
+        case _                              => Map.empty[String, String]
       }
       val redirect = Redirect(redirectUrlWithMode).flashing(Flash(flashData))
 

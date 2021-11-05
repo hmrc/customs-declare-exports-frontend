@@ -41,7 +41,8 @@ class RejectedNotificationsController @Inject()(
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
-          Ok(rejectedNotificationPage(declaration, getRejectedNotificationErrors(notifications)))
+          val maybeMrn = notifications.headOption.map(_.mrn)
+          Ok(rejectedNotificationPage(declaration, maybeMrn, getRejectedNotificationErrors(notifications)))
         }
 
       case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
