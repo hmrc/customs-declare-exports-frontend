@@ -16,21 +16,21 @@
 
 package controllers.declaration
 
+import scala.concurrent.{ExecutionContext, Future}
+
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.TotalPackageQuantityController
 import controllers.navigation.Navigator
 import forms.declaration.TotalNumberOfItems
-import models.DeclarationType.DeclarationType
+import forms.declaration.TotalNumberOfItems._
+import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
-import play.api.data.Form
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.total_number_of_items
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class TotalNumberOfItemsController @Inject()(
   authenticate: AuthAction,
@@ -41,30 +41,24 @@ class TotalNumberOfItemsController @Inject()(
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
-  import forms.declaration.TotalNumberOfItems._
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val frm = form().withSubmissionErrors()
     request.cacheModel.totalNumberOfItems match {
-      case Some(data) => Ok(totalNumberOfItemsPage(mode, frm.fill(data)))
-      case _          => Ok(totalNumberOfItemsPage(mode, frm))
+      case Some(data) => Ok(totalNumberOfItemsPage(mode, form.withSubmissionErrors.fill(data)))
+      case _          => Ok(totalNumberOfItemsPage(mode, form.withSubmissionErrors))
     }
   }
 
   def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form()
-      .bindFromRequest()
+    form.bindFromRequest
       .fold(
-        (formWithErrors: Form[TotalNumberOfItems]) => Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
-        formData => updateCache(formData).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
+        formWithErrors => Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(mode, TotalPackageQuantityController.displayPage))
       )
   }
 
-  private def nextPage(declarationType: DeclarationType): Mode => Call =
-    controllers.declaration.routes.TotalPackageQuantityController.displayPage
-
-  private def updateCache(formData: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]) =
-    updateExportsDeclarationSyncDirect(_.copy(totalNumberOfItems = Some(formData)))
+  private def updateCache(totalNumberOfItems: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(_.copy(totalNumberOfItems = Some(totalNumberOfItems)))
 }
