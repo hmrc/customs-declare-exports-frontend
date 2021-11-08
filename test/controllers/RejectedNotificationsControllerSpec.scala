@@ -44,7 +44,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     super.beforeEach()
 
     authorizedUser()
-    when(mockRejectedNotificationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRejectedNotificationPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -65,7 +65,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         val result = controller.displayPage(declarationId)(getRequest())
 
         status(result) mustBe OK
-        verify(mockRejectedNotificationPage).apply(any(), any())(any(), any())
+        verify(mockRejectedNotificationPage).apply(any(), any(), any())(any(), any())
       }
     }
 

@@ -1903,19 +1903,18 @@ legal.declaration.email.error=Enter a valid email address
 legal.declaration.confirmation=I confirm the information given is correct to the best of my knowledge
 legal.declaration.confirmation.missing=You must confirm the information is correct to the best of your knowledge
 
-rejected.notification.ducr = DUCR {0}
-rejected.notification.ducr.missing = No DUCR
-rejected.notification.title = Declaration errors
+rejected.notification.mrn = MRN {0}
+rejected.notification.mrn.missing = No MRN
+rejected.notification.title = Fix declaration errors
+rejected.notification.table.title = Declaration errors
 rejected.notification.warning = You need to fix these errors and resubmit your declaration when you have finished.
-rejected.notification.description.format = {0} Error code {1}.
+rejected.notification.description.format = Error code {0}.
 
-rejected.notification.guidance.section.1.paragraph.1 = When you have fixed each error, you can resubmit your declaration from the {0}.
-rejected.notification.guidance.section.1.paragraph.1.link = check your answers page
-rejected.notification.guidance.section.1.paragraph.2 = If you start but do not finish fixing the errors, your updated declaration will be in {0}.
-rejected.notification.guidance.section.1.paragraph.2.link = Saved declarations
-rejected.notification.guidance.section.1.paragraph.3 = If the descriptions and links above do not help you to fix your errors, or if errors still remain, review the {0}.
-rejected.notification.guidance.section.1.paragraph.3.link = CDS error codes guide (opens in new tab)
-rejected.notification.guidance.section.1.paragraph.4 = Before resubmitting, add a version number at the end of your LRN reference.
+rejected.notification.guidance.section.1.header = Dealing with errors
+rejected.notification.guidance.section.1.paragraph.1 = A single error can relate to more than one field on the declaration, so you may see some error codes repeated.
+rejected.notification.guidance.section.1.paragraph.2 = When you have fixed each error, you can resubmit your declaration from the {0}. If you start but do not finish fixing the errors, your updated declaration will be in {1}.
+rejected.notification.guidance.section.1.paragraph.2.link.1 = check your answers page
+rejected.notification.guidance.section.1.paragraph.2.link.2 = Saved declarations
 
 rejected.notification.guidance.section.2.header = Get further help with errors
 rejected.notification.guidance.section.2.paragraph.1 = If you need help with errors related to specific Tariff requirements (such as missing documents) call the help desk.
@@ -2009,6 +2008,169 @@ field.declaration.locations.warehouseIdentification.identificationNumber = Wareh
 field.declaration.locations.warehouseIdentification.identificationType = Warehouse type
 field.declaration.locations.warehouseIdentification.supervisingCustomsOffice = Customs supervising office
 field.declaration.consignmentReferences.ucr = Unique Consignment Reference (UCR)
+
+dmsError.CDS10001.title = Required details are missing
+dmsError.CDS10002.title = Invalid entry on the declaration
+dmsError.CDS10003.title = Too many instances of a data element
+dmsError.CDS10004.title = Commodity code error.title =
+dmsError.CDS10010.title = Invalid format
+dmsError.CDS10020.title = Invalid value
+dmsError.CDS10021.title = You appear to have entered a negative value
+dmsError.CDS10045.title = Valuation error
+dmsError.CDS11003.title = You have more or fewer items than the number you declared
+dmsError.CDS11004.title = Relation error
+dmsError.CDS11005.title = Relation error
+dmsError.CDS11006.title = Relation error.title =
+dmsError.CDS11007.title = Additional message cannot be accepted
+dmsError.CDS11012.title = Element is not allowed to be amended on this declaration type
+dmsError.CDS12003.title = Local reference number duplication.title = .
+dmsError.CDS12005.title = Identification not recognised
+dmsError.CDS12006.title = Licence has expired, not recognised, or does not match
+dmsError.CDS12007.title = Authorisation number not accepted
+dmsError.CDS12013.title = Authorisation error
+dmsError.CDS12014.title = Goods arrival notification required
+dmsError.CDS12015.title = Declaration status does not allow request
+dmsError.CDS12016.title = Supplementary declaration is too late or predates acceptance
+dmsError.CDS12022.title = Number of items error.title = .
+dmsError.CDS12024.title = Uniqueness error
+dmsError.CDS12026.title = Field has been amended more than once
+dmsError.CDS12031.title = Arrival notification is too late
+dmsError.CDS12034.title = Amendment request is invalid
+dmsError.CDS12036.title = Request not accepted
+dmsError.CDS12042.title = Relation error
+dmsError.CDS12044.title = MUCR reference is invalid
+dmsError.CDS12046.title = Arrival notification is too late
+dmsError.CDS12050.title = Procedure code is missing or invalid
+dmsError.CDS12052.title = No valid declaration type
+dmsError.CDS12056.title = The combination of 2 values you entered is not allowed
+dmsError.CDS12057.title = Invoice currency for all items must be the same
+dmsError.CDS12058.title = Number of packages error
+dmsError.CDS12062.title = DUCR reference is a duplication or is invalid
+dmsError.CDS12070.title = A required field is missing a value or is invalid
+dmsError.CDS12071.title = A field has been completed at header and item level
+dmsError.CDS12072.title = Relation error
+dmsError.CDS12073.title = Relation error
+dmsError.CDS12074.title = Data elements are missing and one or the other is required
+dmsError.CDS12075.title = Relation error
+dmsError.CDS12077.title = Relation error
+dmsError.CDS12079.title = Relation error
+dmsError.CDS12080.title = Relation error
+dmsError.CDS12081.title =
+dmsError.CDS12082.title = Relation error
+dmsError.CDS12083.title = Relation error
+dmsError.CDS12084.title = Consignee details
+dmsError.CDS12086.title = Carrier details
+dmsError.CDS12087.title = Additional fiscal party
+dmsError.CDS12088.title = Representative details missing
+dmsError.CDS12089.title = Consignee party details
+dmsError.CDS12090.title = Carrier EORI
+dmsError.CDS12091.title = Relation error
+dmsError.CDS12092.title = Relation error
+dmsError.CDS12095.title = Relation error
+dmsError.CDS12096.title = Authorisation error
+dmsError.CDS12097.title = Relation error
+dmsError.CDS12098.title = Relation error.title =
+dmsError.CDS12099.title = Goods location code not recognised
+dmsError.CDS12100.title = Relation error
+dmsError.CDS12101.title = Relation error
+dmsError.CDS12102.title = Relation error
+dmsError.CDS12103.title = Relation error
+dmsError.CDS12104.title = Relation error
+dmsError.CDS12105.title = Relation error
+dmsError.CDS12106.title = Relation error
+dmsError.CDS12107.title = Relation error
+dmsError.CDS12108.title = Obligation error
+dmsError.CDS12109.title = Total invoiced amount should be in GBP
+dmsError.CDS12110.title = Relation error
+dmsError.CDS12111.title = Relation error
+dmsError.CDS12112.title = Addition/deduction code missing
+dmsError.CDS12113.title = Authorisation CGU requires a guarantee.title =
+dmsError.CDS12114.title = Relation error
+dmsError.CDS12115.title = Relation error
+dmsError.CDS12117.title = Relation error
+dmsError.CDS12118.title = Relation error
+dmsError.CDS12119.title = Additional document not allowed or is missing
+dmsError.CDS12120.title = Authorisation error
+dmsError.CDS12121.title = Additional Information codes are not compatible.title =
+dmsError.CDS12123.title = A value declared must be greater than 0
+dmsError.CDS12125.title = DAN error
+dmsError.CDS12132.title = Declaration Unique Consignment Reference (DUCR) format is not valid
+dmsError.CDS12133.title = MUCR format is not valid
+dmsError.CDS12134.title = MUCR or DUCR format is not valid
+dmsError.CDS12135.title = Relation error
+dmsError.CDS12136.title = Relation error
+dmsError.CDS12137.title = Uniqueness error
+dmsError.CDS12138.title = Additional procedure code is not allowed
+dmsError.CDS12139.title = Relation error
+dmsError.CDS12141.title = Relation error
+dmsError.CDS12143.title = Relation error
+dmsError.CDS12144.title = Relation error
+dmsError.CDS12145.title = Relation error
+dmsError.CDS12146.title = Relation error
+dmsError.CDS12147.title = Additional Information (AI) code is not allowed
+dmsError.CDS12148.title = Relation error
+dmsError.CDS12149.title = Relaltion error
+dmsError.CDS12150.title = Authorisation number is invalid
+dmsError.CDS12024.title = Duplication error
+dmsError.CDS13000.title = Value fails credibility check as too high or too low
+dmsError.CDS14000.title = Value fails credibility check as too high or too low
+dmsError.CDS19999.title = Declaration has multiple errors: contact the help desk.
+dmsError.CDS20001.title = Related movement not found
+dmsError.CDS20002.title = Related movement does not match declaration
+dmsError.CDS20003.title = Related movement not found
+dmsError.CDS40007.title = Duplication error
+dmsError.CDS40010.title = Value given for a data element does not apply
+dmsError.CDS40011.title = Missing data element value
+dmsError.CDS40013.title = Invalid value entered
+dmsError.CDS40044.title = Document declared is not allowed for the given commodity code
+dmsError.CDS40045.title = A document is missing
+dmsError.CDS40047.title = Value not allowed
+dmsError.CDS40049.title = Quota used up
+dmsError.CDS40053.title = Quota suspended
+dmsError.CDS40059.title = Incomplete measure or commodity code
+dmsError.CDS40066.title = Tariff condition not fulfilled
+dmsError.CDS40068.title = National additional code for excise is missing
+dmsError.CDS40069.title = Quota error.title = The Quota claimed is no longer available.
+dmsError.CDS40070.title = Additional information code NIIMP must appear on all items.title =
+dmsError.CDS40071.title = Additional information code NIDOM must appear on all items
+dmsError.CDS40072.title = Additional information code NIEXP must appear on all items
+dmsError.CDS40073.title = You declared NIREM additional information code on its own
+dmsError.CDS40074.title = Relation error
+dmsError.CDS49999.title = Other Errors
+dmsError.CDS50000.title = Response from ALVS is not release
+dmsError.CDS50001.title = Invalid UCR Format, DUCR or MUCR
+dmsError.CDS50003.title = UCR is not at the top of its consolidation
+dmsError.CDS50008.title = DUCR or MUCR is not the right format
+dmsError.CDS50015.title = Declaration is cancelled or terminated upon arrival
+dmsError.CDS50027.title = Authorisation failed.title =
+dmsError.CDS50028.title = Goods location code invalid
+dmsError.CDS50031.title = Request has been received after a successful RET
+dmsError.CDS70711.title = Licence error
+dmsError.CDS70719.title = Licence error
+dmsError.CDS70724.title = Licence reference quoted is not valid
+dmsError.CDS70739.title = Licence error.title =
+dmsError.CDS70740.title = Licence error
+dmsError.CDS70758.title = Licence error
+dmsError.CDS70760.title = Licence is not valid for this item
+dmsError.CDS70761.title = Licence error
+dmsError.CDS70791.title = Licence error
+dmsError.CDS71115.title = Licence error.title =
+dmsError.CDS71200.title = Document reference is a duplication.title =
+dmsError.CDS71201.title = Licence error
+dmsError.CDS71203.title = Licence error
+dmsError.CDS71204.title = Licence is already surrendered
+dmsError.CDS71206.title = Licence is already exhausted
+dmsError.CDS71216.title = Licence is no longer available for use
+dmsError.CDS71236.title = Licence error
+dmsError.CDS71252.title = Licence error.title =
+dmsError.CDS71262.title = Licence error.title =
+dmsError.CDS73329.title = Licence cannot be used.title =
+dmsError.CDS77000.title = Document identifier required
+dmsError.CDS77001.title = Quantity must be provided.title = .title =
+dmsError.CDS77002.title = Document status code needed.title =
+dmsError.CDS77003.title = Licence error.title = .
+dmsError.CDS77004.title = Reservation could not be made
+dmsError.CDS77005.title = Reason not given for use of a 'Y' code
 
 userSignedOut.title = We have saved your answers and signed you out
 

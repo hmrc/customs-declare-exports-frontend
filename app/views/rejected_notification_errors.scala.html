@@ -22,6 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
 @import connectors.CodeListConnector
+@import views.helpers.NotificationErrorHelper
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -35,56 +36,11 @@
     govukWarningText: GovukWarningText,
     appConfig: AppConfig,
     codeListConnector: CodeListConnector,
-    changeErrorLinkConfig: ChangeErrorLinkConfig
+    changeErrorLinkConfig: ChangeErrorLinkConfig,
+    notificationErrorHelper: NotificationErrorHelper
 )
 
-@(declaration: ExportsDeclaration, errors: Seq[NotificationError])(implicit request: Request[_], messages: Messages)
-
-@errorDesciption(reason: NotificationError) = @{
-  val description = codeListConnector
-      .getDmsErrorCodesMap(messages.lang.toLocale)
-      .get(reason.validationCode)
-      .map(dmsErrorCode => dmsErrorCode.description)
-      .getOrElse(messages("error.unknown"))
-
-  if(description.endsWith(".")) description else s"$description."
-}
-
-@errorChangeAction(reason: NotificationError) = @{
-  if(changeErrorLinkConfig.isEnabled) {
-    PointerHelper.getChangeLinkCall(reason.pointer, declaration)
-      .fold(Some(Actions(items = Seq.empty))) { call =>
-        val errorPattern = reason.pointer.map(_.pattern).getOrElse("")
-        val errorMessage = errorDesciption(reason)
-        val url = routes.SubmissionsController.amendErrors(declaration.id, call.url, errorPattern, errorMessage).url
-        val action = actionItem(
-            href = url,
-            content = Text(messages("site.change")),
-            visuallyHiddenText = Some(reason.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse(""))
-        )
-
-        Some(Actions(items = Seq(action)))
-      }
-  } else None
-}
-
-@summaryRows = @{
-    errors.zipWithIndex.map {zippedError =>
-        zippedError match {
-            case (notificationError, index) => SummaryListRow(
-                key = Key(
-                    content = HtmlContent(notificationError.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse("")),
-                    classes = s"rejected-field-name rejected_notifications-row-$index-name"
-                ),
-                value = Value(
-                    content = Text(messages("rejected.notification.description.format", errorDesciption(notificationError), notificationError.validationCode)),
-                    classes = s"rejected_notifications-row-$index-description"
-                ),
-                actions = errorChangeAction(notificationError)
-            )
-        }
-    }
-}
+@(declaration: ExportsDeclaration, maybeMrn: Option[String], errors: Seq[NotificationError])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
     title = Title("rejected.notification.title"),
@@ -95,44 +51,39 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
 
-            @sectionHeader(messages("rejected.notification.ducr", declaration.ducr.getOrElse(messages("rejected.notification.ducr.missing"))))
-            @pageTitle(text = messages("rejected.notification.title"))
+            @sectionHeader(messages("rejected.notification.mrn", maybeMrn.getOrElse(messages("rejected.notification.mrn.missing"))))
+            @pageTitle(text = messages("rejected.notification.title"), classes = "govuk-heading-l")
 
             @govukWarningText(WarningText(
                 iconFallbackText = messages("site.warning"),
                 content = Text(messages("rejected.notification.warning"))
             ))
 
-            @govukSummaryList(SummaryList(
-                rows = summaryRows
-            ))
+            @heading(messages("rejected.notification.table.title"), "govuk-heading-m", "h2")
 
+            @govukSummaryList(notificationErrorHelper.createSummaryList(declaration, errors))
 
 @* Section 1 *@
 
-            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.1", link(
-                text = messages("rejected.notification.guidance.section.1.paragraph.1.link"),
-                call = routes.SubmissionsController.amend(declaration.id),
-                id = Some("continue-checking-answers")
-            )))
+            @heading(messages("rejected.notification.guidance.section.1.header"), "govuk-heading-s", "h2")
 
-            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.2", link(
-                text = messages("rejected.notification.guidance.section.1.paragraph.2.link"),
-                call = routes.SavedDeclarationsController.displayDeclarations()
-            )))
+            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.1"))
 
-            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.3", link(
-                text = messages("rejected.notification.guidance.section.1.paragraph.3.link"),
-                call = Call("GET", controllers.routes.GuidanceController.errorExplanation.url),
-                target = "_blank"
-            )))
-
-            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.4"))
-
+            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.2",
+                link(
+                    text = messages("rejected.notification.guidance.section.1.paragraph.2.link.1"),
+                    call = routes.SubmissionsController.amend(declaration.id),
+                    id = Some("continue-checking-answers")
+                ),
+                link(
+                    text = messages("rejected.notification.guidance.section.1.paragraph.2.link.2"),
+                    call = routes.SavedDeclarationsController.displayDeclarations()
+                )
+            ))
 
 @* Section 2 *@
 
-            @heading(messages("rejected.notification.guidance.section.2.header"), "govuk-heading-m", "h2")
+            @heading(messages("rejected.notification.guidance.section.2.header"), "govuk-heading-s", "h2")
 
             @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.1"))
 

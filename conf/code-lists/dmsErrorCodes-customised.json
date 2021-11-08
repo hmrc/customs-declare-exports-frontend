@@ -1,812 +1,812 @@
 [
   {
     "code": "CDS10001",
-    "en": "Obligation error: Mandatory Data Element has not been provided",
-    "cy": "Obligation Error: Mandatory Data Element has not been provided"
+    "en": "Check the declaration to ensure that all the required data elements have been completed in full. For example, if declaring a party name and address, then name, street and number, country and postcode must be completed",
+    "cy": "Check the declaration to ensure that all the required data elements have been completed in full. For example, if declaring a party name and address, then name, street and number, country and postcode must be completed."
   },
   {
     "code": "CDS10002",
-    "en": "Obligation Error: Data Element is not allowed",
-    "cy": "Obligation Error: Data Element is not allowed"
+    "en": "Go through the declaration from the beginning to find where you have entered details that are not permitted. Some details are not permitted at item level, only at header level - this is specified by an X or Y at the start of the value sent",
+    "cy": "Go through the declaration from the beginning to find where you have entered details that are not permitted. Some details are not permitted at item level, only at header level - this is specified by an X or Y at the start of the value sent."
   },
   {
     "code": "CDS10003",
-    "en": "Obligation Error: Number of Occurrences exceeds what is allowed for the Data Element",
-    "cy": "Obligation Error: Number of Occurrences exceeds what is allowed for the Data Element"
+    "en": "You have exceeded the limit for one of the fields on the declaration. For example, only 1 preference code can be declared against an item",
+    "cy": "You have exceeded the limit for one of the fields on the declaration. For example, only 1 preference code can be declared against an item."
   },
   {
     "code": "CDS10004",
-    "en": "Commodity code Error: Mandatory data element not provided or format error or number of occurrences exceeds what is allowed for the data element",
-    "cy": "Commodity code Error: Mandatory data element not provided or format error or number of occurrences exceeds what is allowed for the data element"
+    "en": "A commodity code error is likely to be caused by missing or incorrect additional codes to the commodity code - these are the national additional codes or TARIC additional codes",
+    "cy": "A commodity code error is likely to be caused by missing or incorrect additional codes to the commodity code - these are the national additional codes or TARIC additional codes."
   },
   {
     "code": "CDS10010",
-    "en": "Format error: Data element has invalid format",
-    "cy": "Format error: Data element has invalid format"
+    "en": "One of the data elements does not comply with the minimum/maximum number of characters or uses characters not permitted. For example, the country code field with the address must only use alphabetic characters",
+    "cy": "One of the data elements does not comply with the minimum/maximum number of characters or uses characters not permitted. For example, the country code field with the address must only use alphabetic characters."
   },
   {
     "code": "CDS10020",
-    "en": "Data Error: Data Element contains invalid value",
-    "cy": "Data Error: Data Element contains invalid value"
+    "en": "A code used in the declaration is either not a recognised code or is not a code permitted on the particular declaration. For example, a document code which is only permitted on export declarations has been declared on an import declaration",
+    "cy": "A code used in the declaration is either not a recognised code or is not a code permitted on the particular declaration. For example, a document code which is only permitted on export declarations has been declared on an import declaration."
   },
   {
     "code": "CDS10021",
-    "en": "Domain error: value can not be lower than 0",
-    "cy": "Domain error: value can not be lower than 0"
+    "en": "A negative amount has been declared for writing off a licence. The quantity being written off for a licence must be equal to or greater than zero",
+    "cy": "A negative amount has been declared for writing off a licence. The quantity being written off for a licence must be equal to or greater than zero."
   },
   {
     "code": "CDS10045",
-    "en": "Calculated customs value is not allowed to be below zero",
-    "cy": "Calculated customs value is not allowed to be below zero"
+    "en": "The deductions you declared may exceed the value of the items. See CDS Tariff completion notes for data element 4/9. Apportioning a deduction across mutiple items must not reduce the value of any single item to zero or a negative amount",
+    "cy": "The deductions you declared may exceed the value of the items. See CDS Tariff completion notes for data element 4/9. Apportioning a deduction across mutiple items must not reduce the value of any single item to zero or a negative amount."
   },
   {
     "code": "CDS11003",
-    "en": "Relation error: The value of ItemTotal is invalid; it does not correspond to the number of times that ItemNumber is used in the declaration.",
-    "cy": "Relation error: The value of ItemTotal is invalid; it does not correspond to the number of times that ItemNumber is used in the declaration."
+    "en": "Amend data element 1/9 to match the number of declared goods items on the declaration",
+    "cy": "Amend data element 1/9 to match the number of declared goods items on the declaration."
   },
   {
     "code": "CDS11004",
-    "en": "This is not a recognised procedure code in the UCC guidelines",
-    "cy": "This is not a recognised procedure code in the UCC guidelines"
+    "en": "The combination of procedure code and additional procedure code is either invalid or is not permitted on this type of declaration",
+    "cy": "The combination of procedure code and additional procedure code is either invalid or is not permitted on this type of declaration."
   },
   {
     "code": "CDS11005",
-    "en": "Each item must fit with the same declared procedure code",
-    "cy": "Each item must fit with the same declared procedure code"
+    "en": "All items on the declaration must derive from the same procedure category. For example if one item has requested procedure 40, then another item must not have a requested procedure of 71 because this would require a different declaration type",
+    "cy": "All items on the declaration must derive from the same procedure category. For example if one item has requested procedure 40, then another item must not have a requested procedure of 71 because this would require a different declaration type."
   },
   {
     "code": "CDS11006",
-    "en": "The net mass must be lower than the gross mass",
-    "cy": "The net mass must be lower than the gross mass"
+    "en": "Net mass declared is greater than the gross mass declared.",
+    "cy": "Net mass declared is greater than the gross mass declared."
   },
   {
     "code": "CDS11007",
-    "en": "A different person submitted the original declaration",
-    "cy": "A different person submitted the original declaration"
+    "en": "A person linked to a different EORI number or different identification details cannot send a request to HMRC about the declaration, such as requesting a cancellation. Only the original declarant can send requests",
+    "cy": "A person linked to a different EORI number or different identification details cannot send a request to HMRC about the declaration, such as requesting a cancellation. Only the original declarant can send requests."
   },
   {
     "code": "CDS11012",
-    "en": "Cannot change this element on this declaration type",
-    "cy": "Cannot change this element on this declaration type"
+    "en": "Check your amendment request. For example, you cannot change a declaration from prelodged (D) to arrived (A) through amendment, only through goods arrival",
+    "cy": "Check your amendment request. For example, you cannot change a declaration from prelodged (D) to arrived (A) through amendment, only through goods arrival."
   },
   {
     "code": "CDS12003",
-    "en": "You cannot use the same LRN on different declarations in the space of 48 hours",
-    "cy": "You cannot use the same LRN on different declarations in the space of 48 hours"
+    "en": "You used the same local reference number (LRN) within 48 hours. Change the LRN or add a version number at the end using letters and numbers only.",
+    "cy": "You used the same local reference number (LRN) within 48 hours. Change the LRN or add a version number at the end using letters and numbers only."
   },
   {
     "code": "CDS12005",
-    "en": "Authorization error: Party ID unknown or invalid.",
-    "cy": "Authorization error: Party ID unknown or invalid."
+    "en": "An EORI or VAT number included on the declaration is not recognised",
+    "cy": "An EORI or VAT number included on the declaration is not recognised."
   },
   {
     "code": "CDS12006",
-    "en": "Invalid import/export license number",
-    "cy": "Invalid import/export license number"
+    "en": "You declared a licence number that is failing validation for one of these reasons:\n\nExpiry date is in the past\nLicence ID not recognised\nLicence DUCR not matching declaration DUCR\nLicence ID does not match EORI declared\nLicence declared has insufficient balance remaining\nLicence does not match country of origin specified\nLicence does not permit quantity declared.",
+    "cy": "You declared a licence number that is failing validation for one of these reasons:\n\nExpiry date is in the past\nLicence ID not recognised\nLicence DUCR not matching declaration DUCR\nLicence ID does not match EORI declared\nLicence declared has insufficient balance remaining\nLicence does not match country of origin specified\nLicence does not permit quantity declared."
   },
   {
     "code": "CDS12007",
-    "en": "Authorization error: authorization not valid for declaration",
-    "cy": "Authorization error: authorization not valid for declaration"
+    "en": "You declared an authorisation that has expired; or the reference number does not belong to the party on the declaration; or the reference number provided is not recognised",
+    "cy": "You declared an authorisation that has expired; or the reference number does not belong to the party on the declaration; or the reference number provided is not recognised."
   },
   {
     "code": "CDS12013",
-    "en": "Authorisation Error: Invalid VAT number",
-    "cy": "Authorisation Error: Invalid VAT number"
+    "en": "VAT number is not a valid destination for VAT transfer",
+    "cy": "VAT number is not a valid destination for VAT transfer."
   },
   {
     "code": "CDS12014",
-    "en": "A Goods Arrival Notification must follow a pre-lodged declaration.",
-    "cy": "A Goods Arrival Notification must follow a pre-lodged declaration."
+    "en": "A goods arrival notification must follow a pre-lodged declaration",
+    "cy": "A goods arrival notification must follow a pre-lodged declaration."
   },
   {
     "code": "CDS12015",
-    "en": "Declaration does not exist or is not ready to process the request",
-    "cy": "Declaration does not exist or is not ready to process the request"
+    "en": "The request to arrive, amend or cancel declaration is invalid because the declaration cannot be found or is in a state that will not allow the requested action",
+    "cy": "The request to arrive, amend or cancel declaration is invalid because the declaration cannot be found or is in a state that will not allow the requested action."
   },
   {
     "code": "CDS12016",
-    "en": "The acceptance date cannot be more than 180 days in the past",
-    "cy": "The acceptance date cannot be more than 180 days in the past"
+    "en": "The date when goods were accepted for the simplified declaration or EIDR must not be more than 365 days in the past (or 200 days for a type Q declaration) and also cannot be in the future (cannot be before the goods are accepted)",
+    "cy": "The date when goods were accepted for the simplified declaration or EIDR must not be more than 365 days in the past (or 200 days for a type Q declaration) and also cannot be in the future (cannot be before the goods are accepted)."
   },
   {
     "code": "CDS12022",
-    "en": "The item number declared is higher than the number of items on the declaration",
-    "cy": "The item number declared is higher than the number of items on the declaration"
+    "en": "The goods item number declared is larger than the total number of goods items on the declaration.",
+    "cy": "The goods item number declared is larger than the total number of goods items on the declaration."
   },
   {
     "code": "CDS12024",
-    "en": "Uniqueness error: The Item number is not unique",
-    "cy": "Uniqueness error: The Item number is not unique"
+    "en": "You have declared a value and repeated it, when that is not allowed.\n\nCheck the entries for these data elements:\n1/11 - additional procedure code can only be used once on each item\n1/6 - item number cannot be repeated on the declaration\n2/3 -ARC number declared with document code C651 can only be used on one declaration\n4/9 - addition or deduction code can only be used once at header level or once with each item\n2/3 - licence ID cannot be repeated on the same item.",
+    "cy": "You have declared a value and repeated it, when that is not allowed.\n\nCheck the entries for these data elements:\n1/11 - additional procedure code can only be used once on each item\n1/6 - item number cannot be repeated on the declaration\n2/3 -ARC number declared with document code C651 can only be used on one declaration\n4/9 - addition or deduction code can only be used once at header level or once with each item\n2/3 - licence ID cannot be repeated on the same item."
   },
   {
     "code": "CDS12026",
-    "en": "The same data element cannot be amended more than once in the same request",
-    "cy": "The same data element cannot be amended more than once in the same request"
+    "en": "On amendments the same data element can only be amended once per amendment submission",
+    "cy": "On amendments the same data element can only be amended once per amendment submission."
   },
   {
     "code": "CDS12031",
-    "en": "Goods arrival notification must be submitted within 30 days",
-    "cy": "Goods arrival notification must be submitted within 30 days"
+    "en": "Goods arrival notification has been submitted 30 or more days after the date the declaration was originally submitted and received",
+    "cy": "Goods arrival notification has been submitted 30 or more days after the date the declaration was originally submitted and received."
   },
   {
     "code": "CDS12034",
-    "en": "Any amendments must be made using the same service as the original declaration",
-    "cy": "Any amendments must be made using the same service as the original declaration"
+    "en": "The amendment must be submitted using the same submission channel as the original declaration",
+    "cy": "The amendment must be submitted using the same submission channel as the original declaration."
   },
   {
     "code": "CDS12036",
-    "en": "A new request cannot be submitted until a response is received to your previous request",
-    "cy": "A new request cannot be submitted until a response is received to your previous request"
+    "en": "There is an outstanding cancellation or amendment request. A new request cannot be submitted until a response is received to your previous request",
+    "cy": "There is an outstanding cancellation or amendment request. A new request cannot be submitted until a response is received to your previous request."
   },
   {
     "code": "CDS12042",
-    "en": "Relation error: elements must be identical within the GoodsItem",
-    "cy": "Relation Error: Elements must be identical within the GoodsItem"
+    "en": "Different quota order numbers cannot be declared on the same item. Note that declaration will be rejected if there is more than one quota order number in data element 8/1 for an item",
+    "cy": "Different quota order numbers cannot be declared on the same item. Note that declaration will be rejected if there is more than one quota order number in data element 8/1 for an item."
   },
   {
     "code": "CDS12044",
-    "en": "MUCR exists and has previously been shut",
-    "cy": "MUCR exists and has previously been shut"
+    "en": "A MUCR is only for the consolidation of several declarations. Do not add a MUCR unless you are consolidating.\n\nOn a single declaration (with no MUCR) you may add different items with different commodity codes, as long as all of them are being exported to the same consignee (party buying and receiving the goods).\n\nYou will find more information in the Notes section for data element 2/1 in the completion guide",
+    "cy": "A MUCR is only for the consolidation of several declarations. Do not add a MUCR unless you are consolidating.\n\nOn a single declaration (with no MUCR) you may add different items with different commodity codes, as long as all of them are being exported to the same consignee (party buying and receiving the goods).\n\nYou will find more information in the Notes section for data element 2/1 in the completion guide."
   },
   {
     "code": "CDS12046",
-    "en": "Goods arrival notification was late",
-    "cy": "Goods arrival notification was late"
+    "en": "Goods arrival notification has been submitted after 30 days from the date the declaration was originally submitted and received. You will find your declaration in the 'Rejected' tab and you can resubmit it and send a new arrival message",
+    "cy": "Goods arrival notification has been submitted after 30 days from the date the declaration was originally submitted and received. You will find your declaration in the 'Rejected' tab and you can resubmit it and send a new arrival message."
   },
   {
     "code": "CDS12050",
-    "en": "Procedure code: the requested procedure is not valid",
-    "cy": "Procedure code: the requested procedure is not valid"
+    "en": "Declaration must include at least one item and every item must include a valid procedure code",
+    "cy": "Declaration must include at least one item and every item must include a valid procedure code."
   },
   {
     "code": "CDS12052",
-    "en": "Declaration type: the declaration type is not valid",
-    "cy": "Declaration type: the declaration type is not valid"
+    "en": "Enter the declaration type - standard, simplified (regular use), simplified (occasional use), supplementary or clearance, and prelodged or arrived. See data element 1/2 for the correct codes",
+    "cy": "Enter the declaration type - standard, simplified (regular use), simplified (occasional use), supplementary or clearance, and prelodged or arrived. See data element 1/2 for the correct codes."
   },
   {
     "code": "CDS12056",
-    "en": "Relation error: the combination of elements is not allowed",
-    "cy": "Relation Error: The combination of elements is not allowed"
+    "en": "For example, a document code has an incompatible document status",
+    "cy": "For example, a document code has an incompatible document status."
   },
   {
     "code": "CDS12057",
-    "en": "The invoice currency must be the same for every goods item on the declaration",
-    "cy": "The invoice currency must be the same for every goods item on the declaration"
+    "en": "See data element 4/14 for the requirement",
+    "cy": "See data element 4/14 for the requirement."
   },
   {
     "code": "CDS12058",
-    "en": "At least one packaging quantity must be greater than zero",
-    "cy": "At least one packaging quantity must be greater than zero"
+    "en": "Packaging quantity cannot be zero for all packages for combined packaging",
+    "cy": "Packaging quantity cannot be zero for all packages for combined packaging."
   },
   {
     "code": "CDS12062",
-    "en": "External ILE validation DUCR result - not OK",
-    "cy": "External ILE validation DUCR result - not OK"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS12070",
-    "en": "Relation Error: The value supplied in Data Element 1 mandates the completion of Data Element 2",
-    "cy": "Relation Error: The value supplied in Data Element 1 mandates the completion of Data Element 2"
+    "en": "For example, you have entered a value that requires another field to be completed, or makes another field invalid",
+    "cy": "For example, you have entered a value that requires another field to be completed, or makes another field invalid."
   },
   {
     "code": "CDS12071",
-    "en": "Relation Error: Data Element must be supplied at either header or item level and cannot be declared at both levels",
-    "cy": "Relation Error: Data Element must be supplied at either header or item level and cannot be declared at both levels"
+    "en": "Check the data element completion guide for exports from the CDS Tariff. This tells you the exact requirements for each field. In particular see the data element completion guide for data elements 3/9, 5/8, 5/14, 7/10 and 8/5.",
+    "cy": "Check the data element completion guide for exports from the CDS Tariff. This tells you the exact requirements for each field. In particular see the data element completion guide for data elements 3/9, 5/8, 5/14, 7/10 and 8/5."
   },
   {
     "code": "CDS12072",
-    "en": "You can only supply one [element], not both",
-    "cy": "You can only supply one [element], not both"
+    "en": "This could be an unacceptable combination of values at header and item level, for example gross weight has been declared at both header and item level.\n\nOr EORI as well as name and address has been declared for consignee, consignor or buyer",
+    "cy": "This could be an unacceptable combination of values at header and item level, for example gross weight has been declared at both header and item level.\n\nOr EORI as well as name and address has been declared for consignee, consignor or buyer."
   },
   {
     "code": "CDS12073",
-    "en": "Relation Error: Data Element must be supplied at header or item level",
-    "cy": "Relation Error: Data Element must be supplied at header or item level"
+    "en": "A value is missing or has been entered at the wrong level.\n\nCheck these data elements:\n\n2/1, (31 or 3/2), and 8/5 must be declared at least once at either header or item level.\n7/10 must be declared at least once at header or item level if\n7/2 is coded 1. 3/15 or 3/16 must be declared at header level",
+    "cy": "A value is missing or has been entered at the wrong level.\n\nCheck these data elements:\n\n2/1, (31 or 3/2), and 8/5 must be declared at least once at either header or item level.\n7/10 must be declared at least once at header or item level if\n7/2 is coded 1. 3/15 or 3/16 must be declared at header level."
   },
   {
     "code": "CDS12074",
-    "en": "Relation Error: Because Data Element 1 is not supplied, Data Element 2 is mandatory",
-    "cy": "Relation Error: Because Data Element 1 is not supplied, Data Element 2 is mandatory"
+    "en": "Check the data element completion guide for the CDS Tariff, and declare one or the other but not both. For example, exporter, consignor and carrier, complete either an EORI or name and address. See Tariff for specific requirements",
+    "cy": "Check the data element completion guide for the CDS Tariff, and declare one or the other but not both. For example, exporter, consignor and carrier, complete either an EORI or name and address. See Tariff for specific requirements."
   },
   {
     "code": "CDS12075",
-    "en": "Relation Error: Data Element 2 must not be supplied with this value in Data Element 1",
-    "cy": "Relation Error: Data Element 2 must not be supplied with this value in Data Element 1"
+    "en": "If one of the fields is completed the other should not have a value and should therefore be removed. For example, a document code and document status have been entered but the status is not required for this code. This can also indicate that a data element has been declared but is not permitted on this type of declaration",
+    "cy": "If one of the fields is completed the other should not have a value and should therefore be removed. For example, a document code and document status have been entered but the status is not required for this code. This can also indicate that a data element has been declared but is not permitted on this type of declaration."
   },
   {
     "code": "CDS12077",
-    "en": "Relation Error: A valid value must be supplied in Data Element 2 as Data Element 1 is present",
-    "cy": "Relation Error: A valid value must be supplied in Data Element 2 as Data Element 1 is present"
-  },
-  {
-    "code": "CDS12078",
-    "en": "Relation Error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8",
-    "cy": "Relation Error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8"
+    "en": "For example, if a party name is declared then all fields of the address must be declared, when completing an ID in data element 7/14, a type code must also be provided with it. When manually completing tax line data elements, all the appropriate data elements must be declared",
+    "cy": "For example, if a party name is declared then all fields of the address must be declared, when completing an ID in data element 7/14, a type code must also be provided with it. When manually completing tax line data elements, all the appropriate data elements must be declared."
   },
   {
     "code": "CDS12079",
-    "en": "Relation Error: Data Element 2 must not be supplied with Data Element 1",
-    "cy": "Relation Error: Data Element 2 must not be supplied with Data Element 1"
+    "en": "Two values you declared are incompatible. For example, a data element is declared at both header and item levels but only one level is permissible",
+    "cy": "Two values you declared are incompatible. For example, a data element is declared at both header and item levels but only one level is permissible."
   },
   {
     "code": "CDS12080",
-    "en": "Combination of addition / deduction codes is not allowed",
-    "cy": "Combination of addition / deduction codes is not allowed"
+    "en": "You have used a mix of addition or deduction codes for an item that is not permitted. Certain addition/deduction codes cannot be declared together.\n\nAdditions and deductions should only be declared at header level where they apply to all good items on the customs declaration.\n\nEach addition or deduction code can only be declared once at header level. The same addition or deduction code cannot then be declared at item level as well.\n\nIf a specific addition or deduction is being declared at item level, that addition or deduction may only be declared once per item",
+    "cy": "You have used a mix of addition or deduction codes for an item that is not permitted. Certain addition/deduction codes cannot be declared together.\n\nAdditions and deductions should only be declared at header level where they apply to all good items on the customs declaration.\n\nEach addition or deduction code can only be declared once at header level. The same addition or deduction code cannot then be declared at item level as well.\n\nIf a specific addition or deduction is being declared at item level, that addition or deduction may only be declared once per item."
   },
   {
     "code": "CDS12081",
-    "en": "Importer and exporter must not be the same",
-    "cy": "Importer and exporter must not be the same"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS12082",
-    "en": "The currency declared in the total amount invoiced must be the same declared for the item price",
-    "cy": "The currency declared in the total amount invoiced must be the same declared for the item price"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS12083",
-    "en": "Only one country of preferential origin or country group can be entered",
-    "cy": "Only one country of preferential origin or country group can be entered"
+    "en": "You have provided both a country and country group for mandatory data element Preferential Origin.\n\nWhere the proof of origin document refers to a group of countries, enter the group of countries by using the relevant Union codes in accordance with the codes listed in Appendix 13: Country Codes\n\nWhere data element 5/16 is completed using a preference group code, data element 5/15 must be completed with the specific country of origin for the goods",
+    "cy": "You have provided both a country and country group for mandatory data element Preferential Origin.\n\nWhere the proof of origin document refers to a group of countries, enter the group of countries by using the relevant Union codes in accordance with the codes listed in Appendix 13: Country Codes.\n\nWhere data element 5/16 is completed using a preference group code, data element 5/15 must be completed with the specific country of origin for the goods."
   },
   {
     "code": "CDS12084",
-    "en": "You cannot enter both the consignee's EORI and address",
-    "cy": "You cannot enter both the consignee's EORI and address"
+    "en": "You have provided both consignee name and consignee EORI. Only declare either the EORI or the full name and address of consignee not both. EORI should be declared when known",
+    "cy": "You have provided both consignee name and consignee EORI. Only declare either the EORI or the full name and address of consignee not both. EORI should be declared when known."
   },
   {
     "code": "CDS12086",
-    "en": "You cannot enter both the carrier's EORI and address",
-    "cy": "You cannot enter both the carrier's EORI and address"
+    "en": "You have provided both Carrier name and Carrier EORI. Only declare either the EORI or the full name and address of carrier not both. EORI should be declared when known",
+    "cy": "You have provided both Carrier name and Carrier EORI. Only declare either the EORI or the full name and address of carrier not both. EORI should be declared when known."
   },
   {
     "code": "CDS12087",
-    "en": "Relation Error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item",
-    "cy": "Relation Error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item"
+    "en": "You have declared your additional fiscal party VAT number at both header and item level. It should only be declared at either item or header level. Or you have declared procedure code 1042 and not declared an additional fiscal references ID",
+    "cy": "You have declared your additional fiscal party VAT number at both header and item level. It should only be declared at either item or header level. Or you have declared procedure code 1042 and not declared an additional fiscal references ID."
   },
   {
     "code": "CDS12088",
-    "en": "You cannot enter both the representative's EORI and address",
-    "cy": "You cannot enter both the representative's EORI and address"
+    "en": "To correct this error, complete the EORI in data element 3/19, or the name and address in 3/20, even if they are your own details as the declarant and you are the direct representative",
+    "cy": "To correct this error, complete the EORI in data element 3/19, or the name and address in 3/20, even if they are your own details as the declarant and you are the direct representative."
   },
   {
     "code": "CDS12089",
-    "en": "Relation error: Consignee Party Name (D.E.3/9) must be supplied at either header  or item level",
-    "cy": "Relation error: Consignee Party Name (D.E.3/9) must be supplied at either header  or item level"
+    "en": "Consigneee party name and address must be declared at either header or item level on a C21e unless the procedure code is 0019",
+    "cy": "Consigneee party name and address must be declared at either header or item level on a C21e unless the procedure code is 0019."
   },
   {
     "code": "CDS12090",
-    "en": "Relation Error: Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32) must be supplied for the 17X Additional Procedure Code at either header or item level",
-    "cy": "Relation Error: Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32) must be supplied for the 17X Additional Procedure Code at either header or item level"
+    "en": "When declaring additional procedure Code 17X on a C21e clearance request, the carrier anme and address or the carrier EORI must be declared at header level",
+    "cy": "When declaring additional procedure Code 17X on a C21e clearance request, the carrier anme and address or the carrier EORI must be declared at header level."
   },
   {
     "code": "CDS12091",
-    "en": "Consignee and exporter cannot be the same",
-    "cy": "Consignee and exporter cannot be the same"
+    "en": "Consignee (receiver of goods) and exporter cannot have the same EORI number",
+    "cy": "Consignee (receiver of goods) and exporter cannot have the same EORI number."
   },
   {
     "code": "CDS12092",
-    "en": "Relation Error: Seller (D.E. 3/25) & Exporter (D.E. 3/1) must not be the same Party",
-    "cy": "Relation Error: Seller (D.E. 3/25) & Exporter (D.E. 3/1) must not be the same Party"
+    "en": "You have declared the same party for seller (data element 3/25) and exporter (data element 3/1).\n\nThe seller details are only required where the seller is a different party to the exporter.\n\nWhere the seller is a different party to the exporter and holds a recognised EORI number, enter the seller’s EORI number in data element 3/25",
+    "cy": "You have declared the same party for seller (data element 3/25) and exporter (data element 3/1).\n\nThe seller details are only required where the seller is a different party to the exporter.\n\nWhere the seller is a different party to the exporter and holds a recognised EORI number, enter the seller’s EORI number in data element 3/25."
   },
   {
     "code": "CDS12095",
-    "en": "Country of dispatch needs to be a third country when using this procedure code",
-    "cy": "Country of dispatch needs to be a third country when using this procedure code"
+    "en": "You have used an additional procedure combination (data element 1/11) incorrectly. Additional procedure codes 1IL and 1LV can only be used for goods dispatched/exported from a third country",
+    "cy": "You have used an additional procedure combination (data element 1/11) incorrectly. Additional procedure codes 1IL and 1LV can only be used for goods dispatched/exported from a third country."
   },
   {
     "code": "CDS12096",
-    "en": "Relation Error: Provided Authorisation Type (D.E. 3/39) requires specific document in Additional Documents",
-    "cy": "Relation Error: Provided Authorisation Type (D.E. 3/39) requires specific document in Additional Documents"
+    "en": "When declaring any of the authorisation types CGU, EUS, IPO or TEA in data element 3/39, it is necessary to declare document code C505 (Customs Comprehensive Guarantee) in DE 2/3. It may be necessary to declare C505 together with a waiver status code such as XW",
+    "cy": "When declaring any of the authorisation types CGU, EUS, IPO or TEA in data element 3/39, it is necessary to declare document code C505 (Customs Comprehensive Guarantee) in DE 2/3. It may be necessary to declare C505 together with a waiver status code such as XW."
   },
   {
     "code": "CDS12097",
-    "en": "Country of destination is not available with the procedure code provided",
-    "cy": "Country of destination is not available with the procedure code provided"
+    "en": "When declaring Additional Procedure Code F75, the destination country must be a Special Fiscal Territory or other territory with which the EU has formed a Customs Union",
+    "cy": "When declaring Additional Procedure Code F75, the destination country must be a Special Fiscal Territory or other territory with which the EU has formed a Customs Union."
   },
   {
     "code": "CDS12098",
-    "en": "Relation Error: Combination of Means of Transport (D.E. 7/14) and Delivery Terms in D.E. 4/1 is not allowed",
-    "cy": "Relation Error: Combination of Means of Transport (D.E. 7/14) and Delivery Terms in D.E. 4/1 is not allowed"
+    "en": "You have declared a means of transport code (data element 7/4) that is not compatible with the delivery terms (data element 4/1)",
+    "cy": "You have declared a means of transport code (data element 7/4) that is not compatible with the delivery terms (data element 4/1)."
   },
   {
     "code": "CDS12099",
-    "en": "Invalid goods location code",
-    "cy": "Invalid goods location code"
+    "en": "Check the codes listed in Appendix 16 and in the supplements to Tariff, where new goods location codes may be listed",
+    "cy": "Check the codes listed in Appendix 16 and in the supplements to Tariff, where new goods location codes may be listed."
   },
   {
     "code": "CDS12100",
-    "en": "Relation Error: Combination of Delivery terms (D.E. 4/1) and Addition/Deduction code (D.E. 4/9) is not allowed",
-    "cy": "Relation Error: Combination of Delivery terms (D.E. 4/1) and Addition/Deduction code (D.E. 4/9) is not allowed"
+    "en": "You have declared Delivery Terms (data element 4/1) that are not compatible with the Addition/Deduction code (data element 4/9).\n\nThe combination of Delivery Terms and Addition/Deduction Code must be compatible",
+    "cy": "You have declared Delivery Terms (data element 4/1) that are not compatible with the Addition/Deduction code (data element 4/9).\n\nThe combination of Delivery Terms and Addition/Deduction Code must be compatible."
   },
   {
     "code": "CDS12101",
-    "en": "Relation Error: Declared Tax Type (D.E. 4/3) is not allowed in combination with the Additional Procedure",
-    "cy": "Relation Error: Declared Tax Type (D.E. 4/3) is not allowed in combination with the Additional Procedure"
+    "en": "You have declared an additional procedure code that is not permitted to be combined with the declared tax type (data element 4/3). For example, additional procedure codes 32D, 31D, 1IL and 1LV cannot be used with an excise tax type",
+    "cy": "You have declared an additional procedure code that is not permitted to be combined with the declared tax type (data element 4/3). For example, additional procedure codes 32D, 31D, 1IL and 1LV cannot be used with an excise tax type."
   },
   {
     "code": "CDS12102",
-    "en": "Relation Error: Deferred Payment Method in D.E. 4/8 is Required with the duty deferment account number provided in D.E. 2/6",
-    "cy": "Relation Error: Deferred Payment Method in D.E. 4/8 is Required with the duty deferment account number provided in D.E. 2/6"
+    "en": "You have not declared the deferred payment method which is required for the duty deferment account number declared",
+    "cy": "You have not declared the deferred payment method which is required for the duty deferment account number declared."
   },
   {
     "code": "CDS12103",
-    "en": "Relation Error: Valid delivery destination is required in D.E. 5/8 for a CO declaration",
-    "cy": "Relation Error: Valid delivery destination is required in D.E. 5/8 for a CO declaration"
+    "en": "When declaring Declaration Type code CO in data element 1/1, the destination country must be a Special Fiscal Territory or other territory with which the EU has formed a Customs Union",
+    "cy": "When declaring Declaration Type code CO in data element 1/1, the destination country must be a Special Fiscal Territory or other territory with which the EU has formed a Customs Union."
   },
   {
     "code": "CDS12104",
-    "en": "Valid import procedure code is required",
-    "cy": "Valid import procedure code is required"
+    "en": "For declaration type code IM, the procedure code must be a permitted import procedure code. Check Appendix 1 of the Import Tariff and the Inventory Import Tariff",
+    "cy": "For declaration type code IM, the procedure code must be a permitted import procedure code. Check Appendix 1 of the Import Tariff and the Inventory Import Tariff."
   },
   {
     "code": "CDS12105",
-    "en": "Relation Error: Addition/Deduction code (D.E. 4/9) not allowed with the declared Additional Procedure Code (D.E.1/11)",
-    "cy": "Relation Error: Addition/Deduction code (D.E. 4/9) not allowed with the declared Additional Procedure Code (D.E.1/11)"
+    "en": "When using additional procedure code E01 (simplified procedure value) or E02 (standard import value), data element 4/9 additions and deductions, must not be declared.  See Appendix 1 for more information",
+    "cy": "When using additional procedure code E01 (simplified procedure value) or E02 (standard import value), data element 4/9 additions and deductions, must not be declared.  See Appendix 1 for more information."
   },
   {
     "code": "CDS12106",
-    "en": "Relation Error: Appropriate Additional Information Code must be provided in D.E. 2/2 with Additional Procedure Code 1CL",
-    "cy": "Relation Error: Appropriate Additional Information Code must be provided in D.E. 2/2 with Additional Procedure Code 1CL"
+    "en": "An appropriate Additional Information (AI) code is required with the additional procedure code 1CL",
+    "cy": "An appropriate Additional Information (AI) code is required with the additional procedure code 1CL."
   },
   {
     "code": "CDS12107",
-    "en": "Relation Error: Conditions not met for the requested simplification. Please see CDS Trade Tariff Vol.3 Appendix 4",
-    "cy": "Relation Error: Conditions not met for the requested simplification. Please see CDS Trade Tariff Vol.3 Appendix 4"
+    "en": "When using Additional Information code 00600, data element 2/3 must not include any licence document codes, even if claiming a waiver/exemption",
+    "cy": "When using Additional Information code 00600, data element 2/3 must not include any licence document codes, even if claiming a waiver/exemption."
   },
   {
     "code": "CDS12108",
-    "en": "An export declaration needs a DUCR",
-    "cy": "An export declaration needs a DUCR"
+    "en": "Declaration Unique Consignment Reference (DUCR) is mandatory at header level on an export declaration",
+    "cy": "Declaration Unique Consignment Reference (DUCR) is mandatory at header level on an export declaration."
   },
   {
     "code": "CDS12109",
-    "en": "Agreed fixed rate of exchange needs to be in GBP",
-    "cy": "Agreed fixed rate of exchange needs to be in GBP"
+    "en": "You declared a fixed rate of exchange meaning a contractually agreed rate of exchange was used. The invoice value (data element 4/14) on an import declaration or the total amount invoiced (data element 4/11) on an export declaration, needs to be declared in GBP, converted using the agreed rate",
+    "cy": "You declared a fixed rate of exchange meaning a contractually agreed rate of exchange was used. The invoice value (data element 4/14) on an import declaration or the total amount invoiced (data element 4/11) on an export declaration, needs to be declared in GBP, converted using the agreed rate."
   },
   {
     "code": "CDS12110",
-    "en": "Relation Error: A Quota Order number (D.E. 8/1) cannot be provided in combination with this Preference Code (D.E. 4/17)",
-    "cy": "Relation Error: A Quota Order number (D.E. 8/1) cannot be provided in combination with this Preference Code (D.E. 4/17)"
+    "en": "The Preference Code declared (data element 4/17) is incompatible with claiming Quota (data element 8/1)",
+    "cy": "The Preference Code declared (data element 4/17) is incompatible with claiming Quota (data element 8/1)."
   },
   {
     "code": "CDS12111",
-    "en": "The declared tax amount must be in GBP",
-    "cy": "The declared tax amount must be in GBP"
+    "en": "You have declared the tax amount (data element 4/6 or 4/7) in the incorrect currency. Tax amounts should always be declared with the sterling GBP currency code",
+    "cy": "You have declared the tax amount (data element 4/6 or 4/7) in the incorrect currency. Tax amounts should always be declared with the sterling GBP currency code."
   },
   {
     "code": "CDS12112",
-    "en": "Relation Error: Airfreight related additions/deduction code must be provided in DE 4/9 when an airport place of loading is provided in DE 5/21",
-    "cy": "Relation Error: Airfreight related additions/deduction code must be provided in DE 4/9 when an airport place of loading is provided in DE 5/21"
+    "en": "You have not provided the mandatory airfreight related addition/deduction code (data element 4/9) for the declared airport place of loading (data element 5/21)",
+    "cy": "You have not provided the mandatory airfreight related addition/deduction code (data element 4/9) for the declared airport place of loading (data element 5/21)."
   },
   {
     "code": "CDS12113",
-    "en": "Relation Error: Authorisation holder CGU requires a guarantee type of 0 or 1 to be provided in D.E.8/2",
-    "cy": "Relation Error: Authorisation holder CGU requires a guarantee type of 0 or 1 to be provided in D.E.8/2"
+    "en": "Holder of authorisation type CGU has been declared and so guarantee type in data element 8/2 must be 0 (Guarantee Waiver) or 1 (Comprehensive Guarantee)",
+    "cy": "Holder of authorisation type CGU has been declared and so guarantee type in data element 8/2 must be 0 (Guarantee Waiver) or 1 (Comprehensive Guarantee)."
   },
   {
     "code": "CDS12114",
-    "en": "Relation Error: Value declared must be less than 100 as D.E. 4/9 Additions/Deductions code is a percentage",
-    "cy": "Relation Error: Value declared must be less than 100 as D.E. 4/9 Additions/Deductions code is a percentage"
+    "en": "The value you declared may not be less than 100%. The Additions/Deductions code is a percentage and so the value provided in data element 4/9 must be less than 100",
+    "cy": "The value you declared may not be less than 100%. The Additions/Deductions code is a percentage and so the value provided in data element 4/9 must be less than 100."
   },
   {
     "code": "CDS12115",
-    "en": "The declared procedure code requires additional document 185C",
-    "cy": "The declared procedure code requires additional document 185C"
+    "en": "You have not have declared document code 185C (Claim to Visiting Forces Relief for goods removed from a customs warehouse), required for the additional procedure code entered",
+    "cy": "You have not have declared document code 185C (Claim to Visiting Forces Relief for goods removed from a customs warehouse), required for the additional procedure code entered."
   },
   {
     "code": "CDS12117",
-    "en": "Relation Error: Importer (D.E. 3/16) & Buyer (D.E. 3/27) must not be the same party",
-    "cy": "Relation Error: Importer (D.E. 3/16) & Buyer (D.E. 3/27) must not be the same party"
+    "en": "You have declared the same EORI for the Importer and Buyer on an import declaration",
+    "cy": "You have declared the same EORI for the Importer and Buyer on an import declaration."
   },
   {
     "code": "CDS12118",
-    "en": "Relation Error: Consignor (D.E.3/1) information must be supplied for the 17X Additional Procedure Code at either header or item level and cannot be declared at both levels",
-    "cy": "Relation Error: Consignor (D.E.3/1) information must be supplied for the 17X Additional Procedure Code at either header or item level and cannot be declared at both levels"
+    "en": "You have declared consignor details for the additional procedure code 17X at both header and item level. It should only be declared at either item or header level",
+    "cy": "You have declared consignor details for the additional procedure code 17X at both header and item level. It should only be declared at either item or header level."
   },
   {
     "code": "CDS12119",
-    "en": "The declared additional document is not valid with the declared procedure code",
-    "cy": "The declared additional document is not valid with the declared procedure code"
+    "en": "Additional document code, for example licence, exemption or authorisation number, is not allowed or must not be declared with other data in the declaration.\n\nExamples include C512 and C514 (SDP and EIDR authorisations) not permitted with certain procedure codes; licence document code restrictions with certain additional procedure codes, Special Procedure authorisations required with certain procedure combinations",
+    "cy": "Additional document code, for example licence, exemption or authorisation number, is not allowed or must not be declared with other data in the declaration.\n\nExamples include C512 and C514 (SDP and EIDR authorisations) not permitted with certain procedure codes; licence document code restrictions with certain additional procedure codes, Special Procedure authorisations required with certain procedure combinations."
   },
   {
     "code": "CDS12120",
-    "en": "Relation Error: The appropriate authorisation has not been declared for this Declaration Type (D.E. 1/2)",
-    "cy": "Relation Error: The appropriate authorisation has not been declared for this Declaration Type (D.E. 1/2)"
+    "en": "You may not have declared an authorisation required for this declaration type. If you have declared the correct authorisation, check the authorisation number declared on the 'Additional documentation' page.\n\nFor SDP declarations, you need document code C512 For EIDR declarations, you need document code C514 For submitting an arrived export declaration, data element 3/39 must include one of the authorisation type codes CSE or EXRR.\n\nYou may have declared an authorisation that has expired; or the reference number does not belong to the party on the declaration; or the reference number provided is not recognised",
+    "cy": "You may not have declared an authorisation required for this declaration type. If you have declared the correct authorisation, check the authorisation number declared on the 'Additional documentation' page.\n\nFor SDP declarations, you need document code C512 For EIDR declarations, you need document code C514 For submitting an arrived export declaration, data element 3/39 must include one of the authorisation type codes CSE or EXRR.\n\nYou may have declared an authorisation that has expired; or the reference number does not belong to the party on the declaration; or the reference number provided is not recognised."
   },
   {
     "code": "CDS12121",
-    "en": "Relation Error: This combination of Additional Information codes (D.E. 2/2) is not allowed",
-    "cy": "Relation Error: This combination of Additional Information codes (D.E. 2/2) is not allowed"
+    "en": "Additional Information codes declared together for one item are not compatible",
+    "cy": "Additional Information codes declared together for one item are not compatible."
   },
   {
     "code": "CDS12123",
-    "en": "Data Error: Value must be greater than 0",
-    "cy": "Data Error: Value must be greater than 0"
+    "en": "Invoice value declared in data element 4/14 must be greater than 0",
+    "cy": "Invoice value declared in data element 4/14 must be greater than 0."
   },
   {
     "code": "CDS12125",
-    "en": "DAN Error: Account number is not recognised; or Account is suspended or revoked; or Parties declared on the declaration do not have authority to use account number provided",
-    "cy": "DAN Error: Account number is not recognised; or Account is suspended or revoked; or Parties declared on the declaration do not have authority to use account number provided"
+    "en": "The deferment account number you have provided is not recognised or the account may be suspended/revoked or Parties declared on the declaration do not have authority to use account number provided.\n\nCheck the CDS financial dashboard/contact HMRC deferment department",
+    "cy": "The deferment account number you have provided is not recognised or the account may be suspended/revoked or Parties declared on the declaration do not have authority to use account number provided.\n\nCheck the CDS financial dashboard/contact HMRC deferment department."
   },
   {
     "code": "CDS12132",
-    "en": "DUCR format not valid",
-    "cy": "DUCR format not valid"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS12133",
-    "en": "MUCR format not valid",
-    "cy": "MUCR format not valid"
+    "en": "If the MUCR was given to you, check it is in a valid format. If you created it yourself, check the guidance on the correct format, given in the completion guide",
+    "cy": "If the MUCR was given to you, check it is in a valid format. If you created it yourself, check the guidance on the correct format, given in the completion guide."
   },
   {
     "code": "CDS12134",
-    "en": "DUCR and MUCR formats not valid",
-    "cy": "DUCR and MUCR formats not valid"
+    "en": "If the MUCR was given to you, check it is in a valid format. If you created it yourself, check the guidance on the correct format given in data element 2/1 in the completion guide.\n\nIf you have declared a previous declaration reference such as for an import, check the DUCR on the previous declaration",
+    "cy": "If the MUCR was given to you, check it is in a valid format. If you created it yourself, check the guidance on the correct format given in data element 2/1 in the completion guide.\n\nIf you have declared a previous declaration reference such as for an import, check the DUCR on the previous declaration."
   },
   {
     "code": "CDS12135",
-    "en": "Relation Error: Country of Export (DE 5/14) must be supplied at either header or item level",
-    "cy": "Relation Error: Country of Export (DE 5/14) must be supplied at either header or item level"
+    "en": "Country of export is mandatory at header or item level when declaring additional procedure code 1CD, 1CG, 2CG or 2CD. On a C21I with procedure code 0002, 0003, 0004, 0005, 0006 or 0007",
+    "cy": "Country of export is mandatory at header or item level when declaring additional procedure code 1CD, 1CG, 2CG or 2CD. On a C21I with procedure code 0002, 0003, 0004, 0005, 0006 or 0007."
   },
   {
     "code": "CDS12136",
-    "en": "Relation Error: Provided Additional Procedure Code (D.E. 1/11) necessitates indirect representation (D.E. 3/21) for the following declaration types: C F Y J K Z",
-    "cy": "Relation Error: Provided Additional Procedure Code (D.E. 1/11) necessitates indirect representation (D.E. 3/21) for the following declaration types: C F Y J K Z"
+    "en": "The additional procedure code declared requires this declaration to have indirect representation (data element 3/21).\n\nThe representative status declared in data element 3/21 would show Indirect, code ‘3’. The representative status declared in data element 3/21 indicates the relationship between the representative and the importer, not the sub-agent and any other party",
+    "cy": "The additional procedure code declared requires this declaration to have indirect representation (data element 3/21).\n\nThe representative status declared in data element 3/21 would show Indirect, code ‘3’. The representative status declared in data element 3/21 indicates the relationship between the representative and the importer, not the sub-agent and any other party."
   },
   {
     "code": "CDS12137",
-    "en": "Uniqueness Error: Only a single MUCR can be declared in D.E. 2/1 at Header level on an imports declaration",
-    "cy": "Uniqueness Error: Only a single MUCR can be declared in D.E. 2/1 at Header level on an imports declaration"
+    "en": "You have declared more than one MUCR at header level on your import declaration.",
+    "cy": "You have declared more than one MUCR at header level on your import declaration."
   },
   {
     "code": "CDS12138",
-    "en": "Relation Error: Provided Additional Procedure Code (D.E. 1/11) cannot be used on a Type J/K (EIDR) declaration",
-    "cy": "Relation Error: Provided Additional Procedure Code (D.E. 1/11) cannot be used on a Type J/K (EIDR) declaration"
+    "en": "These additional procedure codes cannot be used with an EIDR C21 declaration.\n\n1CD - Controlled drugs using Simplified Procedures\n1CG - Controlled Goods using Simplified Procedures.",
+    "cy": "These additional procedure codes cannot be used with an EIDR C21 declaration.\n\n1CD - Controlled drugs using Simplified Procedures\n1CG - Controlled Goods using Simplified Procedures."
   },
   {
     "code": "CDS12139",
-    "en": "Relation Error: Additional Information Code OVR01 must be provided in D.E. 2/2 when entering a manual tax amount in D.E. 4/6 or D.E. 4/7",
-    "cy": "Relation Error: Additional Information Code OVR01 must be provided in D.E. 2/2 when entering a manual tax amount in D.E. 4/6 or D.E. 4/7"
+    "en": "You have not provided the Additional Information (AI) Code OVR01 required for the declared manual tax amount in data element 4/6 or 4/7",
+    "cy": "You have not provided the Additional Information (AI) Code OVR01 required for the declared manual tax amount in data element 4/6 or 4/7."
   },
   {
     "code": "CDS12141",
-    "en": "Relation Error: Incompatible goods movements declared. AI codes 'NIDOM' and 'NIIMP' must not be entered together on the same declaration",
-    "cy": "Relation Error: Incompatible goods movements declared. AI codes 'NIDOM' and 'NIIMP' must not be entered together on the same declaration"
+    "en": "You have declared a combination of Additional Information Codes 'NIDOM' and 'NIIMP' that are not permitted to be declared together on the same declaration",
+    "cy": "You have declared a combination of Additional Information Codes 'NIDOM' and 'NIIMP' that are not permitted to be declared together on the same declaration."
   },
   {
     "code": "CDS12143",
-    "en": "Incompatible goods movements declared. AI codes 'NIREM' and 'NIAID' must not be entered together on the same goods item on a declaration",
-    "cy": "Incompatible goods movements declared. AI codes 'NIREM' and 'NIAID' must not be entered together on the same goods item on a declaration"
+    "en": "You have declared a combination of Additional Information Codes 'NIREM' and 'NIAID' that are not permitted to be declared together on the same declaration",
+    "cy": "You have declared a combination of Additional Information Codes 'NIREM' and 'NIAID' that are not permitted to be declared together on the same declaration."
   },
   {
     "code": "CDS12144",
-    "en": "Relation Error: EU Quota order number beginning '09' must not be entered in D.E. 8/1 for any imports into the UK",
-    "cy": "Relation Error: EU Quota order number beginning '09' must not be entered in D.E. 8/1 for any imports into the UK"
+    "en": "You have entered the incorrect EU Quota order number beginning with '09' which is not permitted for imports into the UK",
+    "cy": "You have entered the incorrect EU Quota order number beginning with '09' which is not permitted for imports into the UK."
   },
   {
     "code": "CDS12145",
-    "en": "Relation Error: When declaring the Requested Procedure code 42 in D.E. 1/10, the Additional Information code NIIMP must be declared in D.E. 2/2",
-    "cy": "Relation Error: When declaring the Requested Procedure code 42 in D.E. 1/10, the Additional Information code NIIMP must be declared in D.E. 2/2"
+    "en": "For the Requested Procedure code 42 in data element 1/10 the Additional Information code, NIIMP, must be declared in data element 2/2",
+    "cy": "For the Requested Procedure code 42 in data element 1/10 the Additional Information code, NIIMP, must be declared in data element 2/2."
   },
   {
     "code": "CDS12146",
-    "en": "The Requested Procedure code 42 (D.E. 1/10) and Additional Information code OSR42 (D.E. 2/2) must be entered together on the same goods item",
-    "cy": "The Requested Procedure code 42 (D.E. 1/10) and Additional Information code OSR42 (D.E. 2/2) must be entered together on the same goods item"
+    "en": "You have not entered either the Requested Procedure code 42 (DE 1/10) or Additional Information code OSR42 (DE 2/2) on the same goods item",
+    "cy": "You have not entered either the Requested Procedure code 42 (DE 1/10) or Additional Information code OSR42 (DE 2/2) on the same goods item."
   },
   {
     "code": "CDS12147",
-    "en": "Relation Error: UVC01 declared on an original declaration. UVC01 can only be declared on an amendment request for a declaration",
-    "cy": "Relation Error: UVC01 declared on an original declaration. UVC01 can only be declared on an amendment request for a declaration"
+    "en": "AI code UVC01 may only be used on an amendment",
+    "cy": "AI code UVC01 may only be used on an amendment."
   },
   {
     "code": "CDS12148",
-    "en": "Relation Error: Additional Document C506 requires deferred payment method",
-    "cy": "Relation Error: Additional Document C506 requires deferred payment method"
+    "en": "You have not provided a deferred payment method for the declared Additional Document C506",
+    "cy": "You have not provided a deferred payment method for the declared Additional Document C506."
   },
   {
     "code": "CDS12149",
-    "en": "Relation Error: Additional Procedure code 000 can not be declared with any other Additional Procedure Code",
-    "cy": "Relation Error: Additional Procedure code 000 can not be declared with any other Additional Procedure Code"
+    "en": "Additional procedure code 000 can not be declared with any other additional procedure code",
+    "cy": "Additional procedure code 000 can not be declared with any other additional procedure code."
   },
   {
     "code": "CDS12150",
-    "en": "Authorisation Error: Authorisation reference number does not belong to the party on the declaration",
-    "cy": "Authorisation Error: Authorisation reference number does not belong to the party on the declaration"
+    "en": "An authorisation number, such as for a Special Procedure, SDP, EIDR, CCG, national authorisation, is either not valid or is not authorised for use by the party given on the declaration",
+    "cy": "An authorisation number, such as for a Special Procedure, SDP, EIDR, CCG, national authorisation, is either not valid or is not authorised for use by the party given on the declaration."
   },
   {
     "code": "CDS12151",
-    "en": "Relation Error: When a licence is declared, ID must be unique from all other additional documents (DE 2/3) in the same goods item",
-    "cy": "Relation Error: When a licence is declared, ID must be unique from all other additional documents (DE 2/3) in the same goods item"
+    "en": "Licence ID cannot be declared more than once on the same item.\nAdditional procedure codes cannot be repeated on the same item.\nThe same origin sub-role code cannot be repeated on the same item.\nARC number cannot be used on multiple export declarations.\nAddition and Deduction codes cannot be repeated at header level or within a single item.\nGoods item number cannot be repeated on the declaration",
+    "cy": "Licence ID cannot be declared more than once on the same item.\nAdditional procedure codes cannot be repeated on the same item.\nThe same origin sub-role code cannot be repeated on the same item.\nARC number cannot be used on multiple export declarations.\nAddition and Deduction codes cannot be repeated at header level or within a single item.\nGoods item number cannot be repeated on the declaration."
   },
   {
     "code": "CDS13000",
-    "en": "Credibility check: incredible value found",
-    "cy": "Credibility check: incredible value found"
+    "en": "",
+    "cy": ""
+  },
+  {
+    "code": "CDS14000",
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS19999",
-    "en": "Additional errors found",
-    "cy": "Additional errors found"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS20001",
-    "en": "Related movement not (yet) found",
-    "cy": "Related movement not (yet) found"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS20002",
-    "en": "Related movement does not match declaration",
-    "cy": "Related movement does not match declaration"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS20003",
-    "en": "Related movement not found",
-    "cy": "Related movement not found"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS40007",
-    "en": "Duplicate value",
-    "cy": "Duplicate value"
+    "en": "For example, the same Additional TARIC or National additional code has been declared twice for one item",
+    "cy": "For example, the same Additional TARIC or National additional code has been declared twice for one item."
   },
   {
     "code": "CDS40010",
-    "en": "Data element value does not apply",
-    "cy": "Data element value does not apply"
+    "en": "This could be a formatting error or a code incorrectly completed",
+    "cy": "This could be a formatting error or a code incorrectly completed."
   },
   {
     "code": "CDS40011",
-    "en": "Missing data element value",
-    "cy": "Missing data element value"
+    "en": "A value that is required by the commodity code has not been completed. For example, supplementary unit. You need to check the 'Measures' column for the commodity code on the Trade Tariff",
+    "cy": "A value that is required by the commodity code has not been completed. For example, supplementary unit. You need to check the 'Measures' column for the commodity code on the Trade Tariff."
   },
   {
     "code": "CDS40013",
-    "en": "Data element contains invalid value",
-    "cy": "Data element contains invalid value"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS40044",
-    "en": "Unused Document",
-    "cy": "Unused Document"
+    "en": "You need to check the 'Conditions' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in Appendix 5A",
+    "cy": "You need to check the 'Conditions' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in Appendix 5A."
   },
   {
     "code": "CDS40045",
-    "en": "Missing document/customs-declare-exports/declaration/items/[ITEM_ID]/add-document",
-    "cy": "Missing document/customs-declare-exports/declaration/items/[ITEM_ID]/add-document"
+    "en": "The licence or exemption required for these goods is missing. You need to check the 'Conditions' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in Appendix 5A",
+    "cy": "The licence or exemption required for these goods is missing. You need to check the 'Conditions' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in Appendix 5A."
   },
   {
     "code": "CDS40047",
-    "en": "Prohibition",
-    "cy": "Prohibition"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS40049",
-    "en": "Quota exhausted",
-    "cy": "Quota exhausted"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS40053",
-    "en": "Quota suspended",
-    "cy": "Quota suspended"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS40059",
-    "en": "Incomplete measure or commodity code",
-    "cy": "Incomplete measure or commodity code"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS40066",
-    "en": "Tariff condition not fulfilled",
-    "cy": "Tariff condition not fulfilled"
+    "en": "Value is not allowed to be used for the given commodity code. You need to check the 'Measures' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in Appendix 5A",
+    "cy": "Value is not allowed to be used for the given commodity code. You need to check the 'Measures' box for the commodity code on the Trade Tariff. If you do not hold any licence, you must decide if you can declare a waiver (usually a Y-code). Instructions for how to use the code are given in Appendix 5A."
   },
   {
     "code": "CDS40068",
-    "en": "Additional Excise code is missing",
-    "cy": "Additional Excise code is missing"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS40069",
-    "en": "Quota closed",
-    "cy": "Quota closed"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS40070",
-    "en": "When AI code 'NIIMP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
-    "cy": "When AI code 'NIIMP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration"
+    "en": "Additional information code NIIMP when used on one item must be entered on all items",
+    "cy": "Additional information code NIIMP when used on one item must be entered on all items."
   },
   {
     "code": "CDS40071",
-    "en": "When AI code 'NIDOM' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
-    "cy": "When AI code 'NIDOM' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration"
+    "en": "Additional information code NIDOM when used on one item must be entered on all items",
+    "cy": "Additional information code NIDOM when used on one item must be entered on all items."
   },
   {
     "code": "CDS40072",
-    "en": "When AI code 'NIEXP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration",
-    "cy": "When AI code 'NIEXP' is entered at item level in D.E. 2/2, it must be declared on all goods items in the declaration"
+    "en": "Additional information code NIEXP when used on one item must be entered on all items",
+    "cy": "Additional information code NIEXP when used on one item must be entered on all items."
   },
   {
     "code": "CDS40073",
-    "en": "When de-risking AI code 'NIREM' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item",
-    "cy": "When de-risking AI code 'NIREM' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item"
+    "en": "NIREM additional information (AI) code may not be declared in isolation; NIDOM or NIIMP must also be declared on the same item",
+    "cy": "NIREM additional information (AI) code may not be declared in isolation; NIDOM or NIIMP must also be declared on the same item."
   },
   {
     "code": "CDS40074",
-    "en": "When subsidy AI code 'NIAID' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item",
-    "cy": "When subsidy AI code 'NIAID' is entered at item level in D.E. 2/2, either 'NIIMP' or 'NIDOM' AI codes must also be entered at item level on the same goods item"
+    "en": "You have not entered either 'NIIMP' or 'NIDOM' AI codes when you declared subsidy AI code 'NIAID'. Either of these codes are required to be entered at item level on the same good item",
+    "cy": "You have not entered either 'NIIMP' or 'NIDOM' AI codes when you declared subsidy AI code 'NIAID'. Either of these codes are required to be entered at item level on the same good item."
   },
   {
     "code": "CDS49999",
-    "en": "Unknown error result",
-    "cy": "Unknown error result"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS50000",
-    "en": "Response from ALVS is not release",
-    "cy": "Response from ALVS is not release"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS50001",
-    "en": "Invalid format of DUCR/MUCR",
-    "cy": "Invalid format of DUCR/MUCR"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS50003",
-    "en": "UCR is not at the top of its' consolidation",
-    "cy": "UCR is not at the top of its' consolidation"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS50008",
-    "en": "UCR is not at the top of its' consolidation",
-    "cy": "UCR is not at the top of its' consolidation"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS50015",
-    "en": "Declaration unable to proceed",
-    "cy": "Declaration unable to proceed"
+    "en": "Declaration is cancelled/terminated/invalidated/handled externally/rejected (upon arrival)",
+    "cy": "Declaration is cancelled/terminated/invalidated/handled externally/rejected (upon arrival)."
   },
   {
     "code": "CDS50027",
-    "en": "Role/location authorisation failed",
-    "cy": "Role/location authorisation failed"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS50028",
-    "en": "Enter a valid goods location code",
-    "cy": "Enter a valid goods location code"
+    "en": "The codes declared in the goods location code field must be selected from the code lists shown in Appendix 16",
+    "cy": "The codes declared in the goods location code field must be selected from the code lists shown in Appendix 16."
   },
   {
     "code": "CDS50031",
-    "en": "Request has been received after a successful RET",
-    "cy": "Request has been received after a successful RET"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS70711",
-    "en": "Licence Error: Electronic licence does not exist",
-    "cy": "Licence Error: Electronic licence does not exist"
+    "en": "Electronic licence does not exist",
+    "cy": "Electronic licence does not exist."
   },
   {
     "code": "CDS70719",
-    "en": "Licence Error: Electronic licence quoted although Document Status Code indicated paper licence",
-    "cy": "Licence Error: Electronic licence quoted although Document Status Code indicated paper licence"
+    "en": "Electronic licence quoted but document status code indicates paper licence. Check the document status code",
+    "cy": "Electronic licence quoted but document status code indicates paper licence. Check the document status code."
   },
   {
     "code": "CDS70724",
-    "en": "Licence Error: Licence is not valid",
-    "cy": "Licence Error: Licence is not valid"
+    "en": "This could be because:\n\nlicence does not match the commodity code\nlicensing authority declared is incorrect\nlicence is out of date licence allows insufficient quantity\nlicence reference number declared is incorrect\nlicence does not belong to the importer/ exporter declared\nlicence is not valid for the country of origin/ dispatch/ destination\nlicence does not match the DUCR declared in DE 2/1\n\nIf still stuck, contact the licensing authority",
+    "cy": "This could be because:\n\nlicence does not match the commodity code\nlicensing authority declared is incorrect\nlicence is out of date licence allows insufficient quantity\nlicence reference number declared is incorrect\nlicence does not belong to the importer/ exporter declared\nlicence is not valid for the country of origin/ dispatch/ destination\nlicence does not match the DUCR declared in DE 2/1\n\nIf still stuck, contact the licensing authority."
   },
   {
     "code": "CDS70739",
-    "en": "Licence Error: An Import licence cannot be used on an Export declaration",
-    "cy": "Licence Error: An Import licence cannot be used on an Export declaration"
+    "en": "Import licence cannot be used on an export declaration",
+    "cy": "Import licence cannot be used on an export declaration."
   },
   {
     "code": "CDS70740",
-    "en": "Licence Error: Importer/Exporter is not the owner of the licence",
-    "cy": "Licence Error: Importer/Exporter is not the owner of the licence"
+    "en": "Importer/Exporter is not the owner of the licence and/or licence is not valid",
+    "cy": "Importer/Exporter is not the owner of the licence and/or licence is not valid."
   },
   {
     "code": "CDS70758",
-    "en": "Licence is not valid for declared Country of Destination",
-    "cy": "Licence is not valid for declared Country of Destination"
+    "en": "Licence is not valid for declared country of destination",
+    "cy": "Licence is not valid for declared country of destination."
   },
   {
     "code": "CDS70760",
-    "en": "Licence Error: Licence is not valid for the declared goods item",
-    "cy": "Licence Error: Licence is not valid for the declared goods item"
+    "en": "This could be because:\n\nlicence does not match the commodity code licensing authority declared is incorrect\nlicence is out of date licence allows insufficient quantity\nlicence reference number declared is incorrect\nlicence does not belong to the importer/ exporter declared\nlicence is not valid for the country of origin/ dispatch/ destination\nlicence does not match the DUCR declared in DE 2/1\n\nIf still stuck, contact the issuing authority",
+    "cy": "This could be because:\n\nlicence does not match the commodity code licensing authority declared is incorrect\nlicence is out of date licence allows insufficient quantity\nlicence reference number declared is incorrect\nlicence does not belong to the importer/ exporter declared\nlicence is not valid for the country of origin/ dispatch/ destination\nlicence does not match the DUCR declared in DE 2/1\n\nIf still stuck, contact the issuing authority."
   },
   {
     "code": "CDS70761",
-    "en": "Licence has insufficient quantity remaining to meet claim",
-    "cy": "Licence has insufficient quantity remaining to meet claim"
+    "en": "Licence does not cover the quantity declared",
+    "cy": "Licence does not cover the quantity declared."
   },
   {
     "code": "CDS70791",
-    "en": "Licence Error: Licence line number does not exist on the licence",
-    "cy": "Licence Error: Licence line number does not exist on the licence"
+    "en": "Line number given on licence is not valid",
+    "cy": "Line number given on licence is not valid."
   },
   {
     "code": "CDS71115",
-    "en": "Licence Error: An Export licence cannot be used on an Import declaration",
-    "cy": "Licence Error: An Export licence cannot be used on an Import declaration"
+    "en": "Export licence cannot be used on an import declaration",
+    "cy": "Export licence cannot be used on an import declaration."
   },
   {
     "code": "CDS71200",
-    "en": "Uniqueness Error: Document Codes with identical IDs are not permitted on a single goods item",
-    "cy": "Uniqueness Error: Document Codes with identical IDs are not permitted on a single goods item"
+    "en": "You cannot use the same reference on a single goods item",
+    "cy": "You cannot use the same reference on a single goods item."
   },
   {
     "code": "CDS71201",
-    "en": "Licence Error: All instances of a licence for a declaration must use a consistent Document Status Code",
-    "cy": "Licence Error: All instances of a licence for a declaration must use a consistent Document Status Code"
+    "en": "All instances of a licence for a declaration must use a consistent Document Status Code",
+    "cy": "All instances of a licence for a declaration must use a consistent Document Status Code."
   },
   {
     "code": "CDS71203",
-    "en": "Licence Error: Document Status Code \"EL\" or \"EP\" is not allowed on a Single Use licence",
-    "cy": "Licence Error: Document Status Code \"EL\" or \"EP\" is not allowed on a Single Use licence"
+    "en": "Document status code \"EL\" or \"EP\" is not allowed on a single use licence.\nThe licence can only be used once so cannot be part used",
+    "cy": "Document status code \"EL\" or \"EP\" is not allowed on a single use licence.\nThe licence can only be used once so cannot be part used."
   },
   {
     "code": "CDS71204",
-    "en": "Licence is already surrendered",
-    "cy": "Licence is already surrendered"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS71206",
-    "en": "Licence is already exhausted",
-    "cy": "Licence is already exhausted"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS71216",
-    "en": "Transaction not permitted; Licence is inactive and is no longer available for use",
-    "cy": "Transaction not permitted; Licence is inactive and is no longer available for use"
+    "en": "Licence declared has been made inactive, check correct licence is declared or contact issuing authority",
+    "cy": "Licence declared has been made inactive, check correct licence is declared or contact issuing authority."
   },
   {
     "code": "CDS71236",
-    "en": "Licence not valid for declared Country of Origin",
-    "cy": "Licence not valid for declared Country of Origin"
+    "en": "You have declared an invalid Licence for the declared Country of Origin",
+    "cy": "You have declared an invalid Licence for the declared Country of Origin."
   },
   {
     "code": "CDS71252",
-    "en": "Licence not valid for declared Country of Dispatch",
-    "cy": "Licence not valid for declared Country of Dispatch"
+    "en": "Licence not valid for declared country of dispatch",
+    "cy": "Licence not valid for declared country of dispatch."
   },
   {
     "code": "CDS71262",
-    "en": "Licence Error: Document Status Code \"EA\" can only be declared on Type Y declarations",
-    "cy": "Licence Error: Document Status Code \"EA\" can only be declared on Type Y declarations"
+    "en": "Document Status Code \"EA\" can only be used on a supplementary declaration",
+    "cy": "Document Status Code \"EA\" can only be used on a supplementary declaration."
   },
   {
     "code": "CDS73329",
-    "en": "Licence Error: Licence cannot be declared on declaration category/declaration type combination",
-    "cy": "Licence Error: Licence cannot be declared on declaration category/declaration type combination"
+    "en": "A licence document code (for example X002, 9106) cannot be declared on this type of declaration, even if using a waiver/exemption document status code. If the goods are entitled to a waiver/exemption and there is a waiver document code which can be used in place of the licence document code (for example Y903, Y927), then this can be used instead. If there is no waiver document code that can be used then it may be necssary to use a standard declaration",
+    "cy": "A licence document code (for example X002, 9106) cannot be declared on this type of declaration, even if using a waiver/exemption document status code. If the goods are entitled to a waiver/exemption and there is a waiver document code which can be used in place of the licence document code (for example Y903, Y927), then this can be used instead. If there is no waiver document code that can be used then it may be necssary to use a standard declaration."
   },
   {
     "code": "CDS77000",
-    "en": "Obligation Error: ID must be provided for declared Document Code",
-    "cy": "Obligation Error: ID must be provided for declared Document Code"
+    "en": "Instructions for how to declare document codes are given in Appendix 5A",
+    "cy": "Instructions for how to declare document codes are given in Appendix 5A."
   },
   {
     "code": "CDS77001",
-    "en": "Quantity must be provided for Document Category",
-    "cy": "Quantity must be provided for Document Category"
+    "en": "In some cases, when you declare a document status code to indicate a waiver for a licence, you are still required to enter a '0' as the the quantity attributed to the licence. This will also require a measurement unit such as GBP",
+    "cy": "In some cases, when you declare a document status code to indicate a waiver for a licence, you are still required to enter a '0' as the the quantity attributed to the licence. This will also require a measurement unit such as GBP."
   },
   {
     "code": "CDS77002",
-    "en": "Obligation Error: Document Status Code must be provided for declared Document Code",
-    "cy": "Obligation Error: Document Status Code must be provided for declared Document Code"
+    "en": "Check appendix 5A for more information",
+    "cy": "Check appendix 5A for more information."
   },
   {
     "code": "CDS77003",
-    "en": "Licence Error: DUCR must be provided for an Import declaration with a Licence",
-    "cy": "Licence Error: DUCR must be provided for an Import declaration with a Licence"
+    "en": "You have not provided a DUCR - this is required at header level for an import declaration with a licence.",
+    "cy": "You have not provided a DUCR - this is required at header level for an import declaration with a licence."
   },
   {
     "code": "CDS77004",
-    "en": "Reservation could not be made",
-    "cy": "Reservation could not be made"
+    "en": "",
+    "cy": ""
   },
   {
     "code": "CDS77005",
-    "en": "Reason for waiver must be declared for Document Category",
-    "cy": "Reason for waiver must be declared for Document Category"
+    "en": "The Y series document code used requires a document reason. Check appendix 5A for the information required",
+    "cy": "The Y series document code used requires a document reason. Check appendix 5A for the information required."
   }
 ]
