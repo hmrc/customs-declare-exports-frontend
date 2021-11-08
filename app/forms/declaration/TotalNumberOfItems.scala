@@ -77,7 +77,7 @@ object TotalNumberOfItems extends DeclarationPage {
     ),
     totalAmountInvoicedCurrency ->
       AdditionalConstraintsMapping(
-        optional(text()),
+        optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
         Seq(
           ConditionalConstraint(
             isFieldEmpty(totalAmountInvoicedCurrency) and isFieldNotEmpty(totalAmountInvoiced),
