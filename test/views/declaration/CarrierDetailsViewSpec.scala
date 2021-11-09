@@ -163,7 +163,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
       }
 
       "display error for fullName too long" in {
-        assertIncorrectView(validAddress.copy(fullName = fieldWithLengthOver70), "fullName", "length")
+        assertIncorrectView(validAddress.copy(fullName = fieldWithLengthOver35), "fullName", "length")
       }
 
       "display error for empty addressLine" in {
@@ -175,7 +175,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
       }
 
       "display error for addressLine too long" in {
-        assertIncorrectView(validAddress.copy(addressLine = fieldWithLengthOver70), "addressLine", "length")
+        assertIncorrectView(validAddress.copy(addressLine = fieldWithLengthOver35), "addressLine", "length")
       }
 
       "display error for empty townOrCity" in {
