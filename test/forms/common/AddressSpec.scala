@@ -54,7 +54,7 @@ class AddressSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
       }
 
       "provided with input longer than 70 characters" in {
-        verifyError(buildAddressInputMap(fullName = fieldWithLengthOver70), "fullName", "length")
+        verifyError(buildAddressInputMap(fullName = fieldWithLengthOver35), "fullName", "length")
       }
 
       "contains non-allowed characters" in {
@@ -68,7 +68,7 @@ class AddressSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
       }
 
       "provided with input longer than 70 characters" in {
-        verifyError(buildAddressInputMap(addressLine = fieldWithLengthOver70), "addressLine", "length")
+        verifyError(buildAddressInputMap(addressLine = fieldWithLengthOver35), "addressLine", "length")
       }
 
       "contains non-allowed characters" in {
@@ -162,7 +162,7 @@ object AddressSpec {
 
   val illegalField = "abcd#@"
   val fieldWithLengthOver35 = TestHelper.createRandomAlphanumericString(36)
-  val fieldWithLengthOver70 = TestHelper.createRandomAlphanumericString(71)
+  val fieldWithLengthOver9 = TestHelper.createRandomAlphanumericString(10)
 
   val validAddress = Address(
     fullName = "Some Name,'-",
@@ -177,10 +177,10 @@ object AddressSpec {
 
   val addressWithIllegalLengths =
     Address(
-      fullName = fieldWithLengthOver70,
-      addressLine = fieldWithLengthOver70,
+      fullName = fieldWithLengthOver35,
+      addressLine = fieldWithLengthOver35,
       townOrCity = fieldWithLengthOver35,
-      postCode = fieldWithLengthOver35,
+      postCode = fieldWithLengthOver9,
       country = "United Kingdom"
     )
 
