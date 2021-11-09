@@ -66,7 +66,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
 
       val backButton = createView().getElementById("back-link")
 
-      backButton.text() mustBe messages(backToSelectionCaption)
+      backButton.text() mustBe messages(backCaption)
       backButton.getElementById("back-link") must haveHref(controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec))))
     }
 
