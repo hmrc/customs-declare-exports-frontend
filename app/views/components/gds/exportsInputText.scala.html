@@ -24,18 +24,15 @@
 
 @(
     field: Field,
-    labelKey: String,
+    labelKey: String = "",
     labelArg: String = "",
     hintKey: Option[String] = None,
     hintKeyLinks: Seq[Html] = Seq.empty,
     hintHtml: Option[Html] = None,
     bodyHtml: Option[Html] = None,
-    isPageHeading: Boolean = false,
-    headingClasses: String = gdsPageLabel,
     labelClasses: String = "govuk-label govuk-label--m",
     defaultInputClasses: String = "govuk-!-width-two-thirds",
-    inputClasses: Option[String] = None,
-    sectionHeaderKey: Option[String] = None
+    inputClasses: Option[String] = None
 )(implicit messages: Messages)
 
 @hintContent = @{
@@ -64,7 +61,7 @@
             id = field.id,
             name = field.name,
             value = field.value,
-            label = helper.getLabelForField(isPageHeading, labelKey, labelArg, headingClasses, labelClasses, sectionHeaderKey),
+            label = helper.getLabelForField(labelKey, labelArg, labelClasses),
             hint = hintContent,
             errorMessage = helper.getAnyErrorMessages(field),
             classes = helper.defineInputClasses(defaultInputClasses, inputClasses)

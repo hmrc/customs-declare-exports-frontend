@@ -34,6 +34,7 @@
         saveButtons: saveButtons,
         tariffExpander: tariffExpander,
         pageTitle: pageTitle,
+        label: label,
         appConfig: AppConfig,
         formHelper: FormWithCSRF
 )
@@ -52,11 +53,11 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
+        @pageTitle(content = Some(HtmlContent(label("declaration.taricAdditionalCodes.addnext.header", taricCodeKey, labelClasses = ""))))
+
         @exportsInputText(
             field = form(taricCodeKey),
-            labelKey = "declaration.taricAdditionalCodes.addnext.header",
             inputClasses = Some("govuk-input--width-10"),
-            isPageHeading = true
         )
 
         @tariffExpander(TaricCode, request.declarationType)(messages, appConfig)

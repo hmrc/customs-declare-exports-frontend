@@ -18,8 +18,9 @@ package views.helpers
 
 import play.api.data.Field
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{ErrorMessage, HtmlContent, Label}
+import uk.gov.hmrc.govukfrontend.views.Aliases.ErrorMessage
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 import views.html.components.gds.headingContent
 
 import javax.inject.{Inject, Singleton}
@@ -27,19 +28,10 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class InputTextHelper @Inject()(headingContent: headingContent) {
 
-  def getLabelForField(
-    isPageHeading: Boolean,
-    labelKey: String,
-    labelArg: String,
-    headingClasses: String,
-    labelClasses: String,
-    sectionHeaderKey: Option[String]
-  )(implicit messages: Messages): Label =
-    if (isPageHeading) {
-      Label(content = HtmlContent(headingContent(messages(labelKey, labelArg), sectionHeaderKey.map(messages(_)))), classes = headingClasses)
-    } else {
+  def getLabelForField(labelKey: String, labelArg: String, labelClasses: String)(implicit messages: Messages): Label =
+    if (labelKey.trim.isEmpty) Label()
+    else
       Label(content = Text(messages(labelKey, labelArg)), classes = labelClasses)
-    }
 
   def getAnyErrorMessages(field: Field)(implicit messages: Messages): Option[ErrorMessage] =
     field.error.map(err => ErrorMessage(content = Text(messages(err.message))))

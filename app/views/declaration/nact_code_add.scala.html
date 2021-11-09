@@ -31,6 +31,8 @@
     exportsInputText: exportsInputText,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
+    pageTitle: pageTitle,
+    label: label,
     appConfig: AppConfig,
     formHelper: FormWithCSRF
 )
@@ -48,11 +50,11 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
+        @pageTitle(content = Some(HtmlContent(label("declaration.nationalAdditionalCode.addnext.header", nactCodeKey, labelClasses = ""))))
+
         @exportsInputText(
             field = form(nactCodeKey),
-            labelKey = "declaration.nationalAdditionalCode.addnext.header",
             inputClasses = Some("govuk-input--width-10"),
-            isPageHeading = true
         )
 
         @tariffExpander(NactCode, request.declarationType)(messages, appConfig)

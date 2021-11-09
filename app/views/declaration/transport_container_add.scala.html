@@ -33,6 +33,7 @@
         saveButtons: saveButtons,
         tariffExpander: tariffExpander,
         pageTitle: pageTitle,
+        label: label,
         formHelper: FormWithCSRF,
         appConfig: AppConfig
 )
@@ -49,13 +50,13 @@
 
         @errorSummary(form.errors)
 
+        @sectionHeader(messages("declaration.section.6"))
+
+        @pageTitle(content = Some(HtmlContent(label("declaration.transportInformation.containers.add.title", containerIdKey, labelClasses = ""))))
+
         @exportsInputText(
             field = form(containerIdKey),
-            labelKey = "declaration.transportInformation.containers.add.title",
-            isPageHeading = true,
-            inputClasses = Some("govuk-input--width-20"),
-            sectionHeaderKey = Some("declaration.section.6")
-
+            inputClasses = Some("govuk-input--width-20")
         )
 
         @tariffExpander(ContainerAdd, request.declarationType)(messages, appConfig)
