@@ -18,18 +18,23 @@
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues._
 @import models.DeclarationType
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
-@import views.components.gds.Styles._
-@import views.helpers.{BackButton, Title}
+@import views.components.gds.Styles.gdsPageLegend
 @import views.components.inputs.RadioOption
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukDetails : GovukDetails,
     govukButton: GovukButton,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
+    insetText: exportsInsetText,
+    paragraphBody: paragraphBody,
+    link: link,
     saveAndContinue: saveAndContinue,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
@@ -46,6 +51,41 @@
         case Mode.Draft => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
         case Mode.Normal => controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec)))
     }
+}
+
+@insetLink = @{
+    link(
+        text = messages("declaration.type.insetText.linkText"),
+        call = Call("GET", appConfig.declareGoodsExported),
+        target = "_blank"
+    )
+}
+
+@detailsLink1 = @{
+    link(
+        text = messages("declaration.type.details.p1.linkText"),
+        call = Call("GET", appConfig.additionalDeclarationType),
+        target = "_blank"
+    )
+}
+
+@detailsLink2 = @{
+    link(
+        text = messages("declaration.type.details.p2.linkText"),
+        call = Call("GET", appConfig.simplifiedDeclarationOccasionalUse),
+        target = "_blank"
+    )
+}
+
+@detailsText = @{
+    HtmlContent(HtmlFormat.fill(List(
+        paragraphBody(
+            messages("declaration.type.details.p1", detailsLink1)
+        ),
+        paragraphBody(
+            messages("declaration.type.details.p2", detailsLink2)
+        )
+    )))
 }
 
 @govukLayout(
@@ -69,7 +109,6 @@
                     id = Some(DeclarationType.STANDARD.toString),
                     value = Some(DeclarationType.STANDARD.toString),
                     content = Text(messages("declaration.type.standard")),
-                    hint = Some(Hint(content = Text(messages("declaration.type.standard.hint")))),
                     checked = form("type").value.contains(DeclarationType.STANDARD.toString)
                 ),
                 RadioItem(
@@ -78,6 +117,13 @@
                     content = Text(messages("declaration.type.simplified")),
                     hint = Some(Hint(content = Text(messages("declaration.type.simplified.hint")))),
                     checked = form("type").value.contains(DeclarationType.SIMPLIFIED.toString)
+                ),
+                RadioItem(
+                    id = Some(DeclarationType.CLEARANCE.toString),
+                    value = Some(DeclarationType.CLEARANCE.toString),
+                    content = Text(messages("declaration.type.clearance")),
+                    hint = Some(Hint(content = Text(messages("declaration.type.clearance.hint")))),
+                    checked = form("type").value.contains(DeclarationType.CLEARANCE.toString)
                 ),
                 RadioItem(
                     id = Some(DeclarationType.SUPPLEMENTARY.toString),
@@ -92,19 +138,21 @@
                     content = Text(messages("declaration.type.occasional")),
                     hint = Some(Hint(content = Text(messages("declaration.type.occasional.hint")))),
                     checked = form("type").value.contains(DeclarationType.OCCASIONAL.toString)
-                ),
-                RadioItem(
-                    divider = Some(messages("declaration.type.or")),
-                    value = Some(RadioOption.dividerId)
-                ),
-                RadioItem(
-                    id = Some(DeclarationType.CLEARANCE.toString),
-                    value = Some(DeclarationType.CLEARANCE.toString),
-                    content = Text(messages("declaration.type.clearance")),
-                    checked = form("type").value.contains(DeclarationType.CLEARANCE.toString)
                 )
             ).filter(radioOption => radioOption.value.exists(appConfig.availableDeclarations().contains(_))),
             errorMessage = form("type").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @insetText(content = HtmlContent(HtmlFormat.fill(List(
+            paragraphBody(
+                s"${messages("declaration.type.insetText.p1", insetLink)}  ${messages("declaration.type.insetText.p2")}"
+            )
+        ))))
+
+        @govukDetails(Details(
+            attributes = Map("id" -> "tariffReference"),
+            summary = Text(messages("tariff.expander.title.common")),
+            content = detailsText
         ))
 
         @saveAndContinue("site.continue")

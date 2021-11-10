@@ -27,11 +27,11 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.{Configuration, Environment}
 import tools.Stubs
-import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukRadios}
+import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukDetails, GovukRadios}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.components.gds.{errorSummary, saveAndContinue}
+import views.html.components.gds.{errorSummary, exportsInsetText, link, paragraphBody, saveAndContinue}
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest
 
@@ -51,7 +51,6 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
     }
 
     "display radio buttons with description (not selected)" in {
-
       val view = createView(DeclarationChoice.form())
       ensureAllLabelTextIsCorrect(view)
 
@@ -63,7 +62,6 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
     }
 
     "display 'Back' button that links to 'Choice' page" in {
-
       val backButton = createView().getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
@@ -71,7 +69,6 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
     }
 
     "display 'Continue' button on page" in {
-
       val view = createView()
 
       val saveButton = view.select("#submit")
@@ -82,7 +79,6 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
   "Choice View for invalid input" should {
 
     "display error when no choice is made" in {
-
       val view = createView(DeclarationChoice.form().bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
@@ -92,7 +88,6 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
     }
 
     "display error when choice is incorrect" in {
-
       val view = createView(DeclarationChoice.form().bind(Map("type" -> "incorrect")))
 
       view must haveGovukGlobalErrorSummary
@@ -103,7 +98,6 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   "Choice View when filled" should {
-
     "display selected radio button - Create (SUPPLEMENTARY)" in {
       val view = createView(DeclarationChoice.form().fill(DeclarationChoice(DeclarationType.SUPPLEMENTARY)))
       ensureAllLabelTextIsCorrect(view)
@@ -114,13 +108,10 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       ensureRadioIsUnChecked(view, "OCCASIONAL")
       ensureRadioIsUnChecked(view, "CLEARANCE")
     }
-
   }
 
   "Choice View for available declarations" should {
-
     "display choices that matches configuration" in {
-
       val config: Config =
         ConfigFactory.parseString(AppConfigSpec.configBareMinimum + """
                                     |list-of-available-journeys="CRT"
@@ -135,15 +126,19 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
 
       val page = new declaration_choice(
         gdsMainTemplate,
+        instanceOf[GovukDetails],
         instanceOf[GovukButton],
         instanceOf[GovukRadios],
         instanceOf[errorSummary],
+        instanceOf[exportsInsetText],
+        instanceOf[paragraphBody],
+        instanceOf[link],
         instanceOf[saveAndContinue],
         instanceOf[FormWithCSRF],
         appConfig
       )
 
-      val view = page(Mode.Normal, DeclarationChoice.form)(request, messages)
+      val view = page(Mode.Normal, DeclarationChoice.form())(request, messages)
 
       view.getElementsByTag("label").size mustBe 1
       view.getElementsByAttributeValue("for", "STANDARD") must containMessageForElements("declaration.type.standard")
