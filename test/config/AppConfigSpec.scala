@@ -238,11 +238,11 @@ class AppConfigSpec extends UnitWithMocksSpec {
     }
 
     "have language map with English" in {
-      validAppConfig.languageMap.get("english").isDefined must be(true)
+      validAppConfig.languageMap.contains("english") must be(true)
     }
 
     "have language map with Cymraeg" in {
-      validAppConfig.languageMap.get("cymraeg").isDefined must be(true)
+      validAppConfig.languageMap.contains("cymraeg") must be(true)
     }
 
     "have customs declare exports URL" in {
@@ -458,6 +458,10 @@ object AppConfigSpec {
       |urls.currencyCodesForDataElement410=currencyCodesForDataElement410
       |urls.exchangeRatesForCustoms=exchangeRatesForCustoms
       |
+      |urls.additionalDeclarationType = "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide/group-1-message-information-including-procedure-codes#de-12-additional-declaration-type-box-1-declaration-second-subdivision"
+      |urls.declareGoodsExported = "https://www.gov.uk/guidance/declare-commercial-goods-youre-taking-out-of-great-britain-in-your-accompanied-baggage-or-small-vehicles"
+      |urls.simplifiedDeclarationOccasionalUse = "https://www.gov.uk/government/publications/appendix-2-de-111-additional-procedure-codes/additional-procedure-code-3-series"
+      |
       |files.codelists.holderOfAuthorisationCodes="holderOfAuthorisationCodes"
       |files.codelists.procedureCodes="procedureCodes"
       |files.codelists.procedureCodesC21="procedureCodesC21"
@@ -487,7 +491,6 @@ object AppConfigSpec {
       |guidance.additionalDocumentsUnionCodes = "https://www.gov.uk/government/publications/data-element-23-documents-and-other-reference-codes-union-of-the-customs-declaration-service-cds"
       |guidance.aiCodes = "https://www.gov.uk/guidance/additional-information-ai-statement-codes-for-data-element-22-of-the-customs-declaration-service-cds"
       |guidance.aiCodesForContainers = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes/requested-procedure-10-permanent-export-or-dispatch#additional-information-de-22-1"
-      |guidance.appointSomeoneToDealWithCustomsOnYourBehalf = "https://www.gov.uk/guidance/appoint-someone-to-deal-with-customs-on-your-behalf"
       |guidance.cdsDeclarationSoftware = "https://www.gov.uk/guidance/list-of-software-developers-providing-customs-declaration-support"
       |guidance.cdsRegister = "https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service"
       |guidance.cdsTariffCompletionGuide = "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide"
@@ -498,6 +501,7 @@ object AppConfigSpec {
       |guidance.eoriService = "https://www.gov.uk/eori"
       |guidance.exportingByPost = "https://www.gov.uk/government/publications/notice-143-a-guide-for-international-post-users/notice-143-a-guide-for-international-post-users"
       |guidance.manageYourEmailAddress = "https://www.gov.uk/guidance/manage-your-email-address-for-the-customs-declaration-service"
+      |guidance.someoneToDealWithCustomsOnYourBehalf = "https://www.gov.uk/guidance/appoint-someone-to-deal-with-customs-on-your-behalf"
       |guidance.specialProcedures = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes"
       |guidance.takingCommercialGoodsOnYourPerson = "https://www.gov.uk/guidance/taking-commercial-goods-out-of-great-britain-in-your-baggage"
       |guidance.vatOnGoodsExportedFromUK = "https://www.gov.uk/guidance/vat-on-goods-exported-from-the-uk-notice-703"
