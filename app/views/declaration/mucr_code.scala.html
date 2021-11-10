@@ -58,8 +58,7 @@
         @exportsInputText(
             field = form(Mucr.MUCR),
             labelKey = "declaration.mucr.title",
-            labelClasses = "govuk-visually-hidden",
-            sectionHeaderKey = None
+            labelClasses = "govuk-visually-hidden"
         )
 
         @tariffExpander(Mucr, request.declarationType)(messages, appConfig)

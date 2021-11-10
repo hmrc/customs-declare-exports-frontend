@@ -21,6 +21,7 @@
 @import controllers.navigation.Navigator
 @import views.html.components.gds._
 @import views.helpers.{BackButton, Title}
+
 @import config.AppConfig
 
 @this(
@@ -28,6 +29,8 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         exportsInputText: exportsInputText,
+        pageTitle: pageTitle,
+        label: label,
         tariffExpander: tariffExpander,
         saveButtons: saveButtons,
         formHelper: FormWithCSRF,
@@ -47,10 +50,10 @@
 
         @sectionHeader(messages("declaration.section.2"))
 
+        @pageTitle(content = Some(HtmlContent(label("declaration.representative.entity.title", "details.eori", labelClasses = ""))))
+
         @exportsInputText(
-            field = form("details.eori"),
-            labelKey = "declaration.representative.entity.title",
-            isPageHeading = true
+            field = form("details.eori")
         )
 
         @tariffExpander(RepresentativeEntity, request.declarationType)(messages, appConfig)

@@ -59,13 +59,11 @@
             field = form("identificationNumber"),
             labelKey = "declaration.warehouse.identification.required.title",
             hintKey = Some("declaration.warehouse.identification.label.hint"),
-            labelClasses = "govuk-visually-hidden",
-            sectionHeaderKey = None
+            labelClasses = "govuk-visually-hidden"
         )
 
         @tariffExpander(WarehouseIdentification, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }
-
 }

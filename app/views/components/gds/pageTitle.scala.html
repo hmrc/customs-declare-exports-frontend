@@ -15,10 +15,11 @@
  *@
 
 @import views.components.gds.Styles._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this()
 
-@(text: String, classes: String = gdsPageHeading)
+@(text: String = "", classes: String = gdsPageHeading, content: Option[Content] = None)
 
-<h1 id="title" class="@{classes}">@text</h1>
+<h1 id="title" class="@{classes}">@content.map(_.asHtml).getOrElse(text)</h1>
 

@@ -19,8 +19,7 @@
 @import forms.declaration.PersonPresentingGoodsDetails
 @import forms.declaration.PersonPresentingGoodsDetails._
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import views.components.gds.Styles._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
@@ -31,6 +30,8 @@
     errorSummary: errorSummary,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
+    pageTitle: pageTitle,
+    label: label,
     formHelper: FormWithCSRF,
     sectionHeader: sectionHeader,
     appConfig: AppConfig
@@ -49,12 +50,10 @@
 
         @sectionHeader(messages("declaration.section.2"))
 
+        @pageTitle(content = Some(HtmlContent(label("declaration.personPresentingGoodsDetails.title", fieldName, labelClasses = ""))))
+
         @exportsInputText(
-        field = form(fieldName),
-        labelKey = "declaration.personPresentingGoodsDetails.title",
-        isPageHeading = true,
-        headingClasses = gdsPageLabel,
-        sectionHeaderKey = None
+            field = form(fieldName)
         )
 
         @tariffExpander(PersonPresentingGoodsDetails, request.declarationType)(messages, appConfig)
