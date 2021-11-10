@@ -37,7 +37,7 @@
     headingContent: headingContent,
     paragraphBody: paragraphBody,
     link: link,
-    legend: legend,
+    heading: heading,
     bulletList: bulletList,
     insetText: exportsInsetText,
     saveButtons: saveButtons,
@@ -77,8 +77,7 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))
-
-        @legend(content = Text(messages("declaration.statisticalValue.title")), classes = gdsPageLegend)
+        @heading(messages("declaration.statisticalValue.title"))
 
         @bodySection
 
