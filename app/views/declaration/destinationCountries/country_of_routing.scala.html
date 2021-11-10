@@ -41,7 +41,7 @@
     appConfig: AppConfig
 )(implicit codeListConnector: CodeListConnector)
 
-@(mode: Mode, form: Form[Country], page: CountryPage)(implicit request: JourneyRequest[_], messages: Messages))
+@(mode: Mode, form: Form[Country], page: CountryPage)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
