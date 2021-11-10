@@ -23,8 +23,8 @@
         class="form-control @inputClass"
         type="text"
         id="@{field.id}"
-        name="@{field.name}"
-        value="@{field.value}"
+        @if(field.name.nonEmpty) {name="@field.name"}
+        @if(field.value.nonEmpty) {value="@field.value"}
         @if(field.hasErrors){aria-describedby="error-message-@{field.id}-input" }
 />
 
