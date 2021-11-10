@@ -41,7 +41,7 @@ class EntryViewSpec extends UnitViewSpec with Stubs with Injector {
       val links = view.getElementsByClass("govuk-link--no-visited-state")
       links.size mustBe 7
 
-      links.get(0) must haveHref(guidance.appointSomeoneToDealWithCustomsOnYourBehalf)
+      links.get(0) must haveHref(guidance.someoneToDealWithCustomsOnYourBehalf)
       links.get(1) must haveHref(guidance.takingCommercialGoodsOnYourPerson)
       links.get(2) must haveHref(guidance.exportingByPost)
       links.get(3) must haveHref(controllers.routes.GuidanceController.sendByRoro.url)
