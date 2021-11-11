@@ -96,36 +96,3 @@ class TariffCommoditiesConnector @Inject()(appConfig: AppConfig, httpClient: Htt
     }
 
 }
-
-trait TariffCommoditiesResponseReader extends HttpErrorFunctions {
-
-  //noinspection ConvertExpressionToSAM
-  private implicit val responseReader: HttpReads[TariffCommoditiesResponse] =
-    new HttpReads[TariffCommoditiesResponse] {
-      override def read(method: String, url: String, response: HttpResponse): TariffCommoditiesResponse =
-        response.status match {
-          case OK =>
-            TariffCommoditiesResponse(response.status, Some(response.body))
-          case status if is4xx(status) =>
-            throw UpstreamErrorResponse(
-              message = "Invalid request made to Tariff Commodities API",
-              statusCode = status,
-              reportAs = Status.INTERNAL_SERVER_ERROR,
-              headers = response.headers
-            )
-          case status if is5xx(status) =>
-            throw UpstreamErrorResponse(
-              message = "Tariff Commodities API unable to service request",
-              statusCode = status,
-              reportAs = Status.INTERNAL_SERVER_ERROR
-            )
-          case _ =>
-            throw UpstreamErrorResponse(
-              message = "Unexpected response from Tariff Commodities API response",
-              statusCode = response.status,
-              reportAs = Status.INTERNAL_SERVER_ERROR
-            )
-        }
-    }
-
-}
