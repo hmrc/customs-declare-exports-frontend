@@ -79,6 +79,8 @@ object FieldValidator {
 
   val isAlphanumeric: String => Boolean = (input: String) => input.trim.forall(_.isLetterOrDigit)
 
+  val isNotAlphanumericWithSpace: String => Boolean = (input: String) => !isAlphanumericWithSpace(input)
+
   val isNotAlphanumeric: String => Boolean = (input: String) => !isAlphanumeric(input)
 
   val isAlphanumericWithSpace: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' '))(input)
