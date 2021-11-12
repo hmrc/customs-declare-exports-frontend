@@ -21,7 +21,6 @@ import config.AppConfig
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.responses.TariffCommoditiesResponse
 import play.api.Logger
-import play.api.http.{ContentTypes, HeaderNames, MimeTypes, Status}
 import play.api.libs.json.JsValue
 import play.mvc.Http.Status.OK
 import uk.gov.hmrc.http.{HttpClient, _}
@@ -31,7 +30,7 @@ import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TariffCommoditiesConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, metrics: ExportsMetrics)(implicit ec: ExecutionContext) {
+class TariffAPIConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, metrics: ExportsMetrics)(implicit ec: ExecutionContext) {
 
   private val logger = Logger(this.getClass)
 
@@ -40,13 +39,11 @@ class TariffCommoditiesConnector @Inject()(appConfig: AppConfig, httpClient: Htt
     val timer = metrics.startTimer(MetricIdentifiers.tariffCommoditiesMetric)
 
     httpClient.GET(commoditiesUrl(commodityCode)) map {
-      case TariffCommoditiesResponse(status, json @ Some(commodityJson)) =>
+      case TariffCommoditiesResponse(_, json @ Some(_)) =>
         timer.stop()
-        logger.debug(s"TARIFF_COMMODITIES returned [$status] with body --> ${commodityJson}")
         json
-      case TariffCommoditiesResponse(status, _) =>
+      case _ =>
         timer.stop()
-        logger.error(s"TARIFF_COMMODITIES returned [$status]")
         None
     }
 
@@ -57,22 +54,15 @@ class TariffCommoditiesConnector @Inject()(appConfig: AppConfig, httpClient: Htt
   //noinspection ConvertExpressionToSAM
   private implicit val responseReader: HttpReads[TariffCommoditiesResponse] =
     new HttpReads[TariffCommoditiesResponse] {
-      override def read(method: String, url: String, response: HttpResponse): TariffCommoditiesResponse = {
-        logger.debug(s"Response: ${response.status} => ${response.body}")
+      override def read(method: String, url: String, response: HttpResponse): TariffCommoditiesResponse =
         response.status match {
           case OK =>
+            logger.debug(s"TARIFF_COMMODITIES returned [${response.status}] with JSON body")
             TariffCommoditiesResponse(response.status, Some(response.json))
-          case status if HttpErrorFunctions.is4xx(status) =>
-            logger.error(s"Invalid request made to Tariff Commodities API")
-            TariffCommoditiesResponse(response.status, None)
-          case status if HttpErrorFunctions.is5xx(status) =>
-            logger.error(s"Tariff Commodities API unable to service request")
-            TariffCommoditiesResponse(response.status, None)
-          case status =>
-            logger.error(s"Unexpected response from Tariff Commodities API response")
+          case _ =>
+            logger.error(s"TARIFF_COMMODITIES returned [${response.status}]")
             TariffCommoditiesResponse(response.status, None)
         }
-      }
     }
 
 }

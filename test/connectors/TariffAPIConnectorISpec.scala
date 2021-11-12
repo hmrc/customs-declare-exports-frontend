@@ -25,9 +25,8 @@ import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
-import uk.gov.hmrc.http.{InternalServerException, _}
 
-class TariffCommoditiesConnectorSpec extends ConnectorISpec with MockitoSugar with ScalaFutures with ExportsMetricsMocks with OptionValues {
+class TariffAPIConnectorISpec extends ConnectorISpec with MockitoSugar with ScalaFutures with ExportsMetricsMocks with OptionValues {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
@@ -43,13 +42,13 @@ class TariffCommoditiesConnectorSpec extends ConnectorISpec with MockitoSugar wi
     super.afterAll
   }
 
-  private val testConnector: TariffCommoditiesConnector = app.injector.instanceOf[TariffCommoditiesConnector]
+  private val testConnector: TariffAPIConnector = app.injector.instanceOf[TariffAPIConnector]
 
   private val commodityCode: String = "1234567890"
 
   private val exampleSuccessResponse: String = """{"testJson": true}"""
 
-  "TariffCommoditiesConnector" when {
+  "TariffAPIConnector" when {
 
     "getCommodity" should {
       "respond with json" in {
@@ -62,42 +61,18 @@ class TariffCommoditiesConnectorSpec extends ConnectorISpec with MockitoSugar wi
 
       }
 
-      "respond with an InternalServerException" when {
-        "server responds with 4xx" in {
+      "server responds with something else" in {
 
-          val response = aResponse.withStatus(NOT_FOUND)
-          stubForTariffCommodities(get(anyUrl()).willReturn(response))
+        val response = aResponse.withStatus(NOT_FOUND)
+        stubForTariffCommodities(get(anyUrl()).willReturn(response))
 
-          whenReady(testConnector.getCommodity(commodityCode)) { result =>
-            result mustBe None
-          }
-
+        whenReady(testConnector.getCommodity(commodityCode)) { result =>
+          result mustBe None
         }
 
-        "server responds with 5xx" in {
-
-          val response = aResponse.withStatus(SERVICE_UNAVAILABLE)
-          stubForTariffCommodities(get(anyUrl()).willReturn(response))
-
-          whenReady(testConnector.getCommodity(commodityCode)) { result =>
-            result mustBe None
-          }
-
-        }
-
-        "server responds with something else" in {
-
-          val response = aResponse.withStatus(NO_CONTENT)
-          stubForTariffCommodities(get(anyUrl()).willReturn(response))
-
-          whenReady(testConnector.getCommodity(commodityCode)) { result =>
-            result mustBe None
-          }
-
-        }
       }
-
     }
 
   }
+
 }
