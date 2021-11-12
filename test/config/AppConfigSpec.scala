@@ -204,6 +204,14 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile must be("procedureCodeToAdditionalProcedureCodesC21Link")
     }
 
+    "have countryCodes file path" in {
+      validAppConfig.countryCodes must be("/code-lists/countryCodes.json")
+    }
+
+    "have countryCodeToAliasesLink file path" in {
+      validAppConfig.countryCodeToAliasesLinkFile must be("countryCodeToAliasesLink")
+    }
+
     "load the Choice options when list-of-available-journeys is defined" in {
       val choices = validAppConfig.availableJourneys()
       choices.size must be(3)
@@ -463,6 +471,7 @@ object AppConfigSpec {
       |files.codelists.procedureCodeToAdditionalProcedureCodesC21Link="procedureCodeToAdditionalProcedureCodesC21Link"
       |files.codelists.dmsErrorCodes="/code-lists/dmsErrorCodes.json"
       |files.codelists.countryCodes="/code-lists/countryCodes.json"
+      |files.codelists.countryCodeToAliasesLink="countryCodeToAliasesLink"
       |
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs

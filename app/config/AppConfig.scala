@@ -236,4 +236,5 @@ class AppConfig @Inject()(
   val procedureCodeToAdditionalProcedureCodesC21LinkFile = loadConfig("files.codelists.procedureCodeToAdditionalProcedureCodesC21Link")
   val dmsErrorCodes = loadConfig("files.codelists.dmsErrorCodes")
   val countryCodes = loadConfig("files.codelists.countryCodes")
+  val countryCodeToAliasesLinkFile = loadConfig("files.codelists.countryCodeToAliasesLink")
 }

@@ -27,7 +27,7 @@ object AutoCompleteItem {
   def formatProcedureCode(pc: ProcedureCode) = s"${pc.code} - ${pc.description}"
 
   def fromCountry(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] =
-    countries map (c => AutoCompleteItem(s"${c.countryName}", value(c)))
+    countries map (c => AutoCompleteItem(c.asString(), value(c)))
 
   def fromPackageType(packageTypes: List[PackageType]): List[AutoCompleteItem] =
     packageTypes map (c => AutoCompleteItem(c.asText(), c.code))

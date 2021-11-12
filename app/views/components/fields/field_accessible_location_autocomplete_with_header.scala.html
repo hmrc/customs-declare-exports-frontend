@@ -15,9 +15,10 @@
  *@
 
 @import services.view.AutoCompleteItem
-@import views.html.helper._
+@import views.helpers.CountryAutoCompleteHelper
 @import views.html.components.inputs.input_accessible_location_autocomplete
-@import connectors.CodeListConnector
+@import views.html.helper._
+@import models.codes.Country
 
 @(field: Field,
   label: String,
@@ -26,11 +27,11 @@
   bodyHtml: Option[Html] = None,
   hintParagraphs: List[String] = List.empty,
   emptySelectValue: String,
-  items: List[AutoCompleteItem],
+  countryKey: Country => String,
   isPageHeading: Boolean,
   args: List[(Symbol, Any)] = List.empty,
   rightElement: Option[Html] = None
-)(implicit messages: Messages, codeListConnector: CodeListConnector)
+)(implicit messages: Messages, countryAutoCompleteHelper: CountryAutoCompleteHelper)
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
 JQuery treats [] as element's attribute and tried evaluated this.
@@ -78,7 +79,7 @@ To avoid problems, we need to remove [] from field.
     @input_accessible_location_autocomplete(
         field = field,
         emptySelectValue = emptySelectValue,
-        items = items,
+        countryKey = countryKey,
         rightElement = rightElement
     )
 </div>

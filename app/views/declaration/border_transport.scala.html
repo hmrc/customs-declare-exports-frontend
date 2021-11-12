@@ -18,7 +18,6 @@
 @import forms.declaration.BorderTransport
 @import forms.declaration.TransportCodes._
 @import models.requests.JourneyRequest
-@import services.view.AutoCompleteItem
 @import controllers.navigation.Navigator
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
@@ -28,8 +27,8 @@
 @import play.twirl.api.HtmlFormat
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import config.AppConfig
-@import connectors.CodeListConnector
-@import services.Countries._
+@import views.helpers.CountryAutoCompleteHelper
+@import models.codes.Country
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -45,7 +44,7 @@
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
-)(implicit codeListConnector: CodeListConnector)
+)(implicit countryAutoCompleteHelper: CountryAutoCompleteHelper)
 
 @(mode: Mode, form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -95,7 +94,8 @@
         label = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header"),
         labelClass = None,
         emptySelectValue = messages("declaration.address.country.empty"),
-        items = AutoCompleteItem.fromCountry(getListOfAllCountries())
+        countryKey = (c: Country) => c.countryName,
+        isPageHeading = false
     )
 }
 

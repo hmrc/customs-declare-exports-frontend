@@ -35,5 +35,52 @@ $(document).ready(function(){
                 selectField.val('');
         })
     })
-
 });
+
+// ================================================================================
+//  Function to enhance any select element into an accessible auto-complete (by id)
+// ================================================================================
+function enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConfirm = false) {
+    selectElementId = selectElementId.replace( /(:|\.|\[|\]|,|=)/g, "\\$1" )
+    let selectElementName = selectElementId.replace( /(\_)/g, "\." )
+    accessibleAutocomplete.enhanceSelectElement({
+        selectElement: document.querySelector('#' + selectElementId),
+        displayMenu: 'inline',
+        minLength: 2,
+        source: customSuggest,
+        confirmOnBlur: true,
+        onConfirm: function(confirmed) {
+
+            //Workaround the bug sending confirmed = undefined when confirmOnBlur == true
+            let foundInData = dataSource.find(e => e.displayName === $('#'+selectElementId).val())
+            let element = !!confirmed ? confirmed : foundInData
+
+            if(!!element) {
+                $('select[name="' + selectElementName + '"]').val(element.code);
+                if(submitOnConfirm) {
+                    window.setTimeout(function(){
+                        $('form').submit();
+                    }, 100);
+                }
+            }
+            else {
+                $('select[name="'+selectElementId+'"]').val('')
+            }
+        },
+        templates: {
+            inputValue: function(result) {
+                return (!!result && result.displayName ? result.displayName : '');
+            },
+            suggestion: function(result) {
+                return !!result.displayName ? result.displayName : result;
+            }
+        }
+    })
+
+    function customSuggest (query, syncResults) {
+        var results = dataSource
+        syncResults(query ? results.filter(function (result) {
+            return (result.synonyms.findIndex( function(s) { return s.toLowerCase().indexOf(query.toLowerCase()) !== -1 } ) !== -1 ) || (result.displayName.toLowerCase().indexOf(query.toLowerCase()) !== -1)
+        }) : [])
+    }
+};
