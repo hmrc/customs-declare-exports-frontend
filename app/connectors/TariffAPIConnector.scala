@@ -39,7 +39,7 @@ class TariffAPIConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient,
     val timer = metrics.startTimer(MetricIdentifiers.tariffCommoditiesMetric)
 
     httpClient.GET(commoditiesUrl(commodityCode)) map {
-      case TariffCommoditiesResponse(_, json @ Some(_)) =>
+      case TariffCommoditiesResponse(status, json @ Some(_)) =>
         timer.stop()
         json
       case _ =>
@@ -54,15 +54,15 @@ class TariffAPIConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient,
   //noinspection ConvertExpressionToSAM
   private implicit val responseReader: HttpReads[TariffCommoditiesResponse] =
     new HttpReads[TariffCommoditiesResponse] {
-      override def read(method: String, url: String, response: HttpResponse): TariffCommoditiesResponse =
+      override def read(method: String, url: String, response: HttpResponse): TariffCommoditiesResponse = {
+        logger.error(s"TARIFF_COMMODITIES returned [${response.status}]")
         response.status match {
           case OK =>
-            logger.debug(s"TARIFF_COMMODITIES returned [${response.status}] with JSON body")
             TariffCommoditiesResponse(response.status, Some(response.json))
           case _ =>
-            logger.error(s"TARIFF_COMMODITIES returned [${response.status}]")
             TariffCommoditiesResponse(response.status, None)
         }
+      }
     }
 
 }
