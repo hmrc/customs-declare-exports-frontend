@@ -20,12 +20,14 @@ import org.scalatest.concurrent.ScalaFutures
 import _root_.mock.ExportsMetricsMocks
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
+import org.scalatest.OptionValues
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json.Json
 import play.mvc.Http.Status._
 import uk.gov.hmrc.http.{InternalServerException, _}
 
-class TariffCommoditiesConnectorSpec extends ConnectorISpec with MockitoSugar with ScalaFutures with ExportsMetricsMocks {
+class TariffCommoditiesConnectorSpec extends ConnectorISpec with MockitoSugar with ScalaFutures with ExportsMetricsMocks with OptionValues {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
@@ -56,7 +58,7 @@ class TariffCommoditiesConnectorSpec extends ConnectorISpec with MockitoSugar wi
         stubForTariffCommodities(get(anyUrl()).willReturn(response))
 
         val result = testConnector.getCommodity(commodityCode).futureValue
-        result mustBe exampleSuccessResponse
+        result.value mustBe Json.parse(exampleSuccessResponse)
 
       }
 
@@ -66,8 +68,8 @@ class TariffCommoditiesConnectorSpec extends ConnectorISpec with MockitoSugar wi
           val response = aResponse.withStatus(NOT_FOUND)
           stubForTariffCommodities(get(anyUrl()).willReturn(response))
 
-          whenReady(testConnector.getCommodity(commodityCode).failed) { result =>
-            result mustBe an[InternalServerException]
+          whenReady(testConnector.getCommodity(commodityCode)) { result =>
+            result mustBe None
           }
 
         }
@@ -77,8 +79,8 @@ class TariffCommoditiesConnectorSpec extends ConnectorISpec with MockitoSugar wi
           val response = aResponse.withStatus(SERVICE_UNAVAILABLE)
           stubForTariffCommodities(get(anyUrl()).willReturn(response))
 
-          whenReady(testConnector.getCommodity(commodityCode).failed) { result =>
-            result mustBe an[InternalServerException]
+          whenReady(testConnector.getCommodity(commodityCode)) { result =>
+            result mustBe None
           }
 
         }
@@ -88,8 +90,8 @@ class TariffCommoditiesConnectorSpec extends ConnectorISpec with MockitoSugar wi
           val response = aResponse.withStatus(NO_CONTENT)
           stubForTariffCommodities(get(anyUrl()).willReturn(response))
 
-          whenReady(testConnector.getCommodity(commodityCode).failed) { result =>
-            result mustBe an[InternalServerException]
+          whenReady(testConnector.getCommodity(commodityCode)) { result =>
+            result mustBe None
           }
 
         }

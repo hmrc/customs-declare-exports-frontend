@@ -22,6 +22,7 @@ import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.responses.TariffCommoditiesResponse
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames, MimeTypes, Status}
+import play.api.libs.json.JsValue
 import play.mvc.Http.Status.OK
 import uk.gov.hmrc.http.{HttpClient, _}
 
@@ -34,35 +35,24 @@ class TariffCommoditiesConnector @Inject()(appConfig: AppConfig, httpClient: Htt
 
   private val logger = Logger(this.getClass)
 
-  def getCommodity(commodityCode: String)(implicit hc: HeaderCarrier): Future[String] = {
-    val timer = metrics.startTimer(MetricIdentifiers.tariffCommoditiesMetric)
-    get(commodityCode) map { res =>
-      logger.debug(s"TARIFF_COMMODITIES response is  --> ${res.toString}")
-      res match {
-        case TariffCommoditiesResponse(OK, Some(commodityJson)) =>
-          timer.stop()
-          commodityJson
-        case TariffCommoditiesResponse(status, _) =>
-          timer.stop()
-          throw new InternalServerException(s"TARIFF_COMMODITIES returned [$status]")
-      }
-    }
-  }
-
-  private[connectors] def get(commodityCode: String)(implicit hc: HeaderCarrier): Future[TariffCommoditiesResponse] = {
+  def getCommodity(commodityCode: String)(implicit hc: HeaderCarrier): Future[Option[JsValue]] = {
     logger.debug(s"TARIFF_COMMODITIES request code is -> $commodityCode")
-    httpClient
-      .GET(commoditiesUrl(commodityCode), headers = headers())
-      .recover {
-        case error: Throwable =>
-          logger.error(s"Error while fetching commodities: ${error.getMessage}")
-          TariffCommoditiesResponse(Status.INTERNAL_SERVER_ERROR, None)
-      }
+    val timer = metrics.startTimer(MetricIdentifiers.tariffCommoditiesMetric)
+
+    httpClient.GET(commoditiesUrl(commodityCode)) map {
+      case TariffCommoditiesResponse(status, json @ Some(commodityJson)) =>
+        timer.stop()
+        logger.debug(s"TARIFF_COMMODITIES returned [$status] with body --> ${commodityJson}")
+        json
+      case TariffCommoditiesResponse(status, _) =>
+        timer.stop()
+        logger.error(s"TARIFF_COMMODITIES returned [$status]")
+        None
+    }
+
   }
 
   private def commoditiesUrl(commodityCode: String): URL = new URL(s"${appConfig.tariffCommoditiesUri}/id/$commodityCode")
-
-  private def headers(): Seq[(String, String)] = Seq(HeaderNames.ACCEPT -> MimeTypes.JSON, HeaderNames.CONTENT_TYPE -> ContentTypes.JSON)
 
   //noinspection ConvertExpressionToSAM
   private implicit val responseReader: HttpReads[TariffCommoditiesResponse] =
@@ -71,26 +61,16 @@ class TariffCommoditiesConnector @Inject()(appConfig: AppConfig, httpClient: Htt
         logger.debug(s"Response: ${response.status} => ${response.body}")
         response.status match {
           case OK =>
-            TariffCommoditiesResponse(response.status, Some(response.body))
+            TariffCommoditiesResponse(response.status, Some(response.json))
           case status if HttpErrorFunctions.is4xx(status) =>
-            throw UpstreamErrorResponse(
-              message = "Invalid request made to Tariff Commodities API",
-              statusCode = status,
-              reportAs = Status.INTERNAL_SERVER_ERROR,
-              headers = response.headers
-            )
+            logger.error(s"Invalid request made to Tariff Commodities API")
+            TariffCommoditiesResponse(response.status, None)
           case status if HttpErrorFunctions.is5xx(status) =>
-            throw UpstreamErrorResponse(
-              message = "Tariff Commodities API unable to service request",
-              statusCode = status,
-              reportAs = Status.INTERNAL_SERVER_ERROR
-            )
-          case _ =>
-            throw UpstreamErrorResponse(
-              message = "Unexpected response from Tariff Commodities API response",
-              statusCode = response.status,
-              reportAs = Status.INTERNAL_SERVER_ERROR
-            )
+            logger.error(s"Tariff Commodities API unable to service request")
+            TariffCommoditiesResponse(response.status, None)
+          case status =>
+            logger.error(s"Unexpected response from Tariff Commodities API response")
+            TariffCommoditiesResponse(response.status, None)
         }
       }
     }

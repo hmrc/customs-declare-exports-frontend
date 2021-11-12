@@ -16,4 +16,6 @@
 
 package models.responses
 
-case class TariffCommoditiesResponse(status: Int, commodityJson: Option[String] = None)
+import play.api.libs.json.JsValue
+
+case class TariffCommoditiesResponse(status: Int, commodityJson: Option[JsValue] = None)
