@@ -41,6 +41,7 @@ class TariffAPIConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient,
     httpClient.GET(commoditiesUrl(commodityCode)) map {
       case TariffCommoditiesResponse(status, json @ Some(_)) =>
         timer.stop()
+        logger.info(s"TARIFF_COMMODITIES returned [$status}] with body")
         json
       case _ =>
         timer.stop()
@@ -54,15 +55,14 @@ class TariffAPIConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient,
   //noinspection ConvertExpressionToSAM
   private implicit val responseReader: HttpReads[TariffCommoditiesResponse] =
     new HttpReads[TariffCommoditiesResponse] {
-      override def read(method: String, url: String, response: HttpResponse): TariffCommoditiesResponse = {
-        logger.error(s"TARIFF_COMMODITIES returned [${response.status}]")
+      override def read(method: String, url: String, response: HttpResponse): TariffCommoditiesResponse =
         response.status match {
           case OK =>
             TariffCommoditiesResponse(response.status, Some(response.json))
           case _ =>
+            logger.warn(s"TARIFF_COMMODITIES returned [${response.status}]")
             TariffCommoditiesResponse(response.status, None)
         }
-      }
     }
 
 }
