@@ -20,11 +20,11 @@ import play.api.mvc.PathBindable
 
 object Feature extends Enumeration {
   type Feature = Value
-  val betaBanner, changeErrorLink, default, ead, sfus, secureMessagingInbox, googleFormFeedbackLink, queryNotificationMessage = Value
+  val betaBanner, changeErrorLink, default, ead, sfus, secureMessagingInbox, googleFormFeedbackLink, queryNotificationMessage, commodities = Value
 
   implicit object FeaturePathStringBinder
       extends PathBindable.Parsing[Feature.Feature](
-        withName(_),
+        withName,
         _.toString,
         (k: String, e: Exception) => "Cannot parse %s as Feature: %s".format(k, e.getMessage)
       )

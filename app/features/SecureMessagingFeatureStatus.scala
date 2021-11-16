@@ -25,7 +25,7 @@ object SecureMessagingFeatureStatus extends Enumeration {
 
   implicit object SecureMessagingFeatureStatusPathStringBinder
       extends PathBindable.Parsing[SecureMessagingFeatureStatus.SecureMessagingFeatureStatus](
-        withName(_),
+        withName,
         _.toString,
         (k: String, e: Exception) => "Cannot parse %s as FeatureStatus: %s".format(k, e.getMessage)
       )
