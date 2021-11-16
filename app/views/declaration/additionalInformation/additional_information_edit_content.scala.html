@@ -29,6 +29,9 @@
     errorSummary: errorSummary,
     formGroupWrapper: formGroupWrapper,
     sectionHeader: sectionHeader,
+    heading: heading,
+    paragraphBody: paragraphBody,
+    link: link,
     exportsInputText: exportsInputText,
     characterCount: exportsInputCharacterCount,
     tariffExpander: tariffExpander,
@@ -45,17 +48,14 @@
             field = form(AdditionalInformation.codeKey),
             labelKey = "declaration.additionalInformation.code",
             inputClasses = Some("govuk-input--width-4"),
-            hintKey = Some("declaration.additionalInformation.code.hint"),
-            hintKeyLinks = Seq(tariffLink(
-                linkText = messages("declaration.additionalInformationRequired.hint.link"),
-                linkUrl = appConfig.tradeTariffUrl
-            ))
+            hintKey = Some("declaration.additionalInformation.code.hint")
         )
         @characterCount(
             field = form(AdditionalInformation.descriptionKey),
             labelKey = Some("declaration.additionalInformation.description"),
             maxLength = Some(AdditionalInformation.descriptionMaxLength),
-            inputClasses = "govuk-input--width-20"
+            inputClasses = "govuk-input--width-20",
+            hintKey = Some("declaration.additionalInformation.description.hint")
         )
     }
 }
@@ -63,13 +63,15 @@
 @errorSummary(form.errors)
 
 @sectionHeader(messages("declaration.section.5"))
+@heading(messages("declaration.additionalInformation.title"))
+
+@paragraphBody(messages("declaration.additionalInformation.code.paragraph", link(
+    id = Some("trade_tariff_link"),
+    text = messages("declaration.additionalInformation.code.paragraph.link"),
+    call = Call("GET", appConfig.tradeTariffUrl)
+)))
 
 @govukFieldset(Fieldset(
-    legend = Some(Legend(
-        content = Text(messages("declaration.additionalInformation.title")),
-        classes = gdsPageLegend,
-        isPageHeading = true
-    )),
     html = HtmlFormat.fill(immutable.Seq(
         pageFields,
         tariffExpander(AdditionalInformation, request.declarationType)(messages, appConfig),
