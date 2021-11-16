@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package features
+package config.featureFlags
 
-import play.api.mvc.PathBindable
+import features.Feature
 
-object FeatureStatus extends Enumeration {
-  type FeatureStatus = Value
-  val enabled, disabled, suspended = Value
+import javax.inject.{Inject, Singleton}
 
-  implicit object FeatureStatusPathStringBinder
-      extends PathBindable.Parsing[FeatureStatus.FeatureStatus](
-        withName,
-        _.toString,
-        (k: String, e: Exception) => "Cannot parse %s as FeatureStatus: %s".format(k, e.getMessage)
-      )
-
+@Singleton
+class TariffAPIConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+  val isCommoditiesEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.commodities)
 }
