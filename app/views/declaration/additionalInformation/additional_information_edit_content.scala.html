@@ -47,6 +47,7 @@
         @exportsInputText(
             field = form(AdditionalInformation.codeKey),
             labelKey = "declaration.additionalInformation.code",
+            labelClasses = "govuk-visually-hidden",
             inputClasses = Some("govuk-input--width-4"),
             hintKey = Some("declaration.additionalInformation.code.hint")
         )
@@ -64,6 +65,7 @@
 
 @sectionHeader(messages("declaration.section.5"))
 @heading(messages("declaration.additionalInformation.title"))
+@heading(messages("declaration.additionalInformation.code"), classes = "govuk-heading-m", tier = "h2")
 
 @paragraphBody(messages("declaration.additionalInformation.code.paragraph", link(
     id = Some("trade_tariff_link"),
