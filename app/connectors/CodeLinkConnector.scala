@@ -34,6 +34,8 @@ object CodeLink {
 trait CodeLinkConnector {
   def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]]
   def getValidAdditionalProcedureCodesForProcedureCodeC21(procedureCode: String): Option[Seq[String]]
+
+  def getAliasesForCountryCode(countryCode: String): Option[Seq[String]]
 }
 
 @Singleton
@@ -51,10 +53,15 @@ class FileBasedCodeLinkConnector @Inject()(appConfig: AppConfig) extends CodeLin
     readCodeLinksFromFile(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile)
   private val procedureCodeToAdditionalProcedureCodesC21: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile)
+  private val countryCodeToCountryAliases: Map[String, Seq[String]] =
+    readCodeLinksFromFile(appConfig.countryCodeToAliasesLinkFile)
 
   def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]] =
     procedureCodeToAdditionalProcedureCodes.get(procedureCode)
 
   def getValidAdditionalProcedureCodesForProcedureCodeC21(procedureCode: String): Option[Seq[String]] =
     procedureCodeToAdditionalProcedureCodesC21.get(procedureCode)
+
+  def getAliasesForCountryCode(countryCode: String): Option[Seq[String]] =
+    countryCodeToCountryAliases.get(countryCode)
 }

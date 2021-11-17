@@ -14,11 +14,10 @@
  * limitations under the License.
  *@
 
-@import services.Countries._
-@import services.view.AutoCompleteItem
-@import connectors.CodeListConnector
+@import views.helpers.CountryAutoCompleteHelper
+@import models.codes.Country
 
-@this(exportsInputText: exportsInputText)(implicit codeListConnector: CodeListConnector)
+@this(exportsInputText: exportsInputText)(implicit countryAutoCompleteHelper: CountryAutoCompleteHelper)
 
 @(form: Form[_], labelPrefix: String = "", addressPrefix: String = "")(implicit request: Request[_], messages: Messages)
 
@@ -51,9 +50,11 @@
     defaultInputClasses = "govuk-input govuk-input--width-10"
 )
 
-@components.fields.field_accessible_autocomplete(
+@components.fields.field_accessible_location_autocomplete_with_header(
     field = form(s"${addressPrefix}.country"),
     label = messages(s"$labelPrefix.country"),
+    labelClass = None,
     emptySelectValue = messages("declaration.address.country.empty"),
-    items = AutoCompleteItem.fromCountry(getListOfAllCountries(), _.countryName)
+    countryKey = (c: Country) => c.countryName,
+    isPageHeading = false
 )

@@ -22,7 +22,7 @@ case class Country(countryName: String, countryCode: String) extends CommonCode 
   def code = countryCode
   def description = countryName
 
-  def asString(): String = s"$countryName ($countryCode)"
+  def asString(): String = s"$countryName - $countryCode"
 }
 
 object Country {

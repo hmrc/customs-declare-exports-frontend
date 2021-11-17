@@ -204,6 +204,14 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile must be("procedureCodeToAdditionalProcedureCodesC21Link")
     }
 
+    "have countryCodes file path" in {
+      validAppConfig.countryCodes must be("/code-lists/countryCodes.json")
+    }
+
+    "have countryCodeToAliasesLink file path" in {
+      validAppConfig.countryCodeToAliasesLinkFile must be("countryCodeToAliasesLink")
+    }
+
     "load the Choice options when list-of-available-journeys is defined" in {
       val choices = validAppConfig.availableJourneys()
       choices.size must be(3)
@@ -288,14 +296,6 @@ class AppConfigSpec extends UnitWithMocksSpec {
 
     "have link for 'give feedback'" in {
       validAppConfig.giveFeedbackLink must be("/contact-frontend-url?service=DeclarationServiceId")
-    }
-
-    "have countryCodesJsonFilename" in {
-      validAppConfig.countryCodesJsonFilename must be("code-lists/location-autocomplete-canonical-list.json")
-    }
-
-    "have countriesCsvFilename" in {
-      validAppConfig.countriesCsvFilename must be("code-lists/mdg-country-codes.csv")
     }
 
     "have ttl lifetime" in {
@@ -471,9 +471,8 @@ object AppConfigSpec {
       |files.codelists.procedureCodeToAdditionalProcedureCodesC21Link="procedureCodeToAdditionalProcedureCodesC21Link"
       |files.codelists.dmsErrorCodes="/code-lists/dmsErrorCodes.json"
       |files.codelists.countryCodes="/code-lists/countryCodes.json"
+      |files.codelists.countryCodeToAliasesLink="countryCodeToAliasesLink"
       |
-      |countryCodesCsvFilename=code-lists/mdg-country-codes.csv
-      |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs
       |microservice.services.nrs.port=7654
