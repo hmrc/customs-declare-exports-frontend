@@ -32,7 +32,7 @@ object Mucr extends DeclarationPage {
 
   val MUCR = "MUCR"
 
-  def form2Data(mucr: String): Mucr = new Mucr(mucr.toUpperCase)
+  def form2Data(mucr: String): Mucr = Mucr(mucr.toUpperCase)
 
   val mapping = Forms.mapping(
     MUCR -> text()

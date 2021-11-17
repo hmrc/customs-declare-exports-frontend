@@ -17,101 +17,65 @@
 @import config.AppConfig
 @import controllers.declaration.routes.SupplementaryUnitsController
 @import controllers.navigation.{ItemId, Navigator}
-@import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
-@import forms.declaration.CommodityDetails
 @import forms.declaration.commodityMeasure.SupplementaryUnits
-@import forms.declaration.commodityMeasure.SupplementaryUnits.{hasSupplementaryUnits, supplementaryUnits}
+@import forms.declaration.commodityMeasure.SupplementaryUnits.supplementaryUnits
+@import java.net.URLEncoder
 @import models.requests.JourneyRequest
-@import play.twirl.api.HtmlFormat
+@import services.CommodityInfo
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.{BackButton, Title}
-@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.helpers.{BackButton, InputTextHelper, Title}
 @import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
-    govukRadios: GovukRadios,
+    govukInput: GovukInput,
     formHelper: FormWithCSRF,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     heading: heading,
     body: paragraphBody,
-    link: link,
-    exportsInputText: exportsInputText,
+    inputTextHelper: InputTextHelper,
+    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[SupplementaryUnits])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode,
+  itemId: String,
+  form: Form[SupplementaryUnits],
+  commodityInfo: CommodityInfo
+)(implicit request: JourneyRequest[_], messages: Messages)
 
-@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+@hasErrors = @{ form.hasErrors || form.hasGlobalErrors}
 
-@linkForCommodityCode = {
-    @request.cacheModel.commodityCodeOfItem(itemId).map { commodityCode =>
-        @link(
-            text = messages("declaration.supplementaryUnits.body.link.1", commodityCode),
-            call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)),
-            target = "_blank"
-        )
-    }.getOrElse {
-        @link(
-            text = messages("declaration.supplementaryUnits.body.link.2"),
-            call = Call("GET", appConfig.tradeTariffSections),
-            target = "_blank"
-        )
-    }
-}
-
-@amountInputField = {
-    @exportsInputText(
-        field = form(supplementaryUnits),
-        labelKey = "declaration.supplementaryUnits.amount.label",
-        hintKey = Some("declaration.supplementaryUnits.amount.hint"),
-        labelClasses = "govuk-label",
-        inputClasses = Some("govuk-input govuk-input--width-10")
-    )
-}
+@field = @{ form(supplementaryUnits) }
 
 @govukLayout(
-    title = Title("declaration.supplementaryUnits.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(SupplementaryUnits, mode, ItemId(itemId))))) {
-
+    title = Title("declaration.supplementaryUnits.title", "declaration.section.5", commodityInfo.description, hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(SupplementaryUnits, mode, ItemId(itemId))))
+) {
     @formHelper(action = SupplementaryUnitsController.submitPage(mode, itemId), 'autoComplete -> "off") {
-        @errorSummary(radioGroupErrors(hasSupplementaryUnits, "Yes", form.errors))
+        @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))
 
-        @heading(messages("declaration.supplementaryUnits.title"))
+        @heading(messages("declaration.supplementaryUnits.title", commodityInfo.description))
 
-        @body(messages("declaration.supplementaryUnits.body", linkForCommodityCode))
+        @body(messages("declaration.supplementaryUnits.body", commodityInfo.code, commodityInfo.description, commodityInfo.units))
 
-        @govukRadios(Radios(
-            name = hasSupplementaryUnits,
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.supplementaryUnits.title")),
-                    classes = "govuk-visually-hidden"
-                ))
-            )),
-            items = Seq(
-                RadioItem(
-                    id = Some("Yes"),
-                    value = Some(yes),
-                    content = Text(messages("site.yes")),
-                    conditionalHtml = Some(amountInputField),
-                    checked = form(hasSupplementaryUnits).value.contains(yes)
-                ),
-                RadioItem(
-                    id = Some("No"),
-                    value = Some(no),
-                    content = Text(messages("site.no")),
-                    checked = form(hasSupplementaryUnits).value.contains(no)
-                )
-            ),
-            errorMessage = form(hasSupplementaryUnits).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        @govukInput(Input(
+            id = field.id,
+            name = field.id,
+            value = field.value,
+            hint = Some(Hint(content = Text(messages("declaration.supplementaryUnits.hint")))),
+            errorMessage = inputTextHelper.getAnyErrorMessages(field),
+            classes = "govuk-input govuk-input--width-10",
+            spellcheck = Some(false),
+            suffix = Some(PrefixOrSuffix(content = Text(commodityInfo.units)))
         ))
+
+        @tariffExpander(SupplementaryUnits, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

@@ -21,6 +21,6 @@ import features.Feature
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class TariffAPIConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class TariffApiConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
   val isCommoditiesEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.commodities)
 }

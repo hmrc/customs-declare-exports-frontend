@@ -30,11 +30,12 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.commodityMeasure.supplementary_units
+import views.html.declaration.commodityMeasure.{supplementary_units, supplementary_units_yes_no}
 
 class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
   private val supplementaryUnitsPage = mock[supplementary_units]
+  private val supplementaryUnitsYesNoPage = mock[supplementary_units_yes_no]
 
   private val controller = new SupplementaryUnitsController(
     mockAuthAction,
@@ -42,23 +43,25 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    supplementaryUnitsPage
+    supplementaryUnitsPage,
+    supplementaryUnitsYesNoPage
   )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
     when(supplementaryUnitsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(supplementaryUnitsYesNoPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(supplementaryUnitsPage)
+    reset(supplementaryUnitsPage, supplementaryUnitsYesNoPage)
   }
 
   def theResponseForm: Form[SupplementaryUnits] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[SupplementaryUnits]])
-    verify(supplementaryUnitsPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(supplementaryUnitsYesNoPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -104,7 +107,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
           val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
-          verify(supplementaryUnitsPage).apply(any(), any(), any())(any(), any())
+          verify(supplementaryUnitsYesNoPage).apply(any(), any(), any())(any(), any())
         }
       }
     }

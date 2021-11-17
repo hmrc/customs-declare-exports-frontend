@@ -23,9 +23,14 @@ import play.api.data.{Form, FormError}
 
 class SupplementaryUnitsSpec extends UnitSpec with DeclarationPageBaseSpec {
 
-  def form(hasSupplementaryUnits: String, supplementaryUnits: String): Form[SupplementaryUnits] =
-    SupplementaryUnits.form.bind(
-      Map(SupplementaryUnits.hasSupplementaryUnits -> hasSupplementaryUnits, SupplementaryUnits.supplementaryUnits -> supplementaryUnits)
+  private val yesNoPage = true
+
+  def form(hasSupplementaryUnits: String, supplementaryUnits: String, yesNoPage: Boolean = yesNoPage): Form[SupplementaryUnits] =
+    SupplementaryUnits.form(yesNoPage).bind(
+      Map(
+        SupplementaryUnits.hasSupplementaryUnits -> hasSupplementaryUnits,
+        SupplementaryUnits.supplementaryUnits -> supplementaryUnits
+      )
     )
 
   "Supplementary Units form" should {
@@ -44,17 +49,22 @@ class SupplementaryUnitsSpec extends UnitSpec with DeclarationPageBaseSpec {
     "have errors" when {
 
       "no radio is selected" in {
-        val expectedErrors = List(FormError(hasSupplementaryUnits, "declaration.supplementaryUnits.empty"))
+        val expectedErrors = List(FormError(hasSupplementaryUnits, "declaration.supplementaryUnits.yesNo.empty"))
         form("", "").errors mustBe expectedErrors
       }
 
       "provided with non-numeric 'Supplementary Units'" in {
-        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.amount.error"))
+        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.error"))
         form("Yes", "abcd").errors mustBe expectedErrors
       }
 
+      "provided with too long 'Supplementary Units'" in {
+        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.length"))
+        form("Yes", "12345678901234567").errors mustBe expectedErrors
+      }
+
       "provided with no 'Supplementary Units' when the user selects 'Yes'" in {
-        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.amount.empty"))
+        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.empty"))
         form("Yes", "").errors mustBe expectedErrors
       }
     }

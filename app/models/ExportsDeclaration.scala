@@ -81,6 +81,8 @@ case class ExportsDeclaration(
   def commodityCodeOfItem(itemId: String): Option[String] =
     itemBy(itemId).flatMap(_.commodityDetails.flatMap(_.combinedNomenclatureCode))
 
+  def commodityMeasure(itemId: String): Option[CommodityMeasure] = itemBy(itemId).flatMap(_.commodityMeasure)
+
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
 
   def containers: Seq[Container] = transport.containers.getOrElse(Seq.empty)
