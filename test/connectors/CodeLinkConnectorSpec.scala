@@ -31,6 +31,7 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     reset(appConfig)
     when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile).thenReturn("/code-links/manyLinks.json")
+    when(appConfig.countryCodeToAliasesLinkFile).thenReturn("/code-links/manyLinks.json")
   }
 
   private lazy val connector = new FileBasedCodeLinkConnector(appConfig)
@@ -81,6 +82,20 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
       "the procedure code does not have any valid additional procedure codes" in {
         connector.getValidAdditionalProcedureCodesForProcedureCode("0000") must be(Some(List.empty[String]))
+      }
+    }
+
+    "return a list of aliases for a country" when {
+      "the country code exists in the list" in {
+        connector.getAliasesForCountryCode("1040") must be(Some(List("C12", "F75")))
+      }
+
+      "the country code does not exists in the list" in {
+        connector.getAliasesForCountryCode("940") must be(None)
+      }
+
+      "the country code does not have any aliases" in {
+        connector.getAliasesForCountryCode("0000") must be(Some(List.empty[String]))
       }
     }
   }

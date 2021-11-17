@@ -178,10 +178,6 @@ class AppConfig @Inject()(
   lazy val isUsingImprovedErrorMessages =
     runModeConfiguration.getOptional[Boolean]("microservice.services.features.use-improved-error-messages").getOrElse(false)
 
-  val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
-
-  val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
-
   def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 
   lazy val cacheTimeToLive: FiniteDuration =
@@ -240,4 +236,5 @@ class AppConfig @Inject()(
   val procedureCodeToAdditionalProcedureCodesC21LinkFile = loadConfig("files.codelists.procedureCodeToAdditionalProcedureCodesC21Link")
   val dmsErrorCodes = loadConfig("files.codelists.dmsErrorCodes")
   val countryCodes = loadConfig("files.codelists.countryCodes")
+  val countryCodeToAliasesLinkFile = loadConfig("files.codelists.countryCodeToAliasesLink")
 }
