@@ -23,6 +23,7 @@ import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import forms.{CancelDeclaration, Lrn}
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import mock.{ErrorHandlerMocks, ExportsMetricsMocks}
+import models.{CancellationAlreadyRequested, MrnNotFound}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -61,18 +62,29 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
     "return 200 (OK)" when {
 
       "display page method is invoked" in new SetUp {
-
         val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
 
       "cancellation is requested with success" in new SetUp {
-
-        successfulCancelDeclarationResponse()
+        cancelDeclarationResponse()
 
         val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+        status(result) must be(OK)
+      }
 
+      "cancellation is requested with MRN not found error" in new SetUp {
+        cancelDeclarationResponse(MrnNotFound)
+
+        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+        status(result) must be(OK)
+      }
+
+      "cancellation is requested with duplicate request error" in new SetUp {
+        cancelDeclarationResponse(CancellationAlreadyRequested)
+
+        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
         status(result) must be(OK)
       }
     }
@@ -95,7 +107,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       val counterBefore = cancelCounter.getCount
 
       successfulCustomsDeclareExportsResponse()
-      successfulCancelDeclarationResponse()
+      cancelDeclarationResponse()
 
       val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
 

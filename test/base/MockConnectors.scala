@@ -92,9 +92,9 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclareExportsConnector.findDeclaration(anyString())(any(), any()))
       .thenReturn(Future.successful(None))
 
-  def successfulCancelDeclarationResponse(): OngoingStubbing[Future[Unit]] =
+  def cancelDeclarationResponse(response: CancellationStatus = CancellationRequestSent): OngoingStubbing[Future[CancellationStatus]] =
     when(mockCustomsDeclareExportsConnector.createCancellation(any())(any(), any()))
-      .thenReturn(Future.successful((): Unit))
+      .thenReturn(Future.successful(response))
 
   def findSubmission(id: String, submission: Option[Submission] = None): OngoingStubbing[Future[Option[Submission]]] =
     when(mockCustomsDeclareExportsConnector.findSubmission(refEq(id))(any(), any()))
