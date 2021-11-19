@@ -45,9 +45,9 @@ class VerifiedEmailActionImpl @Inject()(backendConnector: CustomsDeclareExportsC
     val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     backendConnector.getVerifiedEmailAddress(EORI(request.user.eori))(hc, executionContext).map {
-      case Some(Email(address, true))  => Right(VerifiedEmailRequest(request, address))
-      case Some(Email(_, false)) => Left(onUndeclared)
-      case _                           => Left(onUnverified)
+      case Some(Email(address, true)) => Right(VerifiedEmailRequest(request, address))
+      case Some(Email(_, false))      => Left(onUndeclared)
+      case _                          => Left(onUnverified)
     }
   }
 }

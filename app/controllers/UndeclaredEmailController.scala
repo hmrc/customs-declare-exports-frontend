@@ -27,11 +27,11 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class UndeclaredEmailController @Inject()(
-                                           authenticate: AuthAction,
-                                           mcc: MessagesControllerComponents,
-                                           undeclared_email: undeclared_email,
-                                           appConfig: AppConfig
-                                         ) extends FrontendController(mcc) with I18nSupport {
+  authenticate: AuthAction,
+  mcc: MessagesControllerComponents,
+  undeclared_email: undeclared_email,
+  appConfig: AppConfig
+) extends FrontendController(mcc) with I18nSupport {
 
   val informUser: Action[AnyContent] = authenticate { implicit req =>
     Ok(undeclared_email(appConfig.emailFrontendUrl))
