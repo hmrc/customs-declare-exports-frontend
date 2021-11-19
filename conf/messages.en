@@ -393,6 +393,16 @@ emailUnverified.bullets.item4=duty deferment Direct Debit notices
 emailUnverified.bullets.item5=updates about changes to the service
 emailUnverified.link=Verify your email address
 
+Undeliverable.title=There’s a problem with the CDS registered email address
+Undeliverable.heading=There’s a problem with the CDS registered email address
+Undeliverable.p1=We tried to send you an email but it could not be delivered. This could be because the inbox is full, or due to a technical problem with your email provider.
+Undeliverable.p2=This is the email address your organisation has registered for the Customs Declaration Service (CDS). You need to verify this email address or change it. You can verify the email instantly provided you have access to the email account.
+Undeliverable.p3=This will be the only email address we use for:
+Undeliverable.list.1=updates on changes to the Customs Declaration Service
+Undeliverable.list.2=urgent updates about goods in customs
+Undeliverable.list.3=some financial notifications, including Direct Debit notices and VAT
+Undeliverable.link-text=Verify or change email address
+
 choicePage.input.error.empty = Select what you want to do
 choicePage.input.error.incorrectValue = Select what you want to do
 
