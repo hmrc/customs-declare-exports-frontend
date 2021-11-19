@@ -16,20 +16,20 @@
 
 package controllers.actions
 
-import java.time.ZonedDateTime
-
-import scala.concurrent.Future
-
 import base.{ControllerWithoutFormSpec, ExportsTestData, Injector}
 import connectors.CustomsDeclareExportsConnector
+import controllers.routes
 import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
-import models.{EORI, VerifiedEmailAddress}
+import models.{EORI, Email}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.{Configuration, Environment}
+
+import scala.concurrent.Future
 
 class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector with ScalaFutures {
 
@@ -44,7 +44,8 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
   lazy val sampleEori = EORI("12345")
   lazy val user = ExportsTestData.newUser(sampleEori.value, "Id")
 
-  lazy val verifiedEmail = VerifiedEmailAddress(sampleEmailAddress, ZonedDateTime.now())
+  lazy val verifiedEmail = Email(sampleEmailAddress, deliverable = true)
+  lazy val undeliverableEmail = Email(sampleEmailAddress, deliverable = false)
   lazy val authenticatedRequest = new AuthenticatedRequest[Any](FakeRequest("GET", "requestPath"), user)
 
   override def beforeEach(): Unit = {
@@ -72,7 +73,17 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
         val request = new AuthenticatedRequest(authenticatedRequest, user)
 
         whenReady(action.testRefine(request)) { result =>
-          result must be('left)
+          result mustBe Left(Redirect(routes.UnverifiedEmailController.informUser))
+        }
+      }
+
+      "user has no deliverable email address" in {
+        when(backendConnector.getVerifiedEmailAddress(meq(sampleEori))(any(), any())).thenReturn(Future.successful(Some(undeliverableEmail)))
+
+        val request = new AuthenticatedRequest(authenticatedRequest, user)
+
+        whenReady(action.testRefine(request)) { result =>
+          result mustBe Left(Redirect(routes.UndeclaredEmailController.informUser))
         }
       }
     }
