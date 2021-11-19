@@ -53,7 +53,7 @@ class TariffApiServiceSpec
     tariffApiService.retrieveCommodityInfoIfAny(aDeclaration(withItems(item)), item.id)
   }
 
-  private def retrieveCommodityInfoIfAny(json: String): Option[CommodityInfo] = {
+  private def extractCommodityInfoIfAnyFromJson(json: String): Option[CommodityInfo] = {
     val response = Future.successful(Some(Json.parse(json)))
     when(tariffApiConnector.getCommodity(any())).thenReturn(response)
     retrieveCommodityInfoIfAny().futureValue
@@ -82,59 +82,59 @@ class TariffApiServiceSpec
 
         "the Tariff API provides a Json payload that does not include a 'included' Json array" in {
           val json = """{ "data": { "id": "91561" } }"""
-          retrieveCommodityInfoIfAny(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json) mustBe None
         }
 
         "the Tariff API provides a Json payload that includes 'included' but not as Json array" in {
           val json = """{ "included": { "id": "91561" } }"""
-          retrieveCommodityInfoIfAny(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json) mustBe None
         }
 
         "the Tariff API provides a Json payload that includes an empty 'included' Json array" in {
           val json = """{ "included":[] }"""
-          retrieveCommodityInfoIfAny(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json) mustBe None
         }
 
         "no 'included' Json array's element of 'measure' type also has a '/relationships/measure_type/data/id' == '109'" in {
           val json = """{ "included":[ { "type": "measure" } ] }"""
-          retrieveCommodityInfoIfAny(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json) mustBe None
         }
 
         "the element of 'measure' type with a '/relationships/measure_type/data/id' == '109' does not have a '/relationships/duty_expression' object" in {
           val json = """{ "included":[ { "type": "measure", "relationships": { "measure_type": { "data": { "id": "109" } } } } ] }"""
-          retrieveCommodityInfoIfAny(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json) mustBe None
         }
 
         "no element with 'id' == '/relationships/duty_expression/data/id' is found" in {
           val json = jsonWithoutAttributes("")
-          retrieveCommodityInfoIfAny(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json) mustBe None
         }
 
         "an element with 'id' == '/relationships/duty_expression/data/id' is found but does not include an 'attributes' object" in {
           val json = jsonWithoutAttributes(""",{ "id": "2982610-duty_expression" }""")
-          retrieveCommodityInfoIfAny(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json) mustBe None
         }
 
         "the element with 'id' and 'attributes' object is found but 'attributes' does not include a 'formatted_base' attribute" in {
           val json = jsonWithAttributes("")
-          retrieveCommodityInfoIfAny(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json) mustBe None
         }
 
         "the 'attributes' object with a 'formatted_base' attribute is found but 'formatted_base' cannot be parsed" in {
           val json = jsonWithAttributes(""""formatted_base":"<abbr>l alc. 100%</abbr>"""")
-          retrieveCommodityInfoIfAny(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json) mustBe None
         }
 
         "the 'attributes' object with a parseable 'formatted_base' attribute is found but the commodity's information are empty" in {
           val json = jsonWithAttributes(""""formatted_base":"<abbr title='  '>  </abbr>"""")
-          retrieveCommodityInfoIfAny(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json) mustBe None
         }
       }
 
       "return a CommodityInfo object" when {
         "given a commodity code, the Tariff API provides a Json payload that includes the commodity' information" in {
           val json = jsonWithAttributes(""""formatted_base":"<abbr title='Litre pure (100%) alcohol'>l alc. 100%</abbr>"""")
-          retrieveCommodityInfoIfAny(json).value mustBe CommodityInfo(commodityCode, "litre pure (100%) alcohol", "l alc. 100%")
+          extractCommodityInfoIfAnyFromJson(json).value mustBe CommodityInfo(commodityCode, "litre pure (100%) alcohol", "l alc. 100%")
         }
       }
 
