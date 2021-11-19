@@ -17,12 +17,12 @@
 package controllers.actions
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import com.google.inject.ImplementedBy
 import connectors.CustomsDeclareExportsConnector
 import controllers.routes
+
 import javax.inject.{Inject, Singleton}
-import models.EORI
+import models.{EORI, Email}
 import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, MessagesControllerComponents, Result}
@@ -37,16 +37,17 @@ class VerifiedEmailActionImpl @Inject()(backendConnector: CustomsDeclareExportsC
     extends VerifiedEmailAction {
 
   implicit val executionContext: ExecutionContext = mcc.executionContext
-  private lazy val onError = Redirect(routes.UnverifiedEmailController.informUser)
+  private lazy val onUnverified = Redirect(routes.UnverifiedEmailController.informUser)
+  private lazy val onUndeclared = Redirect(routes.UndeclaredEmailController.informUser)
 
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, VerifiedEmailRequest[A]]] = {
 
     val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    backendConnector.getVerifiedEmailAddress(EORI(request.user.eori))(hc, executionContext).map { maybeVerifiedEmail =>
-      maybeVerifiedEmail
-        .map(verifiedEmail => VerifiedEmailRequest(request, verifiedEmail.address))
-        .toRight(onError)
+    backendConnector.getVerifiedEmailAddress(EORI(request.user.eori))(hc, executionContext).map {
+      case Some(Email(address, true))  => Right(VerifiedEmailRequest(request, address))
+      case Some(Email(_, false)) => Left(onUndeclared)
+      case _                           => Left(onUnverified)
     }
   }
 }

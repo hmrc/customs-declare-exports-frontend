@@ -162,15 +162,17 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       .map(_ => (): Unit)
   }
 
-  def getVerifiedEmailAddress(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[VerifiedEmailAddress]] =
+  def getVerifiedEmailAddress(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Email]] =
     httpClient
-      .GET[Option[VerifiedEmailAddress]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchVerifiedEmailPath}/${eori.value}")
+      .GET[Option[Email]](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.fetchVerifiedEmailPath}/${eori.value}")
       .map { maybeVerifiedEmail =>
         maybeVerifiedEmail match {
-          case Some(_) =>
+          case Some(Email(_, true)) =>
             logger.debug(s"Found verified email for eori: $eori")
+          case Some(Email(_, false)) =>
+            logger.debug(s"Undeliverable email for eori: $eori")
           case None =>
-            logger.info(s"No verified email for eori: $eori")
+            logger.info(s"Unverified email for eori: $eori")
         }
         maybeVerifiedEmail
       }
