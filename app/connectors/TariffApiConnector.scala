@@ -20,7 +20,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 import com.google.inject.Inject
-import config.AppConfig
+import config.featureFlags.TariffApiConfig
 import javax.inject.Singleton
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import play.api.Logger
@@ -29,7 +29,7 @@ import play.mvc.Http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.http.HttpClient
 
 @Singleton
-class TariffApiConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, metrics: ExportsMetrics)(implicit ec: ExecutionContext) {
+class TariffApiConnector @Inject()(config: TariffApiConfig, httpClient: HttpClient, metrics: ExportsMetrics)(implicit ec: ExecutionContext) {
 
   private val logger = Logger(this.getClass)
 
@@ -37,7 +37,7 @@ class TariffApiConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient,
     logger.debug(s"Request's Commodity code to Tariff API is [$commodityCode]")
     val timer = metrics.startTimer(MetricIdentifiers.tariffCommoditiesMetric)
 
-    httpClient.doGet(s"${appConfig.tariffCommoditiesUri}/$commodityCode") map { response =>
+    httpClient.doGet(s"${config.tariffCommoditiesUri}/$commodityCode") map { response =>
       timer.stop()
       response.status match {
         case OK =>

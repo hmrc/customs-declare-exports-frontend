@@ -16,17 +16,15 @@
 
 package connectors
 
-import org.scalatest.concurrent.ScalaFutures
-import _root_.mock.ExportsMetricsMocks
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.OptionValues
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
 
-class TariffApiConnectorISpec extends ConnectorISpec with MockitoSugar with ScalaFutures with ExportsMetricsMocks with OptionValues {
+class TariffApiConnectorISpec extends ConnectorISpec with OptionValues with ScalaFutures {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
@@ -51,28 +49,23 @@ class TariffApiConnectorISpec extends ConnectorISpec with MockitoSugar with Scal
   "TariffAPIConnector" when {
 
     "getCommodity" should {
-      "respond with json" in {
 
+      "respond with json" in {
         val response = aResponse.withStatus(OK).withBody(exampleSuccessResponse)
         stubForTariffCommodities(get(anyUrl()).willReturn(response))
 
         val result = testConnector.getCommodity(commodityCode).futureValue
         result.value mustBe Json.parse(exampleSuccessResponse)
-
       }
 
       "server responds with something else" in {
-
         val response = aResponse.withStatus(NOT_FOUND)
         stubForTariffCommodities(get(anyUrl()).willReturn(response))
 
         whenReady(testConnector.getCommodity(commodityCode)) { result =>
           result mustBe None
         }
-
       }
     }
-
   }
-
 }

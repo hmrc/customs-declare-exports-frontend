@@ -50,9 +50,7 @@ object SupplementaryUnits extends DeclarationPage {
     )(form2Model)(model2Form)
 
   private val mappingForMandatorySupplementaryUnits =
-    Forms.mapping(
-      supplementaryUnits -> supplementaryUnitsMapping
-    )(inputValue => SupplementaryUnits(Some(inputValue)))(_.supplementaryUnits)
+    Forms.mapping(supplementaryUnits -> supplementaryUnitsMapping)(inputValue => SupplementaryUnits(Some(inputValue)))(_.supplementaryUnits)
 
   private def form2Model: (String, Option[String]) => SupplementaryUnits = {
     case (hasSupplementaryUnits, value) =>
@@ -78,5 +76,5 @@ object SupplementaryUnits extends DeclarationPage {
     value => validateDecimalGreaterThanZero(99)(6)(value) and containsNotOnlyZeros(value)
 
   override def defineTariffContentKeys(declarationType: DeclarationType): Seq[TariffContentKey] =
-    List(TariffContentKey("tariff.declaration.item.supplementaryUnits.1.common"))
+    List(TariffContentKey("tariff.declaration.item.supplementaryUnits.common"))
 }

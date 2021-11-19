@@ -18,7 +18,6 @@ package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
 
-import config.featureFlags.TariffApiConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.AdditionalInformationRequiredController
 import controllers.navigation.Navigator
@@ -31,8 +30,8 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.TariffApiService
 import services.cache.ExportsCacheService
-import services.{CommodityInfo, TariffApiService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.commodityMeasure.{supplementary_units, supplementary_units_yes_no}
 
@@ -43,7 +42,6 @@ class SupplementaryUnitsController @Inject()(
   tariffApiService: TariffApiService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  tariffApiConfig: TariffApiConfig,
   supplementaryUnitsPage: supplementary_units,
   supplementaryUnitsYesNoPage: supplementary_units_yes_no
 )(implicit ec: ExecutionContext)
@@ -53,7 +51,6 @@ class SupplementaryUnitsController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
-
       def formWithDataIfAny(yesNoPage: Boolean): Form[SupplementaryUnits] =
         request.cacheModel.commodityMeasure(itemId) match {
           case Some(commodityMeasure) if hasSupplementaryUnits(commodityMeasure) =>
@@ -62,7 +59,7 @@ class SupplementaryUnitsController @Inject()(
           case _ => form(yesNoPage)
         }
 
-      retrieveCommodityInfoIfAny(itemId).flatMap {
+      tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
         case Some(commodityInfo) =>
           Future.successful(Ok(supplementaryUnitsPage(mode, itemId, formWithDataIfAny(false), commodityInfo)))
 
@@ -73,7 +70,7 @@ class SupplementaryUnitsController @Inject()(
 
   def submitPage(mode: Mode, itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
-      retrieveCommodityInfoIfAny(itemId).flatMap {
+      tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
         case Some(commodityInfo) =>
           form(false).bindFromRequest.fold(
             formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(mode, itemId, formWithErrors, commodityInfo))),
@@ -94,36 +91,27 @@ class SupplementaryUnitsController @Inject()(
   private def hasSupplementaryUnits(commodityMeasure: CommodityMeasure): Boolean =
     commodityMeasure.supplementaryUnits.isDefined || commodityMeasure.supplementaryUnitsNotRequired.isDefined
 
-  private def retrieveCommodityInfoIfAny(itemId: String)(implicit request: JourneyRequest[_]): Future[Option[CommodityInfo]] = {
-    if (tariffApiConfig.isCommoditiesEnabled) {
-      request.cacheModel.commodityCodeOfItem(itemId)
-        .map(tariffApiService.retrieveCommodityInfo)
-        .getOrElse(Future.successful(None))
-    }
-    else Future.successful(None)
-  }
-
-  private def updateExportsCacheAndContinueToNextPage(
-    mode: Mode, itemId: String, updatedItem: SupplementaryUnits)(implicit r: JourneyRequest[AnyContent]
+  private def updateExportsCacheAndContinueToNextPage(mode: Mode, itemId: String, updatedItem: SupplementaryUnits)(
+    implicit r: JourneyRequest[AnyContent]
   ): Future[Result] =
     updateExportsDeclarationSyncDirect {
       _.updatedItem(itemId, item => item.copy(commodityMeasure = updateCommodityMeasure(item, updatedItem)))
+    }.map { _ =>
+      navigator.continueTo(mode, AdditionalInformationRequiredController.displayPage(_, itemId))
     }
-    .map { _ => navigator.continueTo(mode, AdditionalInformationRequiredController.displayPage(_, itemId)) }
 
   private def updateCommodityMeasure(item: ExportItem, updatedItem: SupplementaryUnits): Option[CommodityMeasure] =
     item.commodityMeasure match {
-      case Some(commodityMeasure) => Some(CommodityMeasure(
-        updatedItem.supplementaryUnits,
-        updatedItem.supplementaryUnits.fold(Some(true))(_ => Some(false)),
-        commodityMeasure.grossMass,
-        commodityMeasure.netMass
-      ))
+      case Some(commodityMeasure) =>
+        Some(
+          CommodityMeasure(
+            updatedItem.supplementaryUnits,
+            updatedItem.supplementaryUnits.fold(Some(true))(_ => Some(false)),
+            commodityMeasure.grossMass,
+            commodityMeasure.netMass
+          )
+        )
 
-      case _ => Some(CommodityMeasure(
-        updatedItem.supplementaryUnits,
-        updatedItem.supplementaryUnits.fold(Some(true))(_ => Some(false)),
-        None, None
-      ))
+      case _ => Some(CommodityMeasure(updatedItem.supplementaryUnits, updatedItem.supplementaryUnits.fold(Some(true))(_ => Some(false)), None, None))
     }
 }

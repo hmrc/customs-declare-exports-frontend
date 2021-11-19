@@ -17,37 +17,36 @@
 package views.declaration.commodityMeasure
 
 import base.Injector
-import config.AppConfig
 import controllers.declaration.routes.CommodityMeasureController
-import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.CommodityDetails
 import forms.declaration.commodityMeasure.SupplementaryUnits
-import forms.declaration.commodityMeasure.SupplementaryUnits.{hasSupplementaryUnits, supplementaryUnits}
+import forms.declaration.commodityMeasure.SupplementaryUnits.supplementaryUnits
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import services.CommodityInfo
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.commodityMeasure.supplementary_units_yes_no
+import views.html.declaration.commodityMeasure.supplementary_units
 import views.tags.ViewTest
 
 @ViewTest
-class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class SupplementaryUnitsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
-
-  private val page = instanceOf[supplementary_units_yes_no]
+  private val page = instanceOf[supplementary_units]
 
   private val itemId = "item1"
-  private val yesNoPage = true
+  private val yesNoPage = false
+
+  private val commodityInfo = CommodityInfo("2208303000", "number of items", "p/st")
 
   private def createView(form: Form[SupplementaryUnits] = SupplementaryUnits.form(yesNoPage))(implicit request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form)(request, messages)
+    page(Mode.Normal, itemId, form, commodityInfo)(request, messages)
 
-  "SupplementaryUnitsYesNo View" should {
+  "SupplementaryUnits View" should {
+
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       val view = createView()
 
@@ -58,69 +57,34 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
       }
 
       "display page title" in {
-        view.getElementsByTag("h1").text mustBe messages("declaration.supplementaryUnits.yesNo.title")
+        val expectedTitle = messages("declaration.supplementaryUnits.title", commodityInfo.description)
+        view.getElementsByTag("h1").text mustBe expectedTitle
       }
 
       "display section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
-      "display body text when a commodity code has been selected" in {
-        val commodityCode = "4602191000"
-        val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
-        val view = createView()(journeyRequest(aDeclarationAfter(request.cacheModel, withItem(item))))
-
-        val body = view.getElementsByClass("govuk-body").get(0)
-
-        val linkWithCommodityCode = messages("declaration.supplementaryUnits.yesNo.body.link.1", commodityCode)
-        val text = messages("declaration.supplementaryUnits.yesNo.body", linkWithCommodityCode)
-        body.text mustBe text
-
-        val href = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
-        body.child(0) must haveHref(href)
+      "display the expected body text" in {
+        val expectedBodyText = messages("declaration.supplementaryUnits.body", commodityInfo.code, commodityInfo.description, commodityInfo.units)
+        view.getElementsByClass("govuk-body").get(0).text mustBe expectedBodyText
       }
 
-      "display body text when no commodity code has been selected" in {
-        val body = view.getElementsByClass("govuk-body").get(0)
-
-        val linkWithoutCommodityCode = messages("declaration.supplementaryUnits.yesNo.body.link.2")
-        val text = messages("declaration.supplementaryUnits.yesNo.body", linkWithoutCommodityCode)
-        body.text mustBe text
-
-        body.child(0) must haveHref(appConfig.tradeTariffSections)
+      "display the expected hint text" in {
+        view.getElementsByClass("govuk-hint").get(0).text mustBe messages("declaration.supplementaryUnits.hint")
       }
 
-      "display radio button with Yes option" in {
-        val label = view.getElementsByTag("label").get(0)
-        label.attr("for") mustBe "Yes"
-        label.text mustBe messages("site.yes")
+      "include a 'supplementaryUnits' field with suffix" in {
+        val wrapperDiv = view.getElementsByClass("govuk-input__wrapper").get(0)
+        wrapperDiv.childrenSize mustBe 2
 
-        val radio = view.getElementById("Yes")
-        radio.attr("type") mustBe "radio"
-        radio.attr("name") mustBe hasSupplementaryUnits
-        radio.attr("value") mustBe YesNoAnswers.yes
-      }
+        wrapperDiv.child(0).id mustBe supplementaryUnits
+        wrapperDiv.child(0).tag.toString mustBe "input"
 
-      "include a 'supplementaryUnits' field" in {
-        val label = view.getElementsByTag("label").get(1)
-        label.attr("for") mustBe supplementaryUnits
-        label.text mustBe messages("declaration.supplementaryUnits.quantity.label")
-
-        val hint = view.getElementsByClass("govuk-hint").get(0)
-        hint.text mustBe messages("declaration.supplementaryUnits.hint")
-
-        view.getElementById(supplementaryUnits).tag.toString mustBe "input"
-      }
-
-      "display radio button with No option" in {
-        val label = view.getElementsByTag("label").get(2)
-        label.attr("for") mustBe "No"
-        label.text mustBe messages("site.no")
-
-        val radio = view.getElementById("No")
-        radio.attr("type") mustBe "radio"
-        radio.attr("name") mustBe hasSupplementaryUnits
-        radio.attr("value") mustBe YesNoAnswers.no
+        val suffix = wrapperDiv.child(1)
+        suffix.tag.toString mustBe "div"
+        suffix.className mustBe "govuk-input__suffix"
+        suffix.text mustBe commodityInfo.units
       }
 
       "display the expected tariff details" in {

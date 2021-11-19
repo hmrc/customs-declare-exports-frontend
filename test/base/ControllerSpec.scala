@@ -83,7 +83,7 @@ trait ControllerSpec
   private val submissionError = "some error"
   protected val submissionFormError = FormError(submissionField, submissionError)
 
-  private def getRequestWithSubmissionErrors: Request[AnyContentAsEmpty.type] =
+  protected def getRequestWithSubmissionErrors: Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "")
       .withFlash((FlashKeys.fieldName, submissionField), (FlashKeys.errorMessage, submissionError))
       .withSession((ExportsSessionKeys.declarationId -> "declaration-id"))
