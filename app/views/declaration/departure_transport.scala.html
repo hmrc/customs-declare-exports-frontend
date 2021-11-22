@@ -59,13 +59,6 @@
     ))
 }
 
-
-
-
-
-
-
-
 @formContent = {
     @paragraphBody(messages("declaration.transportInformation.meansOfTransport.departure.paragraph1"))
 
@@ -173,18 +166,6 @@
     ))
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 @govukLayout(
     title = Title("declaration.transportInformation.meansOfTransport.departure.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DepartureTransport, mode)))) {
@@ -194,8 +175,6 @@
 
         @sectionHeader(messages("declaration.section.6"))
 
-
-
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = HtmlContent(messages("declaration.transportInformation.meansOfTransport.departure.title")),
@@ -204,17 +183,9 @@
             )),
             html = HtmlFormat.fill(List(
                 formContent,
-
                 tariffExpander(DepartureTransport, request.declarationType)(messages, appConfig),
-
                 saveButtons()
             ))
         ))
-
-
-
-
-
-
     }
 }
