@@ -733,6 +733,7 @@ submissions.declarationDetails.references =  Declaration references
 submissions.declarationDetails.ducr = DUCR
 submissions.declarationDetails.lrn = LRN
 submissions.declarationDetails.mrn = MRN:
+submissions.declarationDetails.mrn.pending = MRN pending
 submissions.declarationDetails.fix.resubmit.button = Fix and resubmit
 submissions.declarationDetails.upload.files.button = Upload files
 submissions.declarationDetails.upload.files.title = If you already uploaded files

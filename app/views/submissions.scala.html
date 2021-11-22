@@ -72,8 +72,8 @@
 @mrnLink(submission: Submission) = @{
     HtmlContent(
         link(
-            submission.mrn.getOrElse(""),
-            routes.DeclarationDetailsController.displayPage(submission.uuid),
+            text = submission.mrn.getOrElse(messages("submissions.declarationDetails.mrn.pending")),
+            call = routes.DeclarationDetailsController.displayPage(submission.uuid),
             textHidden = Some(messages("submissions.hidden.text", submission.ducr.getOrElse("")))
         )
     )
