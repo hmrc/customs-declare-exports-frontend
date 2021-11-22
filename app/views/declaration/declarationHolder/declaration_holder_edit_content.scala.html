@@ -63,11 +63,6 @@
 }
 
 @formContent = {
-    @legend(
-        content = HtmlContent(messages("declaration.declarationHolder.eori")),
-        classes = "govuk-label--m",
-        isPageHeading = false
-    )
 
     @declHolderHelper.textForEoriRadiosWhenEXRR
 
@@ -112,9 +107,15 @@
 @declHolderHelper.insetTextBelowAuthorisationCode(appConfig)
 
 @govukFieldset(Fieldset(
+    legend = Some(Legend(
+        content = Text(messages("declaration.declarationHolder.eori")),
+        classes = "govuk-fieldset__legend--m"
+    )),
     html = HtmlFormat.fill(List(
         formContent,
         tariffExpander(DeclarationHolder, request.declarationType)(messages, appConfig),
         saveButtons()
     ))
 ))
+
+
