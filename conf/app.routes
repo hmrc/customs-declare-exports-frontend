@@ -8,8 +8,8 @@ GET         /unauthorised                                  controllers.Unauthori
 
 # Unverified/Undeclared Email
 
-GET         /unverified-email                              controllers.UnverifiedEmailController.informUser
-GET         /undeclared-email                              controllers.UndeclaredEmailController.informUser
+GET         /unverified-email                              controllers.UnverifiedEmailController.informUserUnverified
+GET         /undeliverable-email                           controllers.UnverifiedEmailController.informUserUndeliverable
 
 # Secure Messaging
 GET         /messages                                      controllers.SecureMessagingController.displayInbox

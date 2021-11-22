@@ -28,22 +28,22 @@
 
 @(redirectionUrl: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = Title("Undeliverable.heading")) {
+@mainTemplate(title = Title("emailUndeliverable.heading")) {
 
-  @pageTitle(messages("Undeliverable.heading"))
+  @pageTitle(messages("emailUndeliverable.heading"))
 
-  @paragraphBody(messages("Undeliverable.p1"), id = Some("Undeliverable.para1"))
-  @paragraphBody(messages("Undeliverable.p2"), id = Some("Undeliverable.para2"))
-  @paragraphBody(messages("Undeliverable.p3"), id = Some("Undeliverable.para3"))
+  @paragraphBody(messages("emailUndeliverable.p1"), id = Some("emailUndeliverable.para1"))
+  @paragraphBody(messages("emailUndeliverable.p2"), id = Some("emailUndeliverable.para2"))
+  @paragraphBody(messages("emailUndeliverable.p3"), id = Some("emailUndeliverable.para3"))
   <ul class="govuk-list govuk-list--bullet" id="emailUnverified.bullets">
-    <li>@messages("Undeliverable.list.1")</li>
-    <li>@messages("Undeliverable.list.2")</li>
-    <li>@messages("Undeliverable.list.3")</li>
+    <li>@messages("emailUndeliverable.list.1")</li>
+    <li>@messages("emailUndeliverable.list.2")</li>
+    <li>@messages("emailUndeliverable.list.3")</li>
   </ul>
 
   <p class="govuk-body govuk-!-margin-top-9">
     @linkButton(
-      messageKey = "Undeliverable.link-text",
+      messageKey = "emailUndeliverable.link-text",
       call = Call("GET", redirectionUrl)
     )
   </p>

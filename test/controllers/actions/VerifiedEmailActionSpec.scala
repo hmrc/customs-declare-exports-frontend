@@ -73,7 +73,7 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
         val request = new AuthenticatedRequest(authenticatedRequest, user)
 
         whenReady(action.testRefine(request)) { result =>
-          result mustBe Left(Redirect(routes.UnverifiedEmailController.informUser))
+          result mustBe Left(Redirect(routes.UnverifiedEmailController.informUserUnverified))
         }
       }
 
@@ -83,7 +83,7 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
         val request = new AuthenticatedRequest(authenticatedRequest, user)
 
         whenReady(action.testRefine(request)) { result =>
-          result mustBe Left(Redirect(routes.UndeclaredEmailController.informUser))
+          result mustBe Left(Redirect(routes.UnverifiedEmailController.informUserUndeliverable))
         }
       }
     }

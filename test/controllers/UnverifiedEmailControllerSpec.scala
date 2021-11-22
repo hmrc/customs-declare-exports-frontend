@@ -22,27 +22,33 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.unverified_email
+import views.html.{undeliverable_email, unverified_email}
 
 class UnverifiedEmailControllerSpec extends ControllerWithoutFormSpec {
 
-  val page = mock[unverified_email]
+  val unverifiedPage = mock[unverified_email]
+  val undeliverablePage = mock[undeliverable_email]
 
   def controller() =
-    new UnverifiedEmailController(mockAuthAction, stubMessagesControllerComponents(), page, mock[AppConfig])
+    new UnverifiedEmailController(mockAuthAction, stubMessagesControllerComponents(), unverifiedPage, undeliverablePage, mock[AppConfig])
 
   override protected def beforeEach(): Unit = {
     super.beforeEach
 
-    reset(page)
-
     authorizedUser()
-    when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "UnverifiedEmailController" should {
     "display the unverified email detection page" in {
-      val result = controller().informUser(getRequest())
+      when(unverifiedPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+      val result = controller().informUserUnverified(getRequest())
+
+      status(result) mustBe OK
+    }
+
+    "display the undeliverable email detection page" in {
+      when(undeliverablePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+      val result = controller().informUserUndeliverable(getRequest())
 
       status(result) mustBe OK
     }

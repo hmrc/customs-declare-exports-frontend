@@ -37,8 +37,8 @@ class VerifiedEmailActionImpl @Inject()(backendConnector: CustomsDeclareExportsC
     extends VerifiedEmailAction {
 
   implicit val executionContext: ExecutionContext = mcc.executionContext
-  private lazy val onUnverified = Redirect(routes.UnverifiedEmailController.informUser)
-  private lazy val onUndeclared = Redirect(routes.UndeclaredEmailController.informUser)
+  private lazy val onUnverified = Redirect(routes.UnverifiedEmailController.informUserUnverified)
+  private lazy val onUndeliverable = Redirect(routes.UnverifiedEmailController.informUserUndeliverable)
 
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, VerifiedEmailRequest[A]]] = {
 
@@ -46,7 +46,7 @@ class VerifiedEmailActionImpl @Inject()(backendConnector: CustomsDeclareExportsC
 
     backendConnector.getVerifiedEmailAddress(EORI(request.user.eori))(hc, executionContext).map {
       case Some(Email(address, true)) => Right(VerifiedEmailRequest(request, address))
-      case Some(Email(_, false))      => Left(onUndeclared)
+      case Some(Email(_, false))      => Left(onUndeliverable)
       case _                          => Left(onUnverified)
     }
   }
