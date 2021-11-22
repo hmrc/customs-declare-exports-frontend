@@ -119,6 +119,9 @@ class AppConfig @Inject()(
   val declareGoodsExported = loadConfig("urls.declareGoodsExported")
   val simplifiedDeclarationOccasionalUse = loadConfig("urls.simplifiedDeclarationOccasionalUse")
 
+  lazy val tariffCommoditiesUri: String =
+    s"${servicesConfig.baseUrl("tariff-api")}/api/v2/commodities"
+
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
@@ -174,10 +177,6 @@ class AppConfig @Inject()(
 
   lazy val isUsingImprovedErrorMessages =
     runModeConfiguration.getOptional[Boolean]("microservice.services.features.use-improved-error-messages").getOrElse(false)
-
-  val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
-
-  val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
 
   def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 
@@ -237,4 +236,5 @@ class AppConfig @Inject()(
   val procedureCodeToAdditionalProcedureCodesC21LinkFile = loadConfig("files.codelists.procedureCodeToAdditionalProcedureCodesC21Link")
   val dmsErrorCodes = loadConfig("files.codelists.dmsErrorCodes")
   val countryCodes = loadConfig("files.codelists.countryCodes")
+  val countryCodeToAliasesLinkFile = loadConfig("files.codelists.countryCodeToAliasesLink")
 }

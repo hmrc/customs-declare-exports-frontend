@@ -1,0 +1,206 @@
+[
+  {
+    "parentCode":"AE",
+    "childCodes":["UAE","emirati","dubai","abu dahbi","abu dhabi"]
+  },
+  {
+    "parentCode":"AU",
+    "childCodes":["Oz"]
+  },
+  {
+    "parentCode":"AQ",
+    "childCodes":["Antartica"]
+  },
+  {
+    "parentCode":"BL",
+    "childCodes":["Barthélemy","Barthelemy"]
+  },
+  {
+    "parentCode":"CV",
+    "childCodes":["Republic of Cabo Verde"]
+  },
+  {
+    "parentCode":"CF",
+    "childCodes":["CAR"]
+  },
+  {
+    "parentCode":"CN",
+    "childCodes":["People's Republic of China","PRC","Peoples Republic of China"]
+  },
+  {
+    "parentCode":"CX",
+    "childCodes":["Christmas Islands"]
+  },
+  {
+    "parentCode":"CO",
+    "childCodes":["Columbia"]
+  },
+  {
+    "parentCode":"CD",
+    "childCodes":["DR Congo","DRC"]
+  },
+  {
+    "parentCode":"CG",
+    "childCodes":["Congo-Brazzaville","Congo Republic"]
+  },
+  {
+    "parentCode":"CH",
+    "childCodes":["Swiss"]
+  },
+  {
+    "parentCode":"CI",
+    "childCodes":["Ivory Coast","Cote d'Ivoire","Cote dIvoire","Cote d Ivoire"]
+  },
+  {
+    "parentCode":"CW",
+    "childCodes":["Curacao","Curacoa"]
+  },
+  {
+    "parentCode":"CZ",
+    "childCodes":["Czechoslovakia","Czechia"]
+  },
+  {
+    "parentCode":"DE",
+    "childCodes":["Deutschland"]
+  },
+  {
+    "parentCode":"DK",
+    "childCodes":["Danish"]
+  },
+  {
+    "parentCode":"FK",
+    "childCodes":["Falklands"]
+  },
+  {
+    "parentCode":"FO",
+    "childCodes":["Faroes"]
+  },
+  {
+    "parentCode": "GB",
+    "childCodes": ["UK", "England", "Wales", "Scotland"]
+  },
+  {
+    "parentCode":"GF",
+    "childCodes":["French Guayana"]
+  },
+  {
+    "parentCode":"GI",
+    "childCodes":["Gibraltar Rock"]
+  },
+  {
+    "parentCode":"GG",
+    "childCodes":["Channel Islands"]
+  },
+  {
+    "parentCode":"IE",
+    "childCodes":["Republic of Ireland","Eire"]
+  },
+  {
+    "parentCode":"IO",
+    "childCodes":["BIOT"]
+  },
+  {
+    "parentCode":"JE",
+    "childCodes":["Channel Islands"]
+  },
+  {
+    "parentCode":"KN",
+    "childCodes":["St Kitts"]
+  },
+  {
+    "parentCode":"KY",
+    "childCodes":["Caymans"]
+  },
+  {
+    "parentCode":"LA",
+    "childCodes":["Lao Peoples Democratic Republic"]
+  },
+  {
+    "parentCode":"LC",
+    "childCodes":["St Lucia"]
+  },
+  {
+    "parentCode":"LU",
+    "childCodes":["Luxemburg"]
+  },
+  {
+    "parentCode":"MF",
+    "childCodes":["St Martin"]
+  },
+  {
+    "parentCode":"MV",
+    "childCodes":["Maldive Islands"]
+  },
+  {
+    "parentCode":"ML",
+    "childCodes":["Mali Republic","Republic of Mali"]
+  },
+  {
+    "parentCode":"MM",
+    "childCodes":["Burma"]
+  },
+  {
+    "parentCode":"NL",
+    "childCodes":["Holland","Dutch","Amsterdam"]
+  },
+  {
+    "parentCode":"NE",
+    "childCodes":["Republic of the Niger","Niger Republic"]
+  },
+  {
+    "parentCode":"PF",
+    "childCodes":["Polynesian Islands"]
+  },
+  {
+    "parentCode":"PH",
+    "childCodes":["Philippenes","Phillipines","Phillippines","Philipines"]
+  },
+  {
+    "parentCode":"PM",
+    "childCodes":["St Pierre"]
+  },
+  {
+    "parentCode":"RE",
+    "childCodes":["Reunion"]
+  },
+  {
+    "parentCode":"RU",
+    "childCodes":["USSR","Soviet Union"]
+  },
+  {
+    "parentCode":"SB",
+    "childCodes":["Solomons"]
+  },
+  {
+    "parentCode":"SH",
+    "childCodes":["St Helena"]
+  },
+  {
+    "parentCode":"SZ",
+    "childCodes":["Swaziland"]
+  },
+  {
+    "parentCode":"TG",
+    "childCodes":["Togo Republic","Togolese Republic","Republic of Togo"]
+  },
+  {
+    "parentCode": "US",
+    "childCodes": ["USA"]
+  },
+  {
+    "parentCode":"VA",
+    "childCodes":["Vatican City"]
+  },
+  {
+    "parentCode":"VC",
+    "childCodes":["St Vincent"]
+  },
+  {
+    "parentCode":"WS",
+    "childCodes":["Western Samoa"]
+  },
+  {
+    "parentCode":"ZA",
+    "childCodes":["RSA"]
+  }
+]

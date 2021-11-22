@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package models.codes
+package config.featureFlags
 
-import play.api.libs.json.Json
+import features.Feature
 
-case class Country(countryName: String, countryCode: String) extends CommonCode {
-  def code = countryCode
-  def description = countryName
+import javax.inject.{Inject, Singleton}
 
-  def asString(): String = s"$countryName - $countryCode"
-}
-
-object Country {
-  implicit val formats = Json.format[Country]
+@Singleton
+class TariffAPIConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+  val isCommoditiesEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.commodities)
 }

@@ -154,12 +154,11 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       }
   }
 
-  def createCancellation(cancellation: CancelDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  def createCancellation(cancellation: CancelDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CancellationStatus] = {
     logPayload("Create Cancellation Request", cancellation)
+
     httpClient
-      .POST[CancelDeclaration, HttpResponse](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.cancelDeclarationPath}", cancellation)
-      .filter(_.status == Status.OK)
-      .map(_ => (): Unit)
+      .POST[CancelDeclaration, CancellationStatus](s"${appConfig.customsDeclareExportsBaseUrl}${appConfig.cancelDeclarationPath}", cancellation)
   }
 
   def getVerifiedEmailAddress(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[VerifiedEmailAddress]] =

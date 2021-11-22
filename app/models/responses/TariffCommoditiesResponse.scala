@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package models.codes
+package models.responses
 
-import play.api.libs.json.Json
+import play.api.libs.json.JsValue
 
-case class Country(countryName: String, countryCode: String) extends CommonCode {
-  def code = countryCode
-  def description = countryName
-
-  def asString(): String = s"$countryName - $countryCode"
-}
-
-object Country {
-  implicit val formats = Json.format[Country]
-}
+case class TariffCommoditiesResponse(status: Int, commodityJson: Option[JsValue] = None)

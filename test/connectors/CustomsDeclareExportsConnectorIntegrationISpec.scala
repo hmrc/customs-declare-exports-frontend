@@ -21,10 +21,11 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
 import forms.{CancelDeclaration, Lrn}
+import models.{CancellationRequestSent, Page, Paginated}
 import models.declaration.notifications.Notification
-import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
-import models.{Page, Paginated}
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.CancellationStatus.CancellationStatusWrites
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status
@@ -300,6 +301,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
+              .withBody(Json.toJson(CancellationRequestSent)(CancellationStatusWrites.writes).toString())
           )
       )
 

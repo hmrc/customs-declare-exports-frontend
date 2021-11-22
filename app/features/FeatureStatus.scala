@@ -24,7 +24,7 @@ object FeatureStatus extends Enumeration {
 
   implicit object FeatureStatusPathStringBinder
       extends PathBindable.Parsing[FeatureStatus.FeatureStatus](
-        withName(_),
+        withName,
         _.toString,
         (k: String, e: Exception) => "Cannot parse %s as FeatureStatus: %s".format(k, e.getMessage)
       )
