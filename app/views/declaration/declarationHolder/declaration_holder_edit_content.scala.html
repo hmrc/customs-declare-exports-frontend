@@ -36,6 +36,7 @@
     formGroupWrapper: formGroupWrapper,
     govukFieldset: GovukFieldset,
     sectionHeader: sectionHeader,
+    heading: heading,
     govukHint: GovukHint,
     pageTitle: pageTitle,
     declHolderHelper: DeclarationHolderHelper,
@@ -62,22 +63,6 @@
 }
 
 @formContent = {
-    @formGroupWrapper(field = form(DeclarationHolderFormGroupId)) {
-
-        @declHolderHelper.bodyForDeclarationHolderEditPage(appConfig)
-
-        @field_accessible_autocomplete(
-            field = form("authorisationTypeCode"),
-            label = messages("declaration.declarationHolder.authorisationCode"),
-            labelClass = Some("govuk-label--m"),
-            hintParagraphs = declHolderHelper.hintForAuthorisationCode,
-            emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
-            items = holderOfAuthorisationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
-        )
-
-        @declHolderHelper.insetTextBelowAuthorisationCode(appConfig)
-    }
-
     @legend(
         content = HtmlContent(messages("declaration.declarationHolder.eori")),
         classes = "govuk-label--m",
@@ -111,13 +96,22 @@
 @errorSummary(form.errors)
 
 @sectionHeader(messages("declaration.section.2"))
+@heading(messages("declaration.declarationHolder.title"))
+
+@declHolderHelper.bodyForDeclarationHolderEditPage(appConfig)
+
+@field_accessible_autocomplete(
+    field = form("authorisationTypeCode"),
+    label = messages("declaration.declarationHolder.authorisationCode"),
+    labelClass = Some("govuk-label--m"),
+    hintParagraphs = declHolderHelper.hintForAuthorisationCode,
+    emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
+    items = holderOfAuthorisationCodes.asListOfAutoCompleteItems(messages.lang.toLocale)
+)
+
+@declHolderHelper.insetTextBelowAuthorisationCode(appConfig)
 
 @govukFieldset(Fieldset(
-    legend = Some(Legend(
-        content = Text(messages("declaration.declarationHolder.title")),
-        classes = gdsPageLabel,
-        isPageHeading = true
-    )),
     html = HtmlFormat.fill(List(
         formContent,
         tariffExpander(DeclarationHolder, request.declarationType)(messages, appConfig),
