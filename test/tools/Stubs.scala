@@ -58,8 +58,6 @@ trait Stubs {
   private val minimalConfig: Config =
     ConfigFactory.parseString(AppConfigSpec.configBareMinimum + """
       |assets.version="version"
-      |google-analytics.token=N/A
-      |google-analytics.host=localhostGoogle
       |tracking-consent-frontend.gtm.container=a
       |metrics.name=""
       |metrics.rateUnit="SECONDS"
@@ -70,9 +68,7 @@ trait Stubs {
       |draft.timeToLive=1d
       |timeoutDialog.timeout=13min
       |timeoutDialog.countdown=3min
-      |list-of-available-journeys = "SMP,STD,CAN,SUB,CON"
-      |microservice.services.features.default=disabled
-      |microservice.services.features.use-improved-error-messages=true
+      |list-of-available-journeys="SMP,STD,CAN,SUB,CON"
       |urls.tradeTariff=tradeTariff
       |urls.classificationHelp=classificationHelp
       |urls.ecicsTool=ecicsTool

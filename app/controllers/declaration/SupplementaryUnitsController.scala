@@ -24,56 +24,80 @@ import controllers.navigation.Navigator
 import forms.declaration.commodityMeasure.SupplementaryUnits
 import javax.inject.Inject
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+import models.Mode
 import models.declaration.{CommodityMeasure, ExportItem}
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.TariffApiService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.commodityMeasure.supplementary_units
+import views.html.declaration.commodityMeasure.{supplementary_units, supplementary_units_yes_no}
 
 class SupplementaryUnitsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  tariffApiService: TariffApiService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  supplementaryUnitsPage: supplementary_units
+  supplementaryUnitsPage: supplementary_units,
+  supplementaryUnitsYesNoPage: supplementary_units_yes_no
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val formWithDataIfAny = request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
-      case Some(commodityMeasure) if hasSupplementaryUnits(commodityMeasure) => form.fill(SupplementaryUnits(commodityMeasure))
-      case _                                                                 => form
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] =
+    (authenticate andThen journeyType(validTypes)).async { implicit request =>
+      def formWithDataIfAny(yesNoPage: Boolean): Form[SupplementaryUnits] =
+        request.cacheModel.commodityMeasure(itemId) match {
+          case Some(commodityMeasure) if hasSupplementaryUnits(commodityMeasure) =>
+            form(yesNoPage).fill(SupplementaryUnits(commodityMeasure))
+
+          case _ => form(yesNoPage)
+        }
+
+      tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
+        case Some(commodityInfo) =>
+          Future.successful(Ok(supplementaryUnitsPage(mode, itemId, formWithDataIfAny(false), commodityInfo)))
+
+        case _ =>
+          Future.successful(Ok(supplementaryUnitsYesNoPage(mode, itemId, formWithDataIfAny(true))))
+      }
     }
 
-    Ok(supplementaryUnitsPage(mode, itemId, formWithDataIfAny))
-  }
+  def submitPage(mode: Mode, itemId: String): Action[AnyContent] =
+    (authenticate andThen journeyType(validTypes)).async { implicit request =>
+      tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
+        case Some(commodityInfo) =>
+          form(false).bindFromRequest.fold(
+            formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(mode, itemId, formWithErrors, commodityInfo))),
+            updateExportsCacheAndContinueToNextPage(mode, itemId, _)
+          )
 
-  def submitPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form.bindFromRequest
-      .fold(formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(mode, itemId, formWithErrors))), updateExportsCache(itemId, _).map {
-        _ =>
-          navigator.continueTo(mode, AdditionalInformationRequiredController.displayPage(_, itemId))
-      })
-  }
+        case _ =>
+          form(true).bindFromRequest.fold(
+            formWithErrors => Future.successful(BadRequest(supplementaryUnitsYesNoPage(mode, itemId, formWithErrors))),
+            updateExportsCacheAndContinueToNextPage(mode, itemId, _)
+          )
+      }
+    }
 
-  private def form(implicit request: JourneyRequest[_]): Form[SupplementaryUnits] =
-    SupplementaryUnits.form.withSubmissionErrors
+  private def form(yesNoPage: Boolean)(implicit request: JourneyRequest[_]): Form[SupplementaryUnits] =
+    SupplementaryUnits.form(yesNoPage).withSubmissionErrors
 
   private def hasSupplementaryUnits(commodityMeasure: CommodityMeasure): Boolean =
     commodityMeasure.supplementaryUnits.isDefined || commodityMeasure.supplementaryUnitsNotRequired.isDefined
 
-  private def updateExportsCache(itemId: String, updatedItem: SupplementaryUnits)(
+  private def updateExportsCacheAndContinueToNextPage(mode: Mode, itemId: String, updatedItem: SupplementaryUnits)(
     implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
+  ): Future[Result] =
     updateExportsDeclarationSyncDirect {
       _.updatedItem(itemId, item => item.copy(commodityMeasure = updateCommodityMeasure(item, updatedItem)))
+    }.map { _ =>
+      navigator.continueTo(mode, AdditionalInformationRequiredController.displayPage(_, itemId))
     }
 
   private def updateCommodityMeasure(item: ExportItem, updatedItem: SupplementaryUnits): Option[CommodityMeasure] =
@@ -88,7 +112,6 @@ class SupplementaryUnitsController @Inject()(
           )
         )
 
-      case _ =>
-        Some(CommodityMeasure(updatedItem.supplementaryUnits, updatedItem.supplementaryUnits.map(_ => false), None, None))
+      case _ => Some(CommodityMeasure(updatedItem.supplementaryUnits, updatedItem.supplementaryUnits.fold(Some(true))(_ => Some(false)), None, None))
     }
 }

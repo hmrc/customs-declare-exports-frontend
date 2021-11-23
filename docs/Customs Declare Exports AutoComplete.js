@@ -870,8 +870,8 @@ function commodityMeasurements(){
 
 function supplementaryUnits(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/supplementary-units')) {
-        document.getElementById('Yes').checked = 'checked';
-        document.getElementById('supplementaryUnits').value ='10';
+        if (document.getElementById('Yes')) document.getElementById('Yes').checked = 'checked';
+        document.getElementById('supplementaryUnits').value ='1000';
         document.getElementById('submit').click()
     }
 }

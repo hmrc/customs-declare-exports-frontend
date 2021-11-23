@@ -34,8 +34,6 @@ class AppConfigSpec extends UnitWithMocksSpec {
   private val validConfig: Config =
     ConfigFactory.parseString(configBareMinimum + """
         |microservice.services.auth.host=localhostauth
-        |google-analytics.token=N/A
-        |google-analytics.host=localhostGoogle
         |
         |tracking-consent-frontend.gtm.container=a
         |

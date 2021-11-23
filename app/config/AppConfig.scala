@@ -119,9 +119,6 @@ class AppConfig @Inject()(
   val declareGoodsExported = loadConfig("urls.declareGoodsExported")
   val simplifiedDeclarationOccasionalUse = loadConfig("urls.simplifiedDeclarationOccasionalUse")
 
-  lazy val tariffCommoditiesUri: String =
-    s"${servicesConfig.baseUrl("tariff-api")}/api/v2/commodities"
-
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")

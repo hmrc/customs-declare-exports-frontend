@@ -79,12 +79,12 @@ object CommodityMeasure extends DeclarationPage {
 
   override def defineTariffContentKeys(declarationType: DeclarationType): Seq[TariffContentKey] =
     if (declarationType == CLEARANCE)
-      Seq(
+      List(
         TariffContentKey("tariff.declaration.item.commodityMeasure.1.clearance"),
         TariffContentKey("tariff.declaration.item.commodityMeasure.2.clearance")
       )
     else
-      Seq(
+      List(
         TariffContentKey("tariff.declaration.item.commodityMeasure.1.common"),
         TariffContentKey("tariff.declaration.item.commodityMeasure.2.common")
       )

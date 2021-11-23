@@ -27,13 +27,14 @@ case class Title(
 ) {
 
   def toString(implicit messages: Messages): String = {
-    def args = headingArgs.getOrElse(Seq(headingArg))
+    def args: Seq[String] = headingArgs.getOrElse(Seq(headingArg))
+
     val key = if (hasErrors) ".hasErrors" else ""
+
     if (sectionKey.isEmpty) {
       messages(s"title$key.format", messages(headingKey, args: _*), messages("service.name"))
     } else {
       messages(s"title$key.withSection.format", messages(headingKey, args: _*), messages(sectionKey), messages("service.name"))
     }
   }
-
 }

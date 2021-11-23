@@ -47,7 +47,7 @@ class CommodityMeasureController @Inject()(
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
+    request.cacheModel.commodityMeasure(itemId) match {
       case Some(data) => Ok(commodityMeasurePage(mode, itemId, form.fill(CommodityMeasure(data))))
       case _          => Ok(commodityMeasurePage(mode, itemId, form))
     }

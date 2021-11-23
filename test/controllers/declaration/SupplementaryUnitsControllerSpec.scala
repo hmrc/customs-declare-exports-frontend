@@ -16,12 +16,14 @@
 
 package controllers.declaration
 
+import scala.concurrent.Future
+
 import base.ControllerSpec
 import forms.declaration.commodityMeasure.SupplementaryUnits
 import forms.declaration.commodityMeasure.SupplementaryUnits.{hasSupplementaryUnits, supplementaryUnits}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
-import models.declaration.{CommodityMeasure, ExportItem}
+import models.declaration.CommodityMeasure
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -30,119 +32,218 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.commodityMeasure.supplementary_units
+import services.{CommodityInfo, TariffApiService}
+import views.html.declaration.commodityMeasure.{supplementary_units, supplementary_units_yes_no}
 
 class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
   private val supplementaryUnitsPage = mock[supplementary_units]
+  private val supplementaryUnitsYesNoPage = mock[supplementary_units_yes_no]
+
+  private val tariffApiService = mock[TariffApiService]
 
   private val controller = new SupplementaryUnitsController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
+    tariffApiService,
     navigator,
     stubMessagesControllerComponents(),
-    supplementaryUnitsPage
+    supplementaryUnitsPage,
+    supplementaryUnitsYesNoPage
   )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(supplementaryUnitsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(None))
+    when(supplementaryUnitsPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(supplementaryUnitsYesNoPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(supplementaryUnitsPage)
+    reset(supplementaryUnitsPage, supplementaryUnitsYesNoPage, tariffApiService)
   }
 
-  def theResponseForm: Form[SupplementaryUnits] = {
+  def responseMandatoryForm: Form[SupplementaryUnits] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[SupplementaryUnits]])
-    verify(supplementaryUnitsPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(supplementaryUnitsPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    captor.getValue
+  }
+
+  def responseYesNoForm: Form[SupplementaryUnits] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[SupplementaryUnits]])
+    verify(supplementaryUnitsYesNoPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
     await(controller.displayPage(Mode.Normal, "itemId")(request))
-    theResponseForm
+    responseYesNoForm
   }
 
-  "Supplementary Units controller" should {
+  private val commodityInfo = CommodityInfo("2208303000", "description", "units")
 
-    "return 200 (OK) on displayPage" when {
-      onJourney(STANDARD, SUPPLEMENTARY) { request =>
-        "display page method is invoked and commodity measure cache is empty" in {
-          withNewCaching(request.cacheModel)
+  "SupplementaryUnitsController.displayPage" when {
 
-          val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+      "the cached commodity code does not require supplementary units" should {
 
-          status(result) must be(OK)
-          theResponseForm.value mustBe empty
+        "display an empty supplementary_units_yes_no Page" when {
+          "no supplementary units are cached yet" in {
+            withNewCaching(request.cacheModel)
+
+            val result = controller.displayPage(Mode.Normal, "itemdId")(getRequest())
+
+            status(result) must be(OK)
+            responseYesNoForm.value mustBe empty
+          }
         }
 
-        "display page method is invoked and commodity measure cache is not empty" in {
-          val commodityMeasure = CommodityMeasure(Some("100"), Some(false), Some("1000"), Some("500"))
-          val item = ExportItem("itemId", commodityMeasure = Some(commodityMeasure))
-          withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
+        "display a filled-in supplementary_units_yes_no Page" when {
+          "supplementary units have already been cached" in {
+            val commodityMeasure = CommodityMeasure(Some("100"), Some(false), Some("1000"), Some("500"))
+            val item = anItem(withCommodityMeasure(commodityMeasure))
+            withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
+            val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
-          status(result) must be(OK)
-          theResponseForm.value mustBe Some(SupplementaryUnits(Some("100")))
+            status(result) must be(OK)
+            responseYesNoForm.value mustBe Some(SupplementaryUnits(Some("100")))
+          }
+        }
+      }
+
+      "the cached commodity code does require supplementary units" should {
+
+        "display an empty supplementary_units Page" when {
+          "no supplementary units are cached yet" in {
+            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Some(commodityInfo)))
+
+            withNewCaching(request.cacheModel)
+
+            val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
+
+            status(result) must be(OK)
+            responseMandatoryForm.value mustBe empty
+          }
+        }
+
+        "return a mandatoryForm with submission errors" when {
+          "the cached commodity code does require supplementary units" in {
+            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Some(commodityInfo)))
+
+            withNewCaching(aDeclaration())
+            await(controller.displayPage(Mode.Normal, "itemId")(getRequestWithSubmissionErrors))
+            responseMandatoryForm.errors mustBe Seq(submissionFormError)
+          }
+        }
+
+        "display a filled-in supplementary_units Page" when {
+          "supplementary units have already been cached" in {
+            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Some(commodityInfo)))
+
+            val commodityMeasure = CommodityMeasure(Some("100"), Some(false), Some("1000"), Some("500"))
+            val item = anItem(withCommodityMeasure(commodityMeasure))
+            withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+
+            val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+
+            status(result) must be(OK)
+            responseMandatoryForm.value mustBe Some(SupplementaryUnits(Some("100")))
+          }
         }
       }
     }
 
-    "return 400 (BAD_REQUEST) on submitPage" when {
-      onJourney(STANDARD, SUPPLEMENTARY) { request =>
-        "form is incorrect" in {
-          withNewCaching(aDeclaration(withType(request.declarationType)))
+    onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED) { request =>
+      "redirect to the Choice page at '/'" in {
+        withNewCaching(request.cacheModel)
 
-          val incorrectForm = Json.obj(hasSupplementaryUnits -> "Yes", supplementaryUnits -> "abcd")
+        val response = controller.displayPage(Mode.Normal, "itemId").apply(getRequest())
 
-          val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(incorrectForm))
+        status(response) must be(SEE_OTHER)
+        redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
+      }
+    }
+  }
 
-          status(result) must be(BAD_REQUEST)
-          verify(supplementaryUnitsPage).apply(any(), any(), any())(any(), any())
+  "SupplementaryUnitsController.submitPage" when {
+
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+      "the cached commodity code does NOT require supplementary units" should {
+
+        "return 303 (SEE_OTHER)" when {
+          "information provided by the user are correct" in {
+            withNewCaching(request.cacheModel)
+
+            val correctForm = Json.obj(hasSupplementaryUnits -> "Yes", supplementaryUnits -> "100")
+
+            val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
+          }
+        }
+
+        "return 400 (BAD_REQUEST)" when {
+          "information provided by the user are NOT correct" in {
+            withNewCaching(request.cacheModel)
+
+            val incorrectForm = Json.obj(hasSupplementaryUnits -> "Yes", supplementaryUnits -> "abcd")
+
+            val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(incorrectForm))
+
+            status(result) must be(BAD_REQUEST)
+            verify(supplementaryUnitsYesNoPage).apply(any(), any(), any())(any(), any())
+          }
+        }
+      }
+
+      "the cached commodity code does require supplementary units" should {
+
+        "return 303 (SEE_OTHER)" when {
+          "information provided by the user are correct" in {
+            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Some(commodityInfo)))
+
+            withNewCaching(request.cacheModel)
+
+            val correctForm = Json.obj(supplementaryUnits -> "100")
+
+            val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
+          }
+        }
+
+        "return 400 (BAD_REQUEST)" when {
+          "information provided by the user are NOT correct" in {
+            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Some(commodityInfo)))
+
+            withNewCaching(request.cacheModel)
+
+            val incorrectForm = Json.obj(supplementaryUnits -> "abcd")
+
+            val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(incorrectForm))
+
+            status(result) must be(BAD_REQUEST)
+            verify(supplementaryUnitsPage).apply(any(), any(), any(), any())(any(), any())
+          }
         }
       }
     }
 
-    "return 303 (SEE_OTHER) on submitPage" when {
-      onJourney(STANDARD, SUPPLEMENTARY) { request =>
-        "information provided by user are correct" in {
-          withNewCaching(request.cacheModel)
+    onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED) { request =>
+      "redirect to the Choice page at '/'" in {
+        withNewCaching(request.cacheModel)
 
-          val correctForm = Json.obj(hasSupplementaryUnits -> "Yes", supplementaryUnits -> "100")
+        val response = controller.submitPage(Mode.Normal, "itemId").apply(getRequest())
 
-          val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
-        }
-      }
-    }
-
-    "redirect to the Choice page at '/'" when {
-      onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED) { request =>
-        "the journey is not valid for displayPage" in {
-          withNewCaching(request.cacheModel)
-
-          val response = controller.displayPage(Mode.Normal, "itemId").apply(getRequest())
-
-          status(response) must be(SEE_OTHER)
-          redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
-        }
-
-        "the journey is not valid for submitPage" in {
-          withNewCaching(request.cacheModel)
-
-          val response = controller.submitPage(Mode.Normal, "itemId").apply(getRequest())
-
-          status(response) must be(SEE_OTHER)
-          redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
-        }
+        status(response) must be(SEE_OTHER)
+        redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
       }
     }
   }

@@ -17,10 +17,13 @@
 package config.featureFlags
 
 import features.Feature
-
 import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class TariffAPIConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class TariffApiConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, servicesConfig: ServicesConfig) {
+
+  val tariffCommoditiesUri: String = s"${servicesConfig.baseUrl("tariff-api")}/api/v2/commodities"
+
   val isCommoditiesEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.commodities)
 }
