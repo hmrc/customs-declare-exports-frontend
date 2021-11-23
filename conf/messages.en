@@ -2026,7 +2026,7 @@ field.declaration.consignmentReferences.ucr = Unique Consignment Reference (UCR)
 dmsError.CDS10001.title = Required details are missing
 dmsError.CDS10002.title = Invalid entry on the declaration
 dmsError.CDS10003.title = Too many instances of a data element
-dmsError.CDS10004.title = Commodity code error.title =
+dmsError.CDS10004.title = Commodity code error
 dmsError.CDS10010.title = Invalid format
 dmsError.CDS10020.title = Invalid value
 dmsError.CDS10021.title = You appear to have entered a negative value
@@ -2034,7 +2034,7 @@ dmsError.CDS10045.title = Valuation error
 dmsError.CDS11003.title = You have more or fewer items than the number you declared
 dmsError.CDS11004.title = Relation error
 dmsError.CDS11005.title = Relation error
-dmsError.CDS11006.title = Relation error.title =
+dmsError.CDS11006.title = Relation error
 dmsError.CDS11007.title = Additional message cannot be accepted
 dmsError.CDS11012.title = Element is not allowed to be amended on this declaration type
 dmsError.CDS12003.title = Local reference number duplication.title = .
@@ -2083,7 +2083,7 @@ dmsError.CDS12092.title = Relation error
 dmsError.CDS12095.title = Relation error
 dmsError.CDS12096.title = Authorisation error
 dmsError.CDS12097.title = Relation error
-dmsError.CDS12098.title = Relation error.title =
+dmsError.CDS12098.title = Relation error
 dmsError.CDS12099.title = Goods location code not recognised
 dmsError.CDS12100.title = Relation error
 dmsError.CDS12101.title = Relation error
@@ -2098,14 +2098,14 @@ dmsError.CDS12109.title = Total invoiced amount should be in GBP
 dmsError.CDS12110.title = Relation error
 dmsError.CDS12111.title = Relation error
 dmsError.CDS12112.title = Addition/deduction code missing
-dmsError.CDS12113.title = Authorisation CGU requires a guarantee.title =
+dmsError.CDS12113.title = Authorisation CGU requires a guarantee
 dmsError.CDS12114.title = Relation error
 dmsError.CDS12115.title = Relation error
 dmsError.CDS12117.title = Relation error
 dmsError.CDS12118.title = Relation error
 dmsError.CDS12119.title = Additional document not allowed or is missing
 dmsError.CDS12120.title = Authorisation error
-dmsError.CDS12121.title = Additional Information codes are not compatible.title =
+dmsError.CDS12121.title = Additional Information codes are not compatible
 dmsError.CDS12123.title = A value declared must be greater than 0
 dmsError.CDS12125.title = DAN error
 dmsError.CDS12132.title = Declaration Unique Consignment Reference (DUCR) format is not valid
@@ -2145,7 +2145,7 @@ dmsError.CDS40059.title = Incomplete measure or commodity code
 dmsError.CDS40066.title = Tariff condition not fulfilled
 dmsError.CDS40068.title = National additional code for excise is missing
 dmsError.CDS40069.title = Quota error.title = The Quota claimed is no longer available.
-dmsError.CDS40070.title = Additional information code NIIMP must appear on all items.title =
+dmsError.CDS40070.title = Additional information code NIIMP must appear on all items
 dmsError.CDS40071.title = Additional information code NIDOM must appear on all items
 dmsError.CDS40072.title = Additional information code NIEXP must appear on all items
 dmsError.CDS40073.title = You declared NIREM additional information code on its own
@@ -2156,33 +2156,33 @@ dmsError.CDS50001.title = Invalid UCR Format, DUCR or MUCR
 dmsError.CDS50003.title = UCR is not at the top of its consolidation
 dmsError.CDS50008.title = DUCR or MUCR is not the right format
 dmsError.CDS50015.title = Declaration is cancelled or terminated upon arrival
-dmsError.CDS50027.title = Authorisation failed.title =
+dmsError.CDS50027.title = Authorisation failed
 dmsError.CDS50028.title = Goods location code invalid
 dmsError.CDS50031.title = Request has been received after a successful RET
 dmsError.CDS70711.title = Licence error
 dmsError.CDS70719.title = Licence error
 dmsError.CDS70724.title = Licence reference quoted is not valid
-dmsError.CDS70739.title = Licence error.title =
+dmsError.CDS70739.title = Licence error
 dmsError.CDS70740.title = Licence error
 dmsError.CDS70758.title = Licence error
 dmsError.CDS70760.title = Licence is not valid for this item
 dmsError.CDS70761.title = Licence error
 dmsError.CDS70791.title = Licence error
-dmsError.CDS71115.title = Licence error.title =
-dmsError.CDS71200.title = Document reference is a duplication.title =
+dmsError.CDS71115.title = Licence error
+dmsError.CDS71200.title = Document reference is a duplication
 dmsError.CDS71201.title = Licence error
 dmsError.CDS71203.title = Licence error
 dmsError.CDS71204.title = Licence is already surrendered
 dmsError.CDS71206.title = Licence is already exhausted
 dmsError.CDS71216.title = Licence is no longer available for use
 dmsError.CDS71236.title = Licence error
-dmsError.CDS71252.title = Licence error.title =
-dmsError.CDS71262.title = Licence error.title =
-dmsError.CDS73329.title = Licence cannot be used.title =
+dmsError.CDS71252.title = Licence error
+dmsError.CDS71262.title = Licence error
+dmsError.CDS73329.title = Licence cannot be used
 dmsError.CDS77000.title = Document identifier required
-dmsError.CDS77001.title = Quantity must be provided.title = .title =
-dmsError.CDS77002.title = Document status code needed.title =
-dmsError.CDS77003.title = Licence error.title = .
+dmsError.CDS77001.title = Quantity must be provided
+dmsError.CDS77002.title = Document status code needed
+dmsError.CDS77003.title = Licence error
 dmsError.CDS77004.title = Reservation could not be made
 dmsError.CDS77005.title = Reason not given for use of a 'Y' code
 

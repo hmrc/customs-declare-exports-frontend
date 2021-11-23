@@ -115,7 +115,7 @@ object PointerHelper extends Logging {
     "declaration.borderTransport.meansOfTransportCrossingTheBorderIDNumber" -> routes.BorderTransportController.displayPage,
     "declaration.borderTransport.meansOfTransportCrossingTheBorderType" -> routes.BorderTransportController.displayPage,
     "declaration.borderTransport.meansOfTransportCrossingTheBorderNationality" -> routes.BorderTransportController.displayPage,
-    "declaration.borderTransport.modeCode" -> routes.BorderTransportController.displayPage,
+    "declaration.borderTransport.modeCode" -> routes.TransportLeavingTheBorderController.displayPage,
     "declaration.parties.carrierDetails.details.eori" -> routes.CarrierEoriNumberController.displayPage,
     "declaration.parties.carrierDetails.details.address.fullName" -> routes.CarrierDetailsController.displayPage,
     "declaration.parties.carrierDetails.details.address.townOrCity" -> routes.CarrierDetailsController.displayPage,
