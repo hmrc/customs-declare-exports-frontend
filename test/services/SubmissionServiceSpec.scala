@@ -22,6 +22,7 @@ import scala.concurrent.Future
 import base.{Injector, MockConnectors, MockExportCacheService, UnitWithMocksSpec}
 import com.kenshoo.play.metrics.Metrics
 import connectors.CustomsDeclareExportsConnector
+import forms.declaration.countries.Country
 import forms.declaration.LegalDeclaration
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.declaration.submissions.{Action, Submission}
@@ -79,6 +80,9 @@ class SubmissionServiceSpec
             withType(DeclarationType.STANDARD),
             withConsignmentReferences(ducr = "ducr", lrn = lrn)
           )
+
+        declaration.locations.originationCountry.value mustBe Country.GB
+
         val expectedSubmission = Submission(uuid = "id", eori = eori, lrn = lrn, actions = Seq.empty[Action])
         when(connector.submitDeclaration(any[String])(any(), any())).thenReturn(Future.successful(expectedSubmission))
 

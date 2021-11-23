@@ -24,8 +24,9 @@ import org.mockito.Mockito.when
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
-
 import java.time.{Clock, Instant, LocalDate, ZoneOffset}
+
+import forms.declaration.countries.Country
 
 class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with OptionValues with MockitoSugar {
 
@@ -82,6 +83,11 @@ class ExportsDeclarationSpec extends UnitSpec with ExportsDeclarationBuilder wit
         val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL))
 
         declaration.isDeclarantExporter mustBe false
+      }
+
+      "have originationCountry hard-coded to 'GB'" in {
+        val declaration = aDeclaration()
+        declaration.locations.originationCountry.value mustBe Country.GB
       }
     }
   }
