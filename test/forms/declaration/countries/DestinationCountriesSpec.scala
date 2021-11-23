@@ -53,7 +53,6 @@ class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeT
 
   "Destination Countries" should {
     "contains object to represent every page and contain correct Id" in {
-      OriginationCountryPage.id mustBe "originationCountry"
       DestinationCountryPage.id mustBe "destinationCountry"
       FirstRoutingCountryPage.id mustBe "firstRoutingCountry"
       NextRoutingCountryPage.id mustBe "routingCountry"
@@ -63,9 +62,9 @@ class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeT
   onEveryDeclarationJourney() { implicit request =>
     "Destination Countries" should {
       s"validate form with incorrect value for ${request.declarationType}" in {
-        val result = Countries.form(OriginationCountryPage).fillAndValidate(Country(Some("incorrect")))
+        val result = Countries.form(DestinationCountryPage).fillAndValidate(Country(Some("incorrect")))
 
-        result.errors mustBe Seq(FormError("countryCode", "declaration.originationCountry.error"))
+        result.errors mustBe Seq(FormError("countryCode", "declaration.destinationCountry.error"))
       }
 
       s"validate form with invalid selection of GB for ${request.declarationType}" in {

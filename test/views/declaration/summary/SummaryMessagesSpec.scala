@@ -83,7 +83,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
     "have defined countries messages" in {
 
       messages must haveTranslationFor("declaration.summary.countries")
-      messages must haveTranslationFor("declaration.summary.countries.countryOfDispatch")
       messages must haveTranslationFor("declaration.summary.countries.routingCountries")
       messages must haveTranslationFor("declaration.summary.countries.countryOfDestination")
     }

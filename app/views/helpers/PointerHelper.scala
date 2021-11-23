@@ -151,7 +151,6 @@ object PointerHelper extends Logging {
     "declaration.containers.container.$.id" -> routes.TransportContainerController.displayContainerSummary, //?? SealController.displaySealSummary
     "declaration.containers.container.$.seals.seal.$.id" -> routes.TransportContainerController.displayContainerSummary, //?? SealController.displaySealRemove
     "declaration.locations.destinationCountries.countryOfDestination" -> routes.DestinationCountryController.displayPage,
-    "declaration.locations.destinationCountries.countryOfDispatch" -> routes.OriginationCountryController.displayPage,
     "declaration.previousDocuments.$.documentCategory" -> routes.PreviousDocumentsSummaryController.displayPage, //?? PreviousDocumentsChangeController.displayPage
     "declaration.previousDocuments.$.documentReference" -> routes.PreviousDocumentsSummaryController.displayPage, //?? PreviousDocumentsChangeController.displayPage
     "declaration.previousDocuments.$.documentType" -> routes.PreviousDocumentsSummaryController.displayPage, //?? PreviousDocumentsChangeController.displayPage

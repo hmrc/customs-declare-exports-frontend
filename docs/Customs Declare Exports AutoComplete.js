@@ -566,13 +566,6 @@ function authorisationsSummary(){
     }
 }
 
-function originationCountry(){
-    if (currentPageIs('/customs-declare-exports/declaration/origination-country')) {
-        selectFromAutoPredict(document.getElementById('countryCode-container'), "GB");
-        document.getElementById('submit').click();
-    }
-}
-
 function destinationCountry(){
     if (currentPageIs('/customs-declare-exports/declaration/destination-country')) {
         selectFromAutoPredict(document.getElementById('countryCode-container'), "US");
@@ -1212,7 +1205,6 @@ function completeJourney() {
     authorisationsSummary();
 
     // locations
-    originationCountry();
     destinationCountry();
     countryOfRouting();
     countriesOfRouting();

@@ -30,6 +30,7 @@ import java.time.{Clock, Instant}
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.DeclarationHolder
 
+// scalastyle:off
 case class ExportsDeclaration(
   id: String,
   status: DeclarationStatus,
@@ -163,9 +164,6 @@ case class ExportsDeclaration(
 
   def updateCountriesOfRouting(routingCountries: Seq[Country]): ExportsDeclaration =
     copy(locations = locations.copy(routingCountries = routingCountries))
-
-  def updateOriginationCountry(originationCountry: Country): ExportsDeclaration =
-    copy(locations = locations.copy(originationCountry = Some(originationCountry)))
 
   def updateDestinationCountry(destinationCountry: Country): ExportsDeclaration =
     copy(locations = locations.copy(destinationCountry = Some(destinationCountry)))

@@ -163,12 +163,6 @@ GET         /authorisations-required/:id/remove  controllers.declaration.Declara
 
 POST        /authorisations-required/:id/remove  controllers.declaration.DeclarationHolderRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, id: String)
 
-# Origination country
-
-GET         /origination-country                 controllers.declaration.OriginationCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /origination-country                 controllers.declaration.OriginationCountryController.submit(mode: models.Mode ?= models.Mode.Normal)
-
 # Destination country
 
 GET         /destination-country                 controllers.declaration.DestinationCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)

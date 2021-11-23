@@ -17,20 +17,19 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{DeclarationHolderAddController, DestinationCountryController}
 import controllers.helpers.DeclarationHolderHelper.declarationHolders
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+import javax.inject.Inject
 import models.Mode
-import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_summary
-import javax.inject.Inject
 
 class DeclarationHolderSummaryController @Inject()(
   authenticate: AuthAction,
@@ -42,24 +41,18 @@ class DeclarationHolderSummaryController @Inject()(
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (declarationHolders.isEmpty) navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
+    if (declarationHolders.isEmpty) navigator.continueTo(mode, DeclarationHolderAddController.displayPage)
     else Ok(declarationHolderPage(mode, addAnotherYesNoForm.withSubmissionErrors, declarationHolders))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     addAnotherYesNoForm.bindFromRequest
       .fold(formWithErrors => BadRequest(declarationHolderPage(mode, formWithErrors, declarationHolders)), _.answer match {
-        case YesNoAnswers.yes => navigator.continueTo(mode, routes.DeclarationHolderAddController.displayPage)
-        case YesNoAnswers.no  => navigator.continueTo(mode, nextPage)
+        case YesNoAnswers.yes => navigator.continueTo(mode, DeclarationHolderAddController.displayPage)
+        case YesNoAnswers.no  => navigator.continueTo(mode, DestinationCountryController.displayPage)
       })
   }
 
   private def addAnotherYesNoForm: Form[YesNoAnswer] =
     YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
-
-  private def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
-    request.declarationType match {
-      case SUPPLEMENTARY | STANDARD => routes.OriginationCountryController.displayPage
-      case _                        => routes.DestinationCountryController.displayPage
-    }
 }

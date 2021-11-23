@@ -86,7 +86,6 @@ object ExportDeclarationTestData {
       carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
     ),
     locations = Locations(
-      originationCountry = Some(Country(Some("GB"))),
       destinationCountry = Some(Country(Some("PL"))),
       hasRoutingCountries = Some(true),
       routingCountries = Seq(Country(Some("FR"))),
@@ -150,7 +149,6 @@ object ExportDeclarationTestData {
       carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
     ),
     locations = Locations(
-      originationCountry = Some(Country(Some("GB"))),
       destinationCountry = Some(Country(Some("PL"))),
       hasRoutingCountries = Some(true),
       routingCountries = Seq(Country(Some("FR"))),
