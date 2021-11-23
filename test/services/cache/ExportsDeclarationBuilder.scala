@@ -118,12 +118,6 @@ trait ExportsDeclarationBuilder {
     model.copy(locations = model.locations.copy(goodsLocation = None))
   }
 
-  def withOriginationCountry(originationCountry: Country = Country(Some("GB"))): ExportsDeclarationModifier =
-    model => model.copy(locations = model.locations.copy(originationCountry = Some(originationCountry)))
-
-  def withoutOriginationCountry(): ExportsDeclarationModifier =
-    model => model.copy(locations = model.locations.copy(originationCountry = None))
-
   def withDestinationCountry(destinationCountry: Country = Country(Some("GB"))): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(destinationCountry = Some(destinationCountry)))
 
@@ -335,11 +329,9 @@ trait ExportsDeclarationBuilder {
     )
 
   def withDestinationCountries(
-    countryOfDispatch: Country = Country(Some("GB")),
     countriesOfRouting: Seq[Country] = Seq.empty,
     countryOfDestination: Country = Country(Some("US"))
   ): ExportsDeclarationModifier = {
-    withOriginationCountry(countryOfDispatch)
     withDestinationCountry(countryOfDestination)
     withRoutingCountries(countriesOfRouting)
   }

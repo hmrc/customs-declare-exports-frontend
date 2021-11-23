@@ -26,7 +26,7 @@
 @(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @sectionRequired(locations: Locations) = @{
-    locations.originationCountry.isDefined || locations.hasRoutingCountries.isDefined || locations.routingCountries.nonEmpty || locations.destinationCountry.isDefined
+    locations.hasRoutingCountries.isDefined || locations.routingCountries.nonEmpty || locations.destinationCountry.isDefined
 }
 
 @actions(action: Actions) = @{
@@ -38,26 +38,6 @@
 
     @summaryList("declaration-countries-summary", Some(messages("declaration.summary.countries")), Seq(
 
-        declarationData.locations.originationCountry.map(originationCountry =>
-            SummaryListRow(
-                classes = "countryOfDispatch-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.countries.countryOfDispatch"))
-                ),
-                value = Value(
-                    content = Text(originationCountry.code.map(code => Countries.findByCode(code).asString()).getOrElse(""))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionItem(
-                            href = controllers.declaration.routes.OriginationCountryController.displayPage(mode).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.countries.countryOfDispatch.change"))
-                        )
-                    )
-                ))
-            )
-        ),
         declarationData.locations.hasRoutingCountries.map(_ =>
             SummaryListRow(
                 classes = "countriesOfRouting-row",

@@ -112,43 +112,5 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.countryOfDestination.change")
       row must haveSummaryActionsHref(controllers.declaration.routes.DestinationCountryController.displayPage(Mode.Change))
     }
-
-    "display country of dispatch" in {
-
-      val country = Country(Some("GB"))
-      val data = aDeclaration(withOriginationCountry(country))
-
-      val row = view(data).getElementsByClass("countryOfDispatch-row")
-
-      val expectedCountry = "United Kingdom, Great Britain, Northern Ireland - GB"
-
-      row must haveSummaryKey(messages("declaration.summary.countries.countryOfDispatch"))
-      row must haveSummaryValue(expectedCountry)
-    }
-
-    "not display empty country of dispatch" in {
-
-      val data = aDeclaration(withoutOriginationCountry())
-
-      view(data).getElementsByClass("countryOfDispatch-row") mustBe empty
-    }
-
-    "display change button for country of dispatch" in {
-
-      val country = Country(Some("GB"))
-      val data = aDeclaration(withOriginationCountry(country))
-
-      val row = view(data).getElementsByClass("countryOfDispatch-row")
-
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.countryOfDispatch.change")
-      row must haveSummaryActionsHref(controllers.declaration.routes.OriginationCountryController.displayPage(Mode.Change))
-    }
-
-    "not display country of dispatch when question not asked" in {
-
-      val data = aDeclaration()
-
-      view(data).getElementsByClass("countryOfDispatch-row") mustBe empty
-    }
   }
 }

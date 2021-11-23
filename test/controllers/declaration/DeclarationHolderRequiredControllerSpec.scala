@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{DeclarationHolderAddController, DeclarationHolderSummaryController, DestinationCountryController}
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}
@@ -93,7 +94,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Mode.Normal)
         }
       }
     }
@@ -119,7 +120,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage(Mode.Normal)
         }
       }
     }
@@ -133,7 +134,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.OriginationCountryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe DestinationCountryController.displayPage(Mode.Normal)
         }
       }
 
@@ -145,7 +146,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe DestinationCountryController.displayPage(Mode.Normal)
         }
       }
     }

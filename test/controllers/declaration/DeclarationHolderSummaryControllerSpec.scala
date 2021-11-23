@@ -146,7 +146,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
           val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.OriginationCountryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage(Mode.Normal)
         }
       }
 

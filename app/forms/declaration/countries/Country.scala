@@ -22,4 +22,6 @@ case class Country(code: Option[String])
 
 object Country {
   implicit val format = Json.format[Country]
+
+  val GB = Country(Some("GB"))
 }

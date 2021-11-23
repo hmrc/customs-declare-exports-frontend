@@ -58,6 +58,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
   private def form(request: JourneyRequest[_]): Form[Country] =
     Countries.form(DestinationCountryPage)(request, messages(request), mockCodeListConnector)
+
   private def view(implicit request: JourneyRequest[_]): Html = destinationCountryPage(Mode.Normal, form(request))(request, messages)
 
   "Destination country view spec" should {
@@ -65,6 +66,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     "have defined translation for used labels" in {
 
       messages must haveTranslationFor("declaration.destinationCountry.title")
+      messages must haveTranslationFor("declaration.destinationCountry.body")
       messages must haveTranslationFor("declaration.destinationCountry.empty")
       messages must haveTranslationFor("declaration.destinationCountry.error")
       messages must haveTranslationFor("declaration.section.3")
@@ -78,23 +80,23 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     "Destination country view spec" should {
 
       s"display page question for ${request.declarationType}" in {
-
-        view(request).getElementsByTag("h1").text() mustBe messages("declaration.destinationCountry.title")
+        view(request).getElementsByTag("h1").text mustBe messages("declaration.destinationCountry.title")
       }
 
       s"display page heading for ${request.declarationType}" in {
+        view(request).getElementById("section-header").text must include(messages("declaration.section.3"))
+      }
 
-        view(request).getElementById("section-header").text() must include(messages("declaration.section.3"))
+      "display the expected body text" in {
+        view(request).getElementsByClass("govuk-body").get(0).text mustBe messages("declaration.destinationCountry.body")
       }
 
       s"display 'Save and continue' button for ${request.declarationType}" in {
-
-        view(request).getElementById("submit").text() mustBe messages("site.save_and_continue")
+        view(request).getElementById("submit").text mustBe messages("site.save_and_continue")
       }
 
       s"display 'Save and return' button for ${request.declarationType}" in {
-
-        view(request).getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
+        view(request).getElementById("submit_and_return").text mustBe messages("site.save_and_come_back_later")
       }
     }
   }
@@ -102,13 +104,37 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
   onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
     "Destination country view spec" should {
 
-      s"display back button that links to 'Origination country' page for ${request.declarationType}" in {
+      s"links to 'Declaration Holder Summary' page for ${request.declarationType}" when {
 
-        val view = destinationCountryPage(Mode.Normal, form(request))(request, messages)
-        val backButton = view.getElementById("back-link")
+        "cache contains DeclarationHoldersData.isRequired field with 'Yes' answer" in {
+          val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, Yes)))
+          val req = journeyRequest(request.cacheModel.copy(parties = parties))
 
-        backButton.text() mustBe messages("site.back")
-        backButton must haveHref(routes.OriginationCountryController.displayPage())
+          val backButton = view(req).getElementById("back-link")
+
+          backButton.text mustBe messages("site.back")
+          backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
+        }
+
+        "cache does NOT contain DeclarationHoldersData.isRequired field" in {
+          val backButton = view(request).getElementById("back-link")
+
+          backButton.text mustBe messages("site.back")
+          backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
+        }
+      }
+
+      s"links to 'Declaration Holder Required' page for ${request.declarationType}" when {
+
+        "cache contains DeclarationHoldersData.isRequired field with 'No' answer" in {
+          val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, No)))
+          val req = journeyRequest(request.cacheModel.copy(parties = parties))
+
+          val backButton = view(req).getElementById("back-link")
+
+          backButton.text mustBe messages("site.back")
+          backButton must haveHref(routes.DeclarationHolderRequiredController.displayPage())
+        }
       }
     }
   }
@@ -121,21 +147,19 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
         s"links to 'Declaration Holder Summary' page for ${request.declarationType}" when {
 
           "cache contains DeclarationHoldersData.isRequired field with 'Yes' answer" in {
-
             val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, Yes)))
             val req = journeyRequest(request.cacheModel.copy(parties = parties))
 
             val backButton = view(req).getElementById("back-link")
 
-            backButton.text() mustBe messages("site.back")
+            backButton.text mustBe messages("site.back")
             backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
           }
 
           "cache does NOT contain DeclarationHoldersData.isRequired field" in {
-
             val backButton = view(request).getElementById("back-link")
 
-            backButton.text() mustBe messages("site.back")
+            backButton.text mustBe messages("site.back")
             backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
           }
         }
@@ -143,13 +167,12 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
         s"links to 'Declaration Holder Required' page for ${request.declarationType}" when {
 
           "cache contains DeclarationHoldersData.isRequired field with 'No' answer" in {
-
             val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, No)))
             val req = journeyRequest(request.cacheModel.copy(parties = parties))
 
             val backButton = view(req).getElementById("back-link")
 
-            backButton.text() mustBe messages("site.back")
+            backButton.text mustBe messages("site.back")
             backButton must haveHref(routes.DeclarationHolderRequiredController.displayPage())
           }
         }

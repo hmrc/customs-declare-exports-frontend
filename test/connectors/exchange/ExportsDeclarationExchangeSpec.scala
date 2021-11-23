@@ -21,13 +21,15 @@ import java.time.Instant
 import base.UnitWithMocksSpec
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.declaration.countries.Country
 import forms.{Ducr, Lrn}
 import models.declaration._
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
+import org.scalatest.OptionValues
 import play.api.libs.json.{JsSuccess, Json}
 import services.cache.ExportsDeclarationBuilder
 
-class ExportsDeclarationExchangeSpec extends UnitWithMocksSpec with ExportsDeclarationBuilder {
+class ExportsDeclarationExchangeSpec extends UnitWithMocksSpec with ExportsDeclarationBuilder with OptionValues {
 
   private val id = "id"
   private val sourceId = "source-id"
@@ -86,6 +88,11 @@ class ExportsDeclarationExchangeSpec extends UnitWithMocksSpec with ExportsDecla
   )
 
   "Request" should {
+
+    "have originationCountry hard-coded to 'GB'" in {
+      declaration.locations.originationCountry.value mustBe Country.GB
+    }
+
     "map to ExportsDeclaration" in {
       request.toExportsDeclaration mustBe declaration
     }

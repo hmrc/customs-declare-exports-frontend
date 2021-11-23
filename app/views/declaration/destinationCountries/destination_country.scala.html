@@ -34,6 +34,7 @@
     govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    body: paragraphBody,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
@@ -57,6 +58,7 @@
             field = form("countryCode"),
             label = messages("declaration.destinationCountry.title"),
             labelClass = Some(gdsPageLabel),
+            bodyHtml = Some(body(messages("declaration.destinationCountry.body"))),
             emptySelectValue = messages("declaration.destinationCountry.empty"),
             countryKey = (c: CountryModel) => c.countryCode,
             isPageHeading = true

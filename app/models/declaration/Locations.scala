@@ -23,7 +23,7 @@ import models.ExportsDeclaration
 import play.api.libs.json.Json
 
 case class Locations(
-  originationCountry: Option[Country] = None,
+  originationCountry: Option[Country] = Some(Country.GB),
   destinationCountry: Option[Country] = None,
   hasRoutingCountries: Option[Boolean] = None,
   routingCountries: Seq[Country] = Seq.empty,
@@ -40,7 +40,6 @@ object Locations {
   implicit val format = Json.format[Locations]
 
   def apply(cacheData: ExportsDeclaration): Locations = Locations(
-    originationCountry = cacheData.locations.originationCountry,
     destinationCountry = cacheData.locations.destinationCountry,
     hasRoutingCountries = cacheData.locations.hasRoutingCountries,
     routingCountries = cacheData.locations.routingCountries,

@@ -30,7 +30,7 @@ import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocu
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
 import forms.declaration.commodityMeasure.{CommodityMeasure, SupplementaryUnits}
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
-import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
+import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderRequired, DeclarationHolderSummary}
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.declaration.officeOfExit.OfficeOfExit
@@ -97,7 +97,6 @@ object Navigator {
     case ExpressConsignment          => routes.BorderTransportController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
-    case DestinationCountryPage      => routes.OriginationCountryController.displayPage
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage           => routes.RoutingCountriesSummaryController.displayPage
@@ -154,7 +153,6 @@ object Navigator {
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
-    case DestinationCountryPage      => routes.OriginationCountryController.displayPage
     case GoodsLocationForm           => routes.DestinationCountryController.displayPage
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
     case OfficeOfExit                => routes.LocationController.displayPage
@@ -289,10 +287,10 @@ object Navigator {
     case ConsigneeDetails          => consigneeDetailsPreviousPage
     case ContainerFirst            => ifExpressConsignmentPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
+    case DestinationCountryPage    => destinationCountryPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault
     case ExpressConsignment        => inlandTransportDetailsPageOnCondition
     case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
-    case OriginationCountryPage    => originationCountryPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage
   }
 
@@ -301,10 +299,10 @@ object Navigator {
   val supplementaryCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case ConsigneeDetails          => consigneeDetailsSupplementaryPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
+    case DestinationCountryPage    => destinationCountryPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault
     case ContainerFirst            => inlandTransportDetailsPageOnCondition
     case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
-    case OriginationCountryPage    => originationCountryPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage
   }
 
@@ -315,7 +313,7 @@ object Navigator {
     case CarrierEoriNumber         => carrierEoriNumberPreviousPage
     case Document                  => previousDocumentsPreviousPage
     case ConsigneeDetails          => consigneeDetailsPreviousPage
-    case DestinationCountryPage    => originationCountryPreviousPage
+    case DestinationCountryPage    => destinationCountryPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage
     case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
     case ExpressConsignment        => supervisingCustomsOfficePageOnCondition
@@ -329,7 +327,7 @@ object Navigator {
     case CarrierEoriNumber         => carrierEoriNumberPreviousPage
     case Document                  => previousDocumentsPreviousPage
     case ConsigneeDetails          => consigneeDetailsPreviousPage
-    case DestinationCountryPage    => originationCountryPreviousPage
+    case DestinationCountryPage    => destinationCountryPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage
     case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
     case ExpressConsignment        => supervisingCustomsOfficePageOnCondition
@@ -343,7 +341,7 @@ object Navigator {
     case CarrierEoriNumber          => carrierEoriNumberClearancePreviousPage
     case ExporterEoriNumber         => exporterEoriNumberClearancePreviousPage
     case ConsigneeDetails           => consigneeDetailsClearancePreviousPage
-    case DestinationCountryPage     => originationCountryPreviousPage
+    case DestinationCountryPage     => destinationCountryPreviousPage
     case RepresentativeAgent        => representativeAgentClearancePreviousPage
     case IsExs                      => isExsClearancePreviousPage
     case Document                   => previousDocumentsPreviousPage
@@ -501,7 +499,7 @@ object Navigator {
     }
   }
 
-  private def originationCountryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+  private def destinationCountryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.parties.declarationHoldersData.exists(_.isRequired == YesNoAnswer.No))
       routes.DeclarationHolderRequiredController.displayPage(mode)
     else

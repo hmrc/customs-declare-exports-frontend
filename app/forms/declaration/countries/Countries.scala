@@ -33,13 +33,6 @@ object Countries {
     val id: String
   }
 
-  case object OriginationCountryPage extends CountryPage {
-    override val id = "originationCountry"
-
-    override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-      Seq(TariffContentKey("tariff.declaration.originationCountry.common"))
-  }
-
   case object DestinationCountryPage extends CountryPage {
     override val id = "destinationCountry"
 

@@ -25,7 +25,6 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
-import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -67,16 +66,10 @@ class DeclarationHolderRequiredController @Inject()(
       case _            => form
     }
 
-  private def nextPage(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Mode => Call =
+  private def nextPage(yesNoAnswer: YesNoAnswer): Mode => Call =
     yesNoAnswer.answer match {
       case YesNoAnswers.yes => DeclarationHolderAddController.displayPage
-      case YesNoAnswers.no  => nextPageOnDeclarationType
-    }
-
-  private def nextPageOnDeclarationType(implicit request: JourneyRequest[_]): Mode => Call =
-    request.declarationType match {
-      case SUPPLEMENTARY | STANDARD => OriginationCountryController.displayPage
-      case _                        => DestinationCountryController.displayPage
+      case YesNoAnswers.no  => DestinationCountryController.displayPage
     }
 
   private def updateCache(yesNoAnswer: YesNoAnswer)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
