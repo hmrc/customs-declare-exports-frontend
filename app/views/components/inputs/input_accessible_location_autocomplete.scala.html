@@ -16,6 +16,7 @@
 
 @import services.view.AutoCompleteItem
 @import views.helpers.CountryAutoCompleteHelper
+@import controllers.routes.Assets
 
 @import models.codes.Country
 @(  field: Field,
@@ -67,9 +68,9 @@ To avoid problems, we need to remove [] from field.
     }
 </div>
 
-<script src="/customs-declare-exports/assets/lib/accessible-autocomplete/dist/accessible-autocomplete.min.js"></script>
-<script src="/customs-declare-exports/assets/javascripts/jquery-3.6.0.slim.min.js"></script>
-<script src="/customs-declare-exports/assets/javascripts/auto-complete-fix.js"></script>
+<script src='@Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")'></script>
+<script src='@Assets.versioned("javascripts/jquery-3.6.0.slim.min.js")'></script>
+<script src='@Assets.versioned("javascripts/auto-complete-fix.js")'></script>
 <script  type="text/javascript">
         var selectElementId = '@(fieldNameWithoutBrackets)'
         var submitOnConfirm = false

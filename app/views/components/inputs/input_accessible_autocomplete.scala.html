@@ -16,6 +16,7 @@
 
 @import services.view.AutoCompleteItem
 @import views.html.helper._
+@import controllers.routes.Assets
 
 @(  field: Field,
     emptySelectValue: String,
@@ -63,9 +64,9 @@ To avoid problems, we need to remove [] from field.
     }
 </div>
 
-<script src="/customs-declare-exports/assets/lib/accessible-autocomplete/dist/accessible-autocomplete.min.js"></script>
-<script src="/customs-declare-exports/assets/javascripts/jquery-3.6.0.slim.min.js"></script>
-<script src="/customs-declare-exports/assets/javascripts/auto-complete-fix.js"></script>
+<script src='@Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")'></script>
+<script src='@Assets.versioned("javascripts/jquery-3.6.0.slim.min.js")'></script>
+<script src='@Assets.versioned("javascripts/auto-complete-fix.js")'></script>
 <script>
     var selectedElement = document.querySelector("#@(fieldNameWithoutBrackets)")
     accessibleAutocomplete.enhanceSelectElement({
