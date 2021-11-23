@@ -26,10 +26,9 @@ import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import models.dis.MrnStatus
 import play.api.Logging
-import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
