@@ -18,10 +18,8 @@ package models
 
 import play.api.libs.json.{Json, OFormat}
 
-import java.time.ZonedDateTime
+case class Email(address: String, deliverable: Boolean)
 
-case class VerifiedEmailAddress(address: String, timestamp: ZonedDateTime)
-
-object VerifiedEmailAddress {
-  implicit val format: OFormat[VerifiedEmailAddress] = Json.format[VerifiedEmailAddress]
+object Email {
+  implicit val format: OFormat[Email] = Json.format[Email]
 }

@@ -6,9 +6,10 @@ GET         /assets/*file                                  controllers.Assets.ve
 
 GET         /unauthorised                                  controllers.UnauthorisedController.onPageLoad
 
-# Unverified Email
+# Unverified/Undeclared Email
 
-GET         /unverified-email                              controllers.UnverifiedEmailController.informUser
+GET         /unverified-email                              controllers.UnverifiedEmailController.informUserUnverified
+GET         /undeliverable-email                           controllers.UnverifiedEmailController.informUserUndeliverable
 
 # Secure Messaging
 GET         /messages                                      controllers.SecureMessagingController.displayInbox
