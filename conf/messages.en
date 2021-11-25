@@ -2047,7 +2047,7 @@ dmsError.CDS11005.title = Relation error
 dmsError.CDS11006.title = Relation error
 dmsError.CDS11007.title = Additional message cannot be accepted
 dmsError.CDS11012.title = Element is not allowed to be amended on this declaration type
-dmsError.CDS12003.title = Local reference number duplication.title = .
+dmsError.CDS12003.title = Local reference number duplication
 dmsError.CDS12005.title = Identification not recognised
 dmsError.CDS12006.title = Licence has expired, not recognised, or does not match
 dmsError.CDS12007.title = Authorisation number not accepted
@@ -2055,7 +2055,7 @@ dmsError.CDS12013.title = Authorisation error
 dmsError.CDS12014.title = Goods arrival notification required
 dmsError.CDS12015.title = Declaration status does not allow request
 dmsError.CDS12016.title = Supplementary declaration is too late or predates acceptance
-dmsError.CDS12022.title = Number of items error.title = .
+dmsError.CDS12022.title = Number of items error
 dmsError.CDS12024.title = Uniqueness error
 dmsError.CDS12026.title = Field has been amended more than once
 dmsError.CDS12031.title = Arrival notification is too late
@@ -2154,7 +2154,7 @@ dmsError.CDS40053.title = Quota suspended
 dmsError.CDS40059.title = Incomplete measure or commodity code
 dmsError.CDS40066.title = Tariff condition not fulfilled
 dmsError.CDS40068.title = National additional code for excise is missing
-dmsError.CDS40069.title = Quota error.title = The Quota claimed is no longer available.
+dmsError.CDS40069.title = Quota error
 dmsError.CDS40070.title = Additional information code NIIMP must appear on all items
 dmsError.CDS40071.title = Additional information code NIDOM must appear on all items
 dmsError.CDS40072.title = Additional information code NIEXP must appear on all items
