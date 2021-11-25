@@ -51,7 +51,7 @@ object Address {
         .verifying("declaration.address.townOrCity.length", isEmpty or noLongerThan(35)),
       "postCode" -> text()
         .verifying("declaration.address.postCode.empty", nonEmpty)
-        .verifying("declaration.address.postCode.error", isEmpty or isAlphanumericWithSpace)
+        .verifying("declaration.address.postCode.error", isEmpty or isAlphanumericWithSpaceAndHyphen)
         .verifying("declaration.address.postCode.length", isEmpty or noLongerThan(9)),
       "country" -> text()
         .verifying("declaration.address.country.empty", nonEmpty)

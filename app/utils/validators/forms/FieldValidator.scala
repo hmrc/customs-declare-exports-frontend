@@ -85,6 +85,8 @@ object FieldValidator {
 
   val isAlphanumericWithSpace: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' '))(input)
 
+  val isAlphanumericWithSpaceAndHyphen: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' ', '-'))(input)
+
   val isValidAddressField: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' ', '\'', ',', '-'))(input)
 
   val isValidMucr: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set('/', '-', ':'))(input)

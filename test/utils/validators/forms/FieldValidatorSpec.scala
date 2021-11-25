@@ -855,6 +855,28 @@ class FieldValidatorSpec extends UnitSpec {
     }
   }
 
+  "FieldValidator isAlphanumericWithSpaceAndHyphen" should {
+
+    "return false" when {
+
+      "value is incorrect" in {
+
+        isAlphanumericWithSpaceAndHyphen("@test") must be(false)
+      }
+    }
+
+    "return true" when {
+
+      "value is correct" in {
+
+        isAlphanumericWithSpaceAndHyphen("abc 123") must be(true)
+        isAlphanumericWithSpaceAndHyphen("abc-123") must be(true)
+        isAlphanumericWithSpaceAndHyphen(" ") must be(true)
+        isAlphanumericWithSpaceAndHyphen("-") must be(true)
+      }
+    }
+  }
+
   "FieldValidator isValidEmail" should {
 
     "return false" when {
