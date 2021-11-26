@@ -189,26 +189,25 @@ function declarationChoice(){
 
         switch(getDeclaration()) {
             case 'D':
-            case 'A':
+            case 'A': // Standard
                 selectRadioOptionFromInputs(inputs, 0);
                 break;
             case 'F':
-            case 'C':
+            case 'C': // Simplified
                 selectRadioOptionFromInputs(inputs, 1);
                 break;
             case 'K':
-            case 'J':
+            case 'J': // Clearance
                 selectRadioOptionFromInputs(inputs, 2);
                 break;
             case 'Y':
-            case 'Z':
+            case 'Z': // Supplementary
                 selectRadioOptionFromInputs(inputs, 3);
                 break;
             case 'E':
-            case 'B':
+            case 'B': // Occasional
                 selectRadioOptionFromInputs(inputs, 4);
                 break;
-
         }
         document.getElementById('submit').click()
     }

@@ -19,6 +19,8 @@ package controllers.declaration
 import scala.concurrent.Future
 
 import base.ControllerSpec
+import controllers.declaration.routes.AdditionalInformationRequiredController
+import controllers.routes.RootController
 import forms.declaration.commodityMeasure.SupplementaryUnits
 import forms.declaration.commodityMeasure.SupplementaryUnits.{hasSupplementaryUnits, supplementaryUnits}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
@@ -32,6 +34,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRequired}
 import services.{CommodityInfo, TariffApiService}
 import views.html.declaration.commodityMeasure.{supplementary_units, supplementary_units_yes_no}
 
@@ -56,7 +59,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(None))
+    when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Left(CommodityCodeNotFound)))
     when(supplementaryUnitsPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(supplementaryUnitsYesNoPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
@@ -89,7 +92,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
   "SupplementaryUnitsController.displayPage" when {
 
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
-      "the cached commodity code does not require supplementary units" should {
+      "the given commodity code was not found by calling the Tariff API" should {
 
         "display an empty supplementary_units_yes_no Page" when {
           "no supplementary units are cached yet" in {
@@ -120,7 +123,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
         "display an empty supplementary_units Page" when {
           "no supplementary units are cached yet" in {
-            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Some(commodityInfo)))
+            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Right(commodityInfo)))
 
             withNewCaching(request.cacheModel)
 
@@ -133,7 +136,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
         "return a mandatoryForm with submission errors" when {
           "the cached commodity code does require supplementary units" in {
-            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Some(commodityInfo)))
+            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Right(commodityInfo)))
 
             withNewCaching(aDeclaration())
             await(controller.displayPage(Mode.Normal, "itemId")(getRequestWithSubmissionErrors))
@@ -143,7 +146,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
         "display a filled-in supplementary_units Page" when {
           "supplementary units have already been cached" in {
-            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Some(commodityInfo)))
+            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Right(commodityInfo)))
 
             val commodityMeasure = CommodityMeasure(Some("100"), Some(false), Some("1000"), Some("500"))
             val item = anItem(withCommodityMeasure(commodityMeasure))
@@ -156,6 +159,19 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
           }
         }
       }
+
+      "the cached commodity code does NOT require supplementary units" should {
+        "redirect to the page at '/is-additional-information-required'" in {
+          when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Left(SupplementaryUnitsNotRequired)))
+
+          withNewCaching(request.cacheModel)
+
+          val response = controller.displayPage(Mode.Normal, "itemId").apply(getRequest())
+
+          await(response) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
+        }
+      }
     }
 
     onJourney(CLEARANCE, OCCASIONAL, SIMPLIFIED) { request =>
@@ -165,7 +181,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
         val response = controller.displayPage(Mode.Normal, "itemId").apply(getRequest())
 
         status(response) must be(SEE_OTHER)
-        redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
+        redirectLocation(response) mustBe Some(RootController.displayPage().url)
       }
     }
   }
@@ -173,7 +189,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
   "SupplementaryUnitsController.submitPage" when {
 
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
-      "the cached commodity code does NOT require supplementary units" should {
+      "the given commodity code was not found by calling the Tariff API" should {
 
         "return 303 (SEE_OTHER)" when {
           "information provided by the user are correct" in {
@@ -184,7 +200,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
             val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
+            thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
           }
         }
 
@@ -206,7 +222,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
         "return 303 (SEE_OTHER)" when {
           "information provided by the user are correct" in {
-            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Some(commodityInfo)))
+            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Right(commodityInfo)))
 
             withNewCaching(request.cacheModel)
 
@@ -215,13 +231,13 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
             val result = controller.submitPage(Mode.Normal, "itemId")(postRequest(correctForm))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
+            thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
           }
         }
 
         "return 400 (BAD_REQUEST)" when {
           "information provided by the user are NOT correct" in {
-            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Some(commodityInfo)))
+            when(tariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Right(commodityInfo)))
 
             withNewCaching(request.cacheModel)
 
@@ -243,7 +259,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
         val response = controller.submitPage(Mode.Normal, "itemId").apply(getRequest())
 
         status(response) must be(SEE_OTHER)
-        redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
+        redirectLocation(response) mustBe Some(RootController.displayPage().url)
       }
     }
   }
