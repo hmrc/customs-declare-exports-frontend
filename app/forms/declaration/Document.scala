@@ -44,14 +44,15 @@ object Document extends DeclarationPage {
 
   private def documentReferenceMapping: (String, Mapping[String]) =
     "documentReference" -> text()
+      .transform(_.trim, (s: String) => s)
       .verifying("declaration.previousDocuments.documentReference.empty", nonEmpty)
-      .verifying(
-        "declaration.previousDocuments.documentReference.error",
-        isEmpty or (isAlphanumericWithSpecialCharacters(Set('-', '/', ':')) and noLongerThan(35))
-      )
+      .verifying("declaration.previousDocuments.documentReference.error", isEmpty or isAlphanumericWithSpecialCharacters(Set(' ', '-', '/', ':')))
+      .verifying("declaration.previousDocuments.documentReference.error.spaces", isEmpty or notContainsConsecutiveSpaces)
+      .verifying("declaration.previousDocuments.documentReference.error.length", isEmpty or noLongerThan(35))
 
   private def goodsIdentifierMapping: (String, Mapping[Option[String]]) =
-    "goodsItemIdentifier" -> optional(text.verifying("declaration.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
+    "goodsItemIdentifier" ->
+      optional(text.verifying("declaration.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.addPreviousDocument.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
