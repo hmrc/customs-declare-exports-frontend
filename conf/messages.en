@@ -1424,13 +1424,13 @@ declaration.previousDocuments.documentReference = Document reference
 declaration.previousDocuments.v1.documentReference.body = Enter the unique invoice number or packing reference printed on the document.
 declaration.previousDocuments.v2.documentReference.body = For excise, enter the excise guarantee reference or the stock reference number, as required.
 declaration.previousDocuments.v3.documentReference.body = For special procedures, enter the excise guarantee reference or the movement reference number of the previous declaration, as required.
-declaration.previousDocuments.v3.documentReference.hint = Enter the invoice or other reference using letters, numbers and standard alternative characters, but no spaces. For example, SMITH-321/890.
 declaration.previousDocuments.v4.documentReference.body = Enter a reference.
-declaration.previousDocuments.v4.documentReference.hint = For example, the unique invoice number or packing reference printed on the document.
 declaration.previousDocuments.v5.documentReference.body = Enter a reference.
-declaration.previousDocuments.v5.documentReference.hint = For example, the unique invoice number or packing reference printed on the document.
 declaration.previousDocuments.v6.documentReference.body = Enter the unique invoice number or packing reference printed on the document.
-declaration.previousDocuments.documentReference.error = The document reference must be 35 characters or fewer
+declaration.previousDocuments.documentReference.hint = You can use letters, numbers, spaces and standard alternative characters. For example, SMITH 321/890.
+declaration.previousDocuments.documentReference.error = Document reference must contain only letters, numbers, hyphens and forward slash
+declaration.previousDocuments.documentReference.error.length = The document reference must be 35 characters or fewer
+declaration.previousDocuments.documentReference.error.spaces = Document reference must not contain double spaces
 declaration.previousDocuments.documentReference.empty = Enter a document reference
 
 declaration.previousDocuments.goodsItemIdentifier = Item number
