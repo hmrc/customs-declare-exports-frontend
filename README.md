@@ -36,8 +36,6 @@ The list of feature flags and what they are responsible for:
 
 `betaBanner = [enabled/disabled]` - When enabled, all pages in the service have BETA banner.
 
-`changeErrorLink = [enabled/disabled]` - When enabled, page under url */submissions/[ID]/rejected-notifications* contains 'Change' links to page with errors.
-
 `ead = [enabled/disabled]` - When enabled, page under url */submissions/[ID]/information* may contain link to generate Exports Accompanying Document.
 
 `sfus = [enabled/disabled]` - When enabled, page under url */submissions/[ID]/information* may contain link to Secure File Upload Service.
