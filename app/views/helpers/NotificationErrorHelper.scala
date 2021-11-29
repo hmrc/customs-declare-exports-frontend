@@ -16,28 +16,23 @@
 
 package views.helpers
 
-import config.featureFlags.ChangeErrorLinkConfig
 import connectors.CodeListConnector
 import controllers.routes
-import models.declaration.notifications.NotificationError
 import models.ExportsDeclaration
+import models.declaration.notifications.NotificationError
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
-import views.components.gds.ActionItemBuilder._
-import views.html.components.gds.{heading, _}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import views.components.gds.ActionItemBuilder._
+import views.html.components.gds._
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class NotificationErrorHelper @Inject()(
-  codeListConnector: CodeListConnector,
-  changeErrorLinkConfig: ChangeErrorLinkConfig,
-  paragraphBody: paragraphBody
-) {
+class NotificationErrorHelper @Inject()(codeListConnector: CodeListConnector, paragraphBody: paragraphBody) {
   import NotificationErrorHelper._
 
   def formattedErrorDescription(notificationError: NotificationError)(implicit messages: Messages): List[Html] = {
@@ -65,7 +60,7 @@ class NotificationErrorHelper @Inject()(
     }
   }
 
-  def errorChangeAction(notificationError: NotificationError, declaration: ExportsDeclaration)(implicit messages: Messages) = {
+  def errorChangeAction(notificationError: NotificationError, declaration: ExportsDeclaration)(implicit messages: Messages): Option[Actions] = {
     def constructChangeLinkAction(call: Call) = {
       val errorPattern = notificationError.pointer.map(_.pattern).getOrElse("")
       val errorMessage = messages(s"dmsError.${notificationError.validationCode}.title")
@@ -79,11 +74,9 @@ class NotificationErrorHelper @Inject()(
       Actions(items = Seq(action))
     }
 
-    if (changeErrorLinkConfig.isEnabled) {
-      PointerHelper
-        .getChangeLinkCall(notificationError.pointer, declaration)
-        .map(call => constructChangeLinkAction(call))
-    } else None
+    PointerHelper
+      .getChangeLinkCall(notificationError.pointer, declaration)
+      .map(call => constructChangeLinkAction(call))
   }
 
   def createSummaryListRow(declaration: ExportsDeclaration, errorRow: ErrorRow, index: Int)(implicit messages: Messages): SummaryListRow =

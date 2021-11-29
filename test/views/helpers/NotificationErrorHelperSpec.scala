@@ -17,11 +17,10 @@
 package views.helpers
 
 import base.{Injector, OverridableInjector}
-import config.featureFlags.ChangeErrorLinkConfig
 import connectors.CodeListConnector
+import models.Pointer
 import models.codes.DmsErrorCode
 import models.declaration.notifications.NotificationError
-import models.Pointer
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -30,7 +29,7 @@ import services.cache.ExportsTestData
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Text}
 import views.declaration.spec.UnitViewSpec
 import views.helpers.NotificationErrorHelper.ErrorRow
-import views.html.components.gds.{heading, paragraphBody}
+import views.html.components.gds.paragraphBody
 
 import java.util.Locale
 import scala.collection.immutable.ListMap
@@ -41,7 +40,6 @@ class NotificationErrorHelperSpec extends UnitViewSpec with ExportsTestData with
   val paragraphBody = injector.instanceOf[paragraphBody]
 
   val codeListConnector = mock[CodeListConnector]
-  val changeErrorLinkConfig = mock[ChangeErrorLinkConfig]
 
   val defaultLocale = Locale.UK
   val errorCode = "CDS12345"
@@ -49,7 +47,7 @@ class NotificationErrorHelperSpec extends UnitViewSpec with ExportsTestData with
   val pointer = Pointer("")
   val notificationError = new NotificationError(errorCode, Some(pointer))
 
-  val notificationErrorHelper = new NotificationErrorHelper(codeListConnector, changeErrorLinkConfig, paragraphBody)
+  val notificationErrorHelper = new NotificationErrorHelper(codeListConnector, paragraphBody)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
