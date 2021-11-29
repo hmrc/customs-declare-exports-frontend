@@ -116,6 +116,8 @@ object FieldValidator {
 
   val containsNotOnlyZeros: String => Boolean = (input: String) => input.isEmpty || input.exists(char => char != '0')
 
+  val notContainsConsecutiveSpaces: String => Boolean = (input: String) => !input.contains("  ")
+
   val isTailNumeric: String => Boolean = (input: String) =>
     Try(input.tail) match {
       case Success(value) => isNumeric(value)

@@ -64,6 +64,7 @@ object AdditionalDocument extends DeclarationPage {
   val issuingAuthorityNameKey = "issuingAuthorityName"
   val dateOfValidityKey = "dateOfValidity"
 
+  // scalastyle:off
   private def mapping(cacheModel: ExportsDeclaration): Mapping[AdditionalDocument] = {
     val keyWhenDocumentTypeCodeEmpty =
       if (cacheModel.isAuthCodeRequiringAdditionalDocuments) "declaration.additionalDocument.documentTypeCode.empty.fromAuthCode"
@@ -117,6 +118,7 @@ object AdditionalDocument extends DeclarationPage {
         documentWriteOffKey -> optional(DocumentWriteOff.mapping)
       )(form2data)(AdditionalDocument.unapply)
   }
+  // scalastyle:on
 
   private def form2data(
     documentTypeCode: Option[String],

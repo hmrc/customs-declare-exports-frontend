@@ -72,9 +72,9 @@ class PreviousDocumentsHelper @Inject()(
     versionSelection match {
       case 1 => paragraph("v1.documentReference.body")
       case 2 => paragraph("v2.documentReference.body")
-      case 3 => new Html(List(paragraph("v3.documentReference.body"), hint("v3.documentReference.hint")))
-      case 4 => new Html(List(paragraph("v4.documentReference.body"), hint("v4.documentReference.hint")))
-      case 5 => new Html(List(paragraph("v5.documentReference.body"), hint("v5.documentReference.hint")))
+      case 3 => new Html(List(paragraph("v3.documentReference.body"), hint("documentReference.hint")))
+      case 4 => new Html(List(paragraph("v4.documentReference.body"), hint("documentReference.hint")))
+      case 5 => new Html(List(paragraph("v5.documentReference.body"), hint("documentReference.hint")))
       case 6 => paragraph("v6.documentReference.body")
     }
 
