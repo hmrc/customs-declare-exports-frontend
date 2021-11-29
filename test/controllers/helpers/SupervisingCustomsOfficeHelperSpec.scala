@@ -16,12 +16,22 @@
 
 package controllers.helpers
 
-import base.UnitSpec
-import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
+import base.{JourneyTypeTestRunner, MockAuthAction, MockExportCacheService, UnitSpec}
+import controllers.declaration.routes
+import controllers.helpers.SupervisingCustomsOfficeHelper._
+import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
+import models.{DeclarationType, ExportsDeclaration}
+import models.Mode.Normal
+import models.requests.JourneyRequest
+import play.api.mvc.AnyContentAsEmpty
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
-class SupervisingCustomsOfficeHelperSpec extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder {
+class SupervisingCustomsOfficeHelperSpec
+    extends UnitSpec with ExportsDeclarationBuilder with ExportsItemBuilder with JourneyTypeTestRunner with MockExportCacheService
+    with MockAuthAction {
+
+  import SupervisingCustomsOfficeHelperSpec._
 
   val condVerified = anItem(withProcedureCodes(Some("1040"), Seq(NO_APC_APPLIES_CODE)))
 
@@ -60,4 +70,49 @@ class SupervisingCustomsOfficeHelperSpec extends UnitSpec with ExportsDeclaratio
       }
     }
   }
+
+  "SupervisingCustomsOfficeHelper on nextPage" should {
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { request =>
+      "goto InlandTransportDetailsController for STANDARD & SUPPLEMENTARY journeys" in {
+        nextPage(request)(Normal) mustBe routes.InlandTransportDetailsController.displayPage(Normal)
+      }
+    }
+
+    onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
+      "goto ExpressConsignmentController for SIMPLIFIED & OCCASIONAL journeys" in {
+        nextPage(request)(Normal) mustBe routes.ExpressConsignmentController.displayPage(Normal)
+      }
+    }
+
+    onJourney(DeclarationType.CLEARANCE) { request =>
+      skipDepartureTransportPageCodes.foreach { modeOfTransportCode =>
+        val cachedDec = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
+
+        s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
+          "goto ExpressConsignmentController" in {
+            nextPage(getRequest(cachedDec))(Normal) mustBe routes.ExpressConsignmentController.displayPage(Normal)
+          }
+        }
+      }
+
+      meaningfulModeOfTransportCodes
+        .filter(!skipDepartureTransportPageCodes.contains(_))
+        .foreach { modeOfTransportCode =>
+          val cachedDec = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
+
+          s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
+            "goto DepartureTransportController" in {
+              nextPage(getRequest(cachedDec))(Normal) mustBe routes.DepartureTransportController.displayPage(Normal)
+            }
+          }
+        }
+    }
+  }
+
+  private def getRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
+    new JourneyRequest(getAuthenticatedRequest(), declaration)
+}
+
+object SupervisingCustomsOfficeHelperSpec {
+  val skipDepartureTransportPageCodes = Seq(FixedTransportInstallations, PostalConsignment)
 }

@@ -19,7 +19,7 @@ package controllers
 import base.ControllerWithoutFormSpec
 import config.AppConfig
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.{undeliverable_email, unverified_email}

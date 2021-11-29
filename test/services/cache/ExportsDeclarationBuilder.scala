@@ -297,17 +297,19 @@ trait ExportsDeclarationBuilder {
     )
   }
 
-  def withoutBorderModeOfTransportCode(): ExportsDeclarationModifier = declaration => {
-    declaration.copy(transport = declaration.transport.copy(borderModeOfTransportCode = None))
-  }
+  def withBorderModeOfTransportCode(maybeModeOfTransportCode: Option[ModeOfTransportCode]): ExportsDeclarationModifier =
+    declaration =>
+      declaration.copy(transport = declaration.transport.copy(borderModeOfTransportCode = Some(TransportLeavingTheBorder(maybeModeOfTransportCode))))
 
-  def withoutMeansOfTransportOnDepartureType(): ExportsDeclarationModifier = declaration => {
-    declaration.copy(transport = declaration.transport.copy(meansOfTransportOnDepartureType = None, meansOfTransportOnDepartureIDNumber = None))
-  }
+  def withoutBorderModeOfTransportCode(): ExportsDeclarationModifier =
+    declaration => declaration.copy(transport = declaration.transport.copy(borderModeOfTransportCode = None))
 
-  def withoutTransportPayment(): ExportsDeclarationModifier = declaration => {
-    declaration.copy(transport = declaration.transport.copy(expressConsignment = No, transportPayment = None))
-  }
+  def withoutMeansOfTransportOnDepartureType(): ExportsDeclarationModifier =
+    declaration =>
+      declaration.copy(transport = declaration.transport.copy(meansOfTransportOnDepartureType = None, meansOfTransportOnDepartureIDNumber = None))
+
+  def withoutTransportPayment(): ExportsDeclarationModifier =
+    declaration => declaration.copy(transport = declaration.transport.copy(expressConsignment = No, transportPayment = None))
 
   def withBorderTransport(details: BorderTransport): ExportsDeclarationModifier = declaration => {
     declaration.copy(
