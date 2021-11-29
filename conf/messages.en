@@ -601,7 +601,6 @@ declaration.representative-status.error = Select the type of representation
 declaration.representative.representationType.direct = The representative is authorised to act in the name of the exporter (direct representation)
 declaration.representative.representationType.direct.hint = The liability rests with the exporter.
 declaration.representative.representationType.indirect = The representative shares legal responsibility with the exporter (indirect representation)
-declaration.representative.representationType.indirect.hint = The representative is sharing legal responsibility with the exporter.
 
 declaration.address.fullName = Full name
 declaration.address.fullName.empty = Enter a name
