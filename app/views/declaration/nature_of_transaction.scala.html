@@ -31,6 +31,7 @@
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    heading: heading,
     saveButtons: saveButtons,
     insetText: exportsInsetText,
     paragraphBody: paragraphBody,
@@ -42,6 +43,12 @@
 @(mode: Mode, form: Form[NatureOfTransaction])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@insetContent = {
+    @heading(message = messages("declaration.natureOfTransaction.inset.text.heading"), classes = "govuk-heading-s", tier = "h2")
+    @paragraphBody(messages("declaration.natureOfTransaction.inset.text.1"))
+    @paragraphBody(messages("declaration.natureOfTransaction.inset.text.2"))
+}
 
 @govukLayout(
     title = Title("declaration.natureOfTransaction.heading", "declaration.section.4", hasErrors = hasErrors),
@@ -65,7 +72,6 @@
                     id = Some("Sale"),
                     value = Some(Sale),
                     content = Text(messages("declaration.natureOfTransaction.sale")),
-                    hint = Some(Hint(content = Text(messages("declaration.natureOfTransaction.sale.hint")))),
                     checked = form("natureType").value.contains(Sale)
                 ),
                 RadioItem(
@@ -118,14 +124,13 @@
                     id = Some("Other"),
                     value = Some(Other),
                     content = Text(messages("declaration.natureOfTransaction.other")),
-                    hint = Some(Hint(content = Text(messages("declaration.natureOfTransaction.other.hint")))),
                     checked = form("natureType").value.contains(Other)
                 )
             ),
             errorMessage = form("natureType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @insetText(content = HtmlContent(paragraphBody(messages("declaration.natureOfTransaction.inset.text"))))
+        @insetText(content = HtmlContent(insetContent))
 
         @tariffExpander(NatureOfTransaction, request.declarationType)(messages, appConfig)
 
