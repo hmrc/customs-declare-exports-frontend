@@ -48,7 +48,7 @@
 
 @hintLink = {
     @link(
-        text = messages("declaration.carrierAddress.hint.2.link"),
+        text = messages("declaration.carrierAddress.hint.link"),
         call = Call("GET", appConfig.companyInformationRegister),
         target = "_blank"
     )
@@ -70,8 +70,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-              govukHint(Hint(content = Text(messages("declaration.carrierAddress.hint.1")))),
-              govukHint(Hint(content = HtmlContent(messages("declaration.carrierAddress.hint.2", hintLink)))),
+              govukHint(Hint(content = HtmlContent(messages("declaration.carrierAddress.hint", hintLink)))),
               group_address(form, "declaration.address", "details.address")
             ))
         ))

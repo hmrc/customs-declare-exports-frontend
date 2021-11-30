@@ -79,7 +79,7 @@ class ExporterEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with 
       }
 
       "display eori question" in {
-        view.getElementsByClass("govuk-label--m") must containMessageForElements("declaration.exporterEori.eori.label")
+        view.getElementsByClass("govuk-label") must containMessageForElements("declaration.exporterEori.eori.label")
         view.getElementById("eori").attr("value") mustBe empty
       }
 
