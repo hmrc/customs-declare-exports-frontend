@@ -44,7 +44,6 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.natureOfTransaction.heading")
         messages must haveTranslationFor("declaration.natureOfTransaction.sale")
-        messages must haveTranslationFor("declaration.natureOfTransaction.sale.hint")
         messages must haveTranslationFor("declaration.natureOfTransaction.return")
         messages must haveTranslationFor("declaration.natureOfTransaction.return.hint")
         messages must haveTranslationFor("declaration.natureOfTransaction.donation")
@@ -57,10 +56,10 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
         messages must haveTranslationFor("declaration.natureOfTransaction.military")
         messages must haveTranslationFor("declaration.natureOfTransaction.construction")
         messages must haveTranslationFor("declaration.natureOfTransaction.other")
-        messages must haveTranslationFor("declaration.natureOfTransaction.other.hint")
         messages must haveTranslationFor("declaration.natureOfTransaction.empty")
         messages must haveTranslationFor("declaration.natureOfTransaction.error")
-        messages must haveTranslationFor("declaration.natureOfTransaction.inset.text")
+        messages must haveTranslationFor("declaration.natureOfTransaction.inset.text.1")
+        messages must haveTranslationFor("declaration.natureOfTransaction.inset.text.2")
       }
 
       val view = createView()
@@ -111,7 +110,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
 
       "display inset text" in {
         val insetTextSection = view.getElementsByClass("govuk-inset-text").first()
-        insetTextSection must containMessage("declaration.natureOfTransaction.inset.text")
+        insetTextSection must containMessage("declaration.natureOfTransaction.inset.text.1")
       }
 
       "display 'Back' button that links to 'Total Number Of Items' page" in {
