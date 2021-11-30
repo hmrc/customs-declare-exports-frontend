@@ -70,7 +70,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with S
       }
 
       "display eori question" in {
-        view.getElementsByClass("govuk-label--m") must containMessageForElements("declaration.carrierEori.eori.label")
+        view.getElementsByClass("govuk-label") must containMessageForElements("declaration.carrierEori.eori.label")
         view.getElementById("eori").attr("value") mustBe empty
       }
 

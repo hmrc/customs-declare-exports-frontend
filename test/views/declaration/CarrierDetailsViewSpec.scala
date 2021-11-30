@@ -106,8 +106,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with CommonMessages with St
       "display page hint" in {
         val hints = view.getElementsByClass("govuk-hint")
 
-        hints.first() must containMessage("declaration.carrierAddress.hint")
-        val link = hints.get(1).getElementsByClass("govuk-link").first
+        val link = hints.get(0).getElementsByClass("govuk-link").first
         link must haveHref("https://find-and-update.company-information.service.gov.uk")
         link.attr("target") mustBe "_blank"
       }

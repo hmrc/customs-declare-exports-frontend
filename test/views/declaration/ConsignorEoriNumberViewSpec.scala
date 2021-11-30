@@ -70,7 +70,7 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
       }
 
       "display eori question" in {
-        view.getElementsByClass("govuk-label--m") must containMessageForElements("declaration.consignorEori.eori.label")
+        view.getElementsByClass("govuk-label") must containMessageForElements("declaration.consignorEori.eori.label")
         view.getElementById("eori").attr("value") mustBe empty
       }
 
