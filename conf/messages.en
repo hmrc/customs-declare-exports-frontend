@@ -88,7 +88,7 @@ cancellation.mrn.error.empty = Enter a movement reference number (MRN)
 cancellation.mrn.error.length = Movement reference number (MRN) must be 18 characters long
 cancellation.mrn.error.wrongFormat = Movement reference number (MRN) must contain only letters and numbers
 cancellation.mrn.error.denied = You do not have access to any declaration with this MRN on this service
-cancellation.duplicateRequest.error = You have already requested a cancellation for this MRN. Check your declaration dashboard in the 'Rejected' tab and the 'Progressing' tab to see if it has been cancelled
+cancellation.duplicateRequest.error = You have already requested a cancellation for this MRN. Check your declaration dashboard in the ‘Rejected’ tab and the ‘Progressing’ tab to see if it has been cancelled
 cancellation.statementDescription = Provide more details, for example a consignment reference or item description.
 cancellation.statementDescription.error.empty = Enter details
 cancellation.statementDescription.error.length = Details must contain 512 characters or fewer
@@ -537,7 +537,7 @@ declaration.exporter-address.paragraph = Enter the exporter’s name and busines
 declaration.exporter-address.addressHeading = Exporter’s name and address
 
 declaration.exporterEori.title = Does the exporter have an EORI number?
-declaration.exporterEori.eori.label = Exporter's EORI number
+declaration.exporterEori.eori.label = Exporter’s EORI number
 declaration.exporterEori.eori.hint = For example, GB121212121212.
 declaration.exporterEori.eori.empty = Enter the exporter’s EORI number
 declaration.exporterEori.hasEori.empty = Select yes if the exporter has an EORI number.
@@ -846,7 +846,7 @@ declaration.declarationHolder.eori.user.text = I hold it as the declarant (EORI:
 declaration.declarationHolder.eori.other.text = Another party holds the authorisation
 declaration.declarationHolder.eori.other.label = Enter the authorisation holder’s EORI number
 declaration.declarationHolder.eori.other.hint = For example, GB121212121212.
-declaration.declarationHolder.eori.other.error.empty = Enter the authorisation holder's EORI number
+declaration.declarationHolder.eori.other.error.empty = Enter the authorisation holder’s EORI number
 declaration.declarationHolder.eori.error.radio = Select who holds the authorisation
 
 declaration.declarationHolders.table.heading = You have added 1 authorisation
@@ -969,7 +969,7 @@ declaration.additionalProcedureCodes.error.empty = Enter an additional procedure
 declaration.additionalProcedureCodes.error.invalid = Additional procedure code must be 3 characters, containing only letters and numbers
 declaration.additionalProcedureCodes.error.maximumAmount = Maximum amount of additional procedure codes added
 declaration.additionalProcedureCodes.error.duplication = You have already added this code for this item
-declaration.additionalProcedureCodes.error.tripleZero.alreadyPresent = Additional procedure code '000' is added: no further additional procedure codes are permitted
+declaration.additionalProcedureCodes.error.tripleZero.alreadyPresent = Additional procedure code ‘000’ is added: no further additional procedure codes are permitted
 declaration.additionalProcedureCodes.error.tripleZero.notFirstCode = Additional procedure code ‘000’ not permitted with any other additional procedure codes
 
 declaration.officeOfExit.title = Where is the customs office of exit?
@@ -1262,7 +1262,7 @@ declaration.transportInformation.containerId.error.length = Container ID must co
 declaration.transportInformation.containers.first.title = Are the goods in a container or containers?
 declaration.transportInformation.containers.yes = Yes, the goods are in one or more containers
 declaration.transportInformation.containers.no = No, the goods are not in containers
-declaration.transportInformation.containerId = Enter container identification number. If you want to add this information later, enter 'Unknown' in the box.
+declaration.transportInformation.containerId = Enter container identification number. If you want to add this information later, enter ‘Unknown’ in the box.
 declaration.transportInformation.containers.paragraph = This includes:
 declaration.transportInformation.containers.bullet1 = shipping containers
 declaration.transportInformation.containers.bullet2 = air freight containers
@@ -1413,7 +1413,7 @@ declaration.previousDocuments.inset.text.3.link = Appendix 1 data element 2/1 (o
 
 declaration.previousDocuments.documentCode = Document code
 declaration.previousDocuments.v1.documentCode.body = Select the document code for the document type you want to add.
-declaration.previousDocuments.v1.documentCode.hint = To enter an invoice, type 'invoice' to see the document codes for an invoice.
+declaration.previousDocuments.v1.documentCode.hint = To enter an invoice, type ‘invoice’ to see the document codes for an invoice.
 declaration.previousDocuments.v2.documentCode.body = Select a document type. For excise guarantee, select ZZZ. Select ZZZ a second time to enter the reference for the excise warehousing procedure where no excise duty was paid.
 declaration.previousDocuments.v3.documentCode.body = Select the document code from the list.
 declaration.previousDocuments.v3.documentCode.hint = For example, MRN for the previous declaration entering the goods to Inward Processing.
@@ -1510,8 +1510,8 @@ declaration.natureOfTransaction.other = Other
 declaration.natureOfTransaction.empty = Select what sort of export it is
 declaration.natureOfTransaction.error = This sort of export is not allowed with entered procedure code
 declaration.natureOfTransaction.inset.text.heading = VAT reclaim
-declaration.natureOfTransaction.inset.text.1 = For new items purchased in the UK for use solely outside the UK where VAT is being reclaimed, select 'Goods being sold'.
-declaration.natureOfTransaction.inset.text.2 = For house removals and export of vehicles where VAT is not being reclaimed, select 'Other'.
+declaration.natureOfTransaction.inset.text.1 = For new items purchased in the UK for use solely outside the UK where VAT is being reclaimed, select ‘Goods being sold’.
+declaration.natureOfTransaction.inset.text.2 = For house removals and export of vehicles where VAT is not being reclaimed, select ‘Other’.
 
 declaration.packageInformation.title = Enter the packing details for this item
 declaration.packageInformation.paragraph = You must select a package type. If any of the goods are in a different package type, add that type separately.
@@ -2197,7 +2197,7 @@ dmsError.CDS77001.title = Quantity must be provided
 dmsError.CDS77002.title = Document status code needed
 dmsError.CDS77003.title = Licence error
 dmsError.CDS77004.title = Reservation could not be made
-dmsError.CDS77005.title = Reason not given for use of a 'Y' code
+dmsError.CDS77005.title = Reason not given for use of a ‘Y’ code
 
 userSignedOut.title = We have saved your answers and signed you out
 
