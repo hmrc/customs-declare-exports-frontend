@@ -98,6 +98,9 @@
                     checked = form("partyType").value.contains(WarehouseKeeper.toString)
                 ),
                 RadioItem(
+                    divider = Some(messages("radio.divider"))
+                ),
+                RadioItem(
                     id = Some("no"),
                     value = Some("no"),
                     content = Text(messages("declaration.partyType.no")),

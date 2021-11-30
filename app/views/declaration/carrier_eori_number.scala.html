@@ -34,6 +34,8 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     heading: heading,
+    insetText: exportsInsetText,
+    paragraphBody: paragraphBody,
     body: paragraphBody,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
@@ -48,8 +50,15 @@
 @eoriInput = {
     @exportsInputText(
         field = form("eori"),
-        labelKey = "declaration.carrierEori.eori.label"
+        labelKey = "declaration.carrierEori.eori.label",
+        hintKey = Some("declaration.carrierEori.eori.hint")
     )
+}
+
+@insetContent = {
+    @heading(message = messages("declaration.carrierEori.inset.text.heading"), classes = "govuk-heading-s", tier = "h2")
+    @paragraphBody(messages("declaration.carrierEori.inset.text.1"))
+    @paragraphBody(messages("declaration.carrierEori.inset.text.2"))
 }
 
 @govukLayout(
@@ -63,9 +72,9 @@
 
         @heading(messages("declaration.carrierEori.title"))
 
-        @body(messages("declaration.carrierEori.paragraph.1"))
+        @body(messages("declaration.carrierEori.paragraph"))
 
-        @body(messages("declaration.carrierEori.paragraph.2"))
+        @insetText(content = HtmlContent(insetContent))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
