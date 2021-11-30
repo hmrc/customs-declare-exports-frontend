@@ -37,6 +37,7 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.declaration.removals.RemoveItem
 import forms.{Choice, DeclarationPage}
+import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import models.DeclarationType._
 import models.Mode.ErrorFix
 import models.declaration.ExportItem
@@ -46,6 +47,7 @@ import models.{ExportsDeclaration, Mode}
 import play.api.mvc.{AnyContent, Call, Result, Results}
 import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.HeaderCarrier
+
 import javax.inject.Inject
 
 class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
@@ -94,7 +96,6 @@ object Navigator {
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
-    case ExpressConsignment          => routes.BorderTransportController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
@@ -347,6 +348,7 @@ object Navigator {
     case Document                   => previousDocumentsPreviousPage
     case DepartureTransport         => departureTransportClearancePreviousPage
     case ContainerFirst             => ifExpressConsignmentPreviousPage
+    case ExpressConsignment         => dependsOnTransportLeavingTheBoarder
   }
 
   val clearanceCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -535,6 +537,12 @@ object Navigator {
       routes.InlandTransportDetailsController.displayPage(mode)
     else
       routes.BorderTransportController.displayPage(mode)
+
+  private def dependsOnTransportLeavingTheBoarder(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    cacheModel.transportLeavingBoarderCode match {
+      case Some(FixedTransportInstallations) | Some(PostalConsignment) => routes.SupervisingCustomsOfficeController.displayPage(mode)
+      case _                                                           => routes.DepartureTransportController.displayPage(mode)
+    }
 
   private def ifExpressConsignmentPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.transport.transportPayment.nonEmpty)

@@ -17,6 +17,7 @@
 package controllers.helpers
 
 import controllers.declaration.routes
+import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
@@ -45,6 +46,12 @@ object SupervisingCustomsOfficeHelper {
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD => routes.InlandTransportDetailsController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL  => routes.ExpressConsignmentController.displayPage
-      case DeclarationType.CLEARANCE                                => routes.DepartureTransportController.displayPage
+      case DeclarationType.CLEARANCE                                => dependsOnTransportLeavingTheBoarder
+    }
+
+  private def dependsOnTransportLeavingTheBoarder(implicit request: JourneyRequest[_]): Mode => Call =
+    request.cacheModel.transportLeavingBoarderCode match {
+      case Some(FixedTransportInstallations) | Some(PostalConsignment) => routes.ExpressConsignmentController.displayPage
+      case _                                                           => routes.DepartureTransportController.displayPage
     }
 }

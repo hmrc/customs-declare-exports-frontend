@@ -196,18 +196,19 @@ function declarationChoice(){
             case 'C':
                 selectRadioOptionFromInputs(inputs, 1);
                 break;
+            case 'K':
+            case 'J':
+                selectRadioOptionFromInputs(inputs, 2);
+                break;
             case 'Y':
             case 'Z':
-                selectRadioOptionFromInputs(inputs, 2);
+                selectRadioOptionFromInputs(inputs, 3);
                 break;
             case 'E':
             case 'B':
-                selectRadioOptionFromInputs(inputs, 3);
-                break;
-            case 'K':
-            case 'J':
                 selectRadioOptionFromInputs(inputs, 4);
                 break;
+
         }
         document.getElementById('submit').click()
     }
@@ -1010,7 +1011,6 @@ function addDocuments(){
                 break;
             case 'E':
             case 'K':
-                document.getElementById('submit').click();
             default:
                 document.getElementById('documentTypeCode').value ='C501';
                 document.getElementById('documentIdentifier').value ='GBAEOC717572504502801';

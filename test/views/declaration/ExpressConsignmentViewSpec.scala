@@ -16,9 +16,11 @@
 
 package views.declaration
 
-import base.Injector
+import base.{Injector, MockAuthAction}
 import controllers.declaration.routes
+import controllers.helpers.SupervisingCustomsOfficeHelperSpec.skipDepartureTransportPageCodes
 import forms.common.YesNoAnswer
+import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import models.DeclarationType._
 import models.Mode
 import models.declaration.{ExportItem, ProcedureCodesData}
@@ -33,7 +35,7 @@ import views.html.declaration.express_consignment
 import views.tags.ViewTest
 
 @ViewTest
-class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with Injector {
+class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with Injector with MockAuthAction {
 
   private val page = instanceOf[express_consignment]
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
@@ -123,13 +125,34 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
     }
 
     onClearance { implicit request =>
-      val view: Document = createView()
+      "display 'Back' button to the 'Supervising Customs Office' page" when {
+        skipDepartureTransportPageCodes.foreach { modeOfTransportCode =>
+          val cachedDec = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
+          val requestWithUpdatedDec = new JourneyRequest(getAuthenticatedRequest(), cachedDec)
+          val view: Document = createView()(requestWithUpdatedDec)
 
-      "display 'Back' button to the 'Departure Transport' page" in {
-        verifyBackButton(view, routes.DepartureTransportController.displayPage(Mode.Normal))
+          s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
+            verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
+          }
+        }
+      }
+
+      "display 'Back' button to the 'Departure Transport' page" when {
+        meaningfulModeOfTransportCodes
+          .filter(!skipDepartureTransportPageCodes.contains(_))
+          .foreach { modeOfTransportCode =>
+            val cachedDec = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
+            val requestWithUpdatedDec = new JourneyRequest(getAuthenticatedRequest(), cachedDec)
+            val view: Document = createView()(requestWithUpdatedDec)
+
+            s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
+              verifyBackButton(view, routes.DepartureTransportController.displayPage(Mode.Normal))
+            }
+          }
       }
 
       "display the expected tariff details" in {
+        val view: Document = createView()
         verifyTariffDetails(view, "clearance")
       }
     }
