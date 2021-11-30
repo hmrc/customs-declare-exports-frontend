@@ -43,12 +43,11 @@ site.change = Change
 site.change.header = Change links
 site.add.item = Add item
 site.add.anotherItem = Add another item
+site.radio.divider = or
 site.accessibility.error = Error:
 site.warning = Warning
 
 site.print = Print this page
-
-radio.divider = or
 
 site.pagination.showing = Showing
 site.pagination.showing.no = Showing no
