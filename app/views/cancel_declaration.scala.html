@@ -52,23 +52,20 @@
         @exportsInputText(
             field = form(CancelDeclaration.functionalReferenceIdKey),
             inputClasses = Some("govuk-!-width-two-thirds"),
-            labelKey = "cancellation.functionalReferenceId",
-            labelClasses = "govuk-label"
+            labelKey = "cancellation.functionalReferenceId"
         )
 
         @exportsInputText(
             field = form(CancelDeclaration.mrnKey),
             inputClasses = Some("govuk-!-width-two-thirds"),
-            labelKey = "cancellation.mrn",
-            labelClasses = "govuk-label"
+            labelKey = "cancellation.mrn"
         )
 
         @characterCount(
             field = form(CancelDeclaration.statementDescriptionKey),
             labelKey = Some("cancellation.statementDescription"),
             maxLength = Some(CancelDeclaration.statementDescriptionMaxLength),
-            inputClasses = "govuk-!-width-two-thirds",
-            labelClasses = "govuk-label"
+            inputClasses = "govuk-!-width-two-thirds"
         )
 
         @govukRadios(Radios(

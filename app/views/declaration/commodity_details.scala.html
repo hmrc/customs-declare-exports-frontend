@@ -77,7 +77,8 @@
 
         @characterCount(
             field = form(CommodityDetails.descriptionOfGoodsKey),
-            maxLength = Some(CommodityDetails.descriptionOfGoodsMaxLength)
+            maxLength = Some(CommodityDetails.descriptionOfGoodsMaxLength),
+            labelClasses = "govuk-label--m"
         )
 
         @tariffExpander(CommodityDetails, request.declarationType)(messages, appConfig)

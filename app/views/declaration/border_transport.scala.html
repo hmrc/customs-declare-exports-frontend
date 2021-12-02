@@ -52,7 +52,6 @@
 
 @inputField(transportType: String, key: String) = @{Some(exportsInputText(
     field = form(s"borderTransportReference_$transportType"),
-    labelClasses = "govuk-label",
     inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
     labelKey = s"$key.label",
     hintKey = Some(s"$key.hint"))
