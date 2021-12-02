@@ -26,7 +26,6 @@
   section: Option[String] = None,
   bodyHtml: Option[Html] = None,
   hintParagraphs: List[String] = List.empty,
-  emptySelectValue: String,
   countryKey: Country => String,
   isPageHeading: Boolean,
   args: List[(Symbol, Any)] = List.empty,
@@ -78,7 +77,6 @@ To avoid problems, we need to remove [] from field.
 
     @input_accessible_location_autocomplete(
         field = field,
-        emptySelectValue = emptySelectValue,
         countryKey = countryKey,
         rightElement = rightElement
     )
