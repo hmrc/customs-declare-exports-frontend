@@ -50,14 +50,7 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @insetSection = {
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.title"), "govuk-label--s")
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.paragraph1"))
-
-    @bulletList(Seq(
-        Html(messages("declaration.authorisations.procedureCodeChoice.inset.bullet1")),
-        Html(messages("declaration.authorisations.procedureCodeChoice.inset.bullet2")),
-        Html(messages("declaration.authorisations.procedureCodeChoice.inset.bullet3"))
-    ))
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.paragraph2"))
 }
 
