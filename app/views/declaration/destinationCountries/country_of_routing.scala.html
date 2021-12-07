@@ -57,6 +57,7 @@
             field = form("countryCode"),
             label = messages(s"declaration.${page.id}.question"),
             labelClass = Some(gdsPageLabel),
+            hintParagraphs = List(messages("declaration.country.dropdown.hint")),
             countryKey = (c: CountryModel) => c.countryCode,
             isPageHeading = true
         )

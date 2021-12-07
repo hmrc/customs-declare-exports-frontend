@@ -92,6 +92,7 @@
         field = form("borderTransportNationality"),
         label = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header"),
         labelClass = None,
+        hintParagraphs = List(messages("declaration.country.dropdown.hint")),
         countryKey = (c: Country) => c.countryName,
         isPageHeading = false
     )
