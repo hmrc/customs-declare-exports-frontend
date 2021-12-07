@@ -18,8 +18,8 @@ package controllers
 
 import base.ControllerWithoutFormSpec
 import base.ExportsTestData._
-import config.AppConfig
 import config.featureFlags.SecureMessagingInboxConfig
+import config.AppConfig
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import models.DeclarationType
@@ -39,8 +39,8 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
   import ChoiceControllerSpec._
 
   val choicePage = mock[choice_page]
-  val appConfig = mock[AppConfig]
   val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
+  override val appConfig = mock[AppConfig]
 
   val controller =
     new ChoiceController(

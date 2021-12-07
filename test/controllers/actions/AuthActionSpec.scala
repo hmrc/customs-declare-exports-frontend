@@ -17,18 +17,32 @@
 package controllers.actions
 
 import base.{ControllerWithoutFormSpec, Injector}
-import config.AppConfig
 import config.featureFlags.SecureMessagingInboxConfig
-import controllers.ChoiceController
+import controllers.{routes, ChoiceController}
+import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.InsufficientEnrolments
+import uk.gov.hmrc.auth.core.{BearerTokenExpired, FailedRelationship}
 import views.html.choice_page
+import config.AppConfig
+
+import java.net.URLEncoder
 
 class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
 
   val choicePage = instanceOf[choice_page]
-  val appConfig = mock[AppConfig]
   val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
+  override val appConfig = mock[AppConfig]
+
+  override val mockAuthAction =
+    new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq.empty), stubMessagesControllerComponents(), metricsMock, appConfig)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(appConfig)
+    when(appConfig.loginUrl).thenReturn("/unauthorised")
+    when(appConfig.loginContinueUrl).thenReturn("/loginContinueUrl")
+  }
 
   val controller =
     new ChoiceController(
@@ -41,21 +55,41 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
     )
 
   "Auth Action" should {
+    "redirect to login page when a NoActiveSession type exception is thrown" in {
+      val loginPageUrl = Some(s"${appConfig.loginUrl}?continue=${URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")}")
+      unauthorizedUser(new BearerTokenExpired())
 
-    "return InsufficientEnrolments when EORI number is missing" in {
+      val result = controller.displayPage(None)(getRequest())
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe loginPageUrl
+    }
+
+    "redirect to /Unauthorised when EORI number is missing" in {
       userWithoutEori()
 
       val result = controller.displayPage(None)(getRequest())
 
-      intercept[InsufficientEnrolments](status(result))
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
     }
 
-    "return NoExternalId when External Id is missing" in {
+    "redirect to login page for environment when External Id is missing" in {
+      val loginPageUrl = Some(s"${appConfig.loginUrl}?continue=${URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")}")
       userWithoutExternalId()
 
       val result = controller.displayPage(None)(getRequest())
 
-      intercept[NoExternalId](status(result))
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe loginPageUrl
+    }
+
+    "propagate the error if exception thrown is not InsufficientEnrolments or NoActiveSession type exception" in {
+      unauthorizedUser(new FailedRelationship())
+
+      val result = controller.displayPage(None)(getRequest())
+
+      intercept[FailedRelationship](status(result))
     }
   }
 }

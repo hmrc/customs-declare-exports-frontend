@@ -16,28 +16,30 @@
 
 package controllers.actions
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
 import com.kenshoo.play.metrics.Metrics
+import config.AppConfig
 import controllers.routes
-import javax.inject.Provider
+import models.{IdentityData, SignedInUser}
 import models.AuthKey.{enrolment, identifierKey}
 import models.requests.AuthenticatedRequest
-import models.{IdentityData, SignedInUser}
-import play.api.mvc._
 import play.api.{Configuration, Logging}
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{agentCode, _}
-import uk.gov.hmrc.auth.core.retrieve.~
+import play.api.mvc._
 import uk.gov.hmrc.auth.core.{NoActiveSession, _}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+
+import javax.inject.Provider
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionImpl @Inject()(
   override val authConnector: AuthConnector,
   eoriAllowList: EoriAllowList,
   mcc: MessagesControllerComponents,
-  metrics: Metrics
+  metrics: Metrics,
+  appConfig: AppConfig
 ) extends AuthAction with AuthorisedFunctions with Logging {
 
   implicit override val executionContext: ExecutionContext = mcc.executionContext
@@ -49,54 +51,66 @@ class AuthActionImpl @Inject()(
     agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
     credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
 
+  // scalastyle:off
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
-
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     val authorisation = authTimer.time()
-    authorised(Enrolment(enrolment))
-      .retrieve(authData) {
-        case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments ~ agentCode ~
-              confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
-              credentialRole ~ mdtpInformation ~ itmpName ~ itmpDateOfBirth ~ itmpAddress ~ credentialStrength ~ loginTimes =>
-          authorisation.stop()
-          val eori = getEoriFromEnrolments(allEnrolments)
 
-          validateEnrollments(eori, externalId)
+    val result = authorised(Enrolment(enrolment)).retrieve(authData) {
+      case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments ~ agentCode ~
+            confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
+            credentialRole ~ mdtpInformation ~ itmpName ~ itmpDateOfBirth ~ itmpAddress ~ credentialStrength ~ loginTimes =>
+        authorisation.stop()
+        val eori = getEoriFromEnrolments(allEnrolments)
 
-          val identityData = IdentityData(
-            internalId,
-            externalId,
-            agentCode,
-            credentials,
-            Some(confidenceLevel),
-            authNino,
-            saUtr,
-            name,
-            dateOfBirth,
-            email,
-            Some(agentInformation),
-            groupIdentifier,
-            credentialRole.map(res => res.toJson.toString()),
-            mdtpInformation,
-            itmpName,
-            itmpDateOfBirth,
-            itmpAddress,
-            affinityGroup,
-            credentialStrength,
-            Some(loginTimes)
-          )
+        validateEnrollments(eori, externalId)
 
-          val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments, identityData)
+        val identityData = IdentityData(
+          internalId,
+          externalId,
+          agentCode,
+          credentials,
+          Some(confidenceLevel),
+          authNino,
+          saUtr,
+          name,
+          dateOfBirth,
+          email,
+          Some(agentInformation),
+          groupIdentifier,
+          credentialRole.map(res => res.toJson.toString()),
+          mdtpInformation,
+          itmpName,
+          itmpDateOfBirth,
+          itmpAddress,
+          affinityGroup,
+          credentialStrength,
+          Some(loginTimes)
+        )
 
-          if (eoriAllowList.allows(cdsLoggedInUser.eori)) {
-            block(new AuthenticatedRequest(request, cdsLoggedInUser))
-          } else {
-            logger.warn("User is not in allow list")
-            Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad))
-          }
-      }
+        val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments, identityData)
+        if (eoriAllowList.allows(cdsLoggedInUser.eori)) {
+          block(new AuthenticatedRequest(request, cdsLoggedInUser))
+        } else {
+          logger.warn("User is not in allow list")
+          Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad))
+        }
+    }
+
+    result.recoverWith {
+      case _: NoActiveSession =>
+        logger.warn("User is not currently logged in.")
+        Future.successful(Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl))))
+      case _: InsufficientEnrolments =>
+        logger.warn("User does not have sufficient enrolments.")
+        Future.successful(Results.SeeOther(routes.UnauthorisedController.onPageLoad.url))
+      case e: Throwable =>
+        logger.warn("User failed auth-check.")
+        Future.failed(e)
+    }
   }
+  // scalastyle:on
 
   private def getEoriFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
     enrolments.getEnrolment(enrolment).flatMap(_.getIdentifier(identifierKey))

@@ -17,6 +17,7 @@
 @import config.ExternalServicesConfig
 @import views.helpers.Title
 @import views.html.components.gds._
+@import config.featureFlags.TdrUnauthorisedMsgConfig
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -24,37 +25,51 @@
     paragraphBody: paragraphBody,
     link: link,
     bulletList: bulletList,
-    config: ExternalServicesConfig
+    config: ExternalServicesConfig,
+    tdrUnauthorisedMsgConfig: TdrUnauthorisedMsgConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@howToSection = {
-    @paragraphBody(messages("unauthorised.paragraph.1"))
+@if(tdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled) {
+    @govukLayout(title = Title("unauthorised.tdr.heading")) {
+        @pageTitle(messages("unauthorised.tdr.heading"))
 
-    @bulletList(List(
-      Html(messages("unauthorised.paragraph.1.bullet.1", link(
-        id = Some("get_eori_link"),
-        text = messages("unauthorised.paragraph.1.bullet.1.link"),
-        call = Call("GET", config.eoriService)
-      ))),
-      link(
-        id = Some("access_cds_link"),
-        text = messages("unauthorised.paragraph.1.bullet.2.link"),
-        call = Call("GET", config.cdsRegister)
-      )
-    ))
-}
+        @paragraphBody(messages("unauthorised.tdr.body",
+            link(
+                id = Some("contact_support_link"),
+                text = messages("unauthorised.tdr.body.link"),
+                call = Call("GET", s"mailto:${messages("unauthorised.tdr.body.link")}"),
+                target="_blank"
+            ))
+        )
+    }
+} else {
+    @govukLayout(title = Title("unauthorised.heading")) {
+        @pageTitle(messages("unauthorised.heading"))
 
-@govukLayout(title = Title("unauthorised.heading")) {
+        @paragraphBody(messages("unauthorised.paragraph.1"))
 
-    @pageTitle(messages("unauthorised.heading"))
+        @bulletList(List(
+            Html(
+                messages("unauthorised.paragraph.1.bullet.1",
+                    link(
+                        id = Some("get_eori_link"),
+                        text = messages("unauthorised.paragraph.1.bullet.1.link"),
+                        call = Call("GET", config.eoriService)
+                ))
+            ),
+            link(
+                id = Some("access_cds_link"),
+                text = messages("unauthorised.paragraph.1.bullet.2.link"),
+                call = Call("GET", config.cdsRegister)
+            )
+        ))
 
-    @howToSection
-
-    @paragraphBody(messages("unauthorised.paragraph.2", link(
-        id = Some("check_cds_application_status_link"),
-        text = messages("unauthorised.paragraph.2.link"),
-        call = Call("GET", config.cdsCheckStatus)
-    )))
+        @paragraphBody(messages("unauthorised.paragraph.2", link(
+            id = Some("check_cds_application_status_link"),
+            text = messages("unauthorised.paragraph.2.link"),
+            call = Call("GET", config.cdsCheckStatus)
+        )))
+    }
 }

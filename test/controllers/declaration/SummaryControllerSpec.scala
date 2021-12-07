@@ -16,15 +16,12 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import base.ControllerWithoutFormSpec
-import config.AppConfig
 import forms.declaration.LegalDeclaration
 import mock.ErrorHandlerMocks
+import models.{ExportsDeclaration, Mode}
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys
-import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
@@ -34,6 +31,8 @@ import services.SubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.declaration.summary._
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
 
   private val normalSummaryPage = mock[normal_summary_page]
@@ -41,7 +40,6 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
   private val amendSummaryPage = mock[amend_summary_page]
   private val mockSummaryPageNoData = mock[summary_page_no_data]
   private val mockSubmissionService = mock[SubmissionService]
-  private val appConfig = mock[AppConfig]
 
   private val controller = new SummaryController(
     mockAuthAction,

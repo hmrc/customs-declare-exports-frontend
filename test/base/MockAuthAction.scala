@@ -17,6 +17,7 @@
 package base
 
 import base.ExportsTestData._
+import config.AppConfig
 import controllers.actions.{AuthActionImpl, EoriAllowList}
 import models.SignedInUser
 import models.requests.{ExportsSessionKeys, VerifiedEmailRequest}
@@ -34,14 +35,27 @@ import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.Future
 
-trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with RequestBuilder {
+trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Injector with RequestBuilder {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val appConfig = instanceOf[AppConfig]
 
   val mockAuthAction =
-    new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq.empty), stubMessagesControllerComponents(), metricsMock)
+    new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq.empty), stubMessagesControllerComponents(), metricsMock, appConfig)
 
   val exampleUser = newUser("12345", "external1")
+
+  def unauthorizedUser(exceptionThrown: AuthorisationException): Unit =
+    when(
+      mockAuthConnector.authorise(
+        any(),
+        ArgumentMatchers.eq(
+          credentials and name and email and externalId and internalId and affinityGroup and allEnrolments
+            and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
+            credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
+        )
+      )(any(), any())
+    ).thenReturn(Future.failed(exceptionThrown))
 
   def authorizedUser(user: SignedInUser = exampleUser): Unit =
     when(
