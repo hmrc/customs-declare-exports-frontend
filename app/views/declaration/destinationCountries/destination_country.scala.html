@@ -58,6 +58,7 @@
             field = form("countryCode"),
             label = messages("declaration.destinationCountry.title"),
             labelClass = Some(gdsPageLabel),
+            hintParagraphs = List(messages("declaration.country.dropdown.hint")),
             bodyHtml = Some(body(messages("declaration.destinationCountry.body"))),
             countryKey = (c: CountryModel) => c.countryCode,
             isPageHeading = true

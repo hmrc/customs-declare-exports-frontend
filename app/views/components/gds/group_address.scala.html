@@ -50,6 +50,7 @@
     field = form(s"${addressPrefix}.country"),
     label = messages(s"$labelPrefix.country"),
     labelClass = None,
+    hintParagraphs = List(messages("declaration.country.dropdown.hint")),
     countryKey = (c: Country) => c.countryName,
     isPageHeading = false
 )
