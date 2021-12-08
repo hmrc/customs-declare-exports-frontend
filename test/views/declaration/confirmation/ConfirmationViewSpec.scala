@@ -17,9 +17,7 @@
 package views.declaration.confirmation
 
 import java.time.ZonedDateTime
-
 import base.{Injector, MockAuthAction}
-import config.AppConfig
 import controllers.routes.{DeclarationDetailsController, SubmissionsController}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus.{ACCEPTED, ADDITIONAL_DOCUMENTS_REQUIRED, QUERY_NOTIFICATION_MESSAGE, RECEIVED}
@@ -34,9 +32,7 @@ import views.tags.ViewTest
 @ViewTest
 class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector with MockAuthAction {
 
-  private val appConfig = instanceOf[AppConfig]
   private val page = instanceOf[confirmation_page]
-
   private val defaultDucr = "ducr"
   private val defaultLrn = "lrn"
   private val submissionId = "submissionId"

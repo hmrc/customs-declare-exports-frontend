@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package features
+package config.featureFlags
 
-import play.api.mvc.PathBindable
+import features.Feature
+import play.api.Configuration
 
-object Feature extends Enumeration {
-  type Feature = Value
-  val betaBanner, default, ead, sfus, secureMessagingInbox, googleFormFeedbackLink, queryNotificationMessage, commodities, tdrUnauthorisedMessage =
-    Value
+import javax.inject.{Inject, Singleton}
 
-  implicit object FeaturePathStringBinder
-      extends PathBindable.Parsing[Feature.Feature](
-        withName,
-        _.toString,
-        (k: String, e: Exception) => "Cannot parse %s as Feature: %s".format(k, e.getMessage)
-      )
+@Singleton
+class TdrUnauthorisedMsgConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
 
+  val isTdrUnauthorisedMessageEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.tdrUnauthorisedMessage)
 }

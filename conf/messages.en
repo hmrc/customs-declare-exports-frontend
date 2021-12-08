@@ -63,6 +63,10 @@ unauthorised.paragraph.1.bullet.2.link = get access to the Customs Declaration S
 unauthorised.paragraph.2 = If you’ve already applied for an EORI number, you can {0}.
 unauthorised.paragraph.2.link = check the status of your application
 
+unauthorised.tdr.heading = The EORI you entered is not yet valid on the CDS test service
+unauthorised.tdr.body = Please contact {0} to ensure access has been set up for your EORI number.
+unauthorised.tdr.body.link = cdsexportsuiteam@hmrc.gov.uk
+
 dateTime.date.day.error.empty = The date must include a day
 dateTime.date.month.error.empty = The date must include a month
 dateTime.date.year.error.empty = The date must include a year
