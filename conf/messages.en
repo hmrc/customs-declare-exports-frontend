@@ -1404,15 +1404,16 @@ declaration.previousDocuments.body.bullet.2 = packing list or goods manifest to 
 
 declaration.previousDocuments.inset.text.1 = You may need to declare more than one invoice or packing list to cover all the goods you are exporting.
 declaration.previousDocuments.inset.text.2 = You can declare a proforma invoice if you do not have a commercial invoice for the goods.
-declaration.previousDocuments.inset.text.3 = Excise guarantee details must be declared in this section unless you provide an ARC number in section 5. See {0} for more details.
+declaration.previousDocuments.inset.text.3 = Excise guarantee details must be declared in this section unless you provide an ARC number in the next section (section 5). See {0} for more details.
 declaration.previousDocuments.inset.text.3.link = Appendix 1 data element 2/1 (opens in new tab)
 
 declaration.previousDocuments.documentCode = Document code
-declaration.previousDocuments.v1.documentCode.body = Select the document code for the document type you want to add.
-declaration.previousDocuments.v1.documentCode.hint = To enter an invoice, type ‘invoice’ to see the document codes for an invoice.
-declaration.previousDocuments.v2.documentCode.body = Select a document type. For excise guarantee, select ZZZ. Select ZZZ a second time to enter the reference for the excise warehousing procedure where no excise duty was paid.
-declaration.previousDocuments.v3.documentCode.body = Select the document code from the list.
-declaration.previousDocuments.v3.documentCode.hint = For example, MRN for the previous declaration entering the goods to Inward Processing.
+declaration.previousDocuments.v1.documentCode.body = Select a document type, such as ‘commercial invoice’.
+declaration.previousDocuments.v1.documentCode.hint = To select an invoice, type ‘invoice’ to see the document codes for an invoice.
+declaration.previousDocuments.v2.documentCode.body = Select a document type, such as ‘commercial invoice’. For excise removals under Customs Supervised Exports (CSE), select ZZZ for the excise guarantee or the warehouse stock reference.
+declaration.previousDocuments.v2.documentCode.hint = To select an invoice, type ‘invoice’ to see the document codes for an invoice.
+declaration.previousDocuments.v3.documentCode.body = Select a document type, such as ‘commercial invoice’. For special procedures, select movement reference number (MRN) to enter the MRN of the previous import delaration. For excise removals under Customs Supervised Exports (CSE), select ZZZ for the excise guarantee or the warehouse stock reference.
+declaration.previousDocuments.v3.documentCode.hint = To select an invoice, type ‘invoice’ to see the document codes for an invoice.
 declaration.previousDocuments.v4.documentCode.body = Select a document type.
 declaration.previousDocuments.v5.documentCode.body = Select a document type.
 declaration.previousDocuments.v6.documentCode.body = Select the document code for the document type you want to add.
@@ -1421,8 +1422,8 @@ declaration.previousDocuments.documentCode.empty = Select a document code
 
 declaration.previousDocuments.documentReference = Document reference
 declaration.previousDocuments.v1.documentReference.body = Enter the unique invoice number or packing reference printed on the document.
-declaration.previousDocuments.v2.documentReference.body = For excise, enter the excise guarantee reference or the stock reference number, as required.
-declaration.previousDocuments.v3.documentReference.body = For special procedures, enter the excise guarantee reference or the movement reference number of the previous declaration, as required.
+declaration.previousDocuments.v2.documentReference.body = Enter the unique invoice number or packing reference printed on the document. For excise guarantee, enter the excise guarantee reference.
+declaration.previousDocuments.v3.documentReference.body = Enter the unique invoice number or packing reference printed on the document. For special procedures, enter the movement reference number of the previous declaration. For excise guarantee, enter the excise guarantee reference.
 declaration.previousDocuments.v4.documentReference.body = Enter a reference.
 declaration.previousDocuments.v5.documentReference.body = Enter a reference.
 declaration.previousDocuments.v6.documentReference.body = Enter the unique invoice number or packing reference printed on the document.
@@ -1898,6 +1899,8 @@ declaration.exitSurvey.header = Tell us what you think
 declaration.exitSurvey.line.1 = This is a new service and we want to know what you think of it.
 declaration.exitSurvey.line.2 = {0}. Your thoughts and ideas will help us to make improvements.
 declaration.exitSurvey.link = Send us your feedback
+
+declaration.country.dropdown.hint = Type in 2 letters to search.
 
 declaration.draft.title = Your declaration has been saved
 declaration.draft.info = Your information is held until

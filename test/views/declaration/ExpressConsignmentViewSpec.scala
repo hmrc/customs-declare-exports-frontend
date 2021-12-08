@@ -20,7 +20,7 @@ import base.{Injector, MockAuthAction}
 import controllers.declaration.routes
 import controllers.helpers.SupervisingCustomsOfficeHelperSpec.skipDepartureTransportPageCodes
 import forms.common.YesNoAnswer
-import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
+import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
 import models.DeclarationType._
 import models.Mode
 import models.declaration.{ExportItem, ProcedureCodesData}
