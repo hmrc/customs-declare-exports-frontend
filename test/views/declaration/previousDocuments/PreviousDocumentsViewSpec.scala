@@ -331,10 +331,8 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with I
       val bodyHelp = label.nextElementSibling
       bodyHelp.text mustBe messages(s"declaration.previousDocuments.v$version.documentReference.body")
 
-      if (version >= 3 && version <= 5) {
-        val hintHelp = bodyHelp.nextElementSibling
-        hintHelp.text mustBe messages("declaration.previousDocuments.documentReference.hint")
-      }
+      val hintHelp = bodyHelp.nextElementSibling
+      hintHelp.text mustBe messages("declaration.previousDocuments.documentReference.hint")
 
       view.getElementById("documentReference").attr("value") mustBe empty
     }
