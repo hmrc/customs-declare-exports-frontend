@@ -31,6 +31,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.TariffApiService
+import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRequired}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.commodityMeasure.{supplementary_units, supplementary_units_yes_no}
@@ -60,28 +61,34 @@ class SupplementaryUnitsController @Inject()(
         }
 
       tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
-        case Some(commodityInfo) =>
+        case Right(commodityInfo) =>
           Future.successful(Ok(supplementaryUnitsPage(mode, itemId, formWithDataIfAny(false), commodityInfo)))
 
-        case _ =>
+        case Left(CommodityCodeNotFound) =>
           Future.successful(Ok(supplementaryUnitsYesNoPage(mode, itemId, formWithDataIfAny(true))))
+
+        case Left(SupplementaryUnitsNotRequired) =>
+          updateExportsCacheAndContinueToNextPage(mode, itemId, SupplementaryUnits(None))
       }
     }
 
   def submitPage(mode: Mode, itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
       tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
-        case Some(commodityInfo) =>
+        case Right(commodityInfo) =>
           form(false).bindFromRequest.fold(
             formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(mode, itemId, formWithErrors, commodityInfo))),
             updateExportsCacheAndContinueToNextPage(mode, itemId, _)
           )
 
-        case _ =>
+        case Left(CommodityCodeNotFound) =>
           form(true).bindFromRequest.fold(
             formWithErrors => Future.successful(BadRequest(supplementaryUnitsYesNoPage(mode, itemId, formWithErrors))),
             updateExportsCacheAndContinueToNextPage(mode, itemId, _)
           )
+
+        case Left(SupplementaryUnitsNotRequired) =>
+          updateExportsCacheAndContinueToNextPage(mode, itemId, SupplementaryUnits(None))
       }
     }
 

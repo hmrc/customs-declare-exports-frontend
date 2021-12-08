@@ -17,12 +17,12 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import models.Mode
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
+import play.api.mvc.Call
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.components.gds.Styles
@@ -34,12 +34,13 @@ import views.tags.ViewTest
 @ViewTest
 class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
+  private val itemId = "a7sc78"
+  private val url = "/test"
+
   private val additionalInfoRequiredPage = instanceOf[additional_information_required]
 
-  private val itemId = "a7sc78"
-
   private def createView(implicit request: JourneyRequest[_]): Document =
-    additionalInfoRequiredPage(Mode.Normal, itemId, YesNoAnswer.form())
+    additionalInfoRequiredPage(Mode.Normal, itemId, YesNoAnswer.form(), Call("GET", url))
 
   "Additional Information Required View on empty page" should {
 
@@ -53,6 +54,12 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
   "Additional Information Required View on empty page" should {
 
     onEveryDeclarationJourney() { implicit request =>
+      "display 'Back' button that links to the given url" in {
+        val backButton = createView.getElementById("back-link")
+        backButton must containMessage(backCaption)
+        backButton.attr("href") mustBe url
+      }
+
       "display page title" in {
         createView.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.additionalInformationRequired.title")
       }
@@ -77,33 +84,5 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
         saveButton must containMessage(saveAndContinueCaption)
       }
     }
-  }
-
-  "Additional Information Required View back link" should {
-
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
-      "display 'Back' button that links to the 'Supplementary Units' page" in {
-        val backButton = createView.getElementById("back-link")
-        backButton must containMessage(backCaption)
-        backButton must haveHref(routes.SupplementaryUnitsController.displayPage(Mode.Normal, itemId))
-      }
-    }
-
-    onClearance { implicit request =>
-      "display 'Back' button that links to the 'Commodity Measure' page" in {
-        val backButton = createView.getElementById("back-link")
-        backButton must containMessage(backCaption)
-        backButton must haveHref(routes.CommodityMeasureController.displayPage(Mode.Normal, itemId))
-      }
-    }
-
-    onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to the 'Package Information' page" in {
-        val backButton = createView.getElementById("back-link")
-        backButton must containMessage(backCaption)
-        backButton must haveHref(routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId))
-      }
-    }
-
   }
 }

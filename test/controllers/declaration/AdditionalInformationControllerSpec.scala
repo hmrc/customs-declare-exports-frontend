@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import scala.concurrent.Future
+
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
@@ -29,16 +31,20 @@ import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import services.TariffApiService
+import services.TariffApiService.CommodityCodeNotFound
 import views.html.declaration.additionalInformation.additional_information
 
 class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
+  val mockTariffApiService = mock[TariffApiService]
   val mockSummaryPage = mock[additional_information]
 
   val controller = new AdditionalInformationController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
+    mockTariffApiService,
     navigator,
     stubMessagesControllerComponents(),
     mockSummaryPage
@@ -50,7 +56,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration())
-    when(mockSummaryPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockTariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Left(CommodityCodeNotFound)))
+    when(mockSummaryPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,7 +67,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
   def theResponseForm: Form[YesNoAnswer] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockSummaryPage).apply(any(), any(), formCaptor.capture(), any())(any(), any())
+    verify(mockSummaryPage).apply(any(), any(), formCaptor.capture(), any(), any())(any(), any())
     formCaptor.getValue
   }
 
@@ -72,7 +79,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockSummaryPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(mockSummaryPage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
 
   private val additionalInformation = AdditionalInformation("54321", "Some description")
 

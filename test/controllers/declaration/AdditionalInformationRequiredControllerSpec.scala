@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import scala.concurrent.Future
+
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import models.Mode
@@ -27,16 +29,20 @@ import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import services.TariffApiService
+import services.TariffApiService.CommodityCodeNotFound
 import views.html.declaration.additionalInformation.additional_information_required
 
 class AdditionalInformationRequiredControllerSpec extends ControllerSpec with OptionValues {
 
+  val mockTariffApiService = mock[TariffApiService]
   val mockPage = mock[additional_information_required]
 
   val controller = new AdditionalInformationRequiredController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
+    mockTariffApiService,
     navigator,
     stubMessagesControllerComponents(),
     mockPage
@@ -52,23 +58,24 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockTariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Left(CommodityCodeNotFound)))
+    when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockPage)
+    reset(mockPage, mockTariffApiService)
     super.afterEach()
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   "AdditionalInformationRequired Controller" should {
 

@@ -25,13 +25,14 @@ import connectors.TariffApiConnector
 import forms.declaration.CommodityDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.{BeforeAndAfterEach, EitherValues}
 import play.api.libs.json.Json
+import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRequired, TariffApiResult}
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
 class TariffApiServiceSpec
-    extends UnitWithMocksSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ExportsItemBuilder with OptionValues with ScalaFutures {
+    extends UnitWithMocksSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ExportsItemBuilder with EitherValues with ScalaFutures {
 
   private val tariffApiConfig = mock[TariffApiConfig]
   private val tariffApiConnector = mock[TariffApiConnector]
@@ -47,13 +48,13 @@ class TariffApiServiceSpec
 
   private val commodityCode = "2208303000"
 
-  private def retrieveCommodityInfoIfAny(code: Option[String] = Some(commodityCode)): Future[Option[CommodityInfo]] = {
+  private def retrieveCommodityInfoIfAny(code: Option[String] = Some(commodityCode)): Future[TariffApiResult] = {
     val commodityDetails = CommodityDetails(code, Some("Description"))
     val item = anItem(withCommodityDetails(commodityDetails))
     tariffApiService.retrieveCommodityInfoIfAny(aDeclaration(withItems(item)), item.id)
   }
 
-  private def extractCommodityInfoIfAnyFromJson(json: String): Option[CommodityInfo] = {
+  private def extractCommodityInfoIfAnyFromJson(json: String): TariffApiResult = {
     val response = Future.successful(Some(Json.parse(json)))
     when(tariffApiConnector.getCommodity(any())).thenReturn(response)
     retrieveCommodityInfoIfAny().futureValue
@@ -64,7 +65,7 @@ class TariffApiServiceSpec
     "the feature flag 'isCommoditiesEnabled' is disabled" should {
       "return 'None'" in {
         when(tariffApiConfig.isCommoditiesEnabled).thenReturn(false)
-        retrieveCommodityInfoIfAny().futureValue mustBe None
+        retrieveCommodityInfoIfAny().futureValue.left.value mustBe CommodityCodeNotFound
       }
     }
 
@@ -73,61 +74,61 @@ class TariffApiServiceSpec
       "return 'None'" when {
 
         "the given declaration does not contain an item with a commodity code" in {
-          retrieveCommodityInfoIfAny(None).futureValue mustBe None
+          retrieveCommodityInfoIfAny(None).futureValue.left.value mustBe CommodityCodeNotFound
         }
 
         "the Tariff API responds with a 404 http status code (NOT_FOUND)" in {
-          retrieveCommodityInfoIfAny().futureValue mustBe None
+          retrieveCommodityInfoIfAny().futureValue.left.value mustBe CommodityCodeNotFound
         }
 
         "the Tariff API provides a Json payload that does not include a 'included' Json array" in {
           val json = """{ "data": { "id": "91561" } }"""
-          extractCommodityInfoIfAnyFromJson(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json).left.value mustBe CommodityCodeNotFound
         }
 
         "the Tariff API provides a Json payload that includes 'included' but not as Json array" in {
           val json = """{ "included": { "id": "91561" } }"""
-          extractCommodityInfoIfAnyFromJson(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json).left.value mustBe CommodityCodeNotFound
         }
 
         "the Tariff API provides a Json payload that includes an empty 'included' Json array" in {
           val json = """{ "included":[] }"""
-          extractCommodityInfoIfAnyFromJson(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json).left.value mustBe SupplementaryUnitsNotRequired
         }
 
         "no 'included' Json array's element of 'measure' type also has a '/relationships/measure_type/data/id' == '109'" in {
           val json = """{ "included":[ { "type": "measure" } ] }"""
-          extractCommodityInfoIfAnyFromJson(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json).left.value mustBe SupplementaryUnitsNotRequired
         }
 
         "the element of 'measure' type with a '/relationships/measure_type/data/id' == '109' does not have a '/relationships/duty_expression' object" in {
           val json = """{ "included":[ { "type": "measure", "relationships": { "measure_type": { "data": { "id": "109" } } } } ] }"""
-          extractCommodityInfoIfAnyFromJson(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json).left.value mustBe SupplementaryUnitsNotRequired
         }
 
         "no element with 'id' == '/relationships/duty_expression/data/id' is found" in {
           val json = jsonWithoutAttributes("")
-          extractCommodityInfoIfAnyFromJson(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json).left.value mustBe SupplementaryUnitsNotRequired
         }
 
         "an element with 'id' == '/relationships/duty_expression/data/id' is found but does not include an 'attributes' object" in {
           val json = jsonWithoutAttributes(""",{ "id": "2982610-duty_expression" }""")
-          extractCommodityInfoIfAnyFromJson(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json).left.value mustBe SupplementaryUnitsNotRequired
         }
 
         "the element with 'id' and 'attributes' object is found but 'attributes' does not include a 'formatted_base' attribute" in {
           val json = jsonWithAttributes("")
-          extractCommodityInfoIfAnyFromJson(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json).left.value mustBe SupplementaryUnitsNotRequired
         }
 
         "the 'attributes' object with a 'formatted_base' attribute is found but 'formatted_base' cannot be parsed" in {
           val json = jsonWithAttributes(""""formatted_base":"<abbr>l alc. 100%</abbr>"""")
-          extractCommodityInfoIfAnyFromJson(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json).left.value mustBe SupplementaryUnitsNotRequired
         }
 
         "the 'attributes' object with a parseable 'formatted_base' attribute is found but the commodity's information are empty" in {
           val json = jsonWithAttributes(""""formatted_base":"<abbr title='  '>  </abbr>"""")
-          extractCommodityInfoIfAnyFromJson(json) mustBe None
+          extractCommodityInfoIfAnyFromJson(json).left.value mustBe SupplementaryUnitsNotRequired
         }
       }
 

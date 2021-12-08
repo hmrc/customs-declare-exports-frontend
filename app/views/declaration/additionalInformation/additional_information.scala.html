@@ -46,7 +46,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[YesNoAnswer], items: Seq[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[YesNoAnswer], items: Seq[AdditionalInformation], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(items.size == 1)
@@ -116,12 +116,9 @@
     }
 }
 
-@govukLayout(
-    title = title,
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalInformationSummary, mode, ItemId(itemId))))) {
+@govukLayout(title = title, backButton = Some(BackButton(messages("site.back"), backLink))) {
 
     @formHelper(action = AdditionalInformationController.submitForm(mode, itemId), 'autoComplete -> "off") {
-
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -138,6 +135,5 @@
                 saveButtons()
             ))
         ))
-
     }
 }

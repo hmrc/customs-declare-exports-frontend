@@ -24,6 +24,7 @@ import javax.inject.{Inject, Singleton}
 import models.ExportsDeclaration
 import play.api.Logging
 import play.api.libs.json._
+import services.TariffApiService._
 
 case class CommodityInfo(code: String, description: String, units: String)
 
@@ -31,23 +32,30 @@ case class CommodityInfo(code: String, description: String, units: String)
 class TariffApiService @Inject()(tariffApiConfig: TariffApiConfig, tariffApiConnector: TariffApiConnector)(implicit ec: ExecutionContext)
     extends Logging {
 
-  def retrieveCommodityInfoIfAny(declaration: ExportsDeclaration, itemId: String): Future[Option[CommodityInfo]] =
-    if (!tariffApiConfig.isCommoditiesEnabled) Future.successful(None)
-    else declaration.commodityCodeOfItem(itemId).map(retrieveCommodityInfoIfAny).getOrElse(Future.successful(None))
+  def retrieveCommodityInfoIfAny(declaration: ExportsDeclaration, itemId: String): Future[TariffApiResult] =
+    if (!tariffApiConfig.isCommoditiesEnabled) Future.successful(Left(CommodityCodeNotFound))
+    else
+      declaration
+        .commodityCodeOfItem(itemId)
+        .map(retrieveCommodityInfoIfAny)
+        .getOrElse(Future.successful(Left(CommodityCodeNotFound)))
 
-  private def retrieveCommodityInfoIfAny(commodityCode: String): Future[Option[CommodityInfo]] =
+  private def retrieveCommodityInfoIfAny(commodityCode: String): Future[TariffApiResult] =
     tariffApiConnector.getCommodity(commodityCode).map {
       case Some(json) => extractIncludedObj(commodityCode, json)
-      case _          => None
+      case _          => Left(CommodityCodeNotFound)
     }
 
-  private def extractIncludedObj(commodityCode: String, json: JsValue): Option[CommodityInfo] =
-    parseJsValue[JsArray](json, "included").flatMap(extractCommodityInfoFromIncludedObjIfAny(commodityCode, _))
+  private def extractIncludedObj(commodityCode: String, json: JsValue): TariffApiResult =
+    parseJsValue[JsArray](json, "included") match {
+      case Some(included) => extractCommodityInfoFromIncludedObjIfAny(commodityCode, included)
+      case _              => Left(CommodityCodeNotFound)
+    }
 
-  private def extractCommodityInfoFromIncludedObjIfAny(commodityCode: String, included: JsArray): Option[CommodityInfo] = {
+  private def extractCommodityInfoFromIncludedObjIfAny(commodityCode: String, included: JsArray): TariffApiResult = {
     val objs: Seq[JsValue] = included.value
 
-    val commodityInfo = (
+    val maybeCommodityInfo = (
       for {
         idOfDutyExpressionObjToFind <- extractIdOfDutyExpressionObj(objs)
         dutyExpressionObj <- objs.find(parseJsValue[String](_, "id").exists(_ == idOfDutyExpressionObjToFind))
@@ -56,7 +64,10 @@ class TariffApiService @Inject()(tariffApiConfig: TariffApiConfig, tariffApiConn
       } yield extractCommodityInfo(commodityCode, abbrTag)
     ).flatten
 
-    if (commodityInfo.exists(info => info.description.nonEmpty && info.units.nonEmpty)) commodityInfo else None
+    maybeCommodityInfo match {
+      case Some(commodityInfo) if commodityInfo.description.nonEmpty && commodityInfo.units.nonEmpty => Right(commodityInfo)
+      case _                                                                                         => Left(SupplementaryUnitsNotRequired)
+    }
   }
 
   private val pattern = """<abbr\s+title\s*=\s*'(.+)'\s*>(.+)</abbr>""".r
@@ -90,4 +101,14 @@ class TariffApiService @Inject()(tariffApiConfig: TariffApiConfig, tariffApiConn
       case JsSuccess(value, _) => Some(value)
       case JsError(_)          => None
     }
+}
+
+object TariffApiService {
+
+  sealed trait NoInfoForCommodity
+
+  case object CommodityCodeNotFound extends NoInfoForCommodity
+  case object SupplementaryUnitsNotRequired extends NoInfoForCommodity
+
+  type TariffApiResult = Either[NoInfoForCommodity, CommodityInfo]
 }

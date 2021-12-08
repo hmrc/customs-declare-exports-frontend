@@ -19,30 +19,41 @@ package controllers.navigation
 import java.time.{LocalDate, ZoneOffset}
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ExecutionContext, Future}
 
-import base.{MockExportCacheService, RequestBuilder, UnitWithMocksSpec}
+import base.{JourneyTypeTestRunner, MockExportCacheService, RequestBuilder, UnitWithMocksSpec}
 import config.AppConfig
-import controllers.declaration.routes.DraftDeclarationController
+import controllers.declaration.routes.{
+  CommodityMeasureController,
+  DraftDeclarationController,
+  PackageInformationSummaryController,
+  SupplementaryUnitsController
+}
 import controllers.helpers._
+import controllers.routes.{RejectedNotificationsController, SubmissionsController}
+import forms.declaration.AdditionalInformationSummary
 import forms.declaration.carrier.CarrierDetails
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
-import models.{ExportsDeclaration, Mode, SignedInUser}
+import models.{DeclarationType, ExportsDeclaration, Mode, SignedInUser}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito._
-import org.mockito.Mockito.{verify, verifyNoInteractions}
-import org.mockito.{ArgumentMatchers, Mockito}
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
+import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.{AnyContent, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TariffApiService
+import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRequired}
 import services.audit.{AuditService, AuditTypes}
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 
-class NavigatorSpec extends UnitWithMocksSpec with MockExportCacheService with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
+class NavigatorSpec
+    extends UnitWithMocksSpec with ExportsDeclarationBuilder with JourneyTypeTestRunner with MockExportCacheService with RequestBuilder
+    with ScalaFutures {
 
   private val mode = Mode.Normal
   private val call: Mode => Call = _ => Call("GET", "url")
@@ -51,13 +62,15 @@ class NavigatorSpec extends UnitWithMocksSpec with MockExportCacheService with B
   private val hc: HeaderCarrier = mock[HeaderCarrier]
   private val navigator = new Navigator(config, auditService)
 
+  private val mockTariffApiService = mock[TariffApiService]
+
   override def beforeEach(): Unit = {
     super.beforeEach()
-    Mockito.reset(config, auditService, hc)
+    reset(config, auditService, hc)
   }
 
   override def afterEach(): Unit = {
-    Mockito.reset(config, auditService, hc)
+    reset(config, auditService, hc, mockTariffApiService)
     super.afterEach()
   }
 
@@ -88,7 +101,7 @@ class NavigatorSpec extends UnitWithMocksSpec with MockExportCacheService with B
       verify(auditService).auditAllPagesUserInput(ArgumentMatchers.eq(AuditTypes.SaveAndReturnSubmission), any())(any())
     }
 
-    "Go to URL provided" when {
+    "go to the URL provided" when {
       "Save And Continue" in {
         val result = navigator.continueTo(mode, call(_))(decoratedRequest(request(Some(SaveAndContinue))), hc)
 
@@ -134,24 +147,18 @@ class NavigatorSpec extends UnitWithMocksSpec with MockExportCacheService with B
       implicit val declaration = aDeclaration(withSourceId(sourceId))
 
       "continueTo method is invoked with mode ErrorFix and sourceId in request" in {
-
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
-
-        redirectLocation(result) mustBe Some(controllers.routes.RejectedNotificationsController.displayPage(sourceId).url)
+        redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(sourceId).url)
       }
 
       "backLink method is invoked with mode ErrorFix and sourceId in request" in {
-
         val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
-
-        result mustBe controllers.routes.RejectedNotificationsController.displayPage(sourceId)
+        result mustBe RejectedNotificationsController.displayPage(sourceId)
       }
 
       "backLink method for items is invoked with mode ErrorFix and sourceId in request" in {
-
         val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
-
-        result mustBe controllers.routes.RejectedNotificationsController.displayPage(sourceId)
+        result mustBe RejectedNotificationsController.displayPage(sourceId)
       }
     }
 
@@ -160,24 +167,66 @@ class NavigatorSpec extends UnitWithMocksSpec with MockExportCacheService with B
       implicit val declaration = aDeclaration(withoutSourceId())
 
       "continueTo method is invoked with mode ErrorFix but without sourceId in request" in {
-
         val result = navigator.continueTo(Mode.ErrorFix, call)(decoratedRequest(request), hc)
-
-        redirectLocation(result) mustBe Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url)
+        redirectLocation(result) mustBe Some(SubmissionsController.displayListOfSubmissions().url)
       }
 
       "backLink method is invoked with mode ErrorFix but without sourceId in request" in {
-
         val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
-
-        result mustBe controllers.routes.SubmissionsController.displayListOfSubmissions()
+        result mustBe SubmissionsController.displayListOfSubmissions()
       }
 
       "backLink method for items is invoked with mode ErrorFix but without sourceId in request" in {
-
         val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
+        result mustBe SubmissionsController.displayListOfSubmissions()
+      }
+    }
+  }
 
-        result mustBe controllers.routes.SubmissionsController.displayListOfSubmissions()
+  "Navigator.backLinkForAdditionalInformation" should {
+
+    implicit val ec: ExecutionContext = ExecutionContext.global
+
+    val mode = Mode.Normal
+    val itemId = "itemId"
+
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
+      "return a Call instance for CommodityMeasureController" when {
+        "the response from Tariff API does not include supplementary units" in {
+          when(mockTariffApiService.retrieveCommodityInfoIfAny(any(), any()))
+            .thenReturn(Future.successful(Left(SupplementaryUnitsNotRequired)))
+
+          val url = Navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId, mockTariffApiService).futureValue.url
+
+          url mustBe CommodityMeasureController.displayPage(mode, itemId).url
+        }
+      }
+
+      "return a Call instance for SupplementaryUnitsController" when {
+        "the response from Tariff API does not include supplementary units" in {
+          when(mockTariffApiService.retrieveCommodityInfoIfAny(any(), any()))
+            .thenReturn(Future.successful(Left(CommodityCodeNotFound)))
+
+          val url = Navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId, mockTariffApiService).futureValue.url
+
+          url mustBe SupplementaryUnitsController.displayPage(mode, itemId).url
+        }
+      }
+    }
+
+    onClearance { implicit request =>
+      "return a Call instance for CommodityMeasureController" in {
+        val url = Navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId, mockTariffApiService).futureValue.url
+
+        url mustBe CommodityMeasureController.displayPage(mode, itemId).url
+      }
+    }
+
+    onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
+      "return a Call instance for PackageInformationSummaryController" in {
+        val url = Navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId, mockTariffApiService).futureValue.url
+
+        url mustBe PackageInformationSummaryController.displayPage(mode, itemId).url
       }
     }
   }
