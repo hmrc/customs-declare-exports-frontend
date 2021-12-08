@@ -43,11 +43,7 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.radio.1040")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.radio.1007")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.radio.other")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.inset.title")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.inset.paragraph1")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.inset.bullet1")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.inset.bullet2")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.inset.bullet3")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.inset.paragraph2")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.header")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1")
@@ -100,11 +96,7 @@ class AuthorisationProcedureCodeChoiceViewSpec extends UnitViewSpec with Stubs w
       "display inset text" in {
         val inset = view.getElementsByClass("govuk-inset-text")
         val expected = Seq(
-          messages("declaration.authorisations.procedureCodeChoice.inset.title"),
           messages("declaration.authorisations.procedureCodeChoice.inset.paragraph1"),
-          messages("declaration.authorisations.procedureCodeChoice.inset.bullet1"),
-          messages("declaration.authorisations.procedureCodeChoice.inset.bullet2"),
-          messages("declaration.authorisations.procedureCodeChoice.inset.bullet3"),
           messages("declaration.authorisations.procedureCodeChoice.inset.paragraph2")
         ).mkString(" ")
         inset.get(0) must containText(expected)
