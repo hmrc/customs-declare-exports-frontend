@@ -18,7 +18,7 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.countries.Countries._
 @import forms.declaration.countries.Country
-@import views.helpers.CountryAutoCompleteHelper
+@import views.helpers.CountryHelper
 @import forms.declaration.RoutingCountryQuestionYesNo.ChangeCountryPage
 @import models.requests.JourneyRequest
 @import models.codes.{Country => CountryModel}
@@ -39,7 +39,7 @@
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
-)(implicit countryAutoCompleteHelper: CountryAutoCompleteHelper)
+)(implicit countryAutoCompleteHelper: CountryHelper)
 
 @(mode: Mode, form: Form[Country], page: CountryPage, countryToChange: String)(implicit request: JourneyRequest[_], messages: Messages)
 

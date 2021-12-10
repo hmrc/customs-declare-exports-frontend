@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import views.helpers.CountryAutoCompleteHelper
+@import views.helpers.CountryHelper
 @import models.codes.Country
 
-@this(exportsInputText: exportsInputText)(implicit countryAutoCompleteHelper: CountryAutoCompleteHelper)
+@this(exportsInputText: exportsInputText)(implicit countryAutoCompleteHelper: CountryHelper)
 
 @(form: Form[_], labelPrefix: String = "", addressPrefix: String = "")(implicit request: Request[_], messages: Messages)
 

@@ -25,7 +25,7 @@ import services.Countries
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CountryAutoCompleteHelper @Inject()(codeListConnector: CodeListConnector, codeLinkConnector: CodeLinkConnector) {
+class CountryHelper @Inject()(codeListConnector: CodeListConnector, codeLinkConnector: CodeLinkConnector) {
   def generateAutocompleteEnhancementJson(countryKey: Country => String)(implicit messages: Messages) = {
     val jsObjects = for {
       country <- codeListConnector.getCountryCodes(messages.lang.toLocale).values
@@ -39,4 +39,10 @@ class CountryAutoCompleteHelper @Inject()(codeListConnector: CodeListConnector, 
   }
 
   def getListOfAllCountries()(implicit messages: Messages): List[Country] = Countries.getListOfAllCountries()(messages, codeListConnector)
+
+  def getShortNameForCountry(country: Country): String =
+    codeLinkConnector
+      .getShortNamesForCountryCode(country.countryCode)
+      .flatMap(_.headOption)
+      .getOrElse(country.countryName)
 }

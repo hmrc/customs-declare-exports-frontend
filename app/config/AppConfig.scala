@@ -234,4 +234,5 @@ class AppConfig @Inject()(
   val dmsErrorCodes = loadConfig("files.codelists.dmsErrorCodes")
   val countryCodes = loadConfig("files.codelists.countryCodes")
   val countryCodeToAliasesLinkFile = loadConfig("files.codelists.countryCodeToAliasesLink")
+  val countryCodeToShortNameLinkFile = loadConfig("files.codelists.countryCodeToShortNameLink")
 }
