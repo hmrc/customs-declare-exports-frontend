@@ -51,7 +51,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       val row = view(data).getElementsByClass("countriesOfRouting-row")
 
-      val expectedCountry = "United Kingdom, Great Britain, Northern Ireland - GB"
+      val expectedCountry = "United Kingdom, Great Britain, Northern Ireland"
 
       row must haveSummaryValue(expectedCountry)
     }
@@ -64,8 +64,8 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       val row = view(data).getElementsByClass("countriesOfRouting-row")
 
-      val firstExpectedCountry = "United Kingdom, Great Britain, Northern Ireland - GB"
-      val secondExpectedCountry = "Poland - PL"
+      val firstExpectedCountry = "United Kingdom, Great Britain, Northern Ireland"
+      val secondExpectedCountry = "Poland"
 
       row must haveSummaryValue(s"$firstExpectedCountry, $secondExpectedCountry")
 
@@ -96,7 +96,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       val row = view(data).getElementsByClass("countryOfDestination-row")
 
-      val expectedCountry = "United Kingdom, Great Britain, Northern Ireland - GB"
+      val expectedCountry = "United Kingdom, Great Britain, Northern Ireland"
 
       row must haveSummaryKey(messages("declaration.summary.countries.countryOfDestination"))
       row must haveSummaryValue(expectedCountry)

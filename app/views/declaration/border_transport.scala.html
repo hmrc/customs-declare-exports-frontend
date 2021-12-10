@@ -27,7 +27,7 @@
 @import play.twirl.api.HtmlFormat
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import config.AppConfig
-@import views.helpers.CountryAutoCompleteHelper
+@import views.helpers.CountryHelper
 @import models.codes.Country
 
 @this(
@@ -44,7 +44,7 @@
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
-)(implicit countryAutoCompleteHelper: CountryAutoCompleteHelper)
+)(implicit countryAutoCompleteHelper: CountryHelper)
 
 @(mode: Mode, form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
 

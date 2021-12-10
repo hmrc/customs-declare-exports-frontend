@@ -37,7 +37,7 @@
 
 @import scala.collection.immutable
 @import play.twirl.api.HtmlFormat
-@import views.helpers.{BackButton, Title}
+@import views.helpers.{BackButton, Title, CountryHelper}
 @import views.helpers.ErrorMapper.radioGroupErrors
 
 @this(
@@ -52,7 +52,8 @@
     sectionHeader: sectionHeader,
     link: link,
     saveButtons: saveButtons,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    countryHelper: CountryHelper
 )
 
 @(mode: Mode, form: Form[Boolean], countriesOfRouting: Seq[Country])(implicit request: JourneyRequest[AnyContent], messages: Messages)
@@ -65,7 +66,7 @@
             rows = countriesOfRouting.zipWithIndex.map { case (country, index) =>
                 Seq(
                     TableRow(
-                        content = Text(country.asString()),
+                        content = Text(countryHelper.getShortNameForCountry(country)),
                         attributes = Map("id" -> s"country_of_routing_$index")
                     ),
                     TableRow(

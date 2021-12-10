@@ -32,6 +32,7 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.procedureCodeToAdditionalProcedureCodesLinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.procedureCodeToAdditionalProcedureCodesC21LinkFile).thenReturn("/code-links/manyLinks.json")
     when(appConfig.countryCodeToAliasesLinkFile).thenReturn("/code-links/manyLinks.json")
+    when(appConfig.countryCodeToShortNameLinkFile).thenReturn("/code-links/manyLinks.json")
   }
 
   private lazy val connector = new FileBasedCodeLinkConnector(appConfig)
@@ -96,6 +97,20 @@ class CodeLinkConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
       "the country code does not have any aliases" in {
         connector.getAliasesForCountryCode("0000") must be(Some(List.empty[String]))
+      }
+    }
+
+    "return a list of short names for a country" when {
+      "the country code exists in the list" in {
+        connector.getShortNamesForCountryCode("1040") must be(Some(List("C12", "F75")))
+      }
+
+      "the country code does not exists in the list" in {
+        connector.getShortNamesForCountryCode("940") must be(None)
+      }
+
+      "the country code does not have any short names" in {
+        connector.getShortNamesForCountryCode("0000") must be(Some(List.empty[String]))
       }
     }
   }

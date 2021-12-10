@@ -1,0 +1,198 @@
+[
+  {
+    "parentCode":"AO",
+    "childCodes":["Angola"]
+  },
+  {
+    "parentCode":"AQ",
+    "childCodes":["Antartica"]
+  },
+  {
+    "parentCode":"BS",
+    "childCodes":["the Bahamas"]
+  },
+  {
+    "parentCode":"BY",
+    "childCodes":["Belarus"]
+  },
+  {
+    "parentCode":"BO",
+    "childCodes":["Bolivia"]
+  },
+  {
+    "parentCode":"IO",
+    "childCodes":["the British Indian Ocean Territory"]
+  },
+  {
+    "parentCode":"BN",
+    "childCodes":["Brunei"]
+  },
+  {
+    "parentCode":"KY",
+    "childCodes":["the Cayman Islands"]
+  },
+  {
+    "parentCode":"CF",
+    "childCodes":["the Central African Republic"]
+  },
+  {
+    "parentCode":"CC",
+    "childCodes":["the Cocos Islands"]
+  },
+  {
+    "parentCode":"CK",
+    "childCodes":["the Cook Islands"]
+  },
+  {
+    "parentCode":"CI",
+    "childCodes":["Cote d'Ivoire"]
+  },
+  {
+    "parentCode":"DO",
+    "childCodes":["the Dominican Republic"]
+  },
+  {
+    "parentCode":"FK",
+    "childCodes":["the Falkland Islande"]
+  },
+  {
+    "parentCode":"FO",
+    "childCodes":["the Faroe Islands"]
+  },
+  {
+    "parentCode":"FR",
+    "childCodes":["France"]
+  },
+  {
+    "parentCode":"PF",
+    "childCodes":["French Polynesia"]
+  },
+  {
+    "parentCode": "TF",
+    "childCodes": ["the French Southern Territories"]
+  },
+  {
+    "parentCode":"GM",
+    "childCodes":["the Gambia"]
+  },
+  {
+    "parentCode":"DE",
+    "childCodes":["Germany"]
+  },
+  {
+    "parentCode":"HK",
+    "childCodes":["Hong Kong"]
+  },
+  {
+    "parentCode":"IT",
+    "childCodes":["Italy"]
+  },
+  {
+    "parentCode":"KR",
+    "childCodes":["South Korea"]
+  },
+  {
+    "parentCode":"XK",
+    "childCodes":["Kosovo"]
+  },
+  {
+    "parentCode":"LA",
+    "childCodes":["Laos"]
+  },
+  {
+    "parentCode":"MY",
+    "childCodes":["Malaysia"]
+  },
+  {
+    "parentCode":"MT",
+    "childCodes":["Malta"]
+  },
+  {
+    "parentCode":"MH",
+    "childCodes":["the Marshall Islands"]
+  },
+  {
+    "parentCode":"MU",
+    "childCodes":["Mauritius"]
+  },
+  {
+    "parentCode":"XL",
+    "childCodes":["Melilla"]
+  },
+  {
+    "parentCode":"FM",
+    "childCodes":["Micronesia"]
+  },
+  {
+    "parentCode":"MD",
+    "childCodes":["the Republic of Moldova"]
+  },
+  {
+    "parentCode":"MM",
+    "childCodes":["Myanmar"]
+  },
+  {
+    "parentCode":"NL",
+    "childCodes":["the Netherlands"]
+  },
+  {
+    "parentCode":"NO",
+    "childCodes":["Norway"]
+  },
+  {
+    "parentCode":"PH",
+    "childCodes":["the Philippines"]
+  },
+  {
+    "parentCode":"PN",
+    "childCodes":["Pitcairn"]
+  },
+  {
+    "parentCode":"QA",
+    "childCodes":["Portugal"]
+  },
+  {
+    "parentCode":"RU",
+    "childCodes":["the Russian Federation"]
+  },
+  {
+    "parentCode":"SC",
+    "childCodes":["the Seychelles"]
+  },
+  {
+    "parentCode":"SX",
+    "childCodes":["Sint Maarten"]
+  },
+  {
+    "parentCode":"ES",
+    "childCodes":["Spain"]
+  },
+  {
+    "parentCode":"SD",
+    "childCodes":["the Sudan"]
+  },
+  {
+    "parentCode": "CH",
+    "childCodes": ["Switzerland"]
+  },
+  {
+    "parentCode":"TZ",
+    "childCodes":["Tanzania"]
+  },
+  {
+    "parentCode":"AE",
+    "childCodes":["the United Arab Emirates"]
+  },
+  {
+    "parentCode":"UM",
+    "childCodes":["the United States Minor Outlying Islands"]
+  },
+  {
+    "parentCode":"US",
+    "childCodes":["the United States of America"]
+  },
+  {
+    "parentCode":"YE",
+    "childCodes":["Yemen"]
+  }
+]
