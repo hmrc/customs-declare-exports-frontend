@@ -29,6 +29,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import forms.declaration.countries.{Country => FormCountry}
 import models.codes.Country
+import views.helpers.CountryHelper
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
 
 import scala.collection.immutable.ListMap
@@ -38,6 +39,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
   val mockRoutingQuestionPage = mock[routing_country_question]
   val mockCountryOfRoutingPage = mock[country_of_routing]
   val mockCodeListConnector = mock[CodeListConnector]
+  val countryHelper = instanceOf[CountryHelper]
 
   val controller = new RoutingCountriesController(
     mockAuthAction,
@@ -47,7 +49,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
     stubMessagesControllerComponents(),
     mockRoutingQuestionPage,
     mockCountryOfRoutingPage
-  )(ec, mockCodeListConnector)
+  )(ec, mockCodeListConnector, countryHelper)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
