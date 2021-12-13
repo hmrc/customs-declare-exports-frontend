@@ -73,6 +73,7 @@ object AdditionalDocument extends DeclarationPage {
     val documentTypeCodeRequired = optional(
       text()
         .verifying(keyWhenDocumentTypeCodeEmpty, nonEmpty)
+        .verifying("declaration.additionalDocument.documentTypeCode.Y999.error", f => isEmpty(f) or !documentCodesNotAcceptable.contains(f))
         .verifying("declaration.additionalDocument.documentTypeCode.error", isEmpty or (hasSpecificLength(4) and isAlphanumeric))
     ).verifying(keyWhenDocumentTypeCodeEmpty, isPresent)
 
@@ -233,7 +234,8 @@ object AdditionalDocument extends DeclarationPage {
     "Y968",
     "Y969",
     "Y970",
-    "Y971",
-    "Y999"
+    "Y971"
   )
+
+  val documentCodesNotAcceptable = Seq("Y999")
 }

@@ -1088,6 +1088,7 @@ declaration.additionalDocument.documentTypeCode.expander.paragraph3.text = Colum
 declaration.additionalDocument.documentTypeCode.empty = Enter the document code required for your additional document
 declaration.additionalDocument.documentTypeCode.empty.fromAuthCode = Enter a document code and authorisation number to show the EORI you entered in section 3 is the holder of this authorisation
 declaration.additionalDocument.documentTypeCode.error = Document code must be in the correct format
+declaration.additionalDocument.documentTypeCode.Y999.error = Y999 is not currently accepted by CDS. Replace Y999 with the document code listed in the Trade Tariff for your commodity for the licence you are waiving. For example X002, 9106, 9104<br><br>Leave document identifier field blank, to indicate no licence is held<br><br>Enter XX in status code field, to indicate you are waiving the licence<br><br>Enter ‘Waiver claimed’ in the reason field
 declaration.additionalDocument.documentIdentifier = Document identifier
 declaration.additionalDocument.documentIdentifier.body = Document identifiers can be licence or certificate serial numbers. Details are in column 4 of the document code tables.
 declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph1 = For authorisations, the identifier is the authorisation number given to you by HMRC to use for CDS declarations. It is in a prescribed format usually containing country code, authorisation code, EORI number and time-stamp.
