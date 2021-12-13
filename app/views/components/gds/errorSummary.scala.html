@@ -23,8 +23,8 @@
 @errorList = @{errors.map { error =>
     val errorKey = error.key.replace(".", "_").replace('[', '_').replace("]", "")
     ErrorLink(
-        href = Some(s"#${errorFieldName.getOrElse(errorKey)}"),
-        content = Text(messages(error.message, error.args: _*))
+      href = Some(s"#${errorFieldName.getOrElse(errorKey)}"),
+      content = HtmlContent(messages(error.message, error.args: _*))
     )
 }}
 

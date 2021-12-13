@@ -178,7 +178,7 @@ trait ViewMatchers {
   class ContainErrorElementWithMessage(text: String) extends Matcher[Element] {
     override def apply(left: Element): MatchResult =
       MatchResult(
-        left != null && left.getElementsByClass("govuk-error-summary__list").text().contains(text),
+        left != null && left.getElementsByClass("govuk-error-summary__list").html().contains(text),
         s"Document did not contain error element with message {$text}\n${actualContentWas(left)}",
         s"Document contained an error element with message {$text}"
       )
