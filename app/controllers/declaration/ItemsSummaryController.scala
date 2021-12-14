@@ -17,12 +17,13 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.helpers.{FormAction, SaveAndReturn, SupervisingCustomsOfficeHelper}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import models.DeclarationType.CLEARANCE
+
 import javax.inject.Inject
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
@@ -105,7 +106,7 @@ class ItemsSummaryController @Inject()(
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | CLEARANCE =>
         routes.TransportLeavingTheBorderController.displayPage
 
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
@@ -176,8 +177,8 @@ class ItemsSummaryController @Inject()(
       case None => Future.successful(None)
     }
 
-  private def removeWarehouseIdentification(declaration: ExportsDeclaration) =
-    if (declaration.`type` == DeclarationType.CLEARANCE || declaration.requiresWarehouseId)
+  private def removeWarehouseIdentification(declaration: ExportsDeclaration): ExportsDeclaration =
+    if (declaration.isType(CLEARANCE) || declaration.requiresWarehouseId)
       declaration
     else
       declaration.copy(locations = declaration.locations.copy(warehouseIdentification = None))

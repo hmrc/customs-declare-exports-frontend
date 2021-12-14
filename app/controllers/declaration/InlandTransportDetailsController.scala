@@ -17,21 +17,24 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{DepartureTransportController, ExpressConsignmentController, TransportContainerController}
+import controllers.helpers.ModeOfTransportCodeHelper.isPostalOrFTIModeOfTransport
 import controllers.navigation.Navigator
-import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode}
-import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import forms.declaration.InlandModeOfTransportCode
+import forms.declaration.InlandModeOfTransportCode._
 import models.DeclarationType.{DeclarationType, SUPPLEMENTARY}
 import models.requests.JourneyRequest
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.inland_transport_details
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class InlandTransportDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -42,13 +45,10 @@ class InlandTransportDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  import forms.declaration.InlandModeOfTransportCode._
-  import InlandTransportDetailsController._
-
   private val validJourneys = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = form.withSubmissionErrors
     request.cacheModel.locations.inlandModeOfTransportCode match {
       case Some(data) => Ok(inlandTransportDetailsPage(mode, frm.fill(data)))
       case _          => Ok(inlandTransportDetailsPage(mode, frm))
@@ -57,36 +57,22 @@ class InlandTransportDetailsController @Inject()(
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     InlandModeOfTransportCode
-      .form()
-      .bindFromRequest()
+      .form
+      .bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))),
-        form => {
-          updateCache(form)
-            .map(maybeCachedDec => navigator.continueTo(mode, nextPage(request.declarationType, maybeCachedDec)))
-        }
+        code => updateCache(code).map(maybeDeclaration => navigator.continueTo(mode, nextPage(request.declarationType, code)))
       )
   }
 
-  private def nextPage(decType: DeclarationType, maybeCachedDec: Option[ExportsDeclaration]): Mode => Call =
-    getSkipOtherTransportPagesValue(maybeCachedDec).map { _ =>
-      decType match {
-        case SUPPLEMENTARY => controllers.declaration.routes.TransportContainerController.displayContainerSummary _
-        case _             => controllers.declaration.routes.ExpressConsignmentController.displayPage _
+  private def nextPage(declarationType: DeclarationType, code: InlandModeOfTransportCode): Mode => Call =
+    if (isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode))
+      declarationType match {
+        case SUPPLEMENTARY => TransportContainerController.displayContainerSummary
+        case _             => ExpressConsignmentController.displayPage
       }
-    }.getOrElse(controllers.declaration.routes.DepartureTransportController.displayPage)
+    else DepartureTransportController.displayPage
 
-  private def updateCache(formData: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(formData))))
-}
-
-object InlandTransportDetailsController {
-  val invalidOtherTransportPagesValues = List(FixedTransportInstallations, PostalConsignment)
-
-  def getSkipOtherTransportPagesValue(maybeCachedDec: Option[ExportsDeclaration]): Option[ModeOfTransportCode] =
-    for {
-      dec <- maybeCachedDec
-      inlandModeOfTransportCode <- dec.inlandModeOfTransportCode
-      if invalidOtherTransportPagesValues.contains(inlandModeOfTransportCode)
-    } yield inlandModeOfTransportCode
+  private def updateCache(code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(code))))
 }

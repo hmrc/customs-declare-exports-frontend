@@ -16,14 +16,11 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.SupervisingCustomsOfficeHelper
+import controllers.navigation.Navigator
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.SupervisingCustomsOffice.form
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -31,6 +28,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.supervising_customs_office
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class SupervisingCustomsOfficeController @Inject()(
   authenticate: AuthAction,

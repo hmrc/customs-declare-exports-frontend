@@ -227,6 +227,12 @@ GET         /supervising-customs-office          controllers.declaration.Supervi
 
 POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit(mode: models.Mode ?= models.Mode.Normal)
 
+# UK border or Inland (Customs controlled locations)
+
+GET         /inland-or-border                    controllers.declaration.InlandOrBorderController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /inland-or-border                    controllers.declaration.InlandOrBorderController.submitPage(mode: models.Mode ?= models.Mode.Normal)
+
 # Inland Transport Details
 
 GET         /inland-transport-details            controllers.declaration.InlandTransportDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)

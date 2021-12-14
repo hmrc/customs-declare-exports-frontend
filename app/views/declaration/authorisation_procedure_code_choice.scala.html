@@ -28,21 +28,20 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukDetails : GovukDetails,
-        govukRadios: GovukRadios,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        insetText: exportsInsetText,
-        bulletList: bulletList,
-        paragraphBody: paragraphBody,
-        link: link,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveButtons: saveButtons,
-        formHelper: FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukDetails : GovukDetails,
+    govukRadios: GovukRadios,
+    pageTitle: pageTitle,
+    insetText: exportsInsetText,
+    bulletList: bulletList,
+    paragraphBody: paragraphBody,
+    link: link,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(form: Form[AuthorisationProcedureCodeChoice], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)

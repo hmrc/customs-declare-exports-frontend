@@ -27,16 +27,14 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        govukRadios: GovukRadios,
-        exportsInputText: exportsInputText,
-        govukDetails : GovukDetails,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    govukRadios: GovukRadios,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[DeclarantIsExporter])(implicit request: JourneyRequest[_], messages: Messages)

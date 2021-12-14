@@ -25,53 +25,51 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        saveAndContinue: saveAndContinue,
-        declarationTypeQuestionStandard: declaration_type_question_standard,
-        declarationTypeQuestionSupplementary: declaration_type_question_supplementary,
-        declarationTypeQuestionSimplified: declaration_type_question_simplified,
-        declarationTypeQuestionClearance: declaration_type_question_clearance,
-        declarationTypeQuestionOccasional: declaration_type_question_occasional,
-        tariffExpander: tariffExpander,
-        formHelper: FormWithCSRF,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    saveAndContinue: saveAndContinue,
+    declarationTypeQuestionStandard: declaration_type_question_standard,
+    declarationTypeQuestionSupplementary: declaration_type_question_supplementary,
+    declarationTypeQuestionSimplified: declaration_type_question_simplified,
+    declarationTypeQuestionClearance: declaration_type_question_clearance,
+    declarationTypeQuestionOccasional: declaration_type_question_occasional,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
 
 
-@titleForDeclaration = @{request.declarationType match {
-            case DeclarationType.SUPPLEMENTARY => Title("declaration.declarationType.header.supplementary", "declaration.section.1")
-            case DeclarationType.STANDARD => Title("declaration.declarationType.header.standard", "declaration.section.1")
-            case DeclarationType.SIMPLIFIED => Title("declaration.declarationType.header.simplified", "declaration.section.1")
-            case DeclarationType.OCCASIONAL => Title("declaration.declarationType.header.occasional", "declaration.section.1")
-            case DeclarationType.CLEARANCE => Title("declaration.declarationType.header.clearance", "declaration.section.1")
-        }
+@titleForDeclaration = @{
+    request.declarationType match {
+        case DeclarationType.SUPPLEMENTARY => Title("declaration.declarationType.header.supplementary", "declaration.section.1")
+        case DeclarationType.STANDARD => Title("declaration.declarationType.header.standard", "declaration.section.1")
+        case DeclarationType.SIMPLIFIED => Title("declaration.declarationType.header.simplified", "declaration.section.1")
+        case DeclarationType.OCCASIONAL => Title("declaration.declarationType.header.occasional", "declaration.section.1")
+        case DeclarationType.CLEARANCE => Title("declaration.declarationType.header.clearance", "declaration.section.1")
+    }
 }
 
 @govukLayout(
     title = titleForDeclaration,
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalDeclarationTypeStandardDec, mode)))){
 
- @formHelper(action = controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
 
-        @{
-         request.declarationType match {
-             case DeclarationType.SUPPLEMENTARY => declarationTypeQuestionSupplementary(form)
-             case DeclarationType.STANDARD => declarationTypeQuestionStandard(form)
-             case DeclarationType.SIMPLIFIED => declarationTypeQuestionSimplified(form)
-             case DeclarationType.OCCASIONAL => declarationTypeQuestionOccasional(form)
-             case DeclarationType.CLEARANCE => declarationTypeQuestionClearance(form)
-         }
-        }
+        @{ request.declarationType match {
+            case DeclarationType.SUPPLEMENTARY => declarationTypeQuestionSupplementary(form)
+            case DeclarationType.STANDARD => declarationTypeQuestionStandard(form)
+            case DeclarationType.SIMPLIFIED => declarationTypeQuestionSimplified(form)
+            case DeclarationType.OCCASIONAL => declarationTypeQuestionOccasional(form)
+            case DeclarationType.CLEARANCE => declarationTypeQuestionClearance(form)
+        }}
 
         @tariffExpander(AdditionalDeclarationTypePage, request.declarationType)(messages, appConfig)
 
         @saveAndContinue("site.continue")
     }
-
 }
 

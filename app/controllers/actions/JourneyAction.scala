@@ -17,10 +17,11 @@
 package controllers.actions
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import com.google.inject.Inject
 import controllers.routes.RootController
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationType.DeclarationType
+import models.ExportsDeclaration
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.Logging
 import play.api.mvc.{ActionRefiner, Result, Results}
@@ -31,34 +32,56 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val exc: ExecutionContext)
     extends ActionRefiner[AuthenticatedRequest, JourneyRequest] with Logging {
 
+  type RefineResult[A] = Future[Either[Result, JourneyRequest[A]]]
+
   override protected def executionContext: ExecutionContext = exc
 
-  private def refiner[A](request: AuthenticatedRequest[A], types: Seq[DeclarationType]): Future[Either[Result, JourneyRequest[A]]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+  private def refineOnDeclarationTypes[A](request: AuthenticatedRequest[A], types: Seq[DeclarationType]): RefineResult[A] =
     request.declarationId match {
-      case Some(id) =>
-        cacheService.get(id).map {
-          case Some(declaration) if types.isEmpty || types.contains(declaration.`type`) =>
-            Right(new JourneyRequest(request, declaration))
-
-          case _ =>
-            logger.warn(s"Could not retrieve from cache, for eori ${request.user.eori}, the declaration with id $id")
-            Left(Results.Redirect(RootController.displayPage()))
-        }
-      case None =>
-        logger.warn(s"Could not obtain the declaration's id for eori ${request.user.eori}")
-        Future.successful(Left(Results.Redirect(RootController.displayPage())))
+      case Some(id) => verifyDeclaration(id, request, (d: models.ExportsDeclaration) => types.isEmpty || types.contains(d.`type`))
+      case None => Future.successful(redirectToRoot(s"Could not obtain the declaration's id for eori ${request.user.eori}"))
     }
-  }
 
-  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
-    refiner(request, Seq.empty[DeclarationType])
+  private def refineOnAdditionalTypes[A](request: AuthenticatedRequest[A], additionalTypes: Seq[AdditionalDeclarationType]): RefineResult[A] =
+    request.declarationId match {
+      case Some(id) => verifyDeclaration(id, request, additionalTypes.isEmpty || _.additionalDeclarationType.exists(additionalTypes.contains))
+      case None => Future.successful(redirectToRoot(s"Could not obtain the declaration's id for eori ${request.user.eori}"))
+    }
 
-  def apply(type1: DeclarationType, others: DeclarationType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] = apply(others.toSeq.+:(type1))
+  override def refine[A](request: AuthenticatedRequest[A]): RefineResult[A] =
+    refineOnDeclarationTypes(request, Seq.empty[DeclarationType])
+
+  def apply(type1: DeclarationType, others: DeclarationType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] =
+    apply(others.toSeq.+:(type1))
 
   def apply(types: Seq[DeclarationType]): ActionRefiner[AuthenticatedRequest, JourneyRequest] =
     new ActionRefiner[AuthenticatedRequest, JourneyRequest] {
-      override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = refiner(request, types)
       override protected def executionContext: ExecutionContext = exc
+
+      override protected def refine[A](request: AuthenticatedRequest[A]): RefineResult[A] = refineOnDeclarationTypes(request, types)
     }
+
+  def onAdditionalTypes(additionalTypes: Seq[AdditionalDeclarationType]): ActionRefiner[AuthenticatedRequest, JourneyRequest] =
+    new ActionRefiner[AuthenticatedRequest, JourneyRequest] {
+      override protected def executionContext: ExecutionContext = exc
+
+      override protected def refine[A](request: AuthenticatedRequest[A]): RefineResult[A] =
+        refineOnAdditionalTypes(request, additionalTypes)
+    }
+
+  private def redirectToRoot[A](message: String): Either[Result, JourneyRequest[A]] = {
+    logger.warn(message)
+    Left(Results.Redirect(RootController.displayPage))
+  }
+
+  private def verifyDeclaration[A](id: String, request: AuthenticatedRequest[A], onCondition: ExportsDeclaration => Boolean): RefineResult[A] = {
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+    cacheService.get(id).map {
+      case Some(declaration) =>
+        if (onCondition(declaration)) Right(new JourneyRequest(request, declaration)) else Left(Results.Redirect(RootController.displayPage))
+
+      case _ => redirectToRoot(s"Could not retrieve from cache, for eori ${request.user.eori}, the declaration with id $id")
+    }
+  }
 }
