@@ -58,7 +58,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), any(), captor.capture(), any())(any(), any())
+    verify(mockPage).apply(any(), any(), captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
 
@@ -66,7 +66,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
     super.beforeEach()
     authorizedUser()
     when(mockTariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Left(CommodityCodeNotFound)))
-    when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -75,7 +75,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
 
   "AdditionalInformationRequired Controller" should {
 
