@@ -133,18 +133,6 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
       links(view) mustBe empty
     }
 
-    "not have warehouse section" in {
-
-      Option(createView().getElementById("declaration-warehouse-summary")) mustBe None
-    }
-
-    "have warehouse section" in {
-
-      val view = createView(declaration = aDeclaration(withWarehouseIdentification(Some(WarehouseIdentification(Some("12345"))))))
-      view.getElementById("declaration-warehouse-summary").text() mustNot be(empty)
-      links(view) mustBe empty
-    }
-
     "not have transport section" in {
 
       Option(createView().getElementById("declaration-transport-summary")) mustBe None

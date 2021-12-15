@@ -18,7 +18,14 @@ package views.declaration.summary
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.{ModeOfTransportCode, TransportCodes, TransportPayment}
+import forms.declaration.{
+  InlandModeOfTransportCode,
+  ModeOfTransportCode,
+  SupervisingCustomsOffice,
+  TransportCodes,
+  TransportPayment,
+  WarehouseIdentification
+}
 import models.Mode
 import models.declaration.Container
 import services.cache.ExportsTestData
@@ -31,15 +38,21 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     withDepartureTransport(ModeOfTransportCode.Maritime, "10", "identifier"),
     withBorderTransport(Some("United Kingdom"), "11", "borderId"),
     withContainerData(Seq.empty),
-    withTransportPayment(Some(TransportPayment("A")))
+    withTransportPayment(Some(TransportPayment("A"))),
+    withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
+    withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
+    withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCode.Maritime))))
   )
 
   val section = instanceOf[transport_section]
 
+  val mode = Mode.Normal
+
   "Transport section" should {
 
+    val view = section(mode, data)(messages)
+
     "display border transport with change button" in {
-      val view = section(Mode.Normal, data)(messages)
       val row = view.getElementsByClass("border-transport-row")
 
       row must haveSummaryKey(messages("declaration.summary.transport.departure.transportCode.header"))
@@ -51,7 +64,6 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     }
 
     "display transport reference with change button" in {
-      val view = section(Mode.Normal, data)(messages)
       val row = view.getElementsByClass("transport-reference-row")
 
       row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
@@ -64,7 +76,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     "display transport reference if question skipped" in {
       val view = section(
-        Mode.Normal,
+        mode,
         data.copy(transport = data.transport.copy(meansOfTransportOnDepartureType = None, meansOfTransportOnDepartureIDNumber = Some("")))
       )(messages)
       val row = view.getElementsByClass("transport-reference-row")
@@ -76,7 +88,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     "display transport reference if option none selected" in {
       val view = section(
-        Mode.Normal,
+        mode,
         data.copy(
           transport =
             data.transport.copy(meansOfTransportOnDepartureType = Some(TransportCodes.OptionNone), meansOfTransportOnDepartureIDNumber = Some(""))
@@ -90,7 +102,6 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     }
 
     "display active transport type with change button" in {
-      val view = section(Mode.Normal, data)(messages)
       val row = view.getElementsByClass("active-transport-type-row")
 
       row must haveSummaryKey(messages("declaration.summary.transport.border.meansOfTransport.header"))
@@ -102,7 +113,6 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     }
 
     "display active transport nationality with change button" in {
-      val view = section(Mode.Normal, data)(messages)
       val row = view.getElementsByClass("active-transport-nationality-row")
 
       row must haveSummaryKey(messages("declaration.summary.transport.activeTransportNationality"))
@@ -114,7 +124,6 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     }
 
     "display express consignment with change button" in {
-      val view = section(Mode.Normal, data)(messages)
       val row = view.getElementsByClass("expressConsignment-row")
 
       row must haveSummaryKey(messages("declaration.summary.transport.expressConsignment"))
@@ -125,7 +134,6 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     }
 
     "display transport payment with change button" in {
-      val view = section(Mode.Normal, data)(messages)
       val row = view.getElementsByClass("transport-payment-row")
 
       row must haveSummaryKey(messages("declaration.summary.transport.payment"))
@@ -137,7 +145,6 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     }
 
     "display information about containers when user said 'No' with change button" in {
-      val view = section(Mode.Normal, data)(messages)
       val row = view.getElementsByClass("containers-row")
 
       row must haveSummaryKey(messages("declaration.summary.transport.containers"))
@@ -149,47 +156,107 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     }
 
     "not display border transport if question not answered" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutBorderModeOfTransportCode()))(messages)
+      val view = section(mode, aDeclarationAfter(data, withoutBorderModeOfTransportCode()))(messages)
 
       view.getElementsByClass("border-transport-row") mustBe empty
     }
 
     "not display transport reference if question not answered" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType()))(messages)
+      val view = section(mode, aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType()))(messages)
 
       view.getElementsByClass("transport-reference-row") mustBe empty
     }
 
     "not display active transport type if question not answered" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutBorderTransport()))(messages)
+      val view = section(mode, aDeclarationAfter(data, withoutBorderTransport()))(messages)
 
       view.getElementsByClass("active-transport-type-row") mustBe empty
     }
 
     "not display active transport nationality if question not answered" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutBorderTransport()))(messages)
+      val view = section(mode, aDeclarationAfter(data, withoutBorderTransport()))(messages)
 
       view.getElementsByClass("active-transport-nationality-row") mustBe empty
     }
 
     "not display transport payment if question not answered" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTransportPayment()))(messages)
+      val view = section(mode, aDeclarationAfter(data, withoutTransportPayment()))(messages)
 
       view.getElementsByClass("transport-payment-row") mustBe empty
     }
 
     "skip containers part if empty" in {
 
-      val view = section(Mode.Normal, aDeclaration(withoutContainerData()))(messages)
+      val view = section(mode, aDeclaration(withoutContainerData()))(messages)
 
       view.getElementsByClass("containers-row") mustBe empty
     }
 
     "display containers section (but not yes/no answer) if containers are not empty" in {
 
-      val view = section(Mode.Normal, aDeclaration(withContainerData(Container("123", Seq.empty))))(messages)
+      val view = section(mode, aDeclaration(withContainerData(Container("123", Seq.empty))))(messages)
 
       view.getElementById("containers-table").text() mustNot be(empty)
+    }
+
+    "display warehouse id with change button" in {
+      val row = view.getElementsByClass("warehouse-id-row")
+      row must haveSummaryKey(messages("declaration.summary.warehouse.id"))
+      row must haveSummaryValue("12345")
+
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.id.change")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
+    }
+
+    "display supervising office with change button" in {
+      val row = view.getElementsByClass("supervising-office-row")
+      row must haveSummaryKey(messages("declaration.summary.warehouse.supervisingOffice"))
+      row must haveSummaryValue("23456")
+
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.supervisingOffice.change")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage())
+    }
+
+    "display mode of transport with change button" in {
+      val row = view.getElementsByClass("mode-of-transport-row")
+      row must haveSummaryKey(messages("declaration.summary.warehouse.inlandModeOfTransport"))
+      row must haveSummaryValue(messages("declaration.summary.warehouse.inlandModeOfTransport.Maritime"))
+
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.inlandModeOfTransport.change")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
+    }
+
+    "display warehouse label when user said 'no'" in {
+
+      val row = section(mode, aDeclarationAfter(data, withWarehouseIdentification(Some(WarehouseIdentification(None)))))(messages)
+        .getElementsByClass("warehouse-id-row")
+
+      row must haveSummaryKey(messages("declaration.summary.warehouse.no.label"))
+      row must haveSummaryValue(messages("site.no"))
+    }
+
+    "not display warehouse id when question not answered" in {
+
+      val view = section(mode, aDeclarationAfter(data, withoutWarehouseIdentification()))(messages)
+
+      view.getElementsByClass("warehouse-id-row") mustBe empty
+    }
+
+    "not display supervising office when question not answered" in {
+
+      val view = section(mode, aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages)
+
+      view.getElementsByClass("supervising-office-row") mustBe empty
+    }
+
+    "not display mode of transport when question not answered" in {
+
+      val view = section(mode, aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages)
+
+      view.getElementsByClass("mode-of-transport-row") mustBe empty
     }
   }
 }
