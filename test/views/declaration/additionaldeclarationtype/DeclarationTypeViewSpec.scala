@@ -73,6 +73,39 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
       }
     }
 
+    "display inset text" when {
+
+      "used for Standard Declaration journey" in {
+        val viewWithInset = createView(formStandard, DeclarationType.STANDARD)
+        val inset = viewWithInset.getElementsByClass("govuk-inset-text")
+        inset.size mustBe 1
+      }
+
+      "used for Supplementary Declaration journey" in {
+        val viewWithInset = createView(formSupplementary, DeclarationType.SUPPLEMENTARY)
+        val inset = viewWithInset.getElementsByClass("govuk-inset-text")
+        inset.size mustBe 0
+      }
+
+      "used for Simplified Declaration journey" in {
+        val viewWithInset = createView(formSimplified, DeclarationType.SIMPLIFIED)
+        val inset = viewWithInset.getElementsByClass("govuk-inset-text")
+        inset.size mustBe 1
+      }
+
+      "used for Occasional Declaration journey" in {
+        val viewWithInset = createView(formOccasional, DeclarationType.OCCASIONAL)
+        val inset = viewWithInset.getElementsByClass("govuk-inset-text")
+        inset.size mustBe 0
+      }
+
+      "used for Clearance Request journey" in {
+        val viewWithInset = createView(formClearance, DeclarationType.CLEARANCE)
+        val inset = viewWithInset.getElementsByClass("govuk-inset-text")
+        inset.size mustBe 1
+      }
+    }
+
     "display 'Back' button that links to 'Declaration Choice' page" when {
 
       "used for Standard Declaration journey" in {
