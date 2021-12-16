@@ -39,6 +39,7 @@
     heading: heading,
     govukHint: GovukHint,
     pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
     declHolderHelper: DeclarationHolderHelper,
     exportsInputText: exportsInputText,
     legend: legend,
@@ -90,6 +91,8 @@
 
 @sectionHeader(messages("declaration.section.2"))
 @heading(messages("declaration.declarationHolder.title"))
+
+@paragraphBody(messages("declaration.declarationHolder.paragraph"))
 
 @declHolderHelper.bodyForDeclarationHolderEditPage(appConfig)
 
