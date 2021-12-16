@@ -35,7 +35,6 @@
     locations_section: locations_section,
     transaction_section: transaction_section,
     items_section: items_section,
-    warehouse_section: warehouse_section,
     transport_section: transport_section,
     legal_declaration: legal_declaration,
     formHelper: FormWithCSRF,
@@ -66,8 +65,6 @@
         @transaction_section(Mode.Change, request.cacheModel)
 
         @items_section(Mode.Change, request.cacheModel)
-
-        @warehouse_section(Mode.Change, request.cacheModel)
 
         @transport_section(Mode.Change, request.cacheModel)
 

@@ -83,16 +83,6 @@ trait SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData w
         .text() mustNot be(empty)
     }
 
-    "not have warehouse section" in {
-      view(aDeclaration()).getElementById("declaration-warehouse-summary") mustBe null
-    }
-
-    "have warehouse section" in {
-      view(aDeclaration(withWarehouseIdentification(Some(WarehouseIdentification(Some("12345"))))))
-        .getElementById("declaration-warehouse-summary")
-        .text() mustNot be(empty)
-    }
-
     "not have transport section" in {
       view(aDeclaration()).getElementById("declaration-transport-summary") mustBe null
     }

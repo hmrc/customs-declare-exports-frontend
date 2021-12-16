@@ -37,7 +37,6 @@
         locations_section: locations_section,
         transaction_section: transaction_section,
         items_section: items_section,
-        warehouse_section: warehouse_section,
         transport_section: transport_section
 )
 
@@ -64,8 +63,6 @@
     @transaction_section(Mode.Draft, request.cacheModel)
 
     @items_section(Mode.Draft, request.cacheModel)
-
-    @warehouse_section(Mode.Draft, request.cacheModel)
 
     @transport_section(Mode.Draft, request.cacheModel)
 

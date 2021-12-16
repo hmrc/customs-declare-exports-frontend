@@ -16,25 +16,25 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationController}
 import controllers.navigation.Navigator
+import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{AdditionalInformation, AdditionalInformationRequired}
-import javax.inject.Inject
+import forms.declaration.AdditionalInformationRequired
+import models.{ExportsDeclaration, Mode}
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import services.TariffApiService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalInformation.additional_information_required
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationRequiredController @Inject()(
   authenticate: AuthAction,
@@ -48,10 +48,10 @@ class AdditionalInformationRequiredController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cachedItems(itemId) match {
-      case items if items.isEmpty =>
+    request.cacheModel.listOfAdditionalInformationOfItem(itemId) match {
+      case additionalInformations if additionalInformations.isEmpty =>
         resolveBackLink(mode, itemId) map { backLink =>
-          Ok(additionalInfoReq(mode, itemId, previousAnswer(itemId).withSubmissionErrors, backLink))
+          Ok(additionalInfoReq(mode, itemId, previousAnswer(itemId).withSubmissionErrors, backLink, request.cacheModel.procedureCodeOfItem(itemId)))
         }
 
       case _ => Future.successful(navigator.continueTo(mode, AdditionalInformationController.displayPage(_, itemId)))
@@ -68,9 +68,6 @@ class AdditionalInformationRequiredController @Inject()(
         }
       )
   }
-
-  private def cachedItems(itemId: String)(implicit request: JourneyRequest[AnyContent]): Seq[AdditionalInformation] =
-    request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default).items
 
   private def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformationRequired.error")
 
@@ -93,12 +90,14 @@ class AdditionalInformationRequiredController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     resolveBackLink(mode, itemId) map { backLink =>
-      BadRequest(additionalInfoReq(mode, itemId, formWithErrors, backLink))
+      BadRequest(additionalInfoReq(mode, itemId, formWithErrors, backLink, request.cacheModel.procedureCodeOfItem(itemId)))
     }
 
-  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
+  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Option[ExportsDeclaration]] = {
     val updatedAdditionalInformation = yesNoAnswer.answer match {
-      case YesNoAnswers.yes => AdditionalInformationData(Some(yesNoAnswer), cachedItems(itemId))
+      case YesNoAnswers.yes => AdditionalInformationData(Some(yesNoAnswer), request.cacheModel.listOfAdditionalInformationOfItem(itemId))
       case YesNoAnswers.no  => AdditionalInformationData(Some(yesNoAnswer), Seq.empty)
     }
     updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))

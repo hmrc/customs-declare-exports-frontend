@@ -1464,7 +1464,16 @@ declaration.previousDocuments.addAnotherDocument = Do you need to add another do
 declaration.previousDocuments.add.another.empty = Select yes to add another document
 declaration.previousDocuments.error.duplicate = You have already entered this document reference number
 
-declaration.additionalInformationRequired.title = Do you need to add an Additional Information (AI) code?
+declaration.additionalInformationRequired.title = Do you need to make any Additional Information (AI) statements?
+declaration.additionalInformationRequired.clearanceOr1040.para1 = Statements and requests to customs cover many aspects of declarations. If you move goods on {0},  there are AI codes to cover temporary admission.
+declaration.additionalInformationRequired.clearanceOr1040.para1.link = pallets and containers (opens in new tab)
+declaration.additionalInformationRequired.clearanceOr1040.para2 = You can view other statement codes and what they are for in the {0}.
+declaration.additionalInformationRequired.clearanceOr1040.para2.link = AI statement codes list (opens in new tab)
+declaration.additionalInformationRequired.not1040.para1 = Statements and requests to customs cover many aspects of declarations such as pallets and containers, merchandise in baggage, warehouse premises, transit and special procedures.
+declaration.additionalInformationRequired.not1040.inset.para1 = To check the specific additional information statements that may be required for your declared procedure code {0}, scroll down the {0} guide in {1} to heading ‘Additional Information (DE 2/2)’.
+declaration.additionalInformationRequired.not1040.inset.para1.link = Appendix 1 (opens in new tab)
+declaration.additionalInformationRequired.not1040.inset.para2 = {0} lists all the AI statements that can be used for imports and exports.
+declaration.additionalInformationRequired.not1040.inset.para2.link = Appendix 4 (opens in new tab)
 declaration.additionalInformationRequired.hint = These are {0} and are determined by the commodity code or procedure code used.
 declaration.additionalInformationRequired.hint.link = union and national AI codes (opens in new tab)
 declaration.additionalInformationRequired.error = Select yes if there are any AI codes

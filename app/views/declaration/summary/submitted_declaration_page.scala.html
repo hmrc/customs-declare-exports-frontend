@@ -31,7 +31,6 @@
     locations_section: locations_section,
     transaction_section: transaction_section,
     items_section: items_section,
-    warehouse_section: warehouse_section,
     transport_section: transport_section
 )
 
@@ -68,8 +67,6 @@
     <div class="govuk-section-break">@transaction_section(Mode.Normal, declarationData, false)</div>
 
     @items_section(Mode.Normal, declarationData, false)
-
-    <div class="govuk-section-break">@warehouse_section(Mode.Normal, declarationData, false)</div>
 
     <div class="govuk-section-break">@transport_section(Mode.Normal, declarationData, false)</div>
 

@@ -15,7 +15,7 @@
  *@
 
 @import models.Mode
-@import models.declaration.Transport
+@import models.declaration.{Transport,Locations}
 @import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -29,14 +29,17 @@
 
 @(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@sectionRequired(transport: Transport) = @{
+@sectionRequired(transport: Transport, locations: Locations) = @{
     transport.transportPayment.isDefined ||
-      transport.containers.isDefined ||
-      transport.borderModeOfTransportCode.isDefined ||
-      transport.meansOfTransportOnDepartureType.isDefined ||
-      transport.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
-      transport.meansOfTransportCrossingTheBorderNationality.isDefined ||
-      transport.meansOfTransportCrossingTheBorderType.isDefined
+    transport.containers.isDefined ||
+    transport.borderModeOfTransportCode.isDefined ||
+    transport.meansOfTransportOnDepartureType.isDefined ||
+    transport.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
+    transport.meansOfTransportCrossingTheBorderNationality.isDefined ||
+    transport.meansOfTransportCrossingTheBorderType.isDefined ||
+    locations.warehouseIdentification.isDefined ||
+    locations.supervisingCustomsOffice.isDefined ||
+    locations.inlandModeOfTransportCode
 }
 
 @actions(action: Actions) = @{
@@ -59,7 +62,7 @@
     }
 }
 
-@if(sectionRequired(declarationData.transport)) {
+@if(sectionRequired(declarationData.transport, declarationData.locations)) {
     @summaryList("declaration-transport-summary", Some(messages("declaration.summary.transport")), Seq(
         declarationData.transport.borderModeOfTransportCode.map(borderModeOfTransportCode =>
             SummaryListRow(
@@ -79,6 +82,66 @@
                         )
                     ))
                 ))
+        ),
+        declarationData.locations.warehouseIdentification.map(warehouseIdentification =>
+            SummaryListRow(
+                classes = "warehouse-id-row",
+                key = Key(
+                    content = Text(messages( if(warehouseIdentification.identificationNumber.isDefined) "declaration.summary.warehouse.id" else "declaration.summary.warehouse.no.label"))
+                ),
+                value = Value(
+                    content = Text(warehouseIdentification.identificationNumber.getOrElse(messages("site.no")))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionItem(
+                            href = controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.warehouse.id.change"))
+                        )
+                    )
+                ))
+            )
+        ),
+        declarationData.locations.supervisingCustomsOffice.map(supervisingCustomsOffice =>
+            SummaryListRow(
+                classes = "supervising-office-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.warehouse.supervisingOffice"))
+                ),
+                value = Value(
+                    content = Text(supervisingCustomsOffice.supervisingCustomsOffice.getOrElse(""))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionItem(
+                            href = controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.warehouse.supervisingOffice.change"))
+                        )
+                    )
+                ))
+            )
+        ),
+        declarationData.locations.inlandModeOfTransportCode.map(inlandModeOfTransportCode =>
+            SummaryListRow(
+                classes = "mode-of-transport-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.warehouse.inlandModeOfTransport"))
+                ),
+                value = Value(
+                    content = Text(inlandModeOfTransportCode.inlandModeOfTransportCode.map(code => messages(s"declaration.summary.warehouse.inlandModeOfTransport.$code")).getOrElse(""))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionItem(
+                            href = controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.warehouse.inlandModeOfTransport.change"))
+                        )
+                    )
+                ))
+            )
         ),
         if(declarationData.transport.meansOfTransportOnDepartureType.isDefined || declarationData.transport.meansOfTransportOnDepartureIDNumber.isDefined)
           Some(

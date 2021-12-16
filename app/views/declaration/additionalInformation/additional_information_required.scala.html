@@ -15,13 +15,13 @@
  *@
 
 @import config.AppConfig
-@import controllers.navigation.{ItemId, Navigator}
 @import forms.common.YesNoAnswer
 @import forms.declaration.AdditionalInformationRequired
+@import models.declaration.ProcedureCodesData
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.Styles._
-@import views.helpers.{BackButton, Title}
+@import views.components.gds.Styles
+@import views.helpers.{AdditionalInformationRequiredHelper, BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
 
@@ -31,12 +31,14 @@
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
+    heading: heading,
     appConfig: AppConfig,
     yesNoRadios: yesNoRadios,
+    additionalInformationRequiredHelper: AdditionalInformationRequiredHelper,
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[YesNoAnswer], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[YesNoAnswer], backLink: Call, maybeProcedureCode: Option[ProcedureCodesData])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -49,14 +51,12 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
+        @heading(messages("declaration.additionalInformationRequired.title"), Styles.gdsPageLegend)
+
+        @additionalInformationRequiredHelper.getBodyContent(request.declarationType, maybeProcedureCode)
+
         @yesNoRadios(
               form,
-              Some(Fieldset(
-                  legend = Some(Legend(
-                      content = Text(messages("declaration.additionalInformationRequired.title")),
-                      classes = gdsPageLegend
-                  ))
-              )),
               inline = true
         )
 
