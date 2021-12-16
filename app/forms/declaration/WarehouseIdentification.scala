@@ -81,9 +81,10 @@ object WarehouseIdentification extends DeclarationPage {
           .verifying(
             "declaration.warehouse.identification.identificationNumber.format",
             isEmpty or (
-              startsWithIgnoreCase(validWarehouseTypes) and noShorterThan(2) and noLongerThan(36) and isAlphanumeric
+              startsWithIgnoreCase(validWarehouseTypes) and noShorterThan(2) and noLongerThan(36)
             )
           )
+          .verifying("declaration.warehouse.identification.identificationNumber.invalid", isAlphanumeric)
     )(form2Model)(model2Form)
 
   def form(yesNo: Boolean): Form[WarehouseIdentification] = Form(if (yesNo) mappingYesNo else mapping)
