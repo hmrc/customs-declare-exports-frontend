@@ -31,35 +31,35 @@ class WarehouseIdentificationSpec extends DeclarationPageBaseSpec with LightForm
     "validate - no answer" in {
       val incorrectWarehouseDetails = formData("")
 
-      form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(
-        "declaration.warehouse.identification.identificationNumber.error"
-      )
+      form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(s"$msgPrefix.empty")
     }
 
     "validate - more than 35 characters after type code" in {
       val incorrectWarehouseDetails = formData(warehouseTypeCode + createRandomAlphanumericString(36))
 
-      form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(identificationNumberError)
+      form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(s"$msgPrefix.length")
     }
 
-    "validate - missing identification number" in {
-      val incorrectWarehouseDetails = formData(warehouseTypeCode)
+    "validate - invalid identification number" when {
 
-      form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(
-        "declaration.warehouse.identification.identificationNumber.error"
-      )
-    }
+      "missing identification number" in {
+        val incorrectWarehouseDetails = formData(warehouseTypeCode)
 
-    "validate - missing warehouse type" in {
-      val incorrectWarehouseDetails = formData(warehouseId)
+        form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(identificationNumberError)
+      }
 
-      form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(identificationNumberError)
-    }
+      "missing warehouse type" in {
+        val incorrectWarehouseDetails = formData(warehouseId)
 
-    "validate - invalid warehouse type" in {
-      val incorrectWarehouseDetails = formData(warehouseTypeCodeInvalid + warehouseId)
+        form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(identificationNumberError)
+      }
 
-      form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(identificationNumberError)
+      "invalid warehouse type" in {
+        val incorrectWarehouseDetails = formData(warehouseTypeCodeInvalid + warehouseId)
+
+        form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(identificationNumberError)
+      }
+
     }
 
     "validate correct ware house type and number" in {
@@ -99,5 +99,7 @@ object WarehouseIdentificationSpec {
   def formData(identifier: String) =
     JsObject(Map(warehouseIdKey -> JsString(identifier)))
 
-  def identificationNumberError = "declaration.warehouse.identification.identificationNumber.error"
+  val msgPrefix = "declaration.warehouse.identification.identificationNumber"
+
+  val identificationNumberError = s"$msgPrefix.format"
 }
