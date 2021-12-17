@@ -16,24 +16,26 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import forms.declaration.LegalDeclaration
+import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys._
 import models.{ExportsDeclaration, Mode}
 import play.api.Logging
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services._
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.summary._
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryController @Inject()(
   authenticate: AuthAction,
@@ -46,14 +48,17 @@ class SummaryController @Inject()(
   normalSummaryPage: normal_summary_page,
   amendSummaryPage: amend_summary_page,
   draftSummaryPage: draft_summary_page,
-  summaryPageNoData: summary_page_no_data
+  summaryPageNoData: summary_page_no_data,
+  lrnValidator: LrnValidator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
+
+  val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
       mode match {
-        case Mode.Normal => Ok(normalSummaryPage(LegalDeclaration.form))
+        case Mode.Normal => Ok(normalSummaryPage(form))
         case Mode.Amend  => Ok(amendSummaryPage())
         case Mode.Draft  => Ok(draftSummaryPage())
         case _           => handleError("Invalid mode on summary page")
@@ -64,22 +69,34 @@ class SummaryController @Inject()(
   }
 
   val submitDeclaration: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    LegalDeclaration.form.bindFromRequest
-      .fold(
+    def submit(form: Form[LegalDeclaration]): Future[Result] =
+      form.bindFromRequest.fold(
         (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(normalSummaryPage(formWithErrors))),
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(submission) =>
               Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
-
             case _ => handleError(s"Error from Customs Declarations API")
           }
         }
       )
+
+    val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
+
+    isLrnADuplicate(maybeLrn).flatMap {
+      case true => {
+        val allErrors = form.errors ++ Seq(FormError("lrn", "declaration.consignmentReferences.lrn.error.notExpiredYet"))
+        submit(form.copy(errors = allErrors))
+      }
+      case _ => submit(form)
+    }
   }
 
   private def containsMandatoryData(declaration: ExportsDeclaration, mode: Mode): Boolean =
     mode.equals(Mode.Draft) || declaration.consignmentReferences.exists(references => references.lrn.nonEmpty)
+
+  private def isLrnADuplicate(lrn: Option[Lrn])(implicit hc: HeaderCarrier): Future[Boolean] =
+    lrn.fold(Future.successful(false))(lrnValidator.hasBeenSubmittedInThePast48Hours)
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
     logger.error(logMessage)
