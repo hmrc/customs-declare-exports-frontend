@@ -864,8 +864,8 @@ declaration.declarationHolders.add.another.empty = Select yes if you need to add
 declaration.declarationHolders.remove.empty = Select yes if you want to remove this authorisation
 declaration.declarationHolder.remove.title = Are you sure you want to remove this authorisation?
 declaration.declarationHolder.error.duplicate = You have already entered this EORI number for this authorisation
-declaration.declarationHolder.CSE.error.exclusive = You have already added an EXRR authorisation. If you want to use RoRo transport you cannot add CSE authorisation as well.
-declaration.declarationHolder.EXRR.error.exclusive = You have already added a CSE authorisation. If you want to use RoRo transport you must use EXRR instead of CSE.
+declaration.declarationHolder.CSE.error.exclusive = You have already added an EXRR authorisation. If you want to use RoRo transport you cannot add CSE authorisation as well. Use the back button and then select which authorisation you need.
+declaration.declarationHolder.EXRR.error.exclusive = You have already added a CSE authorisation. If you want to use RoRo transport, you must use EXRR instead of CSE. Use the back button and then select which authorisation you need.
 declaration.declarationHolder.EXRR.error.prelodged = EXRR cannot be used with a pre-lodged declaration
 
 declaration.destinationCountry.title = Where are the goods being exported to?
