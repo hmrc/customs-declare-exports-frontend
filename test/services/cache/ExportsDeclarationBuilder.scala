@@ -347,20 +347,23 @@ trait ExportsDeclarationBuilder {
   def withoutWarehouseIdentification(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = None))
 
+  def withWarehouseIdentification(warehouseIdentification: Option[WarehouseIdentification] = None): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = warehouseIdentification))
+
   def withSupervisingCustomsOffice(supervisingCustomsOffice: Option[SupervisingCustomsOffice]): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(supervisingCustomsOffice = supervisingCustomsOffice))
 
   def withoutSupervisingCustomsOffice(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(supervisingCustomsOffice = None))
 
+  def withInlandOrBorder(inlandOrBorder: Option[InlandOrBorder]): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(inlandOrBorder = inlandOrBorder))
+
   def withInlandModeOfTransportCode(inlandModeOfTransportCode: Option[InlandModeOfTransportCode]): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(inlandModeOfTransportCode = inlandModeOfTransportCode))
 
   def withoutInlandModeOfTransportCode(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(inlandModeOfTransportCode = None))
-
-  def withWarehouseIdentification(warehouseIdentification: Option[WarehouseIdentification] = None): ExportsDeclarationModifier =
-    cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = warehouseIdentification))
 
   def withoutOfficeOfExit(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))

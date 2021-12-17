@@ -20,13 +20,10 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{
   DepartureTransportController, ExpressConsignmentController, InlandTransportDetailsController, TransportContainerController
 }
-import controllers.helpers.ModeOfTransportCodeHelper.isPostalOrFTIModeOfTransport
+import controllers.helpers.TransportSectionHelper.{altAdditionalTypesOnTransportSection, isPostalOrFTIModeOfTransport}
 import controllers.navigation.Navigator
 import forms.declaration.InlandOrBorder
 import forms.declaration.InlandOrBorder.{Border, Inland, form}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{
-  STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED
-}
 import models.DeclarationType.SUPPLEMENTARY
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -48,9 +45,7 @@ class InlandOrBorderController @Inject()(
   inlandOrBorderPage: inland_border,
 )(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  private val validAdditionalTypesTypes = List(STANDARD_PRE_LODGED, STANDARD_FRONTIER, SUPPLEMENTARY_SIMPLIFIED)
-
-  private val actionBuilder = (authenticate andThen journeyAction.onAdditionalTypes(validAdditionalTypesTypes))
+  private val actionBuilder = (authenticate andThen journeyAction.onAdditionalTypes(altAdditionalTypesOnTransportSection))
 
   def displayPage(mode: Mode): Action[AnyContent] = actionBuilder { implicit request =>
     val frm = form.withSubmissionErrors

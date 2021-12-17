@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{DepartureTransportController, ExpressConsignmentController, TransportContainerController}
-import controllers.helpers.ModeOfTransportCodeHelper.isPostalOrFTIModeOfTransport
+import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
 import controllers.navigation.Navigator
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.InlandModeOfTransportCode._
@@ -61,7 +61,7 @@ class InlandTransportDetailsController @Inject()(
       .bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))),
-        code => updateCache(code).map(maybeDeclaration => navigator.continueTo(mode, nextPage(request.declarationType, code)))
+        code => updateCache(code).map(_ => navigator.continueTo(mode, nextPage(request.declarationType, code)))
       )
   }
 

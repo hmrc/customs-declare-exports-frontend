@@ -18,7 +18,7 @@ package controllers.navigation
 
 import config.AppConfig
 import controllers.declaration.routes
-import controllers.helpers.ModeOfTransportCodeHelper.isPostalOrFTIModeOfTransport
+import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
 import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
 import controllers.helpers._
 import controllers.routes.{ChoiceController, RejectedNotificationsController, SubmissionsController}
@@ -529,10 +529,8 @@ object Navigator {
     else routes.SupervisingCustomsOfficeController.displayPage(mode)
 
   private def supervisingCustomsOfficePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.requiresWarehouseId || cacheModel.isType(CLEARANCE))
-      routes.WarehouseIdentificationController.displayPage(mode)
-    else
-      warehouseIdentificationPreviousPage(cacheModel, mode)
+    if (cacheModel.requiresWarehouseId || cacheModel.isType(CLEARANCE)) routes.WarehouseIdentificationController.displayPage(mode)
+    else warehouseIdentificationPreviousPage(cacheModel, mode)
 
   private def inlandOrBorderPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     cacheModel.additionalDeclarationType match {

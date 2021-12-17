@@ -17,7 +17,7 @@
 package controllers.helpers
 
 import controllers.declaration.routes._
-import controllers.helpers.ModeOfTransportCodeHelper.isPostalOrFTIModeOfTransport
+import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData

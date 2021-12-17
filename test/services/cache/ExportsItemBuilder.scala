@@ -26,7 +26,7 @@ import models.declaration.{CommodityMeasure => CommodityMeasureModel}
 
 trait ExportsItemBuilder {
 
-  private def uuid: String = UUID.randomUUID().toString
+  private def uuid: String = UUID.randomUUID.toString
 
   private val modelWithDefaults: ExportItem = ExportItem(id = uuid)
 

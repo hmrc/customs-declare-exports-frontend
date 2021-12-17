@@ -17,12 +17,14 @@
 package base
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, declarationType}
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.mvc.AnyContent
+import services.cache.ExportsTestData
 
-trait JourneyTypeTestRunner extends UnitSpec with services.cache.ExportsTestData {
+trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
 
   val simpleStandardDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.STANDARD))
   val simpleSupplementaryDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
@@ -109,4 +111,9 @@ trait JourneyTypeTestRunner extends UnitSpec with services.cache.ExportsTestData
 
   def additionalType(declaration: ExportsDeclaration): String =
     declaration.additionalDeclarationType.fold("")(at => s" and $at as additional declaration type")
+
+  def withRequest(additionalType: AdditionalDeclarationType, modifiers: ExportsDeclarationModifier*): JourneyRequest[AnyContent] =
+    journeyRequest(aDeclaration(
+      (List(withType(declarationType(additionalType)), withAdditionalDeclarationType(additionalType)) ++ modifiers.toList):_*
+    ))
 }

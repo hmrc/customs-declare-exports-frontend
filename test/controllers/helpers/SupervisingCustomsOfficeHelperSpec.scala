@@ -19,11 +19,13 @@ package controllers.helpers
 import base.{JourneyTypeTestRunner, MockAuthAction, MockExportCacheService, UnitSpec}
 import controllers.declaration.routes
 import controllers.helpers.SupervisingCustomsOfficeHelper._
-import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
-import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
-import models.{DeclarationType, ExportsDeclaration}
+import controllers.helpers.TransportSectionHelper.altAdditionalTypesOnTransportSection
+import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment, meaningfulModeOfTransportCodes}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.Mode.Normal
+import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.requests.JourneyRequest
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.mvc.AnyContentAsEmpty
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
@@ -71,10 +73,21 @@ class SupervisingCustomsOfficeHelperSpec
     }
   }
 
-  "SupervisingCustomsOfficeHelper on nextPage" should {
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { request =>
-      "goto InlandTransportDetailsController for STANDARD & SUPPLEMENTARY journeys" in {
-        nextPage(request)(Normal) mustBe routes.InlandTransportDetailsController.displayPage(Normal)
+  "SupervisingCustomsOfficeHelper on nextPage" when {
+
+    altAdditionalTypesOnTransportSection.foreach { additionalType =>
+      s"AdditionalDeclarationType is ${additionalType}" should {
+        "goto to InlandOrBorderController" in {
+          nextPage(withRequest(additionalType))(Normal) mustBe routes.InlandOrBorderController.displayPage(Normal)
+        }
+      }
+    }
+
+    List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
+      "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" should {
+        "goto to InlandTransportDetailsController" in {
+          nextPage(withRequest(additionalType))(Normal) mustBe routes.InlandTransportDetailsController.displayPage(Normal)
+        }
       }
     }
 

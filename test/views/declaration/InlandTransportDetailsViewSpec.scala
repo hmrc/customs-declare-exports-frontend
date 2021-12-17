@@ -19,6 +19,7 @@ package views.declaration
 import base.Injector
 import controllers.declaration.routes
 import forms.declaration.InlandModeOfTransportCode
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
 import models.Mode
 import models.declaration.{ExportItem, ProcedureCodesData}
@@ -126,13 +127,6 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
         }
       }
 
-      "display 'Back' button that links to 'Supervising Customs Office' page" in {
-        val backButton = view.getElementById("back-link")
-
-        backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(routes.SupervisingCustomsOfficeController.displayPage())
-      }
-
       "display 'Save and continue' button on page" in {
         view.getElementById("submit") must containMessage("site.save_and_continue")
       }
@@ -142,15 +136,78 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
       }
     }
 
-    val itemWith1040AsPC = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
-
-    onJourney(STANDARD, SUPPLEMENTARY)(aDeclaration(withItem(itemWith1040AsPC))) { implicit request =>
-      "display 'Back' button that links to the 'Transport Leaving the Border' page" when {
-        "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" in {
+    List(STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED).foreach { additionalType =>
+      implicit val request = withRequest(additionalType)
+      "display 'Back' button that links to the 'Inland Or Border' page" when {
+        s"AdditionalDeclarationType is $additionalType" in {
           val view = createView()
           val backButton = view.getElementById("back-link")
           backButton must containMessage("site.back")
-          backButton.getElementById("back-link") must haveHref(routes.TransportLeavingTheBorderController.displayPage())
+          backButton.getElementById("back-link") must haveHref(routes.InlandOrBorderController.displayPage())
+        }
+      }
+    }
+
+    List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
+      implicit val request = withRequest(additionalType)
+      val view = createView()
+
+      "display 'Back' button that links to 'Supervising Customs Office' page" when {
+        s"AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
+          val backButton = view.getElementById("back-link")
+
+          backButton must containMessage("site.back")
+          backButton.getElementById("back-link") must haveHref(routes.SupervisingCustomsOfficeController.displayPage())
+        }
+      }
+    }
+
+    List(SUPPLEMENTARY_EIDR, OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
+      "display 'Back' button that links to 'Supervising Customs Office' page" when {
+        implicit val request = withRequest(additionalType)
+        val view = createView()
+
+        s"AdditionalDeclarationType is ${additionalType}" in {
+          val backButton = view.getElementById("back-link")
+
+          backButton must containMessage("site.back")
+          backButton.getElementById("back-link") must haveHref(routes.SupervisingCustomsOfficeController.displayPage())
+        }
+      }
+    }
+
+    List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
+      "display 'Back' button that links to 'Transport Leaving The Border' page" when {
+        "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
+          val itemWith1040AsPC = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
+
+          implicit val request = withRequest(additionalType, withItem(itemWith1040AsPC))
+          val view = createView()
+
+          s"AdditionalDeclarationType is ${additionalType}" in {
+            val backButton = view.getElementById("back-link")
+
+            backButton must containMessage("site.back")
+            backButton.getElementById("back-link") must haveHref(routes.TransportLeavingTheBorderController.displayPage())
+          }
+        }
+      }
+    }
+
+    List(OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
+      "display 'Back' button that links to 'Items Summary' page" when {
+        "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
+          val itemWith1040AsPC = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
+
+          implicit val request = withRequest(additionalType, withItem(itemWith1040AsPC))
+          val view = createView()
+
+          s"AdditionalDeclarationType is ${additionalType}" in {
+            val backButton = view.getElementById("back-link")
+
+            backButton must containMessage("site.back")
+            backButton.getElementById("back-link") must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage())
+          }
         }
       }
     }

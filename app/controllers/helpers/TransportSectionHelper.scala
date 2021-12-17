@@ -18,10 +18,13 @@ package controllers.helpers
 
 import forms.declaration.ModeOfTransportCode
 import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 
-object ModeOfTransportCodeHelper {
+object TransportSectionHelper {
 
-  private val postalOrFTIModeOfTransportCodes = List(Some(FixedTransportInstallations), Some(PostalConsignment))
+  val altAdditionalTypesOnTransportSection = List(STANDARD_PRE_LODGED, STANDARD_FRONTIER, SUPPLEMENTARY_SIMPLIFIED)
+
+  val postalOrFTIModeOfTransportCodes = List(Some(FixedTransportInstallations), Some(PostalConsignment))
 
   def isPostalOrFTIModeOfTransport(modeOfTransportCode: Option[ModeOfTransportCode]): Boolean =
     postalOrFTIModeOfTransportCodes.contains(modeOfTransportCode)

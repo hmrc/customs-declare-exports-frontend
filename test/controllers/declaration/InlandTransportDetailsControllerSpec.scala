@@ -17,15 +17,15 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.InlandTransportDetailsController._
+import controllers.helpers.TransportSectionHelper.postalOrFTIModeOfTransportCodes
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.ModeOfTransportCode._
 import models.DeclarationType._
 import models.Mode
-import org.mockito.{ArgumentCaptor, Mockito}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -33,7 +33,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.inland_transport_details
 
-class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAndAfterEach with OptionValues {
+class InlandTransportDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   private val inlandTransportDetails = mock[inland_transport_details]
 
@@ -55,7 +55,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
   }
 
   override protected def afterEach(): Unit = {
-    Mockito.reset(inlandTransportDetails)
+    reset(inlandTransportDetails)
     super.afterEach()
   }
 
@@ -103,7 +103,8 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
     }
   }
 
-  private val validOtherTransportPagesValues = meaningfulModeOfTransportCodes.filterNot(i => invalidOtherTransportPagesValues.contains(i))
+  private val validOtherTransportPagesValues =
+    meaningfulModeOfTransportCodes.filterNot(code => postalOrFTIModeOfTransportCodes.contains(Some(code)))
 
   "Inland Transport Details Controller on POST" when {
     val body = Json.obj("inlandModeOfTransportCode" -> JsString(exampleTransportMode.value))
@@ -128,7 +129,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
 
       validOtherTransportPagesValues.foreach { transportMode =>
         s"transportMode '$transportMode' is selected" should {
-          val expectedRedirect = controllers.declaration.routes.DepartureTransportController.displayPage()
+          val expectedRedirect = routes.DepartureTransportController.displayPage()
           s"redirect to ${expectedRedirect.url}" in {
             withNewCaching(request.cacheModel)
 
@@ -141,19 +142,19 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         }
       }
 
-      invalidOtherTransportPagesValues.foreach { transportMode =>
+      postalOrFTIModeOfTransportCodes.foreach { transportMode =>
         s"transportMode '$transportMode' is selected" should {
 
           val expectedRedirect =
             if (request.declarationType == SUPPLEMENTARY)
-              controllers.declaration.routes.TransportContainerController.displayContainerSummary()
+              routes.TransportContainerController.displayContainerSummary()
             else
-              controllers.declaration.routes.ExpressConsignmentController.displayPage()
+              routes.ExpressConsignmentController.displayPage()
 
           s"redirect to ${expectedRedirect.url}" in {
             withNewCaching(request.cacheModel)
 
-            val body = Json.obj("inlandModeOfTransportCode" -> JsString(transportMode.value))
+            val body = Json.obj("inlandModeOfTransportCode" -> JsString(transportMode.value.value))
             val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
