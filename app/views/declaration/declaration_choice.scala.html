@@ -112,6 +112,9 @@
                     checked = form("type").value.contains(DeclarationType.STANDARD.toString)
                 ),
                 RadioItem(
+                    divider = Some(messages("site.radio.divider"))
+                ),
+                RadioItem(
                     id = Some(DeclarationType.SIMPLIFIED.toString),
                     value = Some(DeclarationType.SIMPLIFIED.toString),
                     content = Text(messages("declaration.type.simplified")),
