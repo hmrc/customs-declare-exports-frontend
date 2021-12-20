@@ -142,9 +142,6 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
 
       view.getElementsByTag("label").size mustBe 1
       view.getElementsByAttributeValue("for", "STANDARD") must containMessageForElements("declaration.type.standard")
-
-      // CEDS-2290 - "Or" divider should be filtered out if not configured
-      view.getElementsByClass("govuk-radios__divider").size() mustBe (0)
     }
   }
 
