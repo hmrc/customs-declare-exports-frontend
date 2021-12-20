@@ -115,7 +115,7 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#identificationNumber")
 
-        view must containErrorElementWithMessage("declaration.warehouse.identification.identificationNumber.error")
+        view must containErrorElementWithMessage("declaration.warehouse.identification.identificationNumber.empty")
       }
 
       "display error when code is incorrect" in {
@@ -124,7 +124,7 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#identificationNumber")
 
-        view must containErrorElementWithMessage("declaration.warehouse.identification.identificationNumber.error")
+        view must containErrorElementWithMessage("declaration.warehouse.identification.identificationNumber.format")
       }
     }
   }

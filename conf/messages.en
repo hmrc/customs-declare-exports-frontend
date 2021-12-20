@@ -997,7 +997,10 @@ declaration.warehouse.identification.label =  Warehouse identification number
 declaration.warehouse.identification.label.hint =  For example, R1234567GB.
 declaration.warehouse.identification.answer.error = Select yes if the goods were in a customs approved warehouse
 declaration.warehouse.identification.identificationNumber.error = Customs warehouse identification number must contain 36 characters or fewer
+declaration.warehouse.identification.identificationNumber.length = Customs warehouse identification number must contain 36 characters or fewer
 declaration.warehouse.identification.identificationNumber.empty = Enter the warehouse identification number
+declaration.warehouse.identification.identificationNumber.format = Enter a warehouse identification number in the correct format
+declaration.warehouse.identification.identificationNumber.invalid = Customs warehouse identification number must contain only letters and numbers
 
 declaration.warehouse.supervisingCustomsOffice.title = Where is the HMRC supervising customs office (SPOFF)?
 declaration.warehouse.supervisingCustomsOffice.paragraph.1 = If you quoted a specific authorisation for any of your declared items, select the office that granted this authorisation.
