@@ -142,6 +142,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
 
       view.getElementsByTag("label").size mustBe 1
       view.getElementsByAttributeValue("for", "STANDARD") must containMessageForElements("declaration.type.standard")
+      view.getElementsByClass("govuk-radios__divider").size() mustBe (1)
     }
   }
 
