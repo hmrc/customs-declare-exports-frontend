@@ -55,10 +55,8 @@ class InlandTransportDetailsController @Inject()(
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    InlandModeOfTransportCode
-      .form
-      .bindFromRequest
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
+    InlandModeOfTransportCode.form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))),
         code => updateCache(code).map(_ => navigator.continueTo(mode, nextPage(request.declarationType, code)))
@@ -70,8 +68,7 @@ class InlandTransportDetailsController @Inject()(
       declarationType match {
         case SUPPLEMENTARY => TransportContainerController.displayContainerSummary
         case _             => ExpressConsignmentController.displayPage
-      }
-    else DepartureTransportController.displayPage
+      } else DepartureTransportController.displayPage
 
   private def updateCache(code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(code))))

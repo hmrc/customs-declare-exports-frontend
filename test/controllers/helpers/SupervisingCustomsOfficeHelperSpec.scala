@@ -20,7 +20,7 @@ import base.{JourneyTypeTestRunner, MockAuthAction, MockExportCacheService, Unit
 import controllers.declaration.routes
 import controllers.helpers.SupervisingCustomsOfficeHelper._
 import controllers.helpers.TransportSectionHelper.altAdditionalTypesOnTransportSection
-import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment, meaningfulModeOfTransportCodes}
+import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.Mode.Normal
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE

@@ -40,5 +40,3 @@ object InlandOrBorder extends DeclarationPage {
 
   def form: Form[InlandOrBorder] = Form(mapping)
 }
-
-

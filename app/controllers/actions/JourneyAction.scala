@@ -39,13 +39,13 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val ex
   private def refineOnDeclarationTypes[A](request: AuthenticatedRequest[A], types: Seq[DeclarationType]): RefineResult[A] =
     request.declarationId match {
       case Some(id) => verifyDeclaration(id, request, (d: models.ExportsDeclaration) => types.isEmpty || types.contains(d.`type`))
-      case None => Future.successful(redirectToRoot(s"Could not obtain the declaration's id for eori ${request.user.eori}"))
+      case None     => Future.successful(redirectToRoot(s"Could not obtain the declaration's id for eori ${request.user.eori}"))
     }
 
   private def refineOnAdditionalTypes[A](request: AuthenticatedRequest[A], additionalTypes: Seq[AdditionalDeclarationType]): RefineResult[A] =
     request.declarationId match {
       case Some(id) => verifyDeclaration(id, request, additionalTypes.isEmpty || _.additionalDeclarationType.exists(additionalTypes.contains))
-      case None => Future.successful(redirectToRoot(s"Could not obtain the declaration's id for eori ${request.user.eori}"))
+      case None     => Future.successful(redirectToRoot(s"Could not obtain the declaration's id for eori ${request.user.eori}"))
     }
 
   override def refine[A](request: AuthenticatedRequest[A]): RefineResult[A] =

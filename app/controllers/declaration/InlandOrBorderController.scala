@@ -18,12 +18,15 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{
-  DepartureTransportController, ExpressConsignmentController, InlandTransportDetailsController, TransportContainerController
+  DepartureTransportController,
+  ExpressConsignmentController,
+  InlandTransportDetailsController,
+  TransportContainerController
 }
 import controllers.helpers.TransportSectionHelper.{altAdditionalTypesOnTransportSection, isPostalOrFTIModeOfTransport}
 import controllers.navigation.Navigator
 import forms.declaration.InlandOrBorder
-import forms.declaration.InlandOrBorder.{Border, Inland, form}
+import forms.declaration.InlandOrBorder.{form, Border, Inland}
 import models.DeclarationType.SUPPLEMENTARY
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -42,8 +45,9 @@ class InlandOrBorderController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  inlandOrBorderPage: inland_border,
-)(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+  inlandOrBorderPage: inland_border
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val actionBuilder = (authenticate andThen journeyAction.onAdditionalTypes(altAdditionalTypesOnTransportSection))
 
@@ -56,12 +60,8 @@ class InlandOrBorderController @Inject()(
   }
 
   def submitPage(mode: Mode): Action[AnyContent] = actionBuilder.async { implicit request =>
-    form
-      .bindFromRequest
-      .fold(
-        formWithErrors => Future.successful(BadRequest(inlandOrBorderPage(mode, formWithErrors))),
-        updateExportsCache(mode, _)
-      )
+    form.bindFromRequest
+      .fold(formWithErrors => Future.successful(BadRequest(inlandOrBorderPage(mode, formWithErrors))), updateExportsCache(mode, _))
   }
 
   private def nextPage(declaration: ExportsDeclaration, inlandOrBorder: InlandOrBorder): Mode => Call =
@@ -75,7 +75,7 @@ class InlandOrBorderController @Inject()(
     }
 
   private def updateExportsCache(mode: Mode, inlandOrBorder: InlandOrBorder)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandOrBorder = Some(inlandOrBorder)))) map {
-      _ => navigator.continueTo(mode, nextPage(request.cacheModel, inlandOrBorder))
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandOrBorder = Some(inlandOrBorder)))) map { _ =>
+      navigator.continueTo(mode, nextPage(request.cacheModel, inlandOrBorder))
     }
 }

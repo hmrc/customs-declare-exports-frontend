@@ -49,9 +49,9 @@ object SupervisingCustomsOfficeHelper {
         val isSupplementaryEidr = request.cacheModel.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR)
         if (isSupplementaryEidr) InlandTransportDetailsController.displayPage else InlandOrBorderController.displayPage
 
-      case DeclarationType.STANDARD                                 => InlandOrBorderController.displayPage
-      case DeclarationType.CLEARANCE                                => dependsOnTransportLeavingTheBoarder
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL  => ExpressConsignmentController.displayPage
+      case DeclarationType.STANDARD                                => InlandOrBorderController.displayPage
+      case DeclarationType.CLEARANCE                               => dependsOnTransportLeavingTheBoarder
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => ExpressConsignmentController.displayPage
     }
 
   private def dependsOnTransportLeavingTheBoarder(implicit request: JourneyRequest[_]): Mode => Call = {

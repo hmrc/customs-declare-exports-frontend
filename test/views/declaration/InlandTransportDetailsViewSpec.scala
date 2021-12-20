@@ -16,13 +16,14 @@
 
 package views.declaration
 
+import base.ExportsTestData.itemWith1040AsPC
 import base.Injector
 import controllers.declaration.routes
+import controllers.helpers.TransportSectionHelper.altAdditionalTypesOnTransportSection
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
 import models.Mode
-import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -136,7 +137,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
       }
     }
 
-    List(STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED).foreach { additionalType =>
+    altAdditionalTypesOnTransportSection.foreach { additionalType =>
       implicit val request = withRequest(additionalType)
       "display 'Back' button that links to the 'Inland Or Border' page" when {
         s"AdditionalDeclarationType is $additionalType" in {
@@ -179,8 +180,6 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
     List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
       "display 'Back' button that links to 'Transport Leaving The Border' page" when {
         "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
-          val itemWith1040AsPC = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
-
           implicit val request = withRequest(additionalType, withItem(itemWith1040AsPC))
           val view = createView()
 
@@ -197,8 +196,6 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
     List(OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
       "display 'Back' button that links to 'Items Summary' page" when {
         "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
-          val itemWith1040AsPC = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
-
           implicit val request = withRequest(additionalType, withItem(itemWith1040AsPC))
           val view = createView()
 

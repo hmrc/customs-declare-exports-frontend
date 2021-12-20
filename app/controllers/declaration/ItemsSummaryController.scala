@@ -16,24 +16,24 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.{FormAction, SaveAndReturn, SupervisingCustomsOfficeHelper}
+import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.CLEARANCE
-
-import javax.inject.Inject
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.{ExportItemIdGeneratorService, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationitems.{items_add_item, items_remove_item, items_summary}
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class ItemsSummaryController @Inject()(
   authenticate: AuthAction,
@@ -52,31 +52,27 @@ class ItemsSummaryController @Inject()(
   private def removeItemForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.itemsRemove.error.empty")
 
   def displayAddItemPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (request.cacheModel.items.isEmpty)
-      Ok(addItemPage(mode))
-    else
-      navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
+    if (request.cacheModel.items.isEmpty) Ok(addItemPage(mode))
+    else navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
   }
 
   def addFirstItem(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val actionTypeOpt = FormAction.bindFromRequest()
+    val actionTypeOpt = FormAction.bindFromRequest
 
     actionTypeOpt match {
       case SaveAndReturn => Future.successful(navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage))
       case _ =>
-        createNewItemInCache()
+        createNewItemInCache
           .map(newItem => navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, newItem.id)))
     }
   }
 
   def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    removeEmptyItems().map(updatedModel => {
+    removeEmptyItems.map(updatedModel => {
       updatedModel.fold(navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage))(
         model =>
-          if (model.items.isEmpty)
-            navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage)
-          else
-            Ok(itemsSummaryPage(mode, itemSummaryForm, model.items.toList))
+          if (model.items.isEmpty) navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage)
+          else Ok(itemsSummaryPage(mode, itemSummaryForm, model.items.toList))
       )
     })
   }
@@ -85,14 +81,13 @@ class ItemsSummaryController @Inject()(
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val incorrectItems: Seq[FormError] = buildIncorrectItemsErrors(request)
 
-    itemSummaryForm
-      .bindFromRequest()
+    itemSummaryForm.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(itemsSummaryPage(mode, formWithErrors, request.cacheModel.items.toList, incorrectItems))),
         validYesNo =>
           validYesNo.answer match {
             case YesNoAnswers.yes =>
-              createNewItemInCache()
+              createNewItemInCache
                 .map(newItem => navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, newItem.id)))
 
             case YesNoAnswers.no if incorrectItems.nonEmpty =>
@@ -106,10 +101,9 @@ class ItemsSummaryController @Inject()(
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | CLEARANCE =>
-        routes.TransportLeavingTheBorderController.displayPage
+      case SUPPLEMENTARY | STANDARD | CLEARANCE => routes.TransportLeavingTheBorderController.displayPage
 
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+      case SIMPLIFIED | OCCASIONAL =>
         if (request.cacheModel.requiresWarehouseId) routes.WarehouseIdentificationController.displayPage
         else SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage
     }
@@ -120,7 +114,7 @@ class ItemsSummaryController @Inject()(
         FormError("item_" + index, "declaration.itemsSummary.item.incorrect", Seq(item.sequenceId.toString))
     }
 
-  private def createNewItemInCache()(implicit request: JourneyRequest[AnyContent]): Future[ExportItem] = {
+  private def createNewItemInCache(implicit request: JourneyRequest[AnyContent]): Future[ExportItem] = {
     val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
     exportsCacheService
       .update(
@@ -130,7 +124,7 @@ class ItemsSummaryController @Inject()(
       .map(_ => newItem)
   }
 
-  private def removeEmptyItems()(implicit request: JourneyRequest[AnyContent]) = {
+  private def removeEmptyItems(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
     val itemsWithAnswers = request.cacheModel.items.filter(ExportItem.containsAnswers)
     exportsCacheService.update(request.cacheModel.copy(items = itemsWithAnswers))
   }
@@ -143,23 +137,19 @@ class ItemsSummaryController @Inject()(
   }
 
   def removeItem(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    removeItemForm
-      .bindFromRequest()
+    removeItemForm.bindFromRequest
       .fold(
         formWithErrors =>
           Future.successful(request.cacheModel.itemBy(itemId) match {
             case Some(item) => BadRequest(removeItemPage(mode, formWithErrors, item))
             case None       => throw new IllegalStateException(s"Could not find ExportItem with id = [$itemId] to remove")
           }),
-        validYesNo =>
-          validYesNo.answer match {
-            case YesNoAnswers.yes =>
-              removeItemFromCache(itemId).map { _ =>
-                navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)
-              }
+        _.answer match {
+          case YesNoAnswers.yes =>
+            removeItemFromCache(itemId).map(_ => navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage))
 
-            case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage))
+          case YesNoAnswers.no =>
+            Future.successful(navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage))
         }
       )
   }
@@ -178,8 +168,6 @@ class ItemsSummaryController @Inject()(
     }
 
   private def removeWarehouseIdentification(declaration: ExportsDeclaration): ExportsDeclaration =
-    if (declaration.isType(CLEARANCE) || declaration.requiresWarehouseId)
-      declaration
-    else
-      declaration.copy(locations = declaration.locations.copy(warehouseIdentification = None))
+    if (declaration.isType(CLEARANCE) || declaration.requiresWarehouseId) declaration
+    else declaration.copy(locations = declaration.locations.copy(warehouseIdentification = None))
 }

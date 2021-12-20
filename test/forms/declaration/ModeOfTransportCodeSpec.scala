@@ -21,13 +21,11 @@ import base.UnitWithMocksSpec
 class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
 
   "ModeOfTransportCode classicFormatter" should {
-
     val errorMessageKey = "error.message"
     val formatter = ModeOfTransportCode.classicFormatter(errorMessageKey)
 
     "return Right" when {
       "provided with allowed code" in {
-
         val input = Map("clientKey" -> "1")
 
         formatter.bind("clientKey", input) mustBe Right(ModeOfTransportCode.Maritime)
@@ -37,7 +35,6 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
     "return Left" when {
 
       "provided with empty String" in {
-
         val input = Map("clientKey" -> "")
 
         val result = formatter.bind("clientKey", input)
@@ -47,7 +44,6 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
       }
 
       "provided with a code other than allowed" in {
-
         val input = Map("clientKey" -> "123")
 
         val result = formatter.bind("clientKey", input)
@@ -57,7 +53,6 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
       }
 
       "provided with no-code value" in {
-
         val input = Map("clientKey" -> "no-code")
 
         val result = formatter.bind("clientKey", input)
@@ -69,22 +64,18 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
   }
 
   "ModeOfTransportCode clearanceJourneyFormatter" should {
-
     val errorMessageKey = "error.message"
     val formatter = ModeOfTransportCode.clearanceJourneyFormatter(errorMessageKey)
 
     "return Right" when {
+
       "provided with allowed code" in {
-
         val input = Map("clientKey" -> "1")
-
         formatter.bind("clientKey", input) mustBe Right(ModeOfTransportCode.Maritime)
       }
 
       "provided with no-code value" in {
-
         val input = Map("clientKey" -> "no-code")
-
         formatter.bind("clientKey", input) mustBe Right(ModeOfTransportCode.Empty)
       }
     }
@@ -92,7 +83,6 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
     "return Left" when {
 
       "provided with empty String" in {
-
         val input = Map("clientKey" -> "")
 
         val result = formatter.bind("clientKey", input)
@@ -102,7 +92,6 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
       }
 
       "provided with a code other than allowed" in {
-
         val input = Map("clientKey" -> "123")
 
         val result = formatter.bind("clientKey", input)

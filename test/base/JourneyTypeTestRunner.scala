@@ -17,7 +17,7 @@
 package base
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, declarationType}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{declarationType, AdditionalDeclarationType}
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
@@ -113,7 +113,7 @@ trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
     declaration.additionalDeclarationType.fold("")(at => s" and $at as additional declaration type")
 
   def withRequest(additionalType: AdditionalDeclarationType, modifiers: ExportsDeclarationModifier*): JourneyRequest[AnyContent] =
-    journeyRequest(aDeclaration(
-      (List(withType(declarationType(additionalType)), withAdditionalDeclarationType(additionalType)) ++ modifiers.toList):_*
-    ))
+    journeyRequest(
+      aDeclaration((List(withType(declarationType(additionalType)), withAdditionalDeclarationType(additionalType)) ++ modifiers.toList): _*)
+    )
 }

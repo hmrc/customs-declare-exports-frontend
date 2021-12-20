@@ -17,7 +17,9 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{DepartureTransportController, ExpressConsignmentController, TransportContainerController}
 import controllers.helpers.TransportSectionHelper.postalOrFTIModeOfTransportCodes
+import controllers.routes.RootController
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.ModeOfTransportCode._
 import models.DeclarationType._
@@ -98,7 +100,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with OptionVal
         val response = controller.displayPage(Mode.Normal).apply(getRequest())
 
         status(response) must be(SEE_OTHER)
-        redirectLocation(response) mustBe Some(controllers.routes.RootController.displayPage().url)
+        redirectLocation(response) mustBe Some(RootController.displayPage().url)
       }
     }
   }
@@ -129,7 +131,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with OptionVal
 
       validOtherTransportPagesValues.foreach { transportMode =>
         s"transportMode '$transportMode' is selected" should {
-          val expectedRedirect = routes.DepartureTransportController.displayPage()
+          val expectedRedirect = DepartureTransportController.displayPage()
           s"redirect to ${expectedRedirect.url}" in {
             withNewCaching(request.cacheModel)
 
@@ -144,12 +146,9 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with OptionVal
 
       postalOrFTIModeOfTransportCodes.foreach { transportMode =>
         s"transportMode '$transportMode' is selected" should {
-
           val expectedRedirect =
-            if (request.declarationType == SUPPLEMENTARY)
-              routes.TransportContainerController.displayContainerSummary()
-            else
-              routes.ExpressConsignmentController.displayPage()
+            if (request.declarationType == SUPPLEMENTARY) TransportContainerController.displayContainerSummary()
+            else ExpressConsignmentController.displayPage()
 
           s"redirect to ${expectedRedirect.url}" in {
             withNewCaching(request.cacheModel)
@@ -168,9 +167,10 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with OptionVal
       "redirect to start" in {
         withNewCaching(request.cacheModel)
 
-        val response = controller.submit(Mode.Normal)(postRequest(body))
+        val result = controller.submit(Mode.Normal)(postRequest(body))
 
-        status(response) must be(SEE_OTHER)
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) mustBe Some(RootController.displayPage().url)
       }
     }
   }

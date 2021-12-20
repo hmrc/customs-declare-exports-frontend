@@ -1033,11 +1033,11 @@ declaration.inlandOrBorder.answer.border = At a UK border or frontier location s
 declaration.inlandOrBorder.answer.inland = At a customs controlled location
 declaration.inlandOrBorder.answer.empty = Select where you are presenting your goods
 declaration.inlandOrBorder.inset.body = Customs controlled locations include:
-declaration.inlandOrBorder.inset.bullet1.text = the new locations for RoRo exports (EXRR) arrived declarations
-declaration.inlandOrBorder.inset.bullet2.text = Customs Supervised Exports (CSE) premises
-declaration.inlandOrBorder.inset.bullet3.text = Designated export places (DEPs)
-declaration.inlandOrBorder.inset.bullet4.text = Customs warehouses
-declaration.inlandOrBorder.inset.bullet5.text = Excise warehouses
+declaration.inlandOrBorder.inset.bullet.1.text = the new locations for RoRo exports (EXRR) arrived declarations
+declaration.inlandOrBorder.inset.bullet.2.text = Customs Supervised Exports (CSE) premises
+declaration.inlandOrBorder.inset.bullet.3.text = Designated export places (DEPs)
+declaration.inlandOrBorder.inset.bullet.4.text = Customs warehouses
+declaration.inlandOrBorder.inset.bullet.5.text = Excise warehouses
 
 declaration.fiscalInformation.title = Do you want to claim Onward Supply Relief (OSR)?
 declaration.fiscalInformation.onwardSupplyRelief.empty = Select yes if you want to claim onward supply relief

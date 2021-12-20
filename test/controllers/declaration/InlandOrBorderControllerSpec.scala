@@ -20,7 +20,7 @@ import base.ControllerSpec
 import controllers.helpers.TransportSectionHelper._
 import controllers.routes.RootController
 import forms.declaration.InlandOrBorder
-import forms.declaration.InlandOrBorder.{Border, Inland, fieldId}
+import forms.declaration.InlandOrBorder.{fieldId, Border, Inland}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED}
 import models.Mode.Normal
@@ -73,7 +73,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
   }
 
   def cacheRequest(additionalType: AdditionalDeclarationType, modifiers: ExportsDeclarationModifier*): Unit =
-    withNewCaching(withRequest(additionalType, modifiers:_*).cacheModel)
+    withNewCaching(withRequest(additionalType, modifiers: _*).cacheModel)
 
   "InlandOrBorderController.displayPage" should {
 

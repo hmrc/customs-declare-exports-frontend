@@ -28,7 +28,7 @@
     containers: containers
 )
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @sectionRequired(transport: Transport, locations: Locations) = @{
     transport.transportPayment.isDefined ||
@@ -62,9 +62,9 @@
     }
 }
 
-@if(sectionRequired(declarationData.transport, declarationData.locations)) {
+@if(sectionRequired(declaration.transport, declaration.locations)) {
     @summaryList("declaration-transport-summary", Some(messages("declaration.summary.transport")), Seq(
-        declarationData.transport.borderModeOfTransportCode.map(borderModeOfTransportCode =>
+        declaration.transport.borderModeOfTransportCode.map(borderModeOfTransportCode =>
             SummaryListRow(
                 classes = "border-transport-row",
                 key = Key(
@@ -83,7 +83,7 @@
                     ))
                 ))
         ),
-        declarationData.locations.warehouseIdentification.map(warehouseIdentification =>
+        declaration.locations.warehouseIdentification.map(warehouseIdentification =>
             SummaryListRow(
                 classes = "warehouse-id-row",
                 key = Key(
@@ -106,7 +106,7 @@
                 ))
             )
         ),
-        declarationData.locations.supervisingCustomsOffice.map(supervisingCustomsOffice =>
+        declaration.locations.supervisingCustomsOffice.map(supervisingCustomsOffice =>
             SummaryListRow(
                 classes = "supervising-office-row",
                 key = Key(
@@ -126,7 +126,7 @@
                 ))
             )
         ),
-        declarationData.locations.inlandOrBorder.map(inlandOrBorder =>
+        declaration.locations.inlandOrBorder.map(inlandOrBorder =>
             SummaryListRow(
                 classes = "inland-or-border-row",
                 key = Key(
@@ -146,7 +146,7 @@
                 ))
             )
         ),
-        declarationData.locations.inlandModeOfTransportCode.map(inlandModeOfTransportCode =>
+        declaration.locations.inlandModeOfTransportCode.map(inlandModeOfTransportCode =>
             SummaryListRow(
                 classes = "mode-of-transport-row",
                 key = Key(
@@ -166,7 +166,7 @@
                 ))
             )
         ),
-        if (declarationData.transport.meansOfTransportOnDepartureType.isDefined || declarationData.transport.meansOfTransportOnDepartureIDNumber.isDefined)
+        if (declaration.transport.meansOfTransportOnDepartureType.isDefined || declaration.transport.meansOfTransportOnDepartureIDNumber.isDefined)
           Some(
               SummaryListRow(
                   classes = "transport-reference-row",
@@ -174,7 +174,7 @@
                       content = Text(messages("declaration.summary.transport.departure.meansOfTransport.header"))
                   ),
                   value = Value(
-                      content = HtmlContent(messagesForDepartureMeansOfTransport(declarationData.transport).mkString("<br>"))
+                      content = HtmlContent(messagesForDepartureMeansOfTransport(declaration.transport).mkString("<br>"))
                   ),
                   actions = actions(Actions(
                       items = Seq(
@@ -187,7 +187,7 @@
                   ))
           )
         else None,
-        if (declarationData.transport.meansOfTransportCrossingTheBorderType.isDefined && declarationData.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined)
+        if (declaration.transport.meansOfTransportCrossingTheBorderType.isDefined && declaration.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined)
             Some(
                 SummaryListRow(
                     classes = "active-transport-type-row",
@@ -195,7 +195,7 @@
                         content = Text(messages("declaration.summary.transport.border.meansOfTransport.header"))
                     ),
                     value = Value(
-                        content = HtmlContent(messagesForBorderMeansOfTransport(declarationData.transport).mkString("<br>"))
+                        content = HtmlContent(messagesForBorderMeansOfTransport(declaration.transport).mkString("<br>"))
                     ),
                     actions = actions(Actions(
                         items = Seq(
@@ -208,7 +208,7 @@
                     ))
             )
         else None,
-        if (declarationData.transport.meansOfTransportCrossingTheBorderType.isDefined && declarationData.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined)
+        if (declaration.transport.meansOfTransportCrossingTheBorderType.isDefined && declaration.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined)
             Some(
                 SummaryListRow(
                     classes = "active-transport-nationality-row",
@@ -216,7 +216,7 @@
                         content = Text(messages("declaration.summary.transport.activeTransportNationality"))
                     ),
                     value = Value(
-                        content = Text(declarationData.transport.meansOfTransportCrossingTheBorderNationality.getOrElse(""))
+                        content = Text(declaration.transport.meansOfTransportCrossingTheBorderNationality.getOrElse(""))
                     ),
                     actions = actions(Actions(
                         items = Seq(
@@ -229,7 +229,7 @@
                     ))
             )
         else None,
-        declarationData.transport.expressConsignment.map(expressConsignment =>
+        declaration.transport.expressConsignment.map(expressConsignment =>
             SummaryListRow(
                 classes = "expressConsignment-row",
                 key = Key(
@@ -249,7 +249,7 @@
                 ))
             )
         ),
-        declarationData.transport.transportPayment.map(transportPayment =>
+        declaration.transport.transportPayment.map(transportPayment =>
             SummaryListRow(
                 classes = "transport-payment-row",
                 key = Key(
@@ -272,7 +272,7 @@
         classes = "govuk-!-margin-bottom-6"
     )
 
-    @declarationData.transport.containers.map(containerSeq =>
+    @declaration.transport.containers.map(containerSeq =>
         containers(mode, containerSeq, actionsEnabled)
     )
 }

@@ -16,15 +16,12 @@
 
 package controllers.declaration
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 import base.ControllerWithoutFormSpec
 import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
 import models.DeclarationType._
 import models.declaration.{CommodityMeasure, ExportItem, ProcedureCodesData}
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -39,6 +36,9 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.cache.ExportItemIdGeneratorService
 import views.html.declaration.declarationitems.{items_add_item, items_remove_item, items_summary}
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues with ScalaFutures {
 

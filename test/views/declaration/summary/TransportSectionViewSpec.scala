@@ -18,6 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import controllers.declaration.routes
+import forms.declaration.InlandOrBorder.Border
 import forms.declaration.{
   InlandModeOfTransportCode,
   ModeOfTransportCode,
@@ -41,6 +42,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     withTransportPayment(Some(TransportPayment("A"))),
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
+    withInlandOrBorder(Some(Border)),
     withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCode.Maritime))))
   )
 
@@ -197,7 +199,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.warehouse.id.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
+      row must haveSummaryActionsHref(routes.WarehouseIdentificationController.displayPage())
     }
 
     "display supervising office with change button" in {
@@ -207,7 +209,17 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.supervisingOffice.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage())
+      row must haveSummaryActionsHref(routes.SupervisingCustomsOfficeController.displayPage())
+    }
+
+    "display inland or border with change button" in {
+      val row = view.getElementsByClass("inland-or-border-row")
+      row must haveSummaryKey(messages("declaration.summary.transport.inlandOrBorder"))
+      row must haveSummaryValue(messages("declaration.summary.transport.inlandOrBorder.Border"))
+
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.inlandOrBorder.change")
+
+      row must haveSummaryActionsHref(routes.InlandOrBorderController.displayPage())
     }
 
     "display mode of transport with change button" in {
@@ -217,7 +229,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.inlandModeOfTransport.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
+      row must haveSummaryActionsHref(routes.InlandTransportDetailsController.displayPage())
     }
 
     "display warehouse label when user said 'no'" in {
@@ -236,6 +248,11 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     "not display supervising office when question not answered" in {
       val view = section(mode, aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages)
       view.getElementsByClass("supervising-office-row") mustBe empty
+    }
+
+    "not display inland or border when question not answered" in {
+      val view = section(mode, aDeclarationAfter(data, withoutInlandOrBorder))(messages)
+      view.getElementsByClass("inland-or-border-row") mustBe empty
     }
 
     "not display mode of transport when question not answered" in {

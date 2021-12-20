@@ -136,7 +136,6 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
         }
 
         onJourney(STANDARD, SUPPLEMENTARY) { request =>
-
           "redirect to the 'Warehouse Identification' page after a successful bind" when {
             "at least one Procedure Code requires Warehouse information (PCs ending with '07', '71', 78')" in {
               withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("1078"), Seq("000"))))))

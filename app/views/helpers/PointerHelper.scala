@@ -18,7 +18,7 @@ package views.helpers
 
 import controllers.declaration.routes
 import models.DeclarationType.CLEARANCE
-import models.{DeclarationType, ExportsDeclaration, Mode, Pointer}
+import models.{ExportsDeclaration, Mode, Pointer}
 import models.Mode.Normal
 import play.api.mvc.Call
 import play.api.Logging
