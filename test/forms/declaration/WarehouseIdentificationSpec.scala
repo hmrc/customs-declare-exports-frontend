@@ -34,7 +34,7 @@ class WarehouseIdentificationSpec extends DeclarationPageBaseSpec with LightForm
       form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(s"$msgPrefix.empty")
     }
 
-    "validate - more than 35 characters after type code" in {
+    "validate - more than 36 characters after type code" in {
       val incorrectWarehouseDetails = formData(warehouseTypeCode + createRandomAlphanumericString(36))
 
       form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(s"$msgPrefix.length")
