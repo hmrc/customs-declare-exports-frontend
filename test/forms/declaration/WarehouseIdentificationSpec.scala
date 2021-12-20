@@ -40,6 +40,12 @@ class WarehouseIdentificationSpec extends DeclarationPageBaseSpec with LightForm
       form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(s"$msgPrefix.length")
     }
 
+    "validate - with non-alphanumeric" in {
+      val incorrectWarehouseDetails = formData(warehouseTypeCode + "1$3")
+
+      form().bind(incorrectWarehouseDetails, JsonBindMaxChars).errors.map(_.message) must contain(s"$msgPrefix.invalid")
+    }
+
     "validate - invalid identification number" when {
 
       "missing identification number" in {
