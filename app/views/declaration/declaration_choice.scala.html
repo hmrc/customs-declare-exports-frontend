@@ -142,7 +142,7 @@
                     hint = Some(Hint(content = Text(messages("declaration.type.occasional.hint")))),
                     checked = form("type").value.contains(DeclarationType.OCCASIONAL.toString)
                 )
-            ).filter(radioOption => radioOption.value.exists(appConfig.availableDeclarations().contains(_))),
+            ).filter(radioOption => radioOption.value.exists(appConfig.availableDeclarations().contains(_)) || radioOption.divider),
             errorMessage = form("type").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
