@@ -53,7 +53,7 @@ class AddressSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
         verifyError(buildAddressInputMap(), "fullName", "empty")
       }
 
-      "provided with input longer than 70 characters" in {
+      "provided with input longer than 35 characters" in {
         verifyError(buildAddressInputMap(fullName = fieldWithLengthOver35), "fullName", "length")
       }
 
@@ -67,7 +67,7 @@ class AddressSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
         verifyError(buildAddressInputMap(), "addressLine", "empty")
       }
 
-      "provided with input longer than 70 characters" in {
+      "provided with input longer than 35 characters" in {
         verifyError(buildAddressInputMap(addressLine = fieldWithLengthOver35), "addressLine", "length")
       }
 
@@ -115,7 +115,7 @@ class AddressSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
       "provided with non-existing country name" in {
         val input = buildAddressInputMap(country = "Non Existing Country")
-        val form = Address.form().bind(input)
+        val form = Address.form.bind(input)
 
         val countryError = form.errors.find(_.key == "country")
         countryError must be(defined)
@@ -128,7 +128,7 @@ class AddressSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
       "provided with full input" in {
         val expectedAddress = validAddress
 
-        val form = Address.form().bind(correctAddressJSON, JsonBindMaxChars)
+        val form = Address.form.bind(correctAddressJSON, JsonBindMaxChars)
 
         form.errors must be(empty)
         form.value must be(defined)
@@ -139,7 +139,7 @@ class AddressSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
         val input: Map[String, String] = buildAddressInputMap(validAddress)
         val expectedAddress = validAddress
 
-        val form = Address.form().bind(input)
+        val form = Address.form.bind(input)
 
         form.errors must be(empty)
         form.value must be(defined)
@@ -149,7 +149,7 @@ class AddressSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
   }
 
   private def verifyError(input: Map[String, String], field: String, errorKey: String): Assertion = {
-    val form = Address.form().bind(input)
+    val form = Address.form.bind(input)
     val fullNameError = form.errors.find(_.key == field)
     fullNameError must be(defined)
     fullNameError.get.message must equal(s"declaration.address.$field.$errorKey")
@@ -165,9 +165,9 @@ object AddressSpec {
   val fieldWithLengthOver9 = TestHelper.createRandomAlphanumericString(10)
 
   val validAddress = Address(
-    fullName = "Some Name,'-",
-    addressLine = "Test Street,'-",
-    townOrCity = "Leeds,'-",
+    fullName = "Some Name,'-&",
+    addressLine = "Test Street,'-&",
+    townOrCity = "Leeds,'-&",
     postCode = "LS18 BN",
     country = "United Kingdom, Great Britain, Northern Ireland"
   )
