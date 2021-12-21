@@ -55,7 +55,7 @@ object SupervisingCustomsOfficeHelper {
     }
 
   private def dependsOnTransportLeavingTheBoarder(implicit request: JourneyRequest[_]): Mode => Call = {
-    val condition = isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBoarderCode)
+    val condition = isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)
     if (condition) ExpressConsignmentController.displayPage else DepartureTransportController.displayPage
   }
 }

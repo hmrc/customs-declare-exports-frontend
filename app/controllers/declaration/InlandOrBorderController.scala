@@ -66,7 +66,7 @@ class InlandOrBorderController @Inject()(
 
   private def nextPage(declaration: ExportsDeclaration, inlandOrBorder: InlandOrBorder): Mode => Call =
     inlandOrBorder match {
-      case Border if isPostalOrFTIModeOfTransport(declaration.transportLeavingBoarderCode) =>
+      case Border if isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode) =>
         if (declaration.isType(SUPPLEMENTARY)) TransportContainerController.displayContainerSummary
         else ExpressConsignmentController.displayPage
 

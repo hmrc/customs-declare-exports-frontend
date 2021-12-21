@@ -19,10 +19,10 @@ package services.cache
 import base.ExportsTestData.newUser
 import base.RequestBuilder
 import forms.declaration._
-import models.{DeclarationType, ExportsDeclaration}
 import models.DeclarationType.DeclarationType
 import models.declaration.Container
 import models.requests.JourneyRequest
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.FakeRequestCSRFSupport._

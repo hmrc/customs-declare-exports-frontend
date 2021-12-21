@@ -55,7 +55,7 @@ case class ExportsDeclaration(
   def lrn: Option[String] = consignmentReferences.map(_.lrn.value)
   def ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
   def inlandModeOfTransportCode: Option[ModeOfTransportCode] = locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode)
-  def transportLeavingBoarderCode: Option[ModeOfTransportCode] = transport.borderModeOfTransportCode.flatMap(_.code)
+  def transportLeavingBorderCode: Option[ModeOfTransportCode] = transport.borderModeOfTransportCode.flatMap(_.code)
 
   def additionalDocumentsIfAny(itemId: String): Option[AdditionalDocuments] =
     itemBy(itemId).flatMap(_.additionalDocuments)

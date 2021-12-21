@@ -18,7 +18,7 @@ package controllers.navigation
 
 import config.AppConfig
 import controllers.declaration.routes
-import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
+import controllers.helpers.TransportSectionHelper.{altAdditionalTypesOnTransportSection, isPostalOrFTIModeOfTransport}
 import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
 import controllers.helpers._
 import controllers.routes.{ChoiceController, RejectedNotificationsController, SubmissionsController}
@@ -547,39 +547,31 @@ object Navigator {
     if (isConditionForAllProcedureCodesVerified(cacheModel)) supervisingCustomsOfficePreviousPage(cacheModel, mode)
     else routes.SupervisingCustomsOfficeController.displayPage(mode)
 
-  private def departureTransportPreviousPageOnStandardOrSuppl(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    cacheModel.additionalDeclarationType match {
-      case Some(STANDARD_FRONTIER) | Some(STANDARD_PRE_LODGED) | Some(SUPPLEMENTARY_SIMPLIFIED) if cacheModel.isInlandOrBorder(Border) =>
-        routes.InlandOrBorderController.displayPage(mode)
-
-      case _ => routes.InlandTransportDetailsController.displayPage(mode)
-    }
+  private def departureTransportPreviousPageOnStandardOrSuppl(cacheModel: ExportsDeclaration, mode: Mode): Call = {
+    val inAllowedFlow = cacheModel.additionalDeclarationType.exists(altAdditionalTypesOnTransportSection.contains)
+    if (inAllowedFlow && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage(mode)
+    else routes.InlandTransportDetailsController.displayPage(mode)
+  }
 
   private def expressConsignmentPreviousPageOnStandard(cacheModel: ExportsDeclaration, mode: Mode): Call = {
-    val notPostalOrFTI = !isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode)
+    val notPostalOrFTI = !isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
     if (notPostalOrFTI) routes.BorderTransportController.displayPage(mode)
     else if (cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage(mode)
     else routes.InlandTransportDetailsController.displayPage(mode)
   }
 
   private def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration, mode: Mode): Call = {
-    val condition = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBoarderCode)
-    if (condition) routes.SupervisingCustomsOfficeController.displayPage(mode)
+    val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
+    if (postalOrFTI) routes.SupervisingCustomsOfficeController.displayPage(mode)
     else routes.DepartureTransportController.displayPage(mode)
   }
 
   private def containerFirstPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.transport.transportPayment.nonEmpty)
-      routes.TransportPaymentController.displayPage(mode)
-    else
-      routes.ExpressConsignmentController.displayPage(mode)
+    if (cacheModel.transport.transportPayment.nonEmpty) routes.TransportPaymentController.displayPage(mode)
+    else routes.ExpressConsignmentController.displayPage(mode)
 
-  private def containerFirstPreviousPageOnSupplementary(cacheModel: ExportsDeclaration, mode: Mode): Call = {
-    val modeOfTransportIsNotPostalOrFTI = !isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBoarderCode)
-    if (modeOfTransportIsNotPostalOrFTI) routes.BorderTransportController.displayPage(mode)
-    else if (cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage(mode)
-    else routes.InlandTransportDetailsController.displayPage(mode)
-  }
+  private def containerFirstPreviousPageOnSupplementary(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    expressConsignmentPreviousPageOnStandard(cacheModel, mode)
 
   private def additionalTaricCodesPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))

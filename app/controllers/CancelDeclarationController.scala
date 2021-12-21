@@ -92,7 +92,7 @@ class CancelDeclarationController @Inject()(
 
     CancelDeclaration.form
       .fill(userInput)
-      .copy(errors = Seq(FormError.apply(mrnKey, messages(errorMessageKey))))
+      .copy(errors = List(FormError.apply(mrnKey, messages(errorMessageKey))))
   }
 
   private def auditData(form: CancelDeclaration, result: String)(implicit request: AuthenticatedRequest[_]): Map[String, String] =

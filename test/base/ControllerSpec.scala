@@ -16,8 +16,6 @@
 
 package base
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.helpers.{Add, AddField, SaveAndContinue, SaveAndReturn}
 import mock.{JourneyActionMocks, VerifiedEmailMocks}
 import models.ExportsDeclaration
@@ -32,6 +30,8 @@ import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import play.twirl.api.Html
 import services.cache.ExportsItemBuilder
 import utils.FakeRequestCSRFSupport._
+
+import scala.concurrent.{ExecutionContext, Future}
 
 trait ControllerWithoutFormSpec extends ControllerSpec {
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] =

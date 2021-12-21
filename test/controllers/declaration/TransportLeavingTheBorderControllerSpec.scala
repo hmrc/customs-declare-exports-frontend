@@ -131,7 +131,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
             await(controller.submitForm(Normal)(postRequest(body)))
 
-            theCacheModelUpdated.transportLeavingBoarderCode.value mustBe modeOfTransportCode
+            theCacheModelUpdated.transportLeavingBorderCode.value mustBe modeOfTransportCode
           }
         }
 
