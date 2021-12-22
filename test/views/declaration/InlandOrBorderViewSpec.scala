@@ -19,7 +19,7 @@ package views.declaration
 import base.{Injector, MockExportCacheService}
 import base.ExportsTestData.itemWith1040AsPC
 import controllers.declaration.routes.{SupervisingCustomsOfficeController, TransportLeavingTheBorderController}
-import controllers.helpers.TransportSectionHelper.altAdditionalTypesOnTransportSection
+import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.InlandOrBorder.{form, Border, Inland}
 import models.Mode.Normal
 import models.requests.JourneyRequest
@@ -39,7 +39,7 @@ class InlandOrBorderViewSpec extends UnitViewSpec with ExportsTestData with Mock
 
   "Inland or Border View" when {
 
-    altAdditionalTypesOnTransportSection.foreach { additionalType =>
+    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
       s"AdditionalDeclarationType is ${additionalType} and" should {
         implicit val request = withRequest(additionalType)
         val view = createView
@@ -88,7 +88,7 @@ class InlandOrBorderViewSpec extends UnitViewSpec with ExportsTestData with Mock
       }
     }
 
-    altAdditionalTypesOnTransportSection.foreach { additionalType =>
+    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
       s"AdditionalDeclarationType is ${additionalType} and" when {
         "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" should {
           implicit val request = withRequest(additionalType, withItem(itemWith1040AsPC))

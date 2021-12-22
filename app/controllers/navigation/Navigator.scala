@@ -18,7 +18,7 @@ package controllers.navigation
 
 import config.AppConfig
 import controllers.declaration.routes
-import controllers.helpers.TransportSectionHelper.{altAdditionalTypesOnTransportSection, isPostalOrFTIModeOfTransport}
+import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
 import controllers.helpers._
 import controllers.routes.{ChoiceController, RejectedNotificationsController, SubmissionsController}
@@ -548,7 +548,7 @@ object Navigator {
     else routes.SupervisingCustomsOfficeController.displayPage(mode)
 
   private def departureTransportPreviousPageOnStandardOrSuppl(cacheModel: ExportsDeclaration, mode: Mode): Call = {
-    val inAllowedFlow = cacheModel.additionalDeclarationType.exists(altAdditionalTypesOnTransportSection.contains)
+    val inAllowedFlow = cacheModel.additionalDeclarationType.exists(additionalDeclTypesAllowedOnInlandOrBorder.contains)
     if (inAllowedFlow && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage(mode)
     else routes.InlandTransportDetailsController.displayPage(mode)
   }

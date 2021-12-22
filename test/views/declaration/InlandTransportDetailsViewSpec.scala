@@ -19,7 +19,7 @@ package views.declaration
 import base.ExportsTestData.itemWith1040AsPC
 import base.Injector
 import controllers.declaration.routes
-import controllers.helpers.TransportSectionHelper.altAdditionalTypesOnTransportSection
+import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
@@ -137,7 +137,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
       }
     }
 
-    altAdditionalTypesOnTransportSection.foreach { additionalType =>
+    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
       implicit val request = withRequest(additionalType)
       "display 'Back' button that links to the 'Inland Or Border' page" when {
         s"AdditionalDeclarationType is $additionalType" in {

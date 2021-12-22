@@ -19,7 +19,7 @@ package controllers.helpers
 import base.{JourneyTypeTestRunner, MockAuthAction, MockExportCacheService, UnitSpec}
 import controllers.declaration.routes
 import controllers.helpers.SupervisingCustomsOfficeHelper._
-import controllers.helpers.TransportSectionHelper.altAdditionalTypesOnTransportSection
+import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.Mode.Normal
@@ -75,7 +75,7 @@ class SupervisingCustomsOfficeHelperSpec
 
   "SupervisingCustomsOfficeHelper on nextPage" when {
 
-    altAdditionalTypesOnTransportSection.foreach { additionalType =>
+    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
       s"AdditionalDeclarationType is ${additionalType}" should {
         "goto to InlandOrBorderController" in {
           nextPage(withRequest(additionalType))(Normal) mustBe routes.InlandOrBorderController.displayPage(Normal)

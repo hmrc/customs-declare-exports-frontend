@@ -78,7 +78,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
   "InlandOrBorderController.displayPage" should {
 
     "return 200 (OK)" when {
-      altAdditionalTypesOnTransportSection.foreach { additionalType =>
+      additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
         s"AdditionalDeclarationType is ${additionalType} and" when {
 
           "location.inlandOrBorder is not cached yet" in {
@@ -118,7 +118,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
   "InlandOrBorderController.submitPage" when {
 
-    altAdditionalTypesOnTransportSection.foreach { additionalType =>
+    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType and" when {
 
         "the user selects 'Customs controlled location'" should {

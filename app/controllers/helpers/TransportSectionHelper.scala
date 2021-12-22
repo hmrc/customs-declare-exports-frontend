@@ -22,7 +22,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 
 object TransportSectionHelper {
 
-  val altAdditionalTypesOnTransportSection = List(STANDARD_PRE_LODGED, STANDARD_FRONTIER, SUPPLEMENTARY_SIMPLIFIED)
+  val additionalDeclTypesAllowedOnInlandOrBorder = List(STANDARD_PRE_LODGED, STANDARD_FRONTIER, SUPPLEMENTARY_SIMPLIFIED)
 
   val postalOrFTIModeOfTransportCodes = List(Some(FixedTransportInstallations), Some(PostalConsignment))
 

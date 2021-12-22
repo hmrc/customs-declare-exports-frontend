@@ -38,7 +38,7 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val ex
 
   private def refineOnDeclarationTypes[A](request: AuthenticatedRequest[A], types: Seq[DeclarationType]): RefineResult[A] =
     request.declarationId match {
-      case Some(id) => verifyDeclaration(id, request, (d: models.ExportsDeclaration) => types.isEmpty || types.contains(d.`type`))
+      case Some(id) => verifyDeclaration(id, request, (declaration: ExportsDeclaration) => types.isEmpty || types.contains(declaration.`type`))
       case None     => Future.successful(redirectToRoot(s"Could not obtain the declaration's id for eori ${request.user.eori}"))
     }
 
@@ -79,7 +79,11 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val ex
 
     cacheService.get(id).map {
       case Some(declaration) =>
-        if (onCondition(declaration)) Right(new JourneyRequest(request, declaration)) else Left(Results.Redirect(RootController.displayPage))
+        if (onCondition(declaration)) Right(new JourneyRequest(request, declaration))
+        else {
+          val types = s"${declaration.`type`}${declaration.additionalDeclarationType.fold("")(adt => s",$adt")}"
+          redirectToRoot(s"Redirection to start for eori ${request.user.eori}, as types($types) of declaration($id) are not accepted")
+        }
 
       case _ => redirectToRoot(s"Could not retrieve from cache, for eori ${request.user.eori}, the declaration with id $id")
     }

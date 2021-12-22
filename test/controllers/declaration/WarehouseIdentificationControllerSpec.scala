@@ -18,7 +18,7 @@ package controllers.declaration
 
 import java.util.UUID
 import base.ControllerSpec
-import controllers.helpers.TransportSectionHelper.altAdditionalTypesOnTransportSection
+import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.WarehouseIdentification
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
@@ -148,7 +148,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
     "redirect to the 'Inland or Border' page" when {
       "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
-        altAdditionalTypesOnTransportSection.foreach { additionalType =>
+        additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
           s"AdditionalDeclarationType is $additionalType" in {
             withNewCaching(withRequest(additionalType, withItem(itemWith1040AsPC)).cacheModel)
             val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")

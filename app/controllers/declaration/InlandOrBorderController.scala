@@ -23,7 +23,7 @@ import controllers.declaration.routes.{
   InlandTransportDetailsController,
   TransportContainerController
 }
-import controllers.helpers.TransportSectionHelper.{altAdditionalTypesOnTransportSection, isPostalOrFTIModeOfTransport}
+import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.navigation.Navigator
 import forms.declaration.InlandOrBorder
 import forms.declaration.InlandOrBorder.{form, Border, Inland}
@@ -49,7 +49,7 @@ class InlandOrBorderController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  private val actionBuilder = (authenticate andThen journeyAction.onAdditionalTypes(altAdditionalTypesOnTransportSection))
+  private val actionBuilder = (authenticate andThen journeyAction.onAdditionalTypes(additionalDeclTypesAllowedOnInlandOrBorder))
 
   def displayPage(mode: Mode): Action[AnyContent] = actionBuilder { implicit request =>
     val frm = form.withSubmissionErrors

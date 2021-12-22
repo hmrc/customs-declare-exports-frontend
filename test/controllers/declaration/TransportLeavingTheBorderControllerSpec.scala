@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.helpers.TransportSectionHelper.altAdditionalTypesOnTransportSection
+import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import controllers.routes.RootController
 import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
@@ -159,7 +159,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
         "redirect to the 'Inland or Border' page after a successful bind" when {
 
-          altAdditionalTypesOnTransportSection.foreach { additionalType =>
+          additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
             s"AdditionalDeclarationType is $additionalType and" when {
 
               "cache contains '1040' as procedure code, '000' as APC" in {
