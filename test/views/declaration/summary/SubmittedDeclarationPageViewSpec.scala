@@ -17,7 +17,7 @@
 package views.declaration.summary
 
 import base.Injector
-import forms.declaration.{CommodityDetails, WarehouseIdentification}
+import forms.declaration.CommodityDetails
 import models.ExportsDeclaration
 import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus

@@ -18,15 +18,15 @@ package forms.common
 
 import connectors.CodeListConnector
 import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.Countries._
 import utils.validators.forms.FieldValidator._
 
 case class Address(
-  fullName: String, // alphanumeric length 1 - 70
-  addressLine: String, // alphanumeric length 1 - 70
+  fullName: String, // alphanumeric length 1 - 35
+  addressLine: String, // alphanumeric length 1 - 35
   townOrCity: String, // alphanumeric length 1 - 35
   postCode: String, // alphanumeric length 1 - 9
   country: String // full country name, convert to 2 upper case alphabetic characters for backend
@@ -35,7 +35,7 @@ case class Address(
 object Address {
   implicit val format = Json.format[Address]
 
-  def mapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+  def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Address] =
     Forms.mapping(
       "fullName" -> text()
         .verifying("declaration.address.fullName.empty", nonEmpty)
@@ -58,5 +58,5 @@ object Address {
         .verifying("declaration.address.country.error", input => input.isEmpty || isValidCountryName(input) || isValidCountryCode(input))
     )(Address.apply)(Address.unapply)
 
-  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[Address] = Form(mapping)
+  def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[Address] = Form(mapping)
 }

@@ -17,7 +17,7 @@
 package views.declaration.summary
 
 import base.Injector
-import forms.declaration.{CommodityDetails, WarehouseIdentification}
+import forms.declaration.CommodityDetails
 import models.ExportsDeclaration
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestData
@@ -26,18 +26,19 @@ import views.declaration.spec.UnitViewSpec
 
 trait SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
-  def commonBehaviour(document: Document) =
+  def commonBehaviour(document: Document): Unit =
     "have references section" in {
       document.getElementById("declaration-references-summary").text() mustNot be(empty)
     }
 
-  def displayWarning(document: Document) =
+  def displayWarning(document: Document): Unit =
     "warning text should be displayed" in {
       val warningText = s"! ${messages("site.warning")} ${messages("declaration.summary.warning")}"
       document.getElementsByClass("govuk-warning-text").text mustBe warningText
     }
 
-  def sectionsVisiblity(view: (ExportsDeclaration) => Document) = {
+  // scalastyle:off
+  def sectionsVisiblity(view: (ExportsDeclaration) => Document): Unit = {
     "not have parties section" in {
       view(aDeclaration()).getElementById("declaration-parties-summary") mustBe null
     }
@@ -91,4 +92,5 @@ trait SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData w
       view(aDeclaration(withBorderTransport())).getElementById("declaration-transport-summary").text() mustNot be(empty)
     }
   }
+  // scalastyle:on
 }
