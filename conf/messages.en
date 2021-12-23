@@ -906,6 +906,7 @@ declaration.goodsLocation.title = Where will the goods be presented to customs?
 declaration.goodsLocation.body = Enter the new CDS code for the customs location. This is called the ‘goods location code’ and it can be an inland or border location.
 declaration.goodsLocation.code.empty = Enter a goods location code
 declaration.goodsLocation.code.error = Goods location code must be in the correct format
+declaration.goodsLocation.code.error.length = Goods location code must have 10 characters minimum and 39 characters maximum
 declaration.goodsLocation.inset = The new RoRo location codes for the RoRo ports are:
 declaration.goodsLocation.inset.bullet1 = Dover (Eastern Docks): GBAUDVRDOVDVR
 declaration.goodsLocation.inset.bullet2 = Eurotunnel: GBAUEUTEUTEUT
@@ -1583,7 +1584,7 @@ declaration.supplementaryUnits.yesNo.body.link.1 = {0}, the code you entered (op
 declaration.supplementaryUnits.yesNo.body.link.2 = your commodity code in the Trade Tariff (opens in new tab)
 declaration.supplementaryUnits.yesNo.empty = Select whether you need to add supplementary units
 declaration.supplementaryUnits.quantity.label = Supplementary units
-declaration.supplementaryUnits.quantity.empty = Add a quantity of supplementary units
+declaration.supplementaryUnits.quantity.empty = Enter a quantity of supplementary units
 declaration.supplementaryUnits.quantity.error = Supplementary units must be entered as numbers only
 declaration.supplementaryUnits.quantity.length = Number of characters must be 16 or fewer
 

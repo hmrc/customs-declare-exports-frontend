@@ -549,6 +549,12 @@ class FieldValidatorSpec extends UnitSpec {
         containsNotOnlyZeros("00") must be(false)
         containsNotOnlyZeros("000") must be(false)
       }
+
+      "string contains several zeros separated by periods and commas" in {
+        containsNotOnlyZeros("0.0") must be(false)
+        containsNotOnlyZeros("000,000") must be(false)
+        containsNotOnlyZeros("000,000.00") must be(false)
+      }
     }
 
     "return true" when {

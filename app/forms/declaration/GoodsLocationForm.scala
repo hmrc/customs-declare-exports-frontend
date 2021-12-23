@@ -75,14 +75,16 @@ object GoodsLocationForm extends DeclarationPage {
       "code" -> text()
         .transform(_.trim, (s: String) => s)
         .verifying("declaration.goodsLocation.code.empty", nonEmpty)
-        .verifying(
-          "declaration.goodsLocation.code.error",
-          isEmpty or (
-            validateCountry() and validateLocationType and validateQualifierCode and
-              noShorterThan(10) and noLongerThan(39) and isAlphanumeric
-          )
-        )
+        .verifying("declaration.goodsLocation.code.error", isEmpty or isValidFormat())
+        .verifying("declaration.goodsLocation.code.error.length", isEmpty or (noShorterThan(10) and noLongerThan(39)))
     )(form2Data)(GoodsLocationForm.unapply)
+
+  private def isValidFormat()(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean =
+    value =>
+      validateCountry()(messages, codeListConnector)(value) and validateLocationType(value) and validateQualifierCode(value) and isAlphanumeric(value)
+
+  private def isNotValidFormat()(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean =
+    (input: String) => !isValidFormat()(messages, codeListConnector)(input)
 
   private def form2Data(code: String): GoodsLocationForm = GoodsLocationForm(code.toUpperCase)
 

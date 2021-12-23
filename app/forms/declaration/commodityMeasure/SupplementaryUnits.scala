@@ -22,8 +22,8 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.DeclarationType
 import models.declaration.{CommodityMeasure => CommodityMeasureModel}
 import models.viewmodels.TariffContentKey
-import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
+import play.api.data.Forms.text
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
@@ -69,11 +69,12 @@ object SupplementaryUnits extends DeclarationPage {
   private def supplementaryUnitsMapping: Mapping[String] =
     text
       .verifying("declaration.supplementaryUnits.quantity.empty", nonEmpty)
-      .verifying("declaration.supplementaryUnits.quantity.error", (value: String) => isEmpty(value) or decimalValidation(value))
+      .verifying("declaration.supplementaryUnits.quantity.empty", (value: String) => isEmpty(value) or containsNotOnlyZeros(value))
+      .verifying("declaration.supplementaryUnits.quantity.error", (value: String) => isEmpty(value) or isValidDecimal(value))
       .verifying("declaration.supplementaryUnits.quantity.length", isEmpty or noLongerThan(16))
 
-  private val decimalValidation: String => Boolean =
-    value => validateDecimalGreaterThanZero(99)(6)(value) and containsNotOnlyZeros(value)
+  private val isValidDecimal: String => Boolean =
+    value => validateDecimalGreaterThanZero(99)(6)(value) or containsOnlyZeros(value)
 
   override def defineTariffContentKeys(declarationType: DeclarationType): Seq[TariffContentKey] =
     List(TariffContentKey("tariff.declaration.item.supplementaryUnits.common"))
