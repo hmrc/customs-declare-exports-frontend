@@ -59,8 +59,10 @@ class SupplementaryUnitsSpec extends UnitSpec with DeclarationPageBaseSpec {
       }
 
       "the user selects 'Yes' and enters a 'Supplementary Units' of only zeroes" in {
-        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.error"))
+        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.empty"))
         yesNoForm("Yes", "0000").errors mustBe expectedErrors
+        yesNoForm("Yes", "00.00").errors mustBe expectedErrors
+        yesNoForm("Yes", "000,0").errors mustBe expectedErrors
       }
 
       "the user selects 'Yes' and enters a too long 'Supplementary Units'" in {
@@ -91,8 +93,10 @@ class SupplementaryUnitsSpec extends UnitSpec with DeclarationPageBaseSpec {
       }
 
       "the user enters a 'Supplementary Units' of only zeroes" in {
-        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.error"))
+        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.empty"))
         mandatoryForm("0000").errors mustBe expectedErrors
+        mandatoryForm("00.00").errors mustBe expectedErrors
+        mandatoryForm("000,0").errors mustBe expectedErrors
       }
 
       "the user enters a too long 'Supplementary Units'" in {

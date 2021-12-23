@@ -162,7 +162,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
-        view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.error")
+        view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.empty")
       }
 
       "display an error when the value entered in the 'supplementaryUnits' field is too long" in {

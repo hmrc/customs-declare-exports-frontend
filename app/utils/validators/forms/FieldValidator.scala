@@ -114,7 +114,12 @@ object FieldValidator {
   def isContainedIn[T](iterable: Iterable[T]): T => Boolean =
     (input: T) => iterable.exists(_ == input)
 
-  val containsNotOnlyZeros: String => Boolean = (input: String) => input.isEmpty || input.exists(char => char != '0')
+  val containsNotOnlyZeros: String => Boolean = (input: String) => {
+    val strippedOfPeriodsAndCommas = input.replaceAll("\\.*\\,*", "")
+    strippedOfPeriodsAndCommas.isEmpty || strippedOfPeriodsAndCommas.exists(char => char != '0')
+  }
+
+  val containsOnlyZeros: String => Boolean = (input: String) => !containsNotOnlyZeros(input)
 
   val notContainsConsecutiveSpaces: String => Boolean = (input: String) => !input.contains("  ")
 

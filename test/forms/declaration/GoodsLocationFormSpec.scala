@@ -73,19 +73,19 @@ class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar wi
         }
 
         "is longer than 39 characters" in {
-          val form = getBoundedForm(TestHelper.createRandomAlphanumericString(40))
+          val form = getBoundedForm(s"GBAU${TestHelper.createRandomAlphanumericString(40)}")
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.goodsLocation.code.error")
+          form.errors.head.message must equal("declaration.goodsLocation.code.error.length")
         }
 
         "is shorter than 10 characters" in {
-          val form = getBoundedForm(TestHelper.createRandomAlphanumericString(9))
+          val form = getBoundedForm(s"GBAU")
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.goodsLocation.code.error")
+          form.errors.head.message must equal("declaration.goodsLocation.code.error.length")
         }
 
         "is alphanumeric" in {
