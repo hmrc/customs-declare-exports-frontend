@@ -553,12 +553,13 @@ object Navigator {
     else routes.InlandTransportDetailsController.displayPage(mode)
   }
 
-  private def expressConsignmentPreviousPageOnStandard(cacheModel: ExportsDeclaration, mode: Mode): Call = {
-    val notPostalOrFTI = !isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
-    if (notPostalOrFTI) routes.BorderTransportController.displayPage(mode)
-    else if (cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage(mode)
-    else routes.InlandTransportDetailsController.displayPage(mode)
-  }
+  private def expressConsignmentPreviousPageOnStandard(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode)) routes.InlandTransportDetailsController.displayPage(mode)
+    else {
+      val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
+      if (postalOrFTI && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage(mode)
+      else routes.BorderTransportController.displayPage(mode)
+    }
 
   private def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration, mode: Mode): Call = {
     val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
