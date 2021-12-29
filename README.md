@@ -46,8 +46,6 @@ The list of feature flags and what they are responsible for:
 
 `use-improved-error-messages = [true/false]` - When enabled, DMS errors have descriptions made by Exports team designers. Otherwise, they have default CDS descriptions.
 
-`welsh-translation = [true/false]` - Not used at the moment.
-
 ### Scalastyle
 
 Project contains scalafmt plugin.

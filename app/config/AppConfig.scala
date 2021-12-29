@@ -169,9 +169,6 @@ class AppConfig @Inject()(
     throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch verified email URI")
   )
 
-  lazy val languageTranslationEnabled =
-    runModeConfiguration.getOptional[Boolean]("microservice.services.features.welsh-translation").getOrElse(true)
-
   lazy val isUsingImprovedErrorMessages =
     runModeConfiguration.getOptional[Boolean]("microservice.services.features.use-improved-error-messages").getOrElse(false)
 
