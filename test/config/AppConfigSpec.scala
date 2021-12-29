@@ -235,10 +235,6 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
     }
 
-    "have language translation enabled field" in {
-      validAppConfig.languageTranslationEnabled must be(false)
-    }
-
     "have improved error messages feature toggle set to false if not defined" in {
       missingAppConfig.isUsingImprovedErrorMessages must be(false)
     }
@@ -481,7 +477,6 @@ object AppConfigSpec {
       |microservice.services.nrs.port=7654
       |microservice.services.nrs.apikey=cds-exports
       |microservice.services.features.default=disabled
-      |microservice.services.features.welsh-translation=false
       |
       |microservice.services.auth.port=9988
       |microservice.services.contact-frontend.url=/contact-frontend-url
