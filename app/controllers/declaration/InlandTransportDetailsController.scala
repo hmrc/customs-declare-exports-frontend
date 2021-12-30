@@ -17,21 +17,26 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{DepartureTransportController, ExpressConsignmentController, TransportContainerController}
+import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
 import controllers.navigation.Navigator
-import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode}
+import forms.declaration.InlandModeOfTransportCode._
 import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode}
 import models.DeclarationType.{DeclarationType, SUPPLEMENTARY}
 import models.requests.JourneyRequest
+import models.{DeclarationType, Mode}
+import play.api.data.FormError
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.inland_transport_details
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class InlandTransportDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -42,51 +47,57 @@ class InlandTransportDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  import forms.declaration.InlandModeOfTransportCode._
-  import InlandTransportDetailsController._
-
-  private val validJourneys = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
+  private val validJourneys = List(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = form.withSubmissionErrors
     request.cacheModel.locations.inlandModeOfTransportCode match {
-      case Some(data) => Ok(inlandTransportDetailsPage(mode, frm.fill(data)))
+      case Some(code) => Ok(inlandTransportDetailsPage(mode, frm.fill(code)))
       case _          => Ok(inlandTransportDetailsPage(mode, frm))
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    InlandModeOfTransportCode
-      .form()
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))),
-        form => {
-          updateCache(form)
-            .map(maybeCachedDec => navigator.continueTo(mode, nextPage(request.declarationType, maybeCachedDec)))
-        }
-      )
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
+    form.bindFromRequest
+      .fold(formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))), validateAndUpdateCache(mode, _))
   }
 
-  private def nextPage(decType: DeclarationType, maybeCachedDec: Option[ExportsDeclaration]): Mode => Call =
-    getSkipOtherTransportPagesValue(maybeCachedDec).map { _ =>
-      decType match {
-        case SUPPLEMENTARY => controllers.declaration.routes.TransportContainerController.displayContainerSummary _
-        case _             => controllers.declaration.routes.ExpressConsignmentController.displayPage _
-      }
-    }.getOrElse(controllers.declaration.routes.DepartureTransportController.displayPage)
+  private def nextPage(declarationType: DeclarationType, code: InlandModeOfTransportCode): Mode => Call =
+    if (!isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode)) DepartureTransportController.displayPage
+    else if (declarationType == SUPPLEMENTARY) TransportContainerController.displayContainerSummary
+    else ExpressConsignmentController.displayPage
 
-  private def updateCache(formData: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(formData))))
-}
+  private def returnFormWithErrors(mode: Mode, code: InlandModeOfTransportCode, error: String)(
+    implicit request: JourneyRequest[_]
+  ): Future[Result] = {
+    val messages = messagesApi.preferred(request).messages
+    val formWithErrors = form.fill(code).copy(errors = List(FormError(formId, messages(error))))
+    Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors)))
+  }
 
-object InlandTransportDetailsController {
-  val invalidOtherTransportPagesValues = List(FixedTransportInstallations, PostalConsignment)
+  private def updateCacheAndGoNextPage(mode: Mode, code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(code))))
+      .map(_ => navigator.continueTo(mode, nextPage(request.declarationType, code)))
 
-  def getSkipOtherTransportPagesValue(maybeCachedDec: Option[ExportsDeclaration]): Option[ModeOfTransportCode] =
-    for {
-      dec <- maybeCachedDec
-      inlandModeOfTransportCode <- dec.inlandModeOfTransportCode
-      if invalidOtherTransportPagesValues.contains(inlandModeOfTransportCode)
-    } yield inlandModeOfTransportCode
+  private def validateAndUpdateCache(mode: Mode, code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+    validateWithTransportLeavingBorderCode(code).fold(updateCacheAndGoNextPage(mode, code))(returnFormWithErrors(mode, code, _))
+
+  private def validateEquivalenceOfModeOfTransportCode(
+    inlandModeOfTransportCode: InlandModeOfTransportCode,
+    expectedModeOfTransportCode: ModeOfTransportCode,
+    errorKey: String
+  ): Option[String] =
+    if (inlandModeOfTransportCode.inlandModeOfTransportCode.exists(_ == expectedModeOfTransportCode)) None
+    else Some(s"declaration.warehouse.inlandTransportDetails.error.$errorKey")
+
+  private def validateWithTransportLeavingBorderCode(code: InlandModeOfTransportCode)(implicit request: JourneyRequest[_]): Option[String] =
+    request.cacheModel.transportLeavingBorderCode match {
+      case Some(transportLeavingBorderCode) if transportLeavingBorderCode == PostalConsignment =>
+        validateEquivalenceOfModeOfTransportCode(code, PostalConsignment, "not.postal")
+
+      case Some(transportLeavingBorderCode) if transportLeavingBorderCode == FixedTransportInstallations =>
+        validateEquivalenceOfModeOfTransportCode(code, FixedTransportInstallations, "not.fti")
+
+      case _ => None
+    }
 }

@@ -1096,6 +1096,13 @@ function supervisingCustomsOffice(){
     }
 }
 
+function inlandOrBorder(){
+    if (currentPageIs('/customs-declare-exports/declaration/inland-or-border')) {
+        selectRadioOptionFromInputs(document.getElementsByName('location'), 0);
+        document.getElementById('submit').click();
+    }
+}
+
 function inlandTransportDetails(){
     if (currentPageIs('/customs-declare-exports/declaration/inland-transport-details')) {
         selectRadioOptionFromInputs(document.getElementsByName('inlandModeOfTransportCode'), 0);
@@ -1247,6 +1254,7 @@ function completeJourney() {
     transportLeavingBorder();
     warehouseIdentification();
     supervisingCustomsOffice();
+    inlandOrBorder();
     inlandTransportDetails();
     departureTransport();
     borderTransport();

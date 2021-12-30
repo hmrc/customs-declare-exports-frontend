@@ -16,13 +16,14 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import controllers.declaration.routes
+@import models.DeclarationType.SUPPLEMENTARY
 @import views.html.components.gds.linkContent
 @import views.html.components.gds.summary_list
 @import views.components.gds.ActionItemBuilder._
 
 @this(summaryList: summary_list, linkContent: linkContent)
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @actions(action: Actions) = @{
     if(actionsEnabled) Some(action)
@@ -30,7 +31,7 @@
 }
 
 @lrnLabelText = @{
-    if (declarationData.`type` == DeclarationType.SUPPLEMENTARY)
+    if (declaration.isType(SUPPLEMENTARY))
         "declaration.summary.references.supplementary.lrn"
     else
         "declaration.summary.references.lrn"
@@ -43,7 +44,7 @@
                 content = Text(messages("declaration.summary.references.type"))
             ),
             value = Value(
-                content = Text(messages(s"declaration.type.${declarationData.`type`.toString().toLowerCase()}"))
+                content = Text(messages(s"declaration.type.${declaration.`type`.toString().toLowerCase()}"))
             ),
             actions = actions(Actions(
                 items = Seq(
@@ -55,7 +56,7 @@
                 )
             ))
         )),
-        declarationData.additionalDeclarationType.map(decType =>
+        declaration.additionalDeclarationType.map(decType =>
             SummaryListRow(
                 classes = "additionalType-row",
                 key = Key(
@@ -75,7 +76,7 @@
                 ))
             )
         ),
-        declarationData.consignmentReferences.map(refs =>
+        declaration.consignmentReferences.map(refs =>
             SummaryListRow(
                 classes = "ducr-row",
                 key = Key(
@@ -95,7 +96,7 @@
                 ))
             )
         ),
-        declarationData.consignmentReferences.flatMap(_.mrn).map(refs =>
+        declaration.consignmentReferences.flatMap(_.mrn).map(refs =>
             SummaryListRow(
                 classes = "mrn-row",
                 key = Key(
@@ -115,7 +116,7 @@
                 ))
             )
         ),
-        declarationData.consignmentReferences.flatMap(_.eidrDateStamp).map( ref =>
+        declaration.consignmentReferences.flatMap(_.eidrDateStamp).map( ref =>
             SummaryListRow(
                 classes = "eidrDateStamp-row",
                 key = Key(
@@ -135,7 +136,7 @@
                 ))
             )
         ),
-        declarationData.consignmentReferences.map(refs =>
+        declaration.consignmentReferences.map(refs =>
             SummaryListRow(
                 classes = "lrn-row",
                 key = Key(
@@ -155,7 +156,7 @@
                 ))
             )
         ),
-        declarationData.linkDucrToMucr.map(refs =>
+        declaration.linkDucrToMucr.map(refs =>
             SummaryListRow(
                 classes = "linkDucrToMucr-row",
                 key = Key(
@@ -175,7 +176,7 @@
                 ))
             )
         ),
-        declarationData.mucr.map(refs =>
+        declaration.mucr.map(refs =>
             SummaryListRow(
                 classes = "mucr-row",
                 key = Key(

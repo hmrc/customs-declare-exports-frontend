@@ -58,15 +58,11 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
 
         "provided with valid input (spaces top and tail of LRN)" in {
           val form = getBoundedForm(correctConsignmentReferencesLrnWithUntrimmmedSpacesJSON)
-
-          println(form.errors)
           form.hasErrors mustBe false
         }
 
         "provided with valid input (LRN with spaces)" in {
           val form = getBoundedForm(correctConsignmentReferencesLrnWithSpacesJSON)
-
-          println(form.errors)
           form.hasErrors mustBe false
         }
       }

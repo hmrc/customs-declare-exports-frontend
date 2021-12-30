@@ -20,11 +20,10 @@ import base.Injector
 import forms.declaration.CommodityDetails
 import models.ExportsDeclaration
 import org.jsoup.nodes.Document
-import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 
-trait SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
 
   def commonBehaviour(document: Document): Unit =
     "have references section" in {
@@ -38,7 +37,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData w
     }
 
   // scalastyle:off
-  def sectionsVisiblity(view: (ExportsDeclaration) => Document): Unit = {
+  def sectionsVisiblity(view: ExportsDeclaration => Document): Unit = {
     "not have parties section" in {
       view(aDeclaration()).getElementById("declaration-parties-summary") mustBe null
     }

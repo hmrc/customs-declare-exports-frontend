@@ -18,6 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import controllers.declaration.routes
+import forms.declaration.InlandOrBorder.Border
 import forms.declaration.{
   InlandModeOfTransportCode,
   ModeOfTransportCode,
@@ -41,6 +42,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     withTransportPayment(Some(TransportPayment("A"))),
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
+    withInlandOrBorder(Some(Border)),
     withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCode.Maritime))))
   )
 
@@ -157,105 +159,104 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     "not display border transport if question not answered" in {
       val view = section(mode, aDeclarationAfter(data, withoutBorderModeOfTransportCode()))(messages)
-
       view.getElementsByClass("border-transport-row") mustBe empty
     }
 
     "not display transport reference if question not answered" in {
       val view = section(mode, aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType()))(messages)
-
       view.getElementsByClass("transport-reference-row") mustBe empty
     }
 
     "not display active transport type if question not answered" in {
       val view = section(mode, aDeclarationAfter(data, withoutBorderTransport()))(messages)
-
       view.getElementsByClass("active-transport-type-row") mustBe empty
     }
 
     "not display active transport nationality if question not answered" in {
       val view = section(mode, aDeclarationAfter(data, withoutBorderTransport()))(messages)
-
       view.getElementsByClass("active-transport-nationality-row") mustBe empty
     }
 
     "not display transport payment if question not answered" in {
       val view = section(mode, aDeclarationAfter(data, withoutTransportPayment()))(messages)
-
       view.getElementsByClass("transport-payment-row") mustBe empty
     }
 
     "skip containers part if empty" in {
-
       val view = section(mode, aDeclaration(withoutContainerData()))(messages)
-
       view.getElementsByClass("containers-row") mustBe empty
     }
 
     "display containers section (but not yes/no answer) if containers are not empty" in {
-
       val view = section(mode, aDeclaration(withContainerData(Container("123", Seq.empty))))(messages)
-
       view.getElementById("containers-table").text() mustNot be(empty)
     }
 
     "display warehouse id with change button" in {
       val row = view.getElementsByClass("warehouse-id-row")
-      row must haveSummaryKey(messages("declaration.summary.warehouse.id"))
+      row must haveSummaryKey(messages("declaration.summary.transport.warehouse.id"))
       row must haveSummaryValue("12345")
 
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.id.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.warehouse.id.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
+      row must haveSummaryActionsHref(routes.WarehouseIdentificationController.displayPage())
     }
 
     "display supervising office with change button" in {
       val row = view.getElementsByClass("supervising-office-row")
-      row must haveSummaryKey(messages("declaration.summary.warehouse.supervisingOffice"))
+      row must haveSummaryKey(messages("declaration.summary.transport.supervisingOffice"))
       row must haveSummaryValue("23456")
 
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.supervisingOffice.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.supervisingOffice.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage())
+      row must haveSummaryActionsHref(routes.SupervisingCustomsOfficeController.displayPage())
+    }
+
+    "display inland or border with change button" in {
+      val row = view.getElementsByClass("inland-or-border-row")
+      row must haveSummaryKey(messages("declaration.summary.transport.inlandOrBorder"))
+      row must haveSummaryValue(messages("declaration.summary.transport.inlandOrBorder.Border"))
+
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.inlandOrBorder.change")
+
+      row must haveSummaryActionsHref(routes.InlandOrBorderController.displayPage())
     }
 
     "display mode of transport with change button" in {
       val row = view.getElementsByClass("mode-of-transport-row")
-      row must haveSummaryKey(messages("declaration.summary.warehouse.inlandModeOfTransport"))
-      row must haveSummaryValue(messages("declaration.summary.warehouse.inlandModeOfTransport.Maritime"))
+      row must haveSummaryKey(messages("declaration.summary.transport.inlandModeOfTransport"))
+      row must haveSummaryValue(messages("declaration.summary.transport.inlandModeOfTransport.Maritime"))
 
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.warehouse.inlandModeOfTransport.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.inlandModeOfTransport.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
+      row must haveSummaryActionsHref(routes.InlandTransportDetailsController.displayPage())
     }
 
     "display warehouse label when user said 'no'" in {
-
       val row = section(mode, aDeclarationAfter(data, withWarehouseIdentification(Some(WarehouseIdentification(None)))))(messages)
         .getElementsByClass("warehouse-id-row")
 
-      row must haveSummaryKey(messages("declaration.summary.warehouse.no.label"))
+      row must haveSummaryKey(messages("declaration.summary.transport.warehouse.no.label"))
       row must haveSummaryValue(messages("site.no"))
     }
 
     "not display warehouse id when question not answered" in {
-
       val view = section(mode, aDeclarationAfter(data, withoutWarehouseIdentification()))(messages)
-
       view.getElementsByClass("warehouse-id-row") mustBe empty
     }
 
     "not display supervising office when question not answered" in {
-
       val view = section(mode, aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages)
-
       view.getElementsByClass("supervising-office-row") mustBe empty
     }
 
+    "not display inland or border when question not answered" in {
+      val view = section(mode, aDeclarationAfter(data, withoutInlandOrBorder))(messages)
+      view.getElementsByClass("inland-or-border-row") mustBe empty
+    }
+
     "not display mode of transport when question not answered" in {
-
       val view = section(mode, aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages)
-
       view.getElementsByClass("mode-of-transport-row") mustBe empty
     }
   }

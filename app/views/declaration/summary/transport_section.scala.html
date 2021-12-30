@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.declaration.routes
 @import models.Mode
 @import models.declaration.{Transport,Locations}
 @import views.html.components.gds.linkContent
@@ -22,12 +23,12 @@
 @import views.components.gds.ActionItemBuilder._
 
 @this(
-        summaryList: summary_list,
-        linkContent: linkContent,
-        containers: containers
+    summaryList: summary_list,
+    linkContent: linkContent,
+    containers: containers
 )
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @sectionRequired(transport: Transport, locations: Locations) = @{
     transport.transportPayment.isDefined ||
@@ -43,8 +44,7 @@
 }
 
 @actions(action: Actions) = @{
-    if(actionsEnabled) Some(action)
-    else None
+    if (actionsEnabled) Some(action) else None
 }
 
 @messagesForDepartureMeansOfTransport(transport: Transport) = @{
@@ -62,9 +62,9 @@
     }
 }
 
-@if(sectionRequired(declarationData.transport, declarationData.locations)) {
+@if(sectionRequired(declaration.transport, declaration.locations)) {
     @summaryList("declaration-transport-summary", Some(messages("declaration.summary.transport")), Seq(
-        declarationData.transport.borderModeOfTransportCode.map(borderModeOfTransportCode =>
+        declaration.transport.borderModeOfTransportCode.map(borderModeOfTransportCode =>
             SummaryListRow(
                 classes = "border-transport-row",
                 key = Key(
@@ -76,18 +76,21 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionItem(
-                            href = controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(mode).url,
+                            href = routes.TransportLeavingTheBorderController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.departure.transportCode.header.change"))
                         )
                     ))
                 ))
         ),
-        declarationData.locations.warehouseIdentification.map(warehouseIdentification =>
+        declaration.locations.warehouseIdentification.map(warehouseIdentification =>
             SummaryListRow(
                 classes = "warehouse-id-row",
                 key = Key(
-                    content = Text(messages( if(warehouseIdentification.identificationNumber.isDefined) "declaration.summary.warehouse.id" else "declaration.summary.warehouse.no.label"))
+                    content = Text(messages(
+                        if (warehouseIdentification.identificationNumber.isDefined) "declaration.summary.transport.warehouse.id"
+                        else "declaration.summary.transport.warehouse.no.label"
+                    ))
                 ),
                 value = Value(
                     content = Text(warehouseIdentification.identificationNumber.getOrElse(messages("site.no")))
@@ -95,19 +98,19 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionItem(
-                            href = controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode).url,
+                            href = routes.WarehouseIdentificationController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.warehouse.id.change"))
+                            visuallyHiddenText = Some(messages("declaration.summary.transport.warehouse.id.change"))
                         )
                     )
                 ))
             )
         ),
-        declarationData.locations.supervisingCustomsOffice.map(supervisingCustomsOffice =>
+        declaration.locations.supervisingCustomsOffice.map(supervisingCustomsOffice =>
             SummaryListRow(
                 classes = "supervising-office-row",
                 key = Key(
-                    content = Text(messages("declaration.summary.warehouse.supervisingOffice"))
+                    content = Text(messages("declaration.summary.transport.supervisingOffice"))
                 ),
                 value = Value(
                     content = Text(supervisingCustomsOffice.supervisingCustomsOffice.getOrElse(""))
@@ -115,35 +118,55 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionItem(
-                            href = controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(mode).url,
+                            href = routes.SupervisingCustomsOfficeController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.warehouse.supervisingOffice.change"))
+                            visuallyHiddenText = Some(messages("declaration.summary.transport.supervisingOffice.change"))
                         )
                     )
                 ))
             )
         ),
-        declarationData.locations.inlandModeOfTransportCode.map(inlandModeOfTransportCode =>
+        declaration.locations.inlandOrBorder.map(inlandOrBorder =>
             SummaryListRow(
-                classes = "mode-of-transport-row",
+                classes = "inland-or-border-row",
                 key = Key(
-                    content = Text(messages("declaration.summary.warehouse.inlandModeOfTransport"))
+                    content = Text(messages("declaration.summary.transport.inlandOrBorder"))
                 ),
                 value = Value(
-                    content = Text(inlandModeOfTransportCode.inlandModeOfTransportCode.map(code => messages(s"declaration.summary.warehouse.inlandModeOfTransport.$code")).getOrElse(""))
+                    content = Text(messages(s"declaration.summary.transport.inlandOrBorder.${inlandOrBorder.location}"))
                 ),
                 actions = actions(Actions(
                     items = Seq(
                         actionItem(
-                            href = controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode).url,
+                            href = routes.InlandOrBorderController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.warehouse.inlandModeOfTransport.change"))
+                            visuallyHiddenText = Some(messages("declaration.summary.transport.inlandOrBorder.change"))
                         )
                     )
                 ))
             )
         ),
-        if(declarationData.transport.meansOfTransportOnDepartureType.isDefined || declarationData.transport.meansOfTransportOnDepartureIDNumber.isDefined)
+        declaration.locations.inlandModeOfTransportCode.map(inlandModeOfTransportCode =>
+            SummaryListRow(
+                classes = "mode-of-transport-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.transport.inlandModeOfTransport"))
+                ),
+                value = Value(
+                    content = Text(inlandModeOfTransportCode.inlandModeOfTransportCode.map(code => messages(s"declaration.summary.transport.inlandModeOfTransport.$code")).getOrElse(""))
+                ),
+                actions = actions(Actions(
+                    items = Seq(
+                        actionItem(
+                            href = routes.InlandTransportDetailsController.displayPage(mode).url,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("declaration.summary.transport.inlandModeOfTransport.change"))
+                        )
+                    )
+                ))
+            )
+        ),
+        if (declaration.transport.meansOfTransportOnDepartureType.isDefined || declaration.transport.meansOfTransportOnDepartureIDNumber.isDefined)
           Some(
               SummaryListRow(
                   classes = "transport-reference-row",
@@ -151,21 +174,20 @@
                       content = Text(messages("declaration.summary.transport.departure.meansOfTransport.header"))
                   ),
                   value = Value(
-                      content = HtmlContent(messagesForDepartureMeansOfTransport(declarationData.transport).mkString("<br>"))
+                      content = HtmlContent(messagesForDepartureMeansOfTransport(declaration.transport).mkString("<br>"))
                   ),
                   actions = actions(Actions(
                       items = Seq(
                           actionItem(
-                              href = controllers.declaration.routes.DepartureTransportController.displayPage(mode).url,
+                              href = routes.DepartureTransportController.displayPage(mode).url,
                               content = HtmlContent(linkContent(messages("site.change"))),
                               visuallyHiddenText = Some(messages("declaration.summary.transport.departure.meansOfTransport.header.change"))
                           )
                       ))
                   ))
           )
-        else
-         None,
-        if(declarationData.transport.meansOfTransportCrossingTheBorderType.isDefined && declarationData.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined)
+        else None,
+        if (declaration.transport.meansOfTransportCrossingTheBorderType.isDefined && declaration.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined)
             Some(
                 SummaryListRow(
                     classes = "active-transport-type-row",
@@ -173,21 +195,20 @@
                         content = Text(messages("declaration.summary.transport.border.meansOfTransport.header"))
                     ),
                     value = Value(
-                        content = HtmlContent(messagesForBorderMeansOfTransport(declarationData.transport).mkString("<br>"))
+                        content = HtmlContent(messagesForBorderMeansOfTransport(declaration.transport).mkString("<br>"))
                     ),
                     actions = actions(Actions(
                         items = Seq(
                             actionItem(
-                                href = controllers.declaration.routes.BorderTransportController.displayPage(mode).url,
+                                href = routes.BorderTransportController.displayPage(mode).url,
                                 content = HtmlContent(linkContent(messages("site.change"))),
                                 visuallyHiddenText = Some(messages("declaration.summary.transport.border.meansOfTransport.header.change"))
                             )
                         ))
                     ))
             )
-        else
-            None,
-        if(declarationData.transport.meansOfTransportCrossingTheBorderType.isDefined && declarationData.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined)
+        else None,
+        if (declaration.transport.meansOfTransportCrossingTheBorderType.isDefined && declaration.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined)
             Some(
                 SummaryListRow(
                     classes = "active-transport-nationality-row",
@@ -195,21 +216,20 @@
                         content = Text(messages("declaration.summary.transport.activeTransportNationality"))
                     ),
                     value = Value(
-                        content = Text(declarationData.transport.meansOfTransportCrossingTheBorderNationality.getOrElse(""))
+                        content = Text(declaration.transport.meansOfTransportCrossingTheBorderNationality.getOrElse(""))
                     ),
                     actions = actions(Actions(
                         items = Seq(
                             actionItem(
-                                href = controllers.declaration.routes.BorderTransportController.displayPage(mode).url,
+                                href = routes.BorderTransportController.displayPage(mode).url,
                                 content = HtmlContent(linkContent(messages("site.change"))),
                                 visuallyHiddenText = Some(messages("declaration.summary.transport.activeTransportNationality.change"))
                             )
                         ))
                     ))
             )
-        else
-            None,
-        declarationData.transport.expressConsignment.map(expressConsignment =>
+        else None,
+        declaration.transport.expressConsignment.map(expressConsignment =>
             SummaryListRow(
                 classes = "expressConsignment-row",
                 key = Key(
@@ -221,7 +241,7 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionItem(
-                            href = controllers.declaration.routes.ExpressConsignmentController.displayPage(mode).url,
+                            href = routes.ExpressConsignmentController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.expressConsignment.change"))
                         )
@@ -229,7 +249,7 @@
                 ))
             )
         ),
-        declarationData.transport.transportPayment.map(transportPayment =>
+        declaration.transport.transportPayment.map(transportPayment =>
             SummaryListRow(
                 classes = "transport-payment-row",
                 key = Key(
@@ -241,19 +261,18 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionItem(
-                            href = controllers.declaration.routes.TransportPaymentController.displayPage(mode).url,
+                            href = routes.TransportPaymentController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transport.payment.change"))
                         )
                     ))
                 ))
-        )
-
-    ),
+            )
+        ),
         classes = "govuk-!-margin-bottom-6"
     )
 
-    @declarationData.transport.containers.map(containerSeq =>
+    @declaration.transport.containers.map(containerSeq =>
         containers(mode, containerSeq, actionsEnabled)
     )
 }

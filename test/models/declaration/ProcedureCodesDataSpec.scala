@@ -17,36 +17,13 @@
 package models.declaration
 
 import base.UnitSpec
-import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
 class ProcedureCodesDataSpec extends UnitSpec {
 
   "Procedure code" should {
-
     "contain correct limit" in {
-
       val expectedProceduresCodesDataMaxAmount = 99
-
       ProcedureCodesData.limitOfCodes must be(expectedProceduresCodesDataMaxAmount)
     }
   }
-}
-
-object ProcedureCodesDataSpec {
-  private val procedureCode_1 = "12"
-  private val procedureCode_2 = "34"
-
-  val correctProcedureCodes =
-    ProcedureCodesData(procedureCode = Some(procedureCode_1 + procedureCode_2), additionalProcedureCodes = Seq("111", "222", "333"))
-
-  val emptyProcedureCodes = ProcedureCodesData(procedureCode = None, additionalProcedureCodes = Seq.empty)
-
-  val correctProcedureCodesJSON: JsValue = JsObject(
-    Map(
-      "procedureCode" -> JsString(procedureCode_1 + procedureCode_2),
-      "additionalProcedureCodes" -> JsArray(Seq(JsString("111"), JsString("222"), JsString("333")))
-    )
-  )
-
-  val emptyProcedureCodesJSON: JsValue = JsObject(Map("procedureCode" -> JsString(""), "additionalProcedureCodes" -> JsArray()))
 }

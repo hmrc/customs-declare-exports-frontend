@@ -16,8 +16,9 @@
 
 package controllers.helpers
 
-import controllers.declaration.routes
-import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
+import controllers.declaration.routes._
+import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
@@ -40,18 +41,21 @@ object SupervisingCustomsOfficeHelper {
 
   def landOnOrSkipToNextPage(implicit request: JourneyRequest[_]): Mode => Call =
     if (isConditionForAllProcedureCodesVerified(request.cacheModel)) nextPage
-    else routes.SupervisingCustomsOfficeController.displayPage
+    else SupervisingCustomsOfficeController.displayPage
 
   def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD => routes.InlandTransportDetailsController.displayPage
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL  => routes.ExpressConsignmentController.displayPage
-      case DeclarationType.CLEARANCE                                => dependsOnTransportLeavingTheBoarder
+      case DeclarationType.SUPPLEMENTARY =>
+        val isSupplementaryEidr = request.cacheModel.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR)
+        if (isSupplementaryEidr) InlandTransportDetailsController.displayPage else InlandOrBorderController.displayPage
+
+      case DeclarationType.STANDARD                                => InlandOrBorderController.displayPage
+      case DeclarationType.CLEARANCE                               => dependsOnTransportLeavingTheBoarder
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => ExpressConsignmentController.displayPage
     }
 
-  private def dependsOnTransportLeavingTheBoarder(implicit request: JourneyRequest[_]): Mode => Call =
-    request.cacheModel.transportLeavingBoarderCode match {
-      case Some(FixedTransportInstallations) | Some(PostalConsignment) => routes.ExpressConsignmentController.displayPage
-      case _                                                           => routes.DepartureTransportController.displayPage
-    }
+  private def dependsOnTransportLeavingTheBoarder(implicit request: JourneyRequest[_]): Mode => Call = {
+    val condition = isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)
+    if (condition) ExpressConsignmentController.displayPage else DepartureTransportController.displayPage
+  }
 }

@@ -16,18 +16,18 @@
 
 package controllers.navigation
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import config.AppConfig
-import controllers.declaration.InlandTransportDetailsController.getSkipOtherTransportPagesValue
 import controllers.declaration.routes
+import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
 import controllers.helpers._
 import controllers.routes.{ChoiceController, RejectedNotificationsController, SubmissionsController}
 import forms.Choice.AllowedChoiceValues
 import forms.common.YesNoAnswer
+import forms.declaration.InlandOrBorder.Border
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
 import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
@@ -36,12 +36,10 @@ import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderRequired, DeclarationHolderSummary}
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
-import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.declaration.removals.RemoveItem
 import forms.{Choice, DeclarationPage}
-import javax.inject.{Inject, Singleton}
 import models.DeclarationType._
 import models.Mode.ErrorFix
 import models.declaration.ExportItem
@@ -53,6 +51,9 @@ import services.TariffApiService
 import services.TariffApiService.SupplementaryUnitsNotRequired
 import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.HeaderCarrier
+
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
@@ -160,8 +161,8 @@ object Navigator {
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
     case GoodsLocationForm           => routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
-    case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
+    case InlandModeOfTransportCode   => routes.InlandOrBorderController.displayPage
     case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
@@ -176,15 +177,16 @@ object Navigator {
   }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case CarrierEoriNumber         => carrierEoriNumberPreviousPage
-    case ConsigneeDetails          => consigneeDetailsPreviousPage
-    case ContainerFirst            => ifExpressConsignmentPreviousPage
-    case DeclarantIsExporter       => declarantIsExporterPreviousPage
-    case DestinationCountryPage    => destinationCountryPreviousPage
-    case Document                  => previousDocumentsPreviousPageDefault
-    case ExpressConsignment        => inlandTransportDetailsPageOnCondition
-    case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
-    case RepresentativeAgent       => representativeAgentPreviousPage
+    case CarrierEoriNumber      => carrierEoriNumberPreviousPage
+    case ConsigneeDetails       => consigneeDetailsPreviousPage
+    case ContainerFirst         => containerFirstPreviousPage
+    case DeclarantIsExporter    => declarantIsExporterPreviousPage
+    case DestinationCountryPage => destinationCountryPreviousPage
+    case Document               => previousDocumentsPreviousPageDefault
+    case InlandOrBorder         => inlandOrBorderPreviousPage
+    case DepartureTransport     => departureTransportPreviousPageOnStandardOrSuppl
+    case ExpressConsignment     => expressConsignmentPreviousPageOnStandard
+    case RepresentativeAgent    => representativeAgentPreviousPage
   }
 
   val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -195,7 +197,6 @@ object Navigator {
     case DeclarantDetails             => routes.EntryIntoDeclarantsRecordsController.displayPage
     case PersonPresentingGoodsDetails => routes.EntryIntoDeclarantsRecordsController.displayPage
     case DeclarantIsExporter          => routes.DeclarantDetailsController.displayPage
-    case ExpressConsignment           => routes.DepartureTransportController.displayPage
     case ContainerAdd                 => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage   => routes.DestinationCountryController.displayPage
     case RemoveCountryPage            => routes.RoutingCountriesSummaryController.displayPage
@@ -225,8 +226,8 @@ object Navigator {
     case IsExs                      => isExsClearancePreviousPage
     case Document                   => previousDocumentsPreviousPage
     case DepartureTransport         => departureTransportClearancePreviousPage
-    case ContainerFirst             => ifExpressConsignmentPreviousPage
-    case ExpressConsignment         => dependsOnTransportLeavingTheBorder
+    case ContainerFirst             => containerFirstPreviousPage
+    case ExpressConsignment         => expressConsignmentPreviousPageOnClearance
   }
 
   val clearanceCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -245,7 +246,6 @@ object Navigator {
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
     case OfficeOfExit                => routes.LocationController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
-    case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
     case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
@@ -265,8 +265,10 @@ object Navigator {
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case DestinationCountryPage    => destinationCountryPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault
-    case ContainerFirst            => inlandTransportDetailsPageOnCondition
-    case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
+    case InlandOrBorder            => inlandOrBorderPreviousPage
+    case InlandModeOfTransportCode => inlandTransportDetailsPreviousPageOnSupplementary
+    case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
+    case ContainerFirst            => containerFirstPreviousPageOnSupplementary
     case RepresentativeAgent       => representativeAgentPreviousPage
   }
 
@@ -310,7 +312,7 @@ object Navigator {
     case RepresentativeAgent       => representativeAgentPreviousPage
     case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
     case ExpressConsignment        => supervisingCustomsOfficePageOnCondition
-    case ContainerFirst            => ifExpressConsignmentPreviousPage
+    case ContainerFirst            => containerFirstPreviousPage
   }
 
   val simplifiedCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -353,7 +355,7 @@ object Navigator {
     case RepresentativeAgent       => representativeAgentPreviousPage
     case InlandModeOfTransportCode => supervisingCustomsOfficePageOnCondition
     case ExpressConsignment        => supervisingCustomsOfficePageOnCondition
-    case ContainerFirst            => ifExpressConsignmentPreviousPage
+    case ContainerFirst            => containerFirstPreviousPage
   }
 
   val occasionalCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -524,33 +526,53 @@ object Navigator {
     if (cacheModel.isEntryIntoDeclarantsRecords) supervisingCustomsOfficePageOnCondition(cacheModel, mode)
     else routes.SupervisingCustomsOfficeController.displayPage(mode)
 
+  private def supervisingCustomsOfficePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.requiresWarehouseId || cacheModel.isType(CLEARANCE)) routes.WarehouseIdentificationController.displayPage(mode)
+    else warehouseIdentificationPreviousPage(cacheModel, mode)
+
+  private def inlandOrBorderPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    cacheModel.additionalDeclarationType match {
+      case Some(STANDARD_FRONTIER) | Some(STANDARD_PRE_LODGED) | Some(SUPPLEMENTARY_SIMPLIFIED)
+          if isConditionForAllProcedureCodesVerified(cacheModel) =>
+        routes.TransportLeavingTheBorderController.displayPage(mode)
+
+      case _ => routes.SupervisingCustomsOfficeController.displayPage(mode)
+    }
+
+  private def inlandTransportDetailsPreviousPageOnSupplementary(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isAdditionalDeclarationType(SUPPLEMENTARY_SIMPLIFIED)) routes.InlandOrBorderController.displayPage(mode)
+    else supervisingCustomsOfficePageOnCondition(cacheModel, mode)
+
   private def supervisingCustomsOfficePageOnCondition(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (isConditionForAllProcedureCodesVerified(cacheModel)) supervisingCustomsOfficePreviousPage(cacheModel, mode)
     else routes.SupervisingCustomsOfficeController.displayPage(mode)
 
-  private def supervisingCustomsOfficePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.requiresWarehouseId || cacheModel.`type` == CLEARANCE)
-      routes.WarehouseIdentificationController.displayPage(mode)
-    else
-      warehouseIdentificationPreviousPage(cacheModel, mode)
+  private def departureTransportPreviousPageOnStandardOrSuppl(cacheModel: ExportsDeclaration, mode: Mode): Call = {
+    val inAllowedFlow = cacheModel.additionalDeclarationType.exists(additionalDeclTypesAllowedOnInlandOrBorder.contains)
+    if (inAllowedFlow && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage(mode)
+    else routes.InlandTransportDetailsController.displayPage(mode)
+  }
 
-  private def inlandTransportDetailsPageOnCondition(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (getSkipOtherTransportPagesValue(Some(cacheModel)).isDefined)
-      routes.InlandTransportDetailsController.displayPage(mode)
-    else
-      routes.BorderTransportController.displayPage(mode)
-
-  private def dependsOnTransportLeavingTheBorder(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    cacheModel.transportLeavingBoarderCode match {
-      case Some(FixedTransportInstallations) | Some(PostalConsignment) => routes.SupervisingCustomsOfficeController.displayPage(mode)
-      case _                                                           => routes.DepartureTransportController.displayPage(mode)
+  private def expressConsignmentPreviousPageOnStandard(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode)) routes.InlandTransportDetailsController.displayPage(mode)
+    else {
+      val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
+      if (postalOrFTI && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage(mode)
+      else routes.BorderTransportController.displayPage(mode)
     }
 
-  private def ifExpressConsignmentPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.transport.transportPayment.nonEmpty)
-      routes.TransportPaymentController.displayPage(mode)
-    else
-      routes.ExpressConsignmentController.displayPage(mode)
+  private def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration, mode: Mode): Call = {
+    val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
+    if (postalOrFTI) routes.SupervisingCustomsOfficeController.displayPage(mode)
+    else routes.DepartureTransportController.displayPage(mode)
+  }
+
+  private def containerFirstPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.transport.transportPayment.nonEmpty) routes.TransportPaymentController.displayPage(mode)
+    else routes.ExpressConsignmentController.displayPage(mode)
+
+  private def containerFirstPreviousPageOnSupplementary(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    expressConsignmentPreviousPageOnStandard(cacheModel, mode)
 
   private def additionalTaricCodesPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
@@ -559,7 +581,7 @@ object Navigator {
       routes.UNDangerousGoodsCodeController.displayPage(mode, itemId)
 
   private def authorisationProcedureCodeChoicePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.`type` == CLEARANCE && cacheModel.isEntryIntoDeclarantsRecords)
+    if (cacheModel.isType(CLEARANCE) && cacheModel.isEntryIntoDeclarantsRecords)
       routes.ConsigneeDetailsController.displayPage(mode)
     else
       routes.AdditionalActorsSummaryController.displayPage(mode)

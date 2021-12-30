@@ -20,6 +20,8 @@ import forms.Choice
 import forms.Choice._
 import forms.Choice.AllowedChoiceValues._
 import models.AuthKey.{enrolment, identifierKey}
+import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
+import models.declaration.{ExportItem, ProcedureCodesData}
 import models.{IdentityData, SignedInUser}
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
@@ -29,6 +31,8 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments, User}
+
+import java.util.UUID
 
 object ExportsTestData extends ExportsDeclarationBuilder {
 
@@ -51,6 +55,8 @@ object ExportsTestData extends ExportsDeclarationBuilder {
   val mrn = "20GB46J8TMJ4RFGVA0"
   val mucr = "CZYX123A"
   val eidrDateStamp = "20001231"
+
+  def itemWith1040AsPC = ExportItem(UUID.randomUUID.toString, procedureCodes = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE))))
 
   val currentLoginTime: DateTime = new DateTime(1530442800000L, UTC)
   val previousLoginTime: DateTime = new DateTime(1530464400000L, UTC)

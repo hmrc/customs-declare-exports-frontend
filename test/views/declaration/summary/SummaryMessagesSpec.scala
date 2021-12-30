@@ -147,18 +147,17 @@ class SummaryMessagesSpec extends UnitViewSpec {
 
     "have defined warehouse messages" in {
 
-      messages must haveTranslationFor("declaration.summary.warehouse")
-      messages must haveTranslationFor("declaration.summary.warehouse.id")
-      messages must haveTranslationFor("declaration.summary.warehouse.supervisingOffice")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.Maritime")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.Rail")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.Road")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.Air")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.PostalConsignment")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.FixedTransportInstallations")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.InlandWaterway")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.Unknown")
+      messages must haveTranslationFor("declaration.summary.transport.warehouse.id")
+      messages must haveTranslationFor("declaration.summary.transport.supervisingOffice")
+      messages must haveTranslationFor("declaration.summary.transport.inlandModeOfTransport")
+      messages must haveTranslationFor("declaration.summary.transport.inlandModeOfTransport.Maritime")
+      messages must haveTranslationFor("declaration.summary.transport.inlandModeOfTransport.Rail")
+      messages must haveTranslationFor("declaration.summary.transport.inlandModeOfTransport.Road")
+      messages must haveTranslationFor("declaration.summary.transport.inlandModeOfTransport.Air")
+      messages must haveTranslationFor("declaration.summary.transport.inlandModeOfTransport.PostalConsignment")
+      messages must haveTranslationFor("declaration.summary.transport.inlandModeOfTransport.FixedTransportInstallations")
+      messages must haveTranslationFor("declaration.summary.transport.inlandModeOfTransport.InlandWaterway")
+      messages must haveTranslationFor("declaration.summary.transport.inlandModeOfTransport.Unknown")
     }
 
     "have defined transport messages" in {

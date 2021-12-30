@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.ExportsTestData.itemWith1040AsPC
 import base.{Injector, MockAuthAction}
 import controllers.declaration.routes
 import controllers.helpers.SupervisingCustomsOfficeHelperSpec.skipDepartureTransportPageCodes
@@ -23,7 +24,6 @@ import forms.common.YesNoAnswer
 import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
 import models.DeclarationType._
 import models.Mode
-import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -111,8 +111,6 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
         verifyTariffDetails(view, "common")
       }
     }
-
-    val itemWith1040AsPC = ExportItem("12345", procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000"))))
 
     onJourney(SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWith1040AsPC))) { implicit request =>
       val view: Document = createView()

@@ -215,24 +215,6 @@ GET         /total-package-quantity              controllers.declaration.TotalPa
 
 POST        /total-package-quantity              controllers.declaration.TotalPackageQuantityController.saveTotalPackageQuantity(mode: models.Mode ?= models.Mode.Normal)
 
-# Identification of a Warehouse
-
-GET         /warehouse-details                   controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /warehouse-details                   controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
-
-# Supervising Customs Office
-
-GET         /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit(mode: models.Mode ?= models.Mode.Normal)
-
-# Inland Transport Details
-
-GET         /inland-transport-details            controllers.declaration.InlandTransportDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /inland-transport-details            controllers.declaration.InlandTransportDetailsController.submit(mode: models.Mode ?= models.Mode.Normal)
-
 
 # Previous documents
 
@@ -374,8 +356,6 @@ GET         /items/:itemId/package-information/:code/remove    controllers.decla
 
 POST        /items/:itemId/package-information/:code/remove    controllers.declaration.PackageInformationRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
 
-
-
 # Commodity Measure Information
 
 GET         /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
@@ -437,6 +417,30 @@ POST        /items/:itemId/additional-documentation-list        controllers.decl
 GET         /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+# Identification of a Warehouse
+
+GET         /warehouse-details                   controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /warehouse-details                   controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
+
+# Supervising Customs Office
+
+GET         /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+# UK border or Inland (Customs controlled locations)
+
+GET         /inland-or-border                    controllers.declaration.InlandOrBorderController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /inland-or-border                    controllers.declaration.InlandOrBorderController.submitPage(mode: models.Mode ?= models.Mode.Normal)
+
+# Inland Transport Details
+
+GET         /inland-transport-details            controllers.declaration.InlandTransportDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /inland-transport-details            controllers.declaration.InlandTransportDetailsController.submit(mode: models.Mode ?= models.Mode.Normal)
 
 # Departure Transport
 

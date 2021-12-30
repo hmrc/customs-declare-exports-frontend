@@ -52,7 +52,9 @@ class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with E
     reset(cache, block)
     super.afterEach()
   }
+
   "refine" should {
+
     "permit request" when {
       "answers found" in {
         given(block.apply(any())).willReturn(Future.successful(Results.Ok))
@@ -72,6 +74,7 @@ class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with E
     }
 
     "block request" when {
+
       "answers not found" in {
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(None))
 

@@ -17,7 +17,8 @@
 package views.helpers
 
 import controllers.declaration.routes
-import models.{DeclarationType, ExportsDeclaration, Mode, Pointer}
+import models.DeclarationType.CLEARANCE
+import models.{ExportsDeclaration, Mode, Pointer}
 import models.Mode.Normal
 import play.api.mvc.Call
 import play.api.Logging
@@ -58,7 +59,7 @@ object PointerHelper extends Logging {
   }
 
   private def getDecDetailsEoriChangeLinkUrl(pointer: Pointer, declaration: ExportsDeclaration): Option[Call] =
-    if (declaration.`type` == DeclarationType.CLEARANCE && declaration.isExs && declaration.parties.personPresentingGoodsDetails.nonEmpty)
+    if (declaration.isType(CLEARANCE) && declaration.isExs && declaration.parties.personPresentingGoodsDetails.nonEmpty)
       Some(clearanceDecDetailsCall)
     else
       getCallForPointer(pointer)
