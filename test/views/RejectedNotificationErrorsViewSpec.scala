@@ -17,8 +17,8 @@
 package views
 
 import base.Injector
-import controllers.declaration.{routes => decRoutes}
-import controllers.routes
+import controllers.declaration.routes.AdditionalDocumentsController
+import controllers.routes.{DeclarationDetailsController, SavedDeclarationsController, SubmissionsController}
 import models.Pointer
 import models.declaration.notifications.NotificationError
 import models.Mode.Normal
@@ -53,12 +53,13 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
       messages must haveTranslationFor("rejected.notification.table.title")
       messages must haveTranslationFor("rejected.notification.warning")
       messages must haveTranslationFor("rejected.notification.description.format")
+      messages must haveTranslationFor("rejected.notification.check.answers.paragraph")
+      messages must haveTranslationFor("rejected.notification.check.answers.button")
 
       messages must haveTranslationFor("rejected.notification.guidance.section.1.header")
       messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.1")
       messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.2")
-      messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.2.link.1")
-      messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.2.link.2")
+      messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.2.link")
 
       messages must haveTranslationFor("rejected.notification.guidance.section.2.header")
       messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.1")
@@ -67,40 +68,40 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
     }
 
     "have correct title" in {
-      defaultView.getElementById("title").text() mustBe messages("rejected.notification.title")
+      defaultView.getElementById("title").text mustBe messages("rejected.notification.title")
     }
 
     "have correct section header" in {
-      defaultView.getElementById("section-header").text() mustBe messages("rejected.notification.mrn", MRN.value)
+      defaultView.getElementById("section-header").text mustBe messages("rejected.notification.mrn", MRN.value)
     }
 
     "have correct back link" in {
       val backLink = defaultView.getElementById("back-link")
 
-      backLink.text() mustBe messages("site.back")
-      backLink.attr("href") mustBe routes.DeclarationDetailsController.displayPage(declaration.id).url
+      backLink.text mustBe messages("site.back")
+      backLink.attr("href") mustBe DeclarationDetailsController.displayPage(declaration.id).url
     }
 
-    "must contain notifications" when {
-      val reason =
-        NotificationError(defaultRejectionCode, Some(Pointer("declaration.consignmentReferences.lrn")))
+    "contain notifications" when {
+      val reason = NotificationError(defaultRejectionCode, Some(Pointer("declaration.consignmentReferences.lrn")))
 
       val testMessages = stubMessages()
 
       "fully populated and we are using the exports error descriptions" in {
         val doc: Document = view(Seq(reason), Some(MRN.value), testMessages)
 
-        doc.getElementsByClass("rejected_notifications-row-0-name").text() mustBe testMessages("field.declaration.consignmentReferences.lrn")
+        val text = doc.getElementsByClass("rejected_notifications-row-0-name").text
+        text mustBe testMessages("field.declaration.consignmentReferences.lrn")
         doc.getElementsByClass("rejected_notifications-row-0-description").isEmpty mustBe false
       }
 
       "pointer " in {
-        val reason =
-          NotificationError(defaultRejectionCode, Some(Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id")))
+        val pointer = Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id")
+        val reason = NotificationError(defaultRejectionCode, Some(pointer))
 
         val doc: Document = view(Seq(reason), Some(MRN.value), testMessages)
 
-        doc.getElementsByClass("rejected_notifications-row-0-name").text() mustBe testMessages(
+        doc.getElementsByClass("rejected_notifications-row-0-name").text mustBe testMessages(
           "field.declaration.goodsShipment.governmentAgencyGoodsItem.$.additionalDocument.$.id",
           "0",
           "1"
@@ -108,12 +109,17 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
       }
     }
 
-    "must contain continue link" in {
-      val continueLink = defaultView
-        .getElementById("continue-checking-answers")
-        .getElementsByAttributeValue("href", routes.SubmissionsController.amend(declaration.id).url)
+    "contain the 'check-your-answers' paragraph" in {
+      val checkYourAnswers = defaultView.getElementsByClass("govuk-body").get(0)
+      checkYourAnswers.text mustBe messages("rejected.notification.check.answers.paragraph")
+    }
 
-      continueLink.text() mustBe messages("rejected.notification.guidance.section.1.paragraph.2.link.1")
+    "contain the 'check-your-answers' button" in {
+      val checkYourAnswers = defaultView.getElementById("check-your-answers")
+      checkYourAnswers.className mustBe "govuk-button"
+
+      val href = checkYourAnswers.getElementsByAttributeValue("href", SubmissionsController.amend(declaration.id).url)
+      href.text mustBe messages("rejected.notification.check.answers.button")
     }
 
     "display all other expected content links" in {
@@ -123,10 +129,9 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
       val doc: Document = view(Seq(reason), Some(MRN.value))
 
       val links = doc.getElementsByClass("govuk-link--no-visited-state")
-      links.size mustBe 3
+      links.size mustBe 2
 
-      links.get(1) must haveHref(controllers.routes.SubmissionsController.amend(declaration.id).url)
-      links.get(2) must haveHref(routes.SavedDeclarationsController.displayDeclarations())
+      links.get(1) must haveHref(SavedDeclarationsController.displayDeclarations())
     }
 
     "contain change error link" when {
@@ -134,7 +139,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
         val itemId = "12sd31"
         val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"), withItem(anItem(withSequenceId(1), withItemId(itemId))))
 
-        val expectedUrl = decRoutes.AdditionalDocumentsController.displayPage(Normal, itemId)
+        val expectedUrl = AdditionalDocumentsController.displayPage(Normal, itemId)
 
         val pointerPattern = "declaration.items.#1.additionalDocument.#1.documentStatus"
         val urlPattern = "declaration.items.$.additionalDocument.$.documentStatus"
@@ -146,7 +151,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
         val changeLink = view.getElementsByClass("govuk-link").get(1)
 
         changeLink must haveHref(
-          controllers.routes.SubmissionsController.amendErrors(declaration.id, expectedUrl.url, urlPattern, messages("dmsError.CDS12062.title")).url
+          SubmissionsController.amendErrors(declaration.id, expectedUrl.url, urlPattern, messages("dmsError.CDS12062.title")).url
         )
       }
     }

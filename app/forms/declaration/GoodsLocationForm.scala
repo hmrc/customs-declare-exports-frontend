@@ -21,7 +21,7 @@ import forms.DeclarationPage
 import models.declaration.GoodsLocation
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.text
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
@@ -47,10 +47,11 @@ object GoodsLocationForm extends DeclarationPage {
   /**
     * Country is in two first characters in Location Code
     */
-  private def validateCountry()(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean = (input: String) => {
-    val countryCode = input.take(2).toUpperCase
-    isValidCountryCode(countryCode)
-  }
+  private def validateCountry(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean =
+    (input: String) => {
+      val countryCode = input.take(2).toUpperCase
+      isValidCountryCode(countryCode)
+    }
 
   /**
     * Location Type is defined as third character in Location Code
@@ -70,21 +71,21 @@ object GoodsLocationForm extends DeclarationPage {
     input.drop(3).toUpperCase.headOption.map(_.toString).exists(predicate)
   }
 
-  def mapping()(implicit messages: Messages, codeListConnector: CodeListConnector) =
+  private def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[GoodsLocationForm] =
     Forms.mapping(
       "code" -> text()
         .transform(_.trim, (s: String) => s)
         .verifying("declaration.goodsLocation.code.empty", nonEmpty)
-        .verifying("declaration.goodsLocation.code.error", isEmpty or isValidFormat())
+        .verifying("declaration.goodsLocation.code.error", isEmpty or isValidFormat)
         .verifying("declaration.goodsLocation.code.error.length", isEmpty or (noShorterThan(10) and noLongerThan(39)))
     )(form2Data)(GoodsLocationForm.unapply)
 
-  private def isValidFormat()(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean =
+  private def isValidFormat(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean =
     value =>
-      validateCountry()(messages, codeListConnector)(value) and validateLocationType(value) and validateQualifierCode(value) and isAlphanumeric(value)
-
-  private def isNotValidFormat()(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean =
-    (input: String) => !isValidFormat()(messages, codeListConnector)(input)
+      validateCountry(messages, codeListConnector)(value) and
+        validateLocationType(value) and
+        validateQualifierCode(value) and
+        isAlphanumeric(value)
 
   private def form2Data(code: String): GoodsLocationForm = GoodsLocationForm(code.toUpperCase)
 
