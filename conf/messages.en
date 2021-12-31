@@ -1974,12 +1974,13 @@ rejected.notification.title = Fix declaration errors
 rejected.notification.table.title = Declaration errors
 rejected.notification.warning = You need to fix these errors and resubmit your declaration when you have finished.
 rejected.notification.description.format = Error code {0}.
+rejected.notification.check.answers.paragraph = When you have fixed each error using the change links, check your answers and then resubmit your declaration.
+rejected.notification.check.answers.button = Check your answers
 
 rejected.notification.guidance.section.1.header = Dealing with errors
 rejected.notification.guidance.section.1.paragraph.1 = A single error can relate to more than one field on the declaration, so you may see some error codes repeated.
-rejected.notification.guidance.section.1.paragraph.2 = When you have fixed each error, you can resubmit your declaration from the {0}. If you start but do not finish fixing the errors, your updated declaration will be in {1}.
-rejected.notification.guidance.section.1.paragraph.2.link.1 = check your answers page
-rejected.notification.guidance.section.1.paragraph.2.link.2 = Saved declarations
+rejected.notification.guidance.section.1.paragraph.2 = If you start but do not finish fixing the errors, your updated declaration will be in {0}.
+rejected.notification.guidance.section.1.paragraph.2.link = Saved declarations
 
 rejected.notification.guidance.section.2.header = Get further help with errors
 rejected.notification.guidance.section.2.paragraph.1 = If you need help with errors related to specific Tariff requirements (such as missing documents) call the help desk.

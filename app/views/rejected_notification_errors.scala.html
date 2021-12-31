@@ -19,22 +19,20 @@
 @import views.helpers.{BackButton, PointerHelper, Title}
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.ActionItemBuilder._
-@import connectors.CodeListConnector
 @import views.helpers.NotificationErrorHelper
 
 @this(
     govukLayout: gdsMainTemplate,
-    pageTitle: pageTitle,
+    govukButton: GovukButton,
+    govukSummaryList : GovukSummaryList,
+    govukTable: GovukTable,
+    govukWarningText: GovukWarningText,
     sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
     heading: heading,
     paragraphBody: paragraphBody,
     link: link,
-    govukTable: GovukTable,
-    govukSummaryList : GovukSummaryList,
-    govukWarningText: GovukWarningText,
     appConfig: AppConfig,
-    codeListConnector: CodeListConnector,
     notificationErrorHelper: NotificationErrorHelper
 )
 
@@ -61,6 +59,14 @@
 
             @govukSummaryList(notificationErrorHelper.createSummaryList(declaration, errors))
 
+            @paragraphBody(messages("rejected.notification.check.answers.paragraph"))
+
+            @govukButton(Button(
+                content = Text(messages("rejected.notification.check.answers.button")),
+                href = Some(routes.SubmissionsController.amend(declaration.id).url),
+                attributes = Map("id" -> "check-your-answers")
+            ))
+
 @* Section 1 *@
 
             @heading(messages("rejected.notification.guidance.section.1.header"), "govuk-heading-s", "h2")
@@ -69,12 +75,7 @@
 
             @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.2",
                 link(
-                    text = messages("rejected.notification.guidance.section.1.paragraph.2.link.1"),
-                    call = routes.SubmissionsController.amend(declaration.id),
-                    id = Some("continue-checking-answers")
-                ),
-                link(
-                    text = messages("rejected.notification.guidance.section.1.paragraph.2.link.2"),
+                    text = messages("rejected.notification.guidance.section.1.paragraph.2.link"),
                     call = routes.SavedDeclarationsController.displayDeclarations()
                 )
             ))
