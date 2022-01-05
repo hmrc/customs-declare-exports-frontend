@@ -30,6 +30,7 @@ site.backToGovUk = Back to GOV.UK
 site.continue = Continue
 site.no = No
 site.yes = Yes
+site.confirm_and_continue = Confirm and continue
 site.save_and_continue = Save and continue
 site.acceptAndSubmitDeclaration = Accept and submit declaration
 site.save_and_come_back_later = Save and come back later
@@ -1602,9 +1603,10 @@ declaration.supplementaryUnits.quantity.error = Supplementary units must be ente
 declaration.supplementaryUnits.quantity.length = Number of characters must be 16 or fewer
 
 declaration.summary.normal-header = Check your answers before making this declaration
-declaration.summary.amend-header = Check your answers
+declaration.summary.amend-header = Check your answers before resubmitting
 declaration.summary.saved-header = Continue saved declaration
 declaration.summary.submitted-header = Submitted declaration
+declaration.summary.legal-header = Resubmit your declaration
 declaration.summary.noData.header = No information for supplementary declaration found
 declaration.summary.noData.header.secondary = Please, go back and provide necessary information before proceeding
 declaration.summary.noData.button = Make an export declaration
@@ -1860,7 +1862,7 @@ declaration.summary.warning = If you change the declaration type, authorisations
 declaration.summary.saved.label = To continue with your declaration
 declaration.summary.saved.body = To continue where you left off, click the most recent ‘Change’ link. When you have completed all the questions you will be able to submit your declaration.
 declaration.summary.ammend.label = To amend your declaration
-declaration.summary.ammend.body = Use the ‘Change’ links to make further amendments if you need to. When you have completed all the amendments, you will be able to submit your declaration by going to the final ‘Change’ link for Container details.
+declaration.summary.ammend.body = Use the ‘Change’ links to make further amendments if you need to.
 
 
 supplementary.limit = You cannot add more items

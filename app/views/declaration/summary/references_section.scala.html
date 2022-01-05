@@ -37,7 +37,11 @@
         "declaration.summary.references.lrn"
 }
 
-@summaryList("declaration-references-summary", Some(messages("declaration.summary.references")), Seq(
+<h2 class="govuk-heading-m">@messages("declaration.summary.references")</h2>
+
+<p class="govuk-body">@messages("declaration.summary.ammend.body")</p>
+
+@summaryList("declaration-references-summary", None, Seq(
         Some(SummaryListRow(
             classes = "declarationType-row",
             key = Key(

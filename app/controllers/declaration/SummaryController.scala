@@ -43,6 +43,7 @@ class SummaryController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
+  legalDeclarationPage: legal_declaration_page,
   normalSummaryPage: normal_summary_page,
   amendSummaryPage: amend_summary_page,
   draftSummaryPage: draft_summary_page,
@@ -61,6 +62,10 @@ class SummaryController @Inject()(
     } else {
       Ok(summaryPageNoData())
     }
+  }
+
+  val displayDeclarationPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+    Ok(legalDeclarationPage(LegalDeclaration.form))
   }
 
   val submitDeclaration: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>

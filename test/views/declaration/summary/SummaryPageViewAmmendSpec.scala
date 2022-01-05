@@ -50,20 +50,5 @@ class SummaryPageViewAmmendSpec extends SummaryPageViewSpec {
       backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
     }
 
-    "should display label and text at bottom of page" in {
-      val label = document.getElementsByClass("govuk-label govuk-label--m")
-
-      label.text() mustBe messages("declaration.summary.ammend.label")
-
-      val body = document.getElementById("to-continue")
-      body.text() mustBe messages("declaration.summary.ammend.body")
-    }
-
-    "should display continue link" in {
-      val continueLink = document.getElementById("continue-link")
-
-      continueLink must containMessage("declaration.summary.continue.link")
-      continueLink must haveHref(routes.DeclarationChoiceController.displayPage(Mode.Amend))
-    }
   }
 }

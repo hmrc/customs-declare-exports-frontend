@@ -26,19 +26,18 @@
         exportsInputText: exportsInputText
 )
 
-@(form: Form[LegalDeclaration])(implicit messages: Messages)
+@(form: Form[LegalDeclaration], legend: Option[Legend] = None, legalInfo: Seq[String] = Seq.empty)(implicit messages: Messages)
 
 @govukFieldset(Fieldset(
-    legend = Some(Legend(
-        content = Text(messages("legal.declaration.heading")),
-        classes = "govuk-fieldset__legend govuk-fieldset__legend--m"
-    )),
+    legend = legend,
     html = html
 ))
 
 @html = {
 
-@paragraphBody(messages("legal.declaration.info"))
+@legalInfo.map{ infoMsg =>
+    @paragraphBody(infoMsg)
+}
 
 @govukWarningText(WarningText(
     iconFallbackText = messages("site.warning"),

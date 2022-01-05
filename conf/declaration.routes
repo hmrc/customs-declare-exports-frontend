@@ -498,6 +498,8 @@ GET         /amend-summary                       controllers.declaration.Summary
 
 GET         /saved-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.Draft)
 
+GET         /declare                             controllers.declaration.SummaryController.displayDeclarationPage
+
 POST        /summary                             controllers.declaration.SummaryController.submitDeclaration
 
 # Confirmation

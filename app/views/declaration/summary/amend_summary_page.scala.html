@@ -36,8 +36,7 @@
         transaction_section: transaction_section,
         items_section: items_section,
         transport_section: transport_section,
-        label: label,
-        link: link
+        linkButton: linkButton
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -49,6 +48,11 @@
 ) {
 
  @pageTitle(messages("declaration.summary.amend-header"))
+
+@govukWarningText(WarningText(
+    iconFallbackText = messages("site.warning"),
+    content = Text(messages("declaration.summary.warning"))
+))
 
  @references_section(Mode.ChangeAmend, request.cacheModel)
 
@@ -64,19 +68,8 @@
 
  @transport_section(Mode.ChangeAmend, request.cacheModel)
 
- <br/>
+ @linkButton("site.confirm_and_continue", routes.SummaryController.displayDeclarationPage)
 
- @label("declaration.summary.ammend.label", "to-continue")
- @paragraphBody(messages("declaration.summary.ammend.body"), id = Some("to-continue"))
+ <br />
 
- @govukWarningText(WarningText(
-  iconFallbackText = messages("site.warning"),
-  content = Text(messages("declaration.summary.warning"))
- ))
-
- @paragraphBody(message = link(
-  text = messages("declaration.summary.continue.link"),
-  call = routes.DeclarationChoiceController.displayPage(Mode.Amend),
-  id = Some("continue-link")).toString
- )
 }
