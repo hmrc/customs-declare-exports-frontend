@@ -29,6 +29,8 @@
 @this(
     govukLayout: gdsMainTemplate,
     govukButton: GovukButton,
+    govukDetails : GovukDetails,
+    link: link,
     formGroupWrapper: formGroupWrapper,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
@@ -55,6 +57,22 @@
       Navigator.backLink(PackageInformation, mode, ItemId(itemId))
 }
 
+@packageTypeText = {
+    @paragraphBody(messages("declaration.packageInformation.typesOfPackages.paragraph.1"))
+    @paragraphBody(messages("declaration.packageInformation.typesOfPackages.paragraph.2"))
+    @paragraphBody(messages("declaration.packageInformation.typesOfPackages.paragraph.3"))
+}
+
+@numberOfPackagesDetails = {
+    @paragraphBody(messages("declaration.packageInformation.numberOfPackages.details.paragraph.1"))
+    @paragraphBody(
+        message = messages("declaration.packageInformation.numberOfPackages.details.paragraph.2", link(
+            text = messages("declaration.packageInformation.numberOfPackages.details.paragraph.2.link"),
+            call = Call("GET", appConfig.combinedPackaging),
+            target = "_blank"))
+    )
+}
+
 @govukLayout(
     title = Title("declaration.packageInformation.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), backLink))
@@ -66,17 +84,15 @@
         @sectionHeader(messages("declaration.section.5"))
         @pageTitle(text = messages("declaration.packageInformation.title"))
 
-        @paragraphBody(messages("declaration.packageInformation.paragraph"))
-
-        @heading(messages("declaration.packageInformation.typesOfPackages.label"), classes = "govuk-heading-m", tier = "h2")
-
-        @paragraphBody(messages("declaration.packageInformation.typesOfPackages.paragraph"))
+        @paragraphBody(messages("declaration.packageInformation.paragraph.1"))
+        @paragraphBody(messages("declaration.packageInformation.paragraph.2"))
 
         @formGroupWrapper(field = form(PackageInformationFormGroupId)){
             @components.fields.field_accessible_autocomplete(
               field = form("typesOfPackages"),
               label = messages("declaration.packageInformation.typesOfPackages.label"),
-              labelClass = Some("govuk-visually-hidden"),
+              labelClass = Some("govuk-label--m"),
+              bodyHtml = Some(packageTypeText),
               hintParagraphs = List(
                 messages("declaration.packageInformation.typesOfPackages.hint.1")
               ),
@@ -87,14 +103,21 @@
 
             @exportsInputText(
               field = form("numberOfPackages"),
+              bodyHtml = Some(govukDetails(Details(
+                  summary = Text(messages("declaration.packageInformation.numberOfPackages.details.summary")),
+                  content = HtmlContent(numberOfPackagesDetails)
+              ))),
               labelKey = "declaration.packageInformation.numberOfPackages",
+              labelClasses = "govuk-label--m",
+              hintKey = Some("declaration.packageInformation.numberOfPackages.hint"),
               inputClasses = Some("govuk-input--width-10")
             )
 
             @exportsInputText(
               field = form("shippingMarks"),
               labelKey = "declaration.packageInformation.shippingMark",
-              hintKey = Some("declaration.packageInformation.shippingMark.hint"),
+              labelClasses = "govuk-label--m",
+              bodyHtml = Some(paragraphBody(messages("declaration.packageInformation.shippingMark.paragraph"))),
               inputClasses = Some("govuk-input--width-20")
             )
         }
