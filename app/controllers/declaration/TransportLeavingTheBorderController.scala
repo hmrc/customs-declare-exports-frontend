@@ -16,14 +16,11 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.WarehouseIdentificationController
-import controllers.navigation.Navigator
 import controllers.helpers.SupervisingCustomsOfficeHelper
+import controllers.navigation.Navigator
 import forms.declaration.TransportLeavingTheBorder
-import javax.inject.Inject
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -33,6 +30,10 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.transport_leaving_the_border
 
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
+
+@Singleton
 class TransportLeavingTheBorderController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,

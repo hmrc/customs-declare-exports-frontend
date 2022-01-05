@@ -17,8 +17,9 @@
 package controllers.helpers
 
 import controllers.declaration.routes._
+import controllers.helpers.InlandOrBorderHelper.skipInlandOrBorder
 import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import models.DeclarationType.{CLEARANCE, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
@@ -45,16 +46,15 @@ object SupervisingCustomsOfficeHelper {
 
   def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY =>
-        val isSupplementaryEidr = request.cacheModel.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR)
-        if (isSupplementaryEidr) InlandTransportDetailsController.displayPage else InlandOrBorderController.displayPage
+      case STANDARD | SUPPLEMENTARY =>
+        if (skipInlandOrBorder(request.cacheModel)) InlandTransportDetailsController.displayPage
+        else InlandOrBorderController.displayPage
 
-      case DeclarationType.STANDARD                                => InlandOrBorderController.displayPage
-      case DeclarationType.CLEARANCE                               => dependsOnTransportLeavingTheBoarder
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => ExpressConsignmentController.displayPage
+      case CLEARANCE                               => nextPageOnClearance
+      case SIMPLIFIED | DeclarationType.OCCASIONAL => ExpressConsignmentController.displayPage
     }
 
-  private def dependsOnTransportLeavingTheBoarder(implicit request: JourneyRequest[_]): Mode => Call = {
+  private def nextPageOnClearance(implicit request: JourneyRequest[_]): Mode => Call = {
     val condition = isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)
     if (condition) ExpressConsignmentController.displayPage else DepartureTransportController.displayPage
   }

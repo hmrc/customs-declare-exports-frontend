@@ -20,15 +20,15 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.countries.Country
+import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
 import play.api.libs.json._
 
 import java.time.{Clock, Instant}
-import forms.declaration.additionaldocuments.AdditionalDocument
-import forms.declaration.declarationHolder.DeclarationHolder
 
 // scalastyle:off
 case class ExportsDeclaration(
@@ -134,6 +134,8 @@ case class ExportsDeclaration(
 
   def removeSupervisingCustomsOffice: ExportsDeclaration =
     copy(locations = locations.copy(supervisingCustomsOffice = None))
+
+  def skipInlandOrBorder: Boolean = parties.declarationHoldersData.exists(_.holders.exists(_.skipInlandOrBorder))
 
   def updateTransportLeavingBorder(code: ModeOfTransportCode): ExportsDeclaration =
     copy(transport = transport.copy(borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(code)))))

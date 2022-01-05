@@ -21,9 +21,9 @@ import play.api.libs.json.{Json, OFormat}
 
 case class GoodsLocation(country: String, typeOfLocation: String, qualifierOfIdentification: String, identificationOfLocation: String) {
 
-  val code = country + typeOfLocation + qualifierOfIdentification + identificationOfLocation
+  lazy val code = country + typeOfLocation + qualifierOfIdentification + identificationOfLocation
 
-  def toForm(): GoodsLocationForm = GoodsLocationForm(code)
+  def toForm: GoodsLocationForm = GoodsLocationForm(code)
 }
 
 object GoodsLocation {
