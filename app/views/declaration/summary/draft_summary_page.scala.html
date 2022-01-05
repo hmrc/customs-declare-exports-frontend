@@ -50,6 +50,13 @@
 
     @pageTitle(messages("declaration.summary.saved-header"))
 
+    @govukWarningText(WarningText(
+        iconFallbackText = messages("site.warning"),
+        content = Text(messages("declaration.summary.warning"))
+    ))
+
+    <p class="govuk-body">@messages("declaration.summary.draft.body")</p>
+
     @draftInfoSection(request.cacheModel)
 
     @references_section(Mode.Draft, request.cacheModel)
@@ -66,19 +73,4 @@
 
     @transport_section(Mode.Draft, request.cacheModel)
 
-    <br/>
-
-    @label("declaration.summary.saved.label", "")
-    @paragraphBody(messages("declaration.summary.saved.body"), id = Some("to-continue"))
-
-    @govukWarningText(WarningText(
-        iconFallbackText = messages("site.warning"),
-        content = Text(messages("declaration.summary.warning"))
-    ))
-
-    @paragraphBody(message = link(
-        text = messages("declaration.summary.continue.link"),
-        call = routes.AdditionalDeclarationTypeController.displayPage(Mode.Draft),
-        id = Some("continue-link")).toString
-    )
 }

@@ -50,20 +50,10 @@ class SummaryPageViewDraftSpec extends SummaryPageViewSpec {
       backButton must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations())
     }
 
-    "should display label and text at bottom of page" in {
-      val label = document.getElementsByClass("govuk-label govuk-label--m")
+    "should display warning text at top of page" in {
 
-      label.text() mustBe messages("declaration.summary.saved.label")
-
-      val body = document.getElementById("to-continue")
-      body.text() mustBe messages("declaration.summary.saved.body")
+      document.getElementsByClass("govuk-warning-text").text() must include(messages("declaration.summary.warning"))
     }
 
-    "should display continue link" in {
-      val continueLink = document.getElementById("continue-link")
-
-      continueLink must containMessage("declaration.summary.continue.link")
-      continueLink must haveHref(routes.AdditionalDeclarationTypeController.displayPage(Mode.Draft))
-    }
   }
 }
