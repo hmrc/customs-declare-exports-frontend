@@ -119,6 +119,8 @@ class AppConfig @Inject()(
   val declareGoodsExported = loadConfig("urls.declareGoodsExported")
   val simplifiedDeclarationOccasionalUse = loadConfig("urls.simplifiedDeclarationOccasionalUse")
 
+  val combinedPackaging = loadConfig("urls.combinedPackaging")
+
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")

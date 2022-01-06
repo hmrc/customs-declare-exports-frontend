@@ -49,7 +49,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
     messages must haveTranslationFor("declaration.packageInformation.typesOfPackages.hint.1")
     messages must haveTranslationFor("declaration.packageInformation.numberOfPackages")
     messages must haveTranslationFor("declaration.packageInformation.shippingMark")
-    messages must haveTranslationFor("declaration.packageInformation.shippingMark.hint")
+    messages must haveTranslationFor("declaration.packageInformation.shippingMark.paragraph")
     messages must haveTranslationFor("declaration.packageInformation.table.heading")
     messages must haveTranslationFor("declaration.packageInformation.numberOfPackages")
     messages must haveTranslationFor("declaration.packageInformation.table.multiple.heading")

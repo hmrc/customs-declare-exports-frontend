@@ -47,6 +47,19 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
     page(Mode.Normal, itemId, withForm.getOrElse(form), packages)(request, messages)
 
   "PackageInformation Add View" should {
+
+    "have necessary message keys" in {
+      messages must haveTranslationFor("declaration.packageInformation.paragraph.1")
+      messages must haveTranslationFor("declaration.packageInformation.paragraph.2")
+      messages must haveTranslationFor("declaration.packageInformation.typesOfPackages.paragraph.1")
+      messages must haveTranslationFor("declaration.packageInformation.typesOfPackages.paragraph.2")
+      messages must haveTranslationFor("declaration.packageInformation.typesOfPackages.paragraph.3")
+      messages must haveTranslationFor("declaration.packageInformation.numberOfPackages.details.paragraph.1")
+      messages must haveTranslationFor("declaration.packageInformation.numberOfPackages.details.paragraph.2")
+      messages must haveTranslationFor("declaration.packageInformation.numberOfPackages.details.paragraph.2.link")
+      messages must haveTranslationFor("declaration.packageInformation.shippingMark.paragraph")
+    }
+
     onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
@@ -64,10 +77,28 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
       "display the expected hint paragraphs" in {
         val indexedListOfMessages =
-          List("declaration.packageInformation.typesOfPackages.hint.1", "declaration.packageInformation.shippingMark.hint").zipWithIndex
+          List("declaration.packageInformation.typesOfPackages.hint.1", "declaration.packageInformation.numberOfPackages.hint").zipWithIndex
 
         val hints = view.getElementsByClass("govuk-hint")
         forAll(indexedListOfMessages)(t => hints.get(t._2) must containMessage(t._1))
+      }
+
+      "display the expected paragraphs" in {
+        val indexedListOfParagraphs = List(
+          messages("declaration.packageInformation.paragraph.1"),
+          messages("declaration.packageInformation.paragraph.2"),
+          messages("declaration.packageInformation.typesOfPackages.paragraph.1"),
+          messages("declaration.packageInformation.typesOfPackages.paragraph.2"),
+          messages("declaration.packageInformation.typesOfPackages.paragraph.3"),
+          messages("declaration.packageInformation.numberOfPackages.details.paragraph.1"),
+          messages("declaration.packageInformation.numberOfPackages.details.paragraph.2").substring(0, 8) ++
+            messages("declaration.packageInformation.numberOfPackages.details.paragraph.2.link"),
+          messages("declaration.packageInformation.shippingMark.paragraph"),
+          messages("site.save_and_come_back_later")
+        ).zipWithIndex
+
+        val paragraphs = view.getElementsByClass("govuk-body").eachText()
+        forAll(indexedListOfParagraphs)(t => paragraphs.get(t._2) mustBe (t._1))
       }
 
       "display 'Save and continue' button on page" in {
