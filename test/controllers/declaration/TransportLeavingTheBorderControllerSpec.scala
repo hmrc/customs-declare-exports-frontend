@@ -17,14 +17,22 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import base.ExportsTestData.{itemWith1040AsPC, valuesRequiringToSkipInlandOrBorder}
+import controllers.declaration.routes.{
+  InlandOrBorderController,
+  InlandTransportDetailsController,
+  SupervisingCustomsOfficeController,
+  WarehouseIdentificationController
+}
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import controllers.routes.RootController
 import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.{ModeOfTransportCode, TransportLeavingTheBorder}
 import models.DeclarationType
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.Mode.Normal
+import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -68,7 +76,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
   }
 
   def theResponseForm: Form[TransportLeavingTheBorder] = {
-    val captor: ArgumentCaptor[Form[TransportLeavingTheBorder]] = ArgumentCaptor.forClass(classOf[Form[TransportLeavingTheBorder]])
+    val captor = ArgumentCaptor.forClass(classOf[Form[TransportLeavingTheBorder]])
     verify(transportLeavingTheBorder).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
@@ -86,7 +94,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
         }
 
         "display page method is invoked and cache is not empty" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(ModeOfTransportCode.Rail, "", "")))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(ModeOfTransportCode.Rail)))
 
           val result = controller.displayPage(Normal)(getRequest())
 
@@ -136,56 +144,76 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
         }
 
         onJourney(STANDARD, SUPPLEMENTARY) { request =>
-          "redirect to the 'Warehouse Identification' page after a successful bind" when {
-            "at least one Procedure Code requires Warehouse information (PCs ending with '07', '71', 78')" in {
-              withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withProcedureCodes(Some("1078"), Seq("000"))))))
+          "redirect to /warehouse-details after a successful bind" when {
+            warehouseRequiredProcedureCodes.foreach { suffix =>
+              s"user had entered a Procedure Code ending with '$suffix'" in {
+                val item = withItem(anItem(withProcedureCodes(Some(s"10$suffix"))))
+                withNewCaching(aDeclarationAfter(request.cacheModel, item))
 
-              val result = controller.submitForm(Normal)(postRequest(body))
+                val result = controller.submitForm(Normal)(postRequest(body))
 
-              await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe routes.WarehouseIdentificationController.displayPage(Normal)
+                await(result) mustBe aRedirectToTheNextPage
+                thePageNavigatedTo mustBe WarehouseIdentificationController.displayPage()
+              }
             }
           }
 
-          "redirect to the 'Supervising Customs Office' page after a successful bind" in {
+          "redirect to /supervising-customs-office after a successful bind" in {
             withNewCaching(request.cacheModel)
 
             val result = controller.submitForm(Normal)(postRequest(body))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage(Normal)
+            thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage()
           }
         }
 
-        "redirect to the 'Inland or Border' page after a successful bind" when {
+        "redirect to /inland-or-border after a successful bind" when {
+          "cache contains '1040' as procedure code, '000' as APC and" when {
+            val item = withItem(itemWith1040AsPC)
 
-          additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
-            s"AdditionalDeclarationType is $additionalType and" when {
-
-              "cache contains '1040' as procedure code, '000' as APC" in {
-                withNewCaching(withRequest(additionalType, withItem(anItem(withProcedureCodes(Some("1040"), Seq("000"))))).cacheModel)
+            additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+              s"AdditionalDeclarationType is $additionalType and" in {
+                withNewCaching(withRequest(additionalType, item).cacheModel)
 
                 val result = controller.submitForm(Normal)(postRequest(body))
 
                 await(result) mustBe aRedirectToTheNextPage
-                thePageNavigatedTo mustBe routes.InlandOrBorderController.displayPage(Normal)
+                thePageNavigatedTo mustBe InlandOrBorderController.displayPage()
               }
             }
           }
         }
 
-        "redirect to the 'Inland Transport Details' page after a successful bind" when {
+        "redirect to to /inland-transport-details after a successful bind" when {
+          "cache contains '1040' as procedure code, '000' as APC and" when {
+            val item = withItem(itemWith1040AsPC)
 
-          List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
-            "AdditionalDeclarationType is SUPPLEMENTARY_EIDR and" when {
+            List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
+              "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
 
-              "cache contains '1040' as procedure code, '000' as APC" in {
-                withNewCaching(withRequest(additionalType, withItem(anItem(withProcedureCodes(Some("1040"), Seq("000"))))).cacheModel)
+                withNewCaching(withRequest(additionalType, item).cacheModel)
 
                 val result = controller.submitForm(Normal)(postRequest(body))
 
                 await(result) mustBe aRedirectToTheNextPage
-                thePageNavigatedTo mustBe routes.InlandTransportDetailsController.displayPage(Normal)
+                thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage()
+              }
+            }
+
+            additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+              s"AdditionalDeclarationType is $additionalType and" when {
+                "the user has previously entered a value which requires to skip the /inland-or-border page" in {
+                  valuesRequiringToSkipInlandOrBorder.foreach { modifier =>
+                    initMockNavigatorForMultipleCallsInTheSameTest
+                    withNewCaching(withRequest(additionalType, modifier, item).cacheModel)
+
+                    val result = controller.submitForm(Normal)(postRequest(body))
+
+                    await(result) mustBe aRedirectToTheNextPage
+                    thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage()
+                  }
+                }
               }
             }
           }
@@ -198,7 +226,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
             val result = controller.submitForm(Normal)(postRequest(body))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.WarehouseIdentificationController.displayPage(Normal)
+            thePageNavigatedTo mustBe WarehouseIdentificationController.displayPage()
           }
         }
       }

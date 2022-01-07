@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
+import base.ExportsTestData.pc1040
 import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -365,10 +366,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
 
       "return 303 (SEE_OTHER) and redirect to Express Consignment page" when {
         "cache contains '1040' as procedure code and '000' as APC" in {
-          val cachedData = aDeclaration(
-            withType(request.declarationType),
-            withItem(exportItem.copy(procedureCodes = Some(ProcedureCodesData(Some("1040"), Seq("000")))))
-          )
+          val cachedData = aDeclaration(withType(request.declarationType), withItem(exportItem.copy(procedureCodes = pc1040)))
           withNewCaching(cachedData)
           val answerForm = Json.obj("yesNo" -> YesNoAnswers.no)
 

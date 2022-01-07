@@ -16,9 +16,11 @@
 
 package views.helpers
 
+import base.ExportsTestData.pc1040
 import base.Injector
 import models.DeclarationType._
 import models.declaration.{ExportItem, ProcedureCodesData}
+import org.scalatest.Assertion
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 
@@ -29,12 +31,11 @@ class AdditionalInformationRequiredHelperSpec extends UnitViewSpec with ExportsT
   "AdditionalInformationRequiredHelper getBodyContent" when {
 
     "procedure code equals 1040" should {
-      val maybeProcedureCodesData = Some(ProcedureCodesData(Some("1040"), Seq("000")))
-      val item = ExportItem("12345", procedureCodes = maybeProcedureCodesData)
+      val item = ExportItem("12345", procedureCodes = pc1040)
 
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY, CLEARANCE)(aDeclaration(withItem(item))) { implicit request =>
         "display the correct body content" in {
-          val bodyContent = helper.getBodyContent(request.declarationType, maybeProcedureCodesData)
+          val bodyContent = helper.getBodyContent(request.declarationType, pc1040)
 
           checkConentIsClearanceOr1040(bodyContent.body)
         }
@@ -63,12 +64,11 @@ class AdditionalInformationRequiredHelperSpec extends UnitViewSpec with ExportsT
     }
 
     "procedure code is missing" should {
-      val maybeProcedureCodesData = None
-      val item = ExportItem("12345", procedureCodes = maybeProcedureCodesData)
+      val item = ExportItem("12345", procedureCodes = None)
 
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY, CLEARANCE)(aDeclaration(withItem(item))) { implicit request =>
         "display the correct body content" in {
-          val bodyContent = helper.getBodyContent(request.declarationType, maybeProcedureCodesData)
+          val bodyContent = helper.getBodyContent(request.declarationType, None)
 
           checkConentIsClearanceOr1040(bodyContent.body)
         }
@@ -76,9 +76,9 @@ class AdditionalInformationRequiredHelperSpec extends UnitViewSpec with ExportsT
     }
   }
 
-  private def checkConentIsClearanceOr1040(body: String) =
+  private def checkConentIsClearanceOr1040(body: String): Assertion =
     body contains "ai_containers_link" mustBe true
 
-  private def checkConentIsNot1040(body: String) =
+  private def checkConentIsNot1040(body: String): Assertion =
     body contains "proc_codes_link" mustBe true
 }

@@ -58,8 +58,10 @@ case class ExportItem(
     case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
       isProcedureCodesAndFiscalInformationComplete && statisticalValue.isDefined &&
         packageInformation.nonEmpty && commodityMeasure.isDefined
+
     case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
       isProcedureCodesAndFiscalInformationComplete && packageInformation.nonEmpty
+
     case DeclarationType.CLEARANCE =>
       isProcedureCodesAndFiscalInformationComplete &&
         isProcedureCodesAndExportInventoryCleansingRecordComplete
@@ -84,7 +86,7 @@ case class ExportItem(
   }
 
   def requiresWarehouseId: Boolean =
-    procedureCodes.flatMap(_.procedureCode).exists(code => ProcedureCodesData.isWarehouseRequiredCode(code))
+    procedureCodes.flatMap(_.procedureCode).exists(ProcedureCodesData.isWarehouseRequiredCode)
 }
 
 object ExportItem extends DeclarationPage {

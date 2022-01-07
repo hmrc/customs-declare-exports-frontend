@@ -18,14 +18,17 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{
-  DepartureTransportController, ExpressConsignmentController, InlandTransportDetailsController, TransportContainerController
+  DepartureTransportController,
+  ExpressConsignmentController,
+  InlandTransportDetailsController,
+  TransportContainerController
 }
 import controllers.helpers.InlandOrBorderHelper.skipInlandOrBorder
 import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.InlandOrBorder
-import forms.declaration.InlandOrBorder.{Border, Inland, form}
+import forms.declaration.InlandOrBorder.{form, Border, Inland}
 import models.DeclarationType.SUPPLEMENTARY
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -56,16 +59,16 @@ class InlandOrBorderController @Inject()(
       val frm = form.withSubmissionErrors
       request.cacheModel.locations.inlandOrBorder match {
         case Some(location) => Ok(inlandOrBorderPage(mode, frm.fill(location)))
-        case _ => Ok(inlandOrBorderPage(mode, frm))
+        case _              => Ok(inlandOrBorderPage(mode, frm))
       }
     }
   }
 
   def submitPage(mode: Mode): Action[AnyContent] = actionBuilder.async { implicit request =>
     if (skipInlandOrBorder(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
-    else form
-      .bindFromRequest
-      .fold(formWithErrors => Future.successful(BadRequest(inlandOrBorderPage(mode, formWithErrors))), updateExportsCache(mode, _))
+    else
+      form.bindFromRequest
+        .fold(formWithErrors => Future.successful(BadRequest(inlandOrBorderPage(mode, formWithErrors))), updateExportsCache(mode, _))
   }
 
   private def nextPage(declaration: ExportsDeclaration, inlandOrBorder: InlandOrBorder): Mode => Call =

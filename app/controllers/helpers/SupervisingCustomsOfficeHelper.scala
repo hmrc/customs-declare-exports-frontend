@@ -19,11 +19,11 @@ package controllers.helpers
 import controllers.declaration.routes._
 import controllers.helpers.InlandOrBorderHelper.skipInlandOrBorder
 import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
-import models.DeclarationType.{CLEARANCE, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.mvc.Call
 
 object SupervisingCustomsOfficeHelper {
@@ -50,8 +50,8 @@ object SupervisingCustomsOfficeHelper {
         if (skipInlandOrBorder(request.cacheModel)) InlandTransportDetailsController.displayPage
         else InlandOrBorderController.displayPage
 
-      case CLEARANCE                               => nextPageOnClearance
-      case SIMPLIFIED | DeclarationType.OCCASIONAL => ExpressConsignmentController.displayPage
+      case CLEARANCE               => nextPageOnClearance
+      case SIMPLIFIED | OCCASIONAL => ExpressConsignmentController.displayPage
     }
 
   private def nextPageOnClearance(implicit request: JourneyRequest[_]): Mode => Call = {

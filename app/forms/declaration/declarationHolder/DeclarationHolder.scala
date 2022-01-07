@@ -38,7 +38,7 @@ case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option
 
   def isAdditionalDocumentationRequired: Boolean = authorisationTypeCode.exists(codesRequiringDocumentation.contains)
 
-  def skipInlandOrBorder: Boolean = authorisationTypeCode.exists(codesThatSkipInlandOrBorder.contains)
+  def skipInlandOrBorder: Boolean = authorisationTypeCode.exists(authCodesThatSkipInlandOrBorder.contains)
 }
 
 object DeclarationHolder extends DeclarationPage {
@@ -97,8 +97,8 @@ object DeclarationHolder extends DeclarationPage {
   // Note that this validation takes places only when adding a new authorisation, not when changing one.
   def validateMutuallyExclusiveAuthCodes(maybeHolder: Option[DeclarationHolder], holders: Seq[DeclarationHolder]): Option[FormError] =
     maybeHolder match {
-      case Some(DeclarationHolder(Some(code), _, _)) if mutuallyExclusiveCodes.contains(code) =>
-        val mustNotAlreadyContainCodes: List[String] = mutuallyExclusiveCodes.filter(_ != code)
+      case Some(DeclarationHolder(Some(code), _, _)) if mutuallyExclusiveAuthCodes.contains(code) =>
+        val mustNotAlreadyContainCodes: List[String] = mutuallyExclusiveAuthCodes.filter(_ != code)
 
         if (!holders.map(_.authorisationTypeCode.getOrElse("")).containsSlice(mustNotAlreadyContainCodes)) None
         else Some(FormError(DeclarationHolderFormGroupId, s"declaration.declarationHolder.${code}.error.exclusive"))

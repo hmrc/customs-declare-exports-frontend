@@ -29,9 +29,9 @@ object DepCodes {
 
   private val designatedExportPlaceCodes: Set[String] = {
     val filename = "Designated_Export_Place_codes_for_Data_Element-5-23_of_the_CDS__v2__1_.csv"
-    val resource = getClass.getClassLoader.getResource(s"code-lists/$filename")
-    val path = Paths.get(resource.toURI)
-    Files.lines(path, ISO_8859_1)
+    val uri = getClass.getClassLoader.getResource(s"code-lists/$filename").toURI
+    Files
+      .lines(Paths.get(uri), ISO_8859_1)
       .iterator
       .asScala
       .map(_.split(',').last.trim)

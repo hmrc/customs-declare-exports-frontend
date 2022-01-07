@@ -17,6 +17,13 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import base.ExportsTestData.allValuesRequiringToSkipInlandOrBorder
+import controllers.declaration.routes.{
+  DepartureTransportController,
+  ExpressConsignmentController,
+  InlandTransportDetailsController,
+  TransportContainerController
+}
 import controllers.helpers.TransportSectionHelper._
 import controllers.routes.RootController
 import forms.declaration.InlandOrBorder
@@ -108,10 +115,23 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
     }
 
     "redirect to the starting page" when {
+
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
         cacheRequest(SUPPLEMENTARY_EIDR)
         val result = controller.displayPage(Normal)(getRequest())
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+      }
+
+      additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+        s"AdditionalDeclarationType is $additionalType and" when {
+          "the user has previously entered a value which requires to skip the /inland-or-border page" in {
+            allValuesRequiringToSkipInlandOrBorder.foreach { modifier =>
+              cacheRequest(additionalType, modifier)
+              val result = controller.displayPage(Normal)(getRequest())
+              redirectLocation(result) mustBe Some(RootController.displayPage.url)
+            }
+          }
+        }
       }
     }
   }
@@ -123,7 +143,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
         "the user selects 'Customs controlled location'" should {
           val body = Json.obj(fieldId -> JsString(Inland.location))
-          val expectedNextPage = routes.InlandTransportDetailsController.displayPage()
+          val expectedNextPage = InlandTransportDetailsController.displayPage()
 
           "update the cache after a successful bind" in {
             cacheRequest(additionalType)
@@ -145,7 +165,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
         "the user selects 'UK Border'" should {
           val body = Json.obj(fieldId -> JsString(Border.location))
-          val expectedNextPage = routes.DepartureTransportController.displayPage()
+          val expectedNextPage = DepartureTransportController.displayPage()
 
           "update the cache after a successful bind" in {
             cacheRequest(additionalType)
@@ -186,7 +206,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
           List(STANDARD_FRONTIER, STANDARD_PRE_LODGED).foreach { additionalType =>
             s"AdditionalDeclarationType is $additionalType" should {
-              val expectedNextPage = routes.ExpressConsignmentController.displayPage()
+              val expectedNextPage = ExpressConsignmentController.displayPage()
 
               s"redirect to ${expectedNextPage.url}" in {
                 cacheRequest(additionalType, withBorderModeOfTransportCode(modeOfTransportCode))
@@ -200,7 +220,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
           }
 
           s"AdditionalDeclarationType is SUPPLEMENTARY_SIMPLIFIED" should {
-            val expectedNextPage = routes.TransportContainerController.displayContainerSummary()
+            val expectedNextPage = TransportContainerController.displayContainerSummary()
 
             s"redirect to ${expectedNextPage.url}" in {
               cacheRequest(SUPPLEMENTARY_SIMPLIFIED, withBorderModeOfTransportCode(modeOfTransportCode))
@@ -228,10 +248,23 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
     }
 
     "redirect to the starting page" when {
+
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
         cacheRequest(SUPPLEMENTARY_EIDR)
         val result = controller.submitPage(Normal)(postRequest(JsString("")))
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+      }
+
+      additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+        s"AdditionalDeclarationType is $additionalType and" when {
+          "the user has previously entered a value which requires to skip the /inland-or-border page" in {
+            allValuesRequiringToSkipInlandOrBorder.foreach { modifier =>
+              cacheRequest(additionalType, modifier)
+              val result = controller.submitPage(Normal)(postRequest(JsString("")))
+              redirectLocation(result) mustBe Some(RootController.displayPage.url)
+            }
+          }
+        }
       }
     }
   }

@@ -142,6 +142,10 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.locationCodeForTempStorage must be("http://locationCodeForTempStorage")
     }
 
+    "have designatedExportPlaceCodes URL" in {
+      validAppConfig.designatedExportPlaceCodes must be("http://designatedExportPlaceCodes")
+    }
+
     "have locationCodesForCsePremises URL" in {
       validAppConfig.locationCodesForCsePremises must be("http://locationCodesForCsePremises")
     }
