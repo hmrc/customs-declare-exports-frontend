@@ -16,13 +16,10 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import forms.declaration.LegalDeclaration
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys._
 import models.{ExportsDeclaration, Mode}
@@ -34,6 +31,9 @@ import services._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.summary._
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryController @Inject()(
   authenticate: AuthAction,
