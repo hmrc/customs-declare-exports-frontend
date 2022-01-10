@@ -18,7 +18,7 @@ package controllers.declaration
 
 import java.util.{Locale, UUID}
 import base.ControllerSpec
-import base.ExportsTestData.{itemWith1040AsPC, pc1040}
+import base.ExportsTestData.pc1040
 import controllers.helpers.Remove
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.procedurecodes.AdditionalProcedureCode

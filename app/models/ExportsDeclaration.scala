@@ -135,8 +135,6 @@ case class ExportsDeclaration(
   def removeSupervisingCustomsOffice: ExportsDeclaration =
     copy(locations = locations.copy(supervisingCustomsOffice = None))
 
-  def skipInlandOrBorder: Boolean = parties.declarationHoldersData.exists(_.holders.exists(_.skipInlandOrBorder))
-
   def updateTransportLeavingBorder(code: ModeOfTransportCode): ExportsDeclaration =
     copy(transport = transport.copy(borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(code)))))
 

@@ -25,7 +25,7 @@ object InlandOrBorderHelper {
 
   def skipInlandOrBorder(declaration: ExportsDeclaration): Boolean =
     declaration.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR) ||
-      declaration.skipInlandOrBorder ||
+      declaration.declarationHolders.exists(_.skipInlandOrBorder) ||
       declaration.requiresWarehouseId ||
       declaration.transportLeavingBorderCode == Some(RoRo) ||
       isDesignatedExportPlaceCode(declaration)
