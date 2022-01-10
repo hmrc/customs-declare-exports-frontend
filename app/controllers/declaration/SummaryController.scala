@@ -44,7 +44,6 @@ class SummaryController @Inject()(
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
   legalDeclarationPage: legal_declaration_page,
-  normalSummaryPage: normal_summary_page,
   amendSummaryPage: amend_summary_page,
   draftSummaryPage: draft_summary_page,
   summaryPageNoData: summary_page_no_data
@@ -54,10 +53,9 @@ class SummaryController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
       mode match {
-        case Mode.Normal => Ok(normalSummaryPage(LegalDeclaration.form))
-        case Mode.Amend  => Ok(amendSummaryPage())
-        case Mode.Draft  => Ok(draftSummaryPage())
-        case _           => handleError("Invalid mode on summary page")
+        case Mode.Draft | Mode.Normal   => Ok(draftSummaryPage())
+        case Mode.Amend                 => Ok(amendSummaryPage())
+        case _                          => handleError("Invalid mode on summary page")
       }
     } else {
       Ok(summaryPageNoData())
@@ -71,7 +69,7 @@ class SummaryController @Inject()(
   val submitDeclaration: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     LegalDeclaration.form.bindFromRequest
       .fold(
-        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(normalSummaryPage(formWithErrors))),
+        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors))),
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(submission) =>

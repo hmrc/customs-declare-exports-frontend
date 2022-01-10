@@ -51,7 +51,6 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     mockSubmissionService,
     stubMessagesControllerComponents(),
     legalDeclarationPage,
-    normalSummaryPage,
     amendSummaryPage,
     draftSummaryPage,
     mockSummaryPageNoData
@@ -61,14 +60,14 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(normalSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(legalDeclarationPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(draftSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(amendSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(normalSummaryPage, draftSummaryPage, amendSummaryPage, mockSummaryPageNoData, mockSubmissionService)
+    reset(legalDeclarationPage, draftSummaryPage, amendSummaryPage, mockSummaryPageNoData, mockSubmissionService)
     super.afterEach()
   }
 

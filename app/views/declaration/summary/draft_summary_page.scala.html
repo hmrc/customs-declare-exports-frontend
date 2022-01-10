@@ -27,9 +27,6 @@
         govukLayout: gdsMainTemplate,
         govukWarningText: GovukWarningText,
         pageTitle: pageTitle,
-        paragraphBody: paragraphBody,
-        link: link,
-        label: label,
         draftInfoSection: draft_info_section,
         references_section: references_section,
         countries_section: countries_section,
@@ -37,7 +34,8 @@
         locations_section: locations_section,
         transaction_section: transaction_section,
         items_section: items_section,
-        transport_section: transport_section
+        transport_section: transport_section,
+        linkButton: linkButton
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -72,5 +70,9 @@
     @items_section(Mode.Draft, request.cacheModel)
 
     @transport_section(Mode.Draft, request.cacheModel)
+
+    @linkButton("site.confirm_and_continue", routes.SummaryController.displayDeclarationPage)
+
+    <br />
 
 }
