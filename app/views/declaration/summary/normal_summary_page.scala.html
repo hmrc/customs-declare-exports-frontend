@@ -16,10 +16,8 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes.{SummaryController, TransportContainerController}
-@import forms.declaration.LegalDeclaration
 @import models.Mode
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, Legend, Text}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.declaration.summary._
@@ -27,7 +25,6 @@
 @this(
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
-    errorSummary: errorSummary,
     draftInfoSection: draft_info_section,
     references_section: references_section,
     countries_section: countries_section,
@@ -36,23 +33,10 @@
     transaction_section: transaction_section,
     items_section: items_section,
     transport_section: transport_section,
-    legal_declaration: legal_declaration,
-    formHelper: FormWithCSRF,
-    saveAndContinue: saveAndContinue
+    linkButton: linkButton
 )
 
-@(legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
-
-@legalDeclarationLegend = @{
-    Some(Legend(
-        content = Text(messages("legal.declaration.heading")),
-        classes = "govuk-fieldset__legend govuk-fieldset__legend--m"
-    ))
-}
-
-@legalInfo = @{
-    Seq(messages("legal.declaration.info"))
-}
+@(mode: Mode)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @govukLayout(
     title = Title("declaration.summary.normal-header"),
@@ -60,27 +44,22 @@
     useCustomContentWidth = true
 ) {
 
-    @formHelper(action = SummaryController.submitDeclaration, 'autoComplete -> "off") {
-        @errorSummary(legalDeclarationForm.errors)
+    @pageTitle(messages("declaration.summary.normal-header"))
 
-        @pageTitle(messages("declaration.summary.normal-header"))
+    @references_section(Mode.Change, request.cacheModel)
 
-        @references_section(Mode.Change, request.cacheModel)
+    @parties_section(Mode.Change, request.cacheModel)
 
-        @parties_section(Mode.Change, request.cacheModel)
+    @countries_section(Mode.Change, request.cacheModel)
 
-        @countries_section(Mode.Change, request.cacheModel)
+    @locations_section(Mode.Change, request.cacheModel)
 
-        @locations_section(Mode.Change, request.cacheModel)
+    @transaction_section(Mode.Change, request.cacheModel)
 
-        @transaction_section(Mode.Change, request.cacheModel)
+    @items_section(Mode.Change, request.cacheModel)
 
-        @items_section(Mode.Change, request.cacheModel)
+    @transport_section(Mode.Change, request.cacheModel)
 
-        @transport_section(Mode.Change, request.cacheModel)
+    @linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage(mode))
 
-        @legal_declaration(legalDeclarationForm, legalDeclarationLegend, legalInfo)
-
-        @saveAndContinue("site.acceptAndSubmitDeclaration")
-    }
 }

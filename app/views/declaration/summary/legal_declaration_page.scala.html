@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes.{SummaryController, TransportContainerController}
+@import controllers.declaration.routes.SummaryController
 @import forms.declaration.LegalDeclaration
 @import models.Mode
 @import models.requests.JourneyRequest
@@ -33,15 +33,15 @@
     saveAndContinue: saveAndContinue
 )
 
-@(legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(legalDeclarationForm: Form[LegalDeclaration], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @govukLayout(
     title = Title("declaration.summary.legal-header"),
-    backButton = Some(BackButton(messages("site.back"), TransportContainerController.displayContainerSummary(Mode.Normal))),
+    backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage(mode))),
     useCustomContentWidth = true
 ) {
 
-    @formHelper(action = SummaryController.submitDeclaration, 'autoComplete -> "off") {
+    @formHelper(action = SummaryController.submitDeclaration(mode), 'autoComplete -> "off") {
         @errorSummary(legalDeclarationForm.errors)
 
         @pageTitle(messages("declaration.summary.legal-header"))

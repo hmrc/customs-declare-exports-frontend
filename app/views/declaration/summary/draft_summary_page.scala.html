@@ -34,8 +34,7 @@
         locations_section: locations_section,
         transaction_section: transaction_section,
         items_section: items_section,
-        transport_section: transport_section,
-        linkButton: linkButton
+        transport_section: transport_section
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -71,8 +70,6 @@
 
     @transport_section(Mode.Draft, request.cacheModel)
 
-    @linkButton("site.confirm_and_continue", routes.SummaryController.displayDeclarationPage)
-
-    <br />
+    <br/>
 
 }

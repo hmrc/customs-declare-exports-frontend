@@ -17,7 +17,6 @@
 package views.declaration.summary
 
 import controllers.declaration.routes
-import forms.declaration.LegalDeclaration
 import models.ExportsDeclaration
 import models.Mode._
 import org.jsoup.nodes.Document
@@ -29,7 +28,7 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
 
   val normal_summaryPage = instanceOf[normal_summary_page]
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
-    normal_summaryPage(LegalDeclaration.form())(journeyRequest(declaration), messages, minimalAppConfig)
+    normal_summaryPage(models.Mode.Normal)(journeyRequest(declaration), messages, minimalAppConfig)
 
   "Summary page" should {
 

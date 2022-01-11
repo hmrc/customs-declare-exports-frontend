@@ -50,9 +50,10 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     mockExportsCacheService,
     mockSubmissionService,
     stubMessagesControllerComponents(),
-    legalDeclarationPage,
+    normalSummaryPage,
     amendSummaryPage,
     draftSummaryPage,
+    legalDeclarationPage,
     mockSummaryPageNoData
   )(ec, appConfig)
 
@@ -60,14 +61,15 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(legalDeclarationPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(normalSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(legalDeclarationPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(draftSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(amendSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(legalDeclarationPage, draftSummaryPage, amendSummaryPage, mockSummaryPageNoData, mockSubmissionService)
+    reset(normalSummaryPage, legalDeclarationPage, draftSummaryPage, amendSummaryPage, mockSummaryPageNoData, mockSubmissionService)
     super.afterEach()
   }
 
@@ -111,7 +113,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
           .thenReturn(Future.successful(Some(expectedSubmission)))
 
         val formData = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
-        val result = controller.submitDeclaration(postRequestAsFormUrlEncoded(formData: _*))
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(routes.ConfirmationController.displayHoldingPage.url))
@@ -130,7 +132,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
       "missing legal declaration data" in {
         withNewCaching(aDeclaration())
         val partialForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"))
-        val result = controller.submitDeclaration(postRequestAsFormUrlEncoded(partialForm: _*))
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestAsFormUrlEncoded(partialForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -142,7 +144,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         when(mockSubmissionService.submit(any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
 
         val correctForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
-        val result = controller.submitDeclaration(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe INTERNAL_SERVER_ERROR
         verify(normalSummaryPage, times(0)).apply(any())(any(), any(), any())

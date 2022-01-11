@@ -43,9 +43,10 @@ class SummaryController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
-  legalDeclarationPage: legal_declaration_page,
+  normalSummaryPage: normal_summary_page,
   amendSummaryPage: amend_summary_page,
   draftSummaryPage: draft_summary_page,
+  legalDeclarationPage: legal_declaration_page,
   summaryPageNoData: summary_page_no_data
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
@@ -53,23 +54,29 @@ class SummaryController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
       mode match {
-        case Mode.Draft | Mode.Normal => Ok(draftSummaryPage())
-        case Mode.Amend               => Ok(amendSummaryPage())
-        case _                        => handleError("Invalid mode on summary page")
+        case Mode.Normal => Ok(normalSummaryPage(mode))
+        case Mode.Amend  => Ok(amendSummaryPage())
+        case Mode.Draft  => Ok(draftSummaryPage())
+        case _           => handleError("Invalid mode on summary page")
       }
     } else {
       Ok(summaryPageNoData())
     }
   }
 
-  val displayDeclarationPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
-    Ok(legalDeclarationPage(LegalDeclaration.form))
+  def displayDeclarationPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+    mode match {
+      case Mode.Draft | Mode.Normal => Ok(legalDeclarationPage(LegalDeclaration.form, mode))
+      case Mode.Amend               => InternalServerError
+      case _                        => handleError("Invalid mode on summary page")
+    }
+
   }
 
-  val submitDeclaration: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def submitDeclaration(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     LegalDeclaration.form.bindFromRequest
       .fold(
-        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors))),
+        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors, mode))),
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(submission) =>
