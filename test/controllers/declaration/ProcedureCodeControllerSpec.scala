@@ -22,6 +22,7 @@ import forms.declaration.procedurecodes.ProcedureCode
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import models.Mode
+import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -313,13 +314,11 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
       }
     }
 
-    val warehouseRequiredProcedureCodesSuffixes = Seq("07", "71", "78")
-    warehouseRequiredProcedureCodesSuffixes.foreach { suffix =>
-      s"user provides procedure code indicating WarehouseIdentifier is required (ends with $suffix" when {
+    warehouseRequiredProcedureCodes.foreach { suffix =>
+      s"user provides procedure code indicating WarehouseIdentifier is required (ends with $suffix)" when {
 
         onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { request =>
           "remove WarehouseIdentification from cache" in {
-
             withNewCaching(
               aDeclaration(
                 withType(request.declarationType),

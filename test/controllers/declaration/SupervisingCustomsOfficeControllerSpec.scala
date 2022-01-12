@@ -17,15 +17,19 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import base.ExportsTestData.allValuesRequiringToSkipInlandOrBorder
 import controllers.declaration.routes.{
   DepartureTransportController,
   ExpressConsignmentController,
   InlandOrBorderController,
   InlandTransportDetailsController
 }
+import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
+import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
-import models.{DeclarationType, Mode}
+import models.DeclarationType
+import models.Mode.Normal
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
@@ -74,7 +78,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage(Normal)(request))
     theResponseForm
   }
 
@@ -89,7 +93,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
     "return 200 OK" in {
       withNewCaching(supplementaryCacheModel)
 
-      val response = controller.displayPage(Mode.Normal).apply(getRequest())
+      val response = controller.displayPage(Normal).apply(getRequest())
 
       status(response) must be(OK)
     }
@@ -97,22 +101,23 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
     "read item from cache and display it" in {
       withNewCaching(supplementaryCacheModel)
 
-      await(controller.displayPage(Mode.Normal)(getRequest()))
+      await(controller.displayPage(Normal)(getRequest()))
 
       verify(mockExportsCacheService).get(any())(any())
       verify(supervisingCustomsOfficeTemplate).apply(any(), any())(any(), any())
     }
   }
+
   "Supervising Customs Office Controller on POST" when {
 
     val body = Json.obj("supervisingCustomsOffice" -> exampleCustomsOfficeIdentifier, "identificationNumber" -> exampleWarehouseIdentificationNumber)
 
     "we are on standard declaration journey" should {
 
-      "redirect to the 'Inland or Border' page" in {
+      "redirect to /inland-or-border after a successful bind" in {
         withNewCaching(standardCacheModel)
 
-        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+        val result = await(controller.submit(Normal)(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe InlandOrBorderController.displayPage()
@@ -121,7 +126,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
       "update cache after successful bind" in {
         withNewCaching(standardCacheModel)
 
-        await(controller.submit(Mode.Normal)(postRequest(body)))
+        await(controller.submit(Normal)(postRequest(body)))
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
@@ -131,7 +136,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         withNewCaching(standardCacheModel)
 
         val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.submit(Mode.Normal)(postRequest(body))
+        val result = controller.submit(Normal)(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -139,19 +144,19 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
     "we are on supplementary declaration journey" should {
 
-      "redirect to the 'Inland or Border' page" in {
+      "redirect to /inland-or-border after a successful bind" in {
         withNewCaching(withRequest(SUPPLEMENTARY_SIMPLIFIED).cacheModel)
 
-        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+        val result = await(controller.submit(Normal)(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe InlandOrBorderController.displayPage()
       }
 
-      "redirect to the 'Inland Transport' page" in {
+      "redirect to /inland-transport-details after a successful bind" in {
         withNewCaching(withRequest(SUPPLEMENTARY_EIDR).cacheModel)
 
-        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+        val result = await(controller.submit(Normal)(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage()
@@ -160,7 +165,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
       "update cache after successful bind" in {
         withNewCaching(supplementaryCacheModel)
 
-        await(controller.submit(Mode.Normal)(postRequest(body)))
+        await(controller.submit(Normal)(postRequest(body)))
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
@@ -170,18 +175,35 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         withNewCaching(supplementaryCacheModel)
 
         val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.submit(Mode.Normal)(postRequest(body))
+        val result = controller.submit(Normal)(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
       }
     }
 
+    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+      s"AdditionalDeclarationType is $additionalType" should {
+        "redirect to /inland-transport-details after a successful bind" when {
+          "the user has previously entered a value which requires to skip the /inland-or-border page" in {
+            allValuesRequiringToSkipInlandOrBorder.foreach { modifier =>
+              initMockNavigatorForMultipleCallsInTheSameTest
+              withNewCaching(withRequest(additionalType, modifier).cacheModel)
+
+              val result = controller.submit(Normal)(postRequest(body))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage()
+            }
+          }
+        }
+      }
+    }
     "we are on simplified declaration journey" should {
 
-      "redirect to the 'Express Consignment' page" in {
+      "redirect to /express-consignment after a successful bind" in {
         withNewCaching(simplifiedCacheModel)
 
-        val result = await(controller.submit(Mode.Normal).apply(postRequest(body)))
+        val result = await(controller.submit(Normal).apply(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe ExpressConsignmentController.displayPage()
@@ -190,7 +212,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
       "update cache after successful bind" in {
         withNewCaching(simplifiedCacheModel)
 
-        await(controller.submit(Mode.Normal)(postRequest(body)))
+        await(controller.submit(Normal)(postRequest(body)))
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
@@ -200,26 +222,41 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         withNewCaching(simplifiedCacheModel)
 
         val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.submit(Mode.Normal)(postRequest(body))
+        val result = controller.submit(Normal)(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
       }
     }
+
     "we are on clearance declaration journey" should {
 
-      "redirect to Departure Transport" in {
+      "redirect to /departure-transport after a successful bind" in {
         withNewCaching(clearanceCacheModel)
 
-        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+        val result = await(controller.submit(Normal)(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe DepartureTransportController.displayPage()
       }
 
+      "redirect to /express-consignment after a successful bind" when {
+        List(FixedTransportInstallations, PostalConsignment).foreach { modeOfTransport =>
+          s"'$modeOfTransport' has been selected on /transport-leaving-the-border" in {
+            val borderModeOfTransportCode = withBorderModeOfTransportCode(Some(modeOfTransport))
+            withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), borderModeOfTransportCode))
+
+            val result = await(controller.submit(Normal)(postRequest(body)))
+
+            result mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe ExpressConsignmentController.displayPage()
+          }
+        }
+      }
+
       "update cache after successful bind" in {
         withNewCaching(clearanceCacheModel)
 
-        await(controller.submit(Mode.Normal)(postRequest(body)))
+        await(controller.submit(Normal)(postRequest(body)))
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
@@ -229,7 +266,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         withNewCaching(clearanceCacheModel)
 
         val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.submit(Mode.Normal)(postRequest(body))
+        val result = controller.submit(Normal)(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
       }

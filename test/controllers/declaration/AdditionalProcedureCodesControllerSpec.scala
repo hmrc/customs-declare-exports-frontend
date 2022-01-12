@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import java.util.{Locale, UUID}
-
 import base.ControllerSpec
+import base.ExportsTestData.pc1040
 import controllers.helpers.Remove
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.procedurecodes.AdditionalProcedureCode
@@ -275,10 +275,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
 
           "provided with procedureCode '1040' and additionalProcedureCode '000'" should {
             "reset (to None) 'supervisingCustomsOffice'" in {
-              val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE))))
-              val someOffice = Some(SupervisingCustomsOffice(Some("Some office")))
+              val item = ExportItem(itemId, procedureCodes = pc1040)
+              val someOffice = withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("Some office"))))
 
-              withNewCaching(aDeclaration(withType(request.declarationType), withItem(item), withSupervisingCustomsOffice(someOffice)))
+              withNewCaching(aDeclaration(withType(request.declarationType), withItem(item), someOffice))
 
               val correctForm = List(saveAndContinueActionUrlEncoded)
 
@@ -387,11 +387,10 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
         "multiple items are provided with procedureCode '1040' and additionalProcedureCode '000'" should {
           "reset (to None) 'supervisingCustomsOffice'" in {
             val itemId1 = UUID.randomUUID.toString
-            val item1 = ExportItem(itemId1, procedureCodes = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE))))
-            val item2 = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE))))
-            val someOffice = Some(SupervisingCustomsOffice(Some("Some office")))
-
-            withNewCaching(aDeclaration(withType(request.declarationType), withItems(item1, item2), withSupervisingCustomsOffice(someOffice)))
+            val item1 = ExportItem(itemId1, procedureCodes = pc1040)
+            val item2 = ExportItem(itemId, procedureCodes = pc1040)
+            val someOffice = withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("Some office"))))
+            withNewCaching(aDeclaration(withType(request.declarationType), withItems(item1, item2), someOffice))
 
             val correctForm = List(saveAndContinueActionUrlEncoded)
 

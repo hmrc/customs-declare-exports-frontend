@@ -18,7 +18,11 @@ package forms.declaration.declarationHolder
 
 object AuthorizationTypeCodes {
 
-  val CodesRequiringDocumentation = Set(
+  val mutuallyExclusiveAuthCodes = List("CSE", "EXRR")
+
+  val authCodesThatSkipInlandOrBorder = mutuallyExclusiveAuthCodes
+
+  val codesRequiringDocumentation = Set(
     "OPO",
     "REX",
     "AEOC",

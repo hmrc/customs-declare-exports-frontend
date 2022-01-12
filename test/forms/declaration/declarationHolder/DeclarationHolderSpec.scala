@@ -197,7 +197,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
   "DeclarationHolder on requireAdditionalDocumentation" should {
 
     "return true" when {
-      AuthorizationTypeCodes.CodesRequiringDocumentation.foreach { code =>
+      AuthorizationTypeCodes.codesRequiringDocumentation.foreach { code =>
         s"authorisationTypeCode contains $code code" in {
           DeclarationHolder(Some(code), None, None).isAdditionalDocumentationRequired mustBe true
         }

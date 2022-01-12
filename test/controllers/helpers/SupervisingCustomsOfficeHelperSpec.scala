@@ -16,6 +16,7 @@
 
 package controllers.helpers
 
+import base.ExportsTestData.itemWith1040AsPC
 import base.{JourneyTypeTestRunner, MockAuthAction, MockExportCacheService, UnitSpec}
 import controllers.declaration.routes
 import controllers.helpers.SupervisingCustomsOfficeHelper._
@@ -23,7 +24,6 @@ import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnIn
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.Mode.Normal
-import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.mvc.AnyContentAsEmpty
@@ -35,25 +35,22 @@ class SupervisingCustomsOfficeHelperSpec
 
   import SupervisingCustomsOfficeHelperSpec._
 
-  val condVerified = anItem(withProcedureCodes(Some("1040"), Seq(NO_APC_APPLIES_CODE)))
-
   "SupervisingCustomsOfficeHelper on isConditionForAllProcedureCodesVerified" should {
 
     "return true" when {
 
       "a declaration contains a single item with ProcedureCodesData(1040-000)" in {
-        val declaration = aDeclaration(withItem(condVerified))
+        val declaration = aDeclaration(withItem(itemWith1040AsPC))
         assert(isConditionForAllProcedureCodesVerified(declaration))
       }
 
       "a declaration contains all items with ProcedureCodesData(1040-000)" in {
-        val declaration = aDeclaration(withItem(condVerified), withItem(condVerified), withItem(condVerified))
+        val declaration = aDeclaration(withItem(itemWith1040AsPC), withItem(itemWith1040AsPC), withItem(itemWith1040AsPC))
         assert(isConditionForAllProcedureCodesVerified(declaration))
       }
     }
 
     "return false" when {
-
       val condNotVerified = anItem(withProcedureCodes(Some("3171"), Seq("1CS")))
 
       "a declaration does not contain any item with ProcedureCodesData(1040-000)" in {
@@ -62,7 +59,7 @@ class SupervisingCustomsOfficeHelperSpec
       }
 
       "a declaration contains at least one items without ProcedureCodesData(1040-000)" in {
-        val declaration = aDeclaration(withItem(condVerified), withItem(condNotVerified), withItem(condVerified))
+        val declaration = aDeclaration(withItem(itemWith1040AsPC), withItem(condNotVerified), withItem(itemWith1040AsPC))
         isConditionForAllProcedureCodesVerified(declaration) mustBe false
       }
 

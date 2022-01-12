@@ -23,8 +23,10 @@ import controllers.declaration.routes.{
   InlandTransportDetailsController,
   TransportContainerController
 }
+import controllers.helpers.InlandOrBorderHelper.skipInlandOrBorder
 import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.navigation.Navigator
+import controllers.routes.RootController
 import forms.declaration.InlandOrBorder
 import forms.declaration.InlandOrBorder.{form, Border, Inland}
 import models.DeclarationType.SUPPLEMENTARY
@@ -52,16 +54,21 @@ class InlandOrBorderController @Inject()(
   private val actionBuilder = (authenticate andThen journeyAction.onAdditionalTypes(additionalDeclTypesAllowedOnInlandOrBorder))
 
   def displayPage(mode: Mode): Action[AnyContent] = actionBuilder { implicit request =>
-    val frm = form.withSubmissionErrors
-    request.cacheModel.locations.inlandOrBorder match {
-      case Some(location) => Ok(inlandOrBorderPage(mode, frm.fill(location)))
-      case _              => Ok(inlandOrBorderPage(mode, frm))
+    if (skipInlandOrBorder(request.cacheModel)) Results.Redirect(RootController.displayPage)
+    else {
+      val frm = form.withSubmissionErrors
+      request.cacheModel.locations.inlandOrBorder match {
+        case Some(location) => Ok(inlandOrBorderPage(mode, frm.fill(location)))
+        case _              => Ok(inlandOrBorderPage(mode, frm))
+      }
     }
   }
 
   def submitPage(mode: Mode): Action[AnyContent] = actionBuilder.async { implicit request =>
-    form.bindFromRequest
-      .fold(formWithErrors => Future.successful(BadRequest(inlandOrBorderPage(mode, formWithErrors))), updateExportsCache(mode, _))
+    if (skipInlandOrBorder(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
+    else
+      form.bindFromRequest
+        .fold(formWithErrors => Future.successful(BadRequest(inlandOrBorderPage(mode, formWithErrors))), updateExportsCache(mode, _))
   }
 
   private def nextPage(declaration: ExportsDeclaration, inlandOrBorder: InlandOrBorder): Mode => Call =

@@ -23,7 +23,7 @@ import scala.io.Source
 
 object CustomsOffices {
 
-  def all: List[CustomsOffice] = {
+  val all: List[CustomsOffice] = {
 
     val reader = CSVReader.open(Source.fromURL(getClass.getClassLoader.getResource("code-lists/customs-offices.csv"), "UTF-8"))
     val codes: List[Map[String, String]] = reader.allWithHeaders()

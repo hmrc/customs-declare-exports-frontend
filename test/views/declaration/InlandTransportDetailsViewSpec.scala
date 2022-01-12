@@ -16,9 +16,14 @@
 
 package views.declaration
 
-import base.ExportsTestData.itemWith1040AsPC
+import base.ExportsTestData.{allValuesRequiringToSkipInlandOrBorder, itemWith1040AsPC, valuesRequiringToSkipInlandOrBorder}
 import base.Injector
-import controllers.declaration.routes
+import controllers.declaration.routes.{
+  InlandOrBorderController,
+  ItemsSummaryController,
+  SupervisingCustomsOfficeController,
+  TransportLeavingTheBorderController
+}
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
@@ -69,62 +74,49 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
       }
 
       "display same page title as header" in {
-        val viewWithMessage = createView()
-        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+        view.title must include(view.getElementsByTag("h1").text())
       }
 
       "display 'Mode of Transport' section" which {
 
         "have 'Sea' option" in {
-          view.getElementsByAttributeValue("for", "Inland_Sea") must containMessageForElements(
-            "declaration.warehouse.inlandTransportDetails.transportMode.sea"
-          )
+          val key = "declaration.warehouse.inlandTransportDetails.transportMode.sea"
+          view.getElementsByAttributeValue("for", "Inland_Sea") must containMessageForElements(key)
         }
 
         "have 'Road' option" in {
-          view.getElementsByAttributeValue("for", "Inland_Rail") must containMessageForElements(
-            "declaration.warehouse.inlandTransportDetails.transportMode.rail"
-          )
+          val key = "declaration.warehouse.inlandTransportDetails.transportMode.rail"
+          view.getElementsByAttributeValue("for", "Inland_Rail") must containMessageForElements(key)
         }
 
         "have 'Rail' option" in {
-          view.getElementsByAttributeValue("for", "Inland_Road") must containMessageForElements(
-            "declaration.warehouse.inlandTransportDetails.transportMode.road"
-          )
+          val key = "declaration.warehouse.inlandTransportDetails.transportMode.road"
+          view.getElementsByAttributeValue("for", "Inland_Road") must containMessageForElements(key)
         }
 
         "have 'Air' option" in {
-          view.getElementsByAttributeValue("for", "Inland_Air") must containMessageForElements(
-            "declaration.warehouse.inlandTransportDetails.transportMode.air"
-          )
+          val key = "declaration.warehouse.inlandTransportDetails.transportMode.air"
+          view.getElementsByAttributeValue("for", "Inland_Air") must containMessageForElements(key)
         }
 
         "have 'Postal or Mail' option" in {
-          view
-            .getElementsByAttributeValue("for", "Inland_PostalOrMail") must containMessageForElements(
-            "declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail"
-          )
+          val key = "declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail"
+          view.getElementsByAttributeValue("for", "Inland_PostalOrMail") must containMessageForElements(key)
         }
 
         "have 'Fixed transport installations' option" in {
-          view
-            .getElementsByAttributeValue("for", "Inland_FixedTransportInstallations") must containMessageForElements(
-            "declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations"
-          )
+          val key = "declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations"
+          view.getElementsByAttributeValue("for", "Inland_FixedTransportInstallations") must containMessageForElements(key)
         }
 
         "have 'Inland waterway transport' option" in {
-          view
-            .getElementsByAttributeValue("for", "Inland_InlandWaterway") must containMessageForElements(
-            "declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway"
-          )
+          val key = "declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway"
+          view.getElementsByAttributeValue("for", "Inland_InlandWaterway") must containMessageForElements(key)
         }
 
         "have 'Mode unknown' option" in {
-          view
-            .getElementsByAttributeValue("for", "Inland_Unknown") must containMessageForElements(
-            "declaration.warehouse.inlandTransportDetails.transportMode.unknown"
-          )
+          val key = "declaration.warehouse.inlandTransportDetails.transportMode.unknown"
+          view.getElementsByAttributeValue("for", "Inland_Unknown") must containMessageForElements(key)
         }
       }
 
@@ -137,73 +129,77 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
       }
     }
 
-    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
-      implicit val request = withRequest(additionalType)
-      "display 'Back' button that links to the 'Inland Or Border' page" when {
+    "display 'Back' button that links to /inland-or-border" when {
+      additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
         s"AdditionalDeclarationType is $additionalType" in {
-          val view = createView()
+          val view = createView()(withRequest(additionalType))
           val backButton = view.getElementById("back-link")
           backButton must containMessage("site.back")
-          backButton.getElementById("back-link") must haveHref(routes.InlandOrBorderController.displayPage())
+          backButton.getElementById("back-link") must haveHref(InlandOrBorderController.displayPage())
         }
       }
     }
 
-    List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
-      implicit val request = withRequest(additionalType)
-      val view = createView()
+    "display 'Back' button that links to /supervising-customs-office" when {
 
-      "display 'Back' button that links to 'Supervising Customs Office' page" when {
-        s"AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
-          val backButton = view.getElementById("back-link")
-
-          backButton must containMessage("site.back")
-          backButton.getElementById("back-link") must haveHref(routes.SupervisingCustomsOfficeController.displayPage())
+      additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+        s"AdditionalDeclarationType is $additionalType and" when {
+          "the user has previously entered a value which requires to skip the /inland-or-border page" in {
+            allValuesRequiringToSkipInlandOrBorder.foreach { modifier =>
+              val view = createView()(withRequest(additionalType, modifier))
+              val backButton = view.getElementById("back-link")
+              backButton must containMessage("site.back")
+              backButton.getElementById("back-link") must haveHref(SupervisingCustomsOfficeController.displayPage())
+            }
+          }
         }
       }
-    }
 
-    List(SUPPLEMENTARY_EIDR, OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
-      "display 'Back' button that links to 'Supervising Customs Office' page" when {
-        implicit val request = withRequest(additionalType)
-        val view = createView()
-
+      List(SUPPLEMENTARY_EIDR, OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
         s"AdditionalDeclarationType is ${additionalType}" in {
+          val view = createView()(withRequest(additionalType))
           val backButton = view.getElementById("back-link")
-
           backButton must containMessage("site.back")
-          backButton.getElementById("back-link") must haveHref(routes.SupervisingCustomsOfficeController.displayPage())
+          backButton.getElementById("back-link") must haveHref(SupervisingCustomsOfficeController.displayPage())
         }
       }
     }
 
-    List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
-      "display 'Back' button that links to 'Transport Leaving The Border' page" when {
-        "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
-          implicit val request = withRequest(additionalType, withItem(itemWith1040AsPC))
-          val view = createView()
+    "display 'Back' button that links to /transport-leaving-the-border" when {
+      "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
 
+        additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+          s"AdditionalDeclarationType is $additionalType and" when {
+            "the user has previously entered a value which requires to skip the /inland-or-border page" in {
+              valuesRequiringToSkipInlandOrBorder.foreach { modifier =>
+                val view = createView()(withRequest(additionalType, modifier, withItem(itemWith1040AsPC)))
+                val backButton = view.getElementById("back-link")
+                backButton must containMessage("site.back")
+                backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
+              }
+            }
+          }
+        }
+
+        List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
           s"AdditionalDeclarationType is ${additionalType}" in {
+            val view = createView()(withRequest(additionalType, withItem(itemWith1040AsPC)))
             val backButton = view.getElementById("back-link")
-
             backButton must containMessage("site.back")
-            backButton.getElementById("back-link") must haveHref(routes.TransportLeavingTheBorderController.displayPage())
+            backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
           }
         }
       }
     }
 
-    List(OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
-      "display 'Back' button that links to 'Items Summary' page" when {
-        "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
-          implicit val request = withRequest(additionalType, withItem(itemWith1040AsPC))
-          val view = createView()
-
+    "display 'Back' button that links to /declaration-items-list" when {
+      "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
+        List(OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
           s"AdditionalDeclarationType is ${additionalType}" in {
+            val view = createView()(withRequest(additionalType, withItem(itemWith1040AsPC)))
             val backButton = view.getElementById("back-link")
-
             backButton must containMessage("site.back")
-            backButton.getElementById("back-link") must haveHref(routes.ItemsSummaryController.displayItemsSummaryPage())
+            backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage())
           }
         }
       }

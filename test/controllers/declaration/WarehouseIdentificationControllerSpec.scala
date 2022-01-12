@@ -16,14 +16,12 @@
 
 package controllers.declaration
 
-import java.util.UUID
 import base.ControllerSpec
+import base.ExportsTestData.itemWith1040AsPC
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.WarehouseIdentification
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
-import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
-import models.declaration.{ExportItem, ProcedureCodesData}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -128,8 +126,6 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
         }
       }
     }
-
-    val itemWith1040AsPC = ExportItem(UUID.randomUUID.toString, procedureCodes = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE))))
 
     "redirect to the 'Inland Transport Details' page" when {
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR and" when {
