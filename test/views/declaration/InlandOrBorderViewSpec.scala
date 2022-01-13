@@ -67,8 +67,8 @@ class InlandOrBorderViewSpec extends UnitViewSpec with ExportsTestData with Mock
           content.get(0).text mustBe messages("declaration.inlandOrBorder.inset.body")
 
           val bulletPoints = content.get(1).getElementsByClass("govuk-list--bullet").first.children
-          bulletPoints.size mustBe 5
-          for (ix <- 1 to 5)
+          bulletPoints.size mustBe 4
+          for (ix <- 1 to 4)
             bulletPoints.get(ix - 1).text mustBe messages(s"declaration.inlandOrBorder.inset.bullet.$ix.text")
         }
 

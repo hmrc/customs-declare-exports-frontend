@@ -17,6 +17,7 @@
 package views.guidance
 
 import base.Injector
+import collection.JavaConverters._
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.guidance.send_by_roro
@@ -34,9 +35,41 @@ class SendByRoroViewSpec extends UnitViewSpec with Stubs with Injector {
       view.getElementsByTag("h1").first must containMessage("guidance.roro.title")
     }
 
-    "ordered list exist" in {
-      val orderedList = view.getElementsByTag("ol")
-      orderedList.size mustBe 1
+    "display the expected sections" in {
+      val section1 = view.getElementsByClass("govuk-heading-l")
+      section1.size mustBe 1
+      section1.text mustBe messages(s"guidance.roro.section.1.header")
+
+      val otherSections = view.getElementsByClass("govuk-heading-m")
+      otherSections.size mustBe 5
+
+      otherSections.eachText.asScala.zipWithIndex.foreach { section =>
+        val text = section._1
+        val ix = section._2 + 2
+        text mustBe messages(s"guidance.roro.section.${ix}.header")
+      }
+    }
+
+    "display the expected paragraphs" in {
+      val paragraphs = view.getElementsByClass("govuk-body")
+      paragraphs.size mustBe 13
+    }
+
+    "display the expected bullet list" in {
+      val bulletLists = view.getElementsByClass("govuk-list--bullet")
+      bulletLists.size mustBe 4
+
+      bulletLists.get(0).children.size mustBe 2
+      bulletLists.get(1).children.size mustBe 10
+      bulletLists.get(2).children.size mustBe 9
+      bulletLists.get(3).children.size mustBe 4
+    }
+
+    "display the expected numbered list" in {
+      val numberedList = view.getElementsByClass("govuk-list--number")
+      numberedList.size mustBe 1
+
+      numberedList.get(0).children.size mustBe 8
     }
   }
 }
