@@ -193,8 +193,8 @@ trait ExportsDeclarationBuilder {
 
   def withDepartureTransport(
     borderModeOfTransportCode: ModeOfTransportCode,
-    meansOfTransportOnDepartureType: String,
-    meansOfTransportOnDepartureIDNumber: String
+    meansOfTransportOnDepartureType: String = "",
+    meansOfTransportOnDepartureIDNumber: String = ""
   ): ExportsDeclarationModifier =
     withDepartureTransport(
       TransportLeavingTheBorder(Some(borderModeOfTransportCode)),

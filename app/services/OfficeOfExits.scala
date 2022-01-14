@@ -23,7 +23,7 @@ import scala.io.Source
 
 object OfficeOfExits {
 
-  lazy val all: List[OfficeOfExit] = {
+  val all: List[OfficeOfExit] = {
 
     val reader = CSVReader.open(Source.fromURL(getClass.getClassLoader.getResource("code-lists/office-of-exits.csv"), "UTF-8"))
     val codes: List[Map[String, String]] = reader.allWithHeaders()

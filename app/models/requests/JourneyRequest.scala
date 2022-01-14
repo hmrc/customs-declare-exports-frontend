@@ -16,6 +16,7 @@
 
 package models.requests
 
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
 import models.responses.FlashKeys
@@ -27,7 +28,11 @@ class JourneyRequest[+A](val authenticatedRequest: AuthenticatedRequest[A], val 
   val declarationType: DeclarationType = cacheModel.`type`
   val sourceDecId: Option[String] = cacheModel.sourceId
   def isType(`type`: DeclarationType*): Boolean = `type`.contains(declarationType)
+
+  def isAdditionalDeclarationType(adt: AdditionalDeclarationType): Boolean = cacheModel.isAdditionalDeclarationType(adt)
+
   def eori: String = authenticatedRequest.user.eori
+
   def submissionErrors: Seq[FormError] = {
     val fieldName = flash.get(FlashKeys.fieldName)
     val errorMessage = flash.get(FlashKeys.errorMessage)

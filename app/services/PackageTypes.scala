@@ -23,7 +23,7 @@ import scala.io.Source
 
 object PackageTypes {
 
-  lazy val all: List[PackageType] = {
+  val all: List[PackageType] = {
 
     val reader = CSVReader.open(Source.fromURL(getClass.getClassLoader.getResource("code-lists/package-types.csv"), "UTF-8"))
     val codes: List[Map[String, String]] = reader.allWithHeaders()

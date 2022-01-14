@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.{FormAction, Remove}
+import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{ContainerAdd, ContainerFirst}

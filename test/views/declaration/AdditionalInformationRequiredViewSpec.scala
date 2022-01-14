@@ -16,11 +16,11 @@
 
 package views.declaration
 
+import base.ExportsTestData.pc1040
 import base.Injector
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.Mode
-import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
@@ -39,10 +39,9 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
   private val url = "/test"
 
   private val additionalInfoRequiredPage = instanceOf[additional_information_required]
-  val maybeProcedureCodesData = Some(ProcedureCodesData(Some("1040"), Seq("000")))
 
   private def createView(implicit request: JourneyRequest[_]): Document =
-    additionalInfoRequiredPage(Mode.Normal, itemId, YesNoAnswer.form(), Call("GET", url), maybeProcedureCodesData)
+    additionalInfoRequiredPage(Mode.Normal, itemId, YesNoAnswer.form(), Call("GET", url), pc1040)
 
   "Additional Information Required View on empty page" should {
 

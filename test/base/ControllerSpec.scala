@@ -73,6 +73,12 @@ trait ControllerSpec
       .withFormUrlEncodedBody(body: _*)
       .withCSRFToken
 
+  protected def postRequestWithSubmissionError: Request[AnyContentAsEmpty.type] =
+    FakeRequest("POST", "")
+      .withFlash((FlashKeys.fieldName, submissionField), (FlashKeys.errorMessage, submissionError))
+      .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
+      .withCSRFToken
+
   protected def deleteRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("DELETE", "")
       .withSession(ExportsSessionKeys.declarationId -> "declaration-id")

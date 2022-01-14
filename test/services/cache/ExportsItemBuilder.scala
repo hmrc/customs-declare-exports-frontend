@@ -16,13 +16,12 @@
 
 package services.cache
 
-import java.util.UUID
-
 import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldocuments.AdditionalDocument
-import models.declaration._
-import models.declaration.{CommodityMeasure => CommodityMeasureModel}
+import models.declaration.{CommodityMeasure => CommodityMeasureModel, _}
+
+import java.util.UUID
 
 trait ExportsItemBuilder {
 
@@ -124,5 +123,4 @@ trait ExportsItemBuilder {
 
   def withAdditionalDocuments(additionalDocuments: AdditionalDocuments): ItemModifier =
     cache => cache.copy(additionalDocuments = Some(additionalDocuments))
-
 }

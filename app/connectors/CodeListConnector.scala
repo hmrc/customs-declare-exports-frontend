@@ -19,7 +19,7 @@ package connectors
 import akka.util.Helpers.Requiring
 import com.google.inject.ImplementedBy
 import config.AppConfig
-import models.codes.{AdditionalProcedureCode, CommonCode, Country, DmsErrorCode, HolderOfAuthorisationCode, ProcedureCode}
+import models.codes._
 import play.api.libs.json.{Json, OFormat}
 import utils.JsonFile
 
@@ -45,13 +45,13 @@ trait CodeListConnector {
 
   type CodeMap[T <: CommonCode] = Map[String, ListMap[String, T]]
 
+  def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode]
+  def getAdditionalProcedureCodesMapForC21(locale: Locale): ListMap[String, AdditionalProcedureCode]
+  def getCountryCodes(locale: Locale): ListMap[String, Country]
+  def getDmsErrorCodesMap(locale: Locale): ListMap[String, DmsErrorCode]
   def getHolderOfAuthorisationCodes(locale: Locale): ListMap[String, HolderOfAuthorisationCode]
   def getProcedureCodes(locale: Locale): ListMap[String, ProcedureCode]
   def getProcedureCodesForC21(locale: Locale): ListMap[String, ProcedureCode]
-  def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode]
-  def getAdditionalProcedureCodesMapForC21(locale: Locale): ListMap[String, AdditionalProcedureCode]
-  def getDmsErrorCodesMap(locale: Locale): ListMap[String, DmsErrorCode]
-  def getCountryCodes(locale: Locale): ListMap[String, Country]
 
   val WELSH = new Locale("cy", "GB", "");
   val supportedLanguages = Seq(ENGLISH, WELSH)
@@ -59,6 +59,47 @@ trait CodeListConnector {
 
 @Singleton
 class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeListConnector {
+
+  def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode] =
+    additionalProcedureCodeMapsByLang.getOrElse(locale.getLanguage, additionalProcedureCodeMapsByLang.value.head._2)
+
+  def getAdditionalProcedureCodesMapForC21(locale: Locale): ListMap[String, AdditionalProcedureCode] =
+    additionalProcedureCodeForC21MapsByLang.getOrElse(locale.getLanguage, additionalProcedureCodeForC21MapsByLang.value.head._2)
+
+  def getCountryCodes(locale: Locale): ListMap[String, Country] =
+    countryListByLang.getOrElse(locale.getLanguage, countryListByLang.value.head._2)
+
+  def getDmsErrorCodesMap(locale: Locale): ListMap[String, DmsErrorCode] =
+    dmsErrorCodeMapsByLang.getOrElse(locale.getLanguage, dmsErrorCodeMapsByLang.value.head._2)
+
+  def getHolderOfAuthorisationCodes(locale: Locale): ListMap[String, HolderOfAuthorisationCode] =
+    holderOfAuthorisationCodeListsByLang.getOrElse(locale.getLanguage, holderOfAuthorisationCodeListsByLang.value.head._2)
+
+  def getProcedureCodes(locale: Locale): ListMap[String, ProcedureCode] =
+    procedureCodeListsByLang.getOrElse(locale.getLanguage, procedureCodeListsByLang.value.head._2)
+
+  def getProcedureCodesForC21(locale: Locale): ListMap[String, ProcedureCode] =
+    procedureCodeForC21ListsByLang.getOrElse(locale.getLanguage, procedureCodeForC21ListsByLang.value.head._2)
+
+  private val additionalProcedureCodeMapsByLang = loadCommonCodesAsOrderedMap(
+    appConfig.additionalProcedureCodes,
+    (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  private val additionalProcedureCodeForC21MapsByLang = loadCommonCodesAsOrderedMap(
+    appConfig.additionalProcedureCodesForC21,
+    (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
+  private val countryListByLang = loadCommonCodesAsOrderedMap(
+    appConfig.countryCodes,
+    (codeItem: CodeItem, locale: Locale) => Country(codeItem.getDescriptionByLocale(locale), codeItem.code)
+  )
+
+  private val dmsErrorCodeMapsByLang = loadCommonCodesAsOrderedMap(
+    standardOrCustomErrorDefinitionFile,
+    (codeItem: CodeItem, locale: Locale) => DmsErrorCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
 
   private val holderOfAuthorisationCodeListsByLang = loadCommonCodesAsOrderedMap(
     appConfig.holderOfAuthorisationCodes,
@@ -74,47 +115,6 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
     appConfig.procedureCodesForC21ListFile,
     (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
-
-  private val additionalProcedureCodeMapsByLang = loadCommonCodesAsOrderedMap(
-    appConfig.additionalProcedureCodes,
-    (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
-  )
-
-  private val additionalProcedureCodeForC21MapsByLang = loadCommonCodesAsOrderedMap(
-    appConfig.additionalProcedureCodesForC21,
-    (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
-  )
-
-  private val dmsErrorCodeMapsByLang = loadCommonCodesAsOrderedMap(
-    standardOrCustomErrorDefinitionFile,
-    (codeItem: CodeItem, locale: Locale) => DmsErrorCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
-  )
-
-  private val countryListByLang = loadCommonCodesAsOrderedMap(
-    appConfig.countryCodes,
-    (codeItem: CodeItem, locale: Locale) => Country(codeItem.getDescriptionByLocale(locale), codeItem.code)
-  )
-
-  def getHolderOfAuthorisationCodes(locale: Locale): ListMap[String, HolderOfAuthorisationCode] =
-    holderOfAuthorisationCodeListsByLang.getOrElse(locale.getLanguage, holderOfAuthorisationCodeListsByLang.value.head._2)
-
-  def getProcedureCodes(locale: Locale): ListMap[String, ProcedureCode] =
-    procedureCodeListsByLang.getOrElse(locale.getLanguage, procedureCodeListsByLang.value.head._2)
-
-  def getProcedureCodesForC21(locale: Locale): ListMap[String, ProcedureCode] =
-    procedureCodeForC21ListsByLang.getOrElse(locale.getLanguage, procedureCodeForC21ListsByLang.value.head._2)
-
-  def getAdditionalProcedureCodesMap(locale: Locale): ListMap[String, AdditionalProcedureCode] =
-    additionalProcedureCodeMapsByLang.getOrElse(locale.getLanguage, additionalProcedureCodeMapsByLang.value.head._2)
-
-  def getAdditionalProcedureCodesMapForC21(locale: Locale): ListMap[String, AdditionalProcedureCode] =
-    additionalProcedureCodeForC21MapsByLang.getOrElse(locale.getLanguage, additionalProcedureCodeForC21MapsByLang.value.head._2)
-
-  def getDmsErrorCodesMap(locale: Locale): ListMap[String, DmsErrorCode] =
-    dmsErrorCodeMapsByLang.getOrElse(locale.getLanguage, dmsErrorCodeMapsByLang.value.head._2)
-
-  def getCountryCodes(locale: Locale): ListMap[String, Country] =
-    countryListByLang.getOrElse(locale.getLanguage, countryListByLang.value.head._2)
 
   private def loadCommonCodesAsOrderedMap[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T): CodeMap[T] = {
     val codeList = JsonFile.getJsonArrayFromFile(srcFile, CodeItem.formats)

@@ -19,14 +19,17 @@ package base
 import forms.Choice
 import forms.Choice._
 import forms.Choice.AllowedChoiceValues._
+import forms.declaration.GoodsLocationForm
+import forms.declaration.ModeOfTransportCode.RoRo
 import models.AuthKey.{enrolment, identifierKey}
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
+import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.{IdentityData, SignedInUser}
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json._
-import services.cache.ExportsDeclarationBuilder
+import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core.retrieve._
@@ -34,7 +37,7 @@ import uk.gov.hmrc.auth.core.{Enrolment, Enrolments, User}
 
 import java.util.UUID
 
-object ExportsTestData extends ExportsDeclarationBuilder {
+object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder {
 
   val exportsCacheModelFull = aDeclaration()
 
@@ -56,13 +59,25 @@ object ExportsTestData extends ExportsDeclarationBuilder {
   val mucr = "CZYX123A"
   val eidrDateStamp = "20001231"
 
-  def itemWith1040AsPC = ExportItem(UUID.randomUUID.toString, procedureCodes = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE))))
+  val pc1040 = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE)))
+  def itemWith1040AsPC = ExportItem(UUID.randomUUID.toString, procedureCodes = pc1040)
 
   val currentLoginTime: DateTime = new DateTime(1530442800000L, UTC)
   val previousLoginTime: DateTime = new DateTime(1530464400000L, UTC)
   val nrsTimeStamp: DateTime = new DateTime(1530475200000L, UTC)
 
   val nrsLoginTimes = LoginTimes(currentLoginTime, Some(previousLoginTime))
+
+  val valuesRequiringToSkipInlandOrBorder = List(
+    withDeclarationHolders(Some("CSE")),
+    withDeclarationHolders(Some("EXRR")),
+    withBorderModeOfTransportCode(Some(RoRo)),
+    withGoodsLocation(GoodsLocationForm("GBAUCBRLHRXXD")) // GBAUCBRLHRXXD => DEP location code
+  )
+
+  val allValuesRequiringToSkipInlandOrBorder =
+    valuesRequiringToSkipInlandOrBorder ++
+      warehouseRequiredProcedureCodes.map(pc => withItem(anItem(withProcedureCodes(Some(s"12$pc")))))
 
   def newUser(eori: String, externalId: String): SignedInUser =
     SignedInUser(

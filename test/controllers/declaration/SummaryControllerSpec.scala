@@ -18,10 +18,11 @@ package controllers.declaration
 
 import base.ControllerWithoutFormSpec
 import forms.declaration.LegalDeclaration
+import forms.{Lrn, LrnValidator}
 import mock.ErrorHandlerMocks
-import models.{ExportsDeclaration, Mode}
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys
+import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
@@ -41,6 +42,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
   private val amendSummaryPage = mock[amend_summary_page]
   private val mockSummaryPageNoData = mock[summary_page_no_data]
   private val mockSubmissionService = mock[SubmissionService]
+  private val mockLrnValidator = mock[LrnValidator]
 
   private val controller = new SummaryController(
     mockAuthAction,
@@ -53,8 +55,9 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     normalSummaryPage,
     amendSummaryPage,
     draftSummaryPage,
+    mockSummaryPageNoData,
     legalDeclarationPage,
-    mockSummaryPageNoData
+    mockLrnValidator
   )(ec, appConfig)
 
   override protected def beforeEach(): Unit = {
@@ -133,6 +136,25 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         withNewCaching(aDeclaration())
         val partialForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"))
         val result = controller.submitDeclaration(models.Mode.Normal)(postRequestAsFormUrlEncoded(partialForm: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "form is submitted with form errors" in {
+        withNewCaching(aDeclaration())
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestWithSubmissionError)
+
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "lrn has been submitted in the past 48 hours" in {
+        withNewCaching(aDeclaration(withConsignmentReferences()))
+        val completeForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
+
+        when(mockLrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any[HeaderCarrier], any[ExecutionContext]))
+          .thenReturn(Future.successful(true))
+
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestWithSubmissionError)
 
         status(result) must be(BAD_REQUEST)
       }

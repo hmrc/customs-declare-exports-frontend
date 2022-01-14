@@ -39,7 +39,8 @@ class Guidance(
   val specialProcedures: String,
   val takingCommercialGoodsOnYourPerson: String,
   val vatOnGoodsExportedFromUK: String,
-  val vatRatingForStandardExport: String
+  val vatRatingForStandardExport: String,
+  val january2022locations: String
 )
 
 object Guidance {
@@ -64,6 +65,7 @@ object Guidance {
       specialProcedures = loadConfig("guidance.specialProcedures"),
       takingCommercialGoodsOnYourPerson = loadConfig("guidance.takingCommercialGoodsOnYourPerson"),
       vatOnGoodsExportedFromUK = loadConfig("guidance.vatOnGoodsExportedFromUK"),
-      vatRatingForStandardExport = loadConfig("guidance.vatRatingForStandardExport")
+      vatRatingForStandardExport = loadConfig("guidance.vatRatingForStandardExport"),
+      january2022locations = loadConfig("guidance.january2022locations")
     )
 }

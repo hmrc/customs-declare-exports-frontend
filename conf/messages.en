@@ -518,13 +518,13 @@ declaration.consignmentReferences.lrn.hint = This can be up to 22 capital letter
 declaration.consignmentReferences.lrn.error.empty = Enter a local reference number (LRN)
 declaration.consignmentReferences.lrn.error.length = Local reference number (LRN) must be 22 characters or fewer
 declaration.consignmentReferences.lrn.error.specialCharacter = Local reference number (LRN) must contain only letters and numbers
-declaration.consignmentReferences.lrn.error.notExpiredYet = You already submitted a declaration with this LRN in the past 48 hours; if you are resubmitting after correcting an error or updating information, add a version number at the end
+declaration.consignmentReferences.lrn.error.notExpiredYet = You already submitted a declaration with this LRN in the past 48 hours. If you are resubmitting after correcting an error or updating information, add a version number at the end.
 declaration.consignmentReferences.supplementary.lrn.info = Local reference number (LRN)
 declaration.consignmentReferences.supplementary.ducr.hint1 = Enter the DUCR for the simplified declaration that was the ‘part 1’ of this declaration.
 declaration.consignmentReferences.supplementary.lrn.hint = You cannot repeat an LRN within 48 hours. Add a version number if you are resubmitting after fixing errors, or if the simplified declaration was submitted within the last 48 hours.
 declaration.consignmentReferences.supplementary.mrn.info = Movement reference number
 declaration.consignmentReferences.supplementary.mrn.hint1 = Enter the movement reference number (MRN) of the simplified declaration.
-declaration.consignmentReferences.supplementary.mrn.hint2 = This is 18 digits long, made up of 2 digits for the current year, 2 letters for the country code, and a 14 digit number. You were given the MRN when you submitted the simplified declaration.
+declaration.consignmentReferences.supplementary.mrn.hint2 = This is 18 digits long, made up of 2 digits for the current year, 2 letters for the country code, and 14 randomly generated letters and numbers. You were given the MRN when you submitted the simplified declaration.
 declaration.consignmentReferences.supplementary.mrn.error.empty = Enter a movement reference number (MRN)
 declaration.consignmentReferences.supplementary.mrn.error.invalid = Movement Reference Number (MRN) must be in the correct format
 declaration.consignmentReferences.supplementary.eidr.info = Date of EIDR
@@ -816,7 +816,7 @@ declaration.declarationHolderRequired.empty = Select yes if you need to add an a
 declaration.declarationHolder.title = Add any authorisations for this export
 declaration.declarationHolder.paragraph = Authorisations allow you to use specific procedures or types of declaration.
 declaration.declarationHolder.body.1007.link = guidance for procedure 1007 for excise goods (opens in new tab)
-declaration.declarationHolder.body.exrr.roro.exports = For RoRo exports leaving from Dover, Eurotunnel or Holyhead you must select EXRR as the authorisation for an arrived declaration.
+declaration.declarationHolder.body.exrr.roro.exports = For RoRo exports using an arrived declaration, you must select EXRR as the authorisation for the arrived declaration.
 declaration.declarationHolder.body.clearance.eidr.1040 = You need to declare EIR or MOU authorisation for entry into declarant’s records.
 declaration.declarationHolder.body.clearance.eidr.1007 = This procedure code may not be used with EIDR. See the {0} and look at ‘Restrictions on usage’.
 declaration.declarationHolder.body.clearance.eidr.others = Check your EIDR approval before using a non-standard procedure.
@@ -1185,11 +1185,10 @@ declaration.inlandOrBorder.answer.border = At a UK border or frontier location s
 declaration.inlandOrBorder.answer.inland = At a customs controlled location
 declaration.inlandOrBorder.answer.empty = Select where you are presenting your goods
 declaration.inlandOrBorder.inset.body = Customs controlled locations include:
-declaration.inlandOrBorder.inset.bullet.1.text = the new locations for RoRo exports (EXRR) arrived declarations
-declaration.inlandOrBorder.inset.bullet.2.text = Customs Supervised Exports (CSE) premises
-declaration.inlandOrBorder.inset.bullet.3.text = Designated export places (DEPs)
-declaration.inlandOrBorder.inset.bullet.4.text = Customs warehouses
-declaration.inlandOrBorder.inset.bullet.5.text = Excise warehouses
+declaration.inlandOrBorder.inset.bullet.1.text = Customs Supervised Exports (CSE) premises
+declaration.inlandOrBorder.inset.bullet.2.text = Designated export places (DEPs)
+declaration.inlandOrBorder.inset.bullet.3.text = Customs warehouses
+declaration.inlandOrBorder.inset.bullet.4.text = Excise warehouses
 
 declaration.transportInformation.active.title = What are the details for the transport leaving the UK border?
 declaration.transportInformation.borderTransportMode.error.empty = Select the mode of transport at the border
@@ -1546,7 +1545,8 @@ declaration.natureOfTransaction.inset.text.1 = For new items purchased in the UK
 declaration.natureOfTransaction.inset.text.2 = For house removals and export of vehicles where VAT is not being reclaimed, select ‘Other’.
 
 declaration.packageInformation.title = Enter the packing details for this item
-declaration.packageInformation.paragraph = You must select a package type. If any of the goods are in a different package type, add that type separately.
+declaration.packageInformation.paragraph.1 = Any container, pallet or other package that you declare must contain only goods from this export declaration, but may contain other items in the declaration if you are sending more than one goods type.
+declaration.packageInformation.paragraph.2 = If some of the goods are contained in a different package type, enter each type separately.
 declaration.packageInformation.remove.title = Are you sure you want to remove this package type?
 declaration.packageInformation.remove.hint = Remove package type {0} shipping reference {1}.
 declaration.packageInformation.remove.typesOfPackages = Package type
@@ -1562,14 +1562,21 @@ declaration.packageInformation.table.heading.typesOfPackages = Type
 declaration.packageInformation.table.heading.numberOfPackages = Number
 declaration.packageInformation.table.heading.shippingMarks = Shipping marks
 declaration.packageInformation.typesOfPackages.label = Package type
-declaration.packageInformation.typesOfPackages.paragraph = Select the smallest external package type that the goods have been packed in for their exportation. For example, for cartons of books packed on a pallet in a container, the package type would be the pallet.
+declaration.packageInformation.typesOfPackages.paragraph.1 = Enter the the export package type. This might be pallets or a smaller package type, or a larger type such as a freight container or bulk container - a package is a wrapping that has been added for transportation.
+declaration.packageInformation.typesOfPackages.paragraph.2 = Count the package type that holds the goods for exportation in a way that this packaging would first have to be undone in order to get to the goods.
+declaration.packageInformation.typesOfPackages.paragraph.3 = For example, for cartons of books packed on pallets in a container, the package type would be pallet, as the wrapping or binding would need to be undone. For cartons of books loaded directly into a truck, the package type would be the carton.
 declaration.packageInformation.typesOfPackages.hint.1 = Start typing the package type (box, pallet, crate, container) to see the options.
 declaration.packageInformation.typesOfPackages.error = Select a package type from the list
 declaration.packageInformation.typesOfPackages.empty = Select a package type
 declaration.packageInformation.numberOfPackages = Number of this package type
+declaration.packageInformation.numberOfPackages.details.summary = Container or pallet holding multiple goods items
+declaration.packageInformation.numberOfPackages.details.paragraph.1 = If a single package (container, pallet, crate etc) holds more than one of the items in this export, then you declare the number as `1` for the first item, and then declare it as `0` for the next item. This will avoid double-counting.
+declaration.packageInformation.numberOfPackages.details.paragraph.2 = See the {0}
+declaration.packageInformation.numberOfPackages.details.paragraph.2.link = instructions for combined packaging (opens in new tab).
+declaration.packageInformation.numberOfPackages.hint = For example, for cartons of books packed on 10 pallets in a container, the number would be 10.
 declaration.packageInformation.numberOfPackages.error = Enter the number of this package type
 declaration.packageInformation.shippingMark = Shipping mark
-declaration.packageInformation.shippingMark.hint = This is any mark or number on the packages or container, or on the transport documents, that identifies the goods.
+declaration.packageInformation.shippingMark.paragraph = This is any mark or number on the packages or container, or on the transport documents, that identifies the goods.
 declaration.packageInformation.shippingMark.lengthError = Shipping mark must be 42 characters or fewer
 declaration.packageInformation.shippingMark.characterError = Shipping mark must contain only letters, numbers, hyphen and backslash
 declaration.packageInformation.shippingMark.empty = Enter the shipping mark
@@ -1601,7 +1608,6 @@ declaration.supplementaryUnits.quantity.label = Supplementary units
 declaration.supplementaryUnits.quantity.empty = Enter a quantity of supplementary units
 declaration.supplementaryUnits.quantity.error = Supplementary units must be entered as numbers only
 declaration.supplementaryUnits.quantity.length = Number of characters must be 16 or fewer
-
 declaration.summary.normal-header = Check your answers before making this declaration
 declaration.summary.amend-header = Check your answers before resubmitting
 declaration.summary.saved-header = Continue saved declaration
@@ -2345,35 +2351,42 @@ guidance.roro.section.1.paragraph.2 = If you use an agent or freight forwarder t
 guidance.roro.section.1.paragraph.2.link.1 = National Export System
 guidance.roro.section.1.paragraph.2.link.2 = CDS export declaration service
 
-guidance.roro.section.2.header = CDS exports: specific requirements for RoRo transport and containers
-guidance.roro.section.2.paragraph.1 = For departures from Dover, Eurotunnel, or Holyhead for private beta participants, use the following information and codes:
+guidance.roro.section.2.header = From January 22, 2022: specific requirements on CDS for RoRo transport and containers
+guidance.roro.section.2.paragraph.1 = RoRo is when goods are driven on to and off the ferry or train, and includes accompanied and unaccompanied goods.
+guidance.roro.section.2.paragraph.2 = You can get a {0}, including the locations where goods will be checked.
+guidance.roro.section.2.paragraph.2.link = list of the locations using arrived departures (opens in new tab)
+guidance.roro.section.2.paragraph.3 = For RoRo departures from Dover, Eurotunnel, Fishguard, Holyhead, Liverpool, Heysham, Pembroke/Milford Haven, Sheerness or Newhaven, use the following information and codes:
 
-guidance.roro.section.2.list.1.bullet.1 = In ‘Type of declaration’ (section 1) select ‘Arrived’. 
-guidance.roro.section.2.list.1.bullet.2 = In ‘Add the authorisation for this export’ (section 2) select EXRR and enter your EORI number. Do not enter CSE even if you hold it.
-guidance.roro.section.2.list.1.bullet.3 = In ‘What is the goods location code?’ (section 3) enter one of: <ul class="govuk-list  govuk-list--bullet"><li>GBAUDVRDOVDVR = Dover</li><li>GBAUEUTEUTEUT = Eurotunnel</li><li>GBAUHLYHLDHLY = Holyhead</li></ul>
-guidance.roro.section.2.list.1.bullet.4 = In ‘Where is the customs office of exit?’ (section 3) select the intended departure point out of: <ul class="govuk-list  govuk-list--bullet"><li>Dover (OTS) Freight Clearance - GB000040</li><li>Eurotunnel Freight - GB000060</li><li>Holyhead - GB000124</li></ul>
+guidance.roro.section.2.list.1.bullet.1 = In ‘Type of declaration’ (section 1) select ‘Arrived’. However for Sheerness and Newhaven select pre-lodged. 
+guidance.roro.section.2.list.1.bullet.2 = For arrived declarations only, on ‘Add the authorisation for this export’ (section 2) select EXRR and enter your EORI number, or the exporter’s if you are an agent. Do not enter CSE even if you hold it.
+guidance.roro.section.2.list.1.bullet.3 = In ‘What is the goods location code?’ (section 3) enter one of: <ul class="govuk-list  govuk-list--bullet"><li>Dover - GBAUDVRDOVDVRGVM</li><li>Eurotunnel - GBAUEUTEUTEUTGVM</li><li>Dover/Eurotunnel - GBAUDEUDEUDEUGVM</li><li>Fishguard - GBAUFISFISFISGVM</li><li>Holyhead - GBAUHLYHLDHLYGVM</li><li>Liverpool - GBAULIVLIVLIVGVM</li><li>Heysham - GBAUHYMHEYHYMGVM</li><li>Pembroke Dock/Milford Haven - GBAUPEDMILPEDGVM</li><li>Sheerness - GBAUMEDMEDMEDGVM</li><li>Newhaven - GBAUNHVNHVNHVGVM</li></ul>These codes are for the new {0}. For Liverpool, Heysham or Pembroke/Milford Haven, make sure your haulier is using GVMS to handle the movement of the goods. If they are using inventory linking they can advise you the correct code to use.
+guidance.roro.section.2.list.1.bullet.3.link = Goods Vehicle Movement Service (GVMS) (opens in new tab)
+guidance.roro.section.2.list.1.bullet.4 = In ‘Where is the customs office of exit?’ (section 3) select the intended departure point out of: <ul class="govuk-list  govuk-list--bullet"><li>Dover (OTS) Freight Clearance - GB000040</li><li>Eurotunnel Freight - GB000060</li><li>Fishguard - GB005200</li><li>Holyhead - GB000124</li><li>Liverpool, Seaforth S2 berth - GB000080</li><li>Heysham - GB005210</li><li>Pembroke Dock - GB000126</li><li>Sheerness - Sheerness - GB000045</li><li>Newhaven - GB003250</li></ul>
 guidance.roro.section.2.list.1.bullet.5 = In ‘How will the goods be transported to the UK border?’ or ‘What mode of transport took the goods from the warehouse to the border? (section 6) select ‘Road transport’.
-guidance.roro.section.2.list.1.bullet.6 = In ‘What are the details for the road transport?’ or ‘What are the details for the transport the goods are physically loaded on for departure?’ (section 6) select ‘Vehicle registration number’ and enter the registration number of the truck that will carry your goods out of the UK. You may enter ‘Unknown’ if you do not have the details, but do not leave this blank.
+guidance.roro.section.2.list.1.bullet.6 = In ‘What are the details for the road transport?’ (section 6) select ‘Vehicle registration number’ and enter the registration number of the truck that will carry your goods out of the UK or to the terminal. For unaccompanied goods enter the trailer number as well. You may enter ‘Unknown’ if you do not have the details, but do not leave this blank.
 guidance.roro.section.2.list.1.bullet.7 = In ‘What are the details for the transport that left the border?’ enter the ferry number, ferry name, or (for Eurotunnel) the wagon number. You may enter ‘Unknown’ if you do not have the details, but do not leave this blank.
-guidance.roro.section.2.list.1.bullet.8 = In ‘What is the nationality of the transport’ enter a country, or if you do not know, enter GB. Do not leave this blank.
-guidance.roro.section.2.list.1.bullet.9 = In ‘Are the goods in a container or containers?’ enter the container identification number, or enter ‘Unknown’ if you do not have the details, but do not leave this blank. Note that ‘container’ includes all container types including swap bodies.
+guidance.roro.section.2.list.1.bullet.8 = In ‘Are the goods in a container or containers?’ enter the container identification number, or enter ‘Unknown’ if you do not have the details, but do not leave this blank. Note that ‘container’ includes all container types including swap bodies.
 
-guidance.roro.section.3.header = Clearance procedures
-guidance.roro.section.3.paragraph.1 = Once you’ve submitted the declaration, HMRC will send you a notification giving you a route 1, 2, 3 or 6. The meaning of each of those is:
+guidance.roro.section.3.header = Submit the arrived declaration
+guidance.roro.section.3.paragraph.1 = You are advised to submit the arrived declaration before the goods leave your (or the trader’s) premises. This will give you a clearance message (permission to progress) which will allow your driver to go straight through to the office of exit. If your goods need to go route 1 or route 2 (documentary or physical checks) you will be notified immediately upon submission of your declaration.
+guidance.roro.section.3.paragraph.2 = You must in all cases submit the declaration before the goods arrive at the port.
 
-guidance.roro.section.3.list.1.bullet.1 = Route 1: Documentary checks required – upload documents that support your declaration and wait for permission to progress to be granted or for further instruction
-guidance.roro.section.3.list.1.bullet.2 = Route 2: Asks you to upload documents (as for Route 1) and make sure the haulier or driver transports your goods to a designated export place or authorised premises, so that we can make customs checks 
-guidance.roro.section.3.list.1.bullet.3 = Route 3: Post departure documentary check – send a copy of the export entry and supporting documents by email to the {0} or post to: <address>Freepost RTGR-LSCG-LTJS<br />HM Revenue and Customs<br />National Clearance Hub<br />Ralli Quays<br />3 Stanley Street<br />Salford<br />M60 9LA<br />United Kingdom</address>
-guidance.roro.section.3.list.1.bullet.3.link = National Clearance Hub
-guidance.roro.section.3.list.1.bullet.4 = Route 6: Gives permission to progress to port
+guidance.roro.section.4.header = Clearance procedures
+guidance.roro.section.4.paragraph.1 = Once you’ve submitted the declaration, HMRC will send you a notification giving you a route 1, 2, 3 or 6. The meaning of each of those is:
 
-guidance.roro.section.4.header = VAT zero rating and other benefits
-guidance.roro.section.4.paragraph.1 = Where you can show documentary proof of export, including commercial evidence, any goods liable to VAT can be considered for VAT zero rating. If you manufacture goods in the UK, you can off-set your VAT liability.
-guidance.roro.section.4.paragraph.2 = Goods that entered the UK under import reliefs, or subject to excise duty suspension can be recorded when they are re-exported or exported, which help support conclusion of the relief or suspension.
+guidance.roro.section.4.list.1.bullet.1 = Route 1: Documentary checks required – upload documents that support your declaration and wait for permission to progress to be granted or for further instruction
+guidance.roro.section.4.list.1.bullet.2 = Route 2: Asks you to upload documents (as for Route 1) and make sure the haulier or driver transports your goods to a designated export place or authorised premises, so that we can make customs checks 
+guidance.roro.section.4.list.1.bullet.3 = Route 3: Post departure documentary check – send a copy of the export entry and supporting documents by email to the {0} or post to: <address>Freepost RTGR-LSCG-LTJS<br />HM Revenue and Customs<br />National Clearance Hub<br />Ralli Quays<br />3 Stanley Street<br />Salford<br />M60 9LA<br />United Kingdom</address>
+guidance.roro.section.4.list.1.bullet.3.link = National Clearance Hub
+guidance.roro.section.4.list.1.bullet.4 = Route 6: Gives permission to progress to port
 
-guidance.roro.section.5.header = Documents as proof of departure
-guidance.roro.section.5.paragraph.1 = As long as your declaration status shows as ‘Cleared’ you can be satisfied that HMRC will assume that your goods have departed.
-guidance.roro.section.5.paragraph.2 = You still need to keep commercial evidence of the export such as boarding tickets, and proof of import. These documents do not need to be provided to NCH for documentary checks but HMRC may ask to see proof of departure.
+guidance.roro.section.5.header = VAT zero rating and other benefits
+guidance.roro.section.5.paragraph.1 = Where you can show documentary proof of export, including commercial evidence, any goods liable to VAT can be considered for VAT zero rating. If you manufacture goods in the UK, you can off-set your VAT liability.
+guidance.roro.section.5.paragraph.2 = Goods that entered the UK under import reliefs, or subject to excise duty suspension can be recorded when they are re-exported or exported, which help support conclusion of the relief or suspension.
+
+guidance.roro.section.6.header = Documents as proof of departure
+guidance.roro.section.6.paragraph.1 = As long as your declaration status shows as ‘Cleared’ you can be satisfied that HMRC will assume that your goods have departed.
+guidance.roro.section.6.paragraph.2 = You still need to keep commercial evidence of the export such as boarding tickets, and proof of import. These documents do not need to be provided to NCH for documentary checks but HMRC may ask to see proof of departure.
 
 guidance.completeDeclaration.title = Completing an online export declaration using the Customs Declaration Service
 guidance.completeDeclaration.intro = Find out what information you need to complete an online export declaration using the Customs Declarations Service.

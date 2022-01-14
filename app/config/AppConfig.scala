@@ -119,6 +119,8 @@ class AppConfig @Inject()(
   val declareGoodsExported = loadConfig("urls.declareGoodsExported")
   val simplifiedDeclarationOccasionalUse = loadConfig("urls.simplifiedDeclarationOccasionalUse")
 
+  val combinedPackaging = loadConfig("urls.combinedPackaging")
+
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
   val giveFeedbackLink = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
@@ -221,15 +223,15 @@ class AppConfig @Inject()(
   def tariffGuideUrl(key: String): String =
     runModeConfiguration.getOptional[String](key).getOrElse(throw new IllegalStateException(s"Missing tariff guide url key: $key"))
 
-  val holderOfAuthorisationCodes = loadConfig("files.codelists.holderOfAuthorisationCodes")
-  val procedureCodesListFile = loadConfig("files.codelists.procedureCodes")
-  val procedureCodesForC21ListFile = loadConfig("files.codelists.procedureCodesC21")
   val additionalProcedureCodes = loadConfig("files.codelists.additionalProcedureCodes")
   val additionalProcedureCodesForC21 = loadConfig("files.codelists.additionalProcedureCodesC21")
-  val procedureCodeToAdditionalProcedureCodesLinkFile = loadConfig("files.codelists.procedureCodeToAdditionalProcedureCodesLink")
-  val procedureCodeToAdditionalProcedureCodesC21LinkFile = loadConfig("files.codelists.procedureCodeToAdditionalProcedureCodesC21Link")
-  val dmsErrorCodes = loadConfig("files.codelists.dmsErrorCodes")
   val countryCodes = loadConfig("files.codelists.countryCodes")
   val countryCodeToAliasesLinkFile = loadConfig("files.codelists.countryCodeToAliasesLink")
   val countryCodeToShortNameLinkFile = loadConfig("files.codelists.countryCodeToShortNameLink")
+  val dmsErrorCodes = loadConfig("files.codelists.dmsErrorCodes")
+  val holderOfAuthorisationCodes = loadConfig("files.codelists.holderOfAuthorisationCodes")
+  val procedureCodesListFile = loadConfig("files.codelists.procedureCodes")
+  val procedureCodesForC21ListFile = loadConfig("files.codelists.procedureCodesC21")
+  val procedureCodeToAdditionalProcedureCodesLinkFile = loadConfig("files.codelists.procedureCodeToAdditionalProcedureCodesLink")
+  val procedureCodeToAdditionalProcedureCodesC21LinkFile = loadConfig("files.codelists.procedureCodeToAdditionalProcedureCodesC21Link")
 }

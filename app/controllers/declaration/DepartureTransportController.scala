@@ -27,9 +27,11 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.departure_transport
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class DepartureTransportController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
