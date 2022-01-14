@@ -20,7 +20,8 @@ import controllers.declaration.routes
 import models.ExportsDeclaration
 import models.Mode._
 import org.jsoup.nodes.Document
-import views.html.declaration.summary._
+import views.html.declaration.summary.normal_summary_page
+import views.html.declaration.summary.sections._
 
 class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
 

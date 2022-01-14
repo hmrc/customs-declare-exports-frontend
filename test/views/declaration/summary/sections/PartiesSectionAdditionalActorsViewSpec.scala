@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration.summary
+package views.declaration.summary.sections
 
 import base.Injector
 import forms.common.Eori
@@ -22,7 +22,7 @@ import forms.declaration.DeclarationAdditionalActors
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.parties_section_additional_actors
+import views.html.declaration.summary.sections.parties_section_additional_actors
 
 class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 

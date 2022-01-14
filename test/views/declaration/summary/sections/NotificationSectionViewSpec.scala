@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration.summary
-
-import java.time.ZonedDateTime
+package views.declaration.summary.sections
 
 import base.Injector
 import models.declaration.notifications.Notification
@@ -24,7 +22,9 @@ import models.declaration.submissions.SubmissionStatus
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.helpers.{StatusOfSubmission, ViewDates}
-import views.html.declaration.summary.notifications_section
+import views.html.declaration.summary.sections.notifications_section
+
+import java.time.ZonedDateTime
 
 class NotificationSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 

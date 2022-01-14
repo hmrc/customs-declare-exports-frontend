@@ -16,10 +16,10 @@
 
 package views.declaration.summary
 
-import controllers.declaration.routes
-import models.{ExportsDeclaration, Mode}
+import models.{ExportsDeclaration}
 import org.jsoup.nodes.Document
 import views.html.declaration.summary._
+import views.html.declaration.summary.sections._
 
 class SummaryPageViewAmmendSpec extends SummaryPageViewSpec {
 

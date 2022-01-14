@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration.summary
+package views.declaration.summary.sections
 
 import base.Injector
 import forms.common.Eori
@@ -23,7 +23,7 @@ import models.Mode
 import models.declaration.EoriSource
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.parties_section_holders
+import views.html.declaration.summary.sections.parties_section_holders
 
 class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 

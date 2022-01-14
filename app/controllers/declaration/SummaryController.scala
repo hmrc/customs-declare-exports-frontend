@@ -59,10 +59,9 @@ class SummaryController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
       mode match {
-        case Mode.Normal => Ok(normalSummaryPage(mode))
-        case Mode.Amend  => Ok(amendSummaryPage())
-        case Mode.Draft  => Ok(draftSummaryPage())
-        case _           => handleError("Invalid mode on summary page")
+        case Mode.Draft | Mode.Normal => Ok(draftSummaryPage())
+        case Mode.Amend               => Ok(amendSummaryPage())
+        case _                        => handleError("Invalid mode on summary page")
       }
     } else {
       Ok(summaryPageNoData())

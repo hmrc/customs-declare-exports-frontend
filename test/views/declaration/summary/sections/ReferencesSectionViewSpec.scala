@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package views.declaration.summary
+package views.declaration.summary.sections
 
 import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import models.{DeclarationType, Mode}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.references_section
+import views.html.declaration.summary.sections.references_section
 
 class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
