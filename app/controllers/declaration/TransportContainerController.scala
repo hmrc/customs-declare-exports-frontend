@@ -104,7 +104,13 @@ class TransportContainerController @Inject()(
   private def saveFirstContainer(mode: Mode, containerId: Option[String])(implicit request: JourneyRequest[AnyContent]) =
     containerId match {
       case Some(id) => updateCache(Seq(Container(id, Seq.empty))).map(_ => redirectAfterAdd(mode, id))
-      case None     => updateCache(Seq.empty).map(_ => navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage))
+      case None =>
+        for {
+          _ <- updateCache(Seq.empty)
+          _ <- updateExportsDeclarationSyncDirect(_.updateContainersSectionAnswered(true))
+        } yield {
+          navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage)
+        }
     }
 
   private def saveAdditionalContainer(mode: Mode, boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(
@@ -155,7 +161,9 @@ class TransportContainerController @Inject()(
             case YesNoAnswers.yes =>
               Future.successful(navigator.continueTo(mode, routes.TransportContainerController.displayAddContainer))
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage))
+              updateExportsDeclarationSyncDirect(_.updateContainersSectionAnswered(true)) map { _ =>
+                navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage)
+              }
         }
       )
 

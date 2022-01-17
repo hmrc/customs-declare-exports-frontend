@@ -56,10 +56,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-case class ItemId(id: String)
-
-case class ContainersSection(answered: Boolean)
-
 @Singleton
 class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
 
@@ -96,6 +92,8 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
       case _                                => Results.Redirect(SubmissionsController.displayListOfSubmissions())
     }
 }
+
+case class ItemId(id: String)
 
 // scalastyle:off
 object Navigator {
