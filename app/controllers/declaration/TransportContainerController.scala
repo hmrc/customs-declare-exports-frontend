@@ -107,7 +107,7 @@ class TransportContainerController @Inject()(
       case None =>
         for {
           _ <- updateCache(Seq.empty)
-          _ <- updateExportsDeclarationSyncDirect(_.updateContainersSectionAnswered(true))
+          _ <- updateExportsDeclarationSyncDirect(_.updateReadyForSubmission(true))
         } yield {
           navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage)
         }
@@ -161,7 +161,7 @@ class TransportContainerController @Inject()(
             case YesNoAnswers.yes =>
               Future.successful(navigator.continueTo(mode, routes.TransportContainerController.displayAddContainer))
             case YesNoAnswers.no =>
-              updateExportsDeclarationSyncDirect(_.updateContainersSectionAnswered(true)) map { _ =>
+              updateExportsDeclarationSyncDirect(_.updateReadyForSubmission(true)) map { _ =>
                 navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage)
               }
         }

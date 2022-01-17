@@ -59,7 +59,7 @@ class SummaryController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
 
-      val containersSectionAnswered = request.cacheModel.containersSectionAnswered
+      val containersSectionAnswered = request.cacheModel.readyForSubmission
 
       mode match {
         case Mode.Normal | Mode.Draft if containersSectionAnswered => Ok(normalSummaryPage(mode))

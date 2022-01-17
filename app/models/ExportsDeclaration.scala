@@ -46,7 +46,7 @@ case class ExportsDeclaration(
   parties: Parties = Parties(),
   locations: Locations = Locations(),
   items: Seq[ExportItem] = Seq.empty,
-  containersSectionAnswered: Boolean = false,
+  readyForSubmission: Boolean = false,
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
   totalPackageQuantity: Option[TotalPackageQuantity] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
@@ -194,8 +194,8 @@ case class ExportsDeclaration(
   def updatePreviousDocuments(previousDocuments: Seq[Document]): ExportsDeclaration =
     copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))
 
-  def updateContainersSectionAnswered(answered: Boolean) =
-    copy(containersSectionAnswered = answered)
+  def updateReadyForSubmission(ready: Boolean) =
+    copy(readyForSubmission = ready)
 
   def transform(function: ExportsDeclaration => ExportsDeclaration): ExportsDeclaration = function(this)
 }
