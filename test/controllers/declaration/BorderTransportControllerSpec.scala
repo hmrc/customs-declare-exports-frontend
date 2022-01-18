@@ -19,7 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import connectors.CodeListConnector
 import forms.declaration.BorderTransport
-import forms.declaration.TransportCodes.IMOShipIDNumber
+import forms.declaration.TransportCodes.shipOrRoroImoNumber
 import models.DeclarationType._
 import models.Mode
 import models.codes.Country
@@ -82,11 +82,11 @@ class BorderTransportControllerSpec extends ControllerSpec {
     JsObject(
       Map(
         "borderTransportType" -> JsString(transportType),
-        "borderTransportReference_IMOShipIDNumber" -> JsString(reference),
+        "borderTransportReference_shipOrRoroImoNumber" -> JsString(reference),
         "borderTransportReference_nameOfVessel" -> JsString(reference),
         "borderTransportReference_wagonNumber" -> JsString(reference),
         "borderTransportReference_vehicleRegistrationNumber" -> JsString(reference),
-        "borderTransportReference_IATAFlightNumber" -> JsString(reference),
+        "borderTransportReference_flightNumber" -> JsString(reference),
         "borderTransportReference_aircraftRegistrationNumber" -> JsString(reference),
         "borderTransportReference_europeanVesselIDNumber" -> JsString(reference),
         "borderTransportReference_nameOfInlandWaterwayVessel" -> JsString(reference),
@@ -132,7 +132,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "valid options are selected" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom, Great Britain, Northern Ireland")
+          val correctForm = formData(shipOrRoroImoNumber, "SHIP001", "United Kingdom, Great Britain, Northern Ireland")
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -155,7 +155,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       "valid options are selected" in {
         withNewCaching(request.cacheModel)
 
-        val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom, Great Britain, Northern Ireland")
+        val correctForm = formData(shipOrRoroImoNumber, "SHIP001", "United Kingdom, Great Britain, Northern Ireland")
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 

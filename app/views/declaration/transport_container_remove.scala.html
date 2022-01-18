@@ -26,16 +26,14 @@
 @import views.helpers.ErrorMapper.yesNoErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        sectionHeader: sectionHeader,
-        govukFieldset: GovukFieldset,
-        pageTitle: pageTitle,
-        yesNoRadios: yesNoRadios,
-        govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList,
-        errorSummary: errorSummary,
-        saveButtons: saveButtons,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    sectionHeader: sectionHeader,
+    govukFieldset: GovukFieldset,
+    yesNoRadios: yesNoRadios,
+    govukSummaryList: GovukSummaryList,
+    errorSummary: errorSummary,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF
 )
 
 @(mode: Mode, form: Form[YesNoAnswer], container: Container)(implicit request: Request[_], messages: Messages)

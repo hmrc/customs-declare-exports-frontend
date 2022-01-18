@@ -31,22 +31,17 @@
 @import views.helpers.ErrorMapper.yesNoErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukButton: GovukButton,
-        govukTable : GovukTable,
-        govukRadios: GovukRadios,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        spanVisuallyHidden: spanVisuallyHidden,
-        addButton: addButton,
-        addAnotherQuestion: addAnotherQuestion,
-        link: link,
-        saveButtons: saveButtons,
-        navigator: Navigator,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    spanVisuallyHidden: spanVisuallyHidden,
+    addAnotherQuestion: addAnotherQuestion,
+    link: link,
+    saveButtons: saveButtons,
+    navigator: Navigator,
+    formHelper: FormWithCSRF
 )(implicit codeListConnector: CodeListConnector)
 
 @(mode: Mode, itemId:String, form: Form[YesNoAnswer], additionalReferences: Seq[AdditionalFiscalReference])(implicit request: JourneyRequest[_], messages: Messages)

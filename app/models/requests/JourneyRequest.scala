@@ -27,6 +27,7 @@ class JourneyRequest[+A](val authenticatedRequest: AuthenticatedRequest[A], val 
 
   val declarationType: DeclarationType = cacheModel.`type`
   val sourceDecId: Option[String] = cacheModel.sourceId
+
   def isType(`type`: DeclarationType*): Boolean = `type`.contains(declarationType)
 
   def isAdditionalDeclarationType(adt: AdditionalDeclarationType): Boolean = cacheModel.isAdditionalDeclarationType(adt)

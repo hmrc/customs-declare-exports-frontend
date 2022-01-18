@@ -1112,8 +1112,8 @@ function inlandTransportDetails(){
 
 function departureTransport(){
     if (currentPageIs('/customs-declare-exports/declaration/departure-transport')) {
-        selectRadioOptionFromInputs(document.getElementsByName('meansOfTransportOnDepartureType'), 2)
-        document.getElementById('meansOfTransportOnDepartureIDNumber_11').value = 'SHIP1'
+        selectRadioOptionFromInputs(document.getElementsByName('departureTransportType'), 3)
+        document.getElementById('flightNumber').value = 'BA3456220821'
         document.getElementById('submit').click();
     }
 }
@@ -1121,8 +1121,8 @@ function departureTransport(){
 function borderTransport(){
     if (currentPageIs('/customs-declare-exports/declaration/border-transport')) {
         selectFromAutoPredict(document.getElementById('borderTransportNationality-container'), "United Kingdom, Great Britain, Northern Ireland");
-        document.getElementById('nameOfVessel').checked = 'checked';
-        document.getElementById('borderTransportReference_nameOfVessel').value = 'Superfast Hawk Millenium';
+        selectRadioOptionFromInputs(document.getElementsByName('borderTransportType'), 1)
+        document.getElementById('nameOfVessel').value = 'Superfast Hawk Millenium';
         document.getElementById('submit').click();
     }
 }

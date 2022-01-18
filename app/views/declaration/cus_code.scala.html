@@ -27,23 +27,19 @@
 @import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        heading: heading,
-        exportsInputText: exportsInputText,
-        insetText: exportsInsetText,
-        link: link,
-        body: paragraphBody,
-        pageTitle: pageTitle,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        appConfig: AppConfig,
-        navigator: Navigator,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    heading: heading,
+    exportsInputText: exportsInputText,
+    link: link,
+    body: paragraphBody,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig,
+    navigator: Navigator,
+    formHelper: FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[CusCode])(implicit request: JourneyRequest[_], messages: Messages)

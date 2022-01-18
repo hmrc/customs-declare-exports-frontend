@@ -91,8 +91,8 @@ class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with Moc
       }
 
       "sending empty transport type reference" in {
-        form.bind(Map("borderTransportType" -> TransportCodes.IMOShipIDNumber, "borderTransportReference_IMOShipIDNumber" -> "")).errors must contain(
-          "declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty"
+        form.bind(Map("borderTransportType" -> TransportCodes.shipOrRoroImoNumber, "borderTransportReference_shipOrRoroImoNumber" -> "")).errors must contain(
+          "declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.empty"
         )
       }
 
@@ -100,19 +100,19 @@ class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with Moc
         form
           .bind(
             Map(
-              "borderTransportType" -> TransportCodes.AircraftRegistrationNumber,
+              "borderTransportType" -> TransportCodes.aircraftRegistrationNumber,
               "borderTransportReference_aircraftRegistrationNumber" -> "a" * 128
             )
           )
-          .errors must contain("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.length")
+          .errors must contain("declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.length")
       }
 
       "sending reference with special characters" in {
         form
           .bind(
-            Map("borderTransportType" -> TransportCodes.VehicleRegistrationNumber, "borderTransportReference_vehicleRegistrationNumberROI" -> "$#@!")
+            Map("borderTransportType" -> TransportCodes.vehicleRegistrationNumber, "borderTransportReference_vehicleRegistrationNumberROI" -> "$#@!")
           )
-          .errors must contain("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid")
+          .errors must contain("declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.invalid")
       }
 
     }

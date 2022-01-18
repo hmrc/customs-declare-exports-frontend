@@ -54,21 +54,18 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
         messages must haveTranslationFor(saveAndReturnCaption)
 
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.departure.title")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.hint")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.hint")
+        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber")
+        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber.label")
+        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber.hint")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber.label")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber.hint")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.hint")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber.label")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber.hint")
+        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.flightNumber")
+        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.flightNumber.label")
+        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.flightNumber.hint")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.label")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.hint")
@@ -102,97 +99,97 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       "display 'Transport details type' radio section " which {
 
         "have 'Ship number' option" in {
-          view.getElementById("Departure_IMOShipIDNumber").attr("value") mustBe IMOShipIDNumber
+          view.getElementById("shipOrRoroImoNumber").attr("value") mustBe shipOrRoroImoNumber
           view
-            .getElementsByAttributeValue("for", "Departure_IMOShipIDNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.IMOShipIDNumber"
+            .getElementsByAttributeValue("for", "shipOrRoroImoNumber") must containMessageForElements(
+            "declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber"
           )
           view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$IMOShipIDNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label"
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$shipOrRoroImoNumber") must containMessageForElements(
+            "declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber.label"
           )
         }
 
         "have 'Name of vessel' option" in {
-          view.getElementById("Departure_NameOfVessel").attr("value") mustBe NameOfVessel
+          view.getElementById("nameOfVessel").attr("value") mustBe nameOfVessel
           view
-            .getElementsByAttributeValue("for", "Departure_NameOfVessel") must containMessageForElements(
+            .getElementsByAttributeValue("for", "nameOfVessel") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.nameOfVessel"
           )
           view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$NameOfVessel") must containMessageForElements(
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$nameOfVessel") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.nameOfVessel.label"
           )
         }
 
         "have 'Wagon number' option" in {
-          view.getElementById("Departure_WagonNumber").attr("value") mustBe WagonNumber
+          view.getElementById("wagonNumber").attr("value") mustBe wagonNumber
           view
-            .getElementsByAttributeValue("for", "Departure_WagonNumber") must containMessageForElements(
+            .getElementsByAttributeValue("for", "wagonNumber") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.wagonNumber"
           )
           view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$WagonNumber") must containMessageForElements(
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$wagonNumber") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.wagonNumber.label"
           )
         }
 
         "have 'Vehicle number' option" in {
-          view.getElementById("Departure_VehicleRegistrationNumber").attr("value") mustBe VehicleRegistrationNumber
+          view.getElementById("vehicleRegistrationNumber").attr("value") mustBe vehicleRegistrationNumber
           view
-            .getElementsByAttributeValue("for", "Departure_VehicleRegistrationNumber") must containMessageForElements(
+            .getElementsByAttributeValue("for", "vehicleRegistrationNumber") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber"
           )
           view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$VehicleRegistrationNumber") must containMessageForElements(
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$vehicleRegistrationNumber") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label"
           )
         }
 
         "have 'flight number' option" in {
-          view.getElementById("Departure_IATAFlightNumber").attr("value") mustBe IATAFlightNumber
+          view.getElementById("flightNumber").attr("value") mustBe flightNumber
           view
-            .getElementsByAttributeValue("for", "Departure_IATAFlightNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.IATAFlightNumber"
+            .getElementsByAttributeValue("for", "flightNumber") must containMessageForElements(
+            "declaration.transportInformation.meansOfTransport.flightNumber"
           )
           view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$IATAFlightNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.IATAFlightNumber.label"
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$flightNumber") must containMessageForElements(
+            "declaration.transportInformation.meansOfTransport.flightNumber.label"
           )
         }
 
         "have 'aircraft registration' option" in {
-          view.getElementById("Departure_AircraftRegistrationNumber").attr("value") mustBe AircraftRegistrationNumber
+          view.getElementById("aircraftRegistrationNumber").attr("value") mustBe aircraftRegistrationNumber
           view
-            .getElementsByAttributeValue("for", "Departure_AircraftRegistrationNumber") must containMessageForElements(
+            .getElementsByAttributeValue("for", "aircraftRegistrationNumber") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber"
           )
           view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$AircraftRegistrationNumber") must containMessageForElements(
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$aircraftRegistrationNumber") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.label"
           )
         }
 
         "have 'european vessel id' option" in {
-          view.getElementById("Departure_EuropeanVesselIDNumber").attr("value") mustBe EuropeanVesselIDNumber
+          view.getElementById("europeanVesselIDNumber").attr("value") mustBe europeanVesselIDNumber
           view
-            .getElementsByAttributeValue("for", "Departure_EuropeanVesselIDNumber") must containMessageForElements(
+            .getElementsByAttributeValue("for", "europeanVesselIDNumber") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.europeanVesselIDNumber"
           )
           view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$EuropeanVesselIDNumber") must containMessageForElements(
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$europeanVesselIDNumber") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.label"
           )
         }
 
         "have 'inland waterway' option" in {
-          view.getElementById("Departure_NameOfInlandWaterwayVessel").attr("value") mustBe NameOfInlandWaterwayVessel
+          view.getElementById("nameOfInlandWaterwayVessel").attr("value") mustBe nameOfInlandWaterwayVessel
           view
-            .getElementsByAttributeValue("for", "Departure_NameOfInlandWaterwayVessel") must containMessageForElements(
+            .getElementsByAttributeValue("for", "nameOfInlandWaterwayVessel") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel"
           )
           view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$NameOfInlandWaterwayVessel") must containMessageForElements(
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$nameOfInlandWaterwayVessel") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel.label"
           )
         }
@@ -221,9 +218,9 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       "display radio section " which {
 
         "has 'none' option" in {
-          view.getElementById("Departure_NotApplicable").attr("value") mustBe OptionNone
+          view.getElementById("notApplicable").attr("value") mustBe notApplicable
           view
-            .getElementsByAttributeValue("for", "Departure_NotApplicable") must containMessageForElements(
+            .getElementsByAttributeValue("for", "notApplicable") must containMessageForElements(
             "declaration.transportInformation.meansOfTransport.notApplicable"
           )
         }
