@@ -17,168 +17,91 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.declaration.TransportCodes._
-import models.DeclarationType
+import forms.declaration.TransportCodes.transportCodesForV3WhenPC0019
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
-import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
+import play.api.data.{Form, Mapping}
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
-case class DepartureTransport(meansOfTransportOnDepartureType: Option[String], meansOfTransportOnDepartureIDNumber: Option[String])
+case class DepartureTransport(
+  meansOfTransportOnDepartureType: Option[String],
+  meansOfTransportOnDepartureIDNumber: Option[String]
+)
 
 object DepartureTransport extends DeclarationPage {
 
   implicit val formats = Json.format[DepartureTransport]
 
-  val meansOfTransportOnDepartureTypeKey = "meansOfTransportOnDepartureType"
-  val meansOfTransportOnDepartureIDNumberKey = "meansOfTransportOnDepartureIDNumber"
+  val radioButtonGroupId = "departureTransportType"
 
-  private val meansOfTransportOnDepartureTypeOptional =
-    optional(
-      text()
+  val prefix = "declaration.transportInformation.meansOfTransport.departure"
+
+  def form(transportCodes: Seq[TransportCode]): Form[DepartureTransport] = Form(mappingFor(transportCodes))
+
+  private def mappingFor(transportCodes: Seq[TransportCode]): Mapping[DepartureTransport] =
+    mapping(
+      radioButtonGroupId -> mappingForRadioDepartureType(transportCodes),
+      mappingForInputDepartureNumber(transportCodes(0)),
+      mappingForInputDepartureNumber(transportCodes(1)),
+      mappingForInputDepartureNumber(transportCodes(2)),
+      mappingForInputDepartureNumber(transportCodes(3)),
+      mappingForInputDepartureNumber(transportCodes(4)),
+      mappingForInputDepartureNumber(transportCodes(5)),
+      mappingForInputDepartureNumber(transportCodes(6)),
+      mappingForInputDepartureNumber(transportCodes(7))
+    )(form2Model)(model2Form(transportCodes))
+
+  private def form2Model: (
+    Option[String],
+    Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String]
+  ) => DepartureTransport = {
+    case (departureType, v1, v2, v3, v4, v5, v6, v7, v8) =>
+      DepartureTransport(departureType, List(v1, v2, v3, v4, v5, v6, v7, v8).flatten.headOption.orElse(Some("")))
+  }
+
+  private def model2Form(transportCodes: Seq[TransportCode]): DepartureTransport => Option[(
+    Option[String],
+    Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String]
+  )] =
+    implicit departureTransport => Some((
+      departureTransport.meansOfTransportOnDepartureType,
+      model2Ref(transportCodes(0)),
+      model2Ref(transportCodes(1)),
+      model2Ref(transportCodes(2)),
+      model2Ref(transportCodes(3)),
+      model2Ref(transportCodes(4)),
+      model2Ref(transportCodes(5)),
+      model2Ref(transportCodes(6)),
+      model2Ref(transportCodes(7))
+  ))
+
+  private def model2Ref(transportCode: TransportCode)(implicit departureTransport: DepartureTransport): Option[String] =
+    if (!departureTransport.meansOfTransportOnDepartureType.contains(transportCode.value)) None
+    else departureTransport.meansOfTransportOnDepartureIDNumber
+
+  private def mappingForRadioDepartureType(transportCodes: Seq[TransportCode]): Mapping[Option[String]] = {
+    val isV3WhenPC0019 = transportCodes == transportCodesForV3WhenPC0019
+
+    optional(text.verifying(s"$prefix.error.incorrect", isContainedIn(transportCodes.map(_.value))))
+      .verifying(s"$prefix.error.empty${if (isV3WhenPC0019) ".v3" else ""}", isPresent)
+  }
+
+  private def mappingForInputDepartureNumber(transportCode: TransportCode): (String, Mapping[Option[String]]) =
+    transportCode.id -> mandatoryIfEqual(
+      radioButtonGroupId,
+      transportCode.value,
+      text
+        .verifying(s"$prefix.error.empty.input", nonEmpty)
+        .verifying(s"$prefix.error.length", isEmpty or noLongerThan(35))
         .verifying(
-          "declaration.transportInformation.meansOfTransport.departure.error.incorrect",
-          isContainedIn(allowedMeansOfTransportTypeCodes + OptionNone)
-        )
-    ).verifying("declaration.transportInformation.meansOfTransport.departure.error.empty.optional", isPresent)
-
-  private val meansOfTransportOnDepartureTypeRequired =
-    optional(
-      text()
-        .verifying("declaration.transportInformation.meansOfTransport.departure.error.incorrect", isContainedIn(allowedMeansOfTransportTypeCodes))
-    ).verifying("declaration.transportInformation.meansOfTransport.departure.error.empty", isPresent)
-
-  private def meansOfTransportOnDepartureIDNumberMapping(transportType: String) =
-    s"${meansOfTransportOnDepartureIDNumberKey}_$transportType" -> mandatoryIfEqual(
-      meansOfTransportOnDepartureTypeKey,
-      transportType,
-      text()
-        .verifying("declaration.transportInformation.meansOfTransport.reference.error.empty", nonEmpty)
-        .verifying("declaration.transportInformation.meansOfTransport.reference.error.length", isEmpty or noLongerThan(35))
-        .verifying(
-          "declaration.transportInformation.meansOfTransport.reference.error.invalid",
+          s"$prefix.error.invalid",
           isEmpty or (noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
         )
     )
 
-  private val requiredMapping = mapping(
-    meansOfTransportOnDepartureTypeKey -> meansOfTransportOnDepartureTypeRequired,
-    meansOfTransportOnDepartureIDNumberMapping(IMOShipIDNumber),
-    meansOfTransportOnDepartureIDNumberMapping(NameOfVessel),
-    meansOfTransportOnDepartureIDNumberMapping(WagonNumber),
-    meansOfTransportOnDepartureIDNumberMapping(VehicleRegistrationNumber),
-    meansOfTransportOnDepartureIDNumberMapping(IATAFlightNumber),
-    meansOfTransportOnDepartureIDNumberMapping(AircraftRegistrationNumber),
-    meansOfTransportOnDepartureIDNumberMapping(EuropeanVesselIDNumber),
-    meansOfTransportOnDepartureIDNumberMapping(NameOfInlandWaterwayVessel)
-  )(form2Model)(model2Form)
-
-  private val optionalMapping = mapping(
-    meansOfTransportOnDepartureTypeKey -> meansOfTransportOnDepartureTypeOptional,
-    meansOfTransportOnDepartureIDNumberMapping(IMOShipIDNumber),
-    meansOfTransportOnDepartureIDNumberMapping(NameOfVessel),
-    meansOfTransportOnDepartureIDNumberMapping(WagonNumber),
-    meansOfTransportOnDepartureIDNumberMapping(VehicleRegistrationNumber),
-    meansOfTransportOnDepartureIDNumberMapping(IATAFlightNumber),
-    meansOfTransportOnDepartureIDNumberMapping(AircraftRegistrationNumber),
-    meansOfTransportOnDepartureIDNumberMapping(EuropeanVesselIDNumber),
-    meansOfTransportOnDepartureIDNumberMapping(NameOfInlandWaterwayVessel)
-  )(form2Model)(model2Form)
-
-  private def form2Model: (
-    Option[String],
-    Option[String],
-    Option[String],
-    Option[String],
-    Option[String],
-    Option[String],
-    Option[String],
-    Option[String],
-    Option[String]
-  ) => DepartureTransport = {
-
-    case (
-        transportType,
-        shipIdNumber,
-        nameOfVessel,
-        wagonNumber,
-        vehicleRegistrationNumber,
-        flightNumber,
-        aircraftRegistrationNumber,
-        europeanVesselIDNumber,
-        nameOfInlandWaterwayVessel
-        ) =>
-      DepartureTransport(
-        transportType,
-        form2Ref(
-          shipIdNumber,
-          nameOfVessel,
-          wagonNumber,
-          vehicleRegistrationNumber,
-          flightNumber,
-          aircraftRegistrationNumber,
-          europeanVesselIDNumber,
-          nameOfInlandWaterwayVessel
-        )
-      )
-  }
-
-  private def form2Ref(refs: Option[String]*): Option[String] = Some(refs.map(_.getOrElse("")).mkString)
-
-  private def model2Form: DepartureTransport => Option[
-    (Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])
-  ] =
-    implicit model =>
-      Some(
-        (
-          model.meansOfTransportOnDepartureType,
-          model2Ref(IMOShipIDNumber),
-          model2Ref(NameOfVessel),
-          model2Ref(WagonNumber),
-          model2Ref(VehicleRegistrationNumber),
-          model2Ref(IATAFlightNumber),
-          model2Ref(AircraftRegistrationNumber),
-          model2Ref(EuropeanVesselIDNumber),
-          model2Ref(NameOfInlandWaterwayVessel)
-        )
-    )
-
-  private def model2Ref(transportType: String)(implicit model: DepartureTransport): Option[String] =
-    if (model.meansOfTransportOnDepartureType.contains(transportType)) model.meansOfTransportOnDepartureIDNumber else None
-
-  def form(declarationType: DeclarationType): Form[DepartureTransport] = declarationType match {
-    case DeclarationType.CLEARANCE => Form(optionalMapping)
-    case _                         => Form(requiredMapping)
-  }
-
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.departureTransport.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
-}
-
-object TransportCodes {
-
-  val IMOShipIDNumber = "10"
-  val NameOfVessel = "11"
-  val WagonNumber = "20"
-  val VehicleRegistrationNumber = "30"
-  val IATAFlightNumber = "40"
-  val AircraftRegistrationNumber = "41"
-  val EuropeanVesselIDNumber = "80"
-  val NameOfInlandWaterwayVessel = "81"
-  val OptionNone = "option_none"
-
-  val allowedMeansOfTransportTypeCodes =
-    Set(
-      IMOShipIDNumber,
-      NameOfVessel,
-      WagonNumber,
-      VehicleRegistrationNumber,
-      IATAFlightNumber,
-      AircraftRegistrationNumber,
-      EuropeanVesselIDNumber,
-      NameOfInlandWaterwayVessel
-    )
 }

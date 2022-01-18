@@ -27,22 +27,19 @@
 @import views.helpers.ErrorMapper.radioGroupErrors
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        heading: heading,
-        body: paragraphBody,
-        link: link,
-        pageTitle: pageTitle,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        appConfig: AppConfig,
-        navigator: Navigator,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    heading: heading,
+    body: paragraphBody,
+    link: link,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig,
+    navigator: Navigator,
+    formHelper: FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[UNDangerousGoodsCode])(implicit request: JourneyRequest[_], messages: Messages)

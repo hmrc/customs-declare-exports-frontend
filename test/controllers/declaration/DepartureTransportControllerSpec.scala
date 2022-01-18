@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.declaration.ModeOfTransportCode.Maritime
-import forms.declaration.TransportCodes.WagonNumber
+import forms.declaration.TransportCodes.wagonNumber
 import forms.declaration.{DepartureTransport, TransportCodes}
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
@@ -99,7 +99,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
         "display page method is invoked and cache contains data" in {
 
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(Maritime, WagonNumber, "FAA")))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(Maritime, wagonNumber, "FAA")))
 
           val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -135,7 +135,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm: JsValue = formData(WagonNumber, "FAA")
+          val correctForm: JsValue = formData(wagonNumber, "FAA")
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -151,7 +151,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "'none' option is selected" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm: JsValue = formData(TransportCodes.OptionNone, "")
+          val correctForm: JsValue = formData(TransportCodes.notApplicable, "")
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -176,7 +176,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "page is submitted" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm: JsValue = formData(WagonNumber, "FAA")
+          val correctForm: JsValue = formData(wagonNumber, "FAA")
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 

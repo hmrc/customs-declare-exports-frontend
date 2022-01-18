@@ -39,7 +39,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
 
       "user filled all mandatory fields with correct data" in {
 
-        val correctForm = DepartureTransport(Some(IMOShipIDNumber), Some("reference"))
+        val correctForm = DepartureTransport(Some(shipOrRoroImoNumber), Some("reference"))
 
         val result = form.fillAndValidate(correctForm)
 
@@ -50,7 +50,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
     "have errors" when {
 
       val transportTypeField = DepartureTransport.meansOfTransportOnDepartureTypeKey
-      val idNumberField = s"meansOfTransportOnDepartureIDNumber_$IMOShipIDNumber"
+      val idNumberField = s"meansOfTransportOnDepartureIDNumber_$shipOrRoroImoNumber"
 
       "transport type not selected" in {
 
@@ -68,7 +68,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
       "transport id not provided" in {
 
         val incorrectForm =
-          Map(transportTypeField -> IMOShipIDNumber, idNumberField -> "")
+          Map(transportTypeField -> shipOrRoroImoNumber, idNumberField -> "")
 
         val result = form.bind(incorrectForm)
         val errorKeys = result.errors.map(_.key)
@@ -92,7 +92,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
 
       "means of transport on departure id number is too long" in {
 
-        val incorrectForm = Map(transportTypeField -> IMOShipIDNumber, idNumberField -> TestHelper.createRandomAlphanumericString(36))
+        val incorrectForm = Map(transportTypeField -> shipOrRoroImoNumber, idNumberField -> TestHelper.createRandomAlphanumericString(36))
 
         val result = form.bind(incorrectForm)
 
@@ -106,7 +106,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
 
       "means of transport on departure id number contains invalid special characters" in {
 
-        val incorrectForm = Map(transportTypeField -> IMOShipIDNumber, idNumberField -> "!@#$")
+        val incorrectForm = Map(transportTypeField -> shipOrRoroImoNumber, idNumberField -> "!@#$")
 
         val result = form.bind(incorrectForm)
 
@@ -120,7 +120,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
 
       "means of transport on departure id number is too long with invalid characters" in {
 
-        val incorrectForm = Map(transportTypeField -> IMOShipIDNumber, idNumberField -> (TestHelper.createRandomAlphanumericString(36) + "!@#$"))
+        val incorrectForm = Map(transportTypeField -> shipOrRoroImoNumber, idNumberField -> (TestHelper.createRandomAlphanumericString(36) + "!@#$"))
 
         val result = form.bind(incorrectForm)
 
@@ -139,7 +139,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
 
     "allow all means of transport type codes" in {
 
-      val errors = (allowedMeansOfTransportTypeCodes + TransportCodes.OptionNone).map { code =>
+      val errors = (allowedMeansOfTransportTypeCodes + TransportCodes.notApplicable).map { code =>
         form.fillAndValidate(DepartureTransport(Some(code), Some("reference"))).errors
       }.toSeq.flatten
 
@@ -150,7 +150,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
 
       "user filled all mandatory fields with correct data" in {
 
-        val correctForm = DepartureTransport(Some(IMOShipIDNumber), Some("reference"))
+        val correctForm = DepartureTransport(Some(shipOrRoroImoNumber), Some("reference"))
 
         val result = form.fillAndValidate(correctForm)
 
@@ -159,7 +159,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
 
       "user selected 'none'" in {
 
-        val correctForm = DepartureTransport(Some(OptionNone), None)
+        val correctForm = DepartureTransport(Some(notApplicable), None)
 
         val result = form.fillAndValidate(correctForm)
 
@@ -170,7 +170,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
     "have errors" when {
 
       val transportTypeField = DepartureTransport.meansOfTransportOnDepartureTypeKey
-      val idNumberField = s"meansOfTransportOnDepartureIDNumber_$IATAFlightNumber"
+      val idNumberField = s"meansOfTransportOnDepartureIDNumber_$flightNumber"
 
       "user provided no selection" in {
 
@@ -188,7 +188,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
       "transport id not provided" in {
 
         val incorrectForm =
-          Map(transportTypeField -> IATAFlightNumber, idNumberField -> "")
+          Map(transportTypeField -> flightNumber, idNumberField -> "")
 
         val result = form.bind(incorrectForm)
         val errorKeys = result.errors.map(_.key)
@@ -212,7 +212,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
 
       "means of transport on departure id number is too long" in {
 
-        val incorrectForm = Map(transportTypeField -> IATAFlightNumber, idNumberField -> TestHelper.createRandomAlphanumericString(36))
+        val incorrectForm = Map(transportTypeField -> flightNumber, idNumberField -> TestHelper.createRandomAlphanumericString(36))
 
         val result = form.bind(incorrectForm)
 
@@ -226,7 +226,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
 
       "means of transport on departure id number contains invalid special characters" in {
 
-        val incorrectForm = Map(transportTypeField -> IATAFlightNumber, idNumberField -> "!@#$")
+        val incorrectForm = Map(transportTypeField -> flightNumber, idNumberField -> "!@#$")
 
         val result = form.bind(incorrectForm)
 

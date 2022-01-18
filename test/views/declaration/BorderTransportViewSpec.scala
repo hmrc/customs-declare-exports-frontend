@@ -61,10 +61,10 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       messages must haveTranslationFor("declaration.transportInformation.active.title")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.crossingTheBorder.header")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.header")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.header")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber.label")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.shipOrRoroImoNumber.hint")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfVessel")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfVessel.label")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfVessel.hint")
@@ -74,9 +74,9 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumberROI")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.hint")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber.label")
-      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.flightNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.flightNumber.label")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.flightNumber.hint")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.label")
       messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.hint")
@@ -129,7 +129,7 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
           .first() must containMessage("declaration.transportInformation.meansOfTransport.crossingTheBorder.header")
       }
       "has 'Ship' section" in {
-        hasSectionFor(view, "IMOShipIDNumber")
+        hasSectionFor(view, "shipOrRoroImoNumber")
       }
       "has 'Vessel' section" in {
         hasSectionFor(view, "nameOfVessel")
@@ -141,7 +141,7 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
         hasSectionFor(view, "vehicleRegistrationNumberROI")
       }
       "has 'Flight number' section" in {
-        hasSectionFor(view, "IATAFlightNumber")
+        hasSectionFor(view, "flightNumber")
       }
       "has 'Aircraft Number' section" in {
         hasSectionFor(view, "aircraftRegistrationNumber")

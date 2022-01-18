@@ -86,7 +86,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
         mode,
         data.copy(
           transport =
-            data.transport.copy(meansOfTransportOnDepartureType = Some(TransportCodes.OptionNone), meansOfTransportOnDepartureIDNumber = Some(""))
+            data.transport.copy(meansOfTransportOnDepartureType = Some(TransportCodes.notApplicable), meansOfTransportOnDepartureIDNumber = Some(""))
         )
       )(messages)
       val row = view.getElementsByClass("transport-reference-row")
