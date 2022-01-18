@@ -80,15 +80,37 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
     "return 200 (OK)" when {
 
-      "declaration contains mandatory data" in {
+      "declaration contains mandatory data" when {
+        "ready for submission" in {
 
-        withNewCaching(aDeclaration(withConsignmentReferences()))
+          withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = true))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) mustBe OK
-        verify(normalSummaryPage, times(1)).apply(any())(any(), any(), any())
-        verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+          status(result) mustBe OK
+          verify(normalSummaryPage, times(1)).apply(any())(any(), any(), any())
+          verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+        }
+        "saved declaration" in {
+
+          withNewCaching(aDeclaration(withConsignmentReferences()))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          verify(draftSummaryPage, times(1)).apply()(any(), any(), any())
+          verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+        }
+        "amendment" in {
+
+          withNewCaching(aDeclaration(withConsignmentReferences()))
+
+          val result = controller.displayPage(Mode.Amend)(getRequest())
+
+          status(result) mustBe OK
+          verify(amendSummaryPage, times(1)).apply()(any(), any(), any())
+          verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+        }
       }
 
       "declaration doesn't contain mandatory data" in {

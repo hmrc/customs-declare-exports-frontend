@@ -74,9 +74,8 @@ class SummaryController @Inject()(
 
   def displayDeclarationPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     mode match {
-      case Mode.Draft | Mode.Normal => Ok(legalDeclarationPage(form, mode))
-      case Mode.Amend               => InternalServerError
-      case _                        => handleError("Invalid mode on summary page")
+      case Mode.Draft | Mode.Normal | Mode.Amend => Ok(legalDeclarationPage(form, mode))
+      case _                                     => handleError("Invalid mode on summary page")
     }
 
   }

@@ -496,9 +496,9 @@ GET         /saved-summary                       controllers.declaration.Summary
 
 GET         /amend-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.Amend)
 
-GET         /submit-your-declaration             controllers.declaration.SummaryController.displayDeclarationPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /submit-your-declaration             controllers.declaration.SummaryController.displayDeclarationPage(mode: models.Mode)
 
-POST        /submit-your-declaration             controllers.declaration.SummaryController.submitDeclaration(mode: models.Mode ?= models.Mode.Normal)
+POST        /submit-your-declaration             controllers.declaration.SummaryController.submitDeclaration(mode: models.Mode)
 
 # Confirmation
 
