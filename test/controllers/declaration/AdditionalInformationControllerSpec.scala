@@ -16,9 +16,8 @@
 
 package controllers.declaration
 
-import scala.concurrent.Future
-
 import base.ControllerSpec
+import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
 import mock.ErrorHandlerMocks
@@ -35,16 +34,16 @@ import services.TariffApiService
 import services.TariffApiService.CommodityCodeNotFound
 import views.html.declaration.additionalInformation.additional_information
 
+import scala.concurrent.Future
+
 class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  val mockTariffApiService = mock[TariffApiService]
-  val mockSummaryPage = mock[additional_information]
+  private val mockSummaryPage = mock[additional_information]
 
   val controller = new AdditionalInformationController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
-    mockTariffApiService,
     navigator,
     stubMessagesControllerComponents(),
     mockSummaryPage
@@ -56,8 +55,10 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration())
-    when(mockTariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Left(CommodityCodeNotFound)))
+
     when(mockSummaryPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(navigator.backLinkForAdditionalInformation(any(), any(), any())(any(), any()))
+      .thenReturn(Future.successful(routes.CommodityMeasureController.displayPage(Mode.Normal, itemId)))
   }
 
   override protected def afterEach(): Unit = {

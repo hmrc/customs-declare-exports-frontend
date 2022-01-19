@@ -34,6 +34,7 @@
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -43,7 +44,7 @@
 
 @govukLayout(
     title = Title("declaration.transportInformation.transportPayment.paymentMethod", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TransportPayment, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TransportPayment, mode)))) {
 
     @formHelper(action = TransportPaymentController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("paymentMethod", "cash", form.errors))

@@ -48,6 +48,7 @@
     link: link,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -128,7 +129,7 @@
 
 @govukLayout(
     title = Title("declaration.previousDocuments.summary.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentSummary, mode)))
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DocumentSummary, mode)))
 ) {
     @formHelper(action = routes.PreviousDocumentsSummaryController.submit(mode), 'autoComplete -> "off") {
 

@@ -44,6 +44,7 @@
     link: link,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -100,7 +101,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(PackageInformation, mode, ItemId(itemId))))
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(PackageInformation, mode, ItemId(itemId))))
 ) {
 
     @formHelper(action = routes.PackageInformationSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {

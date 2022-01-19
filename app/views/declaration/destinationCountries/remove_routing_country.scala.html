@@ -43,6 +43,7 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
+        navigator: Navigator,
         formHelper: FormWithCSRF
 )
 
@@ -86,7 +87,7 @@
 
 @govukLayout(
     title = Title("declaration.routingCountries.remove.title", "declaration.section.3", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RemoveCountryPage, mode)))){
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(RemoveCountryPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitRemoveCountry(mode, countryToRemove.countryCode), 'autoComplete -> "off") {
 

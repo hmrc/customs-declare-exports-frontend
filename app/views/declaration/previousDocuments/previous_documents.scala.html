@@ -26,6 +26,7 @@
     templateHelper: PreviousDocumentsHelper,
     govukLayout: gdsMainTemplate,
     editContent: previous_documents_edit,
+    navigator: Navigator,
     formHelper: FormWithCSRF
 )
 
@@ -35,7 +36,7 @@
 
 @govukLayout(
     title = Title(templateHelper.title, "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(Document, mode)))
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(Document, mode)))
 ) {
     @formHelper(action = PreviousDocumentsController.submit(mode), 'autoComplete -> "off") {
 

@@ -60,9 +60,8 @@ class NavigatorSpec
   private val config = mock[AppConfig]
   private val auditService = mock[AuditService]
   private val hc: HeaderCarrier = mock[HeaderCarrier]
-  private val navigator = new Navigator(config, auditService)
-
-  private val mockTariffApiService = mock[TariffApiService]
+  private val tariffApiService = mock[TariffApiService]
+  private val navigator = new Navigator(config, auditService, tariffApiService)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -70,7 +69,7 @@ class NavigatorSpec
   }
 
   override def afterEach(): Unit = {
-    reset(config, auditService, hc, mockTariffApiService)
+    reset(config, auditService, hc, tariffApiService)
     super.afterEach()
   }
 
@@ -152,12 +151,12 @@ class NavigatorSpec
       }
 
       "backLink method is invoked with mode ErrorFix and sourceId in request" in {
-        val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
+        val result = navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
         result mustBe RejectedNotificationsController.displayPage(sourceId)
       }
 
       "backLink method for items is invoked with mode ErrorFix and sourceId in request" in {
-        val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
+        val result = navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
         result mustBe RejectedNotificationsController.displayPage(sourceId)
       }
     }
@@ -172,12 +171,12 @@ class NavigatorSpec
       }
 
       "backLink method is invoked with mode ErrorFix but without sourceId in request" in {
-        val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
+        val result = navigator.backLink(CarrierDetails, Mode.ErrorFix)(decoratedRequest(request))
         result mustBe SubmissionsController.displayListOfSubmissions()
       }
 
       "backLink method for items is invoked with mode ErrorFix but without sourceId in request" in {
-        val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
+        val result = navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(decoratedRequest(request))
         result mustBe SubmissionsController.displayListOfSubmissions()
       }
     }
@@ -193,10 +192,10 @@ class NavigatorSpec
     onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
       "return a Call instance for CommodityMeasureController" when {
         "the response from Tariff API does not include supplementary units" in {
-          when(mockTariffApiService.retrieveCommodityInfoIfAny(any(), any()))
+          when(tariffApiService.retrieveCommodityInfoIfAny(any(), any()))
             .thenReturn(Future.successful(Left(SupplementaryUnitsNotRequired)))
 
-          val url = Navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId, mockTariffApiService).futureValue.url
+          val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId).futureValue.url
 
           url mustBe CommodityMeasureController.displayPage(mode, itemId).url
         }
@@ -204,10 +203,10 @@ class NavigatorSpec
 
       "return a Call instance for SupplementaryUnitsController" when {
         "the response from Tariff API does not include supplementary units" in {
-          when(mockTariffApiService.retrieveCommodityInfoIfAny(any(), any()))
+          when(tariffApiService.retrieveCommodityInfoIfAny(any(), any()))
             .thenReturn(Future.successful(Left(CommodityCodeNotFound)))
 
-          val url = Navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId, mockTariffApiService).futureValue.url
+          val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId).futureValue.url
 
           url mustBe SupplementaryUnitsController.displayPage(mode, itemId).url
         }
@@ -216,7 +215,7 @@ class NavigatorSpec
 
     onClearance { implicit request =>
       "return a Call instance for CommodityMeasureController" in {
-        val url = Navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId, mockTariffApiService).futureValue.url
+        val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId).futureValue.url
 
         url mustBe CommodityMeasureController.displayPage(mode, itemId).url
       }
@@ -224,7 +223,7 @@ class NavigatorSpec
 
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
       "return a Call instance for PackageInformationSummaryController" in {
-        val url = Navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId, mockTariffApiService).futureValue.url
+        val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId).futureValue.url
 
         url mustBe PackageInformationSummaryController.displayPage(mode, itemId).url
       }

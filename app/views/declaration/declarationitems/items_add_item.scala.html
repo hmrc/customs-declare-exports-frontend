@@ -31,6 +31,7 @@
   pageTitle: pageTitle,
   paragraphBody: paragraphBody,
   addButton: addButton,
+  navigator: Navigator,
   formHelper: FormWithCSRF
 )
 
@@ -44,7 +45,7 @@
 
 @govukLayout(
   title = Title("declaration.itemsAdd.title", "declaration.section.5"),
-  backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExportItem, mode)))) {
+  backButton = Some(BackButton(messages("site.back"), navigator.backLink(ExportItem, mode)))) {
 
   @formHelper(action = routes.ItemsSummaryController.addFirstItem(mode), 'autoComplete -> "off") {
 

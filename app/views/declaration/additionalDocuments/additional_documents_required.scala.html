@@ -39,6 +39,7 @@
     link: link,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -83,7 +84,7 @@
 
 @govukLayout(
     title = Title("declaration.additionalDocumentsRequired.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalDocumentsRequired, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalDocumentsRequired, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.AdditionalDocumentsRequiredController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
