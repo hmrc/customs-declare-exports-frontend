@@ -58,11 +58,8 @@ class SummaryController @Inject()(
   val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
-    if (containsMandatoryData(request.cacheModel, mode)) {
-      displaySummaryPage(mode)
-    } else {
-      Ok(summaryPageNoData())
-    }
+    if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage(mode)
+    else Ok(summaryPageNoData())
   }
 
   def displayDeclarationPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
@@ -89,10 +86,9 @@ class SummaryController @Inject()(
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
 
     isLrnADuplicate(maybeLrn).flatMap {
-      case true => {
+      case true =>
         val allErrors = form.errors ++ Seq(FormError("lrn", "declaration.consignmentReferences.lrn.error.notExpiredYet"))
         submit(form.copy(errors = allErrors))
-      }
       case _ => submit(form)
     }
   }

@@ -17,11 +17,10 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import controllers.declaration.routes
 @import models.DeclarationType.SUPPLEMENTARY
-@import views.html.components.gds.linkContent
-@import views.html.components.gds.summary_list
 @import views.components.gds.ActionItemBuilder._
+@import views.html.components.gds.{linkContent, paragraphBody, summary_list}
 
-@this(summaryList: summary_list, linkContent: linkContent)
+@this(summaryList: summary_list, linkContent: linkContent, paragraphBody: paragraphBody)
 
 @(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
@@ -31,15 +30,13 @@
 }
 
 @lrnLabelText = @{
-    if (declaration.isType(SUPPLEMENTARY))
-        "declaration.summary.references.supplementary.lrn"
-    else
-        "declaration.summary.references.lrn"
+    if (declaration.isType(SUPPLEMENTARY)) "declaration.summary.references.supplementary.lrn"
+    else "declaration.summary.references.lrn"
 }
 
 <h2 class="govuk-heading-m">@messages("declaration.summary.references")</h2>
 
-<p class="govuk-body">@messages("declaration.summary.ammend.body")</p>
+@paragraphBody(messages("declaration.summary.ammend.body"))
 
 @summaryList("declaration-references-summary", None, Seq(
         Some(SummaryListRow(

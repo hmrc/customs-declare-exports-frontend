@@ -59,31 +59,31 @@ case class ExportsDeclarationExchange(
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
   def toExportsDeclaration: ExportsDeclaration = ExportsDeclaration(
-    id = this.id.get,
-    status = this.status,
-    createdDateTime = this.createdDateTime,
-    updatedDateTime = this.updatedDateTime,
-    sourceId = this.sourceId,
-    `type` = this.`type`,
-    additionalDeclarationType = this.additionalDeclarationType,
-    consignmentReferences = this.consignmentReferences,
-    linkDucrToMucr = this.linkDucrToMucr,
-    mucr = this.mucr,
-    transport = this.transport,
-    parties = this.parties,
-    locations = this.locations,
-    items = this.items,
-    readyForSubmission = this.readyForSubmission,
-    totalNumberOfItems = this.totalNumberOfItems.flatMap { exchange =>
+    id = id.get,
+    status = status,
+    createdDateTime = createdDateTime,
+    updatedDateTime = updatedDateTime,
+    sourceId = sourceId,
+    `type` = `type`,
+    additionalDeclarationType = additionalDeclarationType,
+    consignmentReferences = consignmentReferences,
+    linkDucrToMucr = linkDucrToMucr,
+    mucr = mucr,
+    transport = transport,
+    parties = parties,
+    locations = locations,
+    items = items,
+    readyForSubmission = readyForSubmission,
+    totalNumberOfItems = totalNumberOfItems.flatMap { exchange =>
       (exchange.totalAmountInvoiced, exchange.totalAmountInvoicedCurrency, exchange.exchangeRate) match {
         case (None, None, None) => None
         case (totalAmountInvoiced, totalAmountInvoicedCurrency, exchangeRate) =>
           Some(TotalNumberOfItems(exchangeRate, totalAmountInvoiced, totalAmountInvoicedCurrency))
       }
     },
-    totalPackageQuantity = this.totalNumberOfItems.map(exchange => TotalPackageQuantity(exchange.totalPackage)),
-    previousDocuments = this.previousDocuments,
-    natureOfTransaction = this.natureOfTransaction
+    totalPackageQuantity = totalNumberOfItems.map(exchange => TotalPackageQuantity(exchange.totalPackage)),
+    previousDocuments = previousDocuments,
+    natureOfTransaction = natureOfTransaction
   )
 }
 
