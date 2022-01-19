@@ -18,16 +18,19 @@ package views.declaration.summary
 
 import models.ExportsDeclaration
 import org.jsoup.nodes.Document
+import play.api.mvc.Call
 import views.html.declaration.summary.draft_summary_page
 import views.html.declaration.summary.sections._
 
 class SummaryPageViewDraftSpec extends SummaryPageViewSpec {
 
+  val backLink = Call("GET", "/backLink")
+
   val draftInfoPage = instanceOf[draft_info_section]
 
   val draft_summaryPage = instanceOf[draft_summary_page]
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
-    draft_summaryPage()(journeyRequest(declaration), messages, minimalAppConfig)
+    draft_summaryPage(backLink)(journeyRequest(declaration), messages, minimalAppConfig)
 
   "Summary page" should {
 
@@ -47,7 +50,7 @@ class SummaryPageViewDraftSpec extends SummaryPageViewSpec {
       val backButton = document.getElementById("back-link")
 
       backButton.text() mustBe messages("site.back")
-      backButton must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations())
+      backButton must haveHref(backLink.url)
     }
 
     "should display warning text at top of page" in {

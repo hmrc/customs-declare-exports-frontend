@@ -20,16 +20,20 @@ import controllers.declaration.routes
 import models.ExportsDeclaration
 import models.Mode._
 import org.jsoup.nodes.Document
+import play.api.mvc.Call
 import views.html.declaration.summary.normal_summary_page
 import views.html.declaration.summary.sections._
 
 class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
 
+  val backLink = Call("GET", "/backLink")
+
   val draftInfoPage = instanceOf[draft_info_section]
 
   val normal_summaryPage = instanceOf[normal_summary_page]
+
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
-    normal_summaryPage(models.Mode.Normal)(journeyRequest(declaration), messages, minimalAppConfig)
+    normal_summaryPage(backLink)(journeyRequest(declaration), messages, minimalAppConfig)
 
   "Summary page" should {
 
@@ -47,7 +51,7 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
       val backButton = document.getElementById("back-link")
 
       backButton.text() mustBe messages("site.back")
-      backButton must haveHref(routes.TransportContainerController.displayContainerSummary(Normal))
+      backButton must haveHref(backLink.url)
     }
   }
 }

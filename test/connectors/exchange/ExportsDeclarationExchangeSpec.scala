@@ -63,6 +63,7 @@ class ExportsDeclarationExchangeSpec extends UnitWithMocksSpec with ExportsDecla
     parties = parties,
     locations = locations,
     items = Seq(item),
+    readyForSubmission = true,
     totalNumberOfItems = Some(totalItemExchange),
     previousDocuments = Some(previousDocuments),
     natureOfTransaction = Some(natureOfTransaction)
@@ -81,6 +82,7 @@ class ExportsDeclarationExchangeSpec extends UnitWithMocksSpec with ExportsDecla
     parties = parties,
     locations = locations,
     items = Seq(item),
+    readyForSubmission = true,
     totalNumberOfItems = None,
     totalPackageQuantity = Some(totalPackageQuantity),
     previousDocuments = Some(previousDocuments),
@@ -298,6 +300,7 @@ object ExportsDeclarationExchangeSpec {
       |      }
       |    }
       |  ],
+      |  "readyForSubmission": true,
       |  "totalNumberOfItems": {
       |    "totalAmountInvoiced": "56764",
       |    "exchangeRate": "1.49",

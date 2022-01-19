@@ -23,7 +23,7 @@ import mock.ErrorHandlerMocks
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys
 import models.{ExportsDeclaration, Mode}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.Helpers._
@@ -43,6 +43,9 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
   private val mockSummaryPageNoData = mock[summary_page_no_data]
   private val mockSubmissionService = mock[SubmissionService]
   private val mockLrnValidator = mock[LrnValidator]
+
+  private val normalModeBackLink = routes.TransportContainerController.displayContainerSummary(Mode.Normal)
+  private val draftModeBackLink = controllers.routes.SavedDeclarationsController.displayDeclarations()
 
   private val controller = new SummaryController(
     mockAuthAction,
@@ -66,7 +69,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     setupErrorHandler()
     when(normalSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(legalDeclarationPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
-    when(draftSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(draftSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(amendSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
@@ -81,25 +84,49 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     "return 200 (OK)" when {
 
       "declaration contains mandatory data" when {
-        "ready for submission" in {
+        "ready for submission" when {
+          "normal mode" in {
 
-          withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = true))
+            withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = true))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+            val result = controller.displayPage(Mode.Normal)(getRequest())
 
-          status(result) mustBe OK
-          verify(normalSummaryPage, times(1)).apply(any())(any(), any(), any())
-          verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+            status(result) mustBe OK
+            verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink))(any(), any(), any())
+            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+          }
+          "draft mode" in {
+
+            withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = true))
+
+            val result = controller.displayPage(Mode.Draft)(getRequest())
+
+            status(result) mustBe OK
+            verify(normalSummaryPage, times(1)).apply(eqTo(draftModeBackLink))(any(), any(), any())
+            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+          }
         }
-        "saved declaration" in {
+        "saved declaration" when {
+          "normal mode" in {
 
-          withNewCaching(aDeclaration(withConsignmentReferences()))
+            withNewCaching(aDeclaration(withConsignmentReferences()))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+            val result = controller.displayPage(Mode.Normal)(getRequest())
 
-          status(result) mustBe OK
-          verify(draftSummaryPage, times(1)).apply()(any(), any(), any())
-          verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+            status(result) mustBe OK
+            verify(draftSummaryPage, times(1)).apply(eqTo(normalModeBackLink))(any(), any(), any())
+            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+          }
+          "draft mode" in {
+
+            withNewCaching(aDeclaration(withConsignmentReferences()))
+
+            val result = controller.displayPage(Mode.Draft)(getRequest())
+
+            status(result) mustBe OK
+            verify(draftSummaryPage, times(1)).apply(eqTo(draftModeBackLink))(any(), any(), any())
+            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+          }
         }
         "amendment" in {
 

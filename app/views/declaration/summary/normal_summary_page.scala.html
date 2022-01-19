@@ -38,11 +38,11 @@
     linkButton: linkButton
 )
 
-@(mode: Mode)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(backLink: Call)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @govukLayout(
     title = Title("declaration.summary.normal-header"),
-    backButton = Some(BackButton(messages("site.back"), TransportContainerController.displayContainerSummary(Mode.Normal))),
+    backButton = Some(BackButton(messages("site.back"), backLink)),
     useCustomContentWidth = true
 ) {
 
@@ -69,7 +69,7 @@
 
     @transport_section(Mode.Change, request.cacheModel)
 
-    @linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage(mode))
+    @linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage(Mode.Normal))
 
     <br />
 

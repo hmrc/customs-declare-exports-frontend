@@ -25,7 +25,7 @@
 
 @this(
         govukLayout: gdsMainTemplate,
-            govukWarningText: GovukWarningText,
+        govukWarningText: GovukWarningText,
         pageTitle: pageTitle,
         draftInfoSection: draft_info_section,
         references_section: references_section,
@@ -37,11 +37,11 @@
         transport_section: transport_section
 )
 
-@()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(backLink: Call)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @govukLayout(
     title = Title("declaration.summary.saved-header"),
-    backButton = Some(BackButton(messages("site.back"), controllers.routes.SavedDeclarationsController.displayDeclarations())),
+    backButton = Some(BackButton(messages("site.back"), backLink)),
     useCustomContentWidth = true
 ) {
 

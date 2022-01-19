@@ -105,10 +105,10 @@ class TransportContainerController @Inject()(
     containerId match {
       case Some(id) => updateCache(Seq(Container(id, Seq.empty))).map(_ => redirectAfterAdd(mode, id))
       case None =>
-        for {
-          _ <- updateCache(Seq.empty)
-          _ <- updateExportsDeclarationSyncDirect(_.updateReadyForSubmission(true))
-        } yield {
+        updateExportsDeclarationSyncDirect(
+          _.updateContainers(Seq.empty)
+            .updateReadyForSubmission(true)
+        ) map { _ =>
           navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage)
         }
     }

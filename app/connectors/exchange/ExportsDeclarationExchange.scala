@@ -53,7 +53,7 @@ case class ExportsDeclarationExchange(
   parties: Parties = Parties(),
   locations: Locations = Locations(),
   items: Seq[ExportItem] = Seq.empty[ExportItem],
-  readyForSubmission: Option[Boolean] = None,
+  readyForSubmission: Boolean = false,
   totalNumberOfItems: Option[TotalItemsExchange] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
@@ -73,6 +73,7 @@ case class ExportsDeclarationExchange(
     parties = this.parties,
     locations = this.locations,
     items = this.items,
+    readyForSubmission = this.readyForSubmission,
     totalNumberOfItems = this.totalNumberOfItems.flatMap { exchange =>
       (exchange.totalAmountInvoiced, exchange.totalAmountInvoicedCurrency, exchange.exchangeRate) match {
         case (None, None, None) => None
@@ -108,6 +109,7 @@ object ExportsDeclarationExchange {
       parties = declaration.parties,
       locations = declaration.locations,
       items = declaration.items,
+      readyForSubmission = declaration.readyForSubmission,
       totalNumberOfItems = if (declaration.totalNumberOfItems.isDefined || declaration.totalPackageQuantity.isDefined) {
         Some(
           TotalItemsExchange(

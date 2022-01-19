@@ -23,6 +23,7 @@ import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys._
+import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.Logging
 import play.api.data.{Form, FormError}
@@ -58,15 +59,7 @@ class SummaryController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
-
-      val containersSectionAnswered = request.cacheModel.readyForSubmission
-
-      mode match {
-        case Mode.Normal | Mode.Draft if containersSectionAnswered => Ok(normalSummaryPage(mode))
-        case Mode.Normal | Mode.Draft                              => Ok(draftSummaryPage())
-        case Mode.Amend                                            => Ok(amendSummaryPage())
-        case _                                                     => handleError("Invalid mode on summary page")
-      }
+      displaySummaryPage(mode)
     } else {
       Ok(summaryPageNoData())
     }
@@ -101,6 +94,20 @@ class SummaryController @Inject()(
         submit(form.copy(errors = allErrors))
       }
       case _ => submit(form)
+    }
+  }
+
+  private def displaySummaryPage(mode: Mode)(implicit request: JourneyRequest[_]): Result = {
+
+    val readyForSubmission = request.cacheModel.readyForSubmission
+
+    mode match {
+      case Mode.Normal if readyForSubmission => Ok(normalSummaryPage(routes.TransportContainerController.displayContainerSummary(Mode.Normal)))
+      case Mode.Normal                       => Ok(draftSummaryPage(routes.TransportContainerController.displayContainerSummary(Mode.Normal)))
+      case Mode.Draft if readyForSubmission  => Ok(normalSummaryPage(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+      case Mode.Draft                        => Ok(draftSummaryPage(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+      case Mode.Amend                        => Ok(amendSummaryPage())
+      case _                                 => handleError("Invalid mode on summary page")
     }
   }
 
