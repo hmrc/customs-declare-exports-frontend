@@ -74,11 +74,11 @@ class RoutingCountriesController @Inject()(
       )
   }
 
-  private def updateRoutingAnswer(answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateRoutingAnswer(answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     if (answer) {
-      updateExportsDeclarationSyncDirect(_.updateRoutingQuestion(answer))
+      updateDeclarationFromRequest(_.updateRoutingQuestion(answer))
     } else {
-      updateExportsDeclarationSyncDirect(_.clearRoutingCountries)
+      updateDeclarationFromRequest(_.clearRoutingCountries)
     }
 
   private def redirectFromRoutingAnswer(mode: Mode, answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
@@ -111,7 +111,7 @@ class RoutingCountriesController @Inject()(
         validCountry => {
           val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
 
-          updateExportsDeclarationSyncDirect(_.updateCountriesOfRouting(newRoutingCountries)).map { _ =>
+          updateDeclarationFromRequest(_.updateCountriesOfRouting(newRoutingCountries)).map { _ =>
             navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage, mode.isErrorFix)
           }
         }

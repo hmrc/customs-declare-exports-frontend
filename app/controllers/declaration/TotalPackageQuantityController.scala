@@ -66,6 +66,6 @@ class TotalPackageQuantityController @Inject()(
     }
 
   private def updateCache(totalPackage: TotalPackageQuantity)(implicit req: JourneyRequest[_]) =
-    updateExportsDeclarationSyncDirect(_.copy(totalPackageQuantity = Some(totalPackage)))
+    updateDeclarationFromRequest(_.copy(totalPackageQuantity = Some(totalPackage)))
 
 }

@@ -59,6 +59,6 @@ class TotalNumberOfItemsController @Inject()(
       )
   }
 
-  private def updateCache(totalNumberOfItems: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.copy(totalNumberOfItems = Some(totalNumberOfItems)))
+  private def updateCache(totalNumberOfItems: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.copy(totalNumberOfItems = Some(totalNumberOfItems)))
 }

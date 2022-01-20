@@ -98,6 +98,6 @@ class NactCodeAddController @Inject()(
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[NactCode])(
     implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCache.toList))))
+  ): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCache.toList))))
 }

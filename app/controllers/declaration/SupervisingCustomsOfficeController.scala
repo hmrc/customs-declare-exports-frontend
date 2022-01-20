@@ -59,6 +59,6 @@ class SupervisingCustomsOfficeController @Inject()(
       )
   }
 
-  private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(supervisingCustomsOffice = Some(formData))))
+  private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(supervisingCustomsOffice = Some(formData))))
 }

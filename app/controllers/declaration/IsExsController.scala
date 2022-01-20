@@ -62,8 +62,8 @@ class IsExsController @Inject()(
       )
   }
 
-  private def updateCache(answer: IsExs)(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
+  private def updateCache(answer: IsExs)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { model =>
       val updatedParties: Parties = answer.isExs match {
         case YesNoAnswers.yes => model.parties.copy(isExs = Some(answer))
         case YesNoAnswers.no  => model.parties.copy(isExs = Some(answer), carrierDetails = None, consignorDetails = None)

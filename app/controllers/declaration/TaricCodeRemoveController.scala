@@ -67,8 +67,8 @@ class TaricCodeRemoveController @Inject()(
 
   private def updateExportsCache(itemId: String, taricCodeToRemove: String)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  ): Future[ExportsDeclaration] = {
     val updatedCodes = request.cacheModel.itemBy(itemId).flatMap(_.taricCodes).getOrElse(Seq.empty).filterNot(_.taricCode == taricCodeToRemove)
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(taricCodes = Some(updatedCodes.toList))))
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(taricCodes = Some(updatedCodes.toList))))
   }
 }

@@ -65,6 +65,6 @@ class TransportLeavingTheBorderController @Inject()(
     if (request.isType(CLEARANCE) || request.cacheModel.requiresWarehouseId) WarehouseIdentificationController.displayPage
     else SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage
 
-  private def updateCache(code: TransportLeavingTheBorder)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.updateTransportLeavingBorder(code))
+  private def updateCache(code: TransportLeavingTheBorder)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.updateTransportLeavingBorder(code))
 }

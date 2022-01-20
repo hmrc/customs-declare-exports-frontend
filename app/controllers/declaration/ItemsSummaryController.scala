@@ -68,12 +68,9 @@ class ItemsSummaryController @Inject()(
   }
 
   def displayItemsSummaryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    removeEmptyItems.map(updatedModel => {
-      updatedModel.fold(navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage))(
-        model =>
-          if (model.items.isEmpty) navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage)
-          else Ok(itemsSummaryPage(mode, itemSummaryForm, model.items.toList))
-      )
+    removeEmptyItems.map(declaration => {
+      if (declaration.items.isEmpty) navigator.continueTo(mode, routes.ItemsSummaryController.displayAddItemPage)
+      else Ok(itemsSummaryPage(mode, itemSummaryForm, declaration.items.toList))
     })
   }
 
@@ -124,7 +121,7 @@ class ItemsSummaryController @Inject()(
       .map(_ => newItem)
   }
 
-  private def removeEmptyItems(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
+  private def removeEmptyItems(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val itemsWithAnswers = request.cacheModel.items.filter(ExportItem.containsAnswers)
     exportsCacheService.update(request.cacheModel.copy(items = itemsWithAnswers))
   }
@@ -154,17 +151,18 @@ class ItemsSummaryController @Inject()(
       )
   }
 
-  private def removeItemFromCache(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def removeItemFromCache(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     request.cacheModel.itemBy(itemId) match {
       case Some(itemToDelete) =>
         val updatedItems =
           request.cacheModel.items.filterNot(_ == itemToDelete).zipWithIndex.map {
             case (item, index) => item.copy(sequenceId = index + 1)
           }
+
         val updatedModel = removeWarehouseIdentification(request.cacheModel.copy(items = updatedItems))
         exportsCacheService.update(updatedModel)
 
-      case None => Future.successful(None)
+      case None => Future.successful(request.cacheModel)
     }
 
   private def removeWarehouseIdentification(declaration: ExportsDeclaration): ExportsDeclaration =

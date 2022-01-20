@@ -65,6 +65,6 @@ class MucrController @Inject()(
       case _                         => routes.DeclarantExporterController.displayPage
     }
 
-  private def updateCache(mucr: Mucr)(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.copy(mucr = Some(mucr)))
+  private def updateCache(mucr: Mucr)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.copy(mucr = Some(mucr)))
 }

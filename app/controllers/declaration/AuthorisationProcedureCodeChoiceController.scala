@@ -16,14 +16,12 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{DeclarationHolderRequiredController, DeclarationHolderSummaryController}
 import controllers.navigation.Navigator
 import forms.declaration.AuthorisationProcedureCodeChoice
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
-import javax.inject.Inject
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -32,6 +30,9 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.authorisation_procedure_code_choice
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationProcedureCodeChoiceController @Inject()(
   authenticate: AuthAction,
@@ -46,11 +47,13 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.declarationType match {
       case CLEARANCE if request.cacheModel.isNotEntryIntoDeclarantsRecords =>
-        navigator.continueTo(mode, routes.DeclarationHolderRequiredController.displayPage)
+        navigator.continueTo(mode, DeclarationHolderRequiredController.displayPage)
+
       case OCCASIONAL =>
-        navigator.continueTo(mode, routes.DeclarationHolderRequiredController.displayPage)
+        navigator.continueTo(mode, DeclarationHolderRequiredController.displayPage)
+
       case _ =>
-        val form = AuthorisationProcedureCodeChoice.form().withSubmissionErrors()
+        val form = AuthorisationProcedureCodeChoice.form.withSubmissionErrors
         request.cacheModel.parties.authorisationProcedureCodeChoice match {
           case Some(data) => Ok(authorisationProcedureCodeChoice(form.fill(data), mode))
           case _          => Ok(authorisationProcedureCodeChoice(form, mode))
@@ -62,24 +65,22 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     AuthorisationProcedureCodeChoice
-      .form()
-      .bindFromRequest()
+      .form
+      .bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(authorisationProcedureCodeChoice(formWithErrors, mode))),
         updateCache(_).map(exportsDeclarationUpdated => navigator.continueTo(mode, nextPage(exportsDeclarationUpdated)))
       )
   }
 
-  private def nextPage(maybeExportsDeclaration: Option[ExportsDeclaration]): Mode => Call =
-    maybeExportsDeclaration.map { declaration =>
-      (declaration.`type`, declaration.additionalDeclarationType, declaration.parties.authorisationProcedureCodeChoice)
-    } match {
-      case Some((STANDARD, Some(STANDARD_PRE_LODGED), Choice1040 | ChoiceOthers)) => routes.DeclarationHolderRequiredController.displayPage
-      case _                                                                      => routes.DeclarationHolderSummaryController.displayPage
+  private def nextPage(declaration: ExportsDeclaration): Mode => Call =
+    (declaration.`type`, declaration.additionalDeclarationType, declaration.parties.authorisationProcedureCodeChoice) match {
+      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040 | ChoiceOthers) => DeclarationHolderRequiredController.displayPage
+      case _                                                                => DeclarationHolderSummaryController.displayPage
     }
 
   private def updateCache(
     choice: AuthorisationProcedureCodeChoice
-  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.updateAuthorisationProcedureCodeChoice(choice))
+  )(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.updateAuthorisationProcedureCodeChoice(choice))
 }

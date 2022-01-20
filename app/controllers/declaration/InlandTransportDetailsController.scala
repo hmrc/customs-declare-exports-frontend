@@ -76,7 +76,7 @@ class InlandTransportDetailsController @Inject()(
   }
 
   private def updateCacheAndGoNextPage(mode: Mode, code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(code))))
+    updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(code))))
       .map(_ => navigator.continueTo(mode, nextPage(request.declarationType, code)))
 
   private def validateAndUpdateCache(mode: Mode, code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =

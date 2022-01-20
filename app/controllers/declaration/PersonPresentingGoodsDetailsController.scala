@@ -60,6 +60,6 @@ class PersonPresentingGoodsDetailsController @Inject()(
       )
   }
 
-  private def updateCache(validData: PersonPresentingGoodsDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(parties = model.parties.copy(personPresentingGoodsDetails = Some(validData))))
+  private def updateCache(validData: PersonPresentingGoodsDetails)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(personPresentingGoodsDetails = Some(validData))))
 }

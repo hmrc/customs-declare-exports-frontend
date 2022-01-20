@@ -32,11 +32,8 @@ class ExportsCacheService @Inject()(connector: CustomsDeclareExportsConnector)(i
   def create(declaration: ExportsDeclarationExchange)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
     connector.createDeclaration(declaration)
 
-  def update(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = {
-    val declarationWithUpdatedTimestamp = declaration.copy(updatedDateTime = Instant.now())
-    connector.updateDeclaration(declarationWithUpdatedTimestamp).map(Some(_))
-  }
-
   def get(id: String)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = connector.findDeclaration(id)
 
+  def update(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
+    connector.updateDeclaration(declaration.copy(updatedDateTime = Instant.now))
 }

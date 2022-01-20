@@ -70,8 +70,8 @@ class NactCodeRemoveController @Inject()(
 
   private def updateExportsCache(itemId: String, nactCodeToRemove: String)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  ): Future[ExportsDeclaration] = {
     val updatedCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(Seq.empty).filterNot(_.nactCode == nactCodeToRemove)
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCodes.toList))))
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCodes.toList))))
   }
 }

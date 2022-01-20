@@ -95,11 +95,11 @@ class AdditionalInformationRequiredController @Inject()(
 
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  ): Future[ExportsDeclaration] = {
     val updatedAdditionalInformation = yesNoAnswer.answer match {
       case YesNoAnswers.yes => AdditionalInformationData(Some(yesNoAnswer), request.cacheModel.listOfAdditionalInformationOfItem(itemId))
       case YesNoAnswers.no  => AdditionalInformationData(Some(yesNoAnswer), Seq.empty)
     }
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
   }
 }

@@ -28,7 +28,7 @@ import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration._
@@ -101,15 +101,15 @@ class TransportContainerController @Inject()(
       removeContainerAnswer(mode, containerId)
     }
 
-  private def saveFirstContainer(mode: Mode, containerId: Option[String])(implicit request: JourneyRequest[AnyContent]) =
+  private def saveFirstContainer(mode: Mode, containerId: Option[String])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     containerId match {
       case Some(id) => updateCache(Seq(Container(id, Seq.empty))).map(_ => redirectAfterAdd(mode, id))
       case None     => updateCache(Seq.empty).map(_ => navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage))
     }
 
-  private def saveAdditionalContainer(mode: Mode, boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(
-    implicit request: JourneyRequest[AnyContent]
-  ) =
+  private def saveAdditionalContainer(
+    mode: Mode, boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] =
     prepare(boundForm, elementLimit, cache) fold (
       formWithErrors => Future.successful(BadRequest(addPage(mode, formWithErrors))),
       updatedCache =>
@@ -137,6 +137,7 @@ class TransportContainerController @Inject()(
 
   private def addAnotherContainerYesNoForm: Form[YesNoAnswer] =
     YesNoAnswer.form(errorKey = "declaration.transportInformation.container.another.empty")
+
   private def removeContainerYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.transportInformation.container.remove.empty")
 
   private def duplication(id: String, cachedData: Seq[Container]): Seq[FormError] =
@@ -181,8 +182,8 @@ class TransportContainerController @Inject()(
 
   private def containerId(values: Seq[String]): String = values.headOption.getOrElse("")
 
-  private def updateCache(updatedContainers: Seq[Container])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.updateContainers(updatedContainers))
+  private def updateCache(updatedContainers: Seq[Container])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.updateContainers(updatedContainers))
 
   private def redirectAfterAdd(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) =
     navigator.continueTo(mode, routes.SealController.displaySealSummary(_, containerId))

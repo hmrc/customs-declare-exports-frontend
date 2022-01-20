@@ -67,7 +67,7 @@ class ConsignmentReferencesController @Inject()(
   private def updateCacheAndContinue(mode: Mode, consignmentReferences: ConsignmentReferences)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
-    updateExportsDeclarationSyncDirect(_.copy(consignmentReferences = Some(capitaliseDucr(consignmentReferences))))
+    updateDeclarationFromRequest(_.copy(consignmentReferences = Some(capitaliseDucr(consignmentReferences))))
       .map(_ => navigator.continueTo(mode, nextPage))
 
   private def capitaliseDucr(consignmentReferences: ConsignmentReferences): ConsignmentReferences =

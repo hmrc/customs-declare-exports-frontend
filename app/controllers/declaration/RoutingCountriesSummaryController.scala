@@ -100,8 +100,8 @@ class RoutingCountriesSummaryController @Inject()(
   private def removeRedirect(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(mode, routes.RoutingCountriesSummaryController.displayPage, mode.isErrorFix)
 
-  private def removeCountry(country: Country)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.removeCountryOfRouting(country))
+  private def removeCountry(country: Country)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.removeCountryOfRouting(country))
 
   def displayChangeCountryPage(mode: Mode, countryCode: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val cachedCountries = request.cacheModel.locations.routingCountries.flatMap(_.code)
@@ -129,7 +129,7 @@ class RoutingCountriesSummaryController @Inject()(
         validCountry => {
           val updatedCountries = cachedCountries.updated(countryIndex, validCountry)
 
-          updateExportsDeclarationSyncDirect(_.updateCountriesOfRouting(updatedCountries)).map { _ =>
+          updateDeclarationFromRequest(_.updateCountriesOfRouting(updatedCountries)).map { _ =>
             navigator.continueTo(mode, routes.RoutingCountriesSummaryController.displayPage, mode.isErrorFix)
           }
         }

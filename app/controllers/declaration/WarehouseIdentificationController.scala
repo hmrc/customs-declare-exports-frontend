@@ -78,6 +78,6 @@ class WarehouseIdentificationController @Inject()(
       case _                         => warehouseIdentificationPage(mode, form)
     }
 
-  private def updateCache(formData: WarehouseIdentification)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(warehouseIdentification = Some(formData))))
+  private def updateCache(formData: WarehouseIdentification)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(warehouseIdentification = Some(formData))))
 }
