@@ -107,8 +107,8 @@ class TransportContainerController @Inject()(
       case None     => updateCache(Seq.empty).map(_ => navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage))
     }
 
-  private def saveAdditionalContainer(
-    mode: Mode, boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(implicit request: JourneyRequest[AnyContent]
+  private def saveAdditionalContainer(mode: Mode, boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     prepare(boundForm, elementLimit, cache) fold (
       formWithErrors => Future.successful(BadRequest(addPage(mode, formWithErrors))),

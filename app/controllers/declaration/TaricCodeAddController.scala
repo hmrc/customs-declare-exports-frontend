@@ -103,8 +103,6 @@ class TaricCodeAddController @Inject()(
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.TaricCodeSummaryController.displayPage(_, itemId)))
       )
 
-  private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(
-    implicit r: JourneyRequest[AnyContent]
-  ): Future[ExportsDeclaration] =
+  private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(taricCodes = Some(updatedCache.toList))))
 }

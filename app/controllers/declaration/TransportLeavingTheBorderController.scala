@@ -58,12 +58,15 @@ class TransportLeavingTheBorderController @Inject()(
     TransportLeavingTheBorder
       .form(request.declarationType)
       .bindFromRequest
-      .fold(errors => Future.successful(BadRequest(transportAtBorder(errors, mode))), updateCache(_).map(_ => navigator.continueTo(mode, nextPage)))
+      .fold(
+        formWithErrors => Future.successful(BadRequest(transportAtBorder(formWithErrors, mode))),
+        updateCache(_).map(declaration => navigator.continueTo(mode, nextPage(declaration)))
+      )
   }
 
-  private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
-    if (request.isType(CLEARANCE) || request.cacheModel.requiresWarehouseId) WarehouseIdentificationController.displayPage
-    else SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage
+  private def nextPage(declaration: ExportsDeclaration): Mode => Call =
+    if (declaration.`type` == CLEARANCE || declaration.requiresWarehouseId) WarehouseIdentificationController.displayPage
+    else SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration)
 
   private def updateCache(code: TransportLeavingTheBorder)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updateTransportLeavingBorder(code))

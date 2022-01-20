@@ -64,9 +64,7 @@ class CusCodeController @Inject()(
       )
   }
 
-  private def updateExportsCache(itemId: String, updatedItem: CusCode)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[ExportsDeclaration] =
+  private def updateExportsCache(itemId: String, updatedItem: CusCode)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { model =>
       model.updatedItem(itemId, item => item.copy(cusCode = Some(updatedItem)))
     }

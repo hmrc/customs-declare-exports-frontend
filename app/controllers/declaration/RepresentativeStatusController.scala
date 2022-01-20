@@ -54,8 +54,7 @@ class RepresentativeStatusController @Inject()(
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
-      .bindFromRequest
+    form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(representativeStatusPage(mode, navigationForm, formWithErrors))),
         validRepresentativeDetails =>

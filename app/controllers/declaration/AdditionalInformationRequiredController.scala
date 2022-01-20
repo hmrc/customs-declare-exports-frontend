@@ -93,9 +93,7 @@ class AdditionalInformationRequiredController @Inject()(
       BadRequest(additionalInfoReq(mode, itemId, formWithErrors, backLink, request.cacheModel.procedureCodeOfItem(itemId)))
     }
 
-  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[ExportsDeclaration] = {
+  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val updatedAdditionalInformation = yesNoAnswer.answer match {
       case YesNoAnswers.yes => AdditionalInformationData(Some(yesNoAnswer), request.cacheModel.listOfAdditionalInformationOfItem(itemId))
       case YesNoAnswers.no  => AdditionalInformationData(Some(yesNoAnswer), Seq.empty)

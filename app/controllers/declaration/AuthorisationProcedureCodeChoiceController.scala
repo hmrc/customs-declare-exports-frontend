@@ -64,9 +64,7 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, CLEARANCE)
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    AuthorisationProcedureCodeChoice
-      .form
-      .bindFromRequest
+    AuthorisationProcedureCodeChoice.form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(authorisationProcedureCodeChoice(formWithErrors, mode))),
         updateCache(_).map(exportsDeclarationUpdated => navigator.continueTo(mode, nextPage(exportsDeclarationUpdated)))
@@ -79,8 +77,6 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
       case _                                                                => DeclarationHolderSummaryController.displayPage
     }
 
-  private def updateCache(
-    choice: AuthorisationProcedureCodeChoice
-  )(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+  private def updateCache(choice: AuthorisationProcedureCodeChoice)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updateAuthorisationProcedureCodeChoice(choice))
 }

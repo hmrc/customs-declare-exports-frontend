@@ -45,7 +45,7 @@ class WarehouseIdentificationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form.withSubmissionErrors()
+    val frm = form.withSubmissionErrors
     request.cacheModel.locations.warehouseIdentification match {
       case Some(data) => Ok(page(mode, frm.fill(data)))
       case _          => Ok(page(mode, frm))
@@ -53,17 +53,12 @@ class WarehouseIdentificationController @Inject()(
   }
 
   def saveIdentificationNumber(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(page(mode, formWithErrors))),
-        updateCache(_).map {
-          // Next page should always be '/supervising-customs-office' for CLEARANCE
-          // since Procedure code '1040' is not applicable to this declaration type
-          _ =>
-            navigator.continueTo(mode, SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage)
-        }
-      )
+    form.bindFromRequest
+      .fold(formWithErrors => Future.successful(BadRequest(page(mode, formWithErrors))), updateCache(_).map { declaration =>
+        // Next page should always be '/supervising-customs-office' for CLEARANCE
+        // since Procedure code '1040' is not applicable to this declaration type
+        navigator.continueTo(mode, SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration))
+      })
   }
 
   private def form(implicit request: JourneyRequest[AnyContent]): Form[WarehouseIdentification] =

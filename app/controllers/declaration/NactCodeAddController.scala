@@ -96,8 +96,6 @@ class NactCodeAddController @Inject()(
             .map(_ => navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
       )
 
-  private def updateExportsCache(itemId: String, updatedCache: Seq[NactCode])(
-    implicit r: JourneyRequest[AnyContent]
-  ): Future[ExportsDeclaration] =
+  private def updateExportsCache(itemId: String, updatedCache: Seq[NactCode])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCache.toList))))
 }

@@ -102,7 +102,7 @@ class ItemsSummaryController @Inject()(
 
       case SIMPLIFIED | OCCASIONAL =>
         if (request.cacheModel.requiresWarehouseId) routes.WarehouseIdentificationController.displayPage
-        else SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage
+        else SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage(request.cacheModel)
     }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =

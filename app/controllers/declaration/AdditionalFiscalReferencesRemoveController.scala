@@ -78,7 +78,7 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
   private def redirectAfterRemove(mode: Mode, itemId: String, declaration: ExportsDeclaration)(implicit request: JourneyRequest[AnyContent]): Result =
     declaration.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).map(_.references) match {
       case Some(references) if references.nonEmpty => returnToSummary(mode, itemId)
-      case _ => navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId))
+      case _                                       => navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId))
     }
 
   private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =

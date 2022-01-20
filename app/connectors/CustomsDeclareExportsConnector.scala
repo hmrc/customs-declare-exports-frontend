@@ -79,6 +79,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
         case Success(request) =>
           logPayload("Update Declaration Response", request)
           updateStopwatch.stop()
+
         case Failure(_) =>
           updateStopwatch.stop()
       }

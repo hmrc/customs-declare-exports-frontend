@@ -43,7 +43,7 @@ class SupervisingCustomsOfficeController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form.withSubmissionErrors()
+    val frm = form.withSubmissionErrors
     request.cacheModel.locations.supervisingCustomsOffice match {
       case Some(data) => Ok(supervisingCustomsOfficePage(mode, frm.fill(data)))
       case _          => Ok(supervisingCustomsOfficePage(mode, frm))
@@ -51,11 +51,10 @@ class SupervisingCustomsOfficeController @Inject()(
   }
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
-      .bindFromRequest()
+    form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(supervisingCustomsOfficePage(mode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(mode, SupervisingCustomsOfficeHelper.nextPage))
+        updateCache(_).map(declaration => navigator.continueTo(mode, SupervisingCustomsOfficeHelper.nextPage(declaration)))
       )
   }
 
