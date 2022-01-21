@@ -595,6 +595,9 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
       case _                                   => routes.SupplementaryUnitsController.displayPage(mode, itemId)
     }
 
+  case class modeStaticMapping(value: Mode => Call)
+  case class declarationAndModeStaticMapping(value: (ExportsDeclaration, Mode) => Call)
+
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {
       case Mode.Normal | Mode.Amend =>
@@ -607,14 +610,18 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
         }
 
         commonCacheDependent.orElse(common).orElse(specific)(page) match {
-          case mapping: (Mode => Call) =>
-            mapping(mode)
-          case mapping: ((ExportsDeclaration, Mode) => Call) =>
-            mapping(request.cacheModel, mode)
+          case modeStaticMapping(map) =>
+            map(mode)
+          case declarationAndModeStaticMapping(map) =>
+            map(request.cacheModel, mode)
         }
 
       case _ => backLinkOnOtherModes(mode)
     }
+
+  case class modeAndStringStaticMapping(value: (Mode, String) => Call)
+  case class declarationAndModeAndStringStaticMapping(value: (ExportsDeclaration, Mode, String) => Call)
+  case class declarationAndModeAndStringDynamicMapping(value: (ExportsDeclaration, Mode, String) => Future[Call])
 
   def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Future[Call] =
     mode match {
@@ -627,12 +634,12 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
           case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
         }
         commonCacheItemDependent.orElse(commonItem).orElse(specific)(page) match {
-          case mapping: ((Mode, String) => Call) =>
-            Future.successful(mapping(mode, itemId.id))
-          case mapping: ((ExportsDeclaration, Mode, String) => Call) =>
-            Future.successful(mapping(request.cacheModel, mode, itemId.id))
-          case mapping: ((ExportsDeclaration, Mode, String) => Future[Call]) =>
-            mapping(request.cacheModel, mode, itemId.id)
+          case modeAndStringStaticMapping(map) =>
+            Future.successful(map(mode, itemId.id))
+          case declarationAndModeAndStringStaticMapping(map) =>
+            Future.successful(map(request.cacheModel, mode, itemId.id))
+          case declarationAndModeAndStringDynamicMapping(map) =>
+            map(request.cacheModel, mode, itemId.id)
         }
 
       case _ => Future.successful(backLinkOnOtherModes(mode))
