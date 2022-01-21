@@ -68,8 +68,8 @@ class LinkDucrToMucrController @Inject()(
       }
     }
 
-  private def updateCache(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
+  private def updateCache(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { model =>
       model.copy(linkDucrToMucr = Some(yesNoAnswer), mucr = if (yesNoAnswer.answer == YesNoAnswers.no) None else model.mucr)
     }
 }

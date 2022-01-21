@@ -110,8 +110,8 @@ class AdditionalDocumentChangeController @Inject()(
 
   private def updateCache(itemId: String, additionalDocuments: AdditionalDocuments)(
     implicit req: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
+  ): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => {
       model.updatedItem(itemId, item => item.copy(additionalDocuments = Some(additionalDocuments)))
     })
 }

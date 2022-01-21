@@ -69,8 +69,8 @@ class PackageInformationAddController @Inject()(
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedCache.toList))))
+  ): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedCache.toList))))
 }
 
 object PackageInformationAddController {

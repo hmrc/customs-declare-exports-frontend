@@ -60,8 +60,8 @@ class EntryIntoDeclarantsRecordsController @Inject()(
       )
   }
 
-  private def updateCache(validData: YesNoAnswer)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
+  private def updateCache(validData: YesNoAnswer)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { model =>
       val updatedParties = validData.answer match {
         case YesNoAnswers.yes => model.parties.copy(isEntryIntoDeclarantsRecords = Some(validData))
         case YesNoAnswers.no =>

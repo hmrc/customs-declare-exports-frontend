@@ -64,8 +64,8 @@ class RepresentativeEntityController @Inject()(
   private def nextPage(declarationType: DeclarationType): Mode => Call =
     controllers.declaration.routes.RepresentativeStatusController.displayPage
 
-  private def updateCache(formData: RepresentativeEntity)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
+  private def updateCache(formData: RepresentativeEntity)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { model =>
       val representativeDetails: RepresentativeDetails = model.parties.representativeDetails.getOrElse(RepresentativeDetails())
       val updatedParties = model.parties.copy(representativeDetails = Some(representativeDetails.copy(details = Some(formData.details))))
       model.copy(parties = updatedParties)

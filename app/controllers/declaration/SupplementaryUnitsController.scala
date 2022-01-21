@@ -101,7 +101,7 @@ class SupplementaryUnitsController @Inject()(
   private def updateExportsCacheAndContinueToNextPage(mode: Mode, itemId: String, updatedItem: SupplementaryUnits)(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Result] =
-    updateExportsDeclarationSyncDirect {
+    updateDeclarationFromRequest {
       _.updatedItem(itemId, item => item.copy(commodityMeasure = updateCommodityMeasure(item, updatedItem)))
     }.map { _ =>
       navigator.continueTo(mode, AdditionalInformationRequiredController.displayPage(_, itemId))

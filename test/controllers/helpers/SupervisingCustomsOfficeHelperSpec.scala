@@ -23,10 +23,8 @@ import controllers.helpers.SupervisingCustomsOfficeHelper._
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import models.DeclarationType
 import models.Mode.Normal
-import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration}
-import play.api.mvc.AnyContentAsEmpty
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
 class SupervisingCustomsOfficeHelperSpec
@@ -75,7 +73,8 @@ class SupervisingCustomsOfficeHelperSpec
     additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
       s"AdditionalDeclarationType is ${additionalType}" should {
         "goto to InlandOrBorderController" in {
-          nextPage(withRequest(additionalType))(Normal) mustBe routes.InlandOrBorderController.displayPage(Normal)
+          val declaration = withRequest(additionalType).cacheModel
+          nextPage(declaration)(Normal) mustBe routes.InlandOrBorderController.displayPage(Normal)
         }
       }
     }
@@ -83,24 +82,24 @@ class SupervisingCustomsOfficeHelperSpec
     List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" should {
         "goto to InlandTransportDetailsController" in {
-          nextPage(withRequest(additionalType))(Normal) mustBe routes.InlandTransportDetailsController.displayPage(Normal)
+          val declaration = withRequest(additionalType).cacheModel
+          nextPage(declaration)(Normal) mustBe routes.InlandTransportDetailsController.displayPage(Normal)
         }
       }
     }
 
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       "goto ExpressConsignmentController for SIMPLIFIED & OCCASIONAL journeys" in {
-        nextPage(request)(Normal) mustBe routes.ExpressConsignmentController.displayPage(Normal)
+        nextPage(request.cacheModel)(Normal) mustBe routes.ExpressConsignmentController.displayPage(Normal)
       }
     }
 
     onJourney(DeclarationType.CLEARANCE) { request =>
       skipDepartureTransportPageCodes.foreach { modeOfTransportCode =>
-        val cachedDec = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
-
         s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
           "goto ExpressConsignmentController" in {
-            nextPage(getRequest(cachedDec))(Normal) mustBe routes.ExpressConsignmentController.displayPage(Normal)
+            val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
+            nextPage(declaration)(Normal) mustBe routes.ExpressConsignmentController.displayPage(Normal)
           }
         }
       }
@@ -108,19 +107,15 @@ class SupervisingCustomsOfficeHelperSpec
       meaningfulModeOfTransportCodes
         .filter(!skipDepartureTransportPageCodes.contains(_))
         .foreach { modeOfTransportCode =>
-          val cachedDec = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
-
           s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
             "goto DepartureTransportController" in {
-              nextPage(getRequest(cachedDec))(Normal) mustBe routes.DepartureTransportController.displayPage(Normal)
+              val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
+              nextPage(declaration)(Normal) mustBe routes.DepartureTransportController.displayPage(Normal)
             }
           }
         }
     }
   }
-
-  private def getRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
-    new JourneyRequest(getAuthenticatedRequest(), declaration)
 }
 
 object SupervisingCustomsOfficeHelperSpec {

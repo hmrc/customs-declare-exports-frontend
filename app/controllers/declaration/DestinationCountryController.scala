@@ -60,7 +60,7 @@ class DestinationCountryController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(destinationCountryPage(mode, formWithErrors))),
         validCountry =>
-          updateExportsDeclarationSyncDirect(_.updateDestinationCountry(validCountry)).map { _ =>
+          updateDeclarationFromRequest(_.updateDestinationCountry(validCountry)).map { _ =>
             redirectToNextPage(mode)
         }
       )

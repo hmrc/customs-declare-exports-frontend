@@ -78,8 +78,8 @@ class ExporterEoriNumberController @Inject()(
 
   private def updateCache(formData: ExporterEoriNumber, savedExporterDetails: Option[ExporterDetails])(
     implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
+  ): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(
       model => model.copy(parties = model.parties.copy(exporterDetails = Some(ExporterDetails.from(formData, savedExporterDetails))))
     )
 }

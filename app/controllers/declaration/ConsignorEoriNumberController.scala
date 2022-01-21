@@ -79,8 +79,8 @@ class ConsignorEoriNumberController @Inject()(
 
   private def updateCache(formData: ConsignorEoriNumber, savedConsignorDetails: Option[ConsignorDetails])(
     implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
+  ): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(
       model => model.copy(parties = model.parties.copy(consignorDetails = Some(ConsignorDetails.from(formData, savedConsignorDetails))))
     )
 }

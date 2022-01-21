@@ -22,7 +22,6 @@ import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
 import models.DeclarationType._
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
-import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.mvc.Call
 
@@ -40,22 +39,22 @@ object SupervisingCustomsOfficeHelper {
   def isConditionForAllProcedureCodesVerified(cachedModel: ExportsDeclaration): Boolean =
     cachedModel.items.nonEmpty && cachedModel.items.forall(_.procedureCodes.forall(isConditionForProcedureCodesDataVerified))
 
-  def landOnOrSkipToNextPage(implicit request: JourneyRequest[_]): Mode => Call =
-    if (isConditionForAllProcedureCodesVerified(request.cacheModel)) nextPage
+  def landOnOrSkipToNextPage(declaration: ExportsDeclaration): Mode => Call =
+    if (isConditionForAllProcedureCodesVerified(declaration)) nextPage(declaration)
     else SupervisingCustomsOfficeController.displayPage
 
-  def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
-    request.declarationType match {
+  def nextPage(declaration: ExportsDeclaration): Mode => Call =
+    declaration.`type` match {
       case STANDARD | SUPPLEMENTARY =>
-        if (skipInlandOrBorder(request.cacheModel)) InlandTransportDetailsController.displayPage
+        if (skipInlandOrBorder(declaration)) InlandTransportDetailsController.displayPage
         else InlandOrBorderController.displayPage
 
-      case CLEARANCE               => nextPageOnClearance
+      case CLEARANCE               => nextPageOnClearance(declaration)
       case SIMPLIFIED | OCCASIONAL => ExpressConsignmentController.displayPage
     }
 
-  private def nextPageOnClearance(implicit request: JourneyRequest[_]): Mode => Call = {
-    val condition = isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)
+  private def nextPageOnClearance(declaration: ExportsDeclaration): Mode => Call = {
+    val condition = isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode)
     if (condition) ExpressConsignmentController.displayPage else DepartureTransportController.displayPage
   }
 }

@@ -65,7 +65,7 @@ class ProcedureCodesController @Inject()(
 
   private def updateCache(itemId: String, procedureCodeEntered: ProcedureCode)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  ): Future[ExportsDeclaration] = {
 
     val updateProcedureCode: ExportsDeclaration => ExportsDeclaration = { model =>
       model.updatedItem(itemId, item => {
@@ -111,7 +111,7 @@ class ProcedureCodesController @Inject()(
         model.copy(locations = model.locations.copy(warehouseIdentification = None))
     }
 
-    updateExportsDeclarationSyncDirect { model =>
+    updateDeclarationFromRequest { model =>
       model
         .transform(updateAdditionalProcedureCodes)
         .transform(updateProcedureCode)

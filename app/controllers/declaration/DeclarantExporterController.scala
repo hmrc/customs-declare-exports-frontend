@@ -72,8 +72,8 @@ class DeclarantExporterController @Inject()(
       }
     } else controllers.declaration.routes.ExporterEoriNumberController.displayPage
 
-  private def updateCache(answer: DeclarantIsExporter)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
+  private def updateCache(answer: DeclarantIsExporter)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => {
       if (answer.isExporter) {
         // clear possible previous answers to irrelevant questions
         model.copy(parties = model.parties.copy(declarantIsExporter = Some(answer), exporterDetails = None, representativeDetails = None))

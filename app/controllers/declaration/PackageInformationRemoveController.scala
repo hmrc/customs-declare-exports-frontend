@@ -73,9 +73,9 @@ class PackageInformationRemoveController @Inject()(
 
   private def updateExportsCache(itemId: String, itemToRemove: PackageInformation)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  ): Future[ExportsDeclaration] = {
     val updatedPackageInformation =
       request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(Seq.empty).filterNot(_ == itemToRemove)
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformation.toList))))
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedPackageInformation.toList))))
   }
 }

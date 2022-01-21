@@ -68,8 +68,8 @@ class ExpressConsignmentController @Inject()(
     if (yesNoAnswer.answer == YesNoAnswers.yes) routes.TransportPaymentController.displayPage
     else routes.TransportContainerController.displayContainerSummary
 
-  private def updateCache(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
+  private def updateCache(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { model =>
       model.copy(
         transport = model.transport.copy(
           expressConsignment = Some(yesNoAnswer),
