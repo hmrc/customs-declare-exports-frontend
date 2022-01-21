@@ -17,11 +17,11 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{AdditionalInformationRequiredController, SupplementaryUnitsController}
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import forms.declaration.commodityMeasure.CommodityMeasure
+
 import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import models.declaration.{ExportItem, CommodityMeasure => CommodityMeasureModel}
@@ -46,17 +46,22 @@ class CommodityMeasureController @Inject()(
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    request.cacheModel.commodityMeasure(itemId) match {
-      case Some(data) => Ok(commodityMeasurePage(mode, itemId, form.fill(CommodityMeasure(data))))
-      case _          => Ok(commodityMeasurePage(mode, itemId, form))
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    resolveBackLink(mode, itemId).map { backLink =>
+      request.cacheModel.commodityMeasure(itemId) match {
+        case Some(data) => Ok(commodityMeasurePage(mode, itemId, form.fill(CommodityMeasure(data)), backLink))
+        case _          => Ok(commodityMeasurePage(mode, itemId, form, backLink))
+      }
     }
   }
 
   def submitPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val test = form.bindFromRequest
     test.fold(
-      formWithErrors => Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors))),
+      formWithErrors =>
+        resolveBackLink(mode, itemId).map { backLink =>
+          BadRequest(commodityMeasurePage(mode, itemId, formWithErrors, backLink))
+      },
       updateExportsCache(itemId, _).map(_ => navigator.continueTo(mode, nextPage(itemId)))
     )
   }
@@ -89,4 +94,7 @@ class CommodityMeasureController @Inject()(
 
       case _ => Some(CommodityMeasureModel(None, None, updatedItem.grossMass, updatedItem.netMass))
     }
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(CommodityMeasure, mode, ItemId(itemId))
 }

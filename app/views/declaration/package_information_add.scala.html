@@ -47,15 +47,16 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[_], packages: Seq[PackageInformation], backLink: Call)(
+  implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@backLink = @{
+@backLinkCheck = @{
   if(packages.nonEmpty)
       routes.PackageInformationSummaryController.displayPage(mode, itemId)
   else
-      navigator.backLink(PackageInformation, mode, ItemId(itemId))
+      backLink
 }
 
 @packageTypeText = {
@@ -76,7 +77,7 @@
 
 @govukLayout(
     title = Title("declaration.packageInformation.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), backLink))
+    backButton = Some(BackButton(messages("site.back"), backLinkCheck))
 ) {
 
     @formHelper(action = routes.PackageInformationAddController.submitForm(mode, itemId), 'autoComplete -> "off") {

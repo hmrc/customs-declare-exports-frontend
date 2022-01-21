@@ -17,10 +17,11 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.additionaldocuments.AdditionalDocument
+import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsSummary}
+
 import javax.inject.Inject
 import models.Mode
 import models.requests.JourneyRequest
@@ -31,6 +32,8 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalDocuments.additional_documents
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class AdditionalDocumentsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -38,23 +41,28 @@ class AdditionalDocumentsController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalDocumentsPage: additional_documents
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val additionalDocuments = cachedAdditionalDocuments(itemId)
     if (additionalDocuments.nonEmpty) {
       val frm = yesNoForm.withSubmissionErrors()
-      Ok(additionalDocumentsPage(mode, itemId, frm, additionalDocuments))
-    } else navigator.continueTo(mode, redirectIfNoDocuments(mode, itemId), mode.isErrorFix)
+      resolveBackLink(mode, itemId).map { backLink =>
+        Ok(additionalDocumentsPage(mode, itemId, frm, additionalDocuments, backLink))
+      }
+    } else Future.successful(navigator.continueTo(mode, redirectIfNoDocuments(mode, itemId), mode.isErrorFix))
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    def showFormWithErrors(formWithErrors: Form[YesNoAnswer]): Result =
-      BadRequest(additionalDocumentsPage(mode, itemId, formWithErrors, cachedAdditionalDocuments(itemId)))
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    def showFormWithErrors(formWithErrors: Form[YesNoAnswer]): Future[Result] =
+      resolveBackLink(mode, itemId).map { backLink =>
+        BadRequest(additionalDocumentsPage(mode, itemId, formWithErrors, cachedAdditionalDocuments(itemId), backLink))
+      }
 
     yesNoForm
       .bindFromRequest()
-      .fold(showFormWithErrors, yesNoAnswer => navigator.continueTo(mode, nextPage(yesNoAnswer, itemId)))
+      .fold(showFormWithErrors, yesNoAnswer => Future.successful(navigator.continueTo(mode, nextPage(yesNoAnswer, itemId))))
   }
 
   private def yesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalDocument.add.another.empty")
@@ -70,4 +78,7 @@ class AdditionalDocumentsController @Inject()(
     if (mode.isErrorFix || request.cacheModel.isAuthCodeRequiringAdditionalDocuments)
       routes.AdditionalDocumentAddController.displayPage(_, itemId)
     else routes.AdditionalDocumentsRequiredController.displayPage(_, itemId)
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(AdditionalDocumentsSummary, mode, ItemId(itemId))
 }

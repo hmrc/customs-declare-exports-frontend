@@ -19,7 +19,7 @@ package controllers.declaration
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.AdditionalFiscalReferencesAddController.AdditionalFiscalReferencesFormGroupId
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import controllers.helpers.MultipleItemsHelper
 import forms.declaration.AdditionalFiscalReference.form
 import forms.declaration.AdditionalFiscalReferencesData._
@@ -46,16 +46,21 @@ class AdditionalFiscalReferencesAddController @Inject()(
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val frm = form().withSubmissionErrors()
-    Ok(additionalFiscalReferencesPage(mode, itemId, frm))
+    resolveBackLink(mode, itemId).map { backLink =>
+      Ok(additionalFiscalReferencesPage(mode, itemId, frm, backLink))
+    }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
 
     boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors))),
+      formWithErrors =>
+        resolveBackLink(mode, itemId).map { backLink =>
+          BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors, backLink))
+      },
       _ => saveAndContinue(mode, itemId, boundForm, cachedData(itemId))
     )
   }
@@ -69,7 +74,10 @@ class AdditionalFiscalReferencesAddController @Inject()(
     MultipleItemsHelper
       .add(form, cachedData.references, limit, AdditionalFiscalReferencesFormGroupId, "declaration.additionalFiscalReferences")
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors))),
+        formWithErrors =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors, backLink))
+        },
         updatedCache =>
           updateExportsCache(itemId, cachedData.copy(references = updatedCache))
             .map(_ => navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId)))
@@ -81,6 +89,9 @@ class AdditionalFiscalReferencesAddController @Inject()(
     updateExportsDeclarationSyncDirect { model =>
       model.updatedItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedAdditionalFiscalReferencesData)))
     }
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(AdditionalFiscalReference, mode, ItemId(itemId))
 }
 
 object AdditionalFiscalReferencesAddController {

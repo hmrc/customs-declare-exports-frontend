@@ -16,16 +16,13 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper.remove
 import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
 import controllers.helpers._
+import controllers.navigation.{ItemId, Navigator}
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode._
-import javax.inject.Inject
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
 import models.declaration.ProcedureCodesData
@@ -34,12 +31,15 @@ import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc._
 import services.ProcedureCodeService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.procedureCodes.additional_procedure_codes
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalProcedureCodesController @Inject()(
   authenticate: AuthAction,
@@ -54,17 +54,29 @@ class AdditionalProcedureCodesController @Inject()(
 
   private val emptyProcedureCodesData = ProcedureCodesData(None, Seq())
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val (maybeCachedProcedureCode, cachedData) = getCachedData(itemId)
     val availableAdditionalProcedureCodes = getAvailableAdditionalProcedureCodes(maybeCachedProcedureCode)
 
     (maybeCachedProcedureCode, availableAdditionalProcedureCodes) match {
       case (Some(procedureCode), Some(validAdditionalProcedureCodes)) if !validAdditionalProcedureCodes.isEmpty =>
         val frm = form().withSubmissionErrors()
-        Ok(additionalProcedureCodesPage(mode, itemId, frm, procedureCode, validAdditionalProcedureCodes, cachedData.additionalProcedureCodes))
+        resolveBackLink(mode, itemId).map { backLink =>
+          Ok(
+            additionalProcedureCodesPage(
+              mode,
+              itemId,
+              frm,
+              procedureCode,
+              validAdditionalProcedureCodes,
+              cachedData.additionalProcedureCodes,
+              backLink
+            )
+          )
+        }
 
       case _ =>
-        Redirect(routes.ProcedureCodesController.displayPage(mode, itemId))
+        Future.successful(Redirect(routes.ProcedureCodesController.displayPage(mode, itemId)))
     }
   }
 
@@ -87,11 +99,19 @@ class AdditionalProcedureCodesController @Inject()(
           removeCodeHandler(mode, itemId, retrieveAdditionalProcedureCode(values), cachedData)
 
         case _ =>
-          Future.successful(
+          resolveBackLink(mode, itemId).map { backLink =>
             BadRequest(
-              additionalProcedureCodesPage(mode, itemId, boundForm, procedureCode, validAdditionalProcedureCodes, cachedData.additionalProcedureCodes)
+              additionalProcedureCodesPage(
+                mode,
+                itemId,
+                boundForm,
+                procedureCode,
+                validAdditionalProcedureCodes,
+                cachedData.additionalProcedureCodes,
+                backLink
+              )
             )
-          )
+          }
       }
     }
 
@@ -222,13 +242,23 @@ class AdditionalProcedureCodesController @Inject()(
     val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
     val formWithError = form().fill(userInput).copy(errors = updatedErrors)
 
-    Future.successful(
+    resolveBackLink(mode, itemId).map { backLink =>
       BadRequest(
-        additionalProcedureCodesPage(mode, itemId, formWithError, procedureCode, validAdditionalProcedureCodes, cachedAdditionalProcedureCodes)
+        additionalProcedureCodesPage(
+          mode,
+          itemId,
+          formWithError,
+          procedureCode,
+          validAdditionalProcedureCodes,
+          cachedAdditionalProcedureCodes,
+          backLink
+        )
       )
-    )
+    }
   }
 
   private def retrieveAdditionalProcedureCode(values: Seq[String]): String = values.headOption.getOrElse("")
 
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[_]): Future[Call] =
+    navigator.backLink(AdditionalProcedureCode, mode, ItemId(itemId))
 }

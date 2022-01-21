@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper
+import controllers.navigation.{ItemId, Navigator}
 import forms.declaration.TaricCode.taricCodeLimit
 import forms.declaration.{TaricCode, TaricCodeFirst}
 import models.requests.JourneyRequest
@@ -44,23 +44,27 @@ class TaricCodeAddController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
-      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodeAdd(mode, itemId, TaricCode.form().withSubmissionErrors()))
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    resolveBackLink(mode, itemId).map { backLink =>
+      request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
+        case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodeAdd(mode, itemId, TaricCode.form().withSubmissionErrors(), backLink))
 
-      case Some(_) =>
-        val form = TaricCodeFirst.form().fill(TaricCodeFirst.none).withSubmissionErrors()
-        Ok(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), form))
+        case Some(_) =>
+          val form = TaricCodeFirst.form().fill(TaricCodeFirst.none).withSubmissionErrors()
+          Ok(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), form, backLink))
 
-      case _ =>
-        val form = TaricCodeFirst.form().withSubmissionErrors()
-        Ok(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), form))
+        case _ =>
+          val form = TaricCodeFirst.form().withSubmissionErrors()
+          Ok(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), form, backLink))
+      }
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     def showFormWithErrors(formWithErrors: Form[TaricCodeFirst]): Future[Result] =
-      Future.successful(BadRequest(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), formWithErrors)))
+      resolveBackLink(mode, itemId).map { backLink =>
+        (BadRequest(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), formWithErrors, backLink)))
+      }
 
     val exportItem = request.cacheModel.itemBy(itemId)
     exportItem.flatMap(_.taricCodes) match {
@@ -73,6 +77,7 @@ class TaricCodeAddController @Inject()(
           .bindFromRequest()
           .fold(showFormWithErrors, validForm => saveFirstTaricCode(mode, itemId, validForm.code))
     }
+
   }
 
   private def commodityCode(itemId: String)(implicit request: JourneyRequest[_]): Option[String] =
@@ -97,11 +102,17 @@ class TaricCodeAddController @Inject()(
     MultipleItemsHelper
       .add(boundForm, cachedData, taricCodeLimit, "taricCode", "declaration.taricAdditionalCodes")
       .fold(
-        formWithErrors => Future.successful(BadRequest(taricCodeAdd(mode, itemId, formWithErrors))),
+        formWithErrors =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            (BadRequest(taricCodeAdd(mode, itemId, formWithErrors, backLink)))
+        },
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.TaricCodeSummaryController.displayPage(_, itemId)))
       )
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(TaricCode, mode, ItemId(itemId))
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(
     implicit r: JourneyRequest[AnyContent]

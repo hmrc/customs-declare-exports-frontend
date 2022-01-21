@@ -45,7 +45,8 @@
 @(mode: Mode,
   itemId: String,
   form: Form[SupplementaryUnits],
-  commodityInfo: CommodityInfo
+  commodityInfo: CommodityInfo,
+  backLink: Call
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{ form.hasErrors || form.hasGlobalErrors}
@@ -54,7 +55,7 @@
 
 @govukLayout(
     title = Title("declaration.supplementaryUnits.title", "declaration.section.5", commodityInfo.description, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(SupplementaryUnits, mode, ItemId(itemId))))
+    backButton = Some(BackButton(messages("site.back"), backLink))
 ) {
     @formHelper(action = SupplementaryUnitsController.submitPage(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)

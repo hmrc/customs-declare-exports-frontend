@@ -43,7 +43,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[YesNoAnswer], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -84,7 +84,8 @@
 
 @govukLayout(
     title = Title("declaration.additionalDocumentsRequired.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalDocumentsRequired, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), backLink))
+    ) {
 
     @formHelper(action = routes.AdditionalDocumentsRequiredController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

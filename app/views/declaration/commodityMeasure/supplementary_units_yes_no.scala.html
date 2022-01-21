@@ -45,7 +45,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[SupplementaryUnits])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[SupplementaryUnits], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{ form.hasErrors || form.hasGlobalErrors }
 
@@ -76,7 +76,7 @@
 
 @govukLayout(
     title = Title("declaration.supplementaryUnits.yesNo.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(SupplementaryUnits, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), backLink))) {
 
     @formHelper(action = SupplementaryUnitsController.submitPage(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasSupplementaryUnits, "Yes", form.errors))

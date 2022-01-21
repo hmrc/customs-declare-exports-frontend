@@ -45,13 +45,13 @@
         formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[UNDangerousGoodsCode])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[UNDangerousGoodsCode], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.unDangerousGoodsCode.header", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(UNDangerousGoodsCode, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), backLink))) {
 
     @formHelper(action = routes.UNDangerousGoodsCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasDangerousGoodsCodeKey, "code_yes", form.errors))

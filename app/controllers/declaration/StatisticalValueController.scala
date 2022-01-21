@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import forms.declaration.StatisticalValue
 import forms.declaration.StatisticalValue.form
 import models.requests.JourneyRequest
@@ -44,11 +44,13 @@ class StatisticalValueController @Inject()(
 
   val validTypes = Seq(DeclarationType.SUPPLEMENTARY, DeclarationType.STANDARD)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val frm = StatisticalValue.form().withSubmissionErrors()
-    request.cacheModel.itemBy(itemId).flatMap(_.statisticalValue) match {
-      case Some(itemType) => Ok(itemTypePage(mode, itemId, frm.fill(itemType)))
-      case _              => Ok(itemTypePage(mode, itemId, frm))
+    resolveBackLink(mode, itemId).map { backLink =>
+      request.cacheModel.itemBy(itemId).flatMap(_.statisticalValue) match {
+        case Some(itemType) => Ok(itemTypePage(mode, itemId, frm.fill(itemType), backLink))
+        case _              => Ok(itemTypePage(mode, itemId, frm, backLink))
+      }
     }
   }
 
@@ -56,7 +58,10 @@ class StatisticalValueController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(mode, itemId, formWithErrors))),
+        (formWithErrors: Form[StatisticalValue]) =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(itemTypePage(mode, itemId, formWithErrors, backLink))
+        },
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator
@@ -64,6 +69,9 @@ class StatisticalValueController @Inject()(
         }
       )
   }
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(StatisticalValue, mode, ItemId(itemId))
 
   private def updateExportsCache(itemId: String, updatedItem: StatisticalValue)(
     implicit request: JourneyRequest[AnyContent]

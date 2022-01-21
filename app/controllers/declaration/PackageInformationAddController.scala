@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import controllers.helpers.MultipleItemsHelper
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.form
@@ -30,6 +30,7 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.package_information_add
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,8 +44,10 @@ class PackageInformationAddController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(packageInformationPage(mode, itemId, form().withSubmissionErrors(), cachedPackageInformation(itemId)))
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    resolveBackLink(mode, itemId).map { backLink =>
+      Ok(packageInformationPage(mode, itemId, form().withSubmissionErrors(), cachedPackageInformation(itemId), backLink))
+    }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -61,7 +64,10 @@ class PackageInformationAddController @Inject()(
     MultipleItemsHelper
       .add(boundForm, cachedData, PackageInformation.limit, fieldId = PackageInformationFormGroupId, "declaration.packageInformation")
       .fold(
-        formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
+        formWithErrors =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData, backLink))
+        },
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId)))
@@ -71,6 +77,9 @@ class PackageInformationAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedCache.toList))))
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(PackageInformation, mode, ItemId(itemId))
 }
 
 object PackageInformationAddController {

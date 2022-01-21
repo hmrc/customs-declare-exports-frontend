@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationController}
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformationRequired
@@ -82,7 +82,7 @@ class AdditionalInformationRequiredController @Inject()(
     }
 
   private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
-    navigator.backLinkForAdditionalInformation(AdditionalInformationRequired, mode, itemId)
+    navigator.backLink(AdditionalInformationRequired, mode, ItemId(itemId))
 
   private def showFormWithErrors(mode: Mode, itemId: String, formWithErrors: Form[YesNoAnswer])(
     implicit request: JourneyRequest[AnyContent]

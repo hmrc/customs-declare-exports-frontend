@@ -17,9 +17,10 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.PackageInformation
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
@@ -31,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.package_information
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class PackageInformationSummaryController @Inject()(
   authenticate: AuthAction,
@@ -39,32 +41,43 @@ class PackageInformationSummaryController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   packageInformationPage: package_information
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   import PackageInformationSummaryController._
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.packageInformation) match {
-      case Some(items) if items.nonEmpty => Ok(packageInformationPage(mode, itemId, anotherYesNoForm.withSubmissionErrors(), items))
-      case _                             => navigator.continueTo(mode, routes.PackageInformationAddController.displayPage(_, itemId))
+      case Some(items) if items.nonEmpty =>
+        resolveBackLink(mode, itemId).map { backLink =>
+          Ok(packageInformationPage(mode, itemId, anotherYesNoForm.withSubmissionErrors(), items, backLink))
+        }
+      case _ => Future.successful(navigator.continueTo(mode, routes.PackageInformationAddController.displayPage(_, itemId)))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val items = request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
     anotherYesNoForm
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(packageInformationPage(mode, itemId, formWithErrors, items)),
+        (formWithErrors: Form[YesNoAnswer]) =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(packageInformationPage(mode, itemId, formWithErrors, items, backLink))
+        },
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.PackageInformationAddController.displayPage(_, itemId))
-            case YesNoAnswers.no  => navigator.continueTo(mode, nextPage(itemId))
+            case YesNoAnswers.yes =>
+              Future.successful(navigator.continueTo(mode, controllers.declaration.routes.PackageInformationAddController.displayPage(_, itemId)))
+            case YesNoAnswers.no => Future.successful(navigator.continueTo(mode, nextPage(itemId)))
         }
       )
   }
 
   private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.packageInformation.add.empty")
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(PackageInformation, mode, ItemId(itemId))
 }
 
 object PackageInformationSummaryController {

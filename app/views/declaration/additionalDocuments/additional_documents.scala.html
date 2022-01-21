@@ -49,7 +49,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[_], documents: Seq[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[_], documents: Seq[AdditionalDocument], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(documents.size == 1)
@@ -131,7 +131,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalDocumentsSummary, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), backLink))) {
 
     @formHelper(action = AdditionalDocumentsController.submitForm(mode, itemId), 'autoComplete -> "off") {
 

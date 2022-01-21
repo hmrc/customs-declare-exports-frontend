@@ -17,9 +17,10 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.NactCode
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import play.api.data.Form
@@ -30,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.nact_codes
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class NactCodeSummaryController @Inject()(
   authenticate: AuthAction,
@@ -38,34 +40,45 @@ class NactCodeSummaryController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   nactCodesPage: nact_codes
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   import NactCodeSummaryController._
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
-      case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodesPage(mode, itemId, anotherYesNoForm.withSubmissionErrors(), nactCodes))
-      case _                                     => navigator.continueTo(mode, routes.NactCodeAddController.displayPage(_, itemId))
+      case Some(nactCodes) if nactCodes.nonEmpty =>
+        resolveBackLink(mode, itemId).map { backLink =>
+          Ok(nactCodesPage(mode, itemId, anotherYesNoForm.withSubmissionErrors(), nactCodes, backLink))
+        }
+      case _ => Future.successful(navigator.continueTo(mode, routes.NactCodeAddController.displayPage(_, itemId)))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val nactCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(List.empty)
     anotherYesNoForm
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(nactCodesPage(mode, itemId, formWithErrors, nactCodes)),
+        (formWithErrors: Form[YesNoAnswer]) =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(nactCodesPage(mode, itemId, formWithErrors, nactCodes, backLink))
+        },
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.NactCodeAddController.displayPage(_, itemId))
-            case YesNoAnswers.no  => navigator.continueTo(mode, nextPage(itemId))
+            case YesNoAnswers.yes =>
+              Future.successful(navigator.continueTo(mode, controllers.declaration.routes.NactCodeAddController.displayPage(_, itemId)))
+            case YesNoAnswers.no => Future.successful(navigator.continueTo(mode, nextPage(itemId)))
         }
       )
   }
 
   private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.nationalAdditionalCode.add.answer.empty")
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(NactCode, mode, ItemId(itemId))
 }
 
 object NactCodeSummaryController {

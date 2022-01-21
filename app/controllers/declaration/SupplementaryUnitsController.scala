@@ -17,11 +17,11 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.AdditionalInformationRequiredController
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import forms.declaration.commodityMeasure.SupplementaryUnits
+
 import javax.inject.Inject
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.Mode
@@ -29,7 +29,7 @@ import models.declaration.{CommodityMeasure, ExportItem}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import services.TariffApiService
 import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRequired}
 import services.cache.ExportsCacheService
@@ -62,11 +62,13 @@ class SupplementaryUnitsController @Inject()(
 
       tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
         case Right(commodityInfo) =>
-          Future.successful(Ok(supplementaryUnitsPage(mode, itemId, formWithDataIfAny(false), commodityInfo)))
-
+          resolveBackLink(mode, itemId).map { backLink =>
+            Ok(supplementaryUnitsPage(mode, itemId, formWithDataIfAny(false), commodityInfo, backLink))
+          }
         case Left(CommodityCodeNotFound) =>
-          Future.successful(Ok(supplementaryUnitsYesNoPage(mode, itemId, formWithDataIfAny(true))))
-
+          resolveBackLink(mode, itemId).map { backLink =>
+            Ok(supplementaryUnitsYesNoPage(mode, itemId, formWithDataIfAny(true), backLink))
+          }
         case Left(SupplementaryUnitsNotRequired) =>
           updateExportsCacheAndContinueToNextPage(mode, itemId, SupplementaryUnits(None))
       }
@@ -77,13 +79,19 @@ class SupplementaryUnitsController @Inject()(
       tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
         case Right(commodityInfo) =>
           form(false).bindFromRequest.fold(
-            formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(mode, itemId, formWithErrors, commodityInfo))),
+            formWithErrors =>
+              resolveBackLink(mode, itemId).map { backLink =>
+                BadRequest(supplementaryUnitsPage(mode, itemId, formWithErrors, commodityInfo, backLink))
+            },
             updateExportsCacheAndContinueToNextPage(mode, itemId, _)
           )
 
         case Left(CommodityCodeNotFound) =>
           form(true).bindFromRequest.fold(
-            formWithErrors => Future.successful(BadRequest(supplementaryUnitsYesNoPage(mode, itemId, formWithErrors))),
+            formWithErrors =>
+              resolveBackLink(mode, itemId).map { backLink =>
+                BadRequest(supplementaryUnitsYesNoPage(mode, itemId, formWithErrors, backLink))
+            },
             updateExportsCacheAndContinueToNextPage(mode, itemId, _)
           )
 
@@ -121,4 +129,7 @@ class SupplementaryUnitsController @Inject()(
 
       case _ => Some(CommodityMeasure(updatedItem.supplementaryUnits, updatedItem.supplementaryUnits.fold(Some(true))(_ => Some(false)), None, None))
     }
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(SupplementaryUnits, mode, ItemId(itemId))
 }

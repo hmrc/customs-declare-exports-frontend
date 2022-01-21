@@ -17,12 +17,12 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import controllers.helpers._
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.additionaldocuments.AdditionalDocument._
+
 import javax.inject.Inject
 import models.declaration.AdditionalDocuments
 import models.declaration.AdditionalDocuments.maxNumberOfItems
@@ -45,15 +45,19 @@ class AdditionalDocumentAddController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(additionalDocumentAddPage(mode, itemId, form(request.cacheModel).withSubmissionErrors()))
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    resolveBackLink(mode, itemId).map { backLink =>
+      Ok(additionalDocumentAddPage(mode, itemId, form(request.cacheModel).withSubmissionErrors(), backLink))
+    }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = globalErrors(form(request.cacheModel).bindFromRequest())
 
     boundForm.fold(formWithErrors => {
-      Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors)))
+      resolveBackLink(mode, itemId).map { backLink =>
+        BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors, backLink))
+      }
     }, documents => {
       val additionalDocuments = request.cacheModel.additionalDocuments(itemId)
       if (documents.isDefined) saveDocuments(mode, itemId, boundForm, additionalDocuments)
@@ -79,7 +83,10 @@ class AdditionalDocumentAddController @Inject()(
     MultipleItemsHelper
       .add(boundForm, additionalDocuments.documents, maxNumberOfItems, AdditionalDocumentFormGroupId, "declaration.additionalDocument")
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors))),
+        formWithErrors =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(additionalDocumentAddPage(mode, itemId, formWithErrors, backLink))
+        },
         documents =>
           updateCache(itemId, additionalDocuments.copy(documents = documents))
             .map(_ => navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId)))
@@ -91,4 +98,7 @@ class AdditionalDocumentAddController @Inject()(
     updateExportsDeclarationSyncDirect(model => {
       model.updatedItem(itemId, item => item.copy(additionalDocuments = Some(additionalDocuments)))
     })
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(AdditionalDocument, mode, ItemId(itemId))
 }

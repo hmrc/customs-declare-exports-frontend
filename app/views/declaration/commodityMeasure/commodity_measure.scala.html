@@ -36,13 +36,13 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, itemId: String, form: Form[CommodityMeasure])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[CommodityMeasure], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.commodityMeasure.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(CommodityMeasure, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), backLink))) {
 
     @formHelper(action = CommodityMeasureController.submitPage(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)

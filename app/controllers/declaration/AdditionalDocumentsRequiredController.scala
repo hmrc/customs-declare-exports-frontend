@@ -17,11 +17,12 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import forms.declaration.additionaldocuments.AdditionalDocumentsRequired
+
 import javax.inject.Inject
 import models.declaration.AdditionalDocuments
 import models.requests.JourneyRequest
@@ -44,11 +45,13 @@ class AdditionalDocumentsRequiredController @Inject()(
 
   private val emptyKey = "declaration.additionalDocumentsRequired.empty"
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val frm = form(errorKey = emptyKey).withSubmissionErrors()
-    request.cacheModel.additionalDocumentsRequired(itemId) match {
-      case Some(yesNoAnswer) => Ok(additionalDocumentsRequired(mode, itemId, frm.fill(yesNoAnswer)))
-      case _                 => Ok(additionalDocumentsRequired(mode, itemId, frm))
+    resolveBackLink(mode, itemId).map { backLink =>
+      request.cacheModel.additionalDocumentsRequired(itemId) match {
+        case Some(yesNoAnswer) => Ok(additionalDocumentsRequired(mode, itemId, frm.fill(yesNoAnswer), backLink))
+        case _                 => Ok(additionalDocumentsRequired(mode, itemId, frm, backLink))
+      }
     }
   }
 
@@ -56,7 +59,10 @@ class AdditionalDocumentsRequiredController @Inject()(
     form(errorKey = emptyKey)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalDocumentsRequired(mode, itemId, formWithErrors))),
+        formWithErrors =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(additionalDocumentsRequired(mode, itemId, formWithErrors, backLink))
+        },
         yesNoAnswer => updateCache(yesNoAnswer, itemId).map(_ => navigator.continueTo(mode, nextPage(yesNoAnswer, itemId)))
       )
   }
@@ -74,4 +80,7 @@ class AdditionalDocumentsRequiredController @Inject()(
     val additionalDocuments = AdditionalDocuments(Some(yesNoAnswer), documents)
     updateExportsDeclarationSyncDirect(_.updatedItem(itemId, _.copy(additionalDocuments = Some(additionalDocuments))))
   }
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(AdditionalDocumentsRequired, mode, ItemId(itemId))
 }

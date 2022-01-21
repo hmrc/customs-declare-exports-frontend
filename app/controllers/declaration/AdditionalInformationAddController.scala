@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.AdditionalInformationAddController.AdditionalInformationFormGroupId
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import controllers.helpers.MultipleItemsHelper
 import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.form
@@ -28,7 +28,7 @@ import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalInformation.additional_information_add
@@ -46,15 +46,20 @@ class AdditionalInformationAddController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(additionalInformationPage(mode, itemId, form().withSubmissionErrors()))
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    resolveBackLink(mode, itemId).map { backLink =>
+      Ok(additionalInformationPage(mode, itemId, form().withSubmissionErrors(), backLink))
+    }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
 
     boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors))),
+      formWithErrors =>
+        resolveBackLink(mode, itemId).map { backLink =>
+          BadRequest(additionalInformationPage(mode, itemId, formWithErrors, backLink))
+      },
       _ => saveInformation(mode, itemId, boundForm, cachedData(itemId))
     )
   }
@@ -68,7 +73,10 @@ class AdditionalInformationAddController @Inject()(
     MultipleItemsHelper
       .add(boundForm, cachedData.items, maxNumberOfItems, AdditionalInformationFormGroupId, "declaration.additionalInformation")
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors))),
+        formWithErrors =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(additionalInformationPage(mode, itemId, formWithErrors, backLink))
+        },
         updatedItems =>
           updateCache(itemId, cachedData.copy(items = updatedItems))
             .map(_ => navigator.continueTo(mode, routes.AdditionalInformationController.displayPage(_, itemId)))
@@ -80,6 +88,9 @@ class AdditionalInformationAddController @Inject()(
     updateExportsDeclarationSyncDirect(model => {
       model.updatedItem(itemId, item => item.copy(additionalInformation = Some(updatedData)))
     })
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(AdditionalInformation, mode, ItemId(itemId))
 }
 
 object AdditionalInformationAddController {

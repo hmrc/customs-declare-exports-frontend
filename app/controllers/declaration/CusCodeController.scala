@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import forms.declaration.CusCode
 import forms.declaration.CusCode.form
 import models.DeclarationType.DeclarationType
@@ -44,11 +44,13 @@ class CusCodeController @Inject()(
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val frm = form().withSubmissionErrors()
-    request.cacheModel.itemBy(itemId).flatMap(_.cusCode) match {
-      case Some(cusCode) => Ok(cusCodePage(mode, itemId, frm.fill(cusCode)))
-      case _             => Ok(cusCodePage(mode, itemId, frm))
+    resolveBackLink(mode, itemId).map { backLink =>
+      request.cacheModel.itemBy(itemId).flatMap(_.cusCode) match {
+        case Some(cusCode) => Ok(cusCodePage(mode, itemId, frm.fill(cusCode), backLink))
+        case _             => Ok(cusCodePage(mode, itemId, frm, backLink))
+      }
     }
   }
 
@@ -56,7 +58,10 @@ class CusCodeController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(cusCodePage(mode, itemId, formWithErrors))),
+        formWithErrors =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(cusCodePage(mode, itemId, formWithErrors, backLink))
+        },
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator.continueTo(mode, nextPage(itemId, request.declarationType))
@@ -77,4 +82,7 @@ class CusCodeController @Inject()(
     } else {
       controllers.declaration.routes.TaricCodeSummaryController.displayPage(_, itemId)
     }
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(CusCode, mode, ItemId(itemId))
 }

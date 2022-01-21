@@ -49,7 +49,8 @@
         formHelper: FormWithCSRF
 )(implicit codeListConnector: CodeListConnector)
 
-@(mode: Mode, itemId:String, form: Form[YesNoAnswer], additionalReferences: Seq[AdditionalFiscalReference])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId:String, form: Form[YesNoAnswer], additionalReferences: Seq[AdditionalFiscalReference], backLink: Call)(
+  implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(additionalReferences.size == 1)
@@ -107,7 +108,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalFiscalReferencesSummary, mode, ItemId(itemId))))
+    backButton = Some(BackButton(messages("site.back"), backLink))
     ) {
 
     @formHelper(action = AdditionalFiscalReferencesController.submitForm(mode, itemId), 'autoComplete -> "off") {

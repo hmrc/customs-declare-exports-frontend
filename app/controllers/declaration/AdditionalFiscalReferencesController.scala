@@ -17,9 +17,11 @@
 package controllers.declaration
 
 import controllers.actions.ItemActionBuilder
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.AdditionalFiscalReferencesSummary
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.Mode
@@ -30,44 +32,54 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.fiscalInformation.additional_fiscal_references
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class AdditionalFiscalReferencesController @Inject()(
   itemAction: ItemActionBuilder,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalFiscalReferencesPage: additional_fiscal_references
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId).async { implicit request =>
     val frm = addAnotherYesNoForm.withSubmissionErrors()
     cachedAdditionalReferencesData(itemId) match {
       case Some(data) if data.references.nonEmpty =>
-        Ok(additionalFiscalReferencesPage(mode, itemId, frm, data.references))
+        resolveBackLink(mode, itemId).map { backLink =>
+          Ok(additionalFiscalReferencesPage(mode, itemId, frm, data.references, backLink))
+        }
       case Some(_) =>
-        navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
+        Future.successful(navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId)))
       case _ =>
-        navigator.continueTo(mode, controllers.declaration.routes.FiscalInformationController.displayPage(_, itemId))
+        Future.successful(navigator.continueTo(mode, controllers.declaration.routes.FiscalInformationController.displayPage(_, itemId)))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId).async { implicit request =>
     addAnotherYesNoForm
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) =>
-          BadRequest(
-            additionalFiscalReferencesPage(
-              mode,
-              itemId,
-              formWithErrors,
-              cachedAdditionalReferencesData(itemId).map(_.references).getOrElse(Seq.empty)
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(
+              additionalFiscalReferencesPage(
+                mode,
+                itemId,
+                formWithErrors,
+                cachedAdditionalReferencesData(itemId).map(_.references).getOrElse(Seq.empty),
+                backLink
+              )
             )
-        ),
+        },
         validYesNo =>
           validYesNo.answer match {
             case YesNoAnswers.yes =>
-              navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
-            case YesNoAnswers.no => navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
+              Future
+                .successful(navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId)))
+            case YesNoAnswers.no =>
+              Future.successful(navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId)))
         }
       )
   }
@@ -76,4 +88,7 @@ class AdditionalFiscalReferencesController @Inject()(
 
   private def cachedAdditionalReferencesData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData)
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(AdditionalFiscalReferencesSummary, mode, ItemId(itemId))
 }

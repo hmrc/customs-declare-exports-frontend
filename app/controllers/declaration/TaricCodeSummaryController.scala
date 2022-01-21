@@ -17,10 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.TaricCode
 import models.Mode
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -29,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.taric_codes
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class TaricCodeSummaryController @Inject()(
   authenticate: AuthAction,
@@ -37,28 +40,40 @@ class TaricCodeSummaryController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   taricCodesPage: taric_codes
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
-      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodesPage(mode, itemId, addYesNoForm.withSubmissionErrors(), taricCodes))
-      case _                                       => navigator.continueTo(mode, routes.TaricCodeAddController.displayPage(_, itemId))
+      case Some(taricCodes) if taricCodes.nonEmpty =>
+        resolveBackLink(mode, itemId).map { backLink =>
+          Ok(taricCodesPage(mode, itemId, addYesNoForm.withSubmissionErrors(), taricCodes, backLink))
+        }
+      case _ => Future.successful(navigator.continueTo(mode, routes.TaricCodeAddController.displayPage(_, itemId)))
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val taricCodes = request.cacheModel.itemBy(itemId).flatMap(_.taricCodes).getOrElse(List.empty)
     addYesNoForm
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(taricCodesPage(mode, itemId, formWithErrors, taricCodes)),
+        (formWithErrors: Form[YesNoAnswer]) =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(taricCodesPage(mode, itemId, formWithErrors, taricCodes, backLink))
+        },
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.TaricCodeAddController.displayPage(_, itemId))
-            case YesNoAnswers.no  => navigator.continueTo(mode, controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId))
+            case YesNoAnswers.yes =>
+              Future.successful(navigator.continueTo(mode, controllers.declaration.routes.TaricCodeAddController.displayPage(_, itemId)))
+            case YesNoAnswers.no =>
+              Future.successful(navigator.continueTo(mode, controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId)))
         }
       )
   }
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(TaricCode, mode, ItemId(itemId))
 
   private def addYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.taricAdditionalCodes.add.answer.empty")
 }

@@ -47,7 +47,7 @@
     appConfig: AppConfig
 )(implicit codeListConnector: CodeListConnector)
 
-@(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], backLink: Call, additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -70,7 +70,7 @@
 
 @govukLayout(
     title = Title("declaration.additionalFiscalReferences.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalFiscalReference, mode, ItemId(itemId))))
+    backButton = Some(BackButton(messages("site.back"), backLink))
 ) {
 
     @formHelper(action = routes.AdditionalFiscalReferencesAddController.submitForm(mode, itemId), 'autoComplete -> "off") {

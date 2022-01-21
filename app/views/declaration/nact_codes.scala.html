@@ -50,7 +50,8 @@
     mode: Mode,
     itemId: String,
     form: Form[YesNoAnswer],
-    nactCodes: Seq[NactCode] = Seq.empty
+    nactCodes: Seq[NactCode] = Seq.empty,
+    backLink: Call
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
@@ -102,7 +103,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(NactCodeFirst, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), backLink))) {
 
     @formHelper(action = routes.NactCodeSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {
 

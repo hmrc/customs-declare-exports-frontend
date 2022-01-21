@@ -17,14 +17,14 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
-import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
+import controllers.navigation.{ItemId, Navigator}
 import forms.declaration.UNDangerousGoodsCode.form
+import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.un_dangerous_goods_code
@@ -42,11 +42,13 @@ class UNDangerousGoodsCodeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val frm = form().withSubmissionErrors()
-    request.cacheModel.itemBy(itemId).flatMap(_.dangerousGoodsCode) match {
-      case Some(dangerousGoodsCode) => Ok(unDangerousGoodsCodePage(mode, itemId, frm.fill(dangerousGoodsCode)))
-      case _                        => Ok(unDangerousGoodsCodePage(mode, itemId, frm))
+    resolveBackLink(mode, itemId).map { backLink =>
+      request.cacheModel.itemBy(itemId).flatMap(_.dangerousGoodsCode) match {
+        case Some(dangerousGoodsCode) => Ok(unDangerousGoodsCodePage(mode, itemId, frm.fill(dangerousGoodsCode), backLink))
+        case _                        => Ok(unDangerousGoodsCodePage(mode, itemId, frm, backLink))
+      }
     }
   }
 
@@ -54,7 +56,10 @@ class UNDangerousGoodsCodeController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[UNDangerousGoodsCode]) => Future.successful(BadRequest(unDangerousGoodsCodePage(mode, itemId, formWithErrors))),
+        (formWithErrors: Form[UNDangerousGoodsCode]) =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(unDangerousGoodsCodePage(mode, itemId, formWithErrors, backLink))
+        },
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             redirectToNextPage(mode, itemId)
@@ -74,6 +79,9 @@ class UNDangerousGoodsCodeController @Inject()(
       else
         navigator.continueTo(mode, controllers.declaration.routes.TaricCodeSummaryController.displayPage(_, itemId))
     }
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(UNDangerousGoodsCode, mode, ItemId(itemId))
 
   private def updateExportsCache(itemId: String, updatedItem: UNDangerousGoodsCode)(
     implicit request: JourneyRequest[AnyContent]

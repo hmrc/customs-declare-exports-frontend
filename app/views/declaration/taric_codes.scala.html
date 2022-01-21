@@ -47,7 +47,8 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[YesNoAnswer], taricCodes: Seq[TaricCode] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[YesNoAnswer], taricCodes: Seq[TaricCode] = Seq.empty, backLink: Call)(
+    implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
     if(taricCodes.size == 1)
@@ -98,7 +99,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TaricCodeFirst, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), backLink))) {
 
     @formHelper(action = routes.TaricCodeSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {
 

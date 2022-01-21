@@ -17,12 +17,12 @@
 package controllers.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
+import controllers.navigation.{ItemId, Navigator}
 import controllers.helpers.MultipleItemsHelper
 import forms.declaration.NactCode.nactCodeLimit
 import forms.declaration.{NactCode, NactCodeFirst}
+
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -48,16 +48,18 @@ class NactCodeAddController @Inject()(
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val maybeItem = request.cacheModel.itemBy(itemId)
-    maybeItem.flatMap(_.nactCodes) match {
-      case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(mode, itemId, NactCode.form.withSubmissionErrors))
+    resolveBackLink(mode, itemId).map { backLink =>
+      maybeItem.flatMap(_.nactCodes) match {
+        case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(mode, itemId, NactCode.form.withSubmissionErrors, backLink))
 
-      case Some(_) =>
-        val form = NactCodeFirst.form.fill(NactCodeFirst(None)).withSubmissionErrors
-        Ok(nactCodeAddFirstPage(mode, itemId, form))
+        case Some(_) =>
+          val form = NactCodeFirst.form.fill(NactCodeFirst(None)).withSubmissionErrors
+          Ok(nactCodeAddFirstPage(mode, itemId, form, backLink))
 
-      case _ => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form.withSubmissionErrors))
+        case _ => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form.withSubmissionErrors, backLink))
+      }
     }
   }
 
@@ -69,7 +71,10 @@ class NactCodeAddController @Inject()(
       case _ =>
         NactCodeFirst.form.bindFromRequest
           .fold(
-            (formWithErrors: Form[NactCodeFirst]) => Future.successful(BadRequest(nactCodeAddFirstPage(mode, itemId, formWithErrors))),
+            (formWithErrors: Form[NactCodeFirst]) =>
+              resolveBackLink(mode, itemId).map { backLink =>
+                BadRequest(nactCodeAddFirstPage(mode, itemId, formWithErrors, backLink))
+            },
             validForm => saveFirstNactCode(mode, itemId, validForm.code)
           )
     }
@@ -90,7 +95,10 @@ class NactCodeAddController @Inject()(
     MultipleItemsHelper
       .add(boundForm, cachedData, nactCodeLimit, "nactCode", "declaration.nationalAdditionalCode")
       .fold(
-        formWithErrors => Future.successful(BadRequest(nactCodeAdd(mode, itemId, formWithErrors))),
+        formWithErrors =>
+          resolveBackLink(mode, itemId).map { backLink =>
+            BadRequest(nactCodeAdd(mode, itemId, formWithErrors, backLink))
+        },
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
             .map(_ => navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
@@ -100,4 +108,7 @@ class NactCodeAddController @Inject()(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCache.toList))))
+
+  private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+    navigator.backLink(NactCode, mode, ItemId(itemId))
 }

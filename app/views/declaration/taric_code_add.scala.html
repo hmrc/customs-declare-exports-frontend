@@ -40,13 +40,13 @@
         formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[TaricCode])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[TaricCode], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
     title = Title("declaration.taricAdditionalCodes.addnext.header", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TaricCode, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), backLink))) {
 
     @formHelper(action = TaricCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
