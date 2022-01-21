@@ -113,6 +113,11 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
     case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
   }
 
+  val dynamicCallDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Future[Call]] = {
+    case AdditionalInformationSummary  => additionalInformationTariffApiCall
+    case AdditionalInformationRequired => additionalInformationTariffApiCall
+  }
+
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
     case ConsignmentReferences       => routes.DeclarantDetailsController.displayPage
@@ -584,6 +589,12 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
     else
       routes.AdditionalActorsSummaryController.displayPage(mode)
 
+  private def additionalInformationTariffApiCall(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Future[Call] =
+    tariffApiService.retrieveCommodityInfoIfAny(cacheModel, itemId) map {
+      case Left(SupplementaryUnitsNotRequired) => routes.CommodityMeasureController.displayPage(mode, itemId)
+      case _                                   => routes.SupplementaryUnitsController.displayPage(mode, itemId)
+    }
+
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {
       case Mode.Normal | Mode.Amend =>
@@ -605,49 +616,27 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
       case _ => backLinkOnOtherModes(mode)
     }
 
-  def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Future[Call] = {
-
-    def pageSelection: Future[Call] =
-      tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId.id) map {
-        case Left(SupplementaryUnitsNotRequired) => routes.CommodityMeasureController.displayPage(mode, itemId.id)
-        case _                                   => routes.SupplementaryUnitsController.displayPage(mode, itemId.id)
-      }
-
-    def staticBackLink: Call =
-      mode match {
-        case Mode.Normal | Mode.Amend =>
-          val specific = request.declarationType match {
-            case STANDARD      => standardCacheItemDependent.orElse(standardItemPage)
-            case SUPPLEMENTARY => supplementaryCacheItemDependent.orElse(supplementaryItemPage)
-            case SIMPLIFIED    => simplifiedCacheItemDependent.orElse(simplifiedItemPage)
-            case OCCASIONAL    => occasionalCacheItemDependent.orElse(occasionalItemPage)
-            case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
-          }
-          commonCacheItemDependent.orElse(commonItem).orElse(specific)(page) match {
-            case mapping: ((Mode, String) => Call) =>
-              mapping(mode, itemId.id)
-            case mapping: ((ExportsDeclaration, Mode, String) => Call) =>
-              mapping(request.cacheModel, mode, itemId.id)
-          }
-
-        case _ => backLinkOnOtherModes(mode)
-      }
-
-    page match {
-      case AdditionalInformationSummary | AdditionalInformationRequired =>
-        mode match {
-          case Mode.Normal | Mode.Amend =>
-            request.declarationType match {
-              case STANDARD | SUPPLEMENTARY => pageSelection
-              case _                        => Future.successful(staticBackLink)
-            }
-
-          case _ => Future.successful(backLinkOnOtherModes(mode))
+  def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Future[Call] =
+    mode match {
+      case Mode.Normal | Mode.Amend =>
+        val specific = request.declarationType match {
+          case STANDARD      => standardCacheItemDependent.orElse(standardItemPage).orElse(dynamicCallDependent)
+          case SUPPLEMENTARY => supplementaryCacheItemDependent.orElse(supplementaryItemPage).orElse(dynamicCallDependent)
+          case SIMPLIFIED    => simplifiedCacheItemDependent.orElse(simplifiedItemPage)
+          case OCCASIONAL    => occasionalCacheItemDependent.orElse(occasionalItemPage)
+          case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
+        }
+        commonCacheItemDependent.orElse(commonItem).orElse(specific)(page) match {
+          case mapping: ((Mode, String) => Call) =>
+            Future.successful(mapping(mode, itemId.id))
+          case mapping: ((ExportsDeclaration, Mode, String) => Call) =>
+            Future.successful(mapping(request.cacheModel, mode, itemId.id))
+          case mapping: ((ExportsDeclaration, Mode, String) => Future[Call]) =>
+            mapping(request.cacheModel, mode, itemId.id)
         }
 
-      case _ => Future.successful(staticBackLink)
+      case _ => Future.successful(backLinkOnOtherModes(mode))
     }
-  }
 
   private def backLinkOnOtherModes(mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {
