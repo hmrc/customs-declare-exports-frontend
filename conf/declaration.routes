@@ -492,9 +492,9 @@ POST        /containers/:containerId/seals/:sealId/remove    controllers.declara
 
 # Summary
 
-GET         /saved-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode)
-
 GET         /amend-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.Amend)
+
+GET         /saved-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode)
 
 GET         /submit-your-declaration             controllers.declaration.SummaryController.displayDeclarationPage(mode: models.Mode)
 
