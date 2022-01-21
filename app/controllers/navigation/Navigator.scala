@@ -60,7 +60,7 @@ case class ItemId(id: String)
 
 // scalastyle:off number.of.methods
 @Singleton
-class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tariffApiService: TariffApiService) {
+class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tariffApiService: TariffApiService)(implicit ec: ExecutionContext) {
 
   val common: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarationChoice =>
@@ -605,34 +605,32 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
       case _ => backLinkOnOtherModes(mode)
     }
 
-  def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call =
-    mode match {
-      case Mode.Normal | Mode.Amend =>
-        val specific = request.declarationType match {
-          case STANDARD      => standardCacheItemDependent.orElse(standardItemPage)
-          case SUPPLEMENTARY => supplementaryCacheItemDependent.orElse(supplementaryItemPage)
-          case SIMPLIFIED    => simplifiedCacheItemDependent.orElse(simplifiedItemPage)
-          case OCCASIONAL    => occasionalCacheItemDependent.orElse(occasionalItemPage)
-          case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
-        }
-        commonCacheItemDependent.orElse(commonItem).orElse(specific)(page) match {
-          case mapping: ((Mode, String) => Call) =>
-            mapping(mode, itemId.id)
-          case mapping: ((ExportsDeclaration, Mode, String) => Call) =>
-            mapping(request.cacheModel, mode, itemId.id)
-        }
+  def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Future[Call] = {
 
-      case _ => backLinkOnOtherModes(mode)
-    }
-
-  def backLinkForAdditionalInformation(page: DeclarationPage, mode: Mode, itemId: String)(
-    implicit request: JourneyRequest[_],
-    ec: ExecutionContext
-  ): Future[Call] = {
     def pageSelection: Future[Call] =
-      tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId) map {
-        case Left(SupplementaryUnitsNotRequired) => routes.CommodityMeasureController.displayPage(mode, itemId)
-        case _                                   => routes.SupplementaryUnitsController.displayPage(mode, itemId)
+      tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId.id) map {
+        case Left(SupplementaryUnitsNotRequired) => routes.CommodityMeasureController.displayPage(mode, itemId.id)
+        case _                                   => routes.SupplementaryUnitsController.displayPage(mode, itemId.id)
+      }
+
+    def staticBackLink: Call =
+      mode match {
+        case Mode.Normal | Mode.Amend =>
+          val specific = request.declarationType match {
+            case STANDARD      => standardCacheItemDependent.orElse(standardItemPage)
+            case SUPPLEMENTARY => supplementaryCacheItemDependent.orElse(supplementaryItemPage)
+            case SIMPLIFIED    => simplifiedCacheItemDependent.orElse(simplifiedItemPage)
+            case OCCASIONAL    => occasionalCacheItemDependent.orElse(occasionalItemPage)
+            case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
+          }
+          commonCacheItemDependent.orElse(commonItem).orElse(specific)(page) match {
+            case mapping: ((Mode, String) => Call) =>
+              mapping(mode, itemId.id)
+            case mapping: ((ExportsDeclaration, Mode, String) => Call) =>
+              mapping(request.cacheModel, mode, itemId.id)
+          }
+
+        case _ => backLinkOnOtherModes(mode)
       }
 
     page match {
@@ -641,13 +639,13 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
           case Mode.Normal | Mode.Amend =>
             request.declarationType match {
               case STANDARD | SUPPLEMENTARY => pageSelection
-              case _                        => Future.successful(backLink(page, mode, ItemId(itemId)))
+              case _                        => Future.successful(staticBackLink)
             }
 
           case _ => Future.successful(backLinkOnOtherModes(mode))
         }
 
-      case _ => Future.successful(backLink(page, mode, ItemId(itemId)))
+      case _ => Future.successful(staticBackLink)
     }
   }
 
