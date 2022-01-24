@@ -18,7 +18,7 @@
 @import controllers.declaration.routes.BorderTransportController
 @import controllers.navigation.Navigator
 @import forms.declaration.BorderTransport
-@import forms.declaration.BorderTransport.radioButtonGroupId
+@import forms.declaration.BorderTransport.{nationalityId, radioButtonGroupId}
 @import forms.declaration.TransportCodes.transportCodesOnBorderTransport
 @import models.codes.Country
 @import models.requests.JourneyRequest
@@ -53,7 +53,7 @@
         fieldset = Some(Fieldset(
             attributes = Map("id" -> "borderTransportType-fieldSet"),
             legend = Some(Legend(
-                content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header"))
+                content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.body"))
             ))
         )),
         items = borderTransportHelper.radioButtons(form),
@@ -63,7 +63,7 @@
 
 @borderTransportNationality = {
     @components.fields.field_accessible_location_autocomplete_with_header(
-        field = form("borderTransportNationality"),
+        field = form(nationalityId),
         label = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header"),
         labelClass = None,
         hintParagraphs = List(messages("declaration.country.dropdown.hint")),
@@ -73,7 +73,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.transportInformation.active.title", "declaration.section.6", hasErrors = hasErrors),
+    title = Title("declaration.transportInformation.meansOfTransport.crossingTheBorder.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(BorderTransport, mode)))) {
 
     @formHelper(action = BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
@@ -83,7 +83,7 @@
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("declaration.transportInformation.active.title")),
+                content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.title")),
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),

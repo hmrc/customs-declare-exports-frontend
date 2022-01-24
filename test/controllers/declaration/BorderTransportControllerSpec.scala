@@ -18,8 +18,10 @@ package controllers.declaration
 
 import base.ControllerSpec
 import connectors.CodeListConnector
+import controllers.routes.RootController
 import forms.declaration.BorderTransport
-import forms.declaration.TransportCodes.shipOrRoroImoNumber
+import forms.declaration.BorderTransport.{nationalityId, radioButtonGroupId}
+import forms.declaration.TransportCodes._
 import models.DeclarationType._
 import models.Mode
 import models.codes.Country
@@ -27,8 +29,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString}
-import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.{AnyContentAsEmpty, Call, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.border_transport
@@ -36,6 +38,8 @@ import views.html.declaration.border_transport
 import scala.collection.immutable.ListMap
 
 class BorderTransportControllerSpec extends ControllerSpec {
+
+  val nationality = "United Kingdom, Great Britain, Northern Ireland"
 
   val borderTransportPage = mock[border_transport]
   val mockCodeListConnector = mock[CodeListConnector]
@@ -65,7 +69,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     when(borderTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom, Great Britain, Northern Ireland", "GB")))
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country(nationality, "GB")))
   }
 
   override protected def afterEach(): Unit = {
@@ -73,25 +77,23 @@ class BorderTransportControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  private def nextPage(decType: DeclarationType) = decType match {
+  private def nextPage(decType: DeclarationType): Call = decType match {
     case STANDARD      => routes.ExpressConsignmentController.displayPage()
     case SUPPLEMENTARY => routes.TransportContainerController.displayContainerSummary()
   }
 
-  private def formData(transportType: String, reference: String, nationality: String) =
-    JsObject(
-      Map(
-        "borderTransportType" -> JsString(transportType),
-        "borderTransportReference_shipOrRoroImoNumber" -> JsString(reference),
-        "borderTransportReference_nameOfVessel" -> JsString(reference),
-        "borderTransportReference_wagonNumber" -> JsString(reference),
-        "borderTransportReference_vehicleRegistrationNumber" -> JsString(reference),
-        "borderTransportReference_flightNumber" -> JsString(reference),
-        "borderTransportReference_aircraftRegistrationNumber" -> JsString(reference),
-        "borderTransportReference_europeanVesselIDNumber" -> JsString(reference),
-        "borderTransportReference_nameOfInlandWaterwayVessel" -> JsString(reference),
-        "borderTransportNationality" -> JsString(nationality)
-      )
+  private def formData(transportType: String, reference: String, nationality: String): JsObject =
+    Json.obj(
+      radioButtonGroupId -> transportType,
+      ShipOrRoroImoNumber.id -> reference,
+      NameOfVessel.id -> reference,
+      WagonNumber.id -> reference,
+      VehicleRegistrationNumber.id -> reference,
+      FlightNumber.id -> reference,
+      AircraftRegistrationNumber.id -> reference,
+      EuropeanVesselIDNumber.id -> reference,
+      NameOfInlandWaterwayVessel.id -> reference,
+      nationalityId -> nationality
     )
 
   "Transport Details Controller" when {
@@ -102,7 +104,6 @@ class BorderTransportControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
-
           status(result) must be(OK)
         }
 
@@ -110,20 +111,17 @@ class BorderTransportControllerSpec extends ControllerSpec {
           withNewCaching(aDeclarationAfter(request.cacheModel, withBorderTransport()))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
-
           status(result) must be(OK)
         }
       }
 
       "return 400 (BAD_REQUEST)" when {
-
         "form contains incorrect values" in {
           withNewCaching(request.cacheModel)
 
           val incorrectForm = formData("incorrect", "", "")
 
           val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
-
           status(result) must be(BAD_REQUEST)
         }
       }
@@ -132,7 +130,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "valid options are selected" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm = formData(shipOrRoroImoNumber, "SHIP001", "United Kingdom, Great Britain, Northern Ireland")
+          val correctForm = formData(ShipOrRoroImoNumber.value, "SHIP001", nationality)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -149,18 +147,18 @@ class BorderTransportControllerSpec extends ControllerSpec {
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage().url)
       }
 
       "valid options are selected" in {
         withNewCaching(request.cacheModel)
 
-        val correctForm = formData(shipOrRoroImoNumber, "SHIP001", "United Kingdom, Great Britain, Northern Ireland")
+        val correctForm = formData(ShipOrRoroImoNumber.value, "SHIP001", nationality)
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+        redirectLocation(result) mustBe Some(RootController.displayPage().url)
       }
     }
   }

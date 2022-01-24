@@ -40,6 +40,7 @@ object BorderTransport extends DeclarationPage {
 
   implicit val formats: OFormat[BorderTransport] = Json.format[BorderTransport]
 
+  val nationalityId = "borderTransportNationality"
   val radioButtonGroupId = "borderTransportType"
 
   val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
@@ -59,7 +60,7 @@ object BorderTransport extends DeclarationPage {
 
   private def formMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[BorderTransport] =
     mapping(
-      "borderTransportNationality" -> optional(
+      nationalityId -> optional(
         text.verifying(s"$prefix.nationality.error.incorrect", isValidCountryName(_))
       ),
       radioButtonGroupId -> requiredRadio(s"$prefix.error.empty")
