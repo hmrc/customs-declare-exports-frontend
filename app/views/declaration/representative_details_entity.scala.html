@@ -34,6 +34,7 @@
         tariffExpander: tariffExpander,
         saveButtons: saveButtons,
         formHelper: FormWithCSRF,
+        navigator: Navigator,
         appConfig: AppConfig
 )
 
@@ -43,7 +44,7 @@
 
 @govukLayout(
     title = Title("declaration.representative.entity.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RepresentativeEntity, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(RepresentativeEntity, mode)))) {
 
     @formHelper(action = RepresentativeEntityController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

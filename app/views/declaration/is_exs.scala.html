@@ -33,6 +33,7 @@
     govukRadios: GovukRadios,
     govukDetails : GovukDetails,
     saveButtons: saveButtons,
+    navigator: Navigator,
     formHelper: FormWithCSRF
 )
 
@@ -42,7 +43,7 @@
 
 @govukLayout(
     title = Title("declaration.exs.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(IsExs, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(IsExs, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.IsExsController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(isExsKey, "code_yes", form.errors))

@@ -38,6 +38,7 @@
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )(implicit countryAutoCompleteHelper: CountryHelper)
 
@@ -47,7 +48,7 @@
 
 @govukLayout(
     title = Title(s"declaration.routingCountry.title", "declaration.section.3", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ChangeCountryPage, mode)))){
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ChangeCountryPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitChangeCountry(mode, countryToChange), 'autoComplete -> "off") {
         @errorSummary(form.errors)

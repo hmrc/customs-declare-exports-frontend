@@ -42,6 +42,7 @@
     spanVisuallyHidden: spanVisuallyHidden,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -116,7 +117,7 @@
 @govukLayout(
     title = if(containers.size == 1) Title("declaration.transportInformation.containers.title", "declaration.section.6")
             else Title("declaration.transportInformation.containers.multiple.title", "declaration.section.6", containers.size.toString),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ContainerFirst, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ContainerFirst, mode)))) {
 
     @formHelper(action = TransportContainerController.submitSummaryAction(mode), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

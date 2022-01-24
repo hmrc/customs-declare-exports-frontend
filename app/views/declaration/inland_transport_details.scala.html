@@ -38,6 +38,7 @@
         body: paragraphBody,
         tariffExpander: tariffExpander,
         formHelper: FormWithCSRF,
+        navigator: Navigator,
         appConfig: AppConfig
 )
 
@@ -47,7 +48,7 @@
 
 @govukLayout(
     title = Title("declaration.warehouse.inlandTransportDetails.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(InlandModeOfTransportCode, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(InlandModeOfTransportCode, mode)))) {
 
     @formHelper(routes.InlandTransportDetailsController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

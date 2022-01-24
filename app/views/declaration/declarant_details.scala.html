@@ -39,6 +39,7 @@
     saveAndContinue: saveAndContinue,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -62,7 +63,7 @@
 
 @govukLayout(
     title = Title("declaration.declarant.title", sectionMessagesKey, request.eori, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantDetails, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DeclarantDetails, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(isEoriKey, "code_yes", form.errors))

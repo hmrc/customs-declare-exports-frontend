@@ -43,6 +43,7 @@
     removeButton: removeButton,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -54,7 +55,7 @@
   if(packages.nonEmpty)
       routes.PackageInformationSummaryController.displayPage(mode, itemId)
   else
-      Navigator.backLink(PackageInformation, mode, ItemId(itemId))
+      navigator.backLink(PackageInformation, mode, ItemId(itemId))
 }
 
 @packageTypeText = {

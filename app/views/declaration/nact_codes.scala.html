@@ -42,6 +42,7 @@
     addAnotherQuestion: addAnotherQuestion,
     saveButtons: saveButtons,
     appConfig: AppConfig,
+    navigator: Navigator,
     formHelper: FormWithCSRF
 )
 
@@ -101,7 +102,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCodeFirst, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(NactCodeFirst, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.NactCodeSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {
 

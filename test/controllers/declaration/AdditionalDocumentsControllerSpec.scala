@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.common.{Eori, YesNoAnswer}
 import forms.common.YesNoAnswer.Yes
+import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
