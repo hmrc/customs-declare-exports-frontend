@@ -20,6 +20,8 @@ import play.api.test.Helpers._
 import base.FormSpec
 import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
+import forms.declaration.BorderTransport.{form, nationalityId, radioButtonGroupId}
+import forms.declaration.TransportCodes._
 import models.codes.Country
 import models.viewmodels.TariffContentKey
 import org.mockito.ArgumentMatchers.any
@@ -33,13 +35,15 @@ import scala.collection.immutable.ListMap
 
 class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with MockitoSugar with BeforeAndAfterEach {
 
+  val nationality = "United Kingdom, Great Britain, Northern Ireland"
+
   implicit val mockCodeListConnector = mock[CodeListConnector]
   implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
-    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom, Great Britain, Northern Ireland", "GB")))
+    when(mockCodeListConnector.getCountryCodes(any()))
+      .thenReturn(ListMap("GB" -> Country(nationality, "GB")))
   }
 
   override protected def afterEach(): Unit = {
@@ -47,35 +51,28 @@ class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with Moc
     super.afterEach()
   }
 
-  val form = BorderTransport.form
-
   "Transport Details form" should {
 
     "has no errors" when {
 
       "only mandatory fields are provided with correct data" in {
-
-        val correctForm = BorderTransport(None, "40", "reference")
+        val correctForm = BorderTransport(None, FlightNumber.value, "reference")
 
         val result = form.fillAndValidate(correctForm)
-
         result.hasErrors must be(false)
       }
 
       "all fields contains correct data" in {
-
-        val correctForm =
-          BorderTransport(Some("United Kingdom, Great Britain, Northern Ireland"), "40", "Id.Number")
+        val correctForm = BorderTransport(Some(nationality), FlightNumber.value, "Id.Number")
 
         val result = form.fillAndValidate(correctForm)
-
         result.hasErrors must be(false)
       }
     }
 
     "has errors" when {
       "sending incorrect nationality" in {
-        form.bind(Map("borderTransportNationality" -> "fizz")).errors must contain(
+        form.bind(Map(nationalityId -> "fizz")).errors must contain(
           "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect"
         )
       }
@@ -85,13 +82,13 @@ class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with Moc
       }
 
       "sending non existing transport type" in {
-        form.bind(Map("borderTransportType" -> "donkey")).errors must contain(
+        form.bind(Map(radioButtonGroupId -> "donkey")).errors must contain(
           "declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect"
         )
       }
 
       "sending empty transport type reference" in {
-        form.bind(Map("borderTransportType" -> TransportCodes.shipOrRoroImoNumber, "borderTransportReference_shipOrRoroImoNumber" -> "")).errors must contain(
+        form.bind(Map(radioButtonGroupId -> ShipOrRoroImoNumber.value, ShipOrRoroImoNumber.id -> "")).errors must contain(
           "declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.empty"
         )
       }
@@ -100,8 +97,8 @@ class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with Moc
         form
           .bind(
             Map(
-              "borderTransportType" -> TransportCodes.aircraftRegistrationNumber,
-              "borderTransportReference_aircraftRegistrationNumber" -> "a" * 128
+              radioButtonGroupId -> AircraftRegistrationNumber.value,
+              AircraftRegistrationNumber.id -> "a" * 128
             )
           )
           .errors must contain("declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.length")
@@ -110,7 +107,7 @@ class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with Moc
       "sending reference with special characters" in {
         form
           .bind(
-            Map("borderTransportType" -> TransportCodes.vehicleRegistrationNumber, "borderTransportReference_vehicleRegistrationNumberROI" -> "$#@!")
+            Map(radioButtonGroupId -> VehicleRegistrationNumber.value, VehicleRegistrationNumber.id -> "$#@!")
           )
           .errors must contain("declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.invalid")
       }

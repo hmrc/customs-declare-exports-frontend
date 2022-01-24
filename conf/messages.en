@@ -1198,7 +1198,6 @@ declaration.inlandOrBorder.inset.bullet.2.text = Designated export places (DEPs)
 declaration.inlandOrBorder.inset.bullet.3.text = Customs warehouses
 declaration.inlandOrBorder.inset.bullet.4.text = Excise warehouses
 
-declaration.transportInformation.active.title = What are the details for the transport leaving the UK border?
 declaration.transportInformation.borderTransportMode.error.empty = Select the mode of transport at the border
 declaration.transportInformation.borderTransportMode.error.empty.optional = Select the mode of transport at the border or I don’t know
 declaration.transportInformation.borderTransportMode.error.incorrect = Select the mode of transport at the border
@@ -1234,7 +1233,8 @@ declaration.transportInformation.meansOfTransport.departure.error.incorrect = En
 declaration.transportInformation.meansOfTransport.departure.error.invalid = Reference must contain only letters and numbers
 declaration.transportInformation.meansOfTransport.departure.error.length = Reference must contain 35 characters or fewer
 
-declaration.transportInformation.meansOfTransport.crossingTheBorder.header = Select and then enter the details. You must make a selection, but you can enter ‘Unknown’ if you do not know the details at the time when you must submit the declaration.
+declaration.transportInformation.meansOfTransport.crossingTheBorder.title = What are the details for the transport leaving the UK border?
+declaration.transportInformation.meansOfTransport.crossingTheBorder.body = Select and then enter the details. You must make a selection, but you can enter ‘Unknown’ if you do not know the details at the time when you must submit the declaration.
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.header = Reference
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.empty = Enter a transport reference
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.length = Reference must contain 35 characters or fewer
