@@ -21,8 +21,7 @@ import controllers.declaration.routes._
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
-import forms.declaration.declarationHolder.AuthorizationTypeCodes
+import forms.common.YesNoAnswer.YesNoAnswers._
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
