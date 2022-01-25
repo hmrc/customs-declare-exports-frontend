@@ -50,10 +50,10 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
 
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
-  private val borderTransportPage = instanceOf[departure_transport]
+  private val departureTransportPage = instanceOf[departure_transport]
 
   def createView(transportCodes: List[TransportCode] = transportCodesForV1)(implicit request: JourneyRequest[_]): Html =
-    borderTransportPage(Mode.Normal, form(transportCodes))(request, messages)
+    departureTransportPage(Mode.Normal, form(transportCodes))(request, messages)
 
   "Departure Transport View" should {
     onEveryDeclarationJourney() { implicit request =>
@@ -124,7 +124,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       }
     }
 
-    "display the expected body for version 3" in {
+    "display the expected inset text for version 3" in {
       dataForVersion3.foreach { dataOnTest =>
         val view = createView(dataOnTest.transportCodes)(dataOnTest.request)
         val elements = view.getElementsByClass("govuk-inset-text")
@@ -140,7 +140,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
 
           val transportCodes = dataOnTest.transportCodes
           val isV2 = transportCodes == transportCodesForV2
-          val hasInput = transportCodes != transportCodesForV3WhenPC0019
+          val notAvailableRadioIsNotIncluded = transportCodes != transportCodesForV3WhenPC0019
 
           val radios = view.getElementsByClass("govuk-radios__input")
           radios.size mustBe transportCodes.size
@@ -161,7 +161,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
             element.attr("for") mustBe s"radio_${transportCode.id}"
           }
 
-          if (hasInput) {
+          if (notAvailableRadioIsNotIncluded) {
             // Page does not include the radio "Not available", which has no input field
             val inputs = view.getElementsByClass("govuk-input")
             inputs.size mustBe transportCodes.size
