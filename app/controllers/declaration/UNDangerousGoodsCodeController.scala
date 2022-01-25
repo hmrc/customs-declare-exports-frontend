@@ -77,8 +77,8 @@ class UNDangerousGoodsCodeController @Inject()(
 
   private def updateExportsCache(itemId: String, updatedItem: UNDangerousGoodsCode)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
+  ): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { model =>
       model.updatedItem(itemId, item => item.copy(dangerousGoodsCode = Some(updatedItem)))
     }
 }

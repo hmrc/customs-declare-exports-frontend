@@ -68,8 +68,8 @@ class DeclarantDetailsController @Inject()(
       )
   }
 
-  private def updateCache(declarant: DeclarantDetails)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
+  private def updateCache(declarant: DeclarantDetails)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => {
       model.copy(parties = model.parties.copy(declarantDetails = Some(declarant)))
     })
 

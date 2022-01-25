@@ -42,6 +42,7 @@
         saveButtons: saveButtons,
         tariffExpander: tariffExpander,
         appConfig: AppConfig,
+        navigator: Navigator,
         formHelper: FormWithCSRF
 )
 
@@ -51,7 +52,7 @@
 
 @govukLayout(
     title = Title("declaration.cusCode.header", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CusCode, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(CusCode, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.CusCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasCusCodeKey, "code_yes", form.errors))

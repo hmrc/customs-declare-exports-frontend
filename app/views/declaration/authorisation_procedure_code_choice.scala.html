@@ -36,6 +36,7 @@
     insetText: exportsInsetText,
     bulletList: bulletList,
     paragraphBody: paragraphBody,
+    navigator: Navigator,
     link: link,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
@@ -106,7 +107,7 @@
 
 @govukLayout(
     title = Title("declaration.authorisations.procedureCodeChoice.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AuthorisationProcedureCodeChoice, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AuthorisationProcedureCodeChoice, mode)))) {
     @formHelper(action = AuthorisationProcedureCodeChoiceController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(formFieldName, "Choice1040", form.errors))
 

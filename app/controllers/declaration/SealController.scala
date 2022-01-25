@@ -154,5 +154,5 @@ class SealController @Inject()(
     )
 
   private def updateCache(updatedContainer: Container)(implicit req: JourneyRequest[AnyContent]) =
-    updateExportsDeclarationSyncDirect(model => model.addOrUpdateContainer(updatedContainer))
+    updateDeclarationFromRequest(model => model.addOrUpdateContainer(updatedContainer))
 }

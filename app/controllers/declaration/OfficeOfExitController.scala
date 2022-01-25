@@ -77,6 +77,6 @@ class OfficeOfExitController @Inject()(
 
   private def updateCache(formData: OfficeOfExit, officeOfExit: Option[OfficeOfExit])(
     implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(formData))))
+  ): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(officeOfExit = Some(formData))))
 }

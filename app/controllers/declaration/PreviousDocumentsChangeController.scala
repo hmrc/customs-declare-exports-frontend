@@ -75,6 +75,6 @@ class PreviousDocumentsChangeController @Inject()(
   private def returnToSummary(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(mode, routes.PreviousDocumentsSummaryController.displayPage)
 
-  private def updateCache(updatedDocuments: Seq[Document])(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.updatePreviousDocuments(updatedDocuments))
+  private def updateCache(updatedDocuments: Seq[Document])(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.updatePreviousDocuments(updatedDocuments))
 }

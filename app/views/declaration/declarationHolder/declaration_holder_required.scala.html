@@ -42,6 +42,7 @@
     bulletList: bulletList,
     appConfig: AppConfig,
     yesNoRadios: yesNoRadios,
+    navigator: Navigator,
     formHelper: FormWithCSRF
 )
 
@@ -69,7 +70,7 @@
 
 @govukLayout(
     title = Title("declaration.declarationHolderRequired.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolderRequired, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DeclarationHolderRequired, mode)))) {
 
     @formHelper(action = routes.DeclarationHolderRequiredController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))

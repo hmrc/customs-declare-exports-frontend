@@ -42,6 +42,7 @@
         link: link,
         addAnotherQuestion: addAnotherQuestion,
         saveButtons: saveButtons,
+        navigator: Navigator,
         formHelper: FormWithCSRF
 )
 
@@ -106,7 +107,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalActorsSummary  , mode)))
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalActorsSummary  , mode)))
 ) {
 
     @formHelper(action = AdditionalActorsSummaryController.submitForm(mode), 'autoComplete -> "off") {

@@ -16,16 +16,13 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper.remove
 import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
 import controllers.helpers._
+import controllers.navigation.Navigator
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode._
-import javax.inject.Inject
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
 import models.declaration.ProcedureCodesData
@@ -40,6 +37,9 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.procedureCodes.additional_procedure_codes
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalProcedureCodesController @Inject()(
   authenticate: AuthAction,
@@ -146,7 +146,7 @@ class AdditionalProcedureCodesController @Inject()(
 
       case (None, _) =>
         if (cachedAdditionalProcedureCodes.nonEmpty)
-          nextPage(action, mode, itemId, cachedData.procedureCode, None)
+          nextPage(action, mode, itemId, cachedData.procedureCode, request.cacheModel)
         else
           errorHandler(Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.empty")))
 
@@ -175,7 +175,7 @@ class AdditionalProcedureCodesController @Inject()(
 
   private def updateCache(itemId: String, updatedProcedureCodes: ProcedureCodesData)(
     implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  ): Future[ExportsDeclaration] = {
 
     val updatedModel = (model: ExportsDeclaration) =>
       model.updatedItem(
@@ -187,10 +187,10 @@ class AdditionalProcedureCodesController @Inject()(
           item.copy(procedureCodes = Some(newProcedureCodes))
         }
     )
-    updateExportsDeclarationSyncDirect(updatedModel(_))
+    updateDeclarationFromRequest(updatedModel(_))
   }
 
-  private def nextPage(action: FormAction, mode: Mode, itemId: String, maybeProcedureCode: Option[String], maybeModel: Option[ExportsDeclaration])(
+  private def nextPage(action: FormAction, mode: Mode, itemId: String, maybeProcedureCode: Option[String], declaration: ExportsDeclaration)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     (action, maybeProcedureCode) match {
@@ -203,13 +203,12 @@ class AdditionalProcedureCodesController @Inject()(
       case _ =>
         val continueToCommodityDetails = navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
 
-        val model = maybeModel.fold(request.cacheModel)(identity)
-        if (!isConditionForAllProcedureCodesVerified(model)) Future.successful(continueToCommodityDetails)
-        else resetSupervisingCustomsOfficeInCache(model).map(_ => continueToCommodityDetails)
+        if (!isConditionForAllProcedureCodesVerified(declaration)) Future.successful(continueToCommodityDetails)
+        else resetSupervisingCustomsOfficeInCache(declaration).map(_ => continueToCommodityDetails)
     }
 
-  private def resetSupervisingCustomsOfficeInCache(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(declaration.removeSupervisingCustomsOffice)
+  private def resetSupervisingCustomsOfficeInCache(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
+    updateDeclaration(declaration.removeSupervisingCustomsOffice)
 
   private def returnErrorPage(
     mode: Mode,

@@ -67,8 +67,8 @@ class ExporterDetailsController @Inject()(
       case _                         => controllers.declaration.routes.RepresentativeAgentController.displayPage
     }
 
-  private def updateCache(formData: ExporterDetails)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
+  private def updateCache(formData: ExporterDetails)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => {
       val updatedParties = model.parties.copy(exporterDetails = Some(formData))
       model.copy(parties = updatedParties)
     })

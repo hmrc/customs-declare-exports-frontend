@@ -71,8 +71,8 @@ class CommodityDetailsController @Inject()(
 
   private def updateExportsCache(itemId: String, updatedItem: CommodityDetails)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
+  ): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { model =>
       val postFormAppliedModel = model.updatedItem(itemId, item => item.copy(commodityDetails = Some(updatedItem)))
 
       if (!postFormAppliedModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))

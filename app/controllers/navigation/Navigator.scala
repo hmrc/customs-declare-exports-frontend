@@ -19,8 +19,9 @@ package controllers.navigation
 import config.AppConfig
 import controllers.declaration.routes
 import controllers.helpers.InlandOrBorderHelper.skipInlandOrBorder
-import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
+import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
+import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.helpers._
 import controllers.routes.{ChoiceController, RejectedNotificationsController, SubmissionsController}
 import forms.Choice.AllowedChoiceValues
@@ -56,47 +57,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
-
-  def continueTo(mode: Mode, factory: Mode => Call, isErrorFixInProgress: Boolean = false)(
-    implicit req: JourneyRequest[AnyContent],
-    hc: HeaderCarrier
-  ): Result =
-    (mode, FormAction.bindFromRequest) match {
-      case (ErrorFix, formAction) => handleErrorFixMode(factory, formAction, isErrorFixInProgress)
-
-      case (_, SaveAndReturn) =>
-        auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
-        goToDraftDeclaration
-
-      case _ => Results.Redirect(factory(mode))
-    }
-
-  private def goToDraftDeclaration(implicit req: JourneyRequest[_]): Result = {
-    val updatedDateTime = req.cacheModel.updatedDateTime
-    val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)
-    Results
-      .Redirect(routes.DraftDeclarationController.displayPage)
-      .flashing(FlashKeys.expiryDate -> expiry.toEpochMilli.toString)
-      .removingFromSession(ExportsSessionKeys.declarationId)
-  }
-
-  private def handleErrorFixMode(factory: Mode => Call, formAction: FormAction, isErrorFixInProgress: Boolean)(
-    implicit req: JourneyRequest[AnyContent]
-  ): Result =
-    formAction match {
-      case Add | Remove(_)                  => Results.Redirect(factory(ErrorFix))
-      case _ if isErrorFixInProgress        => Results.Redirect(factory(ErrorFix))
-      case _ if (req.sourceDecId.isDefined) => Results.Redirect(RejectedNotificationsController.displayPage(req.sourceDecId.get))
-      case _                                => Results.Redirect(SubmissionsController.displayListOfSubmissions())
-    }
-}
-
 case class ItemId(id: String)
 
-// scalastyle:off
-object Navigator {
+// scalastyle:off number.of.methods
+@Singleton
+class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tariffApiService: TariffApiService) {
 
   val common: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarationChoice =>
@@ -107,7 +72,6 @@ object Navigator {
     case Mucr                                 => routes.LinkDucrToMucrController.displayPage
     case RepresentativeEntity                 => routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => routes.RepresentativeEntityController.displayPage
-    case OfficeOfExit                         => routes.LocationController.displayPage
     case AdditionalDeclarationTypeStandardDec => routes.DeclarationChoiceController.displayPage
     case NatureOfTransaction                  => routes.TotalPackageQuantityController.displayPage
     case ProcedureCode                        => routes.ItemsSummaryController.displayItemsSummaryPage
@@ -138,6 +102,7 @@ object Navigator {
     case SupervisingCustomsOffice         => supervisingCustomsOfficePreviousPage
     case WarehouseIdentification          => warehouseIdentificationPreviousPage
     case AuthorisationProcedureCodeChoice => authorisationProcedureCodeChoicePreviousPage
+    case OfficeOfExit                     => officeOfExitPreviousPage
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -271,6 +236,7 @@ object Navigator {
     case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
     case ContainerFirst            => containerFirstPreviousPageOnSupplementary
     case RepresentativeAgent       => representativeAgentPreviousPage
+    case OfficeOfExit              => officeOfExitPreviousPage
   }
 
   val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -361,6 +327,39 @@ object Navigator {
 
   val occasionalCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
 
+  def continueTo(mode: Mode, factory: Mode => Call, isErrorFixInProgress: Boolean = false)(
+    implicit req: JourneyRequest[AnyContent],
+    hc: HeaderCarrier
+  ): Result =
+    (mode, FormAction.bindFromRequest) match {
+      case (ErrorFix, formAction) => handleErrorFixMode(factory, formAction, isErrorFixInProgress)
+
+      case (_, SaveAndReturn) =>
+        auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
+        goToDraftDeclaration
+
+      case _ => Results.Redirect(factory(mode))
+    }
+
+  private def goToDraftDeclaration(implicit req: JourneyRequest[_]): Result = {
+    val updatedDateTime = req.cacheModel.updatedDateTime
+    val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)
+    Results
+      .Redirect(routes.DraftDeclarationController.displayPage)
+      .flashing(FlashKeys.expiryDate -> expiry.toEpochMilli.toString)
+      .removingFromSession(ExportsSessionKeys.declarationId)
+  }
+
+  private def handleErrorFixMode(factory: Mode => Call, formAction: FormAction, isErrorFixInProgress: Boolean)(
+    implicit req: JourneyRequest[AnyContent]
+  ): Result =
+    formAction match {
+      case Add | Remove(_)                => Results.Redirect(factory(ErrorFix))
+      case _ if isErrorFixInProgress      => Results.Redirect(factory(ErrorFix))
+      case _ if req.sourceDecId.isDefined => Results.Redirect(RejectedNotificationsController.displayPage(req.sourceDecId.get))
+      case _                              => Results.Redirect(SubmissionsController.displayListOfSubmissions())
+    }
+
   private def declarantIsExporterPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     cacheModel.`type` match {
       case SUPPLEMENTARY => routes.ConsignmentReferencesController.displayPage(mode)
@@ -368,6 +367,10 @@ object Navigator {
         if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage(mode)
         else routes.MucrController.displayPage(mode)
     }
+
+  private def officeOfExitPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (skipLocationOfGoods(cacheModel)) routes.DestinationCountryController.displayPage(mode)
+    else routes.LocationController.displayPage(mode)
 
   private def entryIntoDeclarantsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage(mode)
@@ -599,8 +602,10 @@ object Navigator {
         }
 
         commonCacheDependent.orElse(common).orElse(specific)(page) match {
-          case mapping: (Mode => Call)                       => mapping(mode)
-          case mapping: ((ExportsDeclaration, Mode) => Call) => mapping(request.cacheModel, mode)
+          case mapping: (Mode => Call) =>
+            mapping(mode)
+          case mapping: ((ExportsDeclaration, Mode) => Call) =>
+            mapping(request.cacheModel, mode)
         }
 
       case _ => backLinkOnOtherModes(mode)
@@ -617,42 +622,48 @@ object Navigator {
           case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
         }
         commonCacheItemDependent.orElse(commonItem).orElse(specific)(page) match {
-          case mapping: ((Mode, String) => Call)                     => mapping(mode, itemId.id)
-          case mapping: ((ExportsDeclaration, Mode, String) => Call) => mapping(request.cacheModel, mode, itemId.id)
+          case mapping: ((Mode, String) => Call) =>
+            mapping(mode, itemId.id)
+          case mapping: ((ExportsDeclaration, Mode, String) => Call) =>
+            mapping(request.cacheModel, mode, itemId.id)
         }
 
       case _ => backLinkOnOtherModes(mode)
     }
 
-  def backLinkForAdditionalInformation(page: DeclarationPage, mode: Mode, itemId: String, tariffApiService: TariffApiService)(
-    implicit ec: ExecutionContext,
-    request: JourneyRequest[_]
+  def backLinkForAdditionalInformation(page: DeclarationPage, mode: Mode, itemId: String)(
+    implicit request: JourneyRequest[_],
+    ec: ExecutionContext
   ): Future[Call] = {
-
     def pageSelection: Future[Call] =
       tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId) map {
         case Left(SupplementaryUnitsNotRequired) => routes.CommodityMeasureController.displayPage(mode, itemId)
         case _                                   => routes.SupplementaryUnitsController.displayPage(mode, itemId)
       }
 
-    mode match {
-      case Mode.Normal | Mode.Amend =>
-        request.declarationType match {
-          case STANDARD | SUPPLEMENTARY => pageSelection
-          case _                        => Future.successful(backLink(page, mode, ItemId(itemId)))
+    page match {
+      case AdditionalInformationSummary | AdditionalInformationRequired =>
+        mode match {
+          case Mode.Normal | Mode.Amend =>
+            request.declarationType match {
+              case STANDARD | SUPPLEMENTARY => pageSelection
+              case _                        => Future.successful(backLink(page, mode, ItemId(itemId)))
+            }
+
+          case _ => Future.successful(backLinkOnOtherModes(mode))
         }
 
-      case _ => Future.successful(backLinkOnOtherModes(mode))
+      case _ => Future.successful(backLink(page, mode, ItemId(itemId)))
     }
   }
 
   private def backLinkOnOtherModes(mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {
-      case Mode.ErrorFix if (request.sourceDecId.isDefined) => RejectedNotificationsController.displayPage(request.sourceDecId.get)
-      case Mode.ErrorFix                                    => SubmissionsController.displayListOfSubmissions()
-      case Mode.Change                                      => routes.SummaryController.displayPage(Mode.Normal)
-      case Mode.ChangeAmend                                 => routes.SummaryController.displayPage(Mode.Amend)
-      case Mode.Draft                                       => routes.SummaryController.displayPage(Mode.Draft)
-      case _                                                => throw new IllegalArgumentException(s"Illegal mode [${mode.name}] for Navigator back-link")
+      case Mode.ErrorFix if request.sourceDecId.isDefined => RejectedNotificationsController.displayPage(request.sourceDecId.get)
+      case Mode.ErrorFix                                  => SubmissionsController.displayListOfSubmissions()
+      case Mode.Change                                    => routes.SummaryController.displayPage(Mode.Normal)
+      case Mode.ChangeAmend                               => routes.SummaryController.displayPage(Mode.Amend)
+      case Mode.Draft                                     => routes.SummaryController.displayPage(Mode.Draft)
+      case _                                              => throw new IllegalArgumentException(s"Illegal mode [${mode.name}] for Navigator back-link")
     }
 }

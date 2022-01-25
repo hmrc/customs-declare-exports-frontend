@@ -22,6 +22,8 @@ object AuthorizationTypeCodes {
 
   val authCodesThatSkipInlandOrBorder = mutuallyExclusiveAuthCodes
 
+  val codesThatSkipLocationOfGoods = List(Some("MOU"))
+
   val codesRequiringDocumentation = Set(
     "OPO",
     "REX",

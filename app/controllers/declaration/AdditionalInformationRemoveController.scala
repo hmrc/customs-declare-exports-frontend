@@ -48,7 +48,7 @@ class AdditionalInformationRemoveController @Inject()(
 
   def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalInformation(itemId, id) match {
-      case Some(information) => Ok(removePage(mode, itemId, id, information, removeYesNoForm.withSubmissionErrors()))
+      case Some(information) => Ok(removePage(mode, itemId, id, information, removeYesNoForm.withSubmissionErrors))
       case _                 => returnToSummary(mode, itemId)
     }
   }
@@ -56,8 +56,7 @@ class AdditionalInformationRemoveController @Inject()(
   def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalInformation(itemId, id) match {
       case Some(information) =>
-        removeYesNoForm
-          .bindFromRequest()
+        removeYesNoForm.bindFromRequest
           .fold(formWithErrors => Future.successful(BadRequest(removePage(mode, itemId, id, information, formWithErrors))), _.answer match {
             case YesNoAnswers.yes => removeAdditionalInformation(itemId, information).map(declaration => afterRemove(mode, itemId, declaration))
             case YesNoAnswers.no  => Future.successful(returnToSummary(mode, itemId))
@@ -68,8 +67,8 @@ class AdditionalInformationRemoveController @Inject()(
 
   private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformation.remove.empty")
 
-  private def afterRemove(mode: Mode, itemId: String, declaration: Option[ExportsDeclaration])(implicit request: JourneyRequest[AnyContent]): Result =
-    declaration.flatMap(_.itemBy(itemId)).flatMap(_.additionalInformation).map(_.items) match {
+  private def afterRemove(mode: Mode, itemId: String, declaration: ExportsDeclaration)(implicit request: JourneyRequest[AnyContent]): Result =
+    declaration.itemBy(itemId).flatMap(_.additionalInformation).map(_.items) match {
       case Some(items) if items.nonEmpty => returnToSummary(mode, itemId)
       case _                             => navigator.continueTo(mode, routes.AdditionalInformationRequiredController.displayPage(_, itemId))
     }
@@ -82,10 +81,10 @@ class AdditionalInformationRemoveController @Inject()(
 
   private def removeAdditionalInformation(itemId: String, itemToRemove: AdditionalInformation)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  ): Future[ExportsDeclaration] = {
     val cachedInformation = request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default)
     val updatedInformation = cachedInformation.copy(items = remove(cachedInformation.items, itemToRemove.equals(_: AdditionalInformation)))
-    updateExportsDeclarationSyncDirect(model => {
+    updateDeclarationFromRequest(model => {
       model.updatedItem(itemId, item => item.copy(additionalInformation = Some(updatedInformation)))
     })
   }

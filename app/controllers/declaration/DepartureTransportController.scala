@@ -73,6 +73,6 @@ class DepartureTransportController @Inject()(
       case DeclarationType.CLEARANCE                                => routes.ExpressConsignmentController.displayPage
     }
 
-  private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.updateDepartureTransport(formData))
+  private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.updateDepartureTransport(formData))
 }

@@ -88,8 +88,8 @@ class AdditionalActorsAddController @Inject()(
             .map(_ => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
       )
 
-  private def updateCache(formData: DeclarationAdditionalActorsData)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
+  private def updateCache(formData: DeclarationAdditionalActorsData)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => {
       val updatedParties = model.parties.copy(declarationAdditionalActorsData = Some(formData))
       model.copy(parties = updatedParties)
     })

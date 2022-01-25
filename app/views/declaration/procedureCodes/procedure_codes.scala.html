@@ -42,6 +42,7 @@
   saveButtons: saveButtons,
   formHelper: FormWithCSRF,
   procedureCodeService: ProcedureCodeService,
+  navigator: Navigator,
   appConfig: AppConfig
 )
 
@@ -76,7 +77,7 @@
 
 @govukLayout(
     title = Title("declaration.procedureCodes.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ProcedureCode, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ProcedureCode, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.ProcedureCodesController.submitProcedureCodes(mode, itemId), 'autoComplete -> "off") {
 

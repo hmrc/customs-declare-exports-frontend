@@ -39,6 +39,7 @@
     exportsInputText: exportsInputText,
     formHelper: FormWithCSRF,
     tariffExpander: tariffExpander,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -56,7 +57,7 @@
 
 @govukLayout(
     title = Title("declaration.carrierAddress.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CarrierDetails, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(CarrierDetails, mode)))) {
 
     @formHelper(action = CarrierDetailsController.saveAddress(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

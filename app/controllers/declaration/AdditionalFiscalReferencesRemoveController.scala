@@ -75,13 +75,13 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
 
   private def removalYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalFiscalReferences.remove.empty")
 
-  private def redirectAfterRemove(mode: Mode, itemId: String, declaration: Option[ExportsDeclaration])(implicit request: JourneyRequest[AnyContent]) =
-    declaration.flatMap(_.itemBy(itemId)).flatMap(_.additionalFiscalReferencesData).map(_.references) match {
+  private def redirectAfterRemove(mode: Mode, itemId: String, declaration: ExportsDeclaration)(implicit request: JourneyRequest[AnyContent]): Result =
+    declaration.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).map(_.references) match {
       case Some(references) if references.nonEmpty => returnToSummary(mode, itemId)
       case _                                       => navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId))
     }
 
-  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
 
   private def findAdditionalFiscalReference(itemId: String, id: String)(
@@ -91,12 +91,12 @@ class AdditionalFiscalReferencesRemoveController @Inject()(
 
   private def removeAdditionalFiscalReference(itemId: String, itemToRemove: AdditionalFiscalReference)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  ): Future[ExportsDeclaration] = {
     val cachedInformation =
       request.cacheModel.itemBy(itemId).flatMap(_.additionalFiscalReferencesData).getOrElse(AdditionalFiscalReferencesData(Seq.empty))
     val updatedInformation =
       cachedInformation.copy(references = remove(cachedInformation.references, itemToRemove.equals(_: AdditionalFiscalReference)))
-    updateExportsDeclarationSyncDirect(model => {
+    updateDeclarationFromRequest(model => {
       model.updatedItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedInformation)))
     })
   }

@@ -39,6 +39,7 @@
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -48,7 +49,7 @@
 
 @govukLayout(
     title = Title("declaration.representative.status.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(navigationForm, mode)))) {
 
     @formHelper(action = RepresentativeStatusController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("statusCode", DirectRepresentative, form.errors))

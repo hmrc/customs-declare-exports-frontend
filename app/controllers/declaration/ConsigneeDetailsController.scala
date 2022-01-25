@@ -69,8 +69,8 @@ class ConsigneeDetailsController @Inject()(
       case _         => routes.AdditionalActorsSummaryController.displayPage
     }
 
-  private def updateCache(formData: ConsigneeDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
+  private def updateCache(formData: ConsigneeDetails)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { model =>
       val updatedParties = model.parties.copy(consigneeDetails = Some(formData))
       model.copy(parties = updatedParties)
     }

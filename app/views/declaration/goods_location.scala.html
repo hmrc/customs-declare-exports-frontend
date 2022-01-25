@@ -39,6 +39,7 @@
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     sectionHeader: sectionHeader,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -73,7 +74,7 @@
 
 @govukLayout(
     title = Title("declaration.goodsLocation.title", "declaration.section.3", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(GoodsLocationForm, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(GoodsLocationForm, mode)))) {
 
     @formHelper(action = routes.LocationController.saveLocation(mode), 'autoComplete -> "off") {
 

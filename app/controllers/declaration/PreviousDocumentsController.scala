@@ -59,8 +59,8 @@ class PreviousDocumentsController @Inject()(
       )
   }
 
-  private def updateCache(documents: Seq[Document])(implicit req: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(previousDocuments = Some(PreviousDocumentsData(documents))))
+  private def updateCache(documents: Seq[Document])(implicit req: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => model.copy(previousDocuments = Some(PreviousDocumentsData(documents))))
 }
 
 object PreviousDocumentsController {
