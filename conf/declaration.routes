@@ -388,6 +388,10 @@ GET         /items/:itemId/additional-information-list         controllers.decla
 
 POST        /items/:itemId/additional-information-list         controllers.declaration.AdditionalInformationController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
+GET         /items/:itemId/is-license-required                 controllers.declaration.IsLicenseRequiredController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/is-license-required                 controllers.declaration.IsLicenseRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
 # Additional Documents
 
 GET         /items/:itemId/is-additional-documentation-required controllers.declaration.AdditionalDocumentsRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)

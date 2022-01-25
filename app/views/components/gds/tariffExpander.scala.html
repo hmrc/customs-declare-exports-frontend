@@ -26,7 +26,7 @@
   tariffLink: tariffLink
 )
 
-@(page: DeclarationPage, journey: DeclarationType)(implicit messages: Messages, appConfig: AppConfig)
+@(page: DeclarationPage, journey: DeclarationType, expanderTitleKey: Option[String] = None)(implicit messages: Messages, appConfig: AppConfig)
 
 @htmlElements = @{
     page.defineTariffContentKeys(journey).map { key =>
@@ -44,8 +44,16 @@
     case _ => "common"
 }}
 
+@expanderTitle = @{
+    expanderTitleKey.map{ key =>
+        Text(messages(key))
+    }.getOrElse{
+        Text(messages(s"tariff.expander.title.$specialisation"))
+    }
+}
+
 @govukDetails(Details(
   attributes = Map("id" -> "tariffReference"),
-  summary = Text(messages(s"tariff.expander.title.$specialisation")),
+  summary = expanderTitle,
   content = HtmlContent(htmlElements)
 ))

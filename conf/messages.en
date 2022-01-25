@@ -331,6 +331,20 @@ tariff.declaration.item.additionalDocuments.1.clearance.text = Go to the </br>{0
 tariff.declaration.item.additionalDocuments.1.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
 tariff.declaration.item.additionalDocuments.2.clearance.text = Additional documents, go to data element 2/3 Documents produced, certificates and authorisations, additional references.
 tariff.declaration.item.additionalDocuments.3.clearance.text = Writing off, go to data element 8/7 Writing Off.
+tariff.declaration.item.isLicenseRequired.title = Do these goods require a licence?
+tariff.declaration.item.isLicenseRequired.body = It is your responsibility to check if your goods require a licence.
+tariff.declaration.item.isLicenseRequired.no = No, the goods do not require a licence, or a waiver applies
+tariff.declaration.item.isLicenseRequired.expander.title = How do I know if the goods require a licence?
+
+tariff.declaration.item.isLicenseRequired.common.1.text = The {0} will list any requirements under the ‘Exports’ tab if you see a link that says ‘Conditions’.
+tariff.declaration.item.isLicenseRequired.common.1.linkText.0 = Tariff entry for Unknown macro: 4602191000, the code you entered (opens in new tab)
+
+tariff.declaration.item.isLicenseRequired.common.2.text = If there are no requirements, it will say ’There are no export measures for this commodity on this date.’
+tariff.declaration.item.isLicenseRequired.common.3.text = If you can use a waiver (a 4-character code that starts with a Y) this will be shown in the 'Conditions' box along with the rules for using the waiver. You will need to enter the waiver for the goods.
+
+tariff.declaration.item.isLicenseRequired.common.4.text = There is more information about licences on the {0}.
+tariff.declaration.item.isLicenseRequired.common.4.linkText.0 = step by step guide to exporting on GOV.UK (opens in new tab)
+
 tariff.declaration.declarationItemsList.common.text = For details, go to </br>{0}.
 tariff.declaration.declarationItemsList.common.linkText.0 = data element 1/9 - Total Number of Items (opens in new tab)
 tariff.declaration.declarationItemsList.clearance.text = Go to data element 1/9 Total Number of Items in the </br>{0}.

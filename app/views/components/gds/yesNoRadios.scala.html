@@ -20,12 +20,34 @@
 
 @this(govukRadios: GovukRadios)
 
-@(form: Form[_], heading: Option[Fieldset] = None, hint: Option[Hint] = None, inline: Boolean = false)(implicit messages: Messages)
+@(
+    form: Form[_],
+    heading: Option[Fieldset] = None,
+    yesKey: Option[String] = None,
+    noKey: Option[String] = None,
+    hint: Option[Hint] = None,
+    inline: Boolean = false
+)(implicit messages: Messages)
 
 @classes = @{
     if(inline) "govuk-radios--inline" else ""
 }
 
+@yesContent = @{
+    yesKey.map{ key =>
+        Text(messages(key))
+    }.getOrElse{
+        Text(messages("site.yes"))
+    }
+}
+
+@noContent = @{
+    noKey.map{ key =>
+        Text(messages(key))
+    }.getOrElse{
+        Text(messages("site.no"))
+    }
+}
 
 @govukRadios(Radios(
     name = "yesNo",
@@ -36,13 +58,13 @@
         RadioItem(
             id = Some("code_yes"),
             value = Some(yes),
-            content = Text(messages("site.yes")),
+            content = yesContent,
             checked = form("yesNo").value.contains(yes)
         ),
         RadioItem(
             id = Some("code_no"),
             value = Some(no),
-            content = Text(messages("site.no")),
+            content = noContent,
             checked = form("yesNo").value.contains(no)
         )
     ),
