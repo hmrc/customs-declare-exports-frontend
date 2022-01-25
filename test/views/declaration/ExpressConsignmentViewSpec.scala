@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.ExportsTestData.itemWith1040AsPC
+import base.ExportsTestData.itemWithPC
 import base.{Injector, MockAuthAction}
 import controllers.declaration.routes
 import controllers.helpers.SupervisingCustomsOfficeHelperSpec.skipDepartureTransportPageCodes
@@ -112,7 +112,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWith1040AsPC))) { implicit request =>
+    onJourney(SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWithPC("1040")))) { implicit request =>
       val view: Document = createView()
 
       "display 'Back' button to the 'Items Summary' page" when {

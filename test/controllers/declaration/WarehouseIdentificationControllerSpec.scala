@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import base.ExportsTestData.itemWith1040AsPC
+import base.ExportsTestData.itemWithPC
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.WarehouseIdentification
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
@@ -130,7 +130,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
     "redirect to the 'Inland Transport Details' page" when {
       "AdditionalDeclarationType is SUPPLEMENTARY_EIDR and" when {
         "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" in {
-          withNewCaching(withRequest(SUPPLEMENTARY_EIDR, withItem(itemWith1040AsPC)).cacheModel)
+          withNewCaching(withRequest(SUPPLEMENTARY_EIDR, withItem(itemWithPC("1040"))).cacheModel)
           val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
           val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(correctForm))
@@ -146,7 +146,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
         additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
           s"AdditionalDeclarationType is $additionalType" in {
-            withNewCaching(withRequest(additionalType, withItem(itemWith1040AsPC)).cacheModel)
+            withNewCaching(withRequest(additionalType, withItem(itemWithPC("1040"))).cacheModel)
             val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
             val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(correctForm))
@@ -158,7 +158,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWith1040AsPC))) { request =>
+    onJourney(SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(itemWithPC("1040")))) { request =>
       "redirect to the 'Express Consignment' page" when {
         "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code" in {
           withNewCaching(request.cacheModel)
@@ -218,7 +218,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
       "skip SupervisingCustomsOffice page on submit" when {
         "declaration is EIDR and all declaration's items have '1040' as PC and '000' as unique APC" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(), withItem(itemWith1040AsPC)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(), withItem(itemWithPC("1040"))))
 
           val correctForm = Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> "R12341234")
 

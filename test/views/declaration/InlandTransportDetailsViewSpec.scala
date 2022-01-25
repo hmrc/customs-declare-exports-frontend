@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.ExportsTestData.{allValuesRequiringToSkipInlandOrBorder, itemWith1040AsPC, valuesRequiringToSkipInlandOrBorder}
+import base.ExportsTestData.{allValuesRequiringToSkipInlandOrBorder, itemWithPC, valuesRequiringToSkipInlandOrBorder}
 import base.Injector
 import controllers.declaration.routes.{
   InlandOrBorderController,
@@ -172,7 +172,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
           s"AdditionalDeclarationType is $additionalType and" when {
             "the user has previously entered a value which requires to skip the /inland-or-border page" in {
               valuesRequiringToSkipInlandOrBorder.foreach { modifier =>
-                val view = createView()(withRequest(additionalType, modifier, withItem(itemWith1040AsPC)))
+                val view = createView()(withRequest(additionalType, modifier, withItem(itemWithPC("1040"))))
                 val backButton = view.getElementById("back-link")
                 backButton must containMessage("site.back")
                 backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
@@ -183,7 +183,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
 
         List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
           s"AdditionalDeclarationType is ${additionalType}" in {
-            val view = createView()(withRequest(additionalType, withItem(itemWith1040AsPC)))
+            val view = createView()(withRequest(additionalType, withItem(itemWithPC("1040"))))
             val backButton = view.getElementById("back-link")
             backButton must containMessage("site.back")
             backButton.getElementById("back-link") must haveHref(TransportLeavingTheBorderController.displayPage())
@@ -196,7 +196,7 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
       "all declaration's items have '1040' as Procedure code and '000' as unique Additional Procedure code and" when {
         List(OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
           s"AdditionalDeclarationType is ${additionalType}" in {
-            val view = createView()(withRequest(additionalType, withItem(itemWith1040AsPC)))
+            val view = createView()(withRequest(additionalType, withItem(itemWithPC("1040"))))
             val backButton = view.getElementById("back-link")
             backButton must containMessage("site.back")
             backButton.getElementById("back-link") must haveHref(ItemsSummaryController.displayItemsSummaryPage())

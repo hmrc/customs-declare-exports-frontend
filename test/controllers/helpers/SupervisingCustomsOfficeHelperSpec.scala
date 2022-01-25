@@ -16,7 +16,7 @@
 
 package controllers.helpers
 
-import base.ExportsTestData.itemWith1040AsPC
+import base.ExportsTestData.itemWithPC
 import base.{JourneyTypeTestRunner, MockAuthAction, MockExportCacheService, UnitSpec}
 import controllers.declaration.routes
 import controllers.helpers.SupervisingCustomsOfficeHelper._
@@ -38,12 +38,12 @@ class SupervisingCustomsOfficeHelperSpec
     "return true" when {
 
       "a declaration contains a single item with ProcedureCodesData(1040-000)" in {
-        val declaration = aDeclaration(withItem(itemWith1040AsPC))
+        val declaration = aDeclaration(withItem(itemWithPC("1040")))
         assert(isConditionForAllProcedureCodesVerified(declaration))
       }
 
       "a declaration contains all items with ProcedureCodesData(1040-000)" in {
-        val declaration = aDeclaration(withItem(itemWith1040AsPC), withItem(itemWith1040AsPC), withItem(itemWith1040AsPC))
+        val declaration = aDeclaration(withItem(itemWithPC("1040")), withItem(itemWithPC("1040")), withItem(itemWithPC("1040")))
         assert(isConditionForAllProcedureCodesVerified(declaration))
       }
     }
@@ -57,7 +57,7 @@ class SupervisingCustomsOfficeHelperSpec
       }
 
       "a declaration contains at least one items without ProcedureCodesData(1040-000)" in {
-        val declaration = aDeclaration(withItem(itemWith1040AsPC), withItem(condNotVerified), withItem(itemWith1040AsPC))
+        val declaration = aDeclaration(withItem(itemWithPC("1040")), withItem(condNotVerified), withItem(itemWithPC("1040")))
         isConditionForAllProcedureCodesVerified(declaration) mustBe false
       }
 
