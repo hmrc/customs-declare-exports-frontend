@@ -78,10 +78,8 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
       }
 
       "means of transport on departure id number is too long" in {
-        val incorrectForm = Map(
-          radioButtonGroupId -> ShipOrRoroImoNumber.value,
-          ShipOrRoroImoNumber.id -> TestHelper.createRandomAlphanumericString(36)
-        )
+        val incorrectForm =
+          Map(radioButtonGroupId -> ShipOrRoroImoNumber.value, ShipOrRoroImoNumber.id -> TestHelper.createRandomAlphanumericString(36))
 
         val result = form.bind(incorrectForm)
         result.errors.length must be(2)
@@ -103,10 +101,8 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
       }
 
       "means of transport on departure id number is too long with invalid characters" in {
-        val incorrectForm = Map(
-          radioButtonGroupId -> ShipOrRoroImoNumber.value,
-          ShipOrRoroImoNumber.id -> (TestHelper.createRandomAlphanumericString(36) + "!@#$")
-        )
+        val incorrectForm =
+          Map(radioButtonGroupId -> ShipOrRoroImoNumber.value, ShipOrRoroImoNumber.id -> (TestHelper.createRandomAlphanumericString(36) + "!@#$"))
 
         val result = form.bind(incorrectForm)
         result.errors.length must be(2)
@@ -193,10 +189,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
       }
 
       "means of transport on departure id number is too long" in {
-        val incorrectForm = Map(
-          radioButtonGroupId -> FlightNumber.value,
-          FlightNumber.id -> TestHelper.createRandomAlphanumericString(36)
-        )
+        val incorrectForm = Map(radioButtonGroupId -> FlightNumber.value, FlightNumber.id -> TestHelper.createRandomAlphanumericString(36))
 
         val result = form.bind(incorrectForm)
         result.errors.length must be(2)

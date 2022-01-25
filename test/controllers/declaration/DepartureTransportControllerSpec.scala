@@ -23,7 +23,7 @@ import controllers.routes.RootController
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.radioButtonGroupId
 import forms.declaration.ModeOfTransportCode.Maritime
-import forms.declaration.TransportCodes.{NotApplicable, WagonNumber, transportCodesForV1, transportCodesForV3WhenPC0019}
+import forms.declaration.TransportCodes.{transportCodesForV1, transportCodesForV3WhenPC0019, NotApplicable, WagonNumber}
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import models.Mode.Normal
@@ -89,7 +89,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
   "Departure transport controller" when {
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
-
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -100,8 +99,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         }
 
         "display page method is invoked and cache contains data" in {
-          withNewCaching(aDeclarationAfter(
-            request.cacheModel, withDepartureTransport(Maritime, WagonNumber.value, "FAA")))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(Maritime, WagonNumber.value, "FAA")))
 
           val result = controller.displayPage(Normal)(getRequest())
           status(result) must be(OK)

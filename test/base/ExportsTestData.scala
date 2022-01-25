@@ -62,6 +62,13 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
   val pc1040 = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE)))
   def itemWith1040AsPC = ExportItem(UUID.randomUUID.toString, procedureCodes = pc1040)
 
+  def itemWithPC(
+    procedureCode: String,
+    additionalProcedureCodes: Seq[String] = List(NO_APC_APPLIES_CODE),
+    itemId: String = UUID.randomUUID.toString
+  ) =
+    ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(procedureCode), additionalProcedureCodes)))
+
   val currentLoginTime: DateTime = new DateTime(1530442800000L, UTC)
   val previousLoginTime: DateTime = new DateTime(1530464400000L, UTC)
   val nrsTimeStamp: DateTime = new DateTime(1530475200000L, UTC)

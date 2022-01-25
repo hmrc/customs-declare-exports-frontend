@@ -20,10 +20,7 @@ import forms.declaration.ModeOfTransportCode
 import forms.declaration.ModeOfTransportCode._
 import play.api.i18n.Messages
 
-import javax.inject.Singleton
-
-@Singleton
-class ModeOfTransportCodeHelper {
+object ModeOfTransportCodeHelper {
 
   private val prefix = "declaration.transport.leavingTheBorder.transportMode"
 

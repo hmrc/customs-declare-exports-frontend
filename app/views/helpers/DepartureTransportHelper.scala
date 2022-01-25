@@ -37,7 +37,6 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class DepartureTransportHelper @Inject()(
-  modeOfTransportCodeHelper: ModeOfTransportCodeHelper,
   govukRadios: GovukRadios,
   govukInsetText: GovukInsetText,
   pageTitle: pageTitle,
@@ -67,12 +66,14 @@ class DepartureTransportHelper @Inject()(
   }
 
   private def inputField(transportCode: TransportCode, form: Form[_])(implicit messages: Messages): Option[Html] =
-    Some(exportsInputText(
-      field = form(transportCode.id),
-      inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
-      labelKey = s"$prefix.${transportCode.id}.label",
-      hintKey = Some(s"$prefix.${transportCode.id}.hint")
-    ))
+    Some(
+      exportsInputText(
+        field = form(transportCode.id),
+        inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
+        labelKey = s"$prefix.${transportCode.id}.label",
+        hintKey = Some(s"$prefix.${transportCode.id}.hint")
+      )
+    )
 
   private def insetText(implicit messages: Messages, request: JourneyRequest[_]): Html =
     if (versionSelection == 3) govukInsetText(InsetText(content = Text(messages(s"$prefix.departure.inset.text.v3"))))
@@ -85,13 +86,13 @@ class DepartureTransportHelper @Inject()(
       if (version == 2) request.cacheModel.inlandModeOfTransportCode
       else request.cacheModel.transportLeavingBorderCode
 
-    (s"$prefix.departure.title.v$version", modeOfTransportCodeHelper.transportMode(transportCode))
+    (s"$prefix.departure.title.v$version", ModeOfTransportCodeHelper.transportMode(transportCode))
   }
 
   private def paragraph(key: String)(implicit messages: Messages): Html = paragraphBody(messages(s"$prefix.departure.$key"))
 
-  private def radioButton(
-    form: Form[_], transportCode: TransportCode, useAltRadioTextForV2: Boolean = false)(implicit messages: Messages
+  private def radioButton(form: Form[_], transportCode: TransportCode, useAltRadioTextForV2: Boolean = false)(
+    implicit messages: Messages
   ): RadioItem =
     RadioItem(
       id = Some(s"radio_${transportCode.id}"),
@@ -111,19 +112,21 @@ class DepartureTransportHelper @Inject()(
       case 3 => transportCodesForV3.map(radioButton(form, _))
     }
 
-    govukRadios(Radios(
-      name = radioButtonGroupId,
-      items = items,
-      errorMessage = form(radioButtonGroupId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-    ))
+    govukRadios(
+      Radios(
+        name = radioButtonGroupId,
+        items = items,
+        errorMessage = form(radioButtonGroupId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
+      )
+    )
   }
 
   def transportCodes(implicit request: JourneyRequest[_]): Seq[TransportCode] =
     versionSelection match {
-      case 1 => transportCodesForV1
-      case 2 => transportCodesForV2
+      case 1                                          => transportCodesForV1
+      case 2                                          => transportCodesForV2
       case 3 if hasPCsEqualTo0019(request.cacheModel) => transportCodesForV3WhenPC0019
-      case 3 => transportCodesForV3
+      case 3                                          => transportCodesForV3
     }
 
   /*

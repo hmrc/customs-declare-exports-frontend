@@ -61,15 +61,13 @@ class DepartureTransportController @Inject()(
         val formData = DepartureTransport(transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber)
 
         Ok(departureTransportPage(mode, frm.fill(formData)))
-      }
-      else Results.Redirect(RootController.displayPage)
+      } else Results.Redirect(RootController.displayPage)
     }
 
   def submitForm(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
       if (!isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode))
-        form
-          .bindFromRequest
+        form.bindFromRequest
           .fold(
             formWithErrors => Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
             updateCache(_).map(_ => navigator.continueTo(mode, nextPage))

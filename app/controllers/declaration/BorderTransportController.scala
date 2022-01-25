@@ -63,8 +63,7 @@ class BorderTransportController @Inject()(
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form
-      .bindFromRequest
+    form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(mode, nextPage))
