@@ -19,6 +19,7 @@ package controllers.navigation
 import config.AppConfig
 import controllers.declaration.routes
 import controllers.helpers.InlandOrBorderHelper.skipInlandOrBorder
+import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
 import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.helpers._
@@ -71,7 +72,6 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
     case Mucr                                 => routes.LinkDucrToMucrController.displayPage
     case RepresentativeEntity                 => routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => routes.RepresentativeEntityController.displayPage
-    case OfficeOfExit                         => routes.LocationController.displayPage
     case AdditionalDeclarationTypeStandardDec => routes.DeclarationChoiceController.displayPage
     case NatureOfTransaction                  => routes.TotalPackageQuantityController.displayPage
     case ProcedureCode                        => routes.ItemsSummaryController.displayItemsSummaryPage
@@ -102,6 +102,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
     case SupervisingCustomsOffice         => supervisingCustomsOfficePreviousPage
     case WarehouseIdentification          => warehouseIdentificationPreviousPage
     case AuthorisationProcedureCodeChoice => authorisationProcedureCodeChoicePreviousPage
+    case OfficeOfExit                     => officeOfExitPreviousPage
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -235,6 +236,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
     case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
     case ContainerFirst            => containerFirstPreviousPageOnSupplementary
     case RepresentativeAgent       => representativeAgentPreviousPage
+    case OfficeOfExit              => officeOfExitPreviousPage
   }
 
   val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
@@ -365,6 +367,10 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
         if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage(mode)
         else routes.MucrController.displayPage(mode)
     }
+
+  private def officeOfExitPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (skipLocationOfGoods(cacheModel)) routes.DestinationCountryController.displayPage(mode)
+    else routes.LocationController.displayPage(mode)
 
   private def entryIntoDeclarantsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage(mode)
