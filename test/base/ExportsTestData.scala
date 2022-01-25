@@ -60,7 +60,6 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
   val eidrDateStamp = "20001231"
 
   val pc1040 = Some(ProcedureCodesData(Some("1040"), List(NO_APC_APPLIES_CODE)))
-  def itemWith1040AsPC = ExportItem(UUID.randomUUID.toString, procedureCodes = pc1040)
 
   def itemWithPC(
     procedureCode: String,

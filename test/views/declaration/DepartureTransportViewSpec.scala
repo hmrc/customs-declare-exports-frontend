@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.ExportsTestData.{itemWith1040AsPC, itemWithPC}
+import base.ExportsTestData.itemWithPC
 import base.Injector
 import controllers.declaration.routes.{
   InlandOrBorderController,
@@ -219,7 +219,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
 
       "the declaration is EIDR and" when {
         "all declaration's items have '1040' as PC and '000' as APC and" when {
-          implicit val request = withRequest(additionalType, withEntryIntoDeclarantsRecords(), withItem(itemWith1040AsPC))
+          implicit val request = withRequest(additionalType, withEntryIntoDeclarantsRecords(), withItem(itemWithPC("1040")))
           verifyBackButton(WarehouseIdentificationController.displayPage())
         }
       }
