@@ -52,17 +52,12 @@ object BorderTransport extends DeclarationPage {
       text
         .verifying(s"$prefix.IDNumber.error.empty", nonEmpty)
         .verifying(s"$prefix.IDNumber.error.length", isEmpty or noLongerThan(35))
-        .verifying(
-          s"$prefix.IDNumber.error.invalid",
-          isAlphanumericWithAllowedSpecialCharacters
-        )
+        .verifying(s"$prefix.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
     )
 
   private def formMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[BorderTransport] =
     mapping(
-      nationalityId -> optional(
-        text.verifying(s"$prefix.nationality.error.incorrect", isValidCountryName(_))
-      ),
+      nationalityId -> optional(text.verifying(s"$prefix.nationality.error.incorrect", isValidCountryName(_))),
       radioButtonGroupId -> requiredRadio(s"$prefix.error.empty")
         .verifying(s"$prefix.error.incorrect", isContainedIn(transportCodesOnBorderTransport.map(_.value))),
       transportReferenceMapping(ShipOrRoroImoNumber),
@@ -79,21 +74,29 @@ object BorderTransport extends DeclarationPage {
     Form(formMapping)
 
   private def form2Model: (
-    Option[String], String,
-    Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String]
+    Option[String],
+    String,
+    Option[String],
+    Option[String],
+    Option[String],
+    Option[String],
+    Option[String],
+    Option[String],
+    Option[String],
+    Option[String]
   ) => BorderTransport = {
     case (
-      nationality,
-      transportType,
-      shipIdNumber,
-      nameOfVessel,
-      wagonNumber,
-      vehicleRegistrationNumber,
-      flightNumber,
-      aircraftRegistrationNumber,
-      europeanVesselIDNumber,
-      nameOfInlandWaterwayVessel
-    ) =>
+        nationality,
+        transportType,
+        shipIdNumber,
+        nameOfVessel,
+        wagonNumber,
+        vehicleRegistrationNumber,
+        flightNumber,
+        aircraftRegistrationNumber,
+        europeanVesselIDNumber,
+        nameOfInlandWaterwayVessel
+        ) =>
       BorderTransport(
         nationality,
         transportType,
@@ -110,23 +113,35 @@ object BorderTransport extends DeclarationPage {
       )
   }
 
-  private def model2Form: BorderTransport => Option[(
-    Option[String], String,
-    Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String]
-  )] =
+  private def model2Form: BorderTransport => Option[
+    (
+      Option[String],
+      String,
+      Option[String],
+      Option[String],
+      Option[String],
+      Option[String],
+      Option[String],
+      Option[String],
+      Option[String],
+      Option[String]
+    )
+  ] =
     implicit borderTransport =>
-      Some((
-        borderTransport.meansOfTransportCrossingTheBorderNationality,
-        borderTransport.meansOfTransportCrossingTheBorderType,
-        model2Ref(ShipOrRoroImoNumber),
-        model2Ref(NameOfVessel),
-        model2Ref(WagonNumber),
-        model2Ref(VehicleRegistrationNumber),
-        model2Ref(FlightNumber),
-        model2Ref(AircraftRegistrationNumber),
-        model2Ref(EuropeanVesselIDNumber),
-        model2Ref(NameOfInlandWaterwayVessel)
-      ))
+      Some(
+        (
+          borderTransport.meansOfTransportCrossingTheBorderNationality,
+          borderTransport.meansOfTransportCrossingTheBorderType,
+          model2Ref(ShipOrRoroImoNumber),
+          model2Ref(NameOfVessel),
+          model2Ref(WagonNumber),
+          model2Ref(VehicleRegistrationNumber),
+          model2Ref(FlightNumber),
+          model2Ref(AircraftRegistrationNumber),
+          model2Ref(EuropeanVesselIDNumber),
+          model2Ref(NameOfInlandWaterwayVessel)
+        )
+    )
 
   private def form2Ref(refs: Option[String]*): String = refs.map(_.getOrElse("")).mkString
 

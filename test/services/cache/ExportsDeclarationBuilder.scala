@@ -362,8 +362,8 @@ trait ExportsDeclarationBuilder {
   def withoutInlandOrBorder: ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(inlandOrBorder = None))
 
-  def withInlandModeOfTransportCode(inlandModeOfTransportCode: Option[InlandModeOfTransportCode]): ExportsDeclarationModifier =
-    cache => cache.copy(locations = cache.locations.copy(inlandModeOfTransportCode = inlandModeOfTransportCode))
+  def withInlandModeOfTransportCode(modeOfTransportCode: ModeOfTransportCode): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(inlandModeOfTransportCode = Some(InlandModeOfTransportCode(Some(modeOfTransportCode)))))
 
   def withoutInlandModeOfTransportCode(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(inlandModeOfTransportCode = None))

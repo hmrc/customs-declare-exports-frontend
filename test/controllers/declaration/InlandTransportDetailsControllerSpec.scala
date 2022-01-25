@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import controllers.declaration.routes.{DepartureTransportController, ExpressConsignmentController, TransportContainerController}
-import controllers.helpers.TransportSectionHelper.postalOrFTIModeOfTransportCodes
+import controllers.helpers.TransportSectionHelper.{nonPostalOrFTIModeOfTransportCodes, postalOrFTIModeOfTransportCodes}
 import controllers.routes.RootController
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.ModeOfTransportCode._
@@ -106,9 +106,6 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
     }
   }
 
-  private val validOtherTransportPagesValues =
-    meaningfulModeOfTransportCodes.filterNot(code => postalOrFTIModeOfTransportCodes.contains(Some(code)))
-
   private val body = Json.obj("inlandModeOfTransportCode" -> JsString(exampleTransportMode.value))
 
   onJourney(STANDARD, SUPPLEMENTARY) { request =>
@@ -131,7 +128,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
         status(result) mustBe BAD_REQUEST
       }
 
-      validOtherTransportPagesValues.foreach { transportMode =>
+      nonPostalOrFTIModeOfTransportCodes.foreach { transportMode =>
         val expectedRedirect = DepartureTransportController.displayPage()
 
         s"redirect to ${expectedRedirect.url}" when {

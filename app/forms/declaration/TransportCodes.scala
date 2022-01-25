@@ -17,7 +17,8 @@
 package forms.declaration
 
 sealed abstract class TransportCode(
-  val id: String, val value: String,
+  val id: String,
+  val value: String,
   val useAltRadioTextForV2: Boolean = false,
   val useAltRadioTextForBorderTransport: Boolean = false
 )
@@ -36,14 +37,26 @@ object TransportCodes {
 
   // As used on /departure-transport when journey is Standard or Supplementary_Simplified and /inland-or-border is 'Border'
   val transportCodesForV1 = List(
-    ShipOrRoroImoNumber, NameOfVessel, WagonNumber, FlightNumber, AircraftRegistrationNumber,
-    EuropeanVesselIDNumber, NameOfInlandWaterwayVessel, VehicleRegistrationNumber
+    ShipOrRoroImoNumber,
+    NameOfVessel,
+    WagonNumber,
+    FlightNumber,
+    AircraftRegistrationNumber,
+    EuropeanVesselIDNumber,
+    NameOfInlandWaterwayVessel,
+    VehicleRegistrationNumber
   )
 
   // As used on /departure-transport by default
   val transportCodesForV2 = List(
-    VehicleRegistrationNumber, ShipOrRoroImoNumber, NameOfVessel, FlightNumber,
-    AircraftRegistrationNumber, WagonNumber, EuropeanVesselIDNumber, NameOfInlandWaterwayVessel
+    VehicleRegistrationNumber,
+    ShipOrRoroImoNumber,
+    NameOfVessel,
+    FlightNumber,
+    AircraftRegistrationNumber,
+    WagonNumber,
+    EuropeanVesselIDNumber,
+    NameOfInlandWaterwayVessel
   )
 
   // As used on /departure-transport when journey is Clearance
@@ -54,7 +67,13 @@ object TransportCodes {
 
   // As used on /border-transport
   val transportCodesOnBorderTransport = List(
-      ShipOrRoroImoNumber, NameOfVessel, WagonNumber, VehicleRegistrationNumber,
-      FlightNumber, AircraftRegistrationNumber, EuropeanVesselIDNumber, NameOfInlandWaterwayVessel
+    ShipOrRoroImoNumber,
+    NameOfVessel,
+    WagonNumber,
+    VehicleRegistrationNumber,
+    FlightNumber,
+    AircraftRegistrationNumber,
+    EuropeanVesselIDNumber,
+    NameOfInlandWaterwayVessel
   )
 }

@@ -95,20 +95,13 @@ class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with Moc
 
       "sending very long transport type reference" in {
         form
-          .bind(
-            Map(
-              radioButtonGroupId -> AircraftRegistrationNumber.value,
-              AircraftRegistrationNumber.id -> "a" * 128
-            )
-          )
+          .bind(Map(radioButtonGroupId -> AircraftRegistrationNumber.value, AircraftRegistrationNumber.id -> "a" * 128))
           .errors must contain("declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.length")
       }
 
       "sending reference with special characters" in {
         form
-          .bind(
-            Map(radioButtonGroupId -> VehicleRegistrationNumber.value, VehicleRegistrationNumber.id -> "$#@!")
-          )
+          .bind(Map(radioButtonGroupId -> VehicleRegistrationNumber.value, VehicleRegistrationNumber.id -> "$#@!"))
           .errors must contain("declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.invalid")
       }
 

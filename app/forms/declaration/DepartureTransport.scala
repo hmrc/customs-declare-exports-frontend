@@ -26,10 +26,7 @@ import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
-case class DepartureTransport(
-  meansOfTransportOnDepartureType: Option[String],
-  meansOfTransportOnDepartureIDNumber: Option[String]
-)
+case class DepartureTransport(meansOfTransportOnDepartureType: Option[String], meansOfTransportOnDepartureIDNumber: Option[String])
 
 object DepartureTransport extends DeclarationPage {
 
@@ -56,27 +53,36 @@ object DepartureTransport extends DeclarationPage {
 
   private def form2Model: (
     Option[String],
-    Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String]
+    Option[String],
+    Option[String],
+    Option[String],
+    Option[String],
+    Option[String],
+    Option[String],
+    Option[String],
+    Option[String]
   ) => DepartureTransport = {
     case (departureType, v1, v2, v3, v4, v5, v6, v7, v8) =>
       DepartureTransport(departureType, List(v1, v2, v3, v4, v5, v6, v7, v8).flatten.headOption.orElse(Some("")))
   }
 
-  private def model2Form(transportCodes: Seq[TransportCode]): DepartureTransport => Option[(
-    Option[String],
-    Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String]
-  )] =
-    implicit departureTransport => Some((
-      departureTransport.meansOfTransportOnDepartureType,
-      model2Ref(transportCodes(0)),
-      model2Ref(transportCodes(1)),
-      model2Ref(transportCodes(2)),
-      model2Ref(transportCodes(3)),
-      model2Ref(transportCodes(4)),
-      model2Ref(transportCodes(5)),
-      model2Ref(transportCodes(6)),
-      model2Ref(transportCodes(7))
-  ))
+  private def model2Form(transportCodes: Seq[TransportCode]): DepartureTransport => Option[
+    (Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])
+  ] =
+    implicit departureTransport =>
+      Some(
+        (
+          departureTransport.meansOfTransportOnDepartureType,
+          model2Ref(transportCodes(0)),
+          model2Ref(transportCodes(1)),
+          model2Ref(transportCodes(2)),
+          model2Ref(transportCodes(3)),
+          model2Ref(transportCodes(4)),
+          model2Ref(transportCodes(5)),
+          model2Ref(transportCodes(6)),
+          model2Ref(transportCodes(7))
+        )
+    )
 
   private def model2Ref(transportCode: TransportCode)(implicit departureTransport: DepartureTransport): Option[String] =
     if (!departureTransport.meansOfTransportOnDepartureType.contains(transportCode.value)) None
@@ -96,10 +102,7 @@ object DepartureTransport extends DeclarationPage {
       text
         .verifying(s"$prefix.error.empty.input", nonEmpty)
         .verifying(s"$prefix.error.length", isEmpty or noLongerThan(35))
-        .verifying(
-          s"$prefix.error.invalid",
-          isEmpty or (noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
-        )
+        .verifying(s"$prefix.error.invalid", isEmpty or (noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters))
     )
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =

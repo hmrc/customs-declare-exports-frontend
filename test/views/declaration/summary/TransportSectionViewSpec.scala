@@ -19,14 +19,7 @@ package views.declaration.summary
 import base.Injector
 import controllers.declaration.routes
 import forms.declaration.InlandOrBorder.Border
-import forms.declaration.{
-  InlandModeOfTransportCode,
-  ModeOfTransportCode,
-  SupervisingCustomsOffice,
-  TransportCodes,
-  TransportPayment,
-  WarehouseIdentification
-}
+import forms.declaration.{ModeOfTransportCode, SupervisingCustomsOffice, TransportCodes, TransportPayment, WarehouseIdentification}
 import models.Mode
 import models.declaration.Container
 import services.cache.ExportsTestData
@@ -43,7 +36,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
     withInlandOrBorder(Some(Border)),
-    withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCode.Maritime))))
+    withInlandModeOfTransportCode(ModeOfTransportCode.Maritime)
   )
 
   val section = instanceOf[transport_section]
@@ -91,10 +84,10 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     "display transport reference if option none selected" in {
       val view = section(
         mode,
-        data.copy(transport = data.transport.copy(
-          meansOfTransportOnDepartureType = Some(TransportCodes.NotApplicable.value),
-          meansOfTransportOnDepartureIDNumber = Some("")
-        ))
+        data.copy(
+          transport = data.transport
+            .copy(meansOfTransportOnDepartureType = Some(TransportCodes.NotApplicable.value), meansOfTransportOnDepartureIDNumber = Some(""))
+        )
       )(messages)
       val row = view.getElementsByClass("transport-reference-row")
 

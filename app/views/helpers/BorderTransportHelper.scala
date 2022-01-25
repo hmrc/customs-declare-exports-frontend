@@ -17,7 +17,7 @@
 package views.helpers
 
 import forms.declaration.BorderTransport.radioButtonGroupId
-import forms.declaration.TransportCodes.{NotApplicable, transportCodesOnBorderTransport}
+import forms.declaration.TransportCodes.{transportCodesOnBorderTransport, NotApplicable}
 import forms.declaration.{BorderTransport, TransportCode}
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -37,12 +37,14 @@ class BorderTransportHelper @Inject()(exportsInputText: exportsInputText) {
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
   private def inputField(transportCode: TransportCode, form: Form[_])(implicit messages: Messages): Option[Html] =
-    Some(exportsInputText(
-      field = form(transportCode.id),
-      inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
-      labelKey = s"$prefix.${transportCode.id}.label",
-      hintKey = Some(s"$prefix.${transportCode.id}.hint")
-    ))
+    Some(
+      exportsInputText(
+        field = form(transportCode.id),
+        inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
+        labelKey = s"$prefix.${transportCode.id}.label",
+        hintKey = Some(s"$prefix.${transportCode.id}.hint")
+      )
+    )
 
   private def radioButton(form: Form[BorderTransport], transportCode: TransportCode)(implicit messages: Messages): RadioItem =
     RadioItem(
