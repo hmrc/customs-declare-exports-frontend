@@ -18,12 +18,14 @@ package controllers.declaration
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.navigation.Navigator
+import controllers.routes.RootController
 import forms.declaration.GoodsLocationForm
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.goods_location
@@ -43,22 +45,28 @@ class LocationController @Inject()(
   import forms.declaration.GoodsLocationForm._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
-    request.cacheModel.locations.goodsLocation match {
-      case Some(data) => Ok(goodsLocationPage(mode, frm.fill(data.toForm)))
-      case _          => Ok(goodsLocationPage(mode, frm))
+    if (skipLocationOfGoods(request.cacheModel)) Results.Redirect(RootController.displayPage)
+    else {
+      val frm = form().withSubmissionErrors()
+      request.cacheModel.locations.goodsLocation match {
+        case Some(data) => Ok(goodsLocationPage(mode, frm.fill(data.toForm)))
+        case _          => Ok(goodsLocationPage(mode, frm))
+      }
     }
   }
 
   def saveLocation(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[GoodsLocationForm]) => Future.successful(BadRequest(goodsLocationPage(mode, formWithErrors))),
-        formData =>
-          updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(goodsLocation = Some(formData.toModel())))).map { _ =>
-            navigator.continueTo(mode, controllers.declaration.routes.OfficeOfExitController.displayPage)
-        }
-      )
+    if (skipLocationOfGoods(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
+    else {
+      form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[GoodsLocationForm]) => Future.successful(BadRequest(goodsLocationPage(mode, formWithErrors))),
+          formData =>
+            updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(goodsLocation = Some(formData.toModel())))).map { _ =>
+              navigator.continueTo(mode, controllers.declaration.routes.OfficeOfExitController.displayPage)
+          }
+        )
+    }
   }
 }
