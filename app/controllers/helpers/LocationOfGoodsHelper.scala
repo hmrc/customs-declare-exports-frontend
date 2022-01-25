@@ -23,7 +23,5 @@ import models.ExportsDeclaration
 object LocationOfGoodsHelper {
   def skipLocationOfGoods(declaration: ExportsDeclaration): Boolean =
     declaration.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR) &&
-      declaration.declarationHolders.exists(
-        holder => AuthorizationTypeCodes.codesThatSkipLocationOfGoods.contains(holder.authorisationTypeCode)
-      )
+      declaration.declarationHolders.exists(holder => AuthorizationTypeCodes.codesThatSkipLocationOfGoods.contains(holder.authorisationTypeCode))
 }
