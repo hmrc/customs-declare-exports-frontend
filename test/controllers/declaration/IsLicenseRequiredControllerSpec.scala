@@ -19,10 +19,10 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.CommodityDetails
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -32,13 +32,13 @@ import views.html.declaration.is_license_required
 
 class IsLicenseRequiredControllerSpec extends ControllerSpec with OptionValues {
 
-  val itemId = "itemId"
-  val commodityDetails = CommodityDetails(Some("1234567890"), Some("description"))
-  val declaration = aDeclaration(withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails))))
+  private val itemId = "itemId"
+  private val commodityDetails = CommodityDetails(Some("1234567890"), Some("description"))
+  private val declaration = aDeclaration(withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails))))
 
-  val mockPage = mock[is_license_required]
+  private val mockPage = mock[is_license_required]
 
-  val controller =
+  private val controller =
     new IsLicenseRequiredController(
       mockAuthAction,
       mockJourneyAction,
@@ -56,14 +56,14 @@ class IsLicenseRequiredControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any[Mode], any[String], any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any[Mode], any[String], captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit =
@@ -71,11 +71,11 @@ class IsLicenseRequiredControllerSpec extends ControllerSpec with OptionValues {
   super.afterEach()
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any(), any())(any(), any())
 
   "IsLicenseRequired Controller" should {
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY) { request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY) { _ =>
       "return 200 (OK)" that {
 
         "display page method is invoked and cache is empty" in {

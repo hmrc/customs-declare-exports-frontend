@@ -40,7 +40,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, commodityCode: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[YesNoAnswer], commodityCode: String, representativeStatusCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -57,7 +57,9 @@
 
         @heading(messages("tariff.declaration.item.isLicenseRequired.title"), Styles.gdsPageLegend)
 
-        @paragraphBody(messages("tariff.declaration.item.isLicenseRequired.body"))
+        @representativeStatusCode.map{ code =>
+           @paragraphBody(messages(s"tariff.declaration.item.isLicenseRequired.status.$code.body"))
+        }
 
         @yesNoRadios(
             form,
