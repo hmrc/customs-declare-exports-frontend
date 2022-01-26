@@ -21,9 +21,9 @@ import controllers.declaration.routes.{AdditionalDocumentAddController, Addition
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.CommodityDetails
+import forms.declaration.RepresentativeStatus.StatusCodes
 import models.DeclarationType._
-import models.declaration.AdditionalInformationData
+import models.declaration.{AdditionalInformationData, RepresentativeDetails}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -50,14 +50,19 @@ class IsLicenseRequiredController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     commodityCodeFromRequest(mode, itemId) { commodityCode =>
-      Ok(is_license_required(mode, itemId, commodityCode, form))
+      Ok(is_license_required(mode, itemId, form, commodityCode, representativeStatusCode))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
       .fold(
-        showFormWithErrors(mode, itemId, _),
+        formWithErrors =>
+          Future.successful {
+            commodityCodeFromRequest(mode, itemId) { commodityCode =>
+              BadRequest(is_license_required(mode, itemId, formWithErrors, commodityCode, representativeStatusCode))
+            }
+        },
         yesNo =>
           updateCache(yesNo, itemId).map { _ =>
             navigator.continueTo(mode, nextPage(yesNo, itemId))
@@ -65,23 +70,12 @@ class IsLicenseRequiredController @Inject()(
       )
   }
 
-  private def showFormWithErrors(mode: Mode, itemId: String, formWithErrors: Form[YesNoAnswer])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    Future.successful {
-      commodityCodeFromRequest(mode, itemId) { commodityCode =>
-        BadRequest(is_license_required(mode, itemId, commodityCode, formWithErrors))
-      }
-    }
-
   private def commodityCodeFromRequest(mode: Mode, itemId: String)(view: String => Result)(implicit request: JourneyRequest[AnyContent]) =
     request.cacheModel.commodityCodeOfItem(itemId) match {
       case Some(commodityCode) =>
         view(commodityCode)
-      case _ => {
-        print("??????????" + request.cacheModel.commodityCodeOfItem(itemId))
+      case _ =>
         navigator.continueTo(mode, AdditionalInformationController.displayPage(_, itemId))
-      }
     }
 
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
@@ -98,5 +92,8 @@ class IsLicenseRequiredController @Inject()(
       case YesNoAnswers.no  => AdditionalDocumentsRequiredController.displayPage(_, itemId)
     }
 
-  private def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformationRequired.error")
+  private def representativeStatusCode(implicit request: JourneyRequest[AnyContent]): Option[String] =
+    request.cacheModel.parties.representativeDetails flatMap { _.statusCode }
+
+  private def form: Form[YesNoAnswer] = YesNoAnswer.form()
 }
