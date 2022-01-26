@@ -337,7 +337,7 @@ tariff.declaration.item.isLicenseRequired.no = No, the goods do not require a li
 tariff.declaration.item.isLicenseRequired.expander.title = How do I know if the goods require a licence?
 
 tariff.declaration.item.isLicenseRequired.common.1.text = The {0} will list any requirements under the ‘Exports’ tab if you see a link that says ‘Conditions’.
-tariff.declaration.item.isLicenseRequired.common.1.linkText.0 = Tariff entry for Unknown macro: 4602191000, the code you entered (opens in new tab)
+tariff.declaration.item.isLicenseRequired.common.1.linkText.0 = Tariff entry for {0}, the code you entered (opens in new tab)
 
 tariff.declaration.item.isLicenseRequired.common.2.text = If there are no requirements, it will say ’There are no export measures for this commodity on this date.’
 tariff.declaration.item.isLicenseRequired.common.3.text = If you can use a waiver (a 4-character code that starts with a Y) this will be shown in the 'Conditions' box along with the rules for using the waiver. You will need to enter the waiver for the goods.
