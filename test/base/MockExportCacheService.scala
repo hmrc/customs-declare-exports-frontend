@@ -47,9 +47,8 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
       .thenReturn(Future.successful(Some(dataToReturn)))
   }
 
-  private def withTheFirstArgument[T]: Answer[Future[Option[T]]] = new Answer[Future[Option[T]]] {
-    override def answer(invocation: InvocationOnMock): Future[Option[T]] = Future.successful(Some(invocation.getArgument(0)))
-  }
+  private def withTheFirstArgument[T]: Answer[Future[T]] =
+    (invocation: InvocationOnMock) => Future.successful(invocation.getArgument(0))
 
   def withCreateResponse(declaration: ExportsDeclaration): Unit =
     when(mockExportsCacheService.create(any[ExportsDeclarationExchange])(any()))

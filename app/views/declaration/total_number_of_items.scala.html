@@ -41,6 +41,7 @@
     paragraphBody: paragraphBody,
     bulletList: bulletList,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -143,7 +144,7 @@
 
 @govukLayout(
     title = Title("declaration.invoice.details.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TotalNumberOfItems, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TotalNumberOfItems, mode)))) {
 
     @formHelper(action = TotalNumberOfItemsController.saveNoOfItems(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

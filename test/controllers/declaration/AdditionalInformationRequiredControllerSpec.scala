@@ -35,14 +35,12 @@ import views.html.declaration.additionalInformation.additional_information_requi
 
 class AdditionalInformationRequiredControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockTariffApiService = mock[TariffApiService]
   val mockPage = mock[additional_information_required]
 
   val controller = new AdditionalInformationRequiredController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
-    mockTariffApiService,
     navigator,
     stubMessagesControllerComponents(),
     mockPage
@@ -65,12 +63,13 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockTariffApiService.retrieveCommodityInfoIfAny(any(), any())).thenReturn(Future.successful(Left(CommodityCodeNotFound)))
     when(mockPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(navigator.backLinkForAdditionalInformation(any(), any(), any())(any(), any()))
+      .thenReturn(Future.successful(routes.CommodityMeasureController.displayPage(Mode.Normal, itemId)))
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockPage, mockTariffApiService)
+    reset(mockPage)
     super.afterEach()
   }
 

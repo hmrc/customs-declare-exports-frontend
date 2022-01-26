@@ -45,6 +45,7 @@
         addAnotherQuestion: addAnotherQuestion,
         link: link,
         saveButtons: saveButtons,
+        navigator: Navigator,
         formHelper: FormWithCSRF
 )(implicit codeListConnector: CodeListConnector)
 
@@ -106,7 +107,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalFiscalReferencesSummary, mode, ItemId(itemId))))
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalFiscalReferencesSummary, mode, ItemId(itemId))))
     ) {
 
     @formHelper(action = AdditionalFiscalReferencesController.submitForm(mode, itemId), 'autoComplete -> "off") {

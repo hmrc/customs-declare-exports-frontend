@@ -40,6 +40,7 @@
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -62,7 +63,7 @@
 
 @govukLayout(
     title = Title("declaration.transport.leavingTheBorder.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TransportLeavingTheBorder, mode)))
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TransportLeavingTheBorder, mode)))
 ) {
     @formHelper(action = TransportLeavingTheBorderController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("transportLeavingTheBorder", "Border_Sea", form.errors))

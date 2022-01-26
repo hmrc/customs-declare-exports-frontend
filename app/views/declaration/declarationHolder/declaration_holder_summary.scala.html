@@ -43,6 +43,7 @@
     addAnotherQuestion: addAnotherQuestion,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     holderOfAuthorisationCodes: HolderOfAuthorisationCodes
 )
 
@@ -117,7 +118,7 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolderSummary, mode)))
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DeclarationHolderSummary, mode)))
 ) {
 
     @formHelper(action = DeclarationHolderSummaryController.submitForm(mode), 'autoComplete -> "off") {

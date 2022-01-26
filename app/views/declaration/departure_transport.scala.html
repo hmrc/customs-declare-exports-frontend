@@ -42,6 +42,7 @@
         paragraphBody: paragraphBody,
         legend: legend,
         formHelper: FormWithCSRF,
+        navigator: Navigator,
         appConfig: AppConfig
 )
 
@@ -167,7 +168,7 @@
 
 @govukLayout(
     title = Title("declaration.transportInformation.meansOfTransport.departure.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DepartureTransport, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DepartureTransport, mode)))) {
 
     @formHelper(action = DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("meansOfTransportOnDepartureType", "Departure_IMOShipIDNumber", form.errors))

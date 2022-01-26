@@ -16,13 +16,13 @@
 
 package controllers.declaration
 
-import scala.concurrent.ExecutionContext.global
 import base.ControllerSpec
 import connectors.CodeListConnector
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.countries.Country
 import models.DeclarationType.DeclarationType
-import models.{DeclarationType, Mode}
 import models.codes.{Country => ModelCountry}
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -34,6 +34,7 @@ import play.twirl.api.HtmlFormat
 import views.html.declaration.destinationCountries.destination_country
 
 import scala.collection.immutable.ListMap
+import scala.concurrent.ExecutionContext.global
 
 class DestinationCountryControllerSpec extends ControllerSpec {
 
@@ -117,7 +118,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
       def redirectForDeclarationType(declarationType: DeclarationType, redirect: Call): Unit =
         "redirect" in {
-          withNewCaching(aDeclaration(withType(declarationType), withDestinationCountries()))
+          withNewCaching(aDeclaration(withType(declarationType), withDeclarationHolders(Some("MOU")), withDestinationCountries()))
 
           val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
 
@@ -125,6 +126,20 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe redirect
+        }
+
+      val redirectToOfficeOfExit: Unit =
+        "redirect" in {
+          withNewCaching(
+            aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), withDeclarationHolders(Some("MOU")), withDestinationCountries())
+          )
+
+          val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
+
+          val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitController.displayPage()
         }
 
       "submit for Standard declaration" should {
@@ -155,7 +170,10 @@ class DestinationCountryControllerSpec extends ControllerSpec {
       "submit for Customs Clearance request" should {
         behave like redirectForDeclarationType(DeclarationType.CLEARANCE, controllers.declaration.routes.LocationController.displayPage())
       }
-    }
 
+      "conditions for skipping location of goods pass" should {
+        behave like redirectToOfficeOfExit
+      }
+    }
   }
 }

@@ -37,6 +37,7 @@
   itemSection: item_section,
   yesNoRadios: yesNoRadios,
   saveButtons: saveButtons,
+  navigator: Navigator,
   formHelper: FormWithCSRF
 )
 
@@ -46,7 +47,7 @@
 
 @govukLayout(
     title = Title("declaration.itemsRemove.title", "declaration.section.5", item.sequenceId.toString, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RemoveItem, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(RemoveItem, mode)))) {
 
     @formHelper(action = routes.ItemsSummaryController.removeItem(mode, item.id), 'autoComplete -> "off") {
 

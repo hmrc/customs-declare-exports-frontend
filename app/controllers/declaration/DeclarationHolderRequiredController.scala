@@ -72,8 +72,8 @@ class DeclarationHolderRequiredController @Inject()(
       case YesNoAnswers.no  => DestinationCountryController.displayPage
     }
 
-  private def updateCache(yesNoAnswer: YesNoAnswer)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
+  private def updateCache(yesNoAnswer: YesNoAnswer)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => {
       val declarationHoldersData = DeclarationHoldersData(declarationHolders, Some(yesNoAnswer))
       val updatedParties = model.parties.copy(declarationHoldersData = Some(declarationHoldersData))
       model.copy(parties = updatedParties)

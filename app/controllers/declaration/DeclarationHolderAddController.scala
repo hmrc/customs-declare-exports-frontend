@@ -77,8 +77,8 @@ class DeclarationHolderAddController @Inject()(
         }
       )
 
-  private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
+  private def updateExportsCache(holders: Seq[DeclarationHolder])(implicit r: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => {
       val isRequired = model.parties.declarationHoldersData.flatMap(_.isRequired)
       val updatedParties = model.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders, isRequired)))
       model.copy(parties = updatedParties)

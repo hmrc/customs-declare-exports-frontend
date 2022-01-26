@@ -38,6 +38,7 @@
     inputTextHelper: InputTextHelper,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -53,7 +54,7 @@
 
 @govukLayout(
     title = Title("declaration.supplementaryUnits.title", "declaration.section.5", commodityInfo.description, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(SupplementaryUnits, mode, ItemId(itemId))))
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(SupplementaryUnits, mode, ItemId(itemId))))
 ) {
     @formHelper(action = SupplementaryUnitsController.submitPage(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)

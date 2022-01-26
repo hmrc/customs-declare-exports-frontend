@@ -80,9 +80,9 @@ class PreviousDocumentsRemoveController @Inject()(
   private def returnToSummary(mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
     navigator.continueTo(mode, routes.PreviousDocumentsSummaryController.displayPage)
 
-  private def removeDocument(documentToRemove: Document)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
+  private def removeDocument(documentToRemove: Document)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val cachedDocuments = request.cacheModel.previousDocuments.map(_.documents).getOrElse(Seq.empty)
     val updatedDocuments = MultipleItemsHelper.remove(cachedDocuments, documentToRemove.equals(_: Document))
-    updateExportsDeclarationSyncDirect(_.updatePreviousDocuments(updatedDocuments))
+    updateDeclarationFromRequest(_.updatePreviousDocuments(updatedDocuments))
   }
 }

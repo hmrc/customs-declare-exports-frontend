@@ -39,6 +39,7 @@
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -62,7 +63,7 @@
 
 @govukLayout(
     title = Title("declaration.carrierEori.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CarrierEoriNumber, mode)))){
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(CarrierEoriNumber, mode)))){
 
     @formHelper(action = controllers.declaration.routes.CarrierEoriNumberController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("hasEori", "Yes", form.errors))

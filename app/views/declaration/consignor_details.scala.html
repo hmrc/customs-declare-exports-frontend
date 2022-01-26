@@ -37,6 +37,7 @@
     group_address: group_address,
     formHelper: FormWithCSRF,
     tariffExpander: tariffExpander,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -46,7 +47,7 @@
 
 @govukLayout(
     title = Title("declaration.consignorAddress.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsignorDetails, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ConsignorDetails, mode)))) {
 
     @formHelper(action = ConsignorDetailsController.saveAddress(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

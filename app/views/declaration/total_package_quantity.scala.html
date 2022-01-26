@@ -35,6 +35,7 @@
         saveButtons: saveButtons,
         formHelper: FormWithCSRF,
         sectionHeader: sectionHeader,
+        navigator: Navigator,
         appConfig: AppConfig
 )
 
@@ -44,7 +45,7 @@
 
 @govukLayout(
     title = Title("declaration.totalPackageQuantity.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TotalPackageQuantity, mode)))
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TotalPackageQuantity, mode)))
 ) {
 
     @formHelper(action = TotalPackageQuantityController.saveTotalPackageQuantity(mode), 'autoComplete -> "off") {

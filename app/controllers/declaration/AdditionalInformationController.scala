@@ -16,31 +16,29 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationRequiredController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformationSummary
-import javax.inject.Inject
 import models.Mode
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.TariffApiService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalInformation.additional_information
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
-  tariffApiService: TariffApiService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalInformationPage: additional_information
@@ -81,7 +79,7 @@ class AdditionalInformationController @Inject()(
     }
 
   private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
-    Navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId, tariffApiService)
+    navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId)
 
   private def showFormWithErrors(mode: Mode, itemId: String, formWithErrors: Form[YesNoAnswer])(
     implicit request: JourneyRequest[AnyContent]

@@ -18,6 +18,7 @@ package controllers.declaration
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.navigation.Navigator
 import forms.declaration.countries.Countries
 import forms.declaration.countries.Countries.DestinationCountryPage
@@ -60,17 +61,20 @@ class DestinationCountryController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(destinationCountryPage(mode, formWithErrors))),
         validCountry =>
-          updateExportsDeclarationSyncDirect(_.updateDestinationCountry(validCountry)).map { _ =>
+          updateDeclarationFromRequest(_.updateDestinationCountry(validCountry)).map { _ =>
             redirectToNextPage(mode)
         }
       )
   }
 
   private def redirectToNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
-    request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
-        navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_))
+    if (skipLocationOfGoods(request.cacheModel)) navigator.continueTo(mode, controllers.declaration.routes.OfficeOfExitController.displayPage)
+    else {
+      request.declarationType match {
+        case DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
+          navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
+        case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+          navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_))
+      }
     }
 }

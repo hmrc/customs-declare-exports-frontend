@@ -65,13 +65,11 @@ class AdditionalDocumentsRequiredController @Inject()(
     if (yesNoAnswer.answer == YesNoAnswers.yes) routes.AdditionalDocumentAddController.displayPage(_, itemId)
     else routes.ItemsSummaryController.displayItemsSummaryPage(_)
 
-  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val documents =
       if (yesNoAnswer.answer == YesNoAnswers.no) Seq.empty else request.cacheModel.listOfAdditionalDocuments(itemId)
 
     val additionalDocuments = AdditionalDocuments(Some(yesNoAnswer), documents)
-    updateExportsDeclarationSyncDirect(_.updatedItem(itemId, _.copy(additionalDocuments = Some(additionalDocuments))))
+    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(additionalDocuments = Some(additionalDocuments))))
   }
 }

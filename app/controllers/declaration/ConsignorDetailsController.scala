@@ -71,8 +71,8 @@ class ConsignorDetailsController @Inject()(
       controllers.declaration.routes.RepresentativeAgentController.displayPage
     }
 
-  private def updateCache(formData: ConsignorDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
+  private def updateCache(formData: ConsignorDetails)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { model =>
       val updatedParties = model.parties.copy(consignorDetails = Some(formData))
       model.copy(parties = updatedParties)
     }

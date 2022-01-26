@@ -35,6 +35,7 @@
         paragraphBody: paragraphBody,
         formHelper: FormWithCSRF,
         sectionHeader: sectionHeader,
+        navigator: Navigator,
         appConfig: AppConfig
 )
 
@@ -44,7 +45,7 @@
 
 @govukLayout(
     title = Title("declaration.warehouse.identification.required.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(WarehouseIdentification, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(WarehouseIdentification, mode)))) {
 
     @formHelper(action = WarehouseIdentificationController.saveIdentificationNumber(mode), 'autoComplete -> "off") {
 

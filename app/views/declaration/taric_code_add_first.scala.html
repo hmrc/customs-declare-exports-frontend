@@ -45,6 +45,7 @@
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     appConfig: AppConfig,
+    navigator: Navigator,
     formHelper: FormWithCSRF
 )
 
@@ -72,7 +73,7 @@
 
 @govukLayout(
     title = Title("declaration.taricAdditionalCodes.addfirst.header", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TaricCodeFirst, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TaricCodeFirst, mode, ItemId(itemId))))) {
 
     @formHelper(action = TaricCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(hasTaricCodeKey, "code_yes", form.errors))

@@ -26,7 +26,7 @@ import controllers.declaration.routes.{
 }
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import controllers.routes.RootController
-import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
+import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, RoRo}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.{ModeOfTransportCode, TransportLeavingTheBorder}
 import models.DeclarationType
@@ -179,7 +179,12 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
                 val result = controller.submitForm(Normal)(postRequest(body))
 
                 await(result) mustBe aRedirectToTheNextPage
-                thePageNavigatedTo mustBe InlandOrBorderController.displayPage()
+
+                val expectedPage =
+                  if (modeOfTransportCode == RoRo) InlandTransportDetailsController.displayPage()
+                  else InlandOrBorderController.displayPage()
+
+                thePageNavigatedTo mustBe expectedPage
               }
             }
           }
@@ -191,7 +196,6 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
             List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
               "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {
-
                 withNewCaching(withRequest(additionalType, item).cacheModel)
 
                 val result = controller.submitForm(Normal)(postRequest(body))
@@ -206,12 +210,23 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
                 "the user has previously entered a value which requires to skip the /inland-or-border page" in {
                   valuesRequiringToSkipInlandOrBorder.foreach { modifier =>
                     initMockNavigatorForMultipleCallsInTheSameTest
-                    withNewCaching(withRequest(additionalType, modifier, item).cacheModel)
+                    val declaration = withRequest(additionalType, modifier, item).cacheModel
+
+                    // This is a special case for this test that as specified would
+                    // instead expect to land on /inland-transport-details
+                    val landOnInlandOrBorder =
+                      modeOfTransportCode != RoRo && declaration.transportLeavingBorderCode == Some(RoRo)
+
+                    val expectedPage =
+                      if (landOnInlandOrBorder) InlandOrBorderController.displayPage()
+                      else InlandTransportDetailsController.displayPage()
+
+                    withNewCaching(declaration)
 
                     val result = controller.submitForm(Normal)(postRequest(body))
 
                     await(result) mustBe aRedirectToTheNextPage
-                    thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage()
+                    thePageNavigatedTo mustBe expectedPage
                   }
                 }
               }

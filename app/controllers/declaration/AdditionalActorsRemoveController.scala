@@ -80,9 +80,9 @@ class AdditionalActorsRemoveController @Inject()(
 
   private def updateExportsCache(
     itemToRemove: DeclarationAdditionalActors
-  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
+  )(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val updatedActors = request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty).filterNot(_ == itemToRemove)
     val updatedParties = request.cacheModel.parties.copy(declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(updatedActors)))
-    updateExportsDeclarationSyncDirect(model => model.copy(parties = updatedParties))
+    updateDeclarationFromRequest(model => model.copy(parties = updatedParties))
   }
 }

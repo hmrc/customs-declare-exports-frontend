@@ -67,8 +67,8 @@ class RepresentativeAgentController @Inject()(
     else
       controllers.declaration.routes.RepresentativeEntityController.displayPage
 
-  private def updateCache(formData: RepresentativeAgent)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
+  private def updateCache(formData: RepresentativeAgent)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { model =>
       val representativeDetails: RepresentativeDetails = model.parties.representativeDetails.getOrElse(RepresentativeDetails())
       val updatedParties =
         model.parties.copy(

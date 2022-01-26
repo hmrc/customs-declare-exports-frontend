@@ -88,7 +88,7 @@ class DeclarationChoiceController @Inject()(
     }
 
     updatedDeclaration.flatMap {
-      case Some(declaration) => exportsCacheService.update(declaration)
+      case Some(declaration) => exportsCacheService.update(declaration).map(Some(_))
       case None =>
         logger.error(s"Failed to find declaration for id $id")
         Future.successful(None)

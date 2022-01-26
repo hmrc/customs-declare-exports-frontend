@@ -36,6 +36,7 @@
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -45,7 +46,7 @@
 
 @govukLayout(
     title = Title("declaration.officeOfExit.title", "declaration.section.3", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExit, mode)))){
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(OfficeOfExit, mode)))){
 
     @formHelper(action = controllers.declaration.routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("isUkOfficeOfExit", "Yes", form.errors))

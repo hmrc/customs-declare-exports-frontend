@@ -32,6 +32,7 @@
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -41,7 +42,7 @@
 
 @govukLayout(
     title = Title("declaration.commodityMeasure.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CommodityMeasure, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(CommodityMeasure, mode, ItemId(itemId))))) {
 
     @formHelper(action = CommodityMeasureController.submitPage(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)

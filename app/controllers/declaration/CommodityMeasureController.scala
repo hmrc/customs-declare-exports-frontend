@@ -68,10 +68,8 @@ class CommodityMeasureController @Inject()(
     if (request.declarationType == CLEARANCE) AdditionalInformationRequiredController.displayPage(_, itemId)
     else SupplementaryUnitsController.displayPage(_, itemId)
 
-  private def updateExportsCache(itemId: String, updatedItem: CommodityMeasure)(
-    implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect {
+  private def updateExportsCache(itemId: String, updatedItem: CommodityMeasure)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest {
       _.updatedItem(itemId, item => item.copy(commodityMeasure = updateComodityMeasureModel(item, updatedItem)))
     }
 

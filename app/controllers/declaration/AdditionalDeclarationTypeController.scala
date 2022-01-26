@@ -73,8 +73,8 @@ class AdditionalDeclarationTypeController @Inject()(
     if (request.declarationType == CLEARANCE) routes.ConsignmentReferencesController.displayPage
     else routes.DeclarantDetailsController.displayPage
 
-  private def updateCache(formData: AdditionalDeclarationType)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
+  private def updateCache(formData: AdditionalDeclarationType)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => {
       model.copy(additionalDeclarationType = Some(formData))
     })
 }

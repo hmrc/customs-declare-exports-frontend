@@ -53,6 +53,7 @@
     link: link,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     countryHelper: CountryHelper
 )
 
@@ -146,7 +147,7 @@
 
 @govukLayout(
     title = Title("declaration.routingCountries.summary.title", "declaration.section.3", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingCountryQuestionPage, mode)))){
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(RoutingCountryQuestionPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submit(mode), 'autoComplete -> "off") {
 

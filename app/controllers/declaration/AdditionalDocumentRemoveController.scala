@@ -79,11 +79,11 @@ class AdditionalDocumentRemoveController @Inject()(
 
   private def removeAdditionalDocument(itemId: String, itemToRemove: AdditionalDocument)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  ): Future[ExportsDeclaration] = {
     val additionalDocuments = request.cacheModel.additionalDocuments(itemId)
     val documents = remove(additionalDocuments.documents, itemToRemove.equals(_: AdditionalDocument))
     val updatedDocumentsData =
       additionalDocuments.copy(isRequired = if (documents.nonEmpty) additionalDocuments.isRequired else None, documents = documents)
-    updateExportsDeclarationSyncDirect(_.updatedItem(itemId, _.copy(additionalDocuments = Some(updatedDocumentsData))))
+    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(additionalDocuments = Some(updatedDocumentsData))))
   }
 }

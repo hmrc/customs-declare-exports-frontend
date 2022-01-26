@@ -19,6 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import connectors.CodeListConnector
 import forms.declaration.GoodsLocationForm
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.{DeclarationType, Mode}
 import models.codes.Country
 import org.mockito.ArgumentCaptor
@@ -101,7 +102,6 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value mustNot be(empty)
         theResponseForm.value.value.code mustBe "GBAUEMAEMAEMA"
       }
-
     }
 
     "return 400 (BAD_REQUEST)" when {
@@ -128,6 +128,14 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitController.displayPage()
         verify(mockGoodsLocationPage, times(0)).apply(any(), any())(any(), any())
+      }
+
+      "Additional dec type is Supplementary_EIDR with MOU" in {
+        withNewCaching(aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), withDeclarationHolders(Some("MOU"))))
+        val result = controller.displayPage(Mode.Normal)(getRequest())
+
+        status(result) mustBe 303
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
       }
     }
   }

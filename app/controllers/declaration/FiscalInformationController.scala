@@ -86,7 +86,7 @@ class FiscalInformationController @Inject()(
 
   private def updateCache(itemId: String, updatedFiscalInformation: FiscalInformation)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  ): Future[ExportsDeclaration] = {
     def updatedModel(model: ExportsDeclaration): ExportsDeclaration =
       updatedFiscalInformation.onwardSupplyRelief match {
         case AllowedFiscalInformationAnswers.yes =>
@@ -95,7 +95,7 @@ class FiscalInformationController @Inject()(
           model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
       }
 
-    updateExportsDeclarationSyncDirect(updatedModel(_))
+    updateDeclarationFromRequest(updatedModel(_))
   }
 
   private def redirectToNextPage(mode: Mode, itemId: String, fiscalInformation: FiscalInformation)(

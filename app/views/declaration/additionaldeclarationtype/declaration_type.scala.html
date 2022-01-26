@@ -38,6 +38,7 @@
     declarationTypeQuestionOccasional: declaration_type_question_occasional,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
+    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -56,7 +57,7 @@
 
 @govukLayout(
     title = titleForDeclaration,
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalDeclarationTypeStandardDec, mode)))){
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalDeclarationTypeStandardDec, mode)))){
 
     @formHelper(action = controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
 
