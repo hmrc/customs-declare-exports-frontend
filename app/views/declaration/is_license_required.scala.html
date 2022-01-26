@@ -16,7 +16,6 @@
 
 @import config.AppConfig
 @import controllers.navigation.Navigator
-@import forms.declaration.IsLicenseRequired
 @import forms.common.YesNoAnswer
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -36,12 +35,12 @@
     appConfig: AppConfig,
     heading: heading,
     yesNoRadios: yesNoRadios,
-    tariffExpander: tariffExpander,
+    tariffLink: tariffLink,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, commodityCode: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -65,7 +64,25 @@
             noKey = Some("tariff.declaration.item.isLicenseRequired.no")
         )
 
-        @tariffExpander(IsLicenseRequired, request.declarationType, Some("tariff.declaration.item.isLicenseRequired.expander.title"))(messages, appConfig)
+        @govukDetails(Details(
+            attributes = Map("id" -> "tariffReference"),
+            summary = Text(messages("tariff.declaration.item.isLicenseRequired.expander.title")),
+            content = HtmlContent(Seq(
+                messages("tariff.declaration.item.isLicenseRequired.common.1.text",
+                    tariffLink(
+                        messages("tariff.declaration.item.isLicenseRequired.common.1.linkText.0", commodityCode),
+                        appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.common.1.0")
+                    )
+                ),
+                messages("tariff.declaration.item.isLicenseRequired.common.2.text"),
+                messages("tariff.declaration.item.isLicenseRequired.common.3.text"),
+                messages("tariff.declaration.item.isLicenseRequired.common.4.text",
+                    tariffLink(
+                        messages("tariff.declaration.item.isLicenseRequired.common.4.linkText.0"),
+                        s"${appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.common.4.0")}/$commodityCode#export"
+                    )
+                )).mkString("</br></br>"))
+        ))
 
         @saveButtons()
     }
