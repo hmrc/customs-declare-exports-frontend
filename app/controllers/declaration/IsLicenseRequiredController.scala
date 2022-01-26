@@ -21,6 +21,7 @@ import controllers.declaration.routes.{AdditionalDocumentAddController, Addition
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.CommodityDetails
 import models.DeclarationType._
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
@@ -48,10 +49,8 @@ class IsLicenseRequiredController @Inject()(
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    request.cacheModel.listOfAdditionalInformationOfItem(itemId) match {
-      case additionalInformation if additionalInformation.isEmpty =>
-        Ok(is_license_required(mode, itemId, form))
-      case _ => navigator.continueTo(mode, AdditionalInformationController.displayPage(_, itemId))
+    commodityCodeFromRequest(mode, itemId) { commodityCode =>
+      Ok(is_license_required(mode, itemId, commodityCode, form))
     }
   }
 
@@ -68,16 +67,29 @@ class IsLicenseRequiredController @Inject()(
 
   private def showFormWithErrors(mode: Mode, itemId: String, formWithErrors: Form[YesNoAnswer])(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = Future.successful(BadRequest(is_license_required(mode, itemId, formWithErrors)))
+  ): Future[Result] =
+    Future.successful {
+      commodityCodeFromRequest(mode, itemId) { commodityCode =>
+        BadRequest(is_license_required(mode, itemId, commodityCode, formWithErrors))
+      }
+    }
 
-  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] = {
+  private def commodityCodeFromRequest(mode: Mode, itemId: String)(view: String => Result)(implicit request: JourneyRequest[AnyContent]) =
+    request.cacheModel.commodityCodeOfItem(itemId) match {
+      case Some(commodityCode) =>
+        view(commodityCode)
+      case _ => {
+        print("??????????" + request.cacheModel.commodityCodeOfItem(itemId))
+        navigator.continueTo(mode, AdditionalInformationController.displayPage(_, itemId))
+      }
+    }
+
+  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val updatedAdditionalInformation = yesNoAnswer.answer match {
       case YesNoAnswers.yes => AdditionalInformationData(Some(yesNoAnswer), request.cacheModel.listOfAdditionalInformationOfItem(itemId))
       case YesNoAnswers.no  => AdditionalInformationData(Some(yesNoAnswer), Seq.empty)
     }
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
   }
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
