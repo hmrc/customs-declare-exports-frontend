@@ -59,7 +59,7 @@ object BorderTransport extends DeclarationPage {
     mapping(
       nationalityId -> optional(text.verifying(s"$prefix.nationality.error.incorrect", isValidCountryName(_))),
       radioButtonGroupId -> requiredRadio(s"$prefix.error.empty")
-        .verifying(s"$prefix.error.incorrect", isContainedIn(transportCodesOnBorderTransport.map(_.value))),
+        .verifying(s"$prefix.error.incorrect", isContainedIn(transportCodesOnBorderTransport.transportCodes.map(_.value))),
       transportReferenceMapping(ShipOrRoroImoNumber),
       transportReferenceMapping(NameOfVessel),
       transportReferenceMapping(WagonNumber),

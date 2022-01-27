@@ -104,12 +104,12 @@ class DepartureTransportHelper @Inject()(
 
   private def radioButtons(form: Form[_])(implicit messages: Messages, request: JourneyRequest[_]): Html = {
     val items = versionSelection match {
-      case 1 => transportCodesForV1.map(radioButton(form, _))
-      case 2 => transportCodesForV2.map(transportCode => radioButton(form, transportCode, transportCode.useAltRadioTextForV2))
+      case 1 => transportCodesForV1.transportCodes.map(radioButton(form, _))
+      case 2 => transportCodesForV2.transportCodes.map(transportCode => radioButton(form, transportCode, transportCode.useAltRadioTextForV2))
 
-      case 3 if hasPCsEqualTo0019(request.cacheModel) => transportCodesForV3WhenPC0019.map(radioButton(form, _))
+      case 3 if hasPCsEqualTo0019(request.cacheModel) => transportCodesForV3WhenPC0019.transportCodes.map(radioButton(form, _))
 
-      case 3 => transportCodesForV3.map(radioButton(form, _))
+      case 3 => transportCodesForV3.transportCodes.map(radioButton(form, _))
     }
 
     govukRadios(
@@ -121,7 +121,7 @@ class DepartureTransportHelper @Inject()(
     )
   }
 
-  def transportCodes(implicit request: JourneyRequest[_]): Seq[TransportCode] =
+  def transportCodeCollection(implicit request: JourneyRequest[_]) =
     versionSelection match {
       case 1                                          => transportCodesForV1
       case 2                                          => transportCodesForV2

@@ -31,7 +31,7 @@ import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.TransportCodes._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.{ModeOfTransportCode, TransportCode}
+import forms.declaration.{ModeOfTransportCode, TransportCode, TransportCodeCollection}
 import models.DeclarationType.CLEARANCE
 import models.Mode
 import models.requests.JourneyRequest
@@ -52,7 +52,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
 
   private val departureTransportPage = instanceOf[departure_transport]
 
-  def createView(transportCodes: List[TransportCode] = transportCodesForV1)(implicit request: JourneyRequest[_]): Html =
+  def createView(transportCodes: TransportCodeCollection = transportCodesForV1)(implicit request: JourneyRequest[_]): Html =
     departureTransportPage(Mode.Normal, form(transportCodes))(request, messages)
 
   "Departure Transport View" should {
@@ -138,24 +138,24 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
         dataForVersion.foreach { dataOnTest =>
           val view = createView(dataOnTest.transportCodes)(dataOnTest.request)
 
-          val transportCodes = dataOnTest.transportCodes
-          val isV2 = transportCodes == transportCodesForV2
-          val notAvailableRadioIsNotIncluded = transportCodes != transportCodesForV3WhenPC0019
+          val transportCodeCollection = dataOnTest.transportCodes
+          val isV2 = transportCodeCollection == transportCodesForV2
+          val notAvailableRadioIsNotIncluded = transportCodeCollection != transportCodesForV3WhenPC0019
 
           val radios = view.getElementsByClass("govuk-radios__input")
-          radios.size mustBe transportCodes.size
+          radios.size mustBe transportCodeCollection.transportCodes.size
           radios.iterator.asScala.zipWithIndex.foreach { elementAndIndex =>
             val (element, index) = (elementAndIndex._1, elementAndIndex._2)
-            val transportCode = transportCodes(index)
+            val transportCode = transportCodeCollection.transportCodes(index)
             element.id mustBe s"radio_${transportCode.id}"
             element.attr("value") mustBe transportCode.value
           }
 
           val radioLabels = view.getElementsByClass("govuk-radios__label")
-          radioLabels.size mustBe transportCodes.size
+          radioLabels.size mustBe transportCodeCollection.transportCodes.size
           radioLabels.iterator.asScala.zipWithIndex.foreach { elementAndIndex =>
             val (element, index) = (elementAndIndex._1, elementAndIndex._2)
-            val transportCode = transportCodes(index)
+            val transportCode = transportCodeCollection.transportCodes(index)
             val suffix = if (isV2 && transportCode.useAltRadioTextForV2) ".v2" else ""
             element.text mustBe messages(s"$prefix.${transportCode.id}$suffix")
             element.attr("for") mustBe s"radio_${transportCode.id}"
@@ -164,28 +164,28 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
           if (notAvailableRadioIsNotIncluded) {
             // Page does not include the radio "Not available", which has no input field
             val inputs = view.getElementsByClass("govuk-input")
-            inputs.size mustBe transportCodes.size
+            inputs.size mustBe transportCodeCollection.transportCodes.size
             inputs.iterator.asScala.zipWithIndex.foreach { elementAndIndex =>
               val (element, index) = (elementAndIndex._1, elementAndIndex._2)
-              element.id mustBe transportCodes(index).id
+              element.id mustBe transportCodeCollection.transportCodes(index).id
             }
 
             val inputLabels = view.getElementsByClass("govuk-label").iterator.asScala.filterNot(_.hasClass("govuk-radios__label")).toList
 
-            inputLabels.size mustBe transportCodes.size
+            inputLabels.size mustBe transportCodeCollection.transportCodes.size
             inputLabels.zipWithIndex.foreach { elementAndIndex =>
               val (element, index) = (elementAndIndex._1, elementAndIndex._2)
-              val transportCode = transportCodes(index)
+              val transportCode = transportCodeCollection.transportCodes(index)
               element.attr("for") mustBe transportCode.id
-              element.text mustBe messages(s"$prefix.${transportCodes(index).id}.label")
+              element.text mustBe messages(s"$prefix.${transportCodeCollection.transportCodes(index).id}.label")
             }
 
             val hints = view.getElementsByClass("govuk-hint")
-            hints.size mustBe transportCodes.size
+            hints.size mustBe transportCodeCollection.transportCodes.size
             hints.iterator.asScala.zipWithIndex.foreach { elementAndIndex =>
               val (element, index) = (elementAndIndex._1, elementAndIndex._2)
-              element.id mustBe s"${transportCodes(index).id}-hint"
-              element.text mustBe messages(s"$prefix.${transportCodes(index).id}.hint")
+              element.id mustBe s"${transportCodeCollection.transportCodes(index).id}-hint"
+              element.text mustBe messages(s"$prefix.${transportCodeCollection.transportCodes(index).id}.hint")
             }
           }
         }
@@ -239,7 +239,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       }
     }
 
-  case class DataOnTest(transportCodes: List[TransportCode], transportCode: ModeOfTransportCode, request: JourneyRequest[_])
+  case class DataOnTest(transportCodes: TransportCodeCollection, transportCode: ModeOfTransportCode, request: JourneyRequest[_])
 
   val nonRoRoOrPostalOrFTIModeOfTransportCodes = nonPostalOrFTIModeOfTransportCodes.filterNot(_ == RoRo)
 

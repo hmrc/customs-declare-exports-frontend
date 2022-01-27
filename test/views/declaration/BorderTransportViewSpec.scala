@@ -85,7 +85,7 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
           .text mustBe messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.body")
       }
 
-      transportCodesOnBorderTransport.foreach { transportCode =>
+      transportCodesOnBorderTransport.transportCodes.foreach { transportCode =>
         s"has '${transportCode.id}' section" in {
           Option(view.getElementById(s"radio_${transportCode.id}")) must not be None
 

@@ -27,7 +27,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
     val form = DepartureTransport.form(transportCodesForV1)
 
     "allow all means of transport type codes" in {
-      val errors = transportCodesForV1.map { transportCode =>
+      val errors = transportCodesForV1.transportCodes.map { transportCode =>
         form.fillAndValidate(DepartureTransport(Some(transportCode.value), Some("reference"))).errors
       }.flatten
 
@@ -118,7 +118,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
     val form = DepartureTransport.form(transportCodesForV3WhenPC0019)
 
     "allow all means of transport type codes" in {
-      val errors = transportCodesForV3WhenPC0019.map { transportCode =>
+      val errors = transportCodesForV3WhenPC0019.transportCodes.map { transportCode =>
         form.fillAndValidate(DepartureTransport(Some(transportCode.value), Some("reference"))).errors
       }.flatten
 

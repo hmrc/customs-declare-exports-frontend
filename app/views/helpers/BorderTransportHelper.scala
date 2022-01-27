@@ -32,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 class BorderTransportHelper @Inject()(exportsInputText: exportsInputText) {
 
   def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] =
-    transportCodesOnBorderTransport.map(radioButton(form, _))
+    transportCodesOnBorderTransport.transportCodes.map(radioButton(form, _))
 
   private val prefix = "declaration.transportInformation.meansOfTransport"
 

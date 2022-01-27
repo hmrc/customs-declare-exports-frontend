@@ -57,7 +57,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     super.beforeEach()
     setupErrorHandler()
     authorizedUser()
-    when(departureTransportHelper.transportCodes(any())).thenReturn(transportCodesForV1)
+    when(departureTransportHelper.transportCodeCollection(any())).thenReturn(transportCodesForV1)
     when(departureTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -171,7 +171,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       "return 303 (SEE_OTHER)" when {
         "'0019' has been entered as Procedure Code and" when {
           "the 'NotApplicable' radio element is selected" in {
-            when(departureTransportHelper.transportCodes(any())).thenReturn(transportCodesForV3WhenPC0019)
+            when(departureTransportHelper.transportCodeCollection(any())).thenReturn(transportCodesForV3WhenPC0019)
             withNewCaching(request.cacheModel)
 
             val correctForm = formData(NotApplicable.value, "", "")

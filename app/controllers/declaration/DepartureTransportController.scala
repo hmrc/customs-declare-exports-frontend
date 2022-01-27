@@ -49,7 +49,7 @@ class DepartureTransportController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private def form(implicit request: JourneyRequest[_]): Form[DepartureTransport] =
-    DepartureTransport.form(departureTransportHelper.transportCodes)
+    DepartureTransport.form(departureTransportHelper.transportCodeCollection)
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
 
