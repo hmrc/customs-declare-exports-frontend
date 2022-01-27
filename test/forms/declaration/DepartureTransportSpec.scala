@@ -23,196 +23,118 @@ import forms.declaration.TransportCodes._
 
 class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
 
-  "Departure Transport form" should {
-    val form = DepartureTransport.form(transportCodesForV1)
+  val allTransportCodes = List(transportCodesForV1, transportCodesForV2, transportCodesForV3, transportCodesForV3WhenPC0019)
+  val transportCodesIds = List("transportCodesForV1", "transportCodesForV2", "transportCodesForV3", "transportCodesForV3WhenPC0019")
 
-    "allow all means of transport type codes" in {
-      val errors = transportCodesForV1.map { transportCode =>
-        form.fillAndValidate(DepartureTransport(Some(transportCode.value), Some("reference"))).errors
-      }.flatten
+  "Departure Transport form" when {
 
-      errors must be(empty)
-    }
+    allTransportCodes.zipWithIndex.foreach { transportCodesAndIndex =>
+      val (transportCodes, index) = transportCodesAndIndex
 
-    "have no errors" when {
-      "user filled all mandatory fields with correct data" in {
-        val correctForm = DepartureTransport(Some(ShipOrRoroImoNumber.value), Some("reference"))
-        val result = form.fillAndValidate(correctForm)
-        result.errors must be(empty)
-      }
-    }
+      s"receives as input ${transportCodesIds(index)}" should {
+        val form = DepartureTransport.form(transportCodes)
 
-    "have errors" when {
+        "have no errors" when {
+          "user filled all mandatory fields with correct data" in {
+            val errors = transportCodes.asList.flatMap { transportCode =>
+              val transportId = if (transportCode == NotApplicable) None else Some("reference")
+              val correctForm = DepartureTransport(Some(transportCode.value), transportId)
+              form.fillAndValidate(correctForm).errors
+            }
+            errors must be(empty)
+          }
+        }
 
-      "transport type not selected" in {
-        val incorrectForm = Map(radioButtonGroupId -> "", ShipOrRoroImoNumber.id -> "")
+        "have errors" when {
 
-        val result = form.bind(incorrectForm)
-        val errorKeys = result.errors.map(_.key)
-        val errorMessages = result.errors.map(_.message)
+          "transport type not selected" in {
+            transportCodes.asList.foreach { transportCode =>
+              val incorrectForm = Map(radioButtonGroupId -> "", transportCode.id -> "")
 
-        errorKeys must be(List(radioButtonGroupId))
-        errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.empty"))
-      }
+              val result = form.bind(incorrectForm)
+              val errorKeys = result.errors.map(_.key)
+              val errorMessages = result.errors.map(_.message)
 
-      "transport id not provided" in {
-        val incorrectForm = Map(radioButtonGroupId -> ShipOrRoroImoNumber.value, ShipOrRoroImoNumber.id -> "")
+              errorKeys must be(List(radioButtonGroupId))
+              val suffix = if (transportCodes == transportCodesForV3WhenPC0019) ".v3" else ""
+              errorMessages must be(List(s"declaration.transportInformation.meansOfTransport.departure.error.empty$suffix"))
+            }
+          }
 
-        val result = form.bind(incorrectForm)
-        val errorKeys = result.errors.map(_.key)
-        val errorMessages = result.errors.map(_.message)
+          "transport id not provided" in {
+            transportCodes.asList.filterNot(_ == NotApplicable).foreach { transportCode =>
+              val incorrectForm = Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "")
 
-        errorKeys must be(List(ShipOrRoroImoNumber.id))
-        errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.empty.input"))
-      }
+              val result = form.bind(incorrectForm)
+              val errorKeys = result.errors.map(_.key)
+              val errorMessages = result.errors.map(_.message)
 
-      "means of transport on departure type is incorrect" in {
-        val incorrectForm = Map(radioButtonGroupId -> "incorrect", ShipOrRoroImoNumber.id -> "correct")
+              errorKeys must be(List(transportCode.id))
+              errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.empty.input"))
+            }
+          }
 
-        val result = form.bind(incorrectForm)
-        val errorKeys = result.errors.map(_.key)
-        val errorMessages = result.errors.map(_.message)
+          "means of transport on departure type is incorrect" in {
+            transportCodes.asList.foreach { transportCode =>
+              val incorrectForm = Map(radioButtonGroupId -> "incorrect", transportCode.id -> "correct")
 
-        errorKeys must be(List(radioButtonGroupId))
-        errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.incorrect"))
-      }
+              val result = form.bind(incorrectForm)
+              val errorKeys = result.errors.map(_.key)
+              val errorMessages = result.errors.map(_.message)
 
-      "means of transport on departure id number is too long" in {
-        val incorrectForm =
-          Map(radioButtonGroupId -> ShipOrRoroImoNumber.value, ShipOrRoroImoNumber.id -> TestHelper.createRandomAlphanumericString(36))
+              errorKeys must be(List(radioButtonGroupId))
+              errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.incorrect"))
+            }
+          }
 
-        val result = form.bind(incorrectForm)
-        result.errors.length must be(2)
+          "means of transport on departure id number is too long" in {
+            val tooLong = TestHelper.createRandomAlphanumericString(36)
 
-        val error = result.errors.head
-        error.key must be(ShipOrRoroImoNumber.id)
-        error.message must be("declaration.transportInformation.meansOfTransport.departure.error.length")
-      }
+            transportCodes.asList.filterNot(_ == NotApplicable).foreach { transportCode =>
+              val incorrectForm = Map(radioButtonGroupId -> transportCode.value, transportCode.id -> tooLong)
 
-      "means of transport on departure id number contains invalid special characters" in {
-        val incorrectForm = Map(radioButtonGroupId -> ShipOrRoroImoNumber.value, ShipOrRoroImoNumber.id -> "!@#$")
+              val result = form.bind(incorrectForm)
+              result.errors.length must be(2)
 
-        val result = form.bind(incorrectForm)
-        result.errors.length must be(1)
+              val error = result.errors.head
+              error.key must be(transportCode.id)
+              error.message must be("declaration.transportInformation.meansOfTransport.departure.error.length")
+            }
+          }
 
-        val error = result.errors.head
-        error.key must be(ShipOrRoroImoNumber.id)
-        error.message must be("declaration.transportInformation.meansOfTransport.departure.error.invalid")
-      }
+          "means of transport on departure id number contains invalid special characters" in {
+            transportCodes.asList.filterNot(_ == NotApplicable).foreach { transportCode =>
+              val incorrectForm = Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "!@#$")
 
-      "means of transport on departure id number is too long with invalid characters" in {
-        val incorrectForm =
-          Map(radioButtonGroupId -> ShipOrRoroImoNumber.value, ShipOrRoroImoNumber.id -> (TestHelper.createRandomAlphanumericString(36) + "!@#$"))
+              val result = form.bind(incorrectForm)
+              result.errors.length must be(1)
 
-        val result = form.bind(incorrectForm)
-        result.errors.length must be(2)
+              val error = result.errors.head
+              error.key must be(transportCode.id)
+              error.message must be("declaration.transportInformation.meansOfTransport.departure.error.invalid")
+            }
+          }
 
-        val error = result.errors.head
-        error.key must be(ShipOrRoroImoNumber.id)
-        error.message must be("declaration.transportInformation.meansOfTransport.departure.error.length")
-      }
-    }
-  }
+          "means of transport on departure id number is too long with invalid characters" in {
+            val tooLongAndInvalid = TestHelper.createRandomAlphanumericString(36) + "!@#$"
 
-  "Departure Transport form for clearance request" should {
-    val form = DepartureTransport.form(transportCodesForV3WhenPC0019)
+            transportCodes.asList.filterNot(_ == NotApplicable).foreach { transportCode =>
+              val incorrectForm = Map(radioButtonGroupId -> transportCode.value, transportCode.id -> tooLongAndInvalid)
 
-    "allow all means of transport type codes" in {
-      val errors = transportCodesForV3WhenPC0019.map { transportCode =>
-        form.fillAndValidate(DepartureTransport(Some(transportCode.value), Some("reference"))).errors
-      }.flatten
+              val result = form.bind(incorrectForm)
+              result.errors.length must be(2)
 
-      errors must be(empty)
-    }
-
-    "have no errors" when {
-
-      "user filled all mandatory fields with correct data" in {
-        val correctForm = DepartureTransport(Some(ShipOrRoroImoNumber.value), Some("reference"))
-        val result = form.fillAndValidate(correctForm)
-        result.errors must be(empty)
-      }
-
-      "user selected 'none'" in {
-        val correctForm = DepartureTransport(Some(NotApplicable.value), None)
-        val result = form.fillAndValidate(correctForm)
-        result.errors must be(empty)
-      }
-    }
-
-    "have errors" when {
-
-      "user provided no selection" in {
-        val incorrectForm = Map(radioButtonGroupId -> "", FlightNumber.id -> "")
-
-        val result = DepartureTransport.form(transportCodesForV1).bind(incorrectForm)
-        val errorKeys = result.errors.map(_.key)
-        val errorMessages = result.errors.map(_.message)
-
-        errorKeys must be(List(radioButtonGroupId))
-        errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.empty"))
-      }
-
-      "'0019' has been entered as Procedure code and" when {
-        "user provided no selection" in {
-          val incorrectForm = Map(radioButtonGroupId -> "", FlightNumber.id -> "")
-
-          val result = form.bind(incorrectForm)
-          val errorKeys = result.errors.map(_.key)
-          val errorMessages = result.errors.map(_.message)
-
-          errorKeys must be(List(radioButtonGroupId))
-          errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.empty.v3"))
+              val error = result.errors.head
+              error.key must be(transportCode.id)
+              error.message must be("declaration.transportInformation.meansOfTransport.departure.error.length")
+            }
+          }
         }
       }
-
-      "transport id not provided" in {
-        val incorrectForm = Map(radioButtonGroupId -> FlightNumber.value, FlightNumber.id -> "")
-
-        val result = form.bind(incorrectForm)
-        val errorKeys = result.errors.map(_.key)
-        val errorMessages = result.errors.map(_.message)
-
-        errorKeys must be(List(FlightNumber.id))
-        errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.empty.input"))
-      }
-
-      "means of transport on departure type is incorrect" in {
-        val incorrectForm = Map(radioButtonGroupId -> "incorrect", FlightNumber.id -> "correct")
-
-        val result = form.bind(incorrectForm)
-        val errorKeys = result.errors.map(_.key)
-        val errorMessages = result.errors.map(_.message)
-
-        errorKeys must be(List(radioButtonGroupId))
-        errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.incorrect"))
-      }
-
-      "means of transport on departure id number is too long" in {
-        val incorrectForm = Map(radioButtonGroupId -> FlightNumber.value, FlightNumber.id -> TestHelper.createRandomAlphanumericString(36))
-
-        val result = form.bind(incorrectForm)
-        result.errors.length must be(2)
-
-        val error = result.errors.head
-        error.key must be(FlightNumber.id)
-        error.message must be("declaration.transportInformation.meansOfTransport.departure.error.length")
-      }
-
-      "means of transport on departure id number contains invalid special characters" in {
-        val incorrectForm = Map(radioButtonGroupId -> FlightNumber.value, FlightNumber.id -> "!@#$")
-
-        val result = form.bind(incorrectForm)
-        result.errors.length must be(1)
-
-        val error = result.errors.head
-        error.key must be(FlightNumber.id)
-        error.message must be("declaration.transportInformation.meansOfTransport.departure.error.invalid")
-      }
     }
   }
 
-  "DepartureTransport" when {
+  "DepartureTransport form" when {
     testTariffContentKeys(DepartureTransport, "tariff.declaration.departureTransport")
   }
 }

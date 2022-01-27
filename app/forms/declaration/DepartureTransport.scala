@@ -36,19 +36,19 @@ object DepartureTransport extends DeclarationPage {
 
   val prefix = "declaration.transportInformation.meansOfTransport.departure"
 
-  def form(transportCodes: Seq[TransportCode]): Form[DepartureTransport] = Form(mappingFor(transportCodes))
+  def form(transportCodes: TransportCodes): Form[DepartureTransport] = Form(mappingFor(transportCodes))
 
-  private def mappingFor(transportCodes: Seq[TransportCode]): Mapping[DepartureTransport] =
+  private def mappingFor(transportCodes: TransportCodes): Mapping[DepartureTransport] =
     mapping(
       radioButtonGroupId -> mappingForRadioDepartureType(transportCodes),
-      mappingForInputDepartureNumber(transportCodes(0)),
-      mappingForInputDepartureNumber(transportCodes(1)),
-      mappingForInputDepartureNumber(transportCodes(2)),
-      mappingForInputDepartureNumber(transportCodes(3)),
-      mappingForInputDepartureNumber(transportCodes(4)),
-      mappingForInputDepartureNumber(transportCodes(5)),
-      mappingForInputDepartureNumber(transportCodes(6)),
-      mappingForInputDepartureNumber(transportCodes(7))
+      mappingForInputDepartureNumber(transportCodes.code1),
+      mappingForInputDepartureNumber(transportCodes.code2),
+      mappingForInputDepartureNumber(transportCodes.code3),
+      mappingForInputDepartureNumber(transportCodes.code4),
+      mappingForInputDepartureNumber(transportCodes.code5),
+      mappingForInputDepartureNumber(transportCodes.code6),
+      mappingForInputDepartureNumber(transportCodes.code7),
+      mappingForInputDepartureNumber(transportCodes.code8)
     )(form2Model)(model2Form(transportCodes))
 
   private def form2Model: (
@@ -66,21 +66,21 @@ object DepartureTransport extends DeclarationPage {
       DepartureTransport(departureType, List(v1, v2, v3, v4, v5, v6, v7, v8).flatten.headOption.orElse(Some("")))
   }
 
-  private def model2Form(transportCodes: Seq[TransportCode]): DepartureTransport => Option[
+  private def model2Form(transportCodes: TransportCodes): DepartureTransport => Option[
     (Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])
   ] =
     implicit departureTransport =>
       Some(
         (
           departureTransport.meansOfTransportOnDepartureType,
-          model2Ref(transportCodes(0)),
-          model2Ref(transportCodes(1)),
-          model2Ref(transportCodes(2)),
-          model2Ref(transportCodes(3)),
-          model2Ref(transportCodes(4)),
-          model2Ref(transportCodes(5)),
-          model2Ref(transportCodes(6)),
-          model2Ref(transportCodes(7))
+          model2Ref(transportCodes.code1),
+          model2Ref(transportCodes.code2),
+          model2Ref(transportCodes.code3),
+          model2Ref(transportCodes.code4),
+          model2Ref(transportCodes.code5),
+          model2Ref(transportCodes.code6),
+          model2Ref(transportCodes.code7),
+          model2Ref(transportCodes.code8)
         )
     )
 
@@ -88,10 +88,10 @@ object DepartureTransport extends DeclarationPage {
     if (!departureTransport.meansOfTransportOnDepartureType.contains(transportCode.value)) None
     else departureTransport.meansOfTransportOnDepartureIDNumber
 
-  private def mappingForRadioDepartureType(transportCodes: Seq[TransportCode]): Mapping[Option[String]] = {
+  private def mappingForRadioDepartureType(transportCodes: TransportCodes): Mapping[Option[String]] = {
     val isV3WhenPC0019 = transportCodes == transportCodesForV3WhenPC0019
 
-    optional(text.verifying(s"$prefix.error.incorrect", isContainedIn(transportCodes.map(_.value))))
+    optional(text.verifying(s"$prefix.error.incorrect", isContainedIn(transportCodes.asList.map(_.value))))
       .verifying(s"$prefix.error.empty${if (isV3WhenPC0019) ".v3" else ""}", isPresent)
   }
 

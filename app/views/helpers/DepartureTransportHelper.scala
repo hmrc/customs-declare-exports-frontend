@@ -18,7 +18,7 @@ package views.helpers
 
 import forms.declaration.DepartureTransport.radioButtonGroupId
 import forms.declaration.InlandOrBorder.Border
-import forms.declaration.TransportCode
+import forms.declaration.{TransportCode, TransportCodes}
 import forms.declaration.TransportCodes._
 import models.DeclarationType._
 import models.ExportsDeclaration
@@ -104,12 +104,12 @@ class DepartureTransportHelper @Inject()(
 
   private def radioButtons(form: Form[_])(implicit messages: Messages, request: JourneyRequest[_]): Html = {
     val items = versionSelection match {
-      case 1 => transportCodesForV1.map(radioButton(form, _))
-      case 2 => transportCodesForV2.map(transportCode => radioButton(form, transportCode, transportCode.useAltRadioTextForV2))
+      case 1 => transportCodesForV1.asList.map(radioButton(form, _))
+      case 2 => transportCodesForV2.asList.map(transportCode => radioButton(form, transportCode, transportCode.useAltRadioTextForV2))
 
-      case 3 if hasPCsEqualTo0019(request.cacheModel) => transportCodesForV3WhenPC0019.map(radioButton(form, _))
+      case 3 if hasPCsEqualTo0019(request.cacheModel) => transportCodesForV3WhenPC0019.asList.map(radioButton(form, _))
 
-      case 3 => transportCodesForV3.map(radioButton(form, _))
+      case 3 => transportCodesForV3.asList.map(radioButton(form, _))
     }
 
     govukRadios(
@@ -121,7 +121,7 @@ class DepartureTransportHelper @Inject()(
     )
   }
 
-  def transportCodes(implicit request: JourneyRequest[_]): Seq[TransportCode] =
+  def transportCodes(implicit request: JourneyRequest[_]): TransportCodes =
     versionSelection match {
       case 1                                          => transportCodesForV1
       case 2                                          => transportCodesForV2
@@ -131,7 +131,7 @@ class DepartureTransportHelper @Inject()(
 
   /*
    The version of the page's content is chosen under the assumption that the
-   user has selected on /transport-leaving-leaving NEITHER 'Postal' or 'FTI'.
+   user has selected on /transport-leaving-the-border NEITHER 'Postal' or 'FTI'.
 
    This condition is tested in DepartureTransportController, as guarantee that if
    that is not the case the user won't be able to land on /departure-transport.

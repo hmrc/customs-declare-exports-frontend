@@ -44,7 +44,7 @@
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(DepartureTransport, mode)))) {
 
     @formHelper(action = DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(radioGroupErrors(radioButtonGroupId, departureTransportHelper.transportCodes.head.id, form.errors))
+        @errorSummary(radioGroupErrors(radioButtonGroupId, departureTransportHelper.transportCodes.code1.id, form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
 

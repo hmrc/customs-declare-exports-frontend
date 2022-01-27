@@ -23,6 +23,22 @@ sealed abstract class TransportCode(
   val useAltRadioTextForBorderTransport: Boolean = false
 )
 
+case class TransportCodes(
+  code1: TransportCode,
+  code2: TransportCode,
+  code3: TransportCode,
+  code4: TransportCode,
+  code5: TransportCode,
+  code6: TransportCode,
+  code7: TransportCode,
+  code8: TransportCode,
+  maybeNotAvailable: Option[TransportCode] = None
+) {
+  lazy val asList =
+    List(Some(code1), Some(code2), Some(code3), Some(code4), Some(code5), Some(code6), Some(code7), Some(code8), maybeNotAvailable).flatten
+      .map(identity)
+}
+
 object TransportCodes {
 
   case object AircraftRegistrationNumber extends TransportCode("aircraftRegistrationNumber", "41", true)
@@ -36,7 +52,7 @@ object TransportCodes {
   case object WagonNumber extends TransportCode("wagonNumber", "20", true, true)
 
   // As used on /departure-transport when journey is Standard or Supplementary_Simplified and /inland-or-border is 'Border'
-  val transportCodesForV1 = List(
+  val transportCodesForV1 = TransportCodes(
     ShipOrRoroImoNumber,
     NameOfVessel,
     WagonNumber,
@@ -48,7 +64,7 @@ object TransportCodes {
   )
 
   // As used on /departure-transport by default
-  val transportCodesForV2 = List(
+  val transportCodesForV2 = TransportCodes(
     VehicleRegistrationNumber,
     ShipOrRoroImoNumber,
     NameOfVessel,
@@ -63,7 +79,17 @@ object TransportCodes {
   val transportCodesForV3 = transportCodesForV1
 
   // As used on /departure-transport when journey is Clearance and PC is '0019'
-  val transportCodesForV3WhenPC0019 = transportCodesForV3 :+ NotApplicable
+  val transportCodesForV3WhenPC0019 = TransportCodes(
+    ShipOrRoroImoNumber,
+    NameOfVessel,
+    WagonNumber,
+    FlightNumber,
+    AircraftRegistrationNumber,
+    EuropeanVesselIDNumber,
+    NameOfInlandWaterwayVessel,
+    VehicleRegistrationNumber,
+    Some(NotApplicable)
+  )
 
   // As used on /border-transport
   val transportCodesOnBorderTransport = List(
