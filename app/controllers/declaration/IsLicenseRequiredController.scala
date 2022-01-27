@@ -17,13 +17,13 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{AdditionalDocumentAddController, AdditionalDocumentsRequiredController, AdditionalInformationController}
+import controllers.declaration.routes._
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.RepresentativeStatus.StatusCodes
+import forms.declaration.declarationHolder.AuthorizationTypeCodes
 import models.DeclarationType._
-import models.declaration.{AdditionalInformationData, RepresentativeDetails}
+import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -86,11 +86,23 @@ class IsLicenseRequiredController @Inject()(
     updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
   }
 
-  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
+  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     yesNoAnswer.answer match {
       case YesNoAnswers.yes => AdditionalDocumentAddController.displayPage(_, itemId)
-      case YesNoAnswers.no  => AdditionalDocumentsRequiredController.displayPage(_, itemId)
+      case YesNoAnswers.no if containsAuthCodeRequireDocumentation =>
+        AdditionalDocumentsController.displayPage(_, itemId)
+      case YesNoAnswers.no =>
+        AdditionalDocumentsRequiredController.displayPage(_, itemId)
     }
+
+  private def containsAuthCodeRequireDocumentation(implicit request: JourneyRequest[AnyContent]) =
+    request.cacheModel.parties.declarationHoldersData.exists(
+      _.holders
+        .flatMap(_.authorisationTypeCode)
+        .toSet
+        .intersect(AuthorizationTypeCodes.codesRequiringDocumentation)
+        .nonEmpty
+    )
 
   private def representativeStatusCode(implicit request: JourneyRequest[AnyContent]): Option[String] =
     request.cacheModel.parties.representativeDetails flatMap { _.statusCode }
