@@ -30,7 +30,7 @@
 
 @()(implicit messages: Messages)
 
-@text(suffix: String, args: Any*) = @{ messages(s"declaration.goodsLocation.expander.$suffix", args:_*) }
+@text(suffix: String, args: Any*) = @{ messages(s"declaration.locationOfGoods.expander.$suffix", args:_*) }
 
 @expanderContent = {
     @paragraphBody(text("intro01"))

@@ -21,36 +21,35 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.navigation.Navigator
 import controllers.routes.RootController
-import forms.declaration.GoodsLocationForm
+import forms.declaration.LocationOfGoods
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.goods_location
+import views.html.declaration.location_of_goods
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class LocationController @Inject()(
+class LocationOfGoodsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
-  goodsLocationPage: goods_location,
+  locationOfGoods: location_of_goods,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
-  import forms.declaration.GoodsLocationForm._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (skipLocationOfGoods(request.cacheModel)) Results.Redirect(RootController.displayPage)
     else {
-      val frm = form().withSubmissionErrors()
+      val form = LocationOfGoods.form.withSubmissionErrors
       request.cacheModel.locations.goodsLocation match {
-        case Some(data) => Ok(goodsLocationPage(mode, frm.fill(data.toForm)))
-        case _          => Ok(goodsLocationPage(mode, frm))
+        case Some(data) => Ok(locationOfGoods(mode, form.fill(data.toForm)))
+        case _          => Ok(locationOfGoods(mode, form))
       }
     }
   }
@@ -58,10 +57,10 @@ class LocationController @Inject()(
   def saveLocation(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     if (skipLocationOfGoods(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
     else {
-      form()
-        .bindFromRequest()
+      LocationOfGoods.form
+        .bindFromRequest
         .fold(
-          (formWithErrors: Form[GoodsLocationForm]) => Future.successful(BadRequest(goodsLocationPage(mode, formWithErrors))),
+          (formWithErrors: Form[LocationOfGoods]) => Future.successful(BadRequest(locationOfGoods(mode, formWithErrors))),
           formData =>
             updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(goodsLocation = Some(formData.toModel())))).map { _ =>
               navigator.continueTo(mode, controllers.declaration.routes.OfficeOfExitController.displayPage)

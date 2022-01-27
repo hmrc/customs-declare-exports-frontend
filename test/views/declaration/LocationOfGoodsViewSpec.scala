@@ -19,7 +19,7 @@ package views.declaration
 import base.{Injector, TestHelper}
 import connectors.CodeListConnector
 import controllers.declaration.routes
-import forms.declaration.GoodsLocationForm
+import forms.declaration.LocationOfGoods
 import models.DeclarationType._
 import models.{DeclarationType, Mode}
 import models.codes.Country
@@ -33,13 +33,13 @@ import play.api.mvc.Call
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.goods_location
+import views.html.declaration.location_of_goods
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with MockitoSugar with BeforeAndAfterEach {
+class LocationOfGoodsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with MockitoSugar with BeforeAndAfterEach {
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
@@ -54,13 +54,13 @@ class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs
     super.afterEach()
   }
 
-  private val page = instanceOf[goods_location]
-  private val form: Form[GoodsLocationForm] = GoodsLocationForm.form()
+  private val page = instanceOf[location_of_goods]
+  private val form: Form[LocationOfGoods] = LocationOfGoods.form()
 
-  private def createView(form: Form[GoodsLocationForm] = form, declarationType: DeclarationType = DeclarationType.STANDARD): Document =
+  private def createView(form: Form[LocationOfGoods] = form, declarationType: DeclarationType = DeclarationType.STANDARD): Document =
     page(Mode.Normal, form)(journeyRequest(declarationType), messages)
 
-  val prefix = "declaration.goodsLocation"
+  val prefix = "declaration.locationOfGoods"
 
   "Goods Location View on empty page" should {
 
@@ -216,7 +216,7 @@ class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs
   }
 
   private def verifyError(code: String, errorKey: String = "error"): Assertion = {
-    val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm(code))
+    val form = LocationOfGoods.form.fillAndValidate(LocationOfGoods(code))
     val view = createView(form)
 
     view must haveGovukGlobalErrorSummary

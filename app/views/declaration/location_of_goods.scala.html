@@ -17,7 +17,7 @@
 @import config.AppConfig
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
-@import forms.declaration.GoodsLocationForm
+@import forms.declaration.LocationOfGoods
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
@@ -43,7 +43,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[GoodsLocationForm])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[LocationOfGoods])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -55,7 +55,7 @@
         value = field.value,
         classes = s"govuk-!-width-two-thirds ${if(field.hasErrors) "govuk-input--error"}",
         label = Label(
-            content = Text(messages("declaration.goodsLocation.title")),
+            content = Text(messages("declaration.locationOfGoods.title")),
             classes = "govuk-visually-hidden"
         ),
         errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
@@ -63,28 +63,28 @@
 }
 
 @insetSection = {
-    @paragraphBody(messages("declaration.goodsLocation.inset"))
+    @paragraphBody(messages("declaration.locationOfGoods.inset"))
 
     @bulletList(List(
-        Html(messages("declaration.goodsLocation.inset.bullet1")),
-        Html(messages("declaration.goodsLocation.inset.bullet2")),
-        Html(messages("declaration.goodsLocation.inset.bullet3"))
+        Html(messages("declaration.locationOfGoods.inset.bullet1")),
+        Html(messages("declaration.locationOfGoods.inset.bullet2")),
+        Html(messages("declaration.locationOfGoods.inset.bullet3"))
     ))
 }
 
 @govukLayout(
-    title = Title("declaration.goodsLocation.title", "declaration.section.3", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(GoodsLocationForm, mode)))) {
+    title = Title("declaration.locationOfGoods.title", "declaration.section.3", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(LocationOfGoods, mode)))) {
 
-    @formHelper(action = routes.LocationController.saveLocation(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.LocationOfGoodsController.saveLocation(mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.3"))
 
-        @pageTitle(messages("declaration.goodsLocation.title"))
+        @pageTitle(messages("declaration.locationOfGoods.title"))
 
-        @paragraphBody(messages("declaration.goodsLocation.body"))
+        @paragraphBody(messages("declaration.locationOfGoods.body"))
 
         @insetText(content = HtmlContent(insetSection))
 
@@ -92,7 +92,7 @@
 
         @goodsLocationExpander()
 
-        @tariffExpander(GoodsLocationForm, request.declarationType)(messages, appConfig)
+        @tariffExpander(LocationOfGoods, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

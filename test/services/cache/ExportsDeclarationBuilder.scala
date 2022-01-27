@@ -110,8 +110,8 @@ trait ExportsDeclarationBuilder {
   def withAdditionalDeclarationType(decType: AdditionalDeclarationType = AdditionalDeclarationType.STANDARD_FRONTIER): ExportsDeclarationModifier =
     _.copy(additionalDeclarationType = Some(decType))
 
-  def withGoodsLocation(goodsLocationForm: GoodsLocationForm): ExportsDeclarationModifier = { model =>
-    model.copy(locations = model.locations.copy(goodsLocation = Some(goodsLocationForm.toModel())))
+  def withGoodsLocation(locationOfGoods: LocationOfGoods): ExportsDeclarationModifier = { model =>
+    model.copy(locations = model.locations.copy(goodsLocation = Some(locationOfGoods.toModel())))
   }
 
   def withoutGoodsLocation(): ExportsDeclarationModifier = { model =>

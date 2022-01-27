@@ -18,8 +18,9 @@ package controllers.declaration
 
 import base.ControllerSpec
 import connectors.CodeListConnector
+import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController, RoutingCountriesSummaryController}
 import forms.declaration.countries.Country
-import models.{codes, DeclarationType, Mode}
+import models.{DeclarationType, Mode, codes}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -142,7 +143,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
+        thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion()
 
         verify(routingCountriesSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
       }
@@ -157,7 +158,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.displayRemoveCountryPage(Mode.Normal, "FR")(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage()
       }
 
       "user remove country that exists in cache" in {
@@ -169,7 +170,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.submitRemoveCountry(Mode.Normal, "PL")(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage()
       }
 
       "user decided to not remove country" in {
@@ -181,7 +182,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.submitRemoveCountry(Mode.Normal, "PL")(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage()
       }
 
       "user removed country during error fixing" in {
@@ -193,7 +194,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.submitRemoveCountry(Mode.ErrorFix, "PL")(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix)
+        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage(Mode.ErrorFix)
       }
     }
 
@@ -206,7 +207,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.displayChangeCountryPage(Mode.Normal, "PL")(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage()
       }
 
       "user succesfully update a country" in {
@@ -218,7 +219,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.submitChangeCountry(Mode.Normal, "PL")(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage()
       }
 
       "user submit changed country during error fixing" in {
@@ -230,7 +231,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.submitChangeCountry(Mode.ErrorFix, "PL")(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix)
+        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage(Mode.ErrorFix)
       }
     }
 
@@ -287,7 +288,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.submit(Mode.Normal)(postRequest(correctAnswer))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry()
+        thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
       }
     }
 
@@ -302,7 +303,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.submit(Mode.ErrorFix)(postRequest(correctAnswer))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix)
+        thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix)
       }
     }
 
@@ -317,7 +318,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.submit(Mode.Normal)(postRequest(correctAnswer))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayPage()
+        thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
       }
     }
   }

@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import connectors.CodeListConnector
+import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.countries.Country
 import models.DeclarationType.DeclarationType
@@ -139,36 +140,36 @@ class DestinationCountryControllerSpec extends ControllerSpec {
           val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitController.displayPage()
+          thePageNavigatedTo mustBe OfficeOfExitController.displayPage()
         }
 
       "submit for Standard declaration" should {
         behave like redirectForDeclarationType(
           DeclarationType.STANDARD,
-          controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
+          RoutingCountriesController.displayRoutingQuestion()
         )
       }
 
       "submit for Simplified declaration" should {
         behave like redirectForDeclarationType(
           DeclarationType.SIMPLIFIED,
-          controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
+          RoutingCountriesController.displayRoutingQuestion()
         )
       }
 
       "submit for Occasional declaration" should {
         behave like redirectForDeclarationType(
           DeclarationType.OCCASIONAL,
-          controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
+          RoutingCountriesController.displayRoutingQuestion()
         )
       }
 
       "submit for Supplementary declaration" should {
-        behave like redirectForDeclarationType(DeclarationType.SUPPLEMENTARY, controllers.declaration.routes.LocationController.displayPage())
+        behave like redirectForDeclarationType(DeclarationType.SUPPLEMENTARY, LocationOfGoodsController.displayPage())
       }
 
       "submit for Customs Clearance request" should {
-        behave like redirectForDeclarationType(DeclarationType.CLEARANCE, controllers.declaration.routes.LocationController.displayPage())
+        behave like redirectForDeclarationType(DeclarationType.CLEARANCE, LocationOfGoodsController.displayPage())
       }
 
       "conditions for skipping location of goods pass" should {
