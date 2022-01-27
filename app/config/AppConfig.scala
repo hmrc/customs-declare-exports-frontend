@@ -104,6 +104,7 @@ class AppConfig @Inject()(
   val additionalDocumentsUnitCodes = loadConfig("urls.additionalDocumentsUnitCodes")
   val unDangerousGoodsUrl = loadConfig("urls.unDangerousGoods")
   val licensesForExportingGoods = loadConfig("urls.licensesForExportingGoods")
+  val locationCodesForPortsUsingGVMS = loadConfig("urls.locationCodesForPortsUsingGVMS")
 
   val eoriService = loadConfig("urls.eoriService")
   val cdsRegister = loadConfig("urls.cdsRegister")

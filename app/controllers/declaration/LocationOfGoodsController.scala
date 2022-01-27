@@ -57,8 +57,7 @@ class LocationOfGoodsController @Inject()(
   def saveLocation(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     if (skipLocationOfGoods(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
     else {
-      LocationOfGoods.form
-        .bindFromRequest
+      LocationOfGoods.form.bindFromRequest
         .fold(
           (formWithErrors: Form[LocationOfGoods]) => Future.successful(BadRequest(locationOfGoods(mode, formWithErrors))),
           formData =>

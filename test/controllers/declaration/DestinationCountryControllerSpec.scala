@@ -144,24 +144,15 @@ class DestinationCountryControllerSpec extends ControllerSpec {
         }
 
       "submit for Standard declaration" should {
-        behave like redirectForDeclarationType(
-          DeclarationType.STANDARD,
-          RoutingCountriesController.displayRoutingQuestion()
-        )
+        behave like redirectForDeclarationType(DeclarationType.STANDARD, RoutingCountriesController.displayRoutingQuestion())
       }
 
       "submit for Simplified declaration" should {
-        behave like redirectForDeclarationType(
-          DeclarationType.SIMPLIFIED,
-          RoutingCountriesController.displayRoutingQuestion()
-        )
+        behave like redirectForDeclarationType(DeclarationType.SIMPLIFIED, RoutingCountriesController.displayRoutingQuestion())
       }
 
       "submit for Occasional declaration" should {
-        behave like redirectForDeclarationType(
-          DeclarationType.OCCASIONAL,
-          RoutingCountriesController.displayRoutingQuestion()
-        )
+        behave like redirectForDeclarationType(DeclarationType.OCCASIONAL, RoutingCountriesController.displayRoutingQuestion())
       }
 
       "submit for Supplementary declaration" should {

@@ -20,7 +20,7 @@ import base.ControllerSpec
 import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController, RoutingCountriesSummaryController}
 import forms.declaration.countries.Country
-import models.{DeclarationType, Mode, codes}
+import models.{codes, DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}

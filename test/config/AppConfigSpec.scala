@@ -130,6 +130,10 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.locationCodeForAirports must be("http://locationCodeForAirports")
     }
 
+    "have locationCodesForPortsUsingGVMS URL" in {
+      validAppConfig.locationCodesForPortsUsingGVMS must be("http://locationCodesForPortsUsingGVMS")
+    }
+
     "have certificateOfAgreementAirports URL" in {
       validAppConfig.certificateOfAgreementAirports must be("http://certificateOfAgreementAirports")
     }
@@ -409,6 +413,7 @@ object AppConfigSpec {
       |urls.companyInformationRegister="http://companyInformationRegister"
       |urls.customsDecCompletionRequirements="http://customsDecCompletionRequirements"
       |urls.locationCodeForAirports="http://locationCodeForAirports"
+      |urls.locationCodesForPortsUsingGVMS="http://locationCodesForPortsUsingGVMS"
       |urls.certificateOfAgreementAirports="http://certificateOfAgreementAirports"
       |urls.locationCodeForMaritimePorts="http://locationCodeForMaritimePorts"
       |urls.locationCodeForTempStorage="http://locationCodeForTempStorage"

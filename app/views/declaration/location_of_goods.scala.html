@@ -23,7 +23,7 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.helpers.{BackButton, Title}
-@import views.html.components.goodsLocationExpander
+@import views.html.components.locationOfGoodsExpander
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -35,7 +35,7 @@
     insetText: exportsInsetText,
     bulletList: bulletList,
     saveButtons: saveButtons,
-    goodsLocationExpander: goodsLocationExpander,
+    locationOfGoodsExpander: locationOfGoodsExpander,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     sectionHeader: sectionHeader,
@@ -63,12 +63,18 @@
 }
 
 @insetSection = {
-    @paragraphBody(messages("declaration.locationOfGoods.inset"))
+    @paragraphBody(messages("declaration.locationOfGoods.inset.1"))
+    @paragraphBody(messages("declaration.locationOfGoods.inset.2"))
 
     @bulletList(List(
         Html(messages("declaration.locationOfGoods.inset.bullet1")),
         Html(messages("declaration.locationOfGoods.inset.bullet2")),
-        Html(messages("declaration.locationOfGoods.inset.bullet3"))
+        Html(messages("declaration.locationOfGoods.inset.bullet3")),
+        Html(messages("declaration.locationOfGoods.inset.bullet4")),
+        Html(messages("declaration.locationOfGoods.inset.bullet5")),
+        Html(messages("declaration.locationOfGoods.inset.bullet6")),
+        Html(messages("declaration.locationOfGoods.inset.bullet7")),
+        Html(messages("declaration.locationOfGoods.inset.bullet8"))
     ))
 }
 
@@ -90,7 +96,7 @@
 
         @goodsLocationInput(form("code"))
 
-        @goodsLocationExpander()
+        @locationOfGoodsExpander()
 
         @tariffExpander(LocationOfGoods, request.declarationType)(messages, appConfig)
 
