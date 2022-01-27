@@ -16,9 +16,7 @@
 
 package views.declaration.summary
 
-import controllers.declaration.routes
 import models.ExportsDeclaration
-import models.Mode._
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import views.html.declaration.summary.normal_summary_page

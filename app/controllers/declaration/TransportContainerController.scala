@@ -105,7 +105,7 @@ class TransportContainerController @Inject()(
     containerId match {
       case Some(id) => updateCache(Seq(Container(id, Seq.empty))).map(_ => redirectAfterAdd(mode, id))
       case None =>
-        updateExportsDeclarationSyncDirect(
+        updateDeclarationFromRequest(
           _.updateContainers(Seq.empty)
             .updateReadyForSubmission(true)
         ) map { _ =>
@@ -162,7 +162,7 @@ class TransportContainerController @Inject()(
             case YesNoAnswers.yes =>
               Future.successful(navigator.continueTo(mode, routes.TransportContainerController.displayAddContainer))
             case YesNoAnswers.no =>
-              updateExportsDeclarationSyncDirect(_.updateReadyForSubmission(true)) map { _ =>
+              updateDeclarationFromRequest(_.updateReadyForSubmission(true)) map { _ =>
                 navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage)
               }
         }
