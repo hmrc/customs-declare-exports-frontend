@@ -16,14 +16,14 @@
 
 package models.declaration
 
-import forms.declaration.GoodsLocationForm
+import forms.declaration.LocationOfGoods
 import play.api.libs.json.{Json, OFormat}
 
 case class GoodsLocation(country: String, typeOfLocation: String, qualifierOfIdentification: String, identificationOfLocation: String) {
 
   lazy val code = country + typeOfLocation + qualifierOfIdentification + identificationOfLocation
 
-  def toForm: GoodsLocationForm = GoodsLocationForm(code)
+  def toForm: LocationOfGoods = LocationOfGoods(code)
 }
 
 object GoodsLocation {

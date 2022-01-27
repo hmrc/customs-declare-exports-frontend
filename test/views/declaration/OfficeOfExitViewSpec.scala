@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.{DestinationCountryController, LocationOfGoodsController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.Mode
@@ -65,7 +66,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.LocationController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(LocationOfGoodsController.displayPage(Mode.Normal))
       }
 
       "display 'Save and continue' button" in {
@@ -118,7 +119,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       val backButton = skipLocationOfGoodsView.getElementById("back-link")
 
       backButton must containMessage("site.back")
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DestinationCountryController.displayPage(Mode.Normal))
+      backButton.getElementById("back-link") must haveHref(DestinationCountryController.displayPage(Mode.Normal))
     }
   }
 

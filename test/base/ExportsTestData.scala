@@ -19,7 +19,7 @@ package base
 import forms.Choice
 import forms.Choice._
 import forms.Choice.AllowedChoiceValues._
-import forms.declaration.GoodsLocationForm
+import forms.declaration.LocationOfGoods
 import forms.declaration.ModeOfTransportCode.RoRo
 import models.AuthKey.{enrolment, identifierKey}
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
@@ -72,7 +72,7 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
     withDeclarationHolders(Some("CSE")),
     withDeclarationHolders(Some("EXRR")),
     withBorderModeOfTransportCode(Some(RoRo)),
-    withGoodsLocation(GoodsLocationForm("GBAUCBRLHRXXD")) // GBAUCBRLHRXXD => DEP location code
+    withGoodsLocation(LocationOfGoods("GBAUCBRLHRXXD")) // GBAUCBRLHRXXD => DEP location code
   )
 
   val allValuesRequiringToSkipInlandOrBorder =

@@ -125,7 +125,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
     case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
-    case GoodsLocationForm           => routes.RoutingCountriesSummaryController.displayPage
+    case LocationOfGoods             => routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
     case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
@@ -167,10 +167,10 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
     case RoutingCountryQuestionPage   => routes.DestinationCountryController.displayPage
     case RemoveCountryPage            => routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage            => routes.RoutingCountriesSummaryController.displayPage
-    case GoodsLocationForm            => routes.DestinationCountryController.displayPage
+    case LocationOfGoods              => routes.DestinationCountryController.displayPage
     case ConsignorEoriNumber          => routes.IsExsController.displayPage
     case ConsignorDetails             => routes.ConsignorEoriNumberController.displayPage
-    case OfficeOfExit                 => routes.LocationController.displayPage
+    case OfficeOfExit                 => routes.LocationOfGoodsController.displayPage
     case TotalPackageQuantity         => routes.OfficeOfExitController.displayPage
     case DocumentSummary              => routes.OfficeOfExitController.displayPage
     case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
@@ -208,9 +208,9 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
-    case GoodsLocationForm           => routes.DestinationCountryController.displayPage
+    case LocationOfGoods             => routes.DestinationCountryController.displayPage
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
-    case OfficeOfExit                => routes.LocationController.displayPage
+    case OfficeOfExit                => routes.LocationOfGoodsController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
     case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
@@ -251,7 +251,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage           => routes.RoutingCountriesSummaryController.displayPage
-    case GoodsLocationForm           => routes.RoutingCountriesSummaryController.displayPage
+    case LocationOfGoods             => routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
     case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
@@ -293,7 +293,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
-    case GoodsLocationForm           => routes.RoutingCountriesSummaryController.displayPage
+    case LocationOfGoods             => routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case ChangeCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
@@ -370,7 +370,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
 
   private def officeOfExitPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (skipLocationOfGoods(cacheModel)) routes.DestinationCountryController.displayPage(mode)
-    else routes.LocationController.displayPage(mode)
+    else routes.LocationOfGoodsController.displayPage(mode)
 
   private def entryIntoDeclarantsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.mucr.isEmpty) routes.LinkDucrToMucrController.displayPage(mode)

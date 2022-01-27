@@ -28,7 +28,7 @@ import play.api.libs.json.{Json, OFormat}
 import services.Countries.isValidCountryCode
 import utils.validators.forms.FieldValidator._
 
-case class GoodsLocationForm(code: String) {
+case class LocationOfGoods(code: String) {
 
   def toModel(): GoodsLocation = GoodsLocation(
     country = code.slice(0, 2),
@@ -38,9 +38,9 @@ case class GoodsLocationForm(code: String) {
   )
 }
 
-object GoodsLocationForm extends DeclarationPage {
+object LocationOfGoods extends DeclarationPage {
 
-  implicit val format: OFormat[GoodsLocationForm] = Json.format[GoodsLocationForm]
+  implicit val format: OFormat[LocationOfGoods] = Json.format[LocationOfGoods]
 
   val formId = "Location"
 
@@ -71,14 +71,14 @@ object GoodsLocationForm extends DeclarationPage {
     input.drop(3).toUpperCase.headOption.map(_.toString).exists(predicate)
   }
 
-  private def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[GoodsLocationForm] =
+  private def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[LocationOfGoods] =
     Forms.mapping(
       "code" -> text()
         .transform(_.trim, (s: String) => s)
-        .verifying("declaration.goodsLocation.code.empty", nonEmpty)
-        .verifying("declaration.goodsLocation.code.error", isEmpty or isValidFormat)
-        .verifying("declaration.goodsLocation.code.error.length", isEmpty or (noShorterThan(10) and noLongerThan(39)))
-    )(form2Data)(GoodsLocationForm.unapply)
+        .verifying("declaration.locationOfGoods.code.empty", nonEmpty)
+        .verifying("declaration.locationOfGoods.code.error", isEmpty or isValidFormat)
+        .verifying("declaration.locationOfGoods.code.error.length", isEmpty or (noShorterThan(10) and noLongerThan(39)))
+    )(form2Data)(LocationOfGoods.unapply)
 
   private def isValidFormat(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean =
     value =>
@@ -87,9 +87,9 @@ object GoodsLocationForm extends DeclarationPage {
         validateQualifierCode(value) and
         isAlphanumeric(value)
 
-  private def form2Data(code: String): GoodsLocationForm = GoodsLocationForm(code.toUpperCase)
+  private def form2Data(code: String): LocationOfGoods = LocationOfGoods(code.toUpperCase)
 
-  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[GoodsLocationForm] = Form(mapping)
+  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[LocationOfGoods] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.locationOfGoods.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

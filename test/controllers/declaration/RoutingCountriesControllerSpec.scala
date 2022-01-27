@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import connectors.CodeListConnector
+import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController, RoutingCountriesSummaryController}
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -158,7 +159,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.displayRoutingQuestion(Mode.Normal, true)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage()
       }
 
       "user answered Yes for Routing Question" in {
@@ -170,7 +171,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry()
+        thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
       }
 
       "user answered No for Routing Question" in {
@@ -182,7 +183,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayPage()
+        thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
       }
 
       "user try to get Routing Countries page without Routing Question" in {
@@ -192,7 +193,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(fastForward = false)
+        thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion(fastForward = false)
       }
 
       "user try to get Routing Countries when answered No for Routing Question" in {
@@ -202,7 +203,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(fastForward = false)
+        thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion(fastForward = false)
       }
 
       "use submitted correct routing country" in {
@@ -214,7 +215,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.submitRoutingCountry(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage()
       }
 
       "user is during error fixing and the naswer is yes" in {
@@ -226,7 +227,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.submitRoutingAnswer(Mode.ErrorFix)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix)
+        thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix)
       }
 
       "user submitted correct routing country during error fixing" in {
@@ -238,7 +239,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.submitRoutingCountry(Mode.ErrorFix)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix)
+        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage(Mode.ErrorFix)
       }
     }
   }
