@@ -17,15 +17,20 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController}
+import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
 import controllers.navigation.Navigator
+import controllers.routes.RootController
 import forms.declaration.DepartureTransport
+import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.helpers.DepartureTransportHelper
 import views.html.declaration.departure_transport
 
 import javax.inject.{Inject, Singleton}
@@ -38,39 +43,42 @@ class DepartureTransportController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
+  departureTransportHelper: DepartureTransportHelper,
   departureTransportPage: departure_transport
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  private def form()(implicit request: JourneyRequest[_]): Form[DepartureTransport] = DepartureTransport.form(request.declarationType)
+  private def form(implicit request: JourneyRequest[_]): Form[DepartureTransport] =
+    DepartureTransport.form(departureTransportHelper.transportCodes)
 
-  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)
+  private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
-      val frm = form().withSubmissionErrors()
-      val transport = request.cacheModel.transport
-      val formData = DepartureTransport(transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber)
+      if (!isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode)) {
+        val frm = form.withSubmissionErrors
+        val transport = request.cacheModel.transport
+        val formData = DepartureTransport(transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber)
 
-      Ok(departureTransportPage(mode, frm.fill(formData)))
+        Ok(departureTransportPage(mode, frm.fill(formData)))
+      } else Results.Redirect(RootController.displayPage)
     }
 
   def submitForm(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
-      form()
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[DepartureTransport]) => Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
-          borderTransport =>
-            updateCache(borderTransport)
-              .map(_ => navigator.continueTo(mode, nextPage))
-        )
+      if (!isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode))
+        form.bindFromRequest
+          .fold(
+            formWithErrors => Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
+            updateCache(_).map(_ => navigator.continueTo(mode, nextPage))
+          )
+      else Future.successful(Results.Redirect(RootController.displayPage))
     }
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
-      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY => routes.BorderTransportController.displayPage
-      case DeclarationType.CLEARANCE                                => routes.ExpressConsignmentController.displayPage
+      case STANDARD | SUPPLEMENTARY => BorderTransportController.displayPage
+      case CLEARANCE                => ExpressConsignmentController.displayPage
     }
 
   private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =

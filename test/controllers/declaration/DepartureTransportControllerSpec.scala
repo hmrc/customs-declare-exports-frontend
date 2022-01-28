@@ -17,27 +17,31 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController}
+import controllers.helpers.TransportSectionHelper.postalOrFTIModeOfTransportCodes
+import controllers.routes.RootController
+import forms.declaration.DepartureTransport
+import forms.declaration.DepartureTransport.radioButtonGroupId
 import forms.declaration.ModeOfTransportCode.Maritime
-import forms.declaration.TransportCodes.WagonNumber
-import forms.declaration.{DepartureTransport, TransportCodes}
+import forms.declaration.TransportCodes.{transportCodesForV1, transportCodesForV3WhenPC0019, NotApplicable, WagonNumber}
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
-import models.Mode
+import models.Mode.Normal
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString, JsValue}
-import play.api.mvc.{AnyContentAsEmpty, Request, Result}
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.{AnyContentAsEmpty, Call, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import views.helpers.DepartureTransportHelper
 import views.html.declaration.departure_transport
-
-import scala.concurrent.Future
 
 class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  val borderTransportPage = mock[departure_transport]
+  val departureTransportPage = mock[departure_transport]
+  val departureTransportHelper = mock[DepartureTransportHelper]
 
   val controller = new DepartureTransportController(
     mockAuthAction,
@@ -45,45 +49,43 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    borderTransportPage
+    departureTransportHelper,
+    departureTransportPage
   )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     setupErrorHandler()
     authorizedUser()
-    when(borderTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(departureTransportHelper.transportCodes(any())).thenReturn(transportCodesForV1)
+    when(departureTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(borderTransportPage)
+    reset(departureTransportHelper, departureTransportPage)
     super.afterEach()
   }
 
   def theResponseForm: Form[DepartureTransport] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[DepartureTransport]])
-    verify(borderTransportPage).apply(any(), formCaptor.capture())(any(), any())
+    verify(departureTransportPage).apply(any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage(Normal)(request))
     theResponseForm
   }
 
-  private def nextPage(decType: DeclarationType) = decType match {
-    case STANDARD | SUPPLEMENTARY => routes.BorderTransportController.displayPage()
-    case CLEARANCE                => routes.ExpressConsignmentController.displayPage()
-  }
+  private def nextPage(declarationType: DeclarationType): Call =
+    declarationType match {
+      case STANDARD | SUPPLEMENTARY => BorderTransportController.displayPage()
+      case CLEARANCE                => ExpressConsignmentController.displayPage()
+    }
 
-  private def formData(transportType: String, reference: String) =
-    JsObject(
-      Map(
-        DepartureTransport.meansOfTransportOnDepartureTypeKey -> JsString(transportType),
-        s"${DepartureTransport.meansOfTransportOnDepartureIDNumberKey}_$transportType" -> JsString(reference)
-      )
-    )
+  private def formData(transportCodeValue: String, inputFieldId: String, reference: String): JsObject =
+    Json.obj(radioButtonGroupId -> transportCodeValue, inputFieldId -> reference)
 
   "Departure transport controller" when {
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
@@ -92,18 +94,28 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "display page method is invoked and cache is empty" in {
           withNewCaching(request.cacheModel)
 
-          val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
-
+          val result = controller.displayPage(Normal)(getRequest())
           status(result) must be(OK)
         }
 
         "display page method is invoked and cache contains data" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(Maritime, WagonNumber.value, "FAA")))
 
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(Maritime, WagonNumber, "FAA")))
-
-          val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
-
+          val result = controller.displayPage(Normal)(getRequest())
           status(result) must be(OK)
+        }
+      }
+
+      postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
+        s"TransportLeavingTheBorder is $modeOfTransportCode" should {
+          "redirect to the starting page on displayPage" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(modeOfTransportCode)))
+
+            val result = controller.displayPage(Normal)(getRequest())
+
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) mustBe Some(RootController.displayPage().url)
+          }
         }
       }
 
@@ -112,51 +124,63 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "no option is selected" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm: JsValue = formData("", "")
+          val correctForm = formData("", "", "")
 
-          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
-
+          val result = controller.submitForm(Normal)(postRequest(correctForm))
           status(result) must be(BAD_REQUEST)
         }
 
         "form is incorrect" in {
           withNewCaching(request.cacheModel)
 
-          val incorrectForm: JsValue = formData("wrongValue", "FAA")
+          val incorrectForm = formData("wrongValue", WagonNumber.id, "FAA")
 
-          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
-
+          val result = controller.submitForm(Normal)(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
         }
       }
 
       "return 303 (SEE_OTHER)" when {
-
         "information provided by user are correct" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm: JsValue = formData(WagonNumber, "FAA")
+          val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
 
-          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitForm(Normal)(postRequest(correctForm))
 
-          await(result) mustBe aRedirectToTheNextPage
+          status(result) must be(SEE_OTHER)
           thePageNavigatedTo mustBe nextPage(request.declarationType)
+        }
+      }
+
+      postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
+        s"TransportLeavingTheBorder is $modeOfTransportCode" should {
+          "redirect to the starting page on submitForm" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withBorderModeOfTransportCode(modeOfTransportCode)))
+
+            val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
+
+            val result = controller.submitForm(Normal)(postRequest(correctForm))
+            redirectLocation(result) mustBe Some(RootController.displayPage.url)
+          }
         }
       }
     }
 
     onJourney(CLEARANCE) { request =>
       "return 303 (SEE_OTHER)" when {
+        "'0019' has been entered as Procedure Code and" when {
+          "the 'NotApplicable' radio element is selected" in {
+            when(departureTransportHelper.transportCodes(any())).thenReturn(transportCodesForV3WhenPC0019)
+            withNewCaching(request.cacheModel)
 
-        "'none' option is selected" in {
-          withNewCaching(request.cacheModel)
+            val correctForm = formData(NotApplicable.value, "", "")
 
-          val correctForm: JsValue = formData(TransportCodes.OptionNone, "")
+            val result = controller.submitForm(Normal)(postRequest(correctForm))
 
-          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe nextPage(request.declarationType)
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe nextPage(request.declarationType)
+          }
         }
       }
     }
@@ -164,29 +188,22 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     onJourney(SIMPLIFIED, OCCASIONAL) { request =>
       "return 303 (SEE_OTHER)" when {
 
-        "display page method is invoked" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withBorderTransport()))
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
-        }
-
-        "page is submitted" in {
+        "displayPage is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val correctForm: JsValue = formData(WagonNumber, "FAA")
+          val result = controller.displayPage(Normal)(getRequest())
+          redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        }
 
-          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        "submitForm is invoked" in {
+          withNewCaching(request.cacheModel)
 
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage().url)
+          val correctForm = formData(WagonNumber.value, WagonNumber.id, "FAA")
+
+          val result = controller.submitForm(Normal)(postRequest(correctForm))
+          redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
       }
-
     }
-
   }
-
 }

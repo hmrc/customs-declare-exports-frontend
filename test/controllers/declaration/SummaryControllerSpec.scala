@@ -198,7 +198,6 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
       "lrn has been submitted in the past 48 hours" in {
         withNewCaching(aDeclaration(withConsignmentReferences()))
-        val completeForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
 
         when(mockLrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any[HeaderCarrier], any[ExecutionContext]))
           .thenReturn(Future.successful(true))

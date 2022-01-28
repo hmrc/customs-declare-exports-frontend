@@ -14,30 +14,26 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
-@import forms.declaration.BorderTransport
-@import forms.declaration.TransportCodes._
-@import models.requests.JourneyRequest
-@import controllers.navigation.Navigator
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
-@import views.components.gds.Styles._
-@import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
-@import scala.collection.immutable
-@import play.twirl.api.HtmlFormat
-@import views.helpers.ErrorMapper.radioGroupErrors
 @import config.AppConfig
-@import views.helpers.CountryHelper
+@import controllers.declaration.routes.BorderTransportController
+@import controllers.navigation.Navigator
+@import forms.declaration.BorderTransport
+@import forms.declaration.BorderTransport.{nationalityId, radioButtonGroupId}
+@import forms.declaration.TransportCodes.transportCodesOnBorderTransport
 @import models.codes.Country
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles.gdsPageLegend
+@import views.helpers.{BackButton, BorderTransportHelper, CountryHelper, Title}
+@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
 
 @this(
+    borderTransportHelper: BorderTransportHelper,
     govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
-    govukButton: GovukButton,
-    govukDetails : GovukDetails,
     govukRadios: GovukRadios,
-    pageTitle: pageTitle,
-    exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
@@ -51,46 +47,23 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@inputField(transportType: String, key: String) = @{Some(exportsInputText(
-    field = form(s"borderTransportReference_$transportType"),
-    inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
-    labelKey = s"$key.label",
-    hintKey = Some(s"$key.hint"))
-)}
-
-@radioOption(id: String, value: String) = @{RadioItem(
-    id = Some(id),
-    value = Some(value),
-    content = Text(messages(s"declaration.transportInformation.meansOfTransport.$id")),
-    conditionalHtml = inputField(id, s"declaration.transportInformation.meansOfTransport.$id"),
-    checked = form("borderTransportType").value.contains(value))}
-
 @borderTransportType = {
     @govukRadios(Radios(
-        name = "borderTransportType",
+        name = radioButtonGroupId,
         fieldset = Some(Fieldset(
             attributes = Map("id" -> "borderTransportType-fieldSet"),
             legend = Some(Legend(
-                content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header"))
+                content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.body"))
             ))
         )),
-        items = Seq(
-            radioOption("IMOShipIDNumber", IMOShipIDNumber),
-            radioOption("nameOfVessel", NameOfVessel),
-            radioOption("wagonNumber", WagonNumber),
-            radioOption("IATAFlightNumber", IATAFlightNumber),
-            radioOption("aircraftRegistrationNumber", AircraftRegistrationNumber),
-            radioOption("europeanVesselIDNumber", EuropeanVesselIDNumber),
-            radioOption("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel),
-            radioOption("vehicleRegistrationNumberROI", VehicleRegistrationNumber)
-        ),
-        errorMessage = form("borderTransportType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        items = borderTransportHelper.radioButtons(form),
+        errorMessage = form(radioButtonGroupId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
     ))
 }
 
 @borderTransportNationality = {
     @components.fields.field_accessible_location_autocomplete_with_header(
-        field = form("borderTransportNationality"),
+        field = form(nationalityId),
         label = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header"),
         labelClass = None,
         hintParagraphs = List(messages("declaration.country.dropdown.hint")),
@@ -100,21 +73,21 @@
 }
 
 @govukLayout(
-    title = Title("declaration.transportInformation.active.title", "declaration.section.6", hasErrors = hasErrors),
+    title = Title("declaration.transportInformation.meansOfTransport.crossingTheBorder.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(BorderTransport, mode)))) {
 
     @formHelper(action = BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(radioGroupErrors("borderTransportType", "IMOShipIDNumber", form.errors))
+        @errorSummary(radioGroupErrors(radioButtonGroupId, transportCodesOnBorderTransport.head.id, form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("declaration.transportInformation.active.title")),
+                content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.title")),
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 borderTransportType,
                 borderTransportNationality,
                 tariffExpander(BorderTransport, request.declarationType)(messages, appConfig),

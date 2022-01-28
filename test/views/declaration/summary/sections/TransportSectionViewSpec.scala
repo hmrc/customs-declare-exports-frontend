@@ -36,7 +36,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
     withInlandOrBorder(Some(Border)),
-    withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCode.Maritime))))
+    withInlandModeOfTransportCode(ModeOfTransportCode.Maritime)
   )
 
   val section = instanceOf[transport_section]
@@ -85,8 +85,8 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       val view = section(
         mode,
         data.copy(
-          transport =
-            data.transport.copy(meansOfTransportOnDepartureType = Some(TransportCodes.OptionNone), meansOfTransportOnDepartureIDNumber = Some(""))
+          transport = data.transport
+            .copy(meansOfTransportOnDepartureType = Some(TransportCodes.NotApplicable.value), meansOfTransportOnDepartureIDNumber = Some(""))
         )
       )(messages)
       val row = view.getElementsByClass("transport-reference-row")

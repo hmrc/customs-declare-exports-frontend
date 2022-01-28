@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import base.ExportsTestData.{itemWith1040AsPC, valuesRequiringToSkipInlandOrBorder}
+import base.ExportsTestData.{itemWithPC, valuesRequiringToSkipInlandOrBorder}
 import controllers.declaration.routes.{
   InlandOrBorderController,
   InlandTransportDetailsController,
@@ -170,7 +170,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
         "redirect to /inland-or-border after a successful bind" when {
           "cache contains '1040' as procedure code, '000' as APC and" when {
-            val item = withItem(itemWith1040AsPC)
+            val item = withItem(itemWithPC("1040"))
 
             additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
               s"AdditionalDeclarationType is $additionalType and" in {
@@ -192,7 +192,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
         "redirect to to /inland-transport-details after a successful bind" when {
           "cache contains '1040' as procedure code, '000' as APC and" when {
-            val item = withItem(itemWith1040AsPC)
+            val item = withItem(itemWithPC("1040"))
 
             List(SUPPLEMENTARY_EIDR).foreach { additionalType =>
               "AdditionalDeclarationType is SUPPLEMENTARY_EIDR" in {

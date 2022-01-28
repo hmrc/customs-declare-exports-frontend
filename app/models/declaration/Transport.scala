@@ -33,26 +33,22 @@ case class Transport(
 ) {
 
   def addOrUpdateContainer(updatedContainer: Container): Transport = {
-    def containerSequence = containers.getOrElse(Seq.empty)
-    val updatedContainers = {
-      if (containers.isEmpty) {
-        Seq(updatedContainer)
-      } else if (hasContainer(updatedContainer.id)) {
+
+    def containerSequence: Seq[Container] = containers.getOrElse(Seq.empty)
+
+    def hasContainer(id: String) = containers.exists(_.exists(_.id == id))
+
+    val updatedContainers =
+      if (containers.isEmpty) Seq(updatedContainer)
+      else if (hasContainer(updatedContainer.id)) {
         containerSequence.map {
           case container if updatedContainer.id == container.id => updatedContainer
           case otherContainer                                   => otherContainer
         }
-      } else {
-        containerSequence :+ updatedContainer
-      }
-    }
+      } else containerSequence :+ updatedContainer
+
     copy(containers = Some(updatedContainers))
   }
-
-  private def hasContainer(id: String) = containers.exists(_.exists(_.id == id))
-
-  def hasContainers: Boolean = containers.exists(_.nonEmpty)
-
 }
 
 object Transport {
