@@ -19,27 +19,23 @@ package views.declaration.summary
 import base.Injector
 import forms.declaration.LegalDeclaration
 import views.declaration.spec.UnitViewSpec
+import uk.gov.hmrc.govukfrontend.views.html.components.{Legend, Text}
 import views.html.declaration.summary.legal_declaration
 
 class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 
   private val emptyForm = LegalDeclaration.form()
   private val component = instanceOf[legal_declaration]
+
+  private val legendClass = "govuk-fieldset__legend"
+  private val legendContent = "legal.declaration.heading"
+  private val legend = Some(Legend(Text(messages(legendContent)), legendClass))
+  private val legalInfo = "legal.declaration.info"
+
+  private val nonEmptyView = component(emptyForm, legend, Seq(messages(legalInfo)))
   private val view = component(emptyForm)
 
   "Legal Declaration View" should {
-
-    "have header and translation for it" in {
-
-      view.getElementsByClass("govuk-fieldset__legend").first() must containMessage("legal.declaration.heading")
-      messages must haveTranslationFor("legal.declaration.heading")
-    }
-
-    "have information about declaration" in {
-
-      view.body must include(messages("legal.declaration.info"))
-      messages must haveTranslationFor("legal.declaration.info")
-    }
 
     "have legal declaration warning" in {
 
@@ -83,6 +79,18 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
       view.getElementsByAttributeValue("for", "confirmation") must containMessageForElements("legal.declaration.confirmation")
       messages must haveTranslationFor("legal.declaration.confirmation")
       messages must haveTranslationFor("legal.declaration.confirmation.missing")
+    }
+
+    "have header and translation for it" in {
+
+      nonEmptyView.getElementsByClass(legendClass).first() must containMessage(legendContent)
+      messages must haveTranslationFor(legendContent)
+    }
+
+    "have information about declaration" in {
+
+      nonEmptyView.body must include(messages(legalInfo))
+      messages must haveTranslationFor(legalInfo)
     }
   }
 }

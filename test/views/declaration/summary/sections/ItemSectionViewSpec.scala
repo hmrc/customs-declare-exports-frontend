@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration.summary
+package views.declaration.summary.sections
 
 import base.Injector
 import controllers.declaration.routes._
@@ -25,7 +25,7 @@ import models.declaration.CommodityMeasure
 import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.item_section
+import views.html.declaration.summary.sections.item_section
 
 class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 

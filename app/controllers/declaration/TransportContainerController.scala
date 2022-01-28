@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.{FormAction, Remove}
+import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{ContainerAdd, ContainerFirst}
@@ -104,7 +104,13 @@ class TransportContainerController @Inject()(
   private def saveFirstContainer(mode: Mode, containerId: Option[String])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     containerId match {
       case Some(id) => updateCache(Seq(Container(id, Seq.empty))).map(_ => redirectAfterAdd(mode, id))
-      case None     => updateCache(Seq.empty).map(_ => navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage))
+      case None =>
+        updateDeclarationFromRequest(
+          _.updateContainers(Seq.empty)
+            .updateReadyForSubmission(true)
+        ) map { _ =>
+          navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage)
+        }
     }
 
   private def saveAdditionalContainer(mode: Mode, boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(
@@ -156,7 +162,9 @@ class TransportContainerController @Inject()(
             case YesNoAnswers.yes =>
               Future.successful(navigator.continueTo(mode, routes.TransportContainerController.displayAddContainer))
             case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage))
+              updateDeclarationFromRequest(_.updateReadyForSubmission(true)) map { _ =>
+                navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage)
+              }
         }
       )
 

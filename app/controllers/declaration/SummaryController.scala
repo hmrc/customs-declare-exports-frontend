@@ -23,6 +23,7 @@ import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys._
+import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.Logging
 import play.api.data.{Form, FormError}
@@ -49,6 +50,7 @@ class SummaryController @Inject()(
   amendSummaryPage: amend_summary_page,
   draftSummaryPage: draft_summary_page,
   summaryPageNoData: summary_page_no_data,
+  legalDeclarationPage: legal_declaration_page,
   lrnValidator: LrnValidator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
@@ -56,22 +58,22 @@ class SummaryController @Inject()(
   val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
-    if (containsMandatoryData(request.cacheModel, mode)) {
-      mode match {
-        case Mode.Normal => Ok(normalSummaryPage(form))
-        case Mode.Amend  => Ok(amendSummaryPage())
-        case Mode.Draft  => Ok(draftSummaryPage())
-        case _           => handleError("Invalid mode on summary page")
-      }
-    } else {
-      Ok(summaryPageNoData())
-    }
+    if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage(mode)
+    else Ok(summaryPageNoData())
   }
 
-  val submitDeclaration: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def displayDeclarationPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+    mode match {
+      case Mode.Draft | Mode.Normal | Mode.Amend => Ok(legalDeclarationPage(form, mode))
+      case _                                     => handleError("Invalid mode on summary page")
+    }
+
+  }
+
+  def submitDeclaration(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     def submit(form: Form[LegalDeclaration]): Future[Result] =
       form.bindFromRequest.fold(
-        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(normalSummaryPage(formWithErrors))),
+        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors, mode))),
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(submission) =>
@@ -84,11 +86,24 @@ class SummaryController @Inject()(
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
 
     isLrnADuplicate(maybeLrn).flatMap {
-      case true => {
+      case true =>
         val allErrors = form.errors ++ Seq(FormError("lrn", "declaration.consignmentReferences.lrn.error.notExpiredYet"))
         submit(form.copy(errors = allErrors))
-      }
       case _ => submit(form)
+    }
+  }
+
+  private def displaySummaryPage(mode: Mode)(implicit request: JourneyRequest[_]): Result = {
+
+    val readyForSubmission = request.cacheModel.readyForSubmission
+
+    mode match {
+      case Mode.Normal if readyForSubmission => Ok(normalSummaryPage(routes.TransportContainerController.displayContainerSummary(Mode.Normal)))
+      case Mode.Normal                       => Ok(draftSummaryPage(routes.TransportContainerController.displayContainerSummary(Mode.Normal)))
+      case Mode.Draft if readyForSubmission  => Ok(normalSummaryPage(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+      case Mode.Draft                        => Ok(draftSummaryPage(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+      case Mode.Amend                        => Ok(amendSummaryPage())
+      case _                                 => handleError("Invalid mode on summary page")
     }
   }
 

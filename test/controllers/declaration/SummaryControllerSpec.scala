@@ -23,7 +23,7 @@ import mock.ErrorHandlerMocks
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys
 import models.{ExportsDeclaration, Mode}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.Helpers._
@@ -37,11 +37,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
 
   private val normalSummaryPage = mock[normal_summary_page]
+  private val legalDeclarationPage = mock[legal_declaration_page]
   private val draftSummaryPage = mock[draft_summary_page]
   private val amendSummaryPage = mock[amend_summary_page]
   private val mockSummaryPageNoData = mock[summary_page_no_data]
   private val mockSubmissionService = mock[SubmissionService]
   private val mockLrnValidator = mock[LrnValidator]
+
+  private val normalModeBackLink = routes.TransportContainerController.displayContainerSummary(Mode.Normal)
+  private val draftModeBackLink = controllers.routes.SavedDeclarationsController.displayDeclarations()
 
   private val controller = new SummaryController(
     mockAuthAction,
@@ -55,6 +59,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     amendSummaryPage,
     draftSummaryPage,
     mockSummaryPageNoData,
+    legalDeclarationPage,
     mockLrnValidator
   )(ec, appConfig)
 
@@ -63,13 +68,14 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     authorizedUser()
     setupErrorHandler()
     when(normalSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
-    when(draftSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(legalDeclarationPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(draftSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(amendSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(normalSummaryPage, draftSummaryPage, amendSummaryPage, mockSummaryPageNoData, mockSubmissionService)
+    reset(normalSummaryPage, legalDeclarationPage, draftSummaryPage, amendSummaryPage, mockSummaryPageNoData, mockSubmissionService)
     super.afterEach()
   }
 
@@ -77,15 +83,61 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
     "return 200 (OK)" when {
 
-      "declaration contains mandatory data" in {
+      "declaration contains mandatory data" when {
+        "ready for submission" when {
+          "normal mode" in {
 
-        withNewCaching(aDeclaration(withConsignmentReferences()))
+            withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = true))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+            val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) mustBe OK
-        verify(normalSummaryPage, times(1)).apply(any())(any(), any(), any())
-        verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+            status(result) mustBe OK
+            verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink))(any(), any(), any())
+            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+          }
+          "draft mode" in {
+
+            withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = true))
+
+            val result = controller.displayPage(Mode.Draft)(getRequest())
+
+            status(result) mustBe OK
+            verify(normalSummaryPage, times(1)).apply(eqTo(draftModeBackLink))(any(), any(), any())
+            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+          }
+        }
+        "saved declaration" when {
+          "normal mode" in {
+
+            withNewCaching(aDeclaration(withConsignmentReferences()))
+
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+
+            status(result) mustBe OK
+            verify(draftSummaryPage, times(1)).apply(eqTo(normalModeBackLink))(any(), any(), any())
+            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+          }
+          "draft mode" in {
+
+            withNewCaching(aDeclaration(withConsignmentReferences()))
+
+            val result = controller.displayPage(Mode.Draft)(getRequest())
+
+            status(result) mustBe OK
+            verify(draftSummaryPage, times(1)).apply(eqTo(draftModeBackLink))(any(), any(), any())
+            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+          }
+        }
+        "amendment" in {
+
+          withNewCaching(aDeclaration(withConsignmentReferences()))
+
+          val result = controller.displayPage(Mode.Amend)(getRequest())
+
+          status(result) mustBe OK
+          verify(amendSummaryPage, times(1)).apply()(any(), any(), any())
+          verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+        }
       }
 
       "declaration doesn't contain mandatory data" in {
@@ -113,7 +165,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
           .thenReturn(Future.successful(Some(expectedSubmission)))
 
         val formData = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
-        val result = controller.submitDeclaration(postRequestAsFormUrlEncoded(formData: _*))
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(routes.ConfirmationController.displayHoldingPage.url))
@@ -132,14 +184,14 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
       "missing legal declaration data" in {
         withNewCaching(aDeclaration())
         val partialForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"))
-        val result = controller.submitDeclaration(postRequestAsFormUrlEncoded(partialForm: _*))
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestAsFormUrlEncoded(partialForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
 
       "form is submitted with form errors" in {
         withNewCaching(aDeclaration())
-        val result = controller.submitDeclaration(postRequestWithSubmissionError)
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestWithSubmissionError)
 
         status(result) must be(BAD_REQUEST)
       }
@@ -151,7 +203,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         when(mockLrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any[HeaderCarrier], any[ExecutionContext]))
           .thenReturn(Future.successful(true))
 
-        val result = controller.submitDeclaration(postRequestAsFormUrlEncoded(completeForm: _*))
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestWithSubmissionError)
 
         status(result) must be(BAD_REQUEST)
       }
@@ -163,7 +215,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         when(mockSubmissionService.submit(any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
 
         val correctForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
-        val result = controller.submitDeclaration(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe INTERNAL_SERVER_ERROR
         verify(normalSummaryPage, times(0)).apply(any())(any(), any(), any())

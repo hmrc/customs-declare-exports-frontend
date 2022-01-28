@@ -16,18 +16,17 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes.{SummaryController, TransportContainerController}
-@import forms.declaration.LegalDeclaration
 @import models.Mode
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
-@import views.html.declaration.summary._
+@import views.html.declaration.summary.sections._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukWarningText: GovukWarningText,
     pageTitle: pageTitle,
-    errorSummary: errorSummary,
     draftInfoSection: draft_info_section,
     references_section: references_section,
     countries_section: countries_section,
@@ -36,40 +35,42 @@
     transaction_section: transaction_section,
     items_section: items_section,
     transport_section: transport_section,
-    legal_declaration: legal_declaration,
-    formHelper: FormWithCSRF,
-    saveAndContinue: saveAndContinue
+    linkButton: linkButton
 )
 
-@(legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(backLink: Call)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @govukLayout(
     title = Title("declaration.summary.normal-header"),
-    backButton = Some(BackButton(messages("site.back"), TransportContainerController.displayContainerSummary(Mode.Normal))),
+    backButton = Some(BackButton(messages("site.back"), backLink)),
     useCustomContentWidth = true
 ) {
 
-    @formHelper(action = SummaryController.submitDeclaration, 'autoComplete -> "off") {
-        @errorSummary(legalDeclarationForm.errors)
+    @pageTitle(messages("declaration.summary.normal-header"))
 
-        @pageTitle(messages("declaration.summary.normal-header"))
+    @govukWarningText(WarningText(
+        iconFallbackText = messages("site.warning"),
+        content = Text(messages("declaration.summary.warning"))
+    ))
 
-        @references_section(Mode.Change, request.cacheModel)
+    @draftInfoSection(request.cacheModel)
 
-        @parties_section(Mode.Change, request.cacheModel)
+    @references_section(Mode.Change, request.cacheModel)
 
-        @countries_section(Mode.Change, request.cacheModel)
+    @parties_section(Mode.Change, request.cacheModel)
 
-        @locations_section(Mode.Change, request.cacheModel)
+    @countries_section(Mode.Change, request.cacheModel)
 
-        @transaction_section(Mode.Change, request.cacheModel)
+    @locations_section(Mode.Change, request.cacheModel)
 
-        @items_section(Mode.Change, request.cacheModel)
+    @transaction_section(Mode.Change, request.cacheModel)
 
-        @transport_section(Mode.Change, request.cacheModel)
+    @items_section(Mode.Change, request.cacheModel)
 
-        @legal_declaration(legalDeclarationForm)
+    @transport_section(Mode.Change, request.cacheModel)
 
-        @saveAndContinue("site.acceptAndSubmitDeclaration")
-    }
+    @linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage(Mode.Normal))
+
+    <br />
+
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration.summary
+package views.declaration.summary.sections
 
 import base.Injector
 import controllers.declaration.routes._
@@ -22,7 +22,7 @@ import forms.declaration.LocationOfGoods
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.locations_section
+import views.html.declaration.summary.sections.locations_section
 
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 

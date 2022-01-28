@@ -19,17 +19,14 @@
 @import models.Mode
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
-@import views.html.components.gds.{linkButton, _}
-@import views.html.declaration.summary._
+@import views.html.components.gds._
+@import views.html.declaration.summary.sections._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
         govukLayout: gdsMainTemplate,
         govukWarningText: GovukWarningText,
         pageTitle: pageTitle,
-        paragraphBody: paragraphBody,
-        link: link,
-        label: label,
         draftInfoSection: draft_info_section,
         references_section: references_section,
         countries_section: countries_section,
@@ -40,15 +37,22 @@
         transport_section: transport_section
 )
 
-@()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(backLink: Call)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @govukLayout(
     title = Title("declaration.summary.saved-header"),
-    backButton = Some(BackButton(messages("site.back"), controllers.routes.SavedDeclarationsController.displayDeclarations())),
+    backButton = Some(BackButton(messages("site.back"), backLink)),
     useCustomContentWidth = true
 ) {
 
     @pageTitle(messages("declaration.summary.saved-header"))
+
+    @govukWarningText(WarningText(
+        iconFallbackText = messages("site.warning"),
+        content = Text(messages("declaration.summary.warning"))
+    ))
+
+    <p class="govuk-body">@messages("declaration.summary.draft.body")</p>
 
     @draftInfoSection(request.cacheModel)
 
@@ -68,17 +72,4 @@
 
     <br/>
 
-    @label("declaration.summary.saved.label", "")
-    @paragraphBody(messages("declaration.summary.saved.body"), id = Some("to-continue"))
-
-    @govukWarningText(WarningText(
-        iconFallbackText = messages("site.warning"),
-        content = Text(messages("declaration.summary.warning"))
-    ))
-
-    @paragraphBody(message = link(
-        text = messages("declaration.summary.continue.link"),
-        call = routes.AdditionalDeclarationTypeController.displayPage(Mode.Draft),
-        id = Some("continue-link")).toString
-    )
 }

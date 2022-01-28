@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package views.declaration.summary
+package views.declaration.summary.sections
 
 import base.Injector
 import controllers.declaration.routes
 import forms.declaration.InlandOrBorder.Border
-import forms.declaration.{
-  InlandModeOfTransportCode,
-  ModeOfTransportCode,
-  SupervisingCustomsOffice,
-  TransportCodes,
-  TransportPayment,
-  WarehouseIdentification
-}
+import forms.declaration._
 import models.Mode
 import models.declaration.Container
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.transport_section
+import views.html.declaration.summary.sections.transport_section
 
 class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
