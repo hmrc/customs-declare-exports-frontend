@@ -28,7 +28,7 @@ import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.{request, _}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.is_license_required
@@ -105,7 +105,10 @@ class IsLicenseRequiredController @Inject()(
     )
 
   private def representativeStatusCode(implicit request: JourneyRequest[AnyContent]): Option[String] =
-    request.cacheModel.parties.representativeDetails flatMap { _.statusCode }
+    (request.cacheModel.parties.representativeDetails flatMap { _.statusCode }) orElse {
+      if (request.cacheModel.parties.declarantIsExporter exists { _.isExporter }) Some("1")
+      else None
+    }
 
   private def form: Form[YesNoAnswer] = YesNoAnswer.form()
 }
