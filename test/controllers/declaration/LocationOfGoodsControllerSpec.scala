@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import connectors.CodeListConnector
-import forms.declaration.GoodsLocationForm
+import forms.declaration.LocationOfGoods
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.{DeclarationType, Mode}
 import models.codes.Country
@@ -31,20 +31,20 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.goods_location
+import views.html.declaration.location_of_goods
 
 import scala.collection.immutable.ListMap
 
-class LocationControllerSpec extends ControllerSpec with OptionValues {
+class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockGoodsLocationPage = mock[goods_location]
+  val mockLocationOfGoods = mock[location_of_goods]
   val mockCodeListConnector = mock[CodeListConnector]
 
-  val controller = new LocationController(
+  val controller = new LocationOfGoodsController(
     mockAuthAction,
     mockJourneyAction,
     stubMessagesControllerComponents(),
-    mockGoodsLocationPage,
+    mockLocationOfGoods,
     mockExportsCacheService,
     navigator
   )(ec, mockCodeListConnector)
@@ -54,19 +54,19 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(mockGoodsLocationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockLocationOfGoods.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("PL" -> Country("Poland", "PL")))
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
 
-    reset(mockGoodsLocationPage, mockCodeListConnector)
+    reset(mockLocationOfGoods, mockCodeListConnector)
   }
 
-  def theResponseForm: Form[GoodsLocationForm] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[GoodsLocationForm]])
-    verify(mockGoodsLocationPage).apply(any(), captor.capture())(any(), any())
+  def theResponseForm: Form[LocationOfGoods] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[LocationOfGoods]])
+    verify(mockLocationOfGoods).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -80,24 +80,22 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockGoodsLocationPage).apply(any(), any())(any(), any())
+        verify(mockLocationOfGoods).apply(any(), any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
 
       "display page method is invoked and cache contains data" in {
-
-        val goodsLocation = GoodsLocationForm("GBAUEMAEMAEMA")
-        withNewCaching(aDeclaration(withGoodsLocation(goodsLocation)))
+        val locationOfGoods = LocationOfGoods("GBAUEMAEMAEMA")
+        withNewCaching(aDeclaration(withGoodsLocation(locationOfGoods)))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockGoodsLocationPage).apply(any(), any())(any(), any())
+        verify(mockLocationOfGoods).apply(any(), any())(any(), any())
 
         theResponseForm.value mustNot be(empty)
         theResponseForm.value.value.code mustBe "GBAUEMAEMAEMA"
@@ -107,27 +105,25 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     "return 400 (BAD_REQUEST)" when {
 
       "form is incorrect" in {
-
-        val incorrectForm = Json.toJson(GoodsLocationForm("incorrect"))
+        val incorrectForm = Json.toJson(LocationOfGoods("incorrect"))
 
         val result = controller.saveLocation(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockGoodsLocationPage).apply(any(), any())(any(), any())
+        verify(mockLocationOfGoods).apply(any(), any())(any(), any())
       }
     }
 
     "return 303 (SEE_OTHER)" when {
 
       "information provided by user are correct" in {
-
-        val correctForm = Json.toJson(GoodsLocationForm("PLAUEMAEMAEMA"))
+        val correctForm = Json.toJson(LocationOfGoods("PLAUEMAEMAEMA"))
 
         val result = controller.saveLocation(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitController.displayPage()
-        verify(mockGoodsLocationPage, times(0)).apply(any(), any())(any(), any())
+        verify(mockLocationOfGoods, times(0)).apply(any(), any())(any(), any())
       }
 
       "Additional dec type is Supplementary_EIDR with MOU" in {

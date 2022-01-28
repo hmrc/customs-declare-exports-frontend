@@ -40,7 +40,7 @@ trait ViewMatchers {
 
   def removeBlanksIfAnyBeforeDot(s: String): String = s.replace(" .", ".")
 
-  def removeLineBreakIfAny(s: String): String = s.replace(" </br>", " ")
+  def removeLineBreakIfAny(s: String): String = s.replace("<br>", " ")
 
   implicit class PageComplexChecks(document: Document) {
     def checkErrorsSummary(): Unit = {

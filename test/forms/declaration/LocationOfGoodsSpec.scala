@@ -32,7 +32,7 @@ import play.api.test.Helpers.stubMessagesApi
 import java.util.Locale
 import scala.collection.immutable.ListMap
 
-class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar with BeforeAndAfterEach {
+class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with BeforeAndAfterEach {
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
   implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
@@ -57,7 +57,7 @@ class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar wi
       "provided with a Code" which {
 
         "is missing" in {
-          val form = GoodsLocationForm.form().bind(JsObject(Map("unexpected" -> JsString(""))), Form.FromJsonMaxChars)
+          val form = LocationOfGoods.form().bind(JsObject(Map("unexpected" -> JsString(""))), Form.FromJsonMaxChars)
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
@@ -69,7 +69,7 @@ class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar wi
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.goodsLocation.code.empty")
+          form.errors.head.message must equal("declaration.locationOfGoods.code.empty")
         }
 
         "is longer than 39 characters" in {
@@ -77,7 +77,7 @@ class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar wi
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.goodsLocation.code.error.length")
+          form.errors.head.message must equal("declaration.locationOfGoods.code.error.length")
         }
 
         "is shorter than 10 characters" in {
@@ -85,7 +85,7 @@ class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar wi
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.goodsLocation.code.error.length")
+          form.errors.head.message must equal("declaration.locationOfGoods.code.error.length")
         }
 
         "is alphanumeric" in {
@@ -93,7 +93,7 @@ class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar wi
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.goodsLocation.code.error")
+          form.errors.head.message must equal("declaration.locationOfGoods.code.error")
         }
 
         "does not contain a valid country" in {
@@ -101,7 +101,7 @@ class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar wi
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.goodsLocation.code.error")
+          form.errors.head.message must equal("declaration.locationOfGoods.code.error")
         }
 
         "does not contain a valid location type" in {
@@ -109,7 +109,7 @@ class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar wi
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.goodsLocation.code.error")
+          form.errors.head.message must equal("declaration.locationOfGoods.code.error")
         }
 
         "does not contain a valid qualifier code" in {
@@ -117,7 +117,7 @@ class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar wi
 
           form.hasErrors must be(true)
           form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.goodsLocation.code.error")
+          form.errors.head.message must equal("declaration.locationOfGoods.code.error")
         }
       }
     }
@@ -135,9 +135,9 @@ class GoodsLocationFormSpec extends DeclarationPageBaseSpec with MockitoSugar wi
     }
   }
 
-  "GoodsLocationForm" when {
-    testTariffContentKeys(GoodsLocationForm, "tariff.declaration.locationOfGoods")
+  "LocationOfGoods" when {
+    testTariffContentKeys(LocationOfGoods, "tariff.declaration.locationOfGoods")
   }
 
-  private def getBoundedForm(code: String) = GoodsLocationForm.form().bind(JsObject(Map("code" -> JsString(code))), Form.FromJsonMaxChars)
+  private def getBoundedForm(code: String) = LocationOfGoods.form().bind(JsObject(Map("code" -> JsString(code))), Form.FromJsonMaxChars)
 }

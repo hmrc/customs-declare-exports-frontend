@@ -19,11 +19,11 @@ package views.declaration
 import base.{Injector, TestHelper}
 import connectors.CodeListConnector
 import controllers.declaration.routes
-import forms.declaration.GoodsLocationForm
+import forms.declaration.LocationOfGoods
 import models.DeclarationType._
 import models.{DeclarationType, Mode}
 import models.codes.Country
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{Assertion, BeforeAndAfterEach}
@@ -33,13 +33,14 @@ import play.api.mvc.Call
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.goods_location
+import views.html.declaration.location_of_goods
 import views.tags.ViewTest
 
+import scala.collection.JavaConverters.asScalaIteratorConverter
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with MockitoSugar with BeforeAndAfterEach {
+class LocationOfGoodsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with MockitoSugar with BeforeAndAfterEach {
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
@@ -54,37 +55,19 @@ class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs
     super.afterEach()
   }
 
-  private val page = instanceOf[goods_location]
-  private val form: Form[GoodsLocationForm] = GoodsLocationForm.form()
+  private val page = instanceOf[location_of_goods]
+  private val form: Form[LocationOfGoods] = LocationOfGoods.form()
 
-  private def createView(form: Form[GoodsLocationForm] = form, declarationType: DeclarationType = DeclarationType.STANDARD): Document =
+  private def createView(form: Form[LocationOfGoods] = form, declarationType: DeclarationType = DeclarationType.STANDARD): Document =
     page(Mode.Normal, form)(journeyRequest(declarationType), messages)
 
-  val prefix = "declaration.goodsLocation"
+  val prefix = "declaration.locationOfGoods"
 
   "Goods Location View on empty page" should {
 
     "have proper messages for labels" in {
-      messages must haveTranslationFor(s"$prefix.title")
-      messages must haveTranslationFor(s"$prefix.body")
       messages must haveTranslationFor(s"$prefix.code.empty")
       messages must haveTranslationFor(s"$prefix.code.error")
-      messages must haveTranslationFor(s"$prefix.inset")
-      messages must haveTranslationFor(s"$prefix.inset.bullet1")
-      messages must haveTranslationFor(s"$prefix.inset.bullet2")
-      messages must haveTranslationFor(s"$prefix.inset.bullet3")
-      messages must haveTranslationFor(s"$prefix.expander.title")
-      messages must haveTranslationFor(s"$prefix.expander.intro01")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph01.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph02.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph03.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph04.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph05.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph06.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph07.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph08.title")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph08.text")
-      messages must haveTranslationFor(s"$prefix.expander.paragraph09.text")
       messages must haveTranslationFor("tariff.declaration.locationOfGoods.clearance.text")
     }
 
@@ -111,35 +94,58 @@ class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs
     "display the inset text" in {
       val insetContent = view.getElementsByClass("govuk-inset-text").get(0).children
 
-      insetContent.first.text mustBe messages(s"$prefix.inset")
+      insetContent.get(0).text mustBe messages(s"$prefix.inset.1")
+      insetContent.get(1).text mustBe messages(s"$prefix.inset.2")
 
       val ul = insetContent.last.children.get(0)
       val bulletPoints = ul.children
-      bulletPoints.size mustBe 3
+      bulletPoints.size mustBe 8
 
-      bulletPoints.get(0).text mustBe messages(s"$prefix.inset.bullet1")
-      bulletPoints.get(1).text mustBe messages(s"$prefix.inset.bullet2")
-      bulletPoints.get(2).text mustBe messages(s"$prefix.inset.bullet3")
+      bulletPoints.iterator.asScala.zipWithIndex.foreach { elementAndIndex =>
+        val (element, index) = elementAndIndex
+        element.text mustBe messages(s"$prefix.inset.bullet${index + 1}")
+      }
     }
 
     "display goods location expander" in {
       val expander = view.getElementsByClass("govuk-details").first.children
-      expander.get(0).text mustBe messages(s"$prefix.expander.title")
+      expander.size mustBe 2
+      expander.first.text mustBe messages(s"$prefix.expander.title")
 
       val details = expander.last
 
-      val children = details.children
-      children.size mustBe 18
-      children.get(0).text mustBe messages(s"$prefix.expander.intro01")
+      val sections = details.children
+      sections.size mustBe 20
+      sections.first.text mustBe messages(s"$prefix.expander.intro01")
 
-      val titles = details.getElementsByClass("govuk-heading-s")
-      titles.size mustBe 8
+      val iterator: Iterator[Element] = sections.iterator.asScala.drop(1)
 
-      val links = details.getElementsByTag("a")
-      links.size mustBe 11
+      for (ix <- 1 to 9) {
+        val title = iterator.next
+        title.text mustBe messages(s"$prefix.expander.paragraph$ix.title")
 
-      val hints = details.getElementsByClass("govuk-hint")
-      hints.size mustBe 9
+        if (ix < 9) {
+          val hint = iterator.next
+          assert(hint.hasClass("govuk-hint"))
+
+          val link1 = hint.children.get(0)
+          assert(link1.hasClass("govuk-link"))
+          link1.text mustBe messages(s"$prefix.expander.paragraph$ix.link1")
+        }
+      }
+
+      for (ix <- 9 to 10) {
+        val hint = iterator.next
+        assert(hint.hasClass("govuk-hint"))
+        val expectedText = removeLineBreakIfAny(
+          messages(
+            s"$prefix.expander.paragraph$ix.text",
+            messages(s"$prefix.expander.paragraph$ix.link1"),
+            messages(s"$prefix.expander.paragraph$ix.link2")
+          )
+        )
+        hint.text mustBe expectedText
+      }
     }
 
     "display tariff expander" in {
@@ -216,7 +222,7 @@ class GoodsLocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs
   }
 
   private def verifyError(code: String, errorKey: String = "error"): Assertion = {
-    val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm(code))
+    val form = LocationOfGoods.form.fillAndValidate(LocationOfGoods(code))
     val view = createView(form)
 
     view must haveGovukGlobalErrorSummary

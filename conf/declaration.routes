@@ -193,9 +193,9 @@ POST        /country-of-routing/:code/change     controllers.declaration.Routing
 
 # Location of goods
 
-GET         /location-of-goods                   controllers.declaration.LocationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /location-of-goods                   controllers.declaration.LocationOfGoodsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /location-of-goods                   controllers.declaration.LocationController.saveLocation(mode: models.Mode ?= models.Mode.Normal)
+POST        /location-of-goods                   controllers.declaration.LocationOfGoodsController.saveLocation(mode: models.Mode ?= models.Mode.Normal)
 
 # Office of exit
 

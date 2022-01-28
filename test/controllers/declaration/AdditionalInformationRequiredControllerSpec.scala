@@ -16,8 +16,6 @@
 
 package controllers.declaration
 
-import scala.concurrent.Future
-
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import models.Mode
@@ -29,9 +27,9 @@ import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.TariffApiService
-import services.TariffApiService.CommodityCodeNotFound
 import views.html.declaration.additionalInformation.additional_information_required
+
+import scala.concurrent.Future
 
 class AdditionalInformationRequiredControllerSpec extends ControllerSpec with OptionValues {
 

@@ -18,6 +18,7 @@ package controllers.declaration
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
 import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.navigation.Navigator
 import forms.declaration.countries.Countries
@@ -68,13 +69,14 @@ class DestinationCountryController @Inject()(
   }
 
   private def redirectToNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (skipLocationOfGoods(request.cacheModel)) navigator.continueTo(mode, controllers.declaration.routes.OfficeOfExitController.displayPage)
+    if (skipLocationOfGoods(request.cacheModel)) navigator.continueTo(mode, OfficeOfExitController.displayPage)
     else {
       request.declarationType match {
         case DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
-          navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
+          navigator.continueTo(mode, LocationOfGoodsController.displayPage)
+
         case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-          navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_))
+          navigator.continueTo(mode, RoutingCountriesController.displayRoutingQuestion(_))
       }
     }
 }
