@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package views.declaration.summary
-
-import java.time.LocalDateTime
-
-import scala.concurrent.duration.FiniteDuration
+package views.declaration.summary.sections
 
 import base.Injector
 import config.AppConfig
 import org.mockito.Mockito.when
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.draft_info_section
+import views.html.declaration.summary.sections.draft_info_section
+
+import java.time.LocalDateTime
+import scala.concurrent.duration.FiniteDuration
 
 class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 

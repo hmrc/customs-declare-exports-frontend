@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package views.declaration.summary
+package views.declaration.summary.sections
 
 import base.Injector
 import forms.declaration.countries.Country
 import models.{ExportsDeclaration, Mode}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.countries_section
+import views.html.declaration.summary.sections.countries_section
 
 class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 

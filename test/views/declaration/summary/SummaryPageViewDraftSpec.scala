@@ -16,18 +16,21 @@
 
 package views.declaration.summary
 
-import controllers.declaration.routes
-import models.{ExportsDeclaration, Mode}
+import models.ExportsDeclaration
 import org.jsoup.nodes.Document
-import views.html.declaration.summary._
+import play.api.mvc.Call
+import views.html.declaration.summary.draft_summary_page
+import views.html.declaration.summary.sections._
 
 class SummaryPageViewDraftSpec extends SummaryPageViewSpec {
+
+  val backLink = Call("GET", "/backLink")
 
   val draftInfoPage = instanceOf[draft_info_section]
 
   val draft_summaryPage = instanceOf[draft_summary_page]
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
-    draft_summaryPage()(journeyRequest(declaration), messages, minimalAppConfig)
+    draft_summaryPage(backLink)(journeyRequest(declaration), messages, minimalAppConfig)
 
   "Summary page" should {
 
@@ -47,23 +50,13 @@ class SummaryPageViewDraftSpec extends SummaryPageViewSpec {
       val backButton = document.getElementById("back-link")
 
       backButton.text() mustBe messages("site.back")
-      backButton must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations())
+      backButton must haveHref(backLink.url)
     }
 
-    "should display label and text at bottom of page" in {
-      val label = document.getElementsByClass("govuk-label govuk-label--m")
+    "should display warning text at top of page" in {
 
-      label.text() mustBe messages("declaration.summary.saved.label")
-
-      val body = document.getElementById("to-continue")
-      body.text() mustBe messages("declaration.summary.saved.body")
+      document.getElementsByClass("govuk-warning-text").text() must include(messages("declaration.summary.warning"))
     }
 
-    "should display continue link" in {
-      val continueLink = document.getElementById("continue-link")
-
-      continueLink must containMessage("declaration.summary.continue.link")
-      continueLink must haveHref(routes.AdditionalDeclarationTypeController.displayPage(Mode.Draft))
-    }
   }
 }

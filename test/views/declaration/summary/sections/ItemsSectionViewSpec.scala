@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package views.declaration.summary
+package views.declaration.summary.sections
 
 import base.Injector
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.items_section
+import views.html.declaration.summary.sections.items_section
 
 class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
