@@ -79,13 +79,31 @@ class IsLicenseRequiredControllerSpec extends ControllerSpec with OptionValues {
     onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY) { _ =>
       "return 200 (OK)" that {
 
-        "display page method is invoked and cache is empty" in {
-          withNewCaching(declaration)
+        "display page method is invoked and cache is empty" when {
+          "declarant in exporter" in {
+            withNewCaching(declaration)
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+            val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
-          status(result) mustBe OK
-          verifyPageInvoked()
+            status(result) mustBe OK
+            verifyPageInvoked()
+          }
+          "direct representative" in {
+            withNewCaching(declaration)
+
+            val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+
+            status(result) mustBe OK
+            verifyPageInvoked()
+          }
+          "indirect representative" in {
+            withNewCaching(declaration)
+
+            val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+
+            status(result) mustBe OK
+            verifyPageInvoked()
+          }
         }
       }
 
