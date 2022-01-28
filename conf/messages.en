@@ -907,10 +907,10 @@ declaration.goodsLocation.body = Enter the new CDS code for the customs location
 declaration.goodsLocation.code.empty = Enter a goods location code
 declaration.goodsLocation.code.error = Goods location code must be in the correct format
 declaration.goodsLocation.code.error.length = Goods location code must have 10 characters minimum and 39 characters maximum
-declaration.goodsLocation.inset = The new RoRo location codes for the RoRo ports are:
-declaration.goodsLocation.inset.bullet1 = Dover (Eastern Docks): GBAUDVRDOVDVR
-declaration.goodsLocation.inset.bullet2 = Eurotunnel: GBAUEUTEUTEUT
-declaration.goodsLocation.inset.bullet3 = Holyhead: GBAUHLYHLDHLY
+declaration.goodsLocation.inset = From 29 January 2022, the new RoRo location codes for the RoRo ports are:
+declaration.goodsLocation.inset.bullet1 = Dover (Eastern Docks): GBAUDVRDOVDVRGVM
+declaration.goodsLocation.inset.bullet2 = Eurotunnel: GBAUEUTEUTEUTGVM
+declaration.goodsLocation.inset.bullet3 = Holyhead: GBAUHLYHLDHLYGVM
 
 declaration.goodsLocation.expander.title = Find the goods location code (CDS data element 5/23)
 declaration.goodsLocation.expander.intro01 = When other locations are available for use you can select the location type, and then look up the code (links open in a new tab).
