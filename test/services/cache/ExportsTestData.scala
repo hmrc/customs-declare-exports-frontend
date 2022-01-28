@@ -33,7 +33,7 @@ trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder 
     withType(`type`),
     withConsignmentReferences(),
     withDestinationCountries(),
-    withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")),
+    withGoodsLocation(LocationOfGoods("GBAUEMAEMAEMA")),
     withWarehouseIdentification(Some(WarehouseIdentification(Some("a")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("b")))),
     withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCode.Rail)))),

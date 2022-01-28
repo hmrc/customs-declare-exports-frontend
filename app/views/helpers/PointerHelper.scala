@@ -145,10 +145,10 @@ object PointerHelper extends Logging {
     "declaration.departureTransport.meansOfTransportOnDepartureIDNumber" -> routes.DepartureTransportController.displayPage,
     "declaration.departureTransport.borderModeOfTransportCode" -> routes.DepartureTransportController.displayPage,
     "declaration.departureTransport.meansOfTransportOnDepartureType" -> routes.InlandTransportDetailsController.displayPage,
-    "declaration.locations.goodsLocation.nameOfLocation" -> routes.LocationController.displayPage,
-    "declaration.locations.goodsLocation.identificationOfLocation" -> routes.LocationController.displayPage,
-    "declaration.locations.goodsLocation.qualifierOfIdentification" -> routes.LocationController.displayPage,
-    "declaration.locations.goodsLocation.typeOfLocation" -> routes.LocationController.displayPage,
+    "declaration.locations.goodsLocation.nameOfLocation" -> routes.LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.identificationOfLocation" -> routes.LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.qualifierOfIdentification" -> routes.LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.typeOfLocation" -> routes.LocationOfGoodsController.displayPage,
     "declaration.containers.container.$.id" -> routes.TransportContainerController.displayContainerSummary, //?? SealController.displaySealSummary
     "declaration.containers.container.$.seals.seal.$.id" -> routes.TransportContainerController.displayContainerSummary, //?? SealController.displaySealRemove
     "declaration.locations.destinationCountries.countryOfDestination" -> routes.DestinationCountryController.displayPage,

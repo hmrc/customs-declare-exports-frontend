@@ -17,7 +17,8 @@
 package views.declaration.summary.sections
 
 import base.Injector
-import forms.declaration.GoodsLocationForm
+import controllers.declaration.routes._
+import forms.declaration.LocationOfGoods
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -25,7 +26,7 @@ import views.html.declaration.summary.sections.locations_section
 
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
-  val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123"))
+  val data = aDeclaration(withGoodsLocation(LocationOfGoods("GBAUEMAEMAEMA")), withOfficeOfExit("123"))
 
   val section = instanceOf[locations_section]
 
@@ -41,7 +42,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.locations.goodsLocationCode.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.LocationController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(LocationOfGoodsController.displayPage(Mode.Change))
     }
 
     "have office of exit id with change button" in {
@@ -54,7 +55,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.locations.officeOfExit.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(OfficeOfExitController.displayPage(Mode.Change))
 
     }
 
