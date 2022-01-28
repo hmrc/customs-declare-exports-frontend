@@ -72,10 +72,13 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
 
         val tariffDetails = view.getElementsByClass("govuk-details__text").first.text
 
-        removeBlanksIfAnyBeforeDot(tariffDetails) mustBe messages(
-          s"tariff.declaration.departureTransport.$expectedKey.text",
-          messages(s"tariff.declaration.departureTransport.$expectedKey.linkText.0")
-        ).replace("</br>", "")
+        val expectedText = removeLineBreakIfAny(
+          messages(
+            s"tariff.declaration.departureTransport.$expectedKey.text",
+            messages(s"tariff.declaration.departureTransport.$expectedKey.linkText.0")
+          )
+        )
+        removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
       }
 
       "display 'Save and continue' button on page" in {
