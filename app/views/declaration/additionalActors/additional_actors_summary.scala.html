@@ -29,21 +29,17 @@
 @import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukButton: GovukButton,
-        govukTable : GovukTable,
-        govukRadios: GovukRadios,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        pageTitle: pageTitle,
-        exportsInputText: exportsInputText,
-        spanVisuallyHidden: spanVisuallyHidden,
-        link: link,
-        addAnotherQuestion: addAnotherQuestion,
-        saveButtons: saveButtons,
-        navigator: Navigator,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    spanVisuallyHidden: spanVisuallyHidden,
+    link: link,
+    addAnotherQuestion: addAnotherQuestion,
+    saveButtons: saveButtons,
+    navigator: Navigator,
+    formHelper: FormWithCSRF
 )
 
 @(mode: Mode, form: Form[_], actors: Seq[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)

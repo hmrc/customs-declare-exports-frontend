@@ -146,16 +146,19 @@ case class ExportsDeclaration(
     copy(
       transport = transport.copy(
         meansOfTransportOnDepartureType = departure.meansOfTransportOnDepartureType,
-        meansOfTransportOnDepartureIDNumber = departure.meansOfTransportOnDepartureIDNumber
+        meansOfTransportOnDepartureIDNumber = departure.meansOfTransportOnDepartureIDNumber,
+        meansOfTransportCrossingTheBorderType = None,
+        meansOfTransportCrossingTheBorderIDNumber = None,
+        meansOfTransportCrossingTheBorderNationality = None
       )
     )
 
-  def updateBorderTransport(formData: BorderTransport): ExportsDeclaration =
+  def updateBorderTransport(borderTransport: BorderTransport): ExportsDeclaration =
     copy(
       transport = transport.copy(
-        meansOfTransportCrossingTheBorderType = Some(formData.meansOfTransportCrossingTheBorderType),
-        meansOfTransportCrossingTheBorderIDNumber = Some(formData.meansOfTransportCrossingTheBorderIDNumber),
-        meansOfTransportCrossingTheBorderNationality = formData.meansOfTransportCrossingTheBorderNationality
+        meansOfTransportCrossingTheBorderType = Some(borderTransport.meansOfTransportCrossingTheBorderType),
+        meansOfTransportCrossingTheBorderIDNumber = Some(borderTransport.meansOfTransportCrossingTheBorderIDNumber),
+        meansOfTransportCrossingTheBorderNationality = borderTransport.meansOfTransportCrossingTheBorderNationality
       )
     )
 
