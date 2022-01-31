@@ -20,7 +20,7 @@ import java.util.Locale.{ENGLISH, JAPANESE}
 import scala.collection.immutable.ListMap
 import base.UnitWithMocksSpec
 import config.AppConfig
-import models.codes.{AdditionalProcedureCode, Country, DmsErrorCode, HolderOfAuthorisationCode, ProcedureCode}
+import models.codes.{AdditionalProcedureCode, Country, DmsErrorCode, GoodsLocationCode, HolderOfAuthorisationCode, ProcedureCode}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 
@@ -39,6 +39,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
     when(appConfig.additionalProcedureCodesForC21).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.dmsErrorCodes).thenReturn("/code-lists/manyCodes.json")
     when(appConfig.countryCodes).thenReturn("/code-lists/manyCodes.json")
+    when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
 
   private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig)
@@ -184,6 +185,20 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
         codeListConnector.getCountryCodes(JAPANESE) must be(sampleCountriesEnglish)
       }
     }
+
+    "return a map of Goods Location Codes" when {
+      "'ENGLISH' locale passed return codes with English descriptions" in {
+        codeListConnector.getGoodsLocationCodes(ENGLISH) must be(sampleGlcsEnglish)
+      }
+
+      "'WELSH' local passed return codes with Welsh descriptions" in {
+        codeListConnector.getGoodsLocationCodes(codeListConnector.WELSH) must be(sampleGlcsWelsh)
+      }
+
+      "unsupported 'JAPANESE' locale is passed return codes with English descriptions" in {
+        codeListConnector.getGoodsLocationCodes(JAPANESE) must be(sampleGlcsEnglish)
+      }
+    }
   }
 
   private val samplePCsEnglish =
@@ -225,5 +240,12 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
   private val sampleCountriesEnglish =
     ListMap("001" -> Country("English", "001"), "002" -> Country("English", "002"), "003" -> Country("English", "003"))
 
-  private val sampleCountriesWelsh = ListMap("001" -> Country("Welsh", "001"), "002" -> Country("Welsh", "002"), "003" -> Country("Welsh", "003"))
+  private val sampleCountriesWelsh =
+    ListMap("001" -> Country("Welsh", "001"), "002" -> Country("Welsh", "002"), "003" -> Country("Welsh", "003"))
+
+  private val sampleGlcsEnglish =
+    ListMap("001" -> GoodsLocationCode("001", "English"), "002" -> GoodsLocationCode("002", "English"), "003" -> GoodsLocationCode("003", "English"))
+
+  private val sampleGlcsWelsh =
+    ListMap("001" -> GoodsLocationCode("001", "Welsh"), "002" -> GoodsLocationCode("002", "Welsh"), "003" -> GoodsLocationCode("003", "Welsh"))
 }
