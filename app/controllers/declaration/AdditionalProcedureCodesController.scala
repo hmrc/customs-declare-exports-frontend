@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.helpers.MultipleItemsHelper.remove
-import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
+import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.helpers._
 import controllers.navigation.Navigator
 import forms.declaration.procedurecodes.AdditionalProcedureCode
@@ -48,7 +48,8 @@ class AdditionalProcedureCodesController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   procedureCodeService: ProcedureCodeService,
-  additionalProcedureCodesPage: additional_procedure_codes
+  additionalProcedureCodesPage: additional_procedure_codes,
+  supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
@@ -203,7 +204,7 @@ class AdditionalProcedureCodesController @Inject()(
       case _ =>
         val continueToCommodityDetails = navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
 
-        if (!isConditionForAllProcedureCodesVerified(declaration)) Future.successful(continueToCommodityDetails)
+        if (!supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration)) Future.successful(continueToCommodityDetails)
         else resetSupervisingCustomsOfficeInCache(declaration).map(_ => continueToCommodityDetails)
     }
 

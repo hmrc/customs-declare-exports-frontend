@@ -16,12 +16,6 @@
 
 package controllers.navigation
 
-import java.time.{LocalDate, ZoneOffset}
-import java.util.concurrent.TimeUnit
-
-import scala.concurrent.duration.FiniteDuration
-import scala.concurrent.{ExecutionContext, Future}
-
 import base.{JourneyTypeTestRunner, MockExportCacheService, RequestBuilder, UnitWithMocksSpec}
 import config.AppConfig
 import controllers.declaration.routes.{
@@ -51,6 +45,11 @@ import services.audit.{AuditService, AuditTypes}
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.{LocalDate, ZoneOffset}
+import java.util.concurrent.TimeUnit
+import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ExecutionContext, Future}
+
 class NavigatorSpec
     extends UnitWithMocksSpec with ExportsDeclarationBuilder with JourneyTypeTestRunner with MockExportCacheService with RequestBuilder
     with ScalaFutures {
@@ -61,7 +60,10 @@ class NavigatorSpec
   private val auditService = mock[AuditService]
   private val hc: HeaderCarrier = mock[HeaderCarrier]
   private val tariffApiService = mock[TariffApiService]
-  private val navigator = new Navigator(config, auditService, tariffApiService)
+  private val inlandOrBorderHelper = mock[InlandOrBorderHelper]
+  private val supervisingCustomsOfficeHelper = mock[SupervisingCustomsOfficeHelper]
+
+  private val navigator = new Navigator(config, auditService, tariffApiService, inlandOrBorderHelper, supervisingCustomsOfficeHelper)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

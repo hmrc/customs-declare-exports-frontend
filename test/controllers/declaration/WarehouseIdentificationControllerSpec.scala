@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import base.ExportsTestData.itemWithPC
+import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.WarehouseIdentification
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
@@ -37,6 +38,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
   private val pageYesNo = mock[warehouse_identification_yesno]
   private val pageIdentification = mock[warehouse_identification]
+  private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
 
   val controller = new WarehouseIdentificationController(
     mockAuthAction,
@@ -45,7 +47,8 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     pageYesNo,
-    pageIdentification
+    pageIdentification,
+    supervisingCustomsOfficeHelper
   )(ec)
 
   override protected def beforeEach(): Unit = {

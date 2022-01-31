@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerWithoutFormSpec
 import base.ExportsTestData.pc1040
-import controllers.helpers.SaveAndReturn
+import controllers.helpers.{SaveAndReturn, SupervisingCustomsOfficeHelper}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
@@ -47,6 +47,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   private val itemsSummaryPage = mock[items_summary]
   private val removeItemPage = mock[items_remove_item]
   private val mockExportIdGeneratorService = mock[ExportItemIdGeneratorService]
+  private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
 
   private val controller = new ItemsSummaryController(
     mockAuthAction,
@@ -57,7 +58,8 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     stubMessagesControllerComponents(),
     addItemPage,
     itemsSummaryPage,
-    removeItemPage
+    removeItemPage,
+    supervisingCustomsOfficeHelper
   )(ec)
 
   private val itemId = "ItemId12345"
