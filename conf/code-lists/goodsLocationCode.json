@@ -1,0 +1,377 @@
+[
+  {
+    "code": "GBAUBA5ABDCGD",
+    "en": "Aberdeen 410",
+    "cy": "Aberdeen 410"
+  },
+  {
+    "code": "GBAUZAHABZXCQ",
+    "en": "Aberdeen 410",
+    "cy": "Aberdeen 410"
+  },
+  {
+    "code": "GBAUBELBFSXXX",
+    "en": "Belfast 516,",
+    "cy": "Belfast 516,"
+  },
+  {
+    "code": "GBAUCLLBHXXAD",
+    "en": "Birmingham 011",
+    "cy": "Birmingham 011"
+  },
+  {
+    "code": "GBAUSOLBHXXBW",
+    "en": "Birmingham 011",
+    "cy": "Birmingham 011"
+  },
+  {
+    "code": "GBAULHFBHXXCR",
+    "en": "Birmingham 011",
+    "cy": "Birmingham 011"
+  },
+  {
+    "code": "GBAUAVOBRSXAD",
+    "en": "Bristol 033",
+    "cy": "Bristol 033"
+  },
+  {
+    "code": "GBAUANFDOGWSP",
+    "en": "Dover 060",
+    "cy": "Dover 060"
+  },
+  {
+    "code": "GBAUDVRDOGWDG",
+    "en": "Dover 060",
+    "cy": "Dover 060"
+  },
+  {
+    "code": "GBAUDVRDOGWNL",
+    "en": "Dover 060",
+    "cy": "Dover 060"
+  },
+  {
+    "code": "GBAULY9DOGWSE",
+    "en": "Dover 060",
+    "cy": "Dover 060"
+  },
+  {
+    "code": "GBAUNWBEDIXXX",
+    "en": "Edinburgh 436",
+    "cy": "Edinburgh 436"
+  },
+  {
+    "code": "GBAUCWYLGWXBB",
+    "en": "Gatwick 120",
+    "cy": "Gatwick 120"
+  },
+  {
+    "code": "GBAURENGLAXBS",
+    "en": "Glasgow 444",
+    "cy": "Glasgow 444"
+  },
+  {
+    "code": "GBAUBTIGRKBXD",
+    "en": "Glasgow 444",
+    "cy": "Glasgow 444"
+  },
+  {
+    "code": "GBAUBWLGRKBLD",
+    "en": "Glasgow 444",
+    "cy": "Glasgow 444"
+  },
+  {
+    "code": "GBAUCLDGLAXAD",
+    "en": "Glasgow 444",
+    "cy": "Glasgow 444"
+  },
+  {
+    "code": "GBAUPASGLAXCN",
+    "en": "Glasgow 444",
+    "cy": "Glasgow 444"
+  },
+  {
+    "code": "GBAUPASGLAXXX",
+    "en": "Glasgow 444",
+    "cy": "Glasgow 444"
+  },
+  {
+    "code": "GBAUPIKPIKGPS",
+    "en": "Glasgow 444",
+    "cy": "Glasgow 444"
+  },
+  {
+    "code": "GBAULHRLHRXBN",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUSLLLHRXBB",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUFEMLHRXCY",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUFEMLHRXCB",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUFEMLHRXBF",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUHOULHRXCU",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUFEMLHRXBK",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCBRLHRXAD",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUHMILHRXBW",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCBRLHRXXD",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAURDNLHRXXX",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUHOULHRXBQ",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUSLOLHRXBA",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUASFLHRXCZ",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUFEMLHRXDA",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCBRLHRXBU",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCBRLHRXCR",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUFEMLHRXCK",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCBRLHRXCA",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUSWLLHRXAG",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUHOULHRXBV",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCBRLHRXAF",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUHMILHRXDB",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUHOULHRXAA",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCBRLHROND",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCWYLGWXCS",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUFEMLHRXBC",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCBRLHRXBD",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCBRLHRXBR",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUFEMLHRXCQ",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUFEMLHRXAL",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCBRLHRXAI",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUSLLLHRXZY",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUCBRLHRXAJ",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUFEMLHRXAC",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUHESLHRXAH",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUPLELHRXDC",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUHOULHRXAH",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAUHOULHRXBT",
+    "en": "Heathrow 120",
+    "cy": "Heathrow 120"
+  },
+  {
+    "code": "GBAULUTLTNXBG",
+    "en": "Luton 223",
+    "cy": "Luton 223"
+  },
+  {
+    "code": "GBAUMANMANXBM",
+    "en": "Manchester 191",
+    "cy": "Manchester 191"
+  },
+  {
+    "code": "GBAUMANMANXBB",
+    "en": "Manchester 191",
+    "cy": "Manchester 191"
+  },
+  {
+    "code": "GBAUSFDMANXDH",
+    "en": "Manchester 191",
+    "cy": "Manchester 191"
+  },
+  {
+    "code": "GBAUMANMANXAD",
+    "en": "Manchester 191",
+    "cy": "Manchester 191"
+  },
+  {
+    "code": "GBAUTFKMANXCL",
+    "en": "Manchester 191",
+    "cy": "Manchester 191"
+  },
+  {
+    "code": "GBAUACMMANXXX",
+    "en": "Manchester 191",
+    "cy": "Manchester 191"
+  },
+  {
+    "code": "GBAUBRFMANXCJ",
+    "en": "Manchester 191",
+    "cy": "Manchester 191"
+  },
+  {
+    "code": "GBAUMANMANXBJ",
+    "en": "Manchester 191",
+    "cy": "Manchester 191"
+  },
+  {
+    "code": "GBAURCSRCSXDI",
+    "en": "Medway 065",
+    "cy": "Medway 065"
+  },
+  {
+    "code": "GBAUDFDLGPXAD",
+    "en": "Medway 065",
+    "cy": "Medway 065"
+  },
+  {
+    "code": "GBAUDFDTHPEUD",
+    "en": "Medway 065",
+    "cy": "Medway 065"
+  },
+  {
+    "code": "GBAULRKMEDWSG",
+    "en": "Medway 065",
+    "cy": "Medway 065"
+  },
+  {
+    "code": "GBAUBSTLSAXXX",
+    "en": "Stansted 121",
+    "cy": "Stansted 121"
+  },
+  {
+    "code": "GBAUCLPTILCTD",
+    "en": "Tilbury 150",
+    "cy": "Tilbury 150"
+  },
+  {
+    "code": "GBAULAILONXAM",
+    "en": "Tilbury 150",
+    "cy": "Tilbury 150"
+  }
+]

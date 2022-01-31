@@ -38,7 +38,8 @@ class SupervisingCustomsOfficeController @Inject()(
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  supervisingCustomsOfficePage: supervising_customs_office
+  supervisingCustomsOfficePage: supervising_customs_office,
+  supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
@@ -54,7 +55,7 @@ class SupervisingCustomsOfficeController @Inject()(
     form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(supervisingCustomsOfficePage(mode, formWithErrors))),
-        updateCache(_).map(declaration => navigator.continueTo(mode, SupervisingCustomsOfficeHelper.nextPage(declaration)))
+        updateCache(_).map(declaration => navigator.continueTo(mode, supervisingCustomsOfficeHelper.nextPage(declaration)))
       )
   }
 

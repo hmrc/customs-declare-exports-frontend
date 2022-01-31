@@ -6,5 +6,9 @@
   {
     "parentCode": "0000",
     "childCodes": []
+  },
+  {
+    "parentCode": "GLC",
+    "childCodes": ["DEP"]
   }
 ]

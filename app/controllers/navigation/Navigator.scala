@@ -18,9 +18,9 @@ package controllers.navigation
 
 import config.AppConfig
 import controllers.declaration.routes
-import controllers.helpers.InlandOrBorderHelper.skipInlandOrBorder
+import controllers.helpers.InlandOrBorderHelper
 import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
-import controllers.helpers.SupervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified
+import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.helpers._
 import controllers.routes.{ChoiceController, RejectedNotificationsController, SubmissionsController}
@@ -61,7 +61,13 @@ case class ItemId(id: String)
 
 // scalastyle:off number.of.methods
 @Singleton
-class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tariffApiService: TariffApiService) {
+class Navigator @Inject()(
+  appConfig: AppConfig,
+  auditService: AuditService,
+  tariffApiService: TariffApiService,
+  inlandOrBorderHelper: InlandOrBorderHelper,
+  supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
+) {
 
   val common: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarationChoice =>
@@ -537,18 +543,18 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService, tari
   private def inlandOrBorderPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     cacheModel.additionalDeclarationType match {
       case Some(STANDARD_FRONTIER) | Some(STANDARD_PRE_LODGED) | Some(SUPPLEMENTARY_SIMPLIFIED)
-          if isConditionForAllProcedureCodesVerified(cacheModel) =>
+          if supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel) =>
         routes.TransportLeavingTheBorderController.displayPage(mode)
 
       case _ => routes.SupervisingCustomsOfficeController.displayPage(mode)
     }
 
   private def inlandTransportDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (skipInlandOrBorder(cacheModel)) supervisingCustomsOfficePageOnCondition(cacheModel, mode)
+    if (inlandOrBorderHelper.skipInlandOrBorder(cacheModel)) supervisingCustomsOfficePageOnCondition(cacheModel, mode)
     else routes.InlandOrBorderController.displayPage(mode)
 
   private def supervisingCustomsOfficePageOnCondition(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (isConditionForAllProcedureCodesVerified(cacheModel)) supervisingCustomsOfficePreviousPage(cacheModel, mode)
+    if (supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(cacheModel)) supervisingCustomsOfficePreviousPage(cacheModel, mode)
     else routes.SupervisingCustomsOfficeController.displayPage(mode)
 
   private def departureTransportPreviousPageOnStandardOrSuppl(cacheModel: ExportsDeclaration, mode: Mode): Call = {

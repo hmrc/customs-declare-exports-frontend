@@ -19,14 +19,16 @@ package controllers.helpers
 import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.ExportsDeclaration
-import services.DepCodes.isDesignatedExportPlaceCode
 
-object InlandOrBorderHelper {
+import javax.inject.{Inject, Singleton}
+
+@Singleton
+class InlandOrBorderHelper @Inject()(depCodes: DepCodesHelper) {
 
   def skipInlandOrBorder(declaration: ExportsDeclaration): Boolean =
     declaration.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR) ||
       declaration.declarationHolders.exists(_.skipInlandOrBorder) ||
       declaration.requiresWarehouseId ||
       declaration.transportLeavingBorderCode == Some(RoRo) ||
-      isDesignatedExportPlaceCode(declaration)
+      depCodes.isDesignatedExportPlaceCode(declaration)
 }

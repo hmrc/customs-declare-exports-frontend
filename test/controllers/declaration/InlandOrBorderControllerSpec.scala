@@ -24,6 +24,7 @@ import controllers.declaration.routes.{
   InlandTransportDetailsController,
   TransportContainerController
 }
+import controllers.helpers.InlandOrBorderHelper
 import controllers.helpers.TransportSectionHelper._
 import controllers.routes.RootController
 import forms.declaration.InlandOrBorder
@@ -44,7 +45,8 @@ import views.html.declaration.inland_border
 
 class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
-  val inlandOrBorderPage = mock[inland_border]
+  private val inlandOrBorderPage = mock[inland_border]
+  private val inlandOrBorderHelper = instanceOf[InlandOrBorderHelper]
 
   val controller = new InlandOrBorderController(
     mockAuthAction,
@@ -52,7 +54,8 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    inlandOrBorderPage
+    inlandOrBorderPage,
+    inlandOrBorderHelper
   )
 
   override protected def beforeEach(): Unit = {
