@@ -52,6 +52,7 @@ trait CodeListConnector {
   def getHolderOfAuthorisationCodes(locale: Locale): ListMap[String, HolderOfAuthorisationCode]
   def getProcedureCodes(locale: Locale): ListMap[String, ProcedureCode]
   def getProcedureCodesForC21(locale: Locale): ListMap[String, ProcedureCode]
+  def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode]
 
   val WELSH = new Locale("cy", "GB", "");
   val supportedLanguages = Seq(ENGLISH, WELSH)
@@ -80,6 +81,9 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
 
   def getProcedureCodesForC21(locale: Locale): ListMap[String, ProcedureCode] =
     procedureCodeForC21ListsByLang.getOrElse(locale.getLanguage, procedureCodeForC21ListsByLang.value.head._2)
+
+  def getGoodsLocationCodes(locale: Locale): ListMap[String, GoodsLocationCode] =
+    goodsLocationCodeByLang.getOrElse(locale.getLanguage, goodsLocationCodeByLang.value.head._2)
 
   private val additionalProcedureCodeMapsByLang = loadCommonCodesAsOrderedMap(
     appConfig.additionalProcedureCodes,
@@ -116,6 +120,11 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
     (codeItem: CodeItem, locale: Locale) => ProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
 
+  private val goodsLocationCodeByLang = loadCommonCodesAsOrderedMap(
+    appConfig.goodsLocationCodeFile,
+    (codeItem: CodeItem, locale: Locale) => GoodsLocationCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
+  )
+
   private def loadCommonCodesAsOrderedMap[T <: CommonCode](srcFile: String, factory: (CodeItem, Locale) => T): CodeMap[T] = {
     val codeList = JsonFile.getJsonArrayFromFile(srcFile, CodeItem.formats)
 
@@ -124,7 +133,7 @@ class FileBasedCodeListConnector @Inject()(appConfig: AppConfig) extends CodeLis
         .map(factory(_, locale))
         .map(commonCode => (commonCode.code, commonCode))
 
-      (locale.getLanguage -> ListMap(commonCodeList: _*))
+      locale.getLanguage -> ListMap(commonCodeList: _*)
     }
 
     ListMap(langCodes: _*)
