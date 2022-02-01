@@ -43,4 +43,6 @@ class JourneyRequest[+A](val authenticatedRequest: AuthenticatedRequest[A], val 
       case _                           => Seq.empty
     }
   }
+
+  def typeId: String = cacheModel.typeId
 }

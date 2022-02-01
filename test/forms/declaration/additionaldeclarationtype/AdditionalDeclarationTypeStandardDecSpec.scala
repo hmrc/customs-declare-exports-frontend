@@ -17,7 +17,7 @@
 package forms.declaration.additionaldeclarationtype
 
 import base.UnitSpec
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec.AllowedAdditionalDeclarationTypes._
+import .AllowedAdditionalDeclarationTypes._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class AdditionalDeclarationTypeStandardDecSpec extends UnitSpec {

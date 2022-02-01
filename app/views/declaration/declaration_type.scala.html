@@ -1,0 +1,101 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes.AdditionalDeclarationTypeController
+@import controllers.navigation.Navigator
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+@import models.DeclarationType.SUPPLEMENTARY
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{BackButton, DeclarationTypeHelper, Title}
+@import views.html.components.gds._
+@import config.AppConfig
+
+@this(
+    declarationTypeHelper: DeclarationTypeHelper,
+    govukLayout: gdsMainTemplate,
+    govukDetails: GovukDetails,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    heading: heading,
+    saveAndContinue: saveAndContinue,
+    notificationBanner: notificationBanner,
+    paragraphBody: paragraphBody,
+    link: link,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+@(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
+
+@expanderContent = {
+    @paragraphBody(
+        message = messages("declaration.declarationType.expander.paragraph.1", link(
+            text = messages("declaration.declarationType.expander.paragraph.1.link"),
+            call = Call("GET", appConfig.guidance.moveGoodsThroughPortsUsingGVMS),
+            target = "_blank"
+        ))
+    )
+    @paragraphBody(messages("declaration.declarationType.expander.paragraph.2"))
+}
+
+@govukLayout(
+    title = Title(s"declaration.declarationType.header.${request.typeId}", "declaration.section.1"),
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalDeclarationTypePage, mode)))){
+
+    @formHelper(action = AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(declarationTypeHelper.radioGroupErrors(form))
+
+        @sectionHeader(messages("declaration.section.1"))
+        @heading(messages(s"declaration.declarationType.header.${request.typeId}"))
+
+        @if(!request.isType(SUPPLEMENTARY)) {
+            @notificationBanner(
+                title = messages("declaration.declarationType.notification.title"),
+                content = paragraphBody(messages("declaration.declarationType.notification.content", link(
+                    text = messages("declaration.declarationType.notification.content.link"),
+                    call = Call("GET", appConfig.guidance.january2022locations),
+                    target = "_blank"
+                )))
+            )
+        }
+
+        @govukRadios(Radios(
+            name = "additionalDeclarationType",
+            items = declarationTypeHelper.radioItems(form),
+            errorMessage = form("additionalDeclarationType").error.map {
+                err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))
+            }
+        ))
+
+        @if(!request.isType(SUPPLEMENTARY)) {
+            @govukDetails(Details(
+                id = Some("submission-time-info"),
+                summary = Text(messages("declaration.declarationType.expander.title")),
+                content = HtmlContent(expanderContent)
+            ))
+        }
+
+        @tariffExpander(AdditionalDeclarationTypePage, request.declarationType)(messages, appConfig)
+
+        @saveAndContinue("site.continue")
+    }
+}
+

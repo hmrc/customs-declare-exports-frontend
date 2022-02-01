@@ -16,7 +16,7 @@
 
 package models.declaration.dectype
 
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes.Simplified
+import .AllowedAdditionalDeclarationTypes.Simplified
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 

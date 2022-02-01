@@ -16,21 +16,21 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import forms.declaration.additionaldeclarationtype._
-import javax.inject.Inject
-import models.DeclarationType._
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
+import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.additionaldeclarationtype.declaration_type
+import views.html.declaration.declaration_type
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalDeclarationTypeController @Inject()(
   authenticate: AuthAction,
@@ -43,7 +43,7 @@ class AdditionalDeclarationTypeController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val form = extractFormType(request).form().withSubmissionErrors()
+    val form = AdditionalDeclarationTypePage.form.withSubmissionErrors
     request.cacheModel.additionalDeclarationType match {
       case Some(data) => Ok(declarationTypePage(mode, form.fill(data)))
       case _          => Ok(declarationTypePage(mode, form))
@@ -51,30 +51,18 @@ class AdditionalDeclarationTypeController @Inject()(
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val decType = extractFormType(request).form().bindFromRequest()
-
-    decType
+    val form = AdditionalDeclarationTypePage.form.bindFromRequest
+    form
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationTypePage(mode, formWithErrors))),
-        validAdditionalDeclarationType => updateCache(validAdditionalDeclarationType).map(_ => navigator.continueTo(mode, nextPage))
+        updateCache(_).map(_ => navigator.continueTo(mode, nextPage))
       )
   }
-
-  private def extractFormType(journeyRequest: JourneyRequest[_]): AdditionalDeclarationTypeTrait =
-    journeyRequest.declarationType match {
-      case SUPPLEMENTARY => AdditionalDeclarationTypeSupplementaryDec
-      case STANDARD      => AdditionalDeclarationTypeStandardDec
-      case SIMPLIFIED    => AdditionalDeclarationTypeSimplifiedDec
-      case OCCASIONAL    => AdditionalDeclarationTypeOccasionalDec
-      case CLEARANCE     => AdditionalDeclarationTypeClearanceDec
-    }
 
   private def nextPage(implicit request: JourneyRequest[_]): Mode => Call =
     if (request.declarationType == CLEARANCE) routes.ConsignmentReferencesController.displayPage
     else routes.DeclarantDetailsController.displayPage
 
-  private def updateCache(formData: AdditionalDeclarationType)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
-      model.copy(additionalDeclarationType = Some(formData))
-    })
+  private def updateCache(adt: AdditionalDeclarationType)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.copy(additionalDeclarationType = Some(adt)))
 }
