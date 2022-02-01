@@ -58,7 +58,7 @@ class AdditionalActorsSummaryController @Inject()(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(additionalActorsPage(mode, formWithErrors, actors)),
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, routes.AdditionalActorsAddController.displayPage)
+            case YesNoAnswers.yes => navigator.continueTo(mode, routes.AdditionalActorsAddController.displayPage, mode.isErrorFix)
             case YesNoAnswers.no  => navigator.continueTo(mode, routes.AuthorisationProcedureCodeChoiceController.displayPage)
         }
       )
