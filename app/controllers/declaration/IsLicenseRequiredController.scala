@@ -54,14 +54,19 @@ class IsLicenseRequiredController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
       .fold(
         formWithErrors =>
-          commodityCodeFromRequest(mode, itemId) { commodityCode =>
-            BadRequest(is_license_required(mode, itemId, formWithErrors, commodityCode, representativeStatusCode))
+          Future.successful {
+            commodityCodeFromRequest(mode, itemId) { commodityCode =>
+              BadRequest(is_license_required(mode, itemId, formWithErrors, commodityCode, representativeStatusCode))
+            }
         },
-        yesNo => navigator.continueTo(mode, nextPage(yesNo, itemId))
+        yesNo =>
+          updateCache(yesNo, itemId) map { _ =>
+            navigator.continueTo(mode, nextPage(yesNo, itemId))
+        }
       )
   }
 
@@ -81,6 +86,13 @@ class IsLicenseRequiredController @Inject()(
       case YesNoAnswers.no =>
         AdditionalDocumentsRequiredController.displayPage(_, itemId)
     }
+
+  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
+    val isLicenseRequired =
+      if (yesNoAnswer.answer == YesNoAnswers.yes) true else false
+
+    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(isLicenseRequired = Some(isLicenseRequired))))
+  }
 
   private def containsAuthCodeRequireDocumentation(implicit request: JourneyRequest[AnyContent]) =
     request.cacheModel.parties.declarationHoldersData.exists(

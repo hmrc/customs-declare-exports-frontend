@@ -28,6 +28,8 @@ import views.html.declaration.summary.additional_documents
 
 class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
+  private val item = anItem(withItemId("itemId"), withSequenceId(1))
+
   private val additionalDocumentsSection = instanceOf[additional_documents]
   private val documents = Seq(
     AdditionalDocument(Some("typ1"), Some("identifier1"), None, None, None, None, None),
@@ -40,7 +42,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
       "there is no documents" in {
 
-        val view = additionalDocumentsSection(Mode.Normal, "itemId", 1, AdditionalDocuments(None, Seq.empty))(messages)
+        val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(None, Seq.empty))(messages)
         val row = view.getElementsByClass("additional-documents-1-row")
 
         row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
@@ -54,7 +56,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
     "display all additional documents with change buttons" in {
 
-      val view = additionalDocumentsSection(Mode.Normal, "itemId", 1, AdditionalDocuments(Yes, documents))(messages)
+      val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents))(messages)
       val table = view.getElementById("additional-documents-1-table")
 
       table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
@@ -85,7 +87,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
       "actionsEnabled is false" in {
 
         val view =
-          additionalDocumentsSection(Mode.Normal, "itemId", 1, AdditionalDocuments(Yes, documents), actionsEnabled = false)(messages)
+          additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), actionsEnabled = false)(messages)
         val table = view.getElementById("additional-documents-1-table")
 
         table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")

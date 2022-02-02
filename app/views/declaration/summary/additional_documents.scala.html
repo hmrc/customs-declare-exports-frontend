@@ -16,6 +16,7 @@
 
 @import controllers.declaration.routes
 @import forms.declaration.additionaldocuments.AdditionalDocument
+@import models.declaration.ExportItem
 @import models.declaration.AdditionalDocuments
 @import models.Mode
 @import models.requests.JourneyRequest
@@ -34,8 +35,7 @@
 
 @(
     mode: Mode,
-    itemId: String,
-    itemNo: Int,
+    item: ExportItem,
     additionalDocuments: AdditionalDocuments,
     actionsEnabled: Boolean = true
 )(implicit messages: Messages)
@@ -45,12 +45,12 @@
         if(actionsEnabled)
             link(
                 messages("site.change"),
-                routes.AdditionalDocumentsController.displayPage(mode, itemId),
+                routes.AdditionalDocumentsController.displayPage(mode, item.id),
                 textHidden = Some(messages(
                     "declaration.summary.items.item.additionalDocuments.change",
                     document.documentTypeCode.getOrElse(""),
                     document.documentIdentifier.getOrElse(""),
-                    itemNo
+                    item.sequenceId
                 ))
             )
         else
@@ -58,11 +58,38 @@
     }
 }
 
+@tableCaption = @{
+    if(item.isLicenseRequired.contains(true)) messages("declaration.summary.items.item.licenses")
+    else messages("declaration.summary.items.item.additionalDocuments")
+}
+
 @actions(action: Actions) = @{
     if (actionsEnabled) Some(action) else None
 }
 
 @if(additionalDocuments.documents.nonEmpty){
+
+    @if(!item.isLicenseRequired.contains(true)){
+        @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
+            Some(SummaryListRow(
+                classes = s"licenses-${item.sequenceId}-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.licenses"))
+            ),
+            value = Value(
+            content = Text(messages("site.no"))
+        ),
+        actions = actions(Actions(
+            items = Seq(
+                actionItem(
+                    href = routes.IsLicenseRequiredController.displayPage(mode, item.id).url,
+                    content = HtmlContent(linkContent(messages("site.change"))),
+                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+                )
+            )
+        ))))))
+    }
+
     @govukTable(Table(
         rows = additionalDocuments.documents.map(document =>
             Seq(
@@ -86,13 +113,14 @@
                 content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
             )
         )),
-        caption = Some(messages("declaration.summary.items.item.licenses")),
-        attributes = Map("id" -> s"additional-documents-$itemNo-table")
+        caption = Some(tableCaption),
+        attributes = Map("id" -> s"additional-documents-${item.sequenceId}-table")
     ))
+
 } else {
-    @summaryList(s"additional-documents-$itemNo", None, Seq(
+    @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
         Some(SummaryListRow(
-            classes = s"licenses-$itemNo-row",
+            classes = s"licenses-${item.sequenceId}-row",
             key = Key(
                 content = Text(messages("declaration.summary.items.item.licenses"))
             ),
@@ -102,14 +130,14 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                    href = routes.IsLicenseRequiredController.displayPage(mode, itemId).url,
+                    href = routes.IsLicenseRequiredController.displayPage(mode, item.id).url,
                     content = HtmlContent(linkContent(messages("site.change"))),
-                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", itemNo))
+                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
                 )
             )
         )))),
         Some(SummaryListRow(
-            classes = s"additional-documents-$itemNo-row",
+            classes = s"additional-documents-${item.sequenceId}-row",
             key = Key(
                 content = Text(messages("declaration.summary.items.item.additionalDocuments"))
             ),
@@ -119,9 +147,9 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = routes.AdditionalDocumentsController.displayPage(mode, itemId).url,
+                        href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", itemNo))
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
                     )
                 )
             ))
