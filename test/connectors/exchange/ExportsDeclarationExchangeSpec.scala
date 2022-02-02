@@ -82,7 +82,7 @@ class ExportsDeclarationExchangeSpec extends UnitWithMocksSpec with ExportsDecla
     parties = parties,
     locations = locations,
     items = Seq(item),
-    readyForSubmission = true,
+    readyForSubmission = Some(true),
     totalNumberOfItems = None,
     totalPackageQuantity = Some(totalPackageQuantity),
     previousDocuments = Some(previousDocuments),

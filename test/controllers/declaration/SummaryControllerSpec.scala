@@ -87,7 +87,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         "ready for submission" when {
           "normal mode" in {
 
-            withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = true))
+            withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(true)))
 
             val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -97,7 +97,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
           }
           "draft mode" in {
 
-            withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = true))
+            withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(true)))
 
             val result = controller.displayPage(Mode.Draft)(getRequest())
 

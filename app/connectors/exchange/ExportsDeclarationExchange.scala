@@ -73,7 +73,7 @@ case class ExportsDeclarationExchange(
     parties = parties,
     locations = locations,
     items = items,
-    readyForSubmission = readyForSubmission getOrElse false,
+    readyForSubmission = readyForSubmission,
     totalNumberOfItems = totalNumberOfItems.flatMap { exchange =>
       (exchange.totalAmountInvoiced, exchange.totalAmountInvoicedCurrency, exchange.exchangeRate) match {
         case (None, None, None) => None
@@ -109,7 +109,7 @@ object ExportsDeclarationExchange {
       parties = declaration.parties,
       locations = declaration.locations,
       items = declaration.items,
-      readyForSubmission = Some(declaration.readyForSubmission),
+      readyForSubmission = declaration.readyForSubmission,
       totalNumberOfItems = if (declaration.totalNumberOfItems.isDefined || declaration.totalPackageQuantity.isDefined) {
         Some(
           TotalItemsExchange(
