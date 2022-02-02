@@ -17,7 +17,6 @@
 package controllers.helpers
 
 import controllers.declaration.routes._
-import controllers.helpers.InlandOrBorderHelper.skipInlandOrBorder
 import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
 import models.DeclarationType._
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
@@ -25,7 +24,10 @@ import models.declaration.ProcedureCodesData
 import models.{ExportsDeclaration, Mode}
 import play.api.mvc.Call
 
-object SupervisingCustomsOfficeHelper {
+import javax.inject.{Inject, Singleton}
+
+@Singleton
+class SupervisingCustomsOfficeHelper @Inject()(inlandOrBorderHelper: InlandOrBorderHelper) {
 
   private def isConditionForProcedureCodesDataVerified(data: ProcedureCodesData): Boolean =
     data.procedureCode.contains("1040") && data.additionalProcedureCodes.contains(NO_APC_APPLIES_CODE)
@@ -46,7 +48,7 @@ object SupervisingCustomsOfficeHelper {
   def nextPage(declaration: ExportsDeclaration): Mode => Call =
     declaration.`type` match {
       case STANDARD | SUPPLEMENTARY =>
-        if (skipInlandOrBorder(declaration)) InlandTransportDetailsController.displayPage
+        if (inlandOrBorderHelper.skipInlandOrBorder(declaration)) InlandTransportDetailsController.displayPage
         else InlandOrBorderController.displayPage
 
       case CLEARANCE               => nextPageOnClearance(declaration)

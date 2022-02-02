@@ -24,6 +24,7 @@ import controllers.declaration.routes.{
   InlandOrBorderController,
   InlandTransportDetailsController
 }
+import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import forms.declaration.SupervisingCustomsOffice
@@ -44,6 +45,7 @@ import views.html.declaration.supervising_customs_office
 class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeAndAfterEach with OptionValues {
 
   private val supervisingCustomsOfficeTemplate: supervising_customs_office = mock[supervising_customs_office]
+  private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
 
   private val controller = new SupervisingCustomsOfficeController(
     authenticate = mockAuthAction,
@@ -51,7 +53,8 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
     navigator = navigator,
     exportsCacheService = mockExportsCacheService,
     mcc = stubMessagesControllerComponents(),
-    supervisingCustomsOfficePage = supervisingCustomsOfficeTemplate
+    supervisingCustomsOfficePage = supervisingCustomsOfficeTemplate,
+    supervisingCustomsOfficeHelper = supervisingCustomsOfficeHelper
   )
 
   private val exampleCustomsOfficeIdentifier = "A1B2C3D4"

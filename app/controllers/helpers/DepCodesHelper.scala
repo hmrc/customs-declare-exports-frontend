@@ -14,28 +14,19 @@
  * limitations under the License.
  */
 
-package services
+package controllers.helpers
 
+import connectors.CodeLinkConnector
 import models.ExportsDeclaration
 
-import java.nio.charset.StandardCharsets.ISO_8859_1
-import java.nio.file.{Files, Paths}
-import scala.collection.JavaConverters.asScalaIteratorConverter
+import javax.inject.{Inject, Singleton}
 
-object DepCodes {
+@Singleton
+class DepCodesHelper @Inject()(codeLinkConnector: CodeLinkConnector) {
 
   def isDesignatedExportPlaceCode(declaration: ExportsDeclaration): Boolean =
-    declaration.locations.goodsLocation.exists(location => designatedExportPlaceCodes.contains(location.code))
+    declaration.locations.goodsLocation.exists(location => checkDesignatedExportPlaceCodes(location.code))
 
-  private val designatedExportPlaceCodes: Set[String] = {
-    val filename = "Designated_Export_Place_codes_for_Data_Element-5-23_of_the_CDS__v2__1_.csv"
-    val uri = getClass.getClassLoader.getResource(s"code-lists/$filename").toURI
-    Files
-      .lines(Paths.get(uri), ISO_8859_1)
-      .iterator
-      .asScala
-      .map(_.split(',').last.trim)
-      .toSet
-      .filter(_.startsWith("GB"))
-  }
+  private def checkDesignatedExportPlaceCodes(goodsLocationCode: String): Boolean =
+    codeLinkConnector.getLocationTypesForGoodsLocationCode(goodsLocationCode).getOrElse(Seq()).contains("DEP")
 }

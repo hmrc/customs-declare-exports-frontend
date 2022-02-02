@@ -24,6 +24,7 @@ import controllers.declaration.routes.{
   SupervisingCustomsOfficeController,
   WarehouseIdentificationController
 }
+import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import controllers.routes.RootController
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, RoRo}
@@ -46,7 +47,8 @@ import views.html.declaration.transport_leaving_the_border
 
 class TransportLeavingTheBorderControllerSpec extends ControllerSpec with OptionValues {
 
-  val transportLeavingTheBorder = mock[transport_leaving_the_border]
+  private val transportLeavingTheBorder = mock[transport_leaving_the_border]
+  private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
 
   val controller = new TransportLeavingTheBorderController(
     mockAuthAction,
@@ -54,7 +56,8 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    transportLeavingTheBorder
+    transportLeavingTheBorder,
+    supervisingCustomsOfficeHelper
   )(ec)
 
   override protected def beforeEach(): Unit = {

@@ -19,7 +19,7 @@ package controllers.declaration
 import java.util.{Locale, UUID}
 import base.ControllerSpec
 import base.ExportsTestData.pc1040
-import controllers.helpers.Remove
+import controllers.helpers.{Remove, SupervisingCustomsOfficeHelper}
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode.additionalProcedureCodeKey
@@ -50,6 +50,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
   private val procedureCodeService = mock[ProcedureCodeService]
   private val messages = mock[Messages]
   private val locale = new Locale("en", "gb")
+  private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
 
   private val controller = new AdditionalProcedureCodesController(
     mockAuthAction,
@@ -58,7 +59,8 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     procedureCodeService,
-    additionalProcedureCodesPage
+    additionalProcedureCodesPage,
+    supervisingCustomsOfficeHelper
   )(ec)
 
   private val itemId = "itemId12345"
