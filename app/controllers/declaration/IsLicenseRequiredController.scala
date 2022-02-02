@@ -54,19 +54,14 @@ class IsLicenseRequiredController @Inject()(
     }
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     form.bindFromRequest
       .fold(
         formWithErrors =>
-          Future.successful {
-            commodityCodeFromRequest(mode, itemId) { commodityCode =>
-              BadRequest(is_license_required(mode, itemId, formWithErrors, commodityCode, representativeStatusCode))
-            }
+          commodityCodeFromRequest(mode, itemId) { commodityCode =>
+            BadRequest(is_license_required(mode, itemId, formWithErrors, commodityCode, representativeStatusCode))
         },
-        yesNo =>
-          updateCache(yesNo, itemId).map { _ =>
-            navigator.continueTo(mode, nextPage(yesNo, itemId))
-        }
+        yesNo => navigator.continueTo(mode, nextPage(yesNo, itemId))
       )
   }
 
@@ -77,14 +72,6 @@ class IsLicenseRequiredController @Inject()(
       case _ =>
         navigator.continueTo(mode, AdditionalInformationController.displayPage(_, itemId))
     }
-
-  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
-    val updatedAdditionalInformation = yesNoAnswer.answer match {
-      case YesNoAnswers.yes => AdditionalInformationData(Some(yesNoAnswer), request.cacheModel.listOfAdditionalInformationOfItem(itemId))
-      case YesNoAnswers.no  => AdditionalInformationData(Some(yesNoAnswer), Seq.empty)
-    }
-    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
-  }
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     yesNoAnswer.answer match {
