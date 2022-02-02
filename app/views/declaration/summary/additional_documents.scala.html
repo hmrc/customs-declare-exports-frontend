@@ -86,11 +86,28 @@
                 content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
             )
         )),
-        caption = Some(messages("declaration.summary.items.item.additionalDocuments")),
+        caption = Some(messages("declaration.summary.items.item.licenses")),
         attributes = Map("id" -> s"additional-documents-$itemNo-table")
     ))
 } else {
     @summaryList(s"additional-documents-$itemNo", None, Seq(
+        Some(SummaryListRow(
+            classes = s"licenses-$itemNo-row",
+            key = Key(
+                content = Text(messages("declaration.summary.items.item.licenses"))
+            ),
+            value = Value(
+                content = Text(messages("site.no"))
+            ),
+            actions = actions(Actions(
+                items = Seq(
+                    actionItem(
+                    href = routes.IsLicenseRequiredController.displayPage(mode, itemId).url,
+                    content = HtmlContent(linkContent(messages("site.change"))),
+                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", itemNo))
+                )
+            )
+        )))),
         Some(SummaryListRow(
             classes = s"additional-documents-$itemNo-row",
             key = Key(
