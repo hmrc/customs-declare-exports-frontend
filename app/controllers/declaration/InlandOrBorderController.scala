@@ -23,7 +23,7 @@ import controllers.declaration.routes.{
   InlandTransportDetailsController,
   TransportContainerController
 }
-import controllers.helpers.InlandOrBorderHelper.skipInlandOrBorder
+import controllers.helpers.InlandOrBorderHelper
 import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.navigation.Navigator
 import controllers.routes.RootController
@@ -47,14 +47,15 @@ class InlandOrBorderController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  inlandOrBorderPage: inland_border
+  inlandOrBorderPage: inland_border,
+  inlandOrBorderHelper: InlandOrBorderHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val actionBuilder = (authenticate andThen journeyAction.onAdditionalTypes(additionalDeclTypesAllowedOnInlandOrBorder))
 
   def displayPage(mode: Mode): Action[AnyContent] = actionBuilder { implicit request =>
-    if (skipInlandOrBorder(request.cacheModel)) Results.Redirect(RootController.displayPage)
+    if (inlandOrBorderHelper.skipInlandOrBorder(request.cacheModel)) Results.Redirect(RootController.displayPage)
     else {
       val frm = form.withSubmissionErrors
       request.cacheModel.locations.inlandOrBorder match {
@@ -65,7 +66,7 @@ class InlandOrBorderController @Inject()(
   }
 
   def submitPage(mode: Mode): Action[AnyContent] = actionBuilder.async { implicit request =>
-    if (skipInlandOrBorder(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
+    if (inlandOrBorderHelper.skipInlandOrBorder(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
     else
       form.bindFromRequest
         .fold(formWithErrors => Future.successful(BadRequest(inlandOrBorderPage(mode, formWithErrors))), updateExportsCache(mode, _))

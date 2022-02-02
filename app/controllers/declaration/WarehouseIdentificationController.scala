@@ -40,7 +40,8 @@ class WarehouseIdentificationController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   warehouseIdentificationYesNoPage: warehouse_identification_yesno,
-  warehouseIdentificationPage: warehouse_identification
+  warehouseIdentificationPage: warehouse_identification,
+  supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
@@ -57,7 +58,7 @@ class WarehouseIdentificationController @Inject()(
       .fold(formWithErrors => Future.successful(BadRequest(page(mode, formWithErrors))), updateCache(_).map { declaration =>
         // Next page should always be '/supervising-customs-office' for CLEARANCE
         // since Procedure code '1040' is not applicable to this declaration type
-        navigator.continueTo(mode, SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration))
+        navigator.continueTo(mode, supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration))
       })
   }
 

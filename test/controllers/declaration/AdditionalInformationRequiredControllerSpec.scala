@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class AdditionalInformationRequiredControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockPage = mock[additional_information_required]
+  private val mockPage = mock[additional_information_required]
 
   val controller = new AdditionalInformationRequiredController(
     mockAuthAction,

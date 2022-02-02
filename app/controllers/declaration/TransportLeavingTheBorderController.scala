@@ -40,7 +40,8 @@ class TransportLeavingTheBorderController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  transportAtBorder: transport_leaving_the_border
+  transportAtBorder: transport_leaving_the_border,
+  supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
@@ -66,7 +67,7 @@ class TransportLeavingTheBorderController @Inject()(
 
   private def nextPage(declaration: ExportsDeclaration): Mode => Call =
     if (declaration.`type` == CLEARANCE || declaration.requiresWarehouseId) WarehouseIdentificationController.displayPage
-    else SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration)
+    else supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration)
 
   private def updateCache(code: TransportLeavingTheBorder)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updateTransportLeavingBorder(code))

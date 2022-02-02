@@ -40,41 +40,38 @@ object BorderTransport extends DeclarationPage {
 
   implicit val formats: OFormat[BorderTransport] = Json.format[BorderTransport]
 
-  def transportReferenceMapping(id: String, transportType: String): (String, Mapping[Option[String]]) =
-    s"borderTransportReference_$id" -> mandatoryIfEqual(
-      "borderTransportType",
-      transportType,
-      text()
-        .verifying("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty", nonEmpty)
-        .verifying("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.length", isEmpty or noLongerThan(35))
-        .verifying(
-          "declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid",
-          isAlphanumericWithAllowedSpecialCharacters
-        )
+  val nationalityId = "borderTransportNationality"
+  val radioButtonGroupId = "borderTransportType"
+
+  val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
+
+  def transportReferenceMapping(transportCode: TransportCode): (String, Mapping[Option[String]]) =
+    transportCode.id -> mandatoryIfEqual(
+      radioButtonGroupId,
+      transportCode.value,
+      text
+        .verifying(s"$prefix.IDNumber.error.empty", nonEmpty)
+        .verifying(s"$prefix.IDNumber.error.length", isEmpty or noLongerThan(35))
+        .verifying(s"$prefix.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
     )
 
-  def formMapping()(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[BorderTransport] =
+  private def formMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[BorderTransport] =
     mapping(
-      "borderTransportNationality" -> optional(
-        text()
-          .verifying("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect", isValidCountryName(_))
-      ),
-      "borderTransportType" -> requiredRadio("declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty")
-        .verifying(
-          "declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect",
-          isContainedIn(allowedMeansOfTransportTypeCodes)
-        ),
-      transportReferenceMapping("IMOShipIDNumber", IMOShipIDNumber),
-      transportReferenceMapping("nameOfVessel", NameOfVessel),
-      transportReferenceMapping("wagonNumber", WagonNumber),
-      transportReferenceMapping("vehicleRegistrationNumberROI", VehicleRegistrationNumber),
-      transportReferenceMapping("IATAFlightNumber", IATAFlightNumber),
-      transportReferenceMapping("aircraftRegistrationNumber", AircraftRegistrationNumber),
-      transportReferenceMapping("europeanVesselIDNumber", EuropeanVesselIDNumber),
-      transportReferenceMapping("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel)
+      nationalityId -> optional(text.verifying(s"$prefix.nationality.error.incorrect", isValidCountryName(_))),
+      radioButtonGroupId -> requiredRadio(s"$prefix.error.empty")
+        .verifying(s"$prefix.error.incorrect", isContainedIn(transportCodesOnBorderTransport.map(_.value))),
+      transportReferenceMapping(ShipOrRoroImoNumber),
+      transportReferenceMapping(NameOfVessel),
+      transportReferenceMapping(WagonNumber),
+      transportReferenceMapping(VehicleRegistrationNumber),
+      transportReferenceMapping(FlightNumber),
+      transportReferenceMapping(AircraftRegistrationNumber),
+      transportReferenceMapping(EuropeanVesselIDNumber),
+      transportReferenceMapping(NameOfInlandWaterwayVessel)
     )(form2Model)(model2Form)
 
-  def form()(implicit messages: Messages, codeListConnector: CodeListConnector): Form[BorderTransport] = Form(BorderTransport.formMapping)
+  def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[BorderTransport] =
+    Form(formMapping)
 
   private def form2Model: (
     Option[String],
@@ -88,7 +85,6 @@ object BorderTransport extends DeclarationPage {
     Option[String],
     Option[String]
   ) => BorderTransport = {
-
     case (
         nationality,
         transportType,
@@ -131,16 +127,16 @@ object BorderTransport extends DeclarationPage {
       Option[String]
     )
   ] =
-    implicit model =>
+    implicit borderTransport =>
       Some(
         (
-          model.meansOfTransportCrossingTheBorderNationality,
-          model.meansOfTransportCrossingTheBorderType,
-          model2Ref(IMOShipIDNumber),
+          borderTransport.meansOfTransportCrossingTheBorderNationality,
+          borderTransport.meansOfTransportCrossingTheBorderType,
+          model2Ref(ShipOrRoroImoNumber),
           model2Ref(NameOfVessel),
           model2Ref(WagonNumber),
           model2Ref(VehicleRegistrationNumber),
-          model2Ref(IATAFlightNumber),
+          model2Ref(FlightNumber),
           model2Ref(AircraftRegistrationNumber),
           model2Ref(EuropeanVesselIDNumber),
           model2Ref(NameOfInlandWaterwayVessel)
@@ -149,12 +145,9 @@ object BorderTransport extends DeclarationPage {
 
   private def form2Ref(refs: Option[String]*): String = refs.map(_.getOrElse("")).mkString
 
-  private def model2Ref(transportType: String)(implicit model: BorderTransport): Option[String] =
-    if (model.meansOfTransportCrossingTheBorderType.equals(transportType)) {
-      Some(model.meansOfTransportCrossingTheBorderIDNumber)
-    } else {
-      None
-    }
+  private def model2Ref(transportCode: TransportCode)(implicit model: BorderTransport): Option[String] =
+    if (transportCode.value != model.meansOfTransportCrossingTheBorderType) None
+    else Some(model.meansOfTransportCrossingTheBorderIDNumber)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.borderTransport.1.common"), TariffContentKey("tariff.declaration.borderTransport.2.common"))

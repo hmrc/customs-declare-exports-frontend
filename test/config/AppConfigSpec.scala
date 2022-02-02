@@ -218,6 +218,14 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.countryCodeToShortNameLinkFile must be("countryCodeToShortNameLink")
     }
 
+    "have goodsLocationCode file path" in {
+      validAppConfig.goodsLocationCodeFile must be("goodsLocationCode")
+    }
+
+    "have goodsLocationCodeToLocationType file path" in {
+      validAppConfig.goodsLocationCodeToLocationTypeFile must be("goodsLocationCodeToLocationTypeLink")
+    }
+
     "load the Choice options when list-of-available-journeys is defined" in {
       val choices = validAppConfig.availableJourneys()
       choices.size must be(3)
@@ -477,6 +485,8 @@ object AppConfigSpec {
       |files.codelists.countryCodes="/code-lists/countryCodes.json"
       |files.codelists.countryCodeToAliasesLink="countryCodeToAliasesLink"
       |files.codelists.countryCodeToShortNameLink="countryCodeToShortNameLink"
+      |files.codelists.goodsLocationCode="goodsLocationCode"
+      |files.codelists.goodsLocationCodeToLocationTypeLink="goodsLocationCodeToLocationTypeLink"
       |
       |draft.timeToLive=30d
       |microservice.services.nrs.host=localhostnrs

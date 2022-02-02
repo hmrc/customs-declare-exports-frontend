@@ -37,6 +37,8 @@ trait CodeLinkConnector {
 
   def getAliasesForCountryCode(countryCode: String): Option[Seq[String]]
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]]
+
+  def getLocationTypesForGoodsLocationCode(goodsLocationCode: String): Option[Seq[String]]
 }
 
 @Singleton
@@ -58,6 +60,8 @@ class FileBasedCodeLinkConnector @Inject()(appConfig: AppConfig) extends CodeLin
     readCodeLinksFromFile(appConfig.countryCodeToAliasesLinkFile)
   private val countryCodeToShortName: Map[String, Seq[String]] =
     readCodeLinksFromFile(appConfig.countryCodeToShortNameLinkFile)
+  private val goodsLocationCodeToLocationTypes: Map[String, Seq[String]] =
+    readCodeLinksFromFile(appConfig.goodsLocationCodeToLocationTypeFile)
 
   def getValidAdditionalProcedureCodesForProcedureCode(procedureCode: String): Option[Seq[String]] =
     procedureCodeToAdditionalProcedureCodes.get(procedureCode)
@@ -70,4 +74,7 @@ class FileBasedCodeLinkConnector @Inject()(appConfig: AppConfig) extends CodeLin
 
   def getShortNamesForCountryCode(countryCode: String): Option[Seq[String]] =
     countryCodeToShortName.get(countryCode)
+
+  def getLocationTypesForGoodsLocationCode(goodsLocationCode: String): Option[Seq[String]] =
+    goodsLocationCodeToLocationTypes.get(goodsLocationCode)
 }

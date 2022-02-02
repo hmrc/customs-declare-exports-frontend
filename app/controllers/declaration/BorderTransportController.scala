@@ -17,15 +17,14 @@
 package controllers.declaration
 
 import connectors.CodeListConnector
-
-import scala.concurrent.{ExecutionContext, Future}
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{ExpressConsignmentController, TransportContainerController}
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
+import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
-import play.api.data.Form
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -33,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.border_transport
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class BorderTransportController @Inject()(
   authenticate: AuthAction,
@@ -44,40 +44,38 @@ class BorderTransportController @Inject()(
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
+  private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val transport = request.cacheModel.transport
-    val borderTransportData = (
+    val frm = (
       transport.meansOfTransportCrossingTheBorderType,
       transport.meansOfTransportCrossingTheBorderIDNumber,
       transport.meansOfTransportCrossingTheBorderNationality
     ) match {
-      case (Some(meansType), Some(meansId), meansNationality) => Some(BorderTransport(meansNationality, meansType, meansId))
-      case _                                                  => None
+      case (Some(meansType), Some(meansId), meansNationality) =>
+        form.withSubmissionErrors.fill(BorderTransport(meansNationality, meansType, meansId))
+
+      case _ => form.withSubmissionErrors
     }
-    val frm = form().withSubmissionErrors()
-    borderTransportData match {
-      case Some(data) => Ok(borderTransport(mode, frm.fill(data)))
-      case _          => Ok(borderTransport(mode, frm))
-    }
+
+    Ok(borderTransport(mode, frm))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form()
-      .bindFromRequest()
+    form.bindFromRequest
       .fold(
-        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
-        borderTransport => updateCache(borderTransport).map(_ => navigator.continueTo(mode, nextPage))
+        formWithErrors => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(mode, nextPage))
       )
   }
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
-      case DeclarationType.STANDARD      => routes.ExpressConsignmentController.displayPage
-      case DeclarationType.SUPPLEMENTARY => routes.TransportContainerController.displayContainerSummary
+      case STANDARD      => ExpressConsignmentController.displayPage
+      case SUPPLEMENTARY => TransportContainerController.displayContainerSummary
     }
 
-  private def updateCache(formData: BorderTransport)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.updateBorderTransport(formData))
+  private def updateCache(borderTransport: BorderTransport)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.updateBorderTransport(borderTransport))
 }

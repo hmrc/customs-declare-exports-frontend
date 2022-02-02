@@ -27,19 +27,16 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        body: paragraphBody,
-        pageTitle: pageTitle,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        formHelper: FormWithCSRF,
-        navigator: Navigator,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
 )
 
 @(mode: Mode, itemId: String, form: Form[FiscalInformation])(implicit request: JourneyRequest[_], messages: Messages)

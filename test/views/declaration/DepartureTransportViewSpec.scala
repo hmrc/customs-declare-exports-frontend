@@ -16,77 +16,69 @@
 
 package views.declaration
 
-import base.ExportsTestData.itemWith1040AsPC
+import base.ExportsTestData.itemWithPC
 import base.Injector
-import controllers.declaration.routes
+import controllers.declaration.routes.{
+  InlandOrBorderController,
+  InlandTransportDetailsController,
+  SupervisingCustomsOfficeController,
+  WarehouseIdentificationController
+}
 import controllers.helpers.SaveAndReturn
-import forms.declaration.DepartureTransport
+import controllers.helpers.TransportSectionHelper._
+import forms.declaration.DepartureTransport.form
+import forms.declaration.InlandOrBorder.Border
+import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.TransportCodes._
-import models.DeclarationType._
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.declaration.{ModeOfTransportCode, TransportCodes}
+import models.DeclarationType.CLEARANCE
 import models.Mode
 import models.requests.JourneyRequest
-import play.api.data.Form
+import play.api.mvc.Call
 import play.twirl.api.Html
 import tools.Stubs
-import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
-import views.helpers.CommonMessages
+import views.helpers.{CommonMessages, ModeOfTransportCodeHelper}
 import views.html.declaration.departure_transport
 import views.tags.ViewTest
+
+import scala.collection.JavaConverters.asScalaIteratorConverter
 
 @ViewTest
 class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val borderTransportPage = instanceOf[departure_transport]
+  private val prefix = "declaration.transportInformation.meansOfTransport"
 
-  def createView(form: Option[Form[DepartureTransport]] = None)(implicit request: JourneyRequest[_]): Html =
-    borderTransportPage(Mode.Normal, form.getOrElse(DepartureTransport.form(request.declarationType)))(request, messages)
+  private val departureTransportPage = instanceOf[departure_transport]
 
-  "Departure Transport View" must {
+  def createView(transportCodes: TransportCodes = transportCodesForV1)(implicit request: JourneyRequest[_]): Html =
+    departureTransportPage(Mode.Normal, form(transportCodes))(request, messages)
+
+  "Departure Transport View" should {
 
     onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
-      "have defined translation for used labels" in {
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.departure.title")
-        messages must haveTranslationFor(backCaption)
-        messages must haveTranslationFor(saveAndContinueCaption)
-        messages must haveTranslationFor(saveAndReturnCaption)
-
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.departure.title")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.hint")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber.hint")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber.label")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber.hint")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.hint")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber.label")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber.hint")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.label")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.hint")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.label")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.hint")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel")
-
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.reference.header")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.reference.hint")
-      }
-
-      "display page title" in {
-        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.transportInformation.meansOfTransport.departure.title")
-      }
-
       "display section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.6")
+      }
+
+      "display the expected tariff details" in {
+        val expectedKey = if (request.isType(CLEARANCE)) "clearance" else "common"
+
+        val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
+        tariffTitle.text mustBe messages(s"tariff.expander.title.$expectedKey")
+
+        val tariffDetails = view.getElementsByClass("govuk-details__text").first.text
+
+        val expectedText = removeLineBreakIfAny(
+          messages(
+            s"tariff.declaration.departureTransport.$expectedKey.text",
+            messages(s"tariff.declaration.departureTransport.$expectedKey.linkText.0")
+          )
+        )
+        removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
       }
 
       "display 'Save and continue' button on page" in {
@@ -98,147 +90,195 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
         saveAndReturn.text() mustBe messages(saveAndReturnCaption)
         saveAndReturn must haveAttribute("name", SaveAndReturn.toString)
       }
-
-      "display 'Transport details type' radio section " which {
-
-        "have 'Ship number' option" in {
-          view.getElementById("Departure_IMOShipIDNumber").attr("value") mustBe IMOShipIDNumber
-          view
-            .getElementsByAttributeValue("for", "Departure_IMOShipIDNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.IMOShipIDNumber"
-          )
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$IMOShipIDNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label"
-          )
-        }
-
-        "have 'Name of vessel' option" in {
-          view.getElementById("Departure_NameOfVessel").attr("value") mustBe NameOfVessel
-          view
-            .getElementsByAttributeValue("for", "Departure_NameOfVessel") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.nameOfVessel"
-          )
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$NameOfVessel") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.nameOfVessel.label"
-          )
-        }
-
-        "have 'Wagon number' option" in {
-          view.getElementById("Departure_WagonNumber").attr("value") mustBe WagonNumber
-          view
-            .getElementsByAttributeValue("for", "Departure_WagonNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.wagonNumber"
-          )
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$WagonNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.wagonNumber.label"
-          )
-        }
-
-        "have 'Vehicle number' option" in {
-          view.getElementById("Departure_VehicleRegistrationNumber").attr("value") mustBe VehicleRegistrationNumber
-          view
-            .getElementsByAttributeValue("for", "Departure_VehicleRegistrationNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber"
-          )
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$VehicleRegistrationNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label"
-          )
-        }
-
-        "have 'flight number' option" in {
-          view.getElementById("Departure_IATAFlightNumber").attr("value") mustBe IATAFlightNumber
-          view
-            .getElementsByAttributeValue("for", "Departure_IATAFlightNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.IATAFlightNumber"
-          )
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$IATAFlightNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.IATAFlightNumber.label"
-          )
-        }
-
-        "have 'aircraft registration' option" in {
-          view.getElementById("Departure_AircraftRegistrationNumber").attr("value") mustBe AircraftRegistrationNumber
-          view
-            .getElementsByAttributeValue("for", "Departure_AircraftRegistrationNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber"
-          )
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$AircraftRegistrationNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.label"
-          )
-        }
-
-        "have 'european vessel id' option" in {
-          view.getElementById("Departure_EuropeanVesselIDNumber").attr("value") mustBe EuropeanVesselIDNumber
-          view
-            .getElementsByAttributeValue("for", "Departure_EuropeanVesselIDNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.europeanVesselIDNumber"
-          )
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$EuropeanVesselIDNumber") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.label"
-          )
-        }
-
-        "have 'inland waterway' option" in {
-          view.getElementById("Departure_NameOfInlandWaterwayVessel").attr("value") mustBe NameOfInlandWaterwayVessel
-          view
-            .getElementsByAttributeValue("for", "Departure_NameOfInlandWaterwayVessel") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel"
-          )
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$NameOfInlandWaterwayVessel") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel.label"
-          )
-        }
-      }
-    }
-
-    onJourney(SUPPLEMENTARY, STANDARD) { implicit request =>
-      val view = createView()
-
-      "display 'Back' button that links to 'Inland Transport Details' page" in {
-        val backButton = view.getElementById("back-link")
-        backButton must containMessage(backCaption)
-        backButton must haveHref(routes.InlandTransportDetailsController.displayPage())
-      }
-    }
-
-    onJourney(CLEARANCE) { implicit request =>
-      val view = createView()
-
-      "display 'Back' button that links to 'Supervising Customs Office' page" in {
-        val backButton = view.getElementById("back-link")
-        backButton must containMessage(backCaption)
-        backButton must haveHref(routes.SupervisingCustomsOfficeController.displayPage())
-      }
-
-      "display radio section " which {
-
-        "has 'none' option" in {
-          view.getElementById("Departure_NotApplicable").attr("value") mustBe OptionNone
-          view
-            .getElementsByAttributeValue("for", "Departure_NotApplicable") must containMessageForElements(
-            "declaration.transportInformation.meansOfTransport.notApplicable"
-          )
-        }
-      }
-    }
-
-    onJourney(CLEARANCE)(aDeclaration(withEntryIntoDeclarantsRecords(), withItem(itemWith1040AsPC))) { implicit request =>
-      "display 'Back' button to the 'Warehouse' page" when {
-        "declaration is EIDR and all declaration's items have '1040' as PC and '000' as unique APC" in {
-          val view = createView()
-          val backButton = view.getElementById("back-link")
-          backButton must containMessage("site.back")
-          backButton.getElementById("back-link") must haveHref(routes.WarehouseIdentificationController.displayPage())
-        }
-      }
     }
   }
+
+  "Departure Transport View" should {
+
+    "display the expected page title" in {
+      List(dataForVersion1, dataForVersion2, dataForVersion3).zipWithIndex.foreach { dataForVersion =>
+        dataForVersion._1.foreach { dataOnTest =>
+          val view = createView(dataOnTest.transportCodes)(dataOnTest.request)
+          view.getElementById("title").text mustBe messages(
+            s"$prefix.departure.title.v${dataForVersion._2 + 1}",
+            ModeOfTransportCodeHelper.transportMode(Some(dataOnTest.transportCode))
+          )
+        }
+      }
+    }
+
+    "display the body expected for versions 1 and 3" in {
+      List(dataForVersion1, dataForVersion3).foreach { dataForVersion =>
+        dataForVersion.foreach { dataOnTest =>
+          val view = createView(dataOnTest.transportCodes)(dataOnTest.request)
+          val elements = view.getElementsByClass("govuk-body")
+          elements.size mustBe 2
+          elements.get(0).text mustBe messages(s"$prefix.departure.body")
+        }
+      }
+    }
+
+    "display the expected body for version 2" in {
+      dataForVersion2.foreach { dataOnTest =>
+        val view = createView(dataOnTest.transportCodes)(dataOnTest.request)
+        val elements = view.getElementsByClass("govuk-body")
+        elements.size mustBe 3
+        elements.get(0).text mustBe messages(s"$prefix.departure.body.v2")
+        elements.get(1).text mustBe messages(s"$prefix.departure.body")
+      }
+    }
+
+    "display the expected inset text for version 3" in {
+      dataForVersion3.foreach { dataOnTest =>
+        val view = createView(dataOnTest.transportCodes)(dataOnTest.request)
+        val elements = view.getElementsByClass("govuk-inset-text")
+        elements.size mustBe 1
+        elements.text mustBe messages(s"$prefix.departure.inset.text.v3")
+      }
+    }
+
+    "display the expected sequence of radio buttons and input fields" in {
+      List(dataForVersion1, dataForVersion2, dataForVersion3).foreach { dataForVersion =>
+        dataForVersion.foreach { dataOnTest =>
+          val view = createView(dataOnTest.transportCodes)(dataOnTest.request)
+
+          val transportCodes = dataOnTest.transportCodes
+          val isV2 = transportCodes == transportCodesForV2
+          val notAvailableRadioIsNotIncluded = transportCodes != transportCodesForV3WhenPC0019
+
+          val radios = view.getElementsByClass("govuk-radios__input")
+          radios.size mustBe transportCodes.asList.size
+          radios.iterator.asScala.zipWithIndex.foreach { elementAndIndex =>
+            val (element, index) = elementAndIndex
+            val transportCode = transportCodes.asList(index)
+            element.id mustBe s"radio_${transportCode.id}"
+            element.attr("value") mustBe transportCode.value
+          }
+
+          val radioLabels = view.getElementsByClass("govuk-radios__label")
+          radioLabels.size mustBe transportCodes.asList.size
+          radioLabels.iterator.asScala.zipWithIndex.foreach { elementAndIndex =>
+            val (element, index) = elementAndIndex
+            val transportCode = transportCodes.asList(index)
+            val suffix = if (isV2 && transportCode.useAltRadioTextForV2) ".v2" else ""
+            element.text mustBe messages(s"$prefix.${transportCode.id}$suffix")
+            element.attr("for") mustBe s"radio_${transportCode.id}"
+          }
+
+          if (notAvailableRadioIsNotIncluded) {
+            // Page does not include the radio "Not available", which has no input field
+            val inputs = view.getElementsByClass("govuk-input")
+            inputs.size mustBe transportCodes.asList.size
+            inputs.iterator.asScala.zipWithIndex.foreach { elementAndIndex =>
+              val (element, index) = elementAndIndex
+              element.id mustBe transportCodes.asList(index).id
+            }
+
+            val inputLabels = view.getElementsByClass("govuk-label").iterator.asScala.filterNot(_.hasClass("govuk-radios__label")).toList
+
+            inputLabels.size mustBe transportCodes.asList.size
+            inputLabels.zipWithIndex.foreach { elementAndIndex =>
+              val (element, index) = elementAndIndex
+              val transportCode = transportCodes.asList(index)
+              element.attr("for") mustBe transportCode.id
+              element.text mustBe messages(s"$prefix.${transportCodes.asList(index).id}.label")
+            }
+
+            val hints = view.getElementsByClass("govuk-hint")
+            hints.size mustBe transportCodes.asList.size
+            hints.iterator.asScala.zipWithIndex.foreach { elementAndIndex =>
+              val (element, index) = elementAndIndex
+              element.id mustBe s"${transportCodes.asList(index).id}-hint"
+              element.text mustBe messages(s"$prefix.${transportCodes.asList(index).id}.hint")
+            }
+          }
+        }
+      }
+    }
+
+    additionalDeclTypesAllowedOnInlandOrBorder.foreach { additionalType =>
+      "'Border' was selected on /inland-or border and" when {
+        implicit val request = withRequest(additionalType, withInlandOrBorder(Some(Border)))
+        verifyBackButton(InlandOrBorderController.displayPage())
+      }
+
+      "'Border' was NOT selected on /inland-or border and" when {
+        verifyBackButton(InlandTransportDetailsController.displayPage())(withRequest(additionalType))
+      }
+    }
+
+    "the declarationType is SUPPLEMENTARY and" when {
+      verifyBackButton(InlandTransportDetailsController.displayPage())(withRequest(SUPPLEMENTARY_EIDR))
+    }
+
+    List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED).foreach { additionalType =>
+      "the declaration is CLEARANCE and" when {
+        verifyBackButton(SupervisingCustomsOfficeController.displayPage())(withRequest(additionalType))
+      }
+
+      "the declaration is EIDR and" when {
+        implicit val request = withRequest(additionalType, withEntryIntoDeclarantsRecords())
+        verifyBackButton(SupervisingCustomsOfficeController.displayPage())
+      }
+
+      "the declaration is EIDR and" when {
+        "all declaration's items have '1040' as PC and '000' as APC and" when {
+          implicit val request = withRequest(additionalType, withEntryIntoDeclarantsRecords(), withItem(itemWithPC("1040")))
+          verifyBackButton(WarehouseIdentificationController.displayPage())
+        }
+      }
+    }
+
+    List(OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED).foreach { additionalType =>
+      verifyBackButton(InlandTransportDetailsController.displayPage())(withRequest(additionalType))
+    }
+  }
+
+  def verifyBackButton(call: Call)(implicit request: JourneyRequest[_]): Unit =
+    s"AdditionalDeclarationType is ${request.cacheModel.additionalDeclarationType}" should {
+      s"display 'Back' button that links to the '${call.url}' page" in {
+        val backButton = createView().getElementById("back-link")
+        backButton must containMessage(backCaption)
+        backButton must haveHref(call)
+      }
+    }
+
+  case class DataOnTest(transportCodes: TransportCodes, transportCode: ModeOfTransportCode, request: JourneyRequest[_])
+
+  val nonRoRoOrPostalOrFTIModeOfTransportCodes = nonPostalOrFTIModeOfTransportCodes.filterNot(_ == RoRo)
+
+  val dataForVersion1 =
+    additionalDeclTypesAllowedOnInlandOrBorder.flatMap { additionalType =>
+      nonRoRoOrPostalOrFTIModeOfTransportCodes.map { transportCode: ModeOfTransportCode =>
+        DataOnTest(
+          transportCodesForV1,
+          transportCode,
+          withRequest(additionalType, withBorderModeOfTransportCode(Some(transportCode)), withInlandOrBorder(Some(Border)))
+        )
+      }
+    }
+
+  val dataForVersion2 =
+    additionalDeclTypesAllowedOnInlandOrBorder.flatMap { additionalType =>
+      nonPostalOrFTIModeOfTransportCodes.flatMap { transportCode =>
+        List(
+          DataOnTest(transportCodesForV2, transportCode, withRequest(additionalType, withInlandModeOfTransportCode(transportCode))),
+          DataOnTest(transportCodesForV2, transportCode, withRequest(SUPPLEMENTARY_EIDR, withInlandModeOfTransportCode(transportCode)))
+        )
+      }
+    }
+
+  val dataForVersion3 =
+    List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED).flatMap { additionalType =>
+      nonRoRoOrPostalOrFTIModeOfTransportCodes.flatMap { transportCode =>
+        List(
+          DataOnTest(transportCodesForV3, transportCode, withRequest(additionalType, withBorderModeOfTransportCode(Some(transportCode)))),
+          DataOnTest(
+            transportCodesForV3WhenPC0019,
+            transportCode,
+            withRequest(additionalType, withBorderModeOfTransportCode(Some(transportCode)), withItem(itemWithPC("0019")))
+          )
+        )
+      }
+    }
 }

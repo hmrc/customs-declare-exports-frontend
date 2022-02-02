@@ -44,7 +44,8 @@ class ItemsSummaryController @Inject()(
   mcc: MessagesControllerComponents,
   addItemPage: items_add_item,
   itemsSummaryPage: items_summary,
-  removeItemPage: items_remove_item
+  removeItemPage: items_remove_item,
+  supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -102,7 +103,7 @@ class ItemsSummaryController @Inject()(
 
       case SIMPLIFIED | OCCASIONAL =>
         if (request.cacheModel.requiresWarehouseId) routes.WarehouseIdentificationController.displayPage
-        else SupervisingCustomsOfficeHelper.landOnOrSkipToNextPage(request.cacheModel)
+        else supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(request.cacheModel)
     }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =
