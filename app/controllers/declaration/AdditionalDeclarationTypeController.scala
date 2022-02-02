@@ -27,7 +27,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.declaration_type
+import views.html.declaration.additional_declaration_type
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,15 +38,15 @@ class AdditionalDeclarationTypeController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  declarationTypePage: declaration_type
+  additionalTypePage: additional_declaration_type
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = AdditionalDeclarationTypePage.form.withSubmissionErrors
     request.cacheModel.additionalDeclarationType match {
-      case Some(data) => Ok(declarationTypePage(mode, form.fill(data)))
-      case _          => Ok(declarationTypePage(mode, form))
+      case Some(data) => Ok(additionalTypePage(mode, form.fill(data)))
+      case _          => Ok(additionalTypePage(mode, form))
     }
   }
 
@@ -54,7 +54,7 @@ class AdditionalDeclarationTypeController @Inject()(
     val form = AdditionalDeclarationTypePage.form.bindFromRequest
     form
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationTypePage(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(additionalTypePage(mode, formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(mode, nextPage))
       )
   }

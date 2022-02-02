@@ -28,14 +28,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import javax.inject.Singleton
 
 @Singleton
-class DeclarationTypeHelper {
+class AdditionalDeclarationTypeHelper {
 
   def radioGroupErrors(form: Form[_])(implicit request: JourneyRequest[_]): Seq[FormError] =
-    ErrorMapper.radioGroupErrors(
-      "additionalDeclarationType",
-      if (request.isType(SUPPLEMENTARY)) "simplified" else "prelodged",
-      form.errors
-    )
+    ErrorMapper.radioGroupErrors("additionalDeclarationType", if (request.isType(SUPPLEMENTARY)) "simplified" else "prelodged", form.errors)
 
   def radioItems(form: Form[_])(implicit messages: Messages, request: JourneyRequest[_]): Seq[RadioItem] =
     request.declarationType match {

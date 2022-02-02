@@ -21,12 +21,12 @@
 @import models.DeclarationType.SUPPLEMENTARY
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, DeclarationTypeHelper, Title}
+@import views.helpers.{AdditionalDeclarationTypeHelper, BackButton, Title}
 @import views.html.components.gds._
 @import config.AppConfig
 
 @this(
-    declarationTypeHelper: DeclarationTypeHelper,
+    declarationTypeHelper: AdditionalDeclarationTypeHelper,
     govukLayout: gdsMainTemplate,
     govukDetails: GovukDetails,
     govukRadios: GovukRadios,
@@ -57,14 +57,14 @@
 }
 
 @govukLayout(
-    title = Title(s"declaration.declarationType.header.${request.typeId}", "declaration.section.1"),
+    title = Title(s"declaration.declarationType.header.${request.declarationType}", "declaration.section.1"),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalDeclarationTypePage, mode)))){
 
     @formHelper(action = AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(declarationTypeHelper.radioGroupErrors(form))
 
         @sectionHeader(messages("declaration.section.1"))
-        @heading(messages(s"declaration.declarationType.header.${request.typeId}"))
+        @heading(messages(s"declaration.declarationType.header.${request.declarationType}"))
 
         @if(!request.isType(SUPPLEMENTARY)) {
             @notificationBanner(

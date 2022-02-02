@@ -51,5 +51,4 @@ class AdditionalDeclarationTypeSpec extends UnitSpec {
       Json.fromJson[AdditionalDeclarationType](JsString("other")) mustBe an[JsError]
     }
   }
-
 }

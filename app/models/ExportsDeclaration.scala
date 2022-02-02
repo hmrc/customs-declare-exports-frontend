@@ -53,8 +53,6 @@ case class ExportsDeclaration(
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
 
-  def typeId: String = `type`.toString
-
   def lrn: Option[String] = consignmentReferences.map(_.lrn.value)
   def ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
   def inlandModeOfTransportCode: Option[ModeOfTransportCode] = locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode)
