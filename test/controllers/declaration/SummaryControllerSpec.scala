@@ -107,26 +107,53 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
           }
         }
         "saved declaration" when {
-          "normal mode" in {
 
-            withNewCaching(aDeclaration(withConsignmentReferences()))
+          "readyForSubmission exists" when {
+            "normal mode" in {
 
-            val result = controller.displayPage(Mode.Normal)(getRequest())
+              withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(false)))
 
-            status(result) mustBe OK
-            verify(draftSummaryPage, times(1)).apply(eqTo(normalModeBackLink))(any(), any(), any())
-            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+              val result = controller.displayPage(Mode.Normal)(getRequest())
+
+              status(result) mustBe OK
+              verify(draftSummaryPage, times(1)).apply(eqTo(normalModeBackLink))(any(), any(), any())
+              verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+            }
+            "draft mode" in {
+
+              withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(false)))
+
+              val result = controller.displayPage(Mode.Draft)(getRequest())
+
+              status(result) mustBe OK
+              verify(draftSummaryPage, times(1)).apply(eqTo(draftModeBackLink))(any(), any(), any())
+              verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+            }
           }
-          "draft mode" in {
 
-            withNewCaching(aDeclaration(withConsignmentReferences()))
+          "readyForSubmission does not exist" when {
+            "normal mode" in {
 
-            val result = controller.displayPage(Mode.Draft)(getRequest())
+              withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = None))
 
-            status(result) mustBe OK
-            verify(draftSummaryPage, times(1)).apply(eqTo(draftModeBackLink))(any(), any(), any())
-            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+              val result = controller.displayPage(Mode.Normal)(getRequest())
+
+              status(result) mustBe OK
+              verify(draftSummaryPage, times(1)).apply(eqTo(normalModeBackLink))(any(), any(), any())
+              verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+            }
+            "draft mode" in {
+
+              withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = None))
+
+              val result = controller.displayPage(Mode.Draft)(getRequest())
+
+              status(result) mustBe OK
+              verify(draftSummaryPage, times(1)).apply(eqTo(draftModeBackLink))(any(), any(), any())
+              verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+            }
           }
+
         }
         "amendment" in {
 
