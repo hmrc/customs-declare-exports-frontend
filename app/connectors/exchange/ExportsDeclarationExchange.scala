@@ -53,7 +53,7 @@ case class ExportsDeclarationExchange(
   parties: Parties = Parties(),
   locations: Locations = Locations(),
   items: Seq[ExportItem] = Seq.empty[ExportItem],
-  readyForSubmission: Boolean = false,
+  readyForSubmission: Option[Boolean] = None,
   totalNumberOfItems: Option[TotalItemsExchange] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
