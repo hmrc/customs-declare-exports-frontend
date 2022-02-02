@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationRequiredController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -57,7 +56,7 @@ class AdditionalInformationController @Inject()(
         Future.successful(navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId)))
 
       case _ =>
-        Future.successful(navigator.continueTo(mode, AdditionalInformationRequiredController.displayPage(_, itemId)))
+        Future.successful(navigator.continueTo(mode, routes.AdditionalInformationRequiredController.displayPage(_, itemId)))
     }
   }
 
@@ -77,7 +76,7 @@ class AdditionalInformationController @Inject()(
       case YesNoAnswers.yes =>
         navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
       case _ =>
-        navigator.continueTo(mode, AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
+        navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
     }
 
   private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =

@@ -338,6 +338,11 @@
 
 <div class="govuk-section-break">
     @item.additionalDocuments.map(additionalDocuments =>
-        additional_documents(mode, item.id, item.sequenceId, additionalDocuments, actionsEnabled)
+        additional_documents(
+            mode,
+            item,
+            additionalDocuments,
+            actionsEnabled
+        )
     )
 </div>
