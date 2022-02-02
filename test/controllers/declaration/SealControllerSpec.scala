@@ -27,6 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -134,9 +135,9 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
       "user adds seal when container not in cache" in {
 
-        val body = Seq(("id", "value"))
+        val body = Json.obj("id" -> "value")
 
-        val result = controller.submitAddSeal(Mode.Normal, containerId)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitAddSeal(Mode.Normal, containerId)(postRequest(body))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -144,9 +145,9 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       "user adds seal with incorrect item" in {
 
         withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq.empty))))
-        val body = Seq(("id", "!@#$"))
+        val body = Json.obj("id" -> "!@#$")
 
-        val result = controller.submitAddSeal(Mode.Normal, containerId)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitAddSeal(Mode.Normal, containerId)(postRequest(body))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -167,9 +168,9 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
         withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq(Seal("value"))))))
 
-        val body = Seq(("id", "value"))
+        val body = Json.obj("id" -> "value")
 
-        val result = controller.submitAddSeal(Mode.Normal, containerId)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitAddSeal(Mode.Normal, containerId)(postRequest(body))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -238,20 +239,31 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       "add another seal question" when {
         "redirects when user answers 'Yes" in {
 
-          val body = Seq(("yesNo", "Yes"))
+          val body = Json.obj("yesNo" -> "Yes")
 
-          val result = controller.submitSummaryAction(Mode.Normal, containerId)(postRequestAsFormUrlEncoded(body: _*))
+          val result = controller.submitSummaryAction(Mode.Normal, containerId)(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.SealController
             .displayAddSeal(Mode.Normal, containerId)
         }
 
+        "redirects when user answers 'Yes' in error-fix mode" in {
+
+          val body = Json.obj("yesNo" -> "Yes")
+
+          val result = controller.submitSummaryAction(Mode.ErrorFix, containerId)(postRequest(body))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.SealController
+            .displayAddSeal(Mode.ErrorFix, containerId)
+        }
+
         "redirects when user answers 'No" in {
 
-          val body = Seq(("yesNo", "No"))
+          val body = Json.obj("yesNo" -> "No")
 
-          val result = controller.submitSummaryAction(Mode.Normal, containerId)(postRequestAsFormUrlEncoded(body: _*))
+          val result = controller.submitSummaryAction(Mode.Normal, containerId)(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
@@ -263,10 +275,10 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         "user confirms that they want to remove" in {
 
           withNewCaching(aDeclaration(withContainerData(Seq(Container(containerId, Seq(Seal(sealId))), Container("containerB", Seq(Seal("sealB")))))))
-          val body = Seq(("yesNo", "Yes"))
+          val body = Json.obj("yesNo" -> "Yes")
 
           val result =
-            controller.submitSealRemove(Mode.Normal, containerId, sealId)(postRequestAsFormUrlEncoded(body: _*))
+            controller.submitSealRemove(Mode.Normal, containerId, sealId)(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.SealController
@@ -278,10 +290,10 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         "user confirms that they do not want to remove" in {
 
           withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq(Seal(sealId))))))
-          val body = Seq(("yesNo", "No"))
+          val body = Json.obj("yesNo" -> "No")
 
           val result =
-            controller.submitSealRemove(Mode.Normal, containerId, sealId)(postRequestAsFormUrlEncoded(body: _*))
+            controller.submitSealRemove(Mode.Normal, containerId, sealId)(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.SealController

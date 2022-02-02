@@ -27,6 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -251,30 +252,40 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "redirect to add container page" when {
       "user indicates they want to add another container" in {
-        val body = Seq(("yesNo", "Yes"))
+        val body = Json.obj("yesNo" -> "Yes")
 
-        val result = controller.submitSummaryAction(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitSummaryAction(Mode.Normal)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
           .displayAddContainer(Mode.Normal)
       }
+
+      "user indicates they want to add another container in error-fix mode" in {
+        val body = Json.obj("yesNo" -> "Yes")
+
+        val result = controller.submitSummaryAction(Mode.ErrorFix)(postRequest(body))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+          .displayAddContainer(Mode.ErrorFix)
+      }
     }
 
     "redirect to summary page" when {
       "user indicates they do not want to add another container" in {
-        val body = Seq(("yesNo", "No"))
+        val body = Json.obj("yesNo" -> "No")
 
-        val result = controller.submitSummaryAction(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitSummaryAction(Mode.Normal)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
       }
 
       "user indicates they do not want to add another container and they are in draft mode" in {
-        val body = Seq(("yesNo", "No"))
+        val body = Json.obj("yesNo" -> "No")
 
-        val result = controller.submitSummaryAction(Mode.Draft)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitSummaryAction(Mode.Draft)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
@@ -288,9 +299,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     "remove container and redirect" when {
       "user confirms that they want to remove" in {
         withNewCaching(aDeclaration(withContainerData(containerData)))
-        val body = Seq(("yesNo", "Yes"))
+        val body = Json.obj("yesNo" -> "Yes")
 
-        val result = controller.submitContainerRemove(Mode.Normal, containerId)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitContainerRemove(Mode.Normal, containerId)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
@@ -303,9 +314,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     "not remove container and redirect" when {
       "user confirms that they do not want to remove" in {
         withNewCaching(aDeclaration(withContainerData(containerData)))
-        val body = Seq(("yesNo", "No"))
+        val body = Json.obj("yesNo" -> "No")
 
-        val result = controller.submitContainerRemove(Mode.Normal, containerId)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitContainerRemove(Mode.Normal, containerId)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
@@ -319,9 +330,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   "return 400 (BAD_REQUEST)" when {
     "user adds container with incorrect item" in {
 
-      val body = Seq(("id", "!@#$"))
+      val body = Json.obj("id" -> "!@#$")
 
-      val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+      val result = controller.submitAddContainer(Mode.Normal)(postRequest(body))
 
       status(result) must be(BAD_REQUEST)
     }
@@ -329,9 +340,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     "user adds seal and reached limit of items" in {
       withNewCaching(aDeclaration(withContainerData(maxContainerData)))
 
-      val body = Seq(("id", "value"))
+      val body = Json.obj("id" -> "value")
 
-      val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+      val result = controller.submitAddContainer(Mode.Normal)(postRequest(body))
 
       status(result) must be(BAD_REQUEST)
     }
@@ -339,9 +350,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     "user adds seal with duplicated value" in {
       withNewCaching(aDeclaration(withContainerData(containerData)))
 
-      val body = Seq(("id", containerId))
+      val body = Json.obj("id" -> containerId)
 
-      val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+      val result = controller.submitAddContainer(Mode.Normal)(postRequest(body))
 
       status(result) must be(BAD_REQUEST)
     }
