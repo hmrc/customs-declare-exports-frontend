@@ -109,7 +109,7 @@ class SealController @Inject()(
         formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
-              Future.successful(navigator.continueTo(mode, routes.SealController.displayAddSeal(_, containerId)))
+              Future.successful(navigator.continueTo(mode, routes.SealController.displayAddSeal(_, containerId), mode.isErrorFix))
             case YesNoAnswers.no =>
               Future
                 .successful(navigator.continueTo(mode, routes.TransportContainerController.displayContainerSummary))

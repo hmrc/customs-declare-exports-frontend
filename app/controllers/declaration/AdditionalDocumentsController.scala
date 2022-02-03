@@ -21,7 +21,6 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.additionaldocuments.AdditionalDocument
-import javax.inject.Inject
 import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -30,6 +29,8 @@ import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalDocuments.additional_documents
+
+import javax.inject.Inject
 
 class AdditionalDocumentsController @Inject()(
   authenticate: AuthAction,
@@ -54,7 +55,7 @@ class AdditionalDocumentsController @Inject()(
 
     yesNoForm
       .bindFromRequest()
-      .fold(showFormWithErrors, yesNoAnswer => navigator.continueTo(mode, nextPage(yesNoAnswer, itemId)))
+      .fold(showFormWithErrors, yesNoAnswer => nextPage(mode, yesNoAnswer, itemId))
   }
 
   private def yesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalDocument.add.another.empty")
@@ -62,9 +63,13 @@ class AdditionalDocumentsController @Inject()(
   private def cachedAdditionalDocuments(itemId: String)(implicit request: JourneyRequest[_]): Seq[AdditionalDocument] =
     request.cacheModel.listOfAdditionalDocuments(itemId)
 
-  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
-    if (yesNoAnswer.answer == YesNoAnswers.yes) routes.AdditionalDocumentAddController.displayPage(_, itemId)
-    else routes.ItemsSummaryController.displayItemsSummaryPage
+  private def nextPage(mode: Mode, yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+    yesNoAnswer.answer match {
+      case YesNoAnswers.yes =>
+        navigator.continueTo(mode, routes.AdditionalDocumentAddController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
+      case _ =>
+        navigator.continueTo(mode, routes.ItemsSummaryController.displayItemsSummaryPage)(request, hc)
+    }
 
   private def redirectIfNoDocuments(mode: Mode, itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
     if (mode.isErrorFix || request.cacheModel.isAuthCodeRequiringAdditionalDocuments)

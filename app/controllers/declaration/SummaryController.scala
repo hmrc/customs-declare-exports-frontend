@@ -95,7 +95,7 @@ class SummaryController @Inject()(
 
   private def displaySummaryPage(mode: Mode)(implicit request: JourneyRequest[_]): Result = {
 
-    val readyForSubmission = request.cacheModel.readyForSubmission
+    val readyForSubmission = request.cacheModel.readyForSubmission.contains(true)
 
     mode match {
       case Mode.Normal if readyForSubmission => Ok(normalSummaryPage(routes.TransportContainerController.displayContainerSummary(Mode.Normal)))

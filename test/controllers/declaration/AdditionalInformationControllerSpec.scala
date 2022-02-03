@@ -26,6 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -101,8 +102,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
       "user provide wrong action" in {
 
-        val requestBody = Seq("yesNo" -> "invalid")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+        val requestBody = Json.obj("yesNo" -> "invalid")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
@@ -133,19 +134,30 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val item = anItem(withAdditionalInformation(additionalInformation))
         withNewCaching(aDeclaration(withItems(item)))
 
-        val requestBody = Seq("yesNo" -> "Yes")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+        val requestBody = Json.obj("yesNo" -> "Yes")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.AdditionalInformationAddController.displayPage(Mode.Normal, itemId)
+      }
+
+      "user submits valid Yes answer in error-fix mode" in {
+        val item = anItem(withAdditionalInformation(additionalInformation))
+        withNewCaching(aDeclaration(withItems(item)))
+
+        val requestBody = Json.obj("yesNo" -> "Yes")
+        val result = controller.submitForm(Mode.ErrorFix, itemId)(postRequest(requestBody))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.AdditionalInformationAddController.displayPage(Mode.ErrorFix, itemId)
       }
 
       "user submits valid No answer" in {
         val item = anItem(withAdditionalInformation(additionalInformation))
         withNewCaching(aDeclaration(withItems(item)))
 
-        val requestBody = Seq("yesNo" -> "No")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+        val requestBody = Json.obj("yesNo" -> "No")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId)

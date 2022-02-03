@@ -63,7 +63,7 @@ class AdditionalInformationController @Inject()(
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
-      .fold(showFormWithErrors(mode, itemId, _), yesNoAnswer => Future.successful(navigator.continueTo(mode, nextPage(yesNoAnswer, itemId))))
+      .fold(showFormWithErrors(mode, itemId, _), yesNoAnswer => Future.successful(nextPage(mode, yesNoAnswer, itemId)))
   }
 
   private def form: Form[YesNoAnswer] =
@@ -72,10 +72,12 @@ class AdditionalInformationController @Inject()(
   private def cachedAdditionalInformationData(itemId: String)(implicit request: JourneyRequest[_]): Option[AdditionalInformationData] =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation)
 
-  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
+  private def nextPage(mode: Mode, yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     yesNoAnswer.answer match {
-      case YesNoAnswers.yes => routes.AdditionalInformationAddController.displayPage(_, itemId)
-      case YesNoAnswers.no  => IsLicenseRequiredController.displayPage(_, itemId)
+      case YesNoAnswers.yes =>
+        navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
+      case YesNoAnswers.no =>
+        navigator.continueTo(mode, IsLicenseRequiredController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
     }
 
   private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =

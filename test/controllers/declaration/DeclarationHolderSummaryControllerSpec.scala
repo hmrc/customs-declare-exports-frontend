@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -115,8 +116,8 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         "the user submits the page but does not answer with yes or no" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Seq("yesNo" -> "")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val requestBody = Json.obj("yesNo" -> "")
+          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
@@ -128,11 +129,21 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         "the user submits the page answering Yes" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val requestBody = Json.obj("yesNo" -> "Yes")
+          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.Normal)
+        }
+
+        "the user submits the page answering Yes in error-fix mode" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
+
+          val requestBody = Json.obj("yesNo" -> "Yes")
+          val result = controller.submitForm(Mode.ErrorFix)(postRequest(requestBody))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.DeclarationHolderAddController.displayPage(Mode.ErrorFix)
         }
       }
     }
@@ -142,8 +153,8 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         "the user submits the page answering No" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val requestBody = Json.obj("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage(Mode.Normal)
@@ -154,8 +165,8 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         "the user submits the page answering No" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val requestBody = Json.obj("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.DestinationCountryController.displayPage(Mode.Normal)

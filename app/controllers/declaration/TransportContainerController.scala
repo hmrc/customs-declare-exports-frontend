@@ -160,10 +160,10 @@ class TransportContainerController @Inject()(
         formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
-              Future.successful(navigator.continueTo(mode, routes.TransportContainerController.displayAddContainer))
+              Future.successful(navigator.continueTo(mode, routes.TransportContainerController.displayAddContainer, mode.isErrorFix))
             case YesNoAnswers.no =>
               updateDeclarationFromRequest(_.updateReadyForSubmission(true)) map { _ =>
-                navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage)
+                navigator.continueTo(mode, routes.SummaryController.displayPage)
               }
         }
       )

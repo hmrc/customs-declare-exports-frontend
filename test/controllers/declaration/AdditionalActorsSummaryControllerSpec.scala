@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -99,8 +100,8 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
         "user submits invalid answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
-          val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val requestBody = Json.obj("yesNo" -> "invalid")
+          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
@@ -122,11 +123,21 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
         "user submits valid Yes answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
-          val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val requestBody = Json.obj("yesNo" -> "Yes")
+          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage(Mode.Normal)
+        }
+
+        "user submits valid Yes answer with error-fix flag" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
+
+          val requestBody = Json.obj("yesNo" -> "Yes")
+          val result = controller.submitForm(Mode.ErrorFix)(postRequest(requestBody))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsAddController.displayPage(Mode.ErrorFix)
         }
       }
     }
@@ -136,8 +147,8 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
         "user submits valid No answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationAdditionalActors(additionalActorsData)))
 
-          val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val requestBody = Json.obj("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
