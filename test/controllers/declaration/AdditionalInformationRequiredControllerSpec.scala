@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
+import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -126,16 +127,34 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
           thePageNavigatedTo mustBe routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
         }
 
-        "user submits valid No answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
-
-          val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId)
-        }
       }
+
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+      "user submits valid No answer" in {
+        withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
+
+        val requestBody = Seq("yesNo" -> "No")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId)
+      }
+
+    }
+
+    onJourney(CLEARANCE) { request =>
+      "user submits valid No answer" in {
+        withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
+
+        val requestBody = Seq("yesNo" -> "No")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+      }
+
     }
 
   }
