@@ -18,7 +18,8 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import models.{DeclarationType, Mode}
+import models.DeclarationType
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
