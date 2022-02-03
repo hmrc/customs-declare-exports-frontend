@@ -26,6 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -115,19 +116,30 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
-        val requestBody = Seq("yesNo" -> "Yes")
-        val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+        val requestBody = Json.obj("yesNo" -> "Yes")
+        val result = controller.submitForm(Mode.Normal, item.id)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(Mode.Normal, item.id)
+      }
+
+      "user submits valid Yes answer in error-fix mode" in {
+        val item = anItem()
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+
+        val requestBody = Json.obj("yesNo" -> "Yes")
+        val result = controller.submitForm(Mode.ErrorFix, item.id)(postRequest(requestBody))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(Mode.ErrorFix, item.id)
       }
 
       "user submits valid No answer" in {
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
-        val requestBody = Seq("yesNo" -> "No")
-        val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+        val requestBody = Json.obj("yesNo" -> "No")
+        val result = controller.submitForm(Mode.Normal, item.id)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)

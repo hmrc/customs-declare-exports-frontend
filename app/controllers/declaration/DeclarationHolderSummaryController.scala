@@ -48,7 +48,7 @@ class DeclarationHolderSummaryController @Inject()(
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     addAnotherYesNoForm.bindFromRequest
       .fold(formWithErrors => BadRequest(declarationHolderPage(mode, formWithErrors, declarationHolders)), _.answer match {
-        case YesNoAnswers.yes => navigator.continueTo(mode, DeclarationHolderAddController.displayPage)
+        case YesNoAnswers.yes => navigator.continueTo(mode, DeclarationHolderAddController.displayPage, mode.isErrorFix)
         case YesNoAnswers.no  => navigator.continueTo(mode, DestinationCountryController.displayPage)
       })
   }

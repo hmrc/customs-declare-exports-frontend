@@ -58,8 +58,10 @@ class PackageInformationSummaryController @Inject()(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(packageInformationPage(mode, itemId, formWithErrors, items)),
         validYesNo =>
           validYesNo.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.PackageInformationAddController.displayPage(_, itemId))
-            case YesNoAnswers.no  => navigator.continueTo(mode, nextPage(itemId))
+            case YesNoAnswers.yes =>
+              navigator.continueTo(mode, controllers.declaration.routes.PackageInformationAddController.displayPage(_, itemId), mode.isErrorFix)
+            case YesNoAnswers.no =>
+              navigator.continueTo(mode, nextPage(itemId))
         }
       )
   }

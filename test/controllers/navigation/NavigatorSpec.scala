@@ -134,6 +134,30 @@ class NavigatorSpec
         redirectLocation(result) mustBe Some("url")
         verifyNoInteractions(auditService)
       }
+
+      "Error-fix flag is passed in error-fix mode" in {
+        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(request(Some(SaveAndContinue))), hc)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("url")
+        verifyNoInteractions(auditService)
+      }
+
+      "Add in error-fix mode with error-fix flag passed" in {
+        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(request(Some(Add))), hc)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("url")
+        verifyNoInteractions(auditService)
+      }
+
+      "Remove in error-fix mode with error-fix flag passed" in {
+        val result = navigator.continueTo(Mode.ErrorFix, call, true)(decoratedRequest(request(Some(Remove(Seq.empty)))), hc)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("url")
+        verifyNoInteractions(auditService)
+      }
     }
   }
 

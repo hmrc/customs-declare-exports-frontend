@@ -24,7 +24,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -90,7 +90,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
-        val incorrectForm = JsObject(Seq("yesNo" -> JsString("")))
+        val incorrectForm = Json.obj("yesNo" -> "")
 
         val result = controller.submit(Mode.Normal)(postRequest(incorrectForm))
 
@@ -114,12 +114,24 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
-        val correctForm = JsObject(Seq("yesNo" -> JsString("Yes")))
+        val correctForm = Json.obj("yesNo" -> "Yes")
 
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+      }
+
+      "user answer Yes to add additional document in error-fix ode" in {
+
+        withNewCaching(aDeclaration(withPreviousDocuments(document)))
+
+        val correctForm = Json.obj("yesNo" -> "Yes")
+
+        val result = controller.submit(Mode.ErrorFix)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.ErrorFix)
       }
     }
 
@@ -129,7 +141,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
-        val correctForm = JsObject(Seq("yesNo" -> JsString("No")))
+        val correctForm = Json.obj("yesNo" -> "No")
 
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 

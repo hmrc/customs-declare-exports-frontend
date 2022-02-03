@@ -56,8 +56,9 @@ class PreviousDocumentsSummaryController @Inject()(
         formWithErrors => BadRequest(previousDocumentsSummary(mode, formWithErrors, previousDocuments)),
         validAnswer =>
           validAnswer.answer match {
-            case YesNoAnswers.yes => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage)
-            case YesNoAnswers.no  => navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
+            case YesNoAnswers.yes =>
+              navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage, mode.isErrorFix)
+            case YesNoAnswers.no => navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayAddItemPage)
         }
       )
   }

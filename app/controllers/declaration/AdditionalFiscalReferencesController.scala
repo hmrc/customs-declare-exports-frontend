@@ -66,7 +66,8 @@ class AdditionalFiscalReferencesController @Inject()(
         validYesNo =>
           validYesNo.answer match {
             case YesNoAnswers.yes =>
-              navigator.continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId))
+              navigator
+                .continueTo(mode, controllers.declaration.routes.AdditionalFiscalReferencesAddController.displayPage(_, itemId), mode.isErrorFix)
             case YesNoAnswers.no => navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
         }
       )
