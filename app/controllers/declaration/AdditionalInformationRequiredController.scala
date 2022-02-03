@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationController}
+import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationController, IsLicenseRequiredController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -72,7 +72,7 @@ class AdditionalInformationRequiredController @Inject()(
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
     yesNoAnswer.answer match {
       case YesNoAnswers.yes => AdditionalInformationController.displayPage(_, itemId)
-      case YesNoAnswers.no  => AdditionalDocumentsController.displayPage(_, itemId)
+      case YesNoAnswers.no  => IsLicenseRequiredController.displayPage(_, itemId)
     }
 
   private def previousAnswer(itemId: String)(implicit request: JourneyRequest[AnyContent]): Form[YesNoAnswer] =
