@@ -77,7 +77,7 @@ class AdditionalInformationRequiredHelper @Inject()(appConfig: AppConfig, paragr
         link(
           id = Some("proc_codes_link"),
           text = messages("declaration.additionalInformationRequired.not1040.inset.para1.link"),
-          call = Call("GET", appConfig.previousProcedureCodesUrl),
+          call = Call("GET", appConfig.previousProcedureCodes),
           target = "_blank"
         )
       )

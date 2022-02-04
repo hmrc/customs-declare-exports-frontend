@@ -16,17 +16,25 @@
 
 package forms.declaration.declarationHolder
 
+import controllers.helpers.DeclarationHolderHelper.declarationHolders
+import models.ExportsDeclaration
+import models.requests.JourneyRequest
+
 object AuthorizationTypeCodes {
+
+  val codeFilteredFromView = "EORI"
+  val codeThatOverrideInlandOrBorderSkip = "FP"
+  val codeThatSkipLocationOfGoods = "MOU"
 
   val mutuallyExclusiveAuthCodes = List("CSE", "EXRR")
 
   val authCodesThatSkipInlandOrBorder = mutuallyExclusiveAuthCodes
 
-  val codesThatOverrideInlandOrBorderSkip = List(Some("FP"))
+  def isAuthCode(code: String)(implicit request: JourneyRequest[_]): Boolean =
+    declarationHolders.exists(_.authorisationTypeCode.exists(_ == code))
 
-  val codesThatSkipLocationOfGoods = List(Some("MOU"))
-
-  val codesFilteredFromView = List("EORI")
+  def isAuthCode(declaration: ExportsDeclaration, code: String): Boolean =
+    declaration.declarationHolders.exists(_.authorisationTypeCode.exists(_ == code))
 
   val codesRequiringDocumentation = Set(
     "OPO",

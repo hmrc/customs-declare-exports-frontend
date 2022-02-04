@@ -21,6 +21,7 @@ import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.countries.Country
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
 import models.DeclarationType.DeclarationType
 import models.codes.{Country => ModelCountry}
 import models.{DeclarationType, Mode}
@@ -119,7 +120,11 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
       def redirectForDeclarationType(declarationType: DeclarationType, redirect: Call): Unit =
         "redirect" in {
-          withNewCaching(aDeclaration(withType(declarationType), withDeclarationHolders(Some("MOU")), withDestinationCountries()))
+          withNewCaching(aDeclaration(
+            withType(declarationType),
+            withDeclarationHolders(Some(codeThatSkipLocationOfGoods)),
+            withDestinationCountries()
+          ))
 
           val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
 
@@ -131,9 +136,11 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
       val redirectToOfficeOfExit: Unit =
         "redirect" in {
-          withNewCaching(
-            aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), withDeclarationHolders(Some("MOU")), withDestinationCountries())
-          )
+          withNewCaching(aDeclaration(
+            withAdditionalDeclarationType(SUPPLEMENTARY_EIDR),
+            withDeclarationHolders(Some(codeThatSkipLocationOfGoods)),
+            withDestinationCountries()
+          ))
 
           val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
 
