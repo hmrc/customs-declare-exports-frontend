@@ -17,8 +17,9 @@
 package services.view
 
 import java.util.Locale
-
 import connectors.CodeListConnector
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.codesFilteredFromView
+
 import javax.inject.{Inject, Singleton}
 import models.codes.HolderOfAuthorisationCode
 
@@ -31,5 +32,10 @@ class HolderOfAuthorisationCodes @Inject()(codeListConnector: CodeListConnector)
     codeListConnector.getHolderOfAuthorisationCodes(locale).get(code).fold("")(description)
 
   def asListOfAutoCompleteItems(locale: Locale): List[AutoCompleteItem] =
-    codeListConnector.getHolderOfAuthorisationCodes(locale).values.map(h => AutoCompleteItem(description(h), h.code)).toList
+    codeListConnector
+      .getHolderOfAuthorisationCodes(locale)
+      .values
+      .filter(h => !codesFilteredFromView.contains(h.code))
+      .map(h => AutoCompleteItem(description(h), h.code))
+      .toList
 }
