@@ -59,13 +59,13 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
       autoCompleteItems.size mustBe 45
 
       autoCompleteItems(0) mustBe AutoCompleteItem("ACP - Authorised issuer to establish the proof of the customs status of Union goods", "ACP")
-      autoCompleteItems(25) mustBe AutoCompleteItem("UKCS - UK Continental Shelf", "UKCS")
+      autoCompleteItems(24) mustBe AutoCompleteItem("UKCS - UK Continental Shelf", "UKCS")
 
-      autoCompleteItems(26) mustBe AutoCompleteItem("CGU - Customs comprehensive guarantee", "CGU")
-      autoCompleteItems(40) mustBe AutoCompleteItem("TST - Authorisation to operate storage facilities for the temporary storage of goods", "TST")
+      autoCompleteItems(25) mustBe AutoCompleteItem("CGU - Customs comprehensive guarantee", "CGU")
+      autoCompleteItems(39) mustBe AutoCompleteItem("TST - Authorisation to operate storage facilities for the temporary storage of goods", "TST")
 
-      autoCompleteItems(41) mustBe AutoCompleteItem("ACE - Authorised consignee for Union transit", "ACE")
-      autoCompleteItems(44) mustBe AutoCompleteItem("TRD - Authorisation to use transit declaration with a reduced dataset", "TRD")
+      autoCompleteItems(40) mustBe AutoCompleteItem("ACE - Authorised consignee for Union transit", "ACE")
+      autoCompleteItems(44) mustBe AutoCompleteItem("FP - Freeports Special Procedure", "FP")
     }
   }
 }

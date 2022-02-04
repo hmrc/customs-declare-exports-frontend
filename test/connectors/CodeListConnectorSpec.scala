@@ -144,7 +144,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
         val codeListConnector = new FileBasedCodeListConnector(appConfig)
         (codeListConnector.supportedLanguages :+ JAPANESE).foreach { locale =>
           val codes = codeListConnector.getHolderOfAuthorisationCodes(locale).keys.toList
-          codes.size mustBe 45
+          codes.size mustBe 46
 
           codes(0) mustBe "ACP"
           codes(25) mustBe "UKCS"
@@ -153,7 +153,7 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
           codes(40) mustBe "TST"
 
           codes(41) mustBe "ACE"
-          codes(44) mustBe "TRD"
+          codes(45) mustBe "FP"
         }
       }
     }
