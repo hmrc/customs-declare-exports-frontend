@@ -120,11 +120,9 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
       def redirectForDeclarationType(declarationType: DeclarationType, redirect: Call): Unit =
         "redirect" in {
-          withNewCaching(aDeclaration(
-            withType(declarationType),
-            withDeclarationHolders(Some(codeThatSkipLocationOfGoods)),
-            withDestinationCountries()
-          ))
+          withNewCaching(
+            aDeclaration(withType(declarationType), withDeclarationHolders(Some(codeThatSkipLocationOfGoods)), withDestinationCountries())
+          )
 
           val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
 
@@ -136,11 +134,13 @@ class DestinationCountryControllerSpec extends ControllerSpec {
 
       val redirectToOfficeOfExit: Unit =
         "redirect" in {
-          withNewCaching(aDeclaration(
-            withAdditionalDeclarationType(SUPPLEMENTARY_EIDR),
-            withDeclarationHolders(Some(codeThatSkipLocationOfGoods)),
-            withDestinationCountries()
-          ))
+          withNewCaching(
+            aDeclaration(
+              withAdditionalDeclarationType(SUPPLEMENTARY_EIDR),
+              withDeclarationHolders(Some(codeThatSkipLocationOfGoods)),
+              withDestinationCountries()
+            )
+          )
 
           val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
 

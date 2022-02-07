@@ -59,10 +59,7 @@ class LocationOfGoodsHelper @Inject()(
         ).map(body(_))
 
       case 3 =>
-        List(
-          body(messages(s"$prefix.body.v3.1")),
-          bulletList((1 to 8).map(ix => Html(messages(s"$prefix.body.v3.bullet$ix"))))
-        )
+        List(body(messages(s"$prefix.body.v3.1")), bulletList((1 to 8).map(ix => Html(messages(s"$prefix.body.v3.bullet$ix")))))
 
       case 4 =>
         val linkText2 = messages(s"$prefix.body.v4.2.link")
@@ -83,19 +80,20 @@ class LocationOfGoodsHelper @Inject()(
   }
 
   def expander(version: Int)(implicit messages: Messages): Html =
-    govukDetails(Details(
-      id = Some("location-of-goods-expander"),
-      summary = Text(messages("declaration.locationOfGoods.expander.title")),
-      content = HtmlContent(HtmlFormat.fill(body(messages(s"declaration.locationOfGoods.expander.v$version.intro")) :: expanderContent))
-    ))
+    govukDetails(
+      Details(
+        id = Some("location-of-goods-expander"),
+        summary = Text(messages("declaration.locationOfGoods.expander.title")),
+        content = HtmlContent(HtmlFormat.fill(body(messages(s"declaration.locationOfGoods.expander.v$version.intro")) :: expanderContent))
+      )
+    )
 
   def versionSelection(implicit request: JourneyRequest[_]): Int =
     request.cacheModel.additionalDeclarationType.fold(1) {
-      case STANDARD_PRE_LODGED | SIMPLIFIED_PRE_LODGED |
-           OCCASIONAL_PRE_LODGED | CLEARANCE_PRE_LODGED if isAuthProcedureCodeForV4 => 4
+      case STANDARD_PRE_LODGED | SIMPLIFIED_PRE_LODGED | OCCASIONAL_PRE_LODGED | CLEARANCE_PRE_LODGED if isAuthProcedureCodeForV4 => 4
 
       case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER | OCCASIONAL_FRONTIER | CLEARANCE_FRONTIER =>
-         if (isAuthCode("CSE")) 2 else if (isAuthCode("EXRR")) 3 else 1
+        if (isAuthCode("CSE")) 2 else if (isAuthCode("EXRR")) 3 else 1
 
       case _ => 1
     }
@@ -136,5 +134,5 @@ class LocationOfGoodsHelper @Inject()(
   }
 
   private def text(suffix: String, args: Any*)(implicit messages: Messages) =
-    messages(s"declaration.locationOfGoods.expander.paragraph$suffix", args:_*)
+    messages(s"declaration.locationOfGoods.expander.paragraph$suffix", args: _*)
 }

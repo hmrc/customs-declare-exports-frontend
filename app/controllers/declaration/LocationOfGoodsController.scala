@@ -66,7 +66,7 @@ class LocationOfGoodsController @Inject()(
               navigator.continueTo(mode, OfficeOfExitController.displayPage)
           }
         )
-    }
+  }
 
   private val updateDeclaration =
     (declaration: ExportsDeclaration, locationOfGoods: LocationOfGoods) =>

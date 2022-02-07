@@ -128,10 +128,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "Additional dec type is Supplementary_EIDR with MOU" in {
-        withNewCaching(aDeclaration(
-          withAdditionalDeclarationType(SUPPLEMENTARY_EIDR),
-          withDeclarationHolders(Some(codeThatSkipLocationOfGoods))
-        ))
+        withNewCaching(aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), withDeclarationHolders(Some(codeThatSkipLocationOfGoods))))
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe 303
