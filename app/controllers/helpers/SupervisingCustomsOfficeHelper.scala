@@ -18,7 +18,7 @@ package controllers.helpers
 
 import controllers.declaration.routes._
 import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.codesThatOverrideInlandOrBorderSkip
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{codeThatOverrideInlandOrBorderSkip, isAuthCode}
 import models.DeclarationType._
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
@@ -44,7 +44,7 @@ class SupervisingCustomsOfficeHelper @Inject()(inlandOrBorderHelper: InlandOrBor
   def isConditionForAllProcedureCodesVerified(cachedModel: ExportsDeclaration): Boolean =
     cachedModel.items.nonEmpty &&
       cachedModel.items.forall(_.procedureCodes.forall(isConditionForProcedureCodesDataVerified)) &&
-      !cachedModel.declarationHolders.exists(h => codesThatOverrideInlandOrBorderSkip.contains(h.authorisationTypeCode))
+      !isAuthCode(cachedModel, codeThatOverrideInlandOrBorderSkip)
 
   def landOnOrSkipToNextPage(declaration: ExportsDeclaration): Mode => Call =
     if (isConditionForAllProcedureCodesVerified(declaration)) nextPage(declaration)

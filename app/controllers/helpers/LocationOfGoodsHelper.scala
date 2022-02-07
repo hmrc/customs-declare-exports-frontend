@@ -17,11 +17,11 @@
 package controllers.helpers
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
-import forms.declaration.declarationHolder.AuthorizationTypeCodes
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{codeThatSkipLocationOfGoods, isAuthCode}
 import models.ExportsDeclaration
 
 object LocationOfGoodsHelper {
+
   def skipLocationOfGoods(declaration: ExportsDeclaration): Boolean =
-    declaration.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR) &&
-      declaration.declarationHolders.exists(holder => AuthorizationTypeCodes.codesThatSkipLocationOfGoods.contains(holder.authorisationTypeCode))
+    declaration.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR) && isAuthCode(declaration, codeThatSkipLocationOfGoods)
 }

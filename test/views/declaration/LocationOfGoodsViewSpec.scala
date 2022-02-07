@@ -17,20 +17,23 @@
 package views.declaration
 
 import base.{Injector, TestHelper}
+import config.AppConfig
 import connectors.CodeListConnector
 import controllers.declaration.routes
+import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, ChoiceOthers}
 import forms.declaration.LocationOfGoods
+import forms.declaration.LocationOfGoods.form
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
-import models.{DeclarationType, Mode}
+import models.Mode
 import models.codes.Country
+import models.requests.JourneyRequest
 import org.jsoup.nodes.{Document, Element}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{Assertion, BeforeAndAfterEach}
-import org.scalatestplus.mockito.MockitoSugar
-import play.api.data.Form
 import play.api.mvc.Call
-import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.location_of_goods
@@ -40,13 +43,14 @@ import scala.collection.JavaConverters.asScalaIteratorConverter
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class LocationOfGoodsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with MockitoSugar with BeforeAndAfterEach {
+class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with BeforeAndAfterEach {
+
+  private val appConfig = instanceOf[AppConfig]
 
   implicit val mockCodeListConnector = mock[CodeListConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
   }
 
@@ -56,79 +60,243 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with ExportsTestData with Stu
   }
 
   private val page = instanceOf[location_of_goods]
-  private val form: Form[LocationOfGoods] = LocationOfGoods.form()
 
-  private def createView(form: Form[LocationOfGoods] = form, declarationType: DeclarationType = DeclarationType.STANDARD): Document =
-    page(Mode.Normal, form)(journeyRequest(declarationType), messages)
+  "Goods Location View" when {
+    def createView(implicit request: JourneyRequest[_]): Document = page(Mode.Normal, form)
 
-  val prefix = "declaration.locationOfGoods"
+    val prefix = "declaration.locationOfGoods"
 
-  "Goods Location View on empty page" should {
+    // V1 Content (default)
+    AdditionalDeclarationType.values.toList.foreach { additionalType =>
+      s"AdditionalDeclarationType is $additionalType" should {
+        implicit val request = withRequest(additionalType)
+        val view = createView
 
-    "have proper messages for labels" in {
-      messages must haveTranslationFor(s"$prefix.code.empty")
-      messages must haveTranslationFor(s"$prefix.code.error")
-      messages must haveTranslationFor("tariff.declaration.locationOfGoods.clearance.text")
-    }
+        "display same page title as header" in {
+          view.title must include(view.getElementsByTag("h1").text)
+        }
 
-    val view = createView()
+        "display section header" in {
+          view.getElementById("section-header") must containMessage("declaration.section.3")
+        }
 
-    "display same page title as header" in {
-      val viewWithMessage = createView()
+        "display the expected page title" in {
+          val title = view.getElementsByTag("h1").text
+          title mustBe messages(s"$prefix.title.v1")
+        }
 
-      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
-    }
+        "display the expected body" in {
+          val paragraphs = view.getElementsByClass("govuk-body")
+          paragraphs.size mustBe 5
 
-    "display section header" in {
-      view.getElementById("section-header") must containMessage("declaration.section.3")
-    }
+          paragraphs.get(0).text mustBe messages(s"$prefix.body.v1.1")
+          paragraphs.get(1).text mustBe messages(s"$prefix.body.v1.2")
+          paragraphs.get(2).text mustBe messages(s"$prefix.body.v1.3")
+        }
 
-    "display header" in {
-      view.getElementsByTag("h1") must containMessageForElements(s"$prefix.title")
-    }
+        "display the 'Find the goods location code' expander " in {
+          verifyExpander(view, 1)
+        }
 
-    "display main body text" in {
-      view.getElementsByClass("govuk-body").get(0).text mustBe messages(s"$prefix.body")
-    }
+        "display the expected hint" in {
+          val hint = view.getElementById("code-hint")
+          assert(hint.hasClass("govuk-hint"))
+          hint.text mustBe messages(s"$prefix.hint.v1")
+        }
 
-    "display the inset text" in {
-      val insetContent = view.getElementsByClass("govuk-inset-text").get(0).children
+        "display the expected tariff details" in {
+          val key = if (request.isType(CLEARANCE)) "clearance" else "common"
 
-      insetContent.get(0).text mustBe messages(s"$prefix.inset.1")
-      insetContent.get(1).text mustBe messages(s"$prefix.inset.2")
+          val tariffTitle = view.getElementsByClass("govuk-details__summary-text").last
+          tariffTitle.text mustBe messages(s"tariff.expander.title.$key")
 
-      val ul = insetContent.last.children.get(0)
-      val bulletPoints = ul.children
-      bulletPoints.size mustBe 8
+          val tariffDetails = view.getElementsByClass("govuk-details__text").last.text
 
-      bulletPoints.iterator.asScala.zipWithIndex.foreach { elementAndIndex =>
-        val (element, index) = elementAndIndex
-        element.text mustBe messages(s"$prefix.inset.bullet${index + 1}")
+          val keyPrefix = s"tariff.declaration.locationOfGoods.$key"
+          val expectedText = removeLineBreakIfAny(messages(s"$keyPrefix.text", messages(s"$keyPrefix.linkText.0")))
+          removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
+        }
+
+        "display 'Save and continue' button" in {
+          val saveButton = view.getElementById("submit")
+          saveButton must containMessage("site.save_and_continue")
+        }
+
+        "display 'Save and return' button" in {
+          val saveButton = view.getElementById("submit_and_return")
+          saveButton must containMessage("site.save_and_come_back_later")
+        }
       }
     }
 
-    "display goods location expander" in {
-      val expander = view.getElementsByClass("govuk-details").first.children
-      expander.size mustBe 2
-      expander.first.text mustBe messages(s"$prefix.expander.title")
+    // V2 Content
+    List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, OCCASIONAL_FRONTIER, CLEARANCE_FRONTIER).foreach { additionalType =>
+      s"AdditionalDeclarationType is $additionalType and the authorisation code is 'CSE'" should {
+        implicit val request = withRequest(additionalType, withDeclarationHolders(Some("CSE")))
+        val view = createView
 
-      val details = expander.last
+        "display the expected page title" in {
+          val title = view.getElementsByTag("h1").text
+          title mustBe messages(s"$prefix.title.v2")
+        }
+
+        "display the expected body" in {
+          val paragraphs = view.getElementsByClass("govuk-body")
+          paragraphs.size mustBe 4
+
+          paragraphs.get(0).text mustBe messages(s"$prefix.body.v2.1")
+
+          val paragraph1 = paragraphs.get(1)
+          paragraph1.text mustBe messages(s"$prefix.body.v2.2", messages(s"$prefix.body.v2.2.link"))
+          paragraph1.child(0) must haveHref(appConfig.locationCodesForCsePremises)
+
+          val paragraph2 = paragraphs.get(2)
+
+          val email = messages(s"$prefix.body.v2.3.email")
+          val subject = messages(s"$prefix.body.v2.3.subject")
+
+          paragraph2.text mustBe messages(s"$prefix.body.v2.3", email)
+          paragraph2.child(0) must haveHref(s"mailto:$email?subject=$subject")
+        }
+
+        "display the expected hint" in {
+          val hint = view.getElementById("code-hint")
+          assert(hint.hasClass("govuk-hint"))
+          hint.text mustBe messages(s"$prefix.hint.v2")
+        }
+
+        "NOT display the 'Find the goods location code' expander " in {
+          val expander = view.getElementsByClass("govuk-details").first.children
+          expander.size mustBe 2
+          val key = if (request.isType(CLEARANCE)) "clearance" else "common"
+          expander.first.text mustBe messages(s"tariff.expander.title.$key")
+        }
+      }
+    }
+
+    // V3 Content
+    List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, OCCASIONAL_FRONTIER, CLEARANCE_FRONTIER).foreach { additionalType =>
+      s"AdditionalDeclarationType is $additionalType and the authorisation code is 'EXRR'" should {
+        implicit val request = withRequest(additionalType, withDeclarationHolders(Some("EXRR")))
+        val view = createView
+
+        "display the expected page title" in {
+          val title = view.getElementsByTag("h1").text
+          title mustBe messages(s"$prefix.title.v3")
+        }
+
+        "display the expected body" in {
+          val paragraphs = view.getElementsByClass("govuk-body")
+          paragraphs.size mustBe 4
+
+          paragraphs.get(0).text mustBe messages(s"$prefix.body.v3.1")
+
+          val bulletPoints = view.getElementsByClass("govuk-list--bullet").first.children
+          bulletPoints.size mustBe 8
+          for (ix <- 1 to 8)
+            bulletPoints.get(ix - 1).text mustBe messages(s"$prefix.body.v3.bullet$ix")
+        }
+
+        "display the expected inset text" in {
+          val insetText = view.getElementsByClass("govuk-inset-text")
+          insetText.size mustBe 1
+
+          val paragraphs = insetText.get(0).getElementsByClass("govuk-body")
+          paragraphs.size mustBe 2
+
+          val paragraph1 = paragraphs.get(0)
+          paragraph1.text mustBe messages(s"$prefix.inset.v3.body1", messages(s"$prefix.inset.v3.body1.link"))
+          paragraph1.child(0) must haveHref(appConfig.getGoodsMovementReference)
+
+          val paragraph2 = paragraphs.get(1)
+          paragraph2.text mustBe messages(s"$prefix.inset.v3.body2", messages(s"$prefix.inset.v3.body2.link"))
+          paragraph2.child(0) must haveHref(appConfig.guidance.january2022locations)
+        }
+
+        "display the expected hint" in {
+          val hint = view.getElementById("code-hint")
+          assert(hint.hasClass("govuk-hint"))
+          hint.text mustBe messages(s"$prefix.hint.v3")
+        }
+
+        "NOT display the 'Find the goods location code' expander " in {
+          val expander = view.getElementsByClass("govuk-details").first.children
+          expander.size mustBe 2
+          val key = if (request.isType(CLEARANCE)) "clearance" else "common"
+          expander.first.text mustBe messages(s"tariff.expander.title.$key")
+        }
+      }
+    }
+
+    // V4 Content
+    List(STANDARD_PRE_LODGED, SIMPLIFIED_PRE_LODGED, OCCASIONAL_PRE_LODGED, CLEARANCE_PRE_LODGED).foreach { additionalType =>
+      List(Choice1007, ChoiceOthers).foreach { authProcedureCode =>
+        s"AdditionalDeclarationType is $additionalType and the authorisation procedure code is '$authProcedureCode'" should {
+          implicit val request = withRequest(additionalType, withAuthorisationProcedureCodeChoice(authProcedureCode))
+          val view = createView
+
+          "display the expected page title" in {
+            val title = view.getElementsByTag("h1").text
+            title mustBe messages(s"$prefix.title.v4")
+          }
+
+          "display the expected body" in {
+            val paragraphs = view.getElementsByClass("govuk-body")
+            paragraphs.size mustBe 5
+
+            paragraphs.get(0).text mustBe messages(s"$prefix.body.v4.1")
+
+            val paragraph2 = paragraphs.get(1)
+            paragraph2.text mustBe messages(s"$prefix.body.v4.2", messages(s"$prefix.body.v4.2.link"))
+            paragraph2.child(0) must haveHref(appConfig.previousProcedureCodes)
+
+            val label = paragraph2.nextElementSibling
+            assert(label.hasClass("govuk-heading-s"))
+            label.text mustBe messages(s"$prefix.body.v4.3.label")
+
+            val paragraph3 = paragraphs.get(2)
+            paragraph3.text mustBe messages(s"$prefix.body.v4.3", messages(s"$prefix.body.v4.3.link"))
+            paragraph3.child(0) must haveHref(appConfig.locationCodesForPortsUsingGVMS)
+          }
+
+          "display the expected hint" in {
+            val hint = view.getElementById("code-hint")
+            assert(hint.hasClass("govuk-hint"))
+            hint.text mustBe messages(s"$prefix.hint.v4")
+          }
+
+          "display the 'Find the goods location code' expander " in {
+            verifyExpander(view, 4)
+          }
+        }
+      }
+    }
+
+    def verifyExpander(view: Document, version: Int): Unit = {
+      val expander = view.getElementsByClass("govuk-details").first
+      val expectedTextOfPreviousSibling = messages(s"$prefix.${if (version == 1) "body.v1.3" else "hint.v4"}")
+      expander.previousElementSibling.text mustBe expectedTextOfPreviousSibling
+
+      val children = expander.children
+      children.size mustBe 2
+      children.first.text mustBe messages(s"$prefix.expander.title")
+
+      val details = children.last
 
       val sections = details.children
       sections.size mustBe 20
-      sections.first.text mustBe messages(s"$prefix.expander.intro01")
+      sections.first.text mustBe messages(s"$prefix.expander.v$version.intro")
 
       val iterator: Iterator[Element] = sections.iterator.asScala.drop(1)
 
       for (ix <- 1 to 9) {
         val title = iterator.next
+        title.tagName mustBe "h2"
         title.text mustBe messages(s"$prefix.expander.paragraph$ix.title")
+        assert(title.hasClass("govuk-heading-s"))
 
         if (ix < 9) {
-          val hint = iterator.next
-          assert(hint.hasClass("govuk-hint"))
-
-          val link1 = hint.children.get(0)
+          val link1 = iterator.next.children.get(0)
           assert(link1.hasClass("govuk-link"))
           link1.text mustBe messages(s"$prefix.expander.paragraph$ix.link1")
         }
@@ -146,22 +314,6 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with ExportsTestData with Stu
         )
         hint.text mustBe expectedText
       }
-    }
-
-    "display tariff expander" in {
-      view.getElementsByClass("govuk-details__summary-text").get(1) must containHtml(messages("tariff.expander.title.common"))
-    }
-
-    "display 'Save and continue' button" in {
-      val saveButton = view.getElementById("submit")
-
-      saveButton must containMessage("site.save_and_continue")
-    }
-
-    "display 'Save and return' button" in {
-      val saveButton = view.getElementById("submit_and_return")
-
-      saveButton must containMessage("site.save_and_come_back_later")
     }
   }
 
@@ -208,10 +360,8 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with ExportsTestData with Stu
 
     def viewWithCorrectBackButton(declarationType: DeclarationType, redirect: Call): Unit =
       "have correct back-link" when {
-
-        val view = createView(declarationType = declarationType)
-
         "display 'Back' button that links to correct page" in {
+          val view = page(Mode.Normal, form)(journeyRequest(declarationType), messages)
 
           val backButton = view.getElementById("back-link")
 
@@ -222,12 +372,11 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with ExportsTestData with Stu
   }
 
   private def verifyError(code: String, errorKey: String = "error"): Assertion = {
-    val form = LocationOfGoods.form.fillAndValidate(LocationOfGoods(code))
-    val view = createView(form)
+    val view: Document = page(Mode.Normal, form.fillAndValidate(LocationOfGoods(code)))(journeyRequest(STANDARD), messages)
 
     view must haveGovukGlobalErrorSummary
     view must containErrorElementWithTagAndHref("a", "#code")
 
-    view must containErrorElementWithMessageKey(s"$prefix.code.$errorKey")
+    view must containErrorElementWithMessageKey(s"declaration.locationOfGoods.code.$errorKey")
   }
 }

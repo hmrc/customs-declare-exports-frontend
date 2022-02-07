@@ -18,21 +18,22 @@ package controllers.declaration
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.OfficeOfExitController
 import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
 import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.LocationOfGoods
-import models.Mode
-import play.api.data.Form
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.location_of_goods
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class LocationOfGoodsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -56,15 +57,18 @@ class LocationOfGoodsController @Inject()(
 
   def saveLocation(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     if (skipLocationOfGoods(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
-    else {
+    else
       LocationOfGoods.form.bindFromRequest
         .fold(
-          (formWithErrors: Form[LocationOfGoods]) => Future.successful(BadRequest(locationOfGoods(mode, formWithErrors))),
-          formData =>
-            updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(goodsLocation = Some(formData.toModel())))).map { _ =>
-              navigator.continueTo(mode, controllers.declaration.routes.OfficeOfExitController.displayPage)
+          formWithErrors => Future.successful(BadRequest(locationOfGoods(mode, formWithErrors))),
+          locationOfGoods =>
+            updateDeclarationFromRequest(updateDeclaration(_, locationOfGoods)).map { _ =>
+              navigator.continueTo(mode, OfficeOfExitController.displayPage)
           }
         )
-    }
   }
+
+  private val updateDeclaration =
+    (declaration: ExportsDeclaration, locationOfGoods: LocationOfGoods) =>
+      declaration.copy(locations = declaration.locations.copy(goodsLocation = Some(locationOfGoods.toModel)))
 }

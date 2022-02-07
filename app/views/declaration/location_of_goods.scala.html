@@ -15,88 +15,86 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes
+@import controllers.declaration.routes.LocationOfGoodsController
 @import controllers.navigation.Navigator
 @import forms.declaration.LocationOfGoods
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.Styles._
 @import views.html.components.gds._
-@import views.helpers.{BackButton, Title}
-@import views.html.components.locationOfGoodsExpander
+@import views.helpers.{BackButton, LocationOfGoodsHelper, Title}
 
 @this(
+    locationOfGoodsHelper: LocationOfGoodsHelper,
     govukLayout: gdsMainTemplate,
     govukInput: GovukInput,
-    govukButton: GovukButton,
     errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
     insetText: exportsInsetText,
-    bulletList: bulletList,
+    link: link,
     saveButtons: saveButtons,
-    locationOfGoodsExpander: locationOfGoodsExpander,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
-    sectionHeader: sectionHeader,
     navigator: Navigator,
     appConfig: AppConfig
 )
 
 @(mode: Mode, form: Form[LocationOfGoods])(implicit request: JourneyRequest[_], messages: Messages)
 
-@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
-
+@hasErrors = @{ form.hasErrors || form.hasGlobalErrors }
+@version = @{ locationOfGoodsHelper.versionSelection }
 
 @goodsLocationInput(field: Field) = {
     @govukInput(Input(
         id = field.id,
         name = field.name,
         value = field.value,
+        hint = Some(Hint(content = Text(messages(s"declaration.locationOfGoods.hint.v$version")))),
         classes = s"govuk-!-width-two-thirds ${if(field.hasErrors) "govuk-input--error"}",
-        label = Label(
-            content = Text(messages("declaration.locationOfGoods.title")),
-            classes = "govuk-visually-hidden"
-        ),
         errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
     ))
 }
 
-@insetSection = {
-    @paragraphBody(messages("declaration.locationOfGoods.inset.1"))
-    @paragraphBody(messages("declaration.locationOfGoods.inset.2"))
-
-    @bulletList(List(
-        Html(messages("declaration.locationOfGoods.inset.bullet1")),
-        Html(messages("declaration.locationOfGoods.inset.bullet2")),
-        Html(messages("declaration.locationOfGoods.inset.bullet3")),
-        Html(messages("declaration.locationOfGoods.inset.bullet4")),
-        Html(messages("declaration.locationOfGoods.inset.bullet5")),
-        Html(messages("declaration.locationOfGoods.inset.bullet6")),
-        Html(messages("declaration.locationOfGoods.inset.bullet7")),
-        Html(messages("declaration.locationOfGoods.inset.bullet8"))
-    ))
-}
-
 @govukLayout(
-    title = Title("declaration.locationOfGoods.title", "declaration.section.3", hasErrors = hasErrors),
+    title = Title(
+        s"declaration.locationOfGoods.title.v$version",
+        "declaration.section.3",
+        hasErrors = hasErrors
+    ),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(LocationOfGoods, mode)))) {
 
-    @formHelper(action = routes.LocationOfGoodsController.saveLocation(mode), 'autoComplete -> "off") {
+    @formHelper(action = LocationOfGoodsController.saveLocation(mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.3"))
 
-        @pageTitle(messages("declaration.locationOfGoods.title"))
+        @pageTitle(messages(s"declaration.locationOfGoods.title.v$version"))
 
-        @paragraphBody(messages("declaration.locationOfGoods.body"))
+        @locationOfGoodsHelper.bodyUnderHeading(version)
 
-        @insetText(content = HtmlContent(insetSection))
+        @if(version == 1) { @locationOfGoodsHelper.expander(version) }
+
+        @if(version == 3) {
+          @insetText(content = HtmlContent(HtmlFormat.fill(List(
+              paragraphBody(messages("declaration.locationOfGoods.inset.v3.body1", link(
+                  messages("declaration.locationOfGoods.inset.v3.body1.link"),
+                  Call("GET", appConfig.getGoodsMovementReference),
+                  "_blank"
+              ))),
+              paragraphBody(messages("declaration.locationOfGoods.inset.v3.body2", link(
+                  messages("declaration.locationOfGoods.inset.v3.body2.link"),
+                  Call("GET", appConfig.guidance.january2022locations),
+                  "_blank"
+              )))
+          ))))
+        }
 
         @goodsLocationInput(form("code"))
 
-        @locationOfGoodsExpander()
+        @if(version == 4) { @locationOfGoodsHelper.expander(version) }
 
         @tariffExpander(LocationOfGoods, request.declarationType)(messages, appConfig)
 

@@ -18,7 +18,7 @@ package services.view
 
 import java.util.Locale
 import connectors.CodeListConnector
-import forms.declaration.declarationHolder.AuthorizationTypeCodes.codesFilteredFromView
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeFilteredFromView
 
 import javax.inject.{Inject, Singleton}
 import models.codes.HolderOfAuthorisationCode
@@ -35,7 +35,7 @@ class HolderOfAuthorisationCodes @Inject()(codeListConnector: CodeListConnector)
     codeListConnector
       .getHolderOfAuthorisationCodes(locale)
       .values
-      .filter(h => !codesFilteredFromView.contains(h.code))
+      .filter(_.code != codeFilteredFromView)
       .map(h => AutoCompleteItem(description(h), h.code))
       .toList
 }
