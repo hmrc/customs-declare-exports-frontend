@@ -18,6 +18,7 @@ package controllers.helpers
 
 import controllers.declaration.routes._
 import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.codesThatOverrideInlandOrBorderSkip
 import models.DeclarationType._
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData
@@ -35,11 +36,15 @@ class SupervisingCustomsOfficeHelper @Inject()(inlandOrBorderHelper: InlandOrBor
   /* The Supervising-Customs-Office page must be skipped if all items have
      - "1040" as Procedure code
      - "000" as unique Additional Procedure code
+     And
+     - "FP" is NOT entered as an Authorisation Code
 
      If this condition is NOT verified the user can land on the Supervising-Customs-Office page.
    */
   def isConditionForAllProcedureCodesVerified(cachedModel: ExportsDeclaration): Boolean =
-    cachedModel.items.nonEmpty && cachedModel.items.forall(_.procedureCodes.forall(isConditionForProcedureCodesDataVerified))
+    cachedModel.items.nonEmpty &&
+      cachedModel.items.forall(_.procedureCodes.forall(isConditionForProcedureCodesDataVerified)) &&
+      !cachedModel.declarationHolders.exists(h => codesThatOverrideInlandOrBorderSkip.contains(h.authorisationTypeCode))
 
   def landOnOrSkipToNextPage(declaration: ExportsDeclaration): Mode => Call =
     if (isConditionForAllProcedureCodesVerified(declaration)) nextPage(declaration)

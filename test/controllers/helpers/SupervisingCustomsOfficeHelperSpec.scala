@@ -62,6 +62,17 @@ class SupervisingCustomsOfficeHelperSpec
         supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration) mustBe false
       }
 
+      "a declaration contains a single item with ProcedureCodesData(1040-000) and auth code FP" in {
+        val declaration = aDeclaration(withDeclarationHolders(Some("FP")), withItem(itemWithPC("1040")))
+        supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration) mustBe false
+      }
+
+      "a declaration contains all items with ProcedureCodesData(1040-000) and auth code FP" in {
+        val declaration =
+          aDeclaration(withDeclarationHolders(Some("FP")), withItem(itemWithPC("1040")), withItem(itemWithPC("1040")), withItem(itemWithPC("1040")))
+        supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration) mustBe false
+      }
+
       "a declaration does not contain items" in {
         val declaration = aDeclaration()
         supervisingCustomsOfficeHelper.isConditionForAllProcedureCodesVerified(declaration) mustBe false

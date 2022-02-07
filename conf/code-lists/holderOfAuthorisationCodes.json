@@ -223,5 +223,10 @@
     "code": "TRD",
     "en": "Authorisation to use transit declaration with a reduced dataset",
     "cy": "Authorisation to use transit declaration with a reduced dataset"
+  },
+  {
+    "code": "FP",
+    "en": "Freeports Special Procedure",
+    "cy": "Freeports Special Procedure"
   }
 ]

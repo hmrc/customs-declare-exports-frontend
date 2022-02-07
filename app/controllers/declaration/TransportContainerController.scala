@@ -163,7 +163,7 @@ class TransportContainerController @Inject()(
               Future.successful(navigator.continueTo(mode, routes.TransportContainerController.displayAddContainer, mode.isErrorFix))
             case YesNoAnswers.no =>
               updateDeclarationFromRequest(_.updateReadyForSubmission(true)) map { _ =>
-                navigator.continueTo(mode, routes.SummaryController.displayPage)
+                navigator.continueTo(Mode.Normal, routes.SummaryController.displayPage)
               }
         }
       )
