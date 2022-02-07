@@ -17,23 +17,25 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.helpers.SaveAndContinue
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{apply => _, values => _, _}
+import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantDetailsController}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.radioButtonGroupId
 import models.DeclarationType._
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
-import play.api.libs.json.JsString
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.additionaldeclarationtype.declaration_type
+import views.html.declaration.additional_declaration_type
 
 class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
-  val additionalDeclarationTypePage = mock[declaration_type]
+  val additionalDeclarationTypePage = mock[additional_declaration_type]
 
   val controller = new AdditionalDeclarationTypeController(
     mockAuthAction,
@@ -46,14 +48,12 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
     authorizedUser()
     when(additionalDeclarationTypePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-
     reset(additionalDeclarationTypePage)
   }
 
@@ -69,98 +69,75 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     theResponseForm
   }
 
-  private val additionalDeclarationTypeMapping = Map(
-    STANDARD -> STANDARD_PRE_LODGED,
-    SUPPLEMENTARY -> SUPPLEMENTARY_EIDR,
-    SIMPLIFIED -> SIMPLIFIED_FRONTIER,
-    OCCASIONAL -> OCCASIONAL_FRONTIER,
-    CLEARANCE -> CLEARANCE_FRONTIER
-  )
+  "AdditionalDeclarationTypeController.displayPage" should {
 
-  "Display Page" should {
     "return 200 (OK)" when {
-      "cache is empty" when {
-        for (decType: DeclarationType <- values) {
-          s"during $decType journey" in {
-            withNewCaching(aDeclaration(withType(decType)))
 
+      "cache is empty and" when {
+        DeclarationType.values.foreach { declarationType =>
+          s"the journey selected was $declarationType" in {
+            withNewCaching(aDeclaration(withType(declarationType)))
             val result = controller.displayPage(Mode.Normal)(getRequest())
-
             status(result) must be(OK)
           }
         }
       }
 
-      "cache is populated" when {
-
-        onEveryDeclarationJourney() { request =>
-          s"during ${request.declarationType} journey" in {
-            withNewCaching(
-              aDeclaration(
-                withType(request.declarationType),
-                withAdditionalDeclarationType(additionalDeclarationTypeMapping(request.declarationType))
-              )
-            )
-
-            val result = controller.displayPage(Mode.Normal)(getRequest())
-
-            status(result) must be(OK)
+      "cache was already populated and" when {
+        AdditionalDeclarationType.values.foreach { additionalType =>
+          val declarationType = AdditionalDeclarationType.declarationType(additionalType)
+          s"the journey selected was $declarationType and" when {
+            s"the AdditionalDeclarationType selected was $additionalType" in {
+              withNewCaching(aDeclaration(withType(declarationType), withAdditionalDeclarationType(additionalType)))
+              val result = controller.displayPage(Mode.Normal)(getRequest())
+              status(result) must be(OK)
+            }
           }
-        }
-
-        "during supplementary journey" in {
-          withNewCaching(aDeclaration(withType(SUPPLEMENTARY), withAdditionalDeclarationType(SUPPLEMENTARY_EIDR)))
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) must be(OK)
         }
       }
     }
   }
 
-  "Submit" should {
+  "AdditionalDeclarationTypeController.submitForm" should {
 
-    "return 400 (BAD_REQUEST) for is invalid" when {
+    "return 400 (BAD_REQUEST)" when {
 
-      onEveryDeclarationJourney() { request =>
-        val decType = request.declarationType
+      DeclarationType.values.foreach { declarationType =>
+        s"the journey selected was $declarationType and" when {
 
-        s"during $decType journey" in {
-          withNewCaching(request.cacheModel)
+          s"no value has been selected" in {
+            withNewCaching(aDeclaration(withType(declarationType)))
+            val result = controller.submitForm(Mode.Normal)(postRequest(JsString("")))
+            status(result) must be(BAD_REQUEST)
+          }
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(JsString("x")))
-
-          status(result) must be(BAD_REQUEST)
+          s"the value selected is not a valid AdditionalDeclarationType" in {
+            withNewCaching(aDeclaration(withType(declarationType)))
+            val result = controller.submitForm(Mode.Normal)(postRequest(JsString("x")))
+            status(result) must be(BAD_REQUEST)
+          }
         }
       }
     }
 
-    "Continue to the next page" when {
+    "continue to the next page" when {
+      AdditionalDeclarationType.values.foreach { additionalType =>
+        val declarationType = AdditionalDeclarationType.declarationType(additionalType)
+        s"the journey selected was $declarationType and" when {
+          s"the AdditionalDeclarationType selected was $additionalType" in {
+            withNewCaching(aDeclaration(withType(declarationType), withAdditionalDeclarationType(additionalType)))
 
-      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-        s"during ${request.declarationType} journey" in {
-          withNewCaching(request.cacheModel)
+            val body = Json.obj(radioButtonGroupId -> additionalType.toString)
+            val result = controller.submitForm(Mode.Normal)(postRequest(body))
 
-          val additionalDeclarationType = additionalDeclarationTypeMapping(request.declarationType)
-          val correctForm = Seq("additionalDeclarationType" -> additionalDeclarationType.toString, SaveAndContinue.toString -> "")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+            status(result) mustBe SEE_OTHER
 
-          status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayPage()
-        }
-      }
+            val expectedPage =
+              if (declarationType == CLEARANCE) ConsignmentReferencesController.displayPage()
+              else DeclarantDetailsController.displayPage()
 
-      onClearance { request =>
-        s"during ${request.declarationType} journey" in {
-          withNewCaching(request.cacheModel)
-
-          val additionalDeclarationType = additionalDeclarationTypeMapping(request.declarationType)
-          val correctForm = Seq("additionalDeclarationType" -> additionalDeclarationType.toString, SaveAndContinue.toString -> "")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-          status(result) mustBe SEE_OTHER
-          thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
+            thePageNavigatedTo mustBe expectedPage
+          }
         }
       }
     }

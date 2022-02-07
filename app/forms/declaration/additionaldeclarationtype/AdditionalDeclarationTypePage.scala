@@ -22,26 +22,18 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.Add
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
-import utils.validators.forms.FieldValidator.isContainedIn
 
-trait AdditionalDeclarationTypeTrait extends DeclarationPage {
-  def allowedValues: Set[AdditionalDeclarationType]
+object AdditionalDeclarationTypePage extends DeclarationPage {
 
-  val formMapping: Mapping[AdditionalDeclarationType] = Forms
-    .mapping[AdditionalDeclarationType, AdditionalDeclarationType](
-      "additionalDeclarationType" -> requiredRadio("declaration.declarationType.inputText.error.empty")
-        .verifying("declaration.declarationType.inputText.error.incorrect", isContainedIn(AdditionalDeclarationType.values.map(_.toString)))
+  val radioButtonGroupId = "additionalDeclarationType"
+
+  def form: Form[AdditionalDeclarationType] = Form(mapping)
+
+  private val mapping: Mapping[AdditionalDeclarationType] =
+    Forms.mapping(
+      "additionalDeclarationType" -> requiredRadio("declaration.declarationType.radio.error.empty")
         .transform[AdditionalDeclarationType](AdditionalDeclarationType.from(_).get, _.toString)
-        .verifying("declaration.declarationType.inputText.error.incorrect", isContainedIn(allowedValues))
     )(identity)(Some(_))
-
-  val formId = "AdditionalDeclarationType"
-
-  def form(): Form[AdditionalDeclarationType] = Form(formMapping)
-}
-
-object AdditionalDeclarationTypePage extends AdditionalDeclarationTypeTrait {
-  override def allowedValues: Set[AdditionalDeclarationType] = Set.empty
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.type.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

@@ -16,11 +16,38 @@
 
 package forms.declaration.additionaldeclarationtype
 
+import base.FormSpec
 import forms.common.DeclarationPageBaseSpec
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
 
-class AdditionalDeclarationTypePageSpec extends DeclarationPageBaseSpec {
+class AdditionalDeclarationTypePageSpec extends FormSpec with DeclarationPageBaseSpec {
 
-  "AdditionalDeclarationTypePage" when {
+  "Form for AdditionalDeclarationType" should {
+
+    "have no errors" when {
+      "provided with one of the expected values" in {
+        val errors = AdditionalDeclarationType.values.toList.flatMap { additionalType =>
+          form.fillAndValidate(additionalType).errors
+        }
+        errors must be(empty)
+      }
+    }
+
+    "have errors" when {
+      "not provided with any value" in {
+        val incorrectForm = Map(radioButtonGroupId -> "")
+
+        val result = form.bind(incorrectForm)
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+
+        errorKeys must be(List(radioButtonGroupId))
+        errorMessages must be(List(s"declaration.declarationType.radio.error.empty"))
+      }
+    }
+  }
+
+  "Form for AdditionalDeclarationType" when {
     testTariffContentKeys(AdditionalDeclarationTypePage, "tariff.declaration.type")
   }
 }

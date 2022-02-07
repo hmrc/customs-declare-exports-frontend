@@ -30,7 +30,7 @@ import forms.declaration.InlandOrBorder.Border
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
 import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
 import forms.declaration.commodityMeasure.{CommodityMeasure, SupplementaryUnits}
@@ -74,20 +74,20 @@ class Navigator @Inject()(
       _ =>
         ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
 
-    case LinkDucrToMucr                       => routes.ConsignmentReferencesController.displayPage
-    case Mucr                                 => routes.LinkDucrToMucrController.displayPage
-    case RepresentativeEntity                 => routes.RepresentativeAgentController.displayPage
-    case RepresentativeStatus                 => routes.RepresentativeEntityController.displayPage
-    case AdditionalDeclarationTypeStandardDec => routes.DeclarationChoiceController.displayPage
-    case NatureOfTransaction                  => routes.TotalPackageQuantityController.displayPage
-    case ProcedureCode                        => routes.ItemsSummaryController.displayItemsSummaryPage
-    case ExportItem                           => routes.PreviousDocumentsSummaryController.displayPage
-    case RemoveItem                           => routes.ItemsSummaryController.displayItemsSummaryPage
-    case DocumentChangeOrRemove               => routes.PreviousDocumentsSummaryController.displayPage
-    case TransportLeavingTheBorder            => routes.ItemsSummaryController.displayItemsSummaryPage
-    case TransportPayment                     => routes.ExpressConsignmentController.displayPage
-    case CarrierDetails                       => routes.CarrierEoriNumberController.displayPage
-    case TotalNumberOfItems                   => routes.OfficeOfExitController.displayPage
+    case LinkDucrToMucr                => routes.ConsignmentReferencesController.displayPage
+    case Mucr                          => routes.LinkDucrToMucrController.displayPage
+    case RepresentativeEntity          => routes.RepresentativeAgentController.displayPage
+    case RepresentativeStatus          => routes.RepresentativeEntityController.displayPage
+    case AdditionalDeclarationTypePage => routes.DeclarationChoiceController.displayPage
+    case NatureOfTransaction           => routes.TotalPackageQuantityController.displayPage
+    case ProcedureCode                 => routes.ItemsSummaryController.displayItemsSummaryPage
+    case ExportItem                    => routes.PreviousDocumentsSummaryController.displayPage
+    case RemoveItem                    => routes.ItemsSummaryController.displayItemsSummaryPage
+    case DocumentChangeOrRemove        => routes.PreviousDocumentsSummaryController.displayPage
+    case TransportLeavingTheBorder     => routes.ItemsSummaryController.displayItemsSummaryPage
+    case TransportPayment              => routes.ExpressConsignmentController.displayPage
+    case CarrierDetails                => routes.CarrierEoriNumberController.displayPage
+    case TotalNumberOfItems            => routes.OfficeOfExitController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {

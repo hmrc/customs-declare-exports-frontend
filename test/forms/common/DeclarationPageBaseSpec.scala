@@ -25,7 +25,7 @@ import base.UnitSpec
 trait DeclarationPageBaseSpec extends UnitSpec {
   val commonKeyDeclarationTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL)
 
-  def testTariffContentKeys(page: DeclarationPage, messageKey: String) =
+  def testTariffContentKeys(page: DeclarationPage, messageKey: String): Unit =
     "defineTariffContentKeys is called" which {
       "is passed a specific DeclarationType" should {
         "return the correct collection of TariffContentKeys" in {

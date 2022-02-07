@@ -1,5 +1,5 @@
-/*
- * Copyright 2022 HM Revenue & Customs
+@*
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms.declaration.additionaldeclarationtype
+@this()
 
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+@(title: String, content: Html)
 
-object AdditionalDeclarationTypeSimplifiedDec extends AdditionalDeclarationTypeTrait {
-  override def allowedValues: Set[AdditionalDeclarationType] =
-    Set(AdditionalDeclarationType.SIMPLIFIED_FRONTIER, AdditionalDeclarationType.SIMPLIFIED_PRE_LODGED)
-
-  object AllowedAdditionalDeclarationTypes {
-    val PreLodged = "F"
-    val Frontier = "C"
-  }
-}
+<div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+    <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">@title</h2>
+    </div>
+    <div class="govuk-notification-banner__content">@content</div>
+</div>
