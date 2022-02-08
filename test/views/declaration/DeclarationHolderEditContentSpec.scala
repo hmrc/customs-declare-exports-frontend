@@ -239,7 +239,7 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
 
         val key = s"$prefix.authCode.inset.special.bullet"
         removeBlanksIfAnyBeforeDot(bulletPoints.get(0).text) mustBe messages(s"${key}1", messages(s"${key}1.link"))
-        bulletPoints.get(0).child(0) must haveHref(minimalAppConfig.previousProcedureCodesUrl)
+        bulletPoints.get(0).child(0) must haveHref(minimalAppConfig.previousProcedureCodes)
         bulletPoints.get(1).text mustBe messages(s"${key}2")
         bulletPoints.get(2).text mustBe messages(s"${key}3")
         bulletPoints.get(3).text mustBe messages(s"${key}4")

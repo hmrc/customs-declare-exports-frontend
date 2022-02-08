@@ -143,7 +143,7 @@ class DeclarationHolderHelper @Inject()(
   }
 
   private def insetTextForNonStandardProcedures(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
-    val call1 = Call("GET", appConfig.previousProcedureCodesUrl)
+    val call1 = Call("GET", appConfig.previousProcedureCodes)
     val link1 = link(messages(s"$insetKey.special.bullet1.link"), call1, "_blank")
 
     insetText(

@@ -25,16 +25,16 @@ class TitleSpec extends UnitViewSpec {
   "Title" should {
 
     "format title without section" in {
-      Title("declaration.declarationType.title").toString(messages) must equal(
-        s"${messages("declaration.declarationType.title")} - $serviceName - GOV.UK"
-      )
+      val message = s"${messages("declaration.declarationType.title")} - $serviceName - GOV.UK"
+      Title("declaration.declarationType.title").toString(messages) mustBe message
     }
 
     "format title with section" in {
-      Title("declaration.declarationType.title", "declaration.declarationType.header.supplementary").toString(messages) must equal(
-        s"${messages("declaration.declarationType.title")} - ${messages("declaration.declarationType.header.supplementary")} - $serviceName - GOV.UK"
-      )
-    }
+      val message = messages("declaration.declarationType.header.SUPPLEMENTARY")
+      val expectedTitle = s"${messages("declaration.declarationType.title")} - ${message} - $serviceName - GOV.UK"
 
+      val title = Title("declaration.declarationType.title", "declaration.declarationType.header.SUPPLEMENTARY")
+      title.toString(messages) mustBe expectedTitle
+    }
   }
 }
