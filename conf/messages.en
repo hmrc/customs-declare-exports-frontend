@@ -337,7 +337,7 @@ tariff.declaration.item.isLicenseRequired.title = Do these goods require a licen
 tariff.declaration.item.isLicenseRequired.status.1.body = It is your responsibility to check if your goods require a licence.
 tariff.declaration.item.isLicenseRequired.status.2.body = It is the responsibility of the exporter you’re representing to check if the goods require a licence.
 tariff.declaration.item.isLicenseRequired.status.3.body = It is the joint responsibility of you and the exporter you’re representing to check if the goods require a licence.
-tariff.declaration.item.isLicenseRequired.no = No, the goods do not require a licence, or a waiver applies
+tariff.declaration.item.isLicenseRequired.no.hint = The answer ‘No’ will apply CDS waiver 999L against any licensing measures on your goods.
 tariff.declaration.item.isLicenseRequired.expander.title = How do I know if the goods require a licence?
 
 tariff.declaration.item.isLicenseRequired.common.1.text = The {0} will list any requirements under the ‘Exports’ tab if you see a link that says ‘Conditions’.
