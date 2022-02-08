@@ -339,6 +339,8 @@ tariff.declaration.item.isLicenseRequired.status.2.body = It is the responsibili
 tariff.declaration.item.isLicenseRequired.status.3.body = It is the joint responsibility of you and the exporter you’re representing to check if the goods require a licence.
 tariff.declaration.item.isLicenseRequired.no.hint = The answer ‘No’ will apply CDS waiver 999L against any licensing measures on your goods.
 tariff.declaration.item.isLicenseRequired.expander.title = How do I know if the goods require a licence?
+tariff.declaration.item.isLicenseRequired.common.text = This page will send the new CDS waiver code 999L as the document code and the reason 'CDS WAIVER' as required by {0} when you select 'No'.
+tariff.declaration.item.isLicenseRequired.common.linkText = data element 2/3 (opens in new tab)
 
 tariff.declaration.item.isLicenseRequired.common.1.text = The {0} will list any requirements under the ‘Exports’ tab if you see a link that says ‘Conditions’.
 tariff.declaration.item.isLicenseRequired.common.1.linkText.0 = Tariff entry for {0}, the code you entered (opens in new tab)
