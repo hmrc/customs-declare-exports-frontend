@@ -15,6 +15,7 @@
  *@
 
 @import config.AppConfig
+@import forms.declaration.IsLicenseRequired
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer
 @import models.requests.JourneyRequest
@@ -31,6 +32,7 @@
     sectionHeader: sectionHeader,
     govukRadios: GovukRadios,
     govukDetails : GovukDetails,
+    tariffExpander: tariffExpander,
     paragraphBody: paragraphBody,
     appConfig: AppConfig,
     heading: heading,
@@ -85,6 +87,9 @@
                     )
                 )).mkString("</br></br>"))
         ))
+
+        @tariffExpander(IsLicenseRequired, request.declarationType)(messages, appConfig)
+
 
         @saveButtons()
     }

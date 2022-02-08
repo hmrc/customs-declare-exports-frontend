@@ -23,12 +23,11 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.declarationHolder.AuthorizationTypeCodes
 import models.DeclarationType._
-import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{request, _}
+import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.is_license_required
@@ -50,7 +49,7 @@ class IsLicenseRequiredController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     commodityCodeFromRequest(mode, itemId) { commodityCode =>
-      Ok(is_license_required(mode, itemId, form, commodityCode, representativeStatusCode))
+      Ok(is_license_required(mode, itemId, form.withSubmissionErrors(), commodityCode, representativeStatusCode))
     }
   }
 
