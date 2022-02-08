@@ -224,7 +224,7 @@ function dispatchLocation(){
 function additionalDeclarationType(){
     if(currentPageIs('/customs-declare-exports/declaration/type')){
         // top values
-        if (['D','F','Y','E','K'].indexOf(getDeclaration()) > -1) {
+        if (['A','C','Y','B','J'].indexOf(getDeclaration()) > -1) {
             selectRadioOptionFromInputs(document.getElementsByName('additionalDeclarationType'), 0);
         } else {
             selectRadioOptionFromInputs(document.getElementsByName('additionalDeclarationType'), 1);

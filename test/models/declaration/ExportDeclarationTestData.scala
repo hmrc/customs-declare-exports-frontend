@@ -18,7 +18,6 @@ package models.declaration
 
 import java.time.Instant
 import java.util.UUID
-
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Date, Eori}
 import forms.declaration.ConsignmentReferencesSpec._
@@ -27,7 +26,7 @@ import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransportPayment.cash
 import forms.declaration._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.countries.Country
@@ -61,7 +60,7 @@ object ExportDeclarationTestData {
   val correctDeclarantDetailsEORIOnly: DeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
 
   lazy val allRecords = declaration.copy(
-    additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
+    additionalDeclarationType = Some(SUPPLEMENTARY_SIMPLIFIED),
     consignmentReferences = Some(correctConsignmentReferences),
     natureOfTransaction = Some(correctNatureOfTransaction),
     totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),

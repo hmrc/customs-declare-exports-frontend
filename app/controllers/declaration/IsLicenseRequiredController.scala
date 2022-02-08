@@ -21,6 +21,7 @@ import controllers.declaration.routes._
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 import forms.declaration.declarationHolder.AuthorizationTypeCodes
 import models.DeclarationType._
 import models.requests.JourneyRequest
@@ -49,7 +50,15 @@ class IsLicenseRequiredController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     commodityCodeFromRequest(mode, itemId) { commodityCode =>
-      Ok(is_license_required(mode, itemId, form.withSubmissionErrors(), commodityCode, representativeStatusCode))
+      val formWithErrors = form.withSubmissionErrors
+
+      val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenseRequired).fold(form.withSubmissionErrors) {
+        case true  => formWithErrors.fill(YesNoAnswer(yes))
+        case false => formWithErrors.fill(YesNoAnswer(no))
+      }
+
+      Ok(is_license_required(mode, itemId, frm, commodityCode, representativeStatusCode))
+
     }
   }
 

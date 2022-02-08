@@ -20,6 +20,7 @@ import base.ControllerSpec
 import connectors.CodeListConnector
 import forms.declaration.LocationOfGoods
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
 import models.{DeclarationType, Mode}
 import models.codes.Country
 import org.mockito.ArgumentCaptor
@@ -127,7 +128,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "Additional dec type is Supplementary_EIDR with MOU" in {
-        withNewCaching(aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), withDeclarationHolders(Some("MOU"))))
+        withNewCaching(aDeclaration(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR), withDeclarationHolders(Some(codeThatSkipLocationOfGoods))))
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe 303

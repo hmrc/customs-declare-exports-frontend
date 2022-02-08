@@ -19,10 +19,13 @@ package views.declaration
 import base.Injector
 import controllers.declaration.routes.{DestinationCountryController, LocationOfGoodsController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeThatSkipLocationOfGoods
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.mvc.AnyContent
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -34,8 +37,8 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
   private val page: office_of_exit = instanceOf[office_of_exit]
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExit] = OfficeOfExit.form()): Document =
-    page(mode, form)(journeyRequest(), messages)
+  private def createView(form: Form[OfficeOfExit] = OfficeOfExit.form): Document =
+    page(Mode.Normal, form)(journeyRequest(), messages)
 
   "Office of Exit View" should {
     val view = createView()
@@ -83,8 +86,8 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
         "display errors when all inputs are incorrect" in {
           val data = OfficeOfExit("123456")
-          val form = OfficeOfExit.form().fillAndValidate(data)
-          val view = createView(form = form)
+          val form = OfficeOfExit.form.fillAndValidate(data)
+          val view = createView(form)
 
           view.getElementById("error-summary-title") must containMessage("error.summary.title")
 
@@ -98,8 +101,8 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
         "display errors when office of exit contains special characters" in {
           val data = OfficeOfExit("12#$%^78")
-          val form = OfficeOfExit.form().fillAndValidate(data)
-          val view = createView(form = form)
+          val form = OfficeOfExit.form.fillAndValidate(data)
+          val view = createView(form)
 
           view.getElementById("error-summary-title") must containMessage("error.summary.title")
 
@@ -113,14 +116,15 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       }
     }
 
-    val skipLocationOfGoodsView =
-      page(Mode.Normal, OfficeOfExit.form())(withRequest(SUPPLEMENTARY_EIDR, withDeclarationHolders(Some("MOU"))), messages)
     "display 'Back' button that links to 'Destination Country' page" in {
+      val modifier = withDeclarationHolders(Some(codeThatSkipLocationOfGoods))
+      implicit val request: JourneyRequest[AnyContent] = withRequest(SUPPLEMENTARY_EIDR, modifier)
+      val skipLocationOfGoodsView = page(Mode.Normal, OfficeOfExit.form)
+
       val backButton = skipLocationOfGoodsView.getElementById("back-link")
 
       backButton must containMessage("site.back")
       backButton.getElementById("back-link") must haveHref(DestinationCountryController.displayPage(Mode.Normal))
     }
   }
-
 }

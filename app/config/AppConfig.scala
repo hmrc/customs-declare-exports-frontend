@@ -61,7 +61,7 @@ class AppConfig @Inject()(
   val govUkUrl = loadConfig("urls.govUk")
   val tradeTariffUrl = loadConfig("urls.tradeTariff")
   val tariffCommoditiesUrl = loadConfig("urls.tariffCommodities")
-  val previousProcedureCodesUrl = loadConfig("urls.previousProcedureCodes")
+  val previousProcedureCodes = loadConfig("urls.previousProcedureCodes")
   val commodityCodeHelpUrl = loadConfig("urls.commodityCodeHelp")
   val ecicsToolUrl = loadConfig("urls.ecicsTool")
   val companyInformationRegister = loadConfig("urls.companyInformationRegister")
@@ -115,6 +115,7 @@ class AppConfig @Inject()(
   val nationalAdditionalCodes = loadConfig("urls.nationalAdditionalCodes")
   val commodityCode9306909000 = loadConfig("urls.commodityCode9306909000")
   val simplifiedDeclPreviousDoc = loadConfig("urls.simplifiedDeclPreviousDoc")
+  val getGoodsMovementReference = loadConfig("urls.getGoodsMovementReference")
 
   val additionalDeclarationType = loadConfig("urls.additionalDeclarationType")
   val declareGoodsExported = loadConfig("urls.declareGoodsExported")

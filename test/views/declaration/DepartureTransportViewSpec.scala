@@ -60,7 +60,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
     onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
-      "display section header" in {
+      "display the expected section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.6")
       }
 
