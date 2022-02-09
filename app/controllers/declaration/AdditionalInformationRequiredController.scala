@@ -69,16 +69,11 @@ class AdditionalInformationRequiredController @Inject()(
 
   private def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformationRequired.error")
 
-  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call = {
-
-    val isClearanceJourney = request.declarationType == DeclarationType.CLEARANCE
-
+  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
     yesNoAnswer.answer match {
-      case YesNoAnswers.yes                      => AdditionalInformationController.displayPage(_, itemId)
-      case YesNoAnswers.no if isClearanceJourney => AdditionalDocumentsController.displayPage(_, itemId)
-      case YesNoAnswers.no                       => IsLicenseRequiredController.displayPage(_, itemId)
+      case YesNoAnswers.yes => AdditionalInformationController.displayPage(_, itemId)
+      case YesNoAnswers.no  => AdditionalDocumentsController.displayPage(_, itemId)
     }
-  }
 
   private def previousAnswer(itemId: String)(implicit request: JourneyRequest[AnyContent]): Form[YesNoAnswer] =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).flatMap(_.isRequired) match {
