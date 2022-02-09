@@ -33,6 +33,7 @@
     govukRadios: GovukRadios,
     govukDetails : GovukDetails,
     tariffExpander: tariffExpander,
+    insetText: exportsInsetText,
     paragraphBody: paragraphBody,
     appConfig: AppConfig,
     heading: heading,
@@ -68,25 +69,24 @@
             noHint = Some("tariff.declaration.item.isLicenseRequired.no.hint")
         )
 
-        @govukDetails(Details(
-            attributes = Map("id" -> "tariffReference"),
-            summary = Text(messages("tariff.declaration.item.isLicenseRequired.expander.title")),
+        @insetText(
             content = HtmlContent(Seq(
-                messages("tariff.declaration.item.isLicenseRequired.common.1.text",
+                heading(messages("tariff.declaration.item.isLicenseRequired.inset.title"), classes = "govuk-heading", tier = "strong"),
+                messages("tariff.declaration.item.isLicenseRequired.inset.1.text",
                     tariffLink(
-                        messages("tariff.declaration.item.isLicenseRequired.common.1.linkText.0", commodityCode),
-                        appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.common.1.0")
+                        messages("tariff.declaration.item.isLicenseRequired.inset.1.linkText.0", commodityCode),
+                        appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.inset.1.0")
                     )
                 ),
-                messages("tariff.declaration.item.isLicenseRequired.common.2.text"),
-                messages("tariff.declaration.item.isLicenseRequired.common.3.text"),
-                messages("tariff.declaration.item.isLicenseRequired.common.4.text",
+                messages("tariff.declaration.item.isLicenseRequired.inset.2.text"),
+                messages("tariff.declaration.item.isLicenseRequired.inset.3.text"),
+                messages("tariff.declaration.item.isLicenseRequired.inset.4.text",
                     tariffLink(
-                        messages("tariff.declaration.item.isLicenseRequired.common.4.linkText.0"),
-                        s"${appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.common.4.0")}/$commodityCode#export"
+                        messages("tariff.declaration.item.isLicenseRequired.inset.4.linkText.0"),
+                        s"${appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.inset.4.0")}/$commodityCode#export"
                     )
                 )).mkString("</br></br>"))
-        ))
+        )
 
         @tariffExpander(IsLicenseRequired, request.declarationType)(messages, appConfig)
 
