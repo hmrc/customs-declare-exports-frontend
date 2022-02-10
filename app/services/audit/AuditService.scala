@@ -51,7 +51,7 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
     val extendedEvent = ExtendedDataEvent(
       auditSource = appConfig.appName,
       auditType = auditType.toString,
-      tags = getAuditTags(s"${auditType}-payload-request", s"${auditType}/full-payload"),
+      tags = getAuditTags(s"$auditType-payload-request", s"$auditType/full-payload"),
       detail = getAuditDetails(Json.toJson(userInput).as[JsObject])
     )
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType.toString))
@@ -62,7 +62,7 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
     val extendedEvent = ExtendedDataEvent(
       auditSource = appConfig.appName,
       auditType = auditType,
-      tags = getAuditTags(s"${auditType}-payload-request", s"${auditType}/full-payload"),
+      tags = getAuditTags(s"$auditType-payload-request", s"$auditType/full-payload"),
       detail = getAuditDetails(Json.toJson(userInput).as[JsObject])
     )
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
@@ -83,15 +83,15 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
   private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier): Map[String, String] =
     AuditExtensions
       .auditHeaderCarrier(hc)
-      .toAuditTags(transactionName = s"export-declaration-${transactionName.toLowerCase}", path = s"customs-declare-exports/${path}")
+      .toAuditTags(transactionName = s"export-declaration-${transactionName.toLowerCase}", path = s"customs-declare-exports/$path")
 
   private def handleResponse(result: AuditResult, auditType: String): AuditResult = result match {
     case Success =>
-      logger.debug(s"Exports ${auditType} audit successful")
+      logger.debug(s"Exports $auditType audit successful")
       Success
 
     case Failure(err, _) =>
-      logger.warn(s"Exports ${auditType} Audit Error, message: $err")
+      logger.warn(s"Exports $auditType Audit Error, message: $err")
       Failure(err)
 
     case Disabled =>
@@ -113,10 +113,12 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
 
 object AuditTypes extends Enumeration {
   type Audit = Value
-  val Submission, SaveAndReturnSubmission, SubmissionPayload, Cancellation, SubmissionSuccess, SubmissionFailure, NavigateToMessages = Value
+  val Submission, SaveAndReturnSubmission, SubmissionPayload, Cancellation, SubmissionSuccess, SubmissionFailure, NavigateToMessages,
+  UploadDocumentLink = Value
 }
 
 object EventData extends Enumeration {
   type Data = Value
-  val eori, lrn, mrn, ducr, decType, changeReason, changeDescription, fullName, jobRole, email, confirmed, submissionResult, Success, Failure = Value
+  val eori, lrn, mrn, ducr, decType, changeReason, changeDescription, fullName, jobRole, email, confirmed, submissionResult, Success, Failure, url =
+    Value
 }
