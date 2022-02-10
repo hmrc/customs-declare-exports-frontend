@@ -16,10 +16,6 @@
 
 package views
 
-import java.time.ZonedDateTime
-
-import scala.collection.JavaConverters.asScalaIteratorConverter
-
 import base.{ExportsTestData, Injector, OverridableInjector, RequestBuilder}
 import config.featureFlags._
 import controllers.routes
@@ -35,6 +31,9 @@ import play.api.inject.bind
 import views.declaration.spec.UnitViewSpec
 import views.helpers.{StatusOfSubmission, ViewDates}
 import views.html.declaration_details
+
+import java.time.ZonedDateTime
+import scala.collection.JavaConverters.asScalaIteratorConverter
 
 class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with Injector {
 
@@ -208,7 +207,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
     when(secureMessagingInboxConfig.sfusInboxLink).thenReturn(dummyInboxLink)
 
-    val dummySfusLink = "dummySfusLink"
+    val dummySfusLink = "dummyInboxLink"
 
     val sfusConfig = mock[SfusConfig]
     when(sfusConfig.isSfusUploadEnabled).thenReturn(true)
@@ -383,7 +382,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         uploadFilesElements.size mustBe 2
 
         And("the 'Documents required' content, when defined, should include a link-button to SFUS")
-        verifyButton(uploadFilesElements.get(0), buttonIsSecondary, "upload.files", s"$dummySfusLink/$mrn")
+        verifyButton(uploadFilesElements.get(0), buttonIsSecondary, "upload.files", controllers.routes.FileUploadController.startFileUpload(mrn).url)
 
         And("and an expander")
         val details = uploadFilesElements.get(1)
