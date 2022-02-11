@@ -53,8 +53,8 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
 
     "asked previously 'Is License Required?'" when {
 
-      val declarationLicenseRequired = aDeclaration(withItem(anItem(withLicenseRequired())))
-      val declarationLicenseNotRequired = aDeclaration(withItem(anItem(withLicenseRequired())))
+      val declarationLicenseRequired = aDeclaration(withItem(anItem(withItemId(itemId), withLicenseRequired())))
+      val declarationLicenseNotRequired = aDeclaration(withItem(anItem(withItemId(itemId))))
 
       val declarationHolderWithAuthCode =
         aDeclaration(withDeclarationHolders(DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))))
