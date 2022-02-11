@@ -21,6 +21,7 @@ import config.AppConfig
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.declaration.CommodityDetails
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -132,11 +133,21 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
       }
     }
 
-    "display a 'Back' button that links to the 'Additional Information' page" when {
-      val item = anItem(withItemId(itemId), withAdditionalInformation("1234", "description"))
-      onEveryDeclarationJourney(withItem(item)) { implicit request =>
+    val item = anItem(withItemId(itemId), withAdditionalInformation("1234", "description"))
+
+    onJourney(CLEARANCE)(aDeclaration(withItem(item))) { implicit request =>
+      "display a 'Back' button that links to the 'Additional Information' page" when {
+
         "Additional Information are present" in {
           verifyBackButton(routes.AdditionalInformationController.displayPage(Mode.Normal, itemId))
+        }
+      }
+    }
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(item))) { implicit request =>
+      "display a 'Back' button that links to the 'Is License Required' page" when {
+
+        "Additional Information are present" in {
+          verifyBackButton(routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId))
         }
       }
     }
