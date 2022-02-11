@@ -112,12 +112,10 @@ class Navigator @Inject()(
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
-    case AdditionalDocumentsSummary  => additionalDocumentsSummaryPreviousPage
-    case AdditionalDocument          => additionalDocumentsPreviousPage
-    case AdditionalInformation       => additionalInformationAddPreviousPage
-    case AdditionalFiscalReference   => additionalFiscalReferencesPreviousPage
-    case TaricCodeFirst              => additionalTaricCodesPreviousPage
-    case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
+    case AdditionalDocument        => additionalDocumentsPreviousPage
+    case AdditionalInformation     => additionalInformationAddPreviousPage
+    case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
+    case TaricCodeFirst            => additionalTaricCodesPreviousPage
   }
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -161,7 +159,9 @@ class Navigator @Inject()(
     case RepresentativeAgent       => representativeAgentPreviousPage
   }
 
-  val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
+  val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
+    case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
+  }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
     case ConsignmentReferences        => routes.AdditionalDeclarationTypeController.displayPage
@@ -203,8 +203,9 @@ class Navigator @Inject()(
   }
 
   val clearanceCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
-    case CommodityMeasure   => commodityMeasureClearancePreviousPage
-    case PackageInformation => packageInformationClearancePreviousPage
+    case CommodityMeasure            => commodityMeasureClearancePreviousPage
+    case PackageInformation          => packageInformationClearancePreviousPage
+    case AdditionalDocumentsRequired => additionalDocumentsSummaryClearancePreviousPage
   }
 
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -245,7 +246,9 @@ class Navigator @Inject()(
     case OfficeOfExit              => officeOfExitPreviousPage
   }
 
-  val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
+  val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
+    case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
+  }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
@@ -288,7 +291,9 @@ class Navigator @Inject()(
     case ContainerFirst            => containerFirstPreviousPage
   }
 
-  val simplifiedCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
+  val simplifiedCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
+    case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
+  }
 
   val occasional: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => routes.AdditionalDeclarationTypeController.displayPage
@@ -331,7 +336,9 @@ class Navigator @Inject()(
     case ContainerFirst            => containerFirstPreviousPage
   }
 
-  val occasionalCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
+  val occasionalCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
+    case AdditionalDocumentsRequired => additionalDocumentsSummaryPreviousPage
+  }
 
   def continueTo(mode: Mode, factory: Mode => Call, isErrorFixInProgress: Boolean = false)(
     implicit req: JourneyRequest[AnyContent],
@@ -408,6 +415,12 @@ class Navigator @Inject()(
       routes.CommodityDetailsController.displayPage(mode, itemId)
 
   private def additionalDocumentsSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    if (cacheModel.itemBy(itemId).flatMap(_.additionalInformation).exists(_.items.nonEmpty))
+      routes.IsLicenseRequiredController.displayPage(mode, itemId)
+    else
+      routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
+
+  private def additionalDocumentsSummaryClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.itemBy(itemId).flatMap(_.additionalInformation).exists(_.items.nonEmpty))
       routes.AdditionalInformationController.displayPage(mode, itemId)
     else
