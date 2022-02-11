@@ -25,7 +25,7 @@
 <div id="upload-files-section" class="section">
     @linkButton(
         messageKey = "submissions.declarationDetails.upload.files.button",
-        call = Call("GET", s"${sfusConfig.sfusUploadLink}/${mrn.getOrElse("")}"),
+        call = routes.FileUploadController.startFileUpload(mrn.getOrElse("")),
         classes = if (isPrimary) "govuk-button" else "govuk-button govuk-button--secondary"
     )
 

@@ -258,7 +258,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         val sfusLink = viewWithFeatures.getElementById("notification_action_0")
 
         sfusLink must containMessage("submissions.sfus.upload.files")
-        sfusLink.child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/mrn")
+        sfusLink.child(0) must haveHref(controllers.routes.FileUploadController.startFileUpload("mrn"))
       }
 
       "feature flag is enabled, status is ADDITIONAL_DOCUMENTS_REQUIRED and mrn is not present" in {
@@ -266,7 +266,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
         val sfusLink = view.getElementById("notification_action_0")
 
         sfusLink must containMessage("submissions.sfus.upload.files")
-        sfusLink.child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/")
+        sfusLink.child(0) must haveHref(controllers.routes.FileUploadController.startFileUpload(""))
       }
     }
 
@@ -329,7 +329,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       viewWithFeatures.getElementById("notification_action_0") must containMessage("submissions.sfus.upload.files")
       viewWithFeatures
         .getElementById("notification_action_0")
-        .child(0) must haveHref("http://localhost:6793/cds-file-upload-service/mrn-entry/mrn")
+        .child(0) must haveHref(routes.FileUploadController.startFileUpload("mrn"))
     }
 
     "contain rejected acceptedNotification with correct data and view errors link" in {

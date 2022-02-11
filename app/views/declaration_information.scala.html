@@ -49,7 +49,7 @@
     }
 
     @if(status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED && sfusConfig.isSfusUploadEnabled) {
-        @link(text = messages("submissions.sfus.upload.files"), call = Call("GET", s"${sfusConfig.sfusUploadLink}/${submission.mrn.getOrElse("")}"), target="_blank")
+        @link(text = messages("submissions.sfus.upload.files"), call = routes.FileUploadController.startFileUpload(submission.mrn.getOrElse("")), target="_blank")
     }
 }
 

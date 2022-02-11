@@ -11,6 +11,10 @@ GET         /unauthorised                                  controllers.Unauthori
 GET         /unverified-email                              controllers.UnverifiedEmailController.informUserUnverified
 GET         /undeliverable-email                           controllers.UnverifiedEmailController.informUserUndeliverable
 
+# File Upload
+
+GET         /file-upload                                   controllers.FileUploadController.startFileUpload(mrn: String)
+
 # Secure Messaging
 GET         /messages                                      controllers.SecureMessagingController.displayInbox
 GET         /conversation/:client/:conversationId          controllers.SecureMessagingController.displayConversation(client, conversationId)
