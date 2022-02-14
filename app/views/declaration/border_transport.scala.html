@@ -18,24 +18,26 @@
 @import controllers.declaration.routes.BorderTransportController
 @import controllers.navigation.Navigator
 @import forms.declaration.BorderTransport
-@import forms.declaration.BorderTransport.{nationalityId, radioButtonGroupId}
+@import forms.declaration.BorderTransport.{isBorderOnInlandOrBorder, nationalityId, radioButtonGroupId}
 @import forms.declaration.TransportCodes.transportCodesOnBorderTransport
 @import models.codes.Country
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles.gdsPageLegend
-@import views.helpers.{BackButton, BorderTransportHelper, CountryHelper, Title}
+@import views.helpers.{BackButton, BorderTransportHelper, CountryHelper, ModeOfTransportCodeHelper, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
 
 @this(
     borderTransportHelper: BorderTransportHelper,
     govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    heading: heading,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
@@ -47,52 +49,48 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@borderTransportType = {
-    @govukRadios(Radios(
-        name = radioButtonGroupId,
-        fieldset = Some(Fieldset(
-            attributes = Map("id" -> "borderTransportType-fieldSet"),
-            legend = Some(Legend(
-                content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.body"))
-            ))
-        )),
-        items = borderTransportHelper.radioButtons(form),
-        errorMessage = form(radioButtonGroupId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-    ))
-}
-
-@borderTransportNationality = {
-    @components.fields.field_accessible_location_autocomplete_with_header(
-        field = form(nationalityId),
-        label = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header"),
-        labelClass = None,
-        hintParagraphs = List(messages("declaration.country.dropdown.hint")),
-        countryKey = (c: Country) => c.countryName,
-        isPageHeading = false
-    )
-}
-
 @govukLayout(
-    title = Title("declaration.transportInformation.meansOfTransport.crossingTheBorder.title", "declaration.section.6", hasErrors = hasErrors),
+    title = borderTransportHelper.titleInHeadTag(form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(BorderTransport, mode)))) {
 
     @formHelper(action = BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(radioGroupErrors(radioButtonGroupId, transportCodesOnBorderTransport.head.id, form.errors))
 
-        @sectionHeader(messages("declaration.section.6"))
+        @if(isBorderOnInlandOrBorder) {
+            @errorSummary(form.errors)
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.title")),
-                classes = gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(List(
-                borderTransportType,
-                borderTransportNationality,
-                tariffExpander(BorderTransport, request.declarationType)(messages, appConfig),
-                saveButtons()
+            @sectionHeader(messages("declaration.section.6"))
+
+            @pageTitle(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.title.v1"))
+
+        } else {
+            @errorSummary(radioGroupErrors(radioButtonGroupId, transportCodesOnBorderTransport.head.id, form.errors))
+
+            @sectionHeader(messages("declaration.section.6"))
+
+            @pageTitle(messages(
+                "declaration.transportInformation.meansOfTransport.crossingTheBorder.title.v2",
+                ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
             ))
-        ))
+
+            @paragraphBody(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.body.v2"))
+
+            @govukRadios(Radios(
+                name = radioButtonGroupId,
+                items = borderTransportHelper.radioButtons(form),
+                errorMessage = form(radioButtonGroupId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            ))
+
+            @heading(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header"), "govuk-heading-s", "h2")
+        }
+
+        @components.fields.field_accessible_location_autocomplete_with_header(
+            field = form(nationalityId),
+            hintParagraphs = List(messages("declaration.country.dropdown.hint")),
+            countryKey = (c: Country) => c.countryName
+        )
+
+        @tariffExpander(BorderTransport, request.declarationType)(messages, appConfig),
+
+        @saveButtons()
     }
 }

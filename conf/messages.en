@@ -1251,9 +1251,9 @@ declaration.transportInformation.meansOfTransport.departure.error.incorrect = En
 declaration.transportInformation.meansOfTransport.departure.error.invalid = Reference must contain only letters and numbers
 declaration.transportInformation.meansOfTransport.departure.error.length = Reference must contain 35 characters or fewer
 
-declaration.transportInformation.meansOfTransport.crossingTheBorder.title = What are the details for the transport leaving the UK border?
-declaration.transportInformation.meansOfTransport.crossingTheBorder.body = Select and then enter the details. You must make a selection, but you can enter ‘Unknown’ if you do not know the details at the time when you must submit the declaration.
-declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.header = Reference
+declaration.transportInformation.meansOfTransport.crossingTheBorder.title.v1 = What country is the transport registered in?
+declaration.transportInformation.meansOfTransport.crossingTheBorder.title.v2 = What are the details for the {0}?
+declaration.transportInformation.meansOfTransport.crossingTheBorder.body.v2 = Select the details you will give for the transport taking the goods out of the UK. You can then enter the required details in the box or enter ‘Unknown’ if you want to give the details later.
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.empty = Enter a transport reference
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.length = Reference must contain 35 characters or fewer
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.invalid = Reference must contain only letters and numbers
