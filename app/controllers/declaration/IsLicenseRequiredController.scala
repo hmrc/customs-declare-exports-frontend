@@ -89,7 +89,7 @@ class IsLicenseRequiredController @Inject()(
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     yesNoAnswer.answer match {
       case YesNoAnswers.yes => AdditionalDocumentAddController.displayPage(_, itemId)
-      case YesNoAnswers.no if containsAuthCodeRequireDocumentation =>
+      case YesNoAnswers.no if request.cacheModel.isAuthCodeRequiringAdditionalDocuments =>
         AdditionalDocumentsController.displayPage(_, itemId)
       case YesNoAnswers.no =>
         AdditionalDocumentsRequiredController.displayPage(_, itemId)
@@ -101,15 +101,6 @@ class IsLicenseRequiredController @Inject()(
 
     updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(isLicenseRequired = Some(isLicenseRequired))))
   }
-
-  private def containsAuthCodeRequireDocumentation(implicit request: JourneyRequest[AnyContent]) =
-    request.cacheModel.parties.declarationHoldersData.exists(
-      _.holders
-        .flatMap(_.authorisationTypeCode)
-        .toSet
-        .intersect(AuthorizationTypeCodes.codesRequiringDocumentation)
-        .nonEmpty
-    )
 
   private def representativeStatusCode(implicit request: JourneyRequest[AnyContent]): Option[String] =
     (request.cacheModel.parties.representativeDetails flatMap { _.statusCode }) orElse {

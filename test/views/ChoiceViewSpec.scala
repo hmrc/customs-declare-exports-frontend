@@ -56,7 +56,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
     super.afterEach()
   }
 
-  private val dummyUploadLink = "dummyUploadLink"
+  private val dummyUploadLink = controllers.routes.FileUploadController.startFileUpload("").url
   private val dummyInboxLink = "dummyInboxLink"
 
   private val SFUS = SecureMessagingFeatureStatus.sfus

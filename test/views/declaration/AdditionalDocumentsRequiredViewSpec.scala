@@ -21,6 +21,7 @@ import config.AppConfig
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.declaration.CommodityDetails
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -40,6 +41,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
 
   private val itemId = "itemId"
+  private val item = anItem(withItemId(itemId), withAdditionalInformation("1234", "description"))
 
   private def createView(form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
     additionalDocumentsRequiredPage(Mode.Normal, itemId, form)(request, messages)
@@ -125,19 +127,19 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
         saveAndReturnButton must containMessage("site.save_and_come_back_later")
       }
 
-      "display a 'Back' button that links to the 'Additional Information Required' page" when {
-        "Additional Information are not present" in {
-          verifyBackButton(routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId))
-        }
-      }
     }
 
-    "display a 'Back' button that links to the 'Additional Information' page" when {
-      val item = anItem(withItemId(itemId), withAdditionalInformation("1234", "description"))
-      onEveryDeclarationJourney(withItem(item)) { implicit request =>
+    onJourney(CLEARANCE)(aDeclaration(withItem(item))) { implicit request =>
+      "display a 'Back' button that links to the 'Additional Information' page" when {
+
         "Additional Information are present" in {
           verifyBackButton(routes.AdditionalInformationController.displayPage(Mode.Normal, itemId))
         }
+      }
+    }
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(item))) { implicit request =>
+      "display a 'Back' button that links to the 'Is License Required' page" in {
+        verifyBackButton(routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId))
       }
     }
   }
