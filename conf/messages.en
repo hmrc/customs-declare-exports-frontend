@@ -1166,6 +1166,10 @@ declaration.transport.leavingTheBorder.transportMode.inlandWaterway = Inland wat
 declaration.transport.leavingTheBorder.transportMode.unknown = Own propulsion
 declaration.transport.leavingTheBorder.transportMode.unknown.hint = For example, goods carried by a passenger.
 declaration.transport.leavingTheBorder.transportMode.empty = I don’t know
+declaration.transport.leavingTheBorder.error.empty = Select the mode of transport at the border
+declaration.transport.leavingTheBorder.error.empty.optional = Select the mode of transport at the border or I don’t know
+declaration.transport.leavingTheBorder.error.incorrect = Select the mode of transport at the border
+declaration.transport.leavingTheBorder.error.roro.required = Goods location code entered - {0} - is a Goods Vehicle Movement Service code and requires a roll on roll off (RoRo) mode of transport
 
 declaration.warehouse.identification.optional.title =  Were the goods in a customs approved warehouse?
 declaration.warehouse.identification.required.title =  What is the customs approved warehouse number?
@@ -1215,10 +1219,6 @@ declaration.inlandOrBorder.inset.bullet.1.text = Customs Supervised Exports (CSE
 declaration.inlandOrBorder.inset.bullet.2.text = Designated export places (DEPs)
 declaration.inlandOrBorder.inset.bullet.3.text = Customs warehouses
 declaration.inlandOrBorder.inset.bullet.4.text = Excise warehouses
-
-declaration.transportInformation.borderTransportMode.error.empty = Select the mode of transport at the border
-declaration.transportInformation.borderTransportMode.error.empty.optional = Select the mode of transport at the border or I don’t know
-declaration.transportInformation.borderTransportMode.error.incorrect = Select the mode of transport at the border
 
 declaration.transportInformation.expressConsignment.title = Is this an express consignment?
 declaration.transportInformation.expressConsignment.paragraph = This is when the goods are carried by an express courier or express cargo services.

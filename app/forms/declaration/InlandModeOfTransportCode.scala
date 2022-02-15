@@ -34,7 +34,7 @@ object InlandModeOfTransportCode extends DeclarationPage {
   val mapping = Forms
     .mapping(
       "inlandModeOfTransportCode" ->
-        optional(of(ModeOfTransportCode.classicFormatter("declaration.warehouse.inlandTransportDetails.error.incorrect")))
+        optional(of(ModeOfTransportCode.formatter("declaration.warehouse.inlandTransportDetails.error.incorrect")))
     )(InlandModeOfTransportCode.apply)(InlandModeOfTransportCode.unapply)
 
   def form(): Form[InlandModeOfTransportCode] = Form(mapping)

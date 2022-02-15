@@ -20,9 +20,9 @@ import base.UnitWithMocksSpec
 
 class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
 
-  "ModeOfTransportCode classicFormatter" should {
+  "ModeOfTransportCode formatter" should {
     val errorMessageKey = "error.message"
-    val formatter = ModeOfTransportCode.classicFormatter(errorMessageKey)
+    val formatter = ModeOfTransportCode.formatter(errorMessageKey)
 
     "return Right" when {
       "provided with allowed code" in {
@@ -63,9 +63,9 @@ class ModeOfTransportCodeSpec extends UnitWithMocksSpec {
     }
   }
 
-  "ModeOfTransportCode clearanceJourneyFormatter" should {
+  "ModeOfTransportCode formatterForClearance" should {
     val errorMessageKey = "error.message"
-    val formatter = ModeOfTransportCode.clearanceJourneyFormatter(errorMessageKey)
+    val formatter = ModeOfTransportCode.formatterForClearance(errorMessageKey)
 
     "return Right" when {
 
