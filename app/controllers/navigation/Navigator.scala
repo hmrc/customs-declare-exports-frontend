@@ -110,9 +110,10 @@ class Navigator @Inject()(
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
-    case AdditionalInformation     => additionalInformationAddPreviousPage
-    case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
-    case TaricCodeFirst            => additionalTaricCodesPreviousPage
+    case AdditionalDocumentsSummary => additionalDocumentsSummaryPreviousPage
+    case AdditionalInformation      => additionalInformationAddPreviousPage
+    case AdditionalFiscalReference  => additionalFiscalReferencesPreviousPage
+    case TaricCodeFirst             => additionalTaricCodesPreviousPage
   }
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {

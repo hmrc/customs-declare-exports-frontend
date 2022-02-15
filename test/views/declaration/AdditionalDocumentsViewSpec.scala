@@ -87,7 +87,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
+        backButton must haveHref(routes.IsLicenseRequiredController.displayPage(mode, itemId))
       }
 
       "display 'Save and continue' button on page" in {
@@ -110,7 +110,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
+        backButton must haveHref(routes.IsLicenseRequiredController.displayPage(mode, itemId))
       }
 
     }
