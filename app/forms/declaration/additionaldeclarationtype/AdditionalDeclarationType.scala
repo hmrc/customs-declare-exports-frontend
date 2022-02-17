@@ -68,21 +68,18 @@ object AdditionalDeclarationType extends Enumeration {
       case CLEARANCE_FRONTIER | CLEARANCE_PRE_LODGED     => CLEARANCE
     }
 
+  val arrivedTypes = List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, OCCASIONAL_FRONTIER, CLEARANCE_FRONTIER)
+  val preLodgedTypes = List(STANDARD_PRE_LODGED, SIMPLIFIED_PRE_LODGED, OCCASIONAL_PRE_LODGED, CLEARANCE_PRE_LODGED)
+
   def isArrived(additionalDeclarationType: Option[AdditionalDeclarationType]): Boolean =
     additionalDeclarationType.fold(false)(isArrived)
 
   def isArrived(additionalDeclarationType: AdditionalDeclarationType): Boolean =
-    additionalDeclarationType match {
-      case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER | OCCASIONAL_FRONTIER | CLEARANCE_FRONTIER => true
-      case _                                                                                  => false
-    }
+    arrivedTypes.contains(additionalDeclarationType)
 
   def isPreLodged(additionalDeclarationType: Option[AdditionalDeclarationType]): Boolean =
     additionalDeclarationType.fold(false)(isPreLodged)
 
   def isPreLodged(additionalDeclarationType: AdditionalDeclarationType): Boolean =
-    additionalDeclarationType match {
-      case STANDARD_PRE_LODGED | SIMPLIFIED_PRE_LODGED | OCCASIONAL_PRE_LODGED | CLEARANCE_PRE_LODGED => true
-      case _                                                                                          => false
-    }
+    preLodgedTypes.contains(additionalDeclarationType)
 }

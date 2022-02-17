@@ -21,15 +21,19 @@ import controllers.declaration.routes.{DeclarationHolderAddController, Destinati
 import controllers.helpers.DeclarationHolderHelper.declarationHolders
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
-import javax.inject.Inject
+import forms.common.YesNoAnswer.{formId, YesNoAnswers}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.isArrived
+import forms.declaration.declarationHolder.AuthorizationTypeCodes.{isAuthCode, mutuallyExclusiveAuthCodes}
 import models.Mode
-import play.api.data.Form
+import models.requests.JourneyRequest
+import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_summary
+
+import javax.inject.Inject
 
 class DeclarationHolderSummaryController @Inject()(
   authenticate: AuthAction,
@@ -49,10 +53,20 @@ class DeclarationHolderSummaryController @Inject()(
     addAnotherYesNoForm.bindFromRequest
       .fold(formWithErrors => BadRequest(declarationHolderPage(mode, formWithErrors, declarationHolders)), _.answer match {
         case YesNoAnswers.yes => navigator.continueTo(mode, DeclarationHolderAddController.displayPage, mode.isErrorFix)
-        case YesNoAnswers.no  => navigator.continueTo(mode, DestinationCountryController.displayPage)
+        case YesNoAnswers.no  => validateNoAnswerAndGoNextPage(mode)
       })
   }
 
   private def addAnotherYesNoForm: Form[YesNoAnswer] =
     YesNoAnswer.form(errorKey = "declaration.declarationHolders.add.another.empty")
+
+  private def validateNoAnswerAndGoNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result = {
+    val valid = !isArrived(request.cacheModel.additionalDeclarationType) || isAuthCode(request.cacheModel, mutuallyExclusiveAuthCodes)
+    if (valid) navigator.continueTo(mode, DestinationCountryController.displayPage)
+    else {
+      val message = messagesApi.preferred(request).messages("declaration.declarationHolder.error.arrived")
+      val formWithErrors = addAnotherYesNoForm.copy(errors = List(FormError.apply(formId, message)))
+      BadRequest(declarationHolderPage(mode, formWithErrors, declarationHolders))
+    }
+  }
 }

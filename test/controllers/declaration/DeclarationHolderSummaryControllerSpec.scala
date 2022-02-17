@@ -18,6 +18,8 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.{Eori, YesNoAnswer}
+import forms.common.YesNoAnswer.formId
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.arrivedTypes
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
 import models.Mode
@@ -31,6 +33,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import play.twirl.api.HtmlFormat.Appendable
 import views.html.declaration.declarationHolder.declaration_holder_summary
 
 class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionValues {
@@ -75,10 +78,10 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
     captor.getValue
   }
 
-  private def verifyPageInvoked(numberOfTimes: Int = 1) =
+  private def verifyPageInvoked(numberOfTimes: Int = 1): Appendable =
     verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
-  val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")), Some(EoriSource.OtherEori))
+  val declarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")), Some(EoriSource.OtherEori))
   val id = "ACE-GB56523343784324"
 
   "DeclarationHolderSummaryController on displayPage" should {
@@ -111,25 +114,46 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
 
   "DeclarationHolderSummaryController on submitForm" should {
 
+    "return 400 (BAD_REQUEST)" when {
+
+      arrivedTypes.foreach { additionalType =>
+        s"AdditionalDeclarationType is ${additionalType} and" when {
+
+          "user has NOT selected 'CSE' or 'EXRR' and" when {
+            val request = withRequest(additionalType, withDeclarationHolders(Some("APE")))
+
+            "the user submits the page answering No" in {
+              withNewCaching(request.cacheModel)
+              val requestBody = Json.obj(formId -> "No")
+              val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
+
+              status(result) mustBe BAD_REQUEST
+              verifyPageInvoked()
+            }
+          }
+        }
+      }
+    }
+
     onEveryDeclarationJourney() { request =>
       "return 400 (BAD_REQUEST)" when {
         "the user submits the page but does not answer with yes or no" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Json.obj("yesNo" -> "")
+          val requestBody = Json.obj(formId -> "")
           val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
         }
-
       }
 
       "return 303 (SEE_OTHER)" when {
+
         "the user submits the page answering Yes" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Json.obj("yesNo" -> "Yes")
+          val requestBody = Json.obj(formId -> "Yes")
           val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
@@ -139,7 +163,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         "the user submits the page answering Yes in error-fix mode" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Json.obj("yesNo" -> "Yes")
+          val requestBody = Json.obj(formId -> "Yes")
           val result = controller.submitForm(Mode.ErrorFix)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
@@ -153,7 +177,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         "the user submits the page answering No" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Json.obj("yesNo" -> "No")
+          val requestBody = Json.obj(formId -> "No")
           val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
@@ -165,7 +189,7 @@ class DeclarationHolderSummaryControllerSpec extends ControllerSpec with OptionV
         "the user submits the page answering No" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Json.obj("yesNo" -> "No")
+          val requestBody = Json.obj(formId -> "No")
           val result = controller.submitForm(Mode.Normal)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
