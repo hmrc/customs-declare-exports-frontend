@@ -16,9 +16,10 @@
 
 package views.helpers
 
-import forms.declaration.BorderTransport.radioButtonGroupId
+import forms.declaration.BorderTransport.{isBorderOnInlandOrBorder, radioButtonGroupId}
 import forms.declaration.TransportCodes.{transportCodesOnBorderTransport, NotApplicable}
 import forms.declaration.{BorderTransport, TransportCode}
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -31,10 +32,17 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class BorderTransportHelper @Inject()(exportsInputText: exportsInputText) {
 
+  private val prefix = "declaration.transportInformation.meansOfTransport"
+
   def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] =
     transportCodesOnBorderTransport.map(radioButton(form, _))
 
-  private val prefix = "declaration.transportInformation.meansOfTransport"
+  def titleInHeadTag(hasErrors: Boolean)(implicit messages: Messages, request: JourneyRequest[_]): Title =
+    if (isBorderOnInlandOrBorder) Title(s"$prefix.crossingTheBorder.title.v1", "declaration.section.6", hasErrors = hasErrors)
+    else {
+      val transportCode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
+      Title(s"$prefix.crossingTheBorder.title.v2", "declaration.section.6", transportCode, hasErrors = hasErrors)
+    }
 
   private def inputField(transportCode: TransportCode, form: Form[_])(implicit messages: Messages): Option[Html] =
     Some(

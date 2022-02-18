@@ -1164,7 +1164,13 @@ function containersSummary() {
 }
 
 function summary(){
-    if (currentPageIs('/customs-declare-exports/declaration/summary')) {
+    if (currentPageIs('/customs-declare-exports/declaration/saved-summary')) {
+        document.getElementsByClassName('govuk-button')[0].click();
+    }
+}
+
+function submission(){
+    if (currentPageIs('/customs-declare-exports/declaration/submit-your-declaration')) {
         document.getElementById('fullName').value = 'Tim Tester';
         document.getElementById('jobRole').value = 'Tester';
         document.getElementById('email').value = 'tim@testing.com';
@@ -1268,4 +1274,5 @@ function completeJourney() {
 
     // summary and confirmation
     summary();
+    submission();
 }

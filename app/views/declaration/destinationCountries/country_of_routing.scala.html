@@ -55,7 +55,7 @@
 
         @components.fields.field_accessible_location_autocomplete_with_header(
             field = form("countryCode"),
-            label = messages(s"declaration.${page.id}.question"),
+            label = Some(messages(s"declaration.${page.id}.question")),
             labelClass = Some(gdsPageLabel),
             hintParagraphs = List(messages("declaration.country.dropdown.hint")),
             countryKey = (c: CountryModel) => c.countryCode,

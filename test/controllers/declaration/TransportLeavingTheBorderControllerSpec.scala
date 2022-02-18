@@ -28,8 +28,9 @@ import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import controllers.routes.RootController
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, RoRo}
+import forms.declaration.TransportLeavingTheBorder.suffixForLocationOfGoods
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
-import forms.declaration.{ModeOfTransportCode, TransportLeavingTheBorder}
+import forms.declaration.{LocationOfGoods, ModeOfTransportCode, TransportLeavingTheBorder}
 import models.DeclarationType
 import models.DeclarationType._
 import models.Mode.Normal
@@ -117,14 +118,43 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
     }
   }
 
-  "TransportLeavingTheBorderController.submitForm" should {
+  "TransportLeavingTheBorderController.submitForm" when {
+
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
-      "return 400 (BAD_REQUEST)" when {
-        "the user does not select any option" in {
+      "the user does not select any option" should {
+        "return 400 (BAD_REQUEST)" in {
           withNewCaching(request.cacheModel)
 
           val result = controller.submitForm(Normal)(postRequest(Json.obj()))
           status(result) must be(BAD_REQUEST)
+        }
+      }
+
+      s"LocationOfGood's value is present and ends with '$suffixForLocationOfGoods'" should {
+        val goodsLocation = withGoodsLocation(LocationOfGoods(s"GBAUFEMLHR$suffixForLocationOfGoods"))
+
+        "update successfully the cache" when {
+          s"ModeOfTransportCode selected is 'RoRo'" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, goodsLocation))
+
+            val body = Json.obj("transportLeavingTheBorder" -> RoRo.value)
+            await(controller.submitForm(Normal)(postRequest(body)))
+
+            theCacheModelUpdated.transportLeavingBorderCode mustBe Some(RoRo)
+          }
+        }
+
+        "return 400 (BAD_REQUEST)" when {
+          meaningfulModeOfTransportCodes.filter(_ != RoRo).foreach { modeOfTransportCode =>
+            s"ModeOfTransportCode is '${modeOfTransportCode}'" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, goodsLocation))
+
+              val body = Json.obj("transportLeavingTheBorder" -> modeOfTransportCode.value)
+
+              val result = controller.submitForm(Normal)(postRequest(body))
+              status(result) must be(BAD_REQUEST)
+            }
+          }
         }
       }
     }

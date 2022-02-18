@@ -21,6 +21,7 @@ import controllers.declaration.routes.WarehouseIdentificationController
 import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.navigation.Navigator
 import forms.declaration.TransportLeavingTheBorder
+import forms.declaration.TransportLeavingTheBorder.form
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -48,17 +49,14 @@ class TransportLeavingTheBorderController @Inject()(
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val form = TransportLeavingTheBorder.form(request.declarationType).withSubmissionErrors
     request.cacheModel.transport.borderModeOfTransportCode match {
-      case Some(data) => Ok(transportAtBorder(form.fill(data), mode))
-      case _          => Ok(transportAtBorder(form, mode))
+      case Some(data) => Ok(transportAtBorder(form.withSubmissionErrors.fill(data), mode))
+      case _          => Ok(transportAtBorder(form.withSubmissionErrors, mode))
     }
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    TransportLeavingTheBorder
-      .form(request.declarationType)
-      .bindFromRequest
+    form.withSubmissionErrors.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(transportAtBorder(formWithErrors, mode))),
         updateCache(_).map(declaration => navigator.continueTo(mode, nextPage(declaration)))

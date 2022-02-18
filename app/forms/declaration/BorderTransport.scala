@@ -19,8 +19,10 @@ package forms.declaration
 import connectors.CodeListConnector
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
+import forms.declaration.InlandOrBorder.Border
 import forms.declaration.TransportCodes._
 import models.DeclarationType.DeclarationType
+import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
@@ -44,6 +46,12 @@ object BorderTransport extends DeclarationPage {
   val radioButtonGroupId = "borderTransportType"
 
   val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
+
+  def form(implicit messages: Messages, request: JourneyRequest[_], codeListConnector: CodeListConnector): Form[BorderTransport] =
+    Form(if (isBorderOnInlandOrBorder) nationalityOnlyMapping else formMapping)
+
+  def isBorderOnInlandOrBorder(implicit request: JourneyRequest[_]): Boolean =
+    request.cacheModel.isInlandOrBorder(Border)
 
   def transportReferenceMapping(transportCode: TransportCode): (String, Mapping[Option[String]]) =
     transportCode.id -> mandatoryIfEqual(
@@ -70,8 +78,10 @@ object BorderTransport extends DeclarationPage {
       transportReferenceMapping(NameOfInlandWaterwayVessel)
     )(form2Model)(model2Form)
 
-  def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[BorderTransport] =
-    Form(formMapping)
+  private def nationalityOnlyMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[BorderTransport] =
+    mapping(nationalityId -> optional(text.verifying(s"$prefix.nationality.error.incorrect", isValidCountryName(_))))(nationalityOnlyForm2Model)(
+      model2NationalityOnlyForm
+    )
 
   private def form2Model: (
     Option[String],
@@ -113,6 +123,8 @@ object BorderTransport extends DeclarationPage {
       )
   }
 
+  private def nationalityOnlyForm2Model: Option[String] => BorderTransport = BorderTransport(_, "", "")
+
   private def model2Form: BorderTransport => Option[
     (
       Option[String],
@@ -142,6 +154,9 @@ object BorderTransport extends DeclarationPage {
           model2Ref(NameOfInlandWaterwayVessel)
         )
     )
+
+  private def model2NationalityOnlyForm: BorderTransport => Option[Option[String]] =
+    implicit borderTransport => Option(borderTransport.meansOfTransportCrossingTheBorderNationality)
 
   private def form2Ref(refs: Option[String]*): String = refs.map(_.getOrElse("")).mkString
 
