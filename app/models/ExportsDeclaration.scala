@@ -105,7 +105,7 @@ case class ExportsDeclaration(
 
   def isCommodityCodeOfItemPrefixedWith(itemId: String, prefix: Seq[Int]): Boolean =
     commodityCodeOfItem(itemId) match {
-      case Some(commodityCode) if (commodityCode.trim.length > 0) =>
+      case Some(commodityCode) if commodityCode.trim.nonEmpty =>
         prefix.exists(digits => commodityCode.startsWith(digits.toString))
       case _ => false
     }

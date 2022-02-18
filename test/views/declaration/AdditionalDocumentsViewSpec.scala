@@ -22,6 +22,7 @@ import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalDocumentSpec._
 import forms.declaration.additionaldocuments.AdditionalDocument
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -87,7 +88,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.IsLicenseRequiredController.displayPage(mode, itemId))
+        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
       }
 
       "display 'Save and continue' button on page" in {
@@ -102,15 +103,30 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
   }
 
   "additional_documents view on empty page with cached Additional Information" should {
-    onEveryDeclarationJourney(withItem(anItem(withItemId(itemId), withAdditionalInformation("1234", "Description")))) { implicit request =>
+
+    val declarationWithAdditionalInfo = aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalInformation("1234", "Description"))))
+
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY)(declarationWithAdditionalInfo) { implicit request =>
       val view = createView()
 
-      "display 'Back' button that links to 'Additional Information' page when additional info present" in {
+      "display 'Back' button that links to 'Is License Required' page when additional info present" in {
 
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
         backButton must haveHref(routes.IsLicenseRequiredController.displayPage(mode, itemId))
+      }
+
+    }
+    onJourney(CLEARANCE)(declarationWithAdditionalInfo) { implicit request =>
+      val view = createView()
+
+      "display 'Back' button that links to 'Additional Info' page when additional info present" in {
+
+        val backButton = view.getElementById("back-link")
+
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
       }
 
     }
