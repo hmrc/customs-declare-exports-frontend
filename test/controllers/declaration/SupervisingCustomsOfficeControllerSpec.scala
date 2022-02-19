@@ -24,11 +24,12 @@ import controllers.declaration.routes.{
   InlandOrBorderController,
   InlandTransportDetailsController
 }
-import controllers.helpers.SupervisingCustomsOfficeHelper
+import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
+import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import forms.declaration.SupervisingCustomsOffice
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType
 import models.Mode.Normal
 import org.mockito.ArgumentMatchers.any
@@ -44,8 +45,9 @@ import views.html.declaration.supervising_customs_office
 
 class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeAndAfterEach with OptionValues {
 
-  private val supervisingCustomsOfficeTemplate: supervising_customs_office = mock[supervising_customs_office]
+  private val inlandOrBorderHelper = instanceOf[InlandOrBorderHelper]
   private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
+  private val supervisingCustomsOfficeTemplate = mock[supervising_customs_office]
 
   private val controller = new SupervisingCustomsOfficeController(
     authenticate = mockAuthAction,
@@ -54,6 +56,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
     exportsCacheService = mockExportsCacheService,
     mcc = stubMessagesControllerComponents(),
     supervisingCustomsOfficePage = supervisingCustomsOfficeTemplate,
+    inlandOrBorderHelper = inlandOrBorderHelper,
     supervisingCustomsOfficeHelper = supervisingCustomsOfficeHelper
   )
 
@@ -201,6 +204,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         }
       }
     }
+
     "we are on simplified declaration journey" should {
 
       "redirect to /express-consignment after a successful bind" in {
@@ -272,6 +276,37 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         val result = controller.submit(Normal)(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
+      }
+    }
+
+    val inlandOrBorderIfOrNotToReset = List(
+      (STANDARD_FRONTIER, Border, Some(Border)),
+      (STANDARD_PRE_LODGED, Border, Some(Border)),
+      (SUPPLEMENTARY_SIMPLIFIED, Inland, Some(Inland)),
+      (SUPPLEMENTARY_EIDR, Border, None),
+      (SIMPLIFIED_FRONTIER, Border, None),
+      (SIMPLIFIED_PRE_LODGED, Border, None),
+      (OCCASIONAL_FRONTIER, Border, None),
+      (OCCASIONAL_PRE_LODGED, Border, None),
+      (CLEARANCE_FRONTIER, Border, None),
+      (CLEARANCE_PRE_LODGED, Inland, None)
+    )
+
+    inlandOrBorderIfOrNotToReset.foreach { data =>
+      val additionalType = data._1
+      val actualCachedInlandOrBorder = data._2
+      val expectedCachedInlandOrBorder = data._3
+
+      s"AdditionalDeclarationType is $additionalType and" when {
+        s"the cached InlandOrBorder is $actualCachedInlandOrBorder" should {
+          s"${if (expectedCachedInlandOrBorder.isEmpty) "" else "not "} reset InlandOrBorder after a successful bind" in {
+            withNewCaching(withRequest(additionalType, withInlandOrBorder(Some(actualCachedInlandOrBorder))).cacheModel)
+
+            await(controller.submit(Normal)(postRequest(body)))
+
+            theCacheModelUpdated.locations.inlandOrBorder mustBe expectedCachedInlandOrBorder
+          }
+        }
       }
     }
   }

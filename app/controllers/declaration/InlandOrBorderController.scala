@@ -83,7 +83,14 @@ class InlandOrBorderController @Inject()(
     }
 
   private def updateExportsCache(mode: Mode, inlandOrBorder: InlandOrBorder)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(inlandOrBorder = Some(inlandOrBorder)))) map { _ =>
+    updateDeclarationFromRequest { declaration =>
+      declaration.copy(
+        locations = declaration.locations.copy(
+          inlandOrBorder = Some(inlandOrBorder),
+          inlandModeOfTransportCode = if (inlandOrBorder == Border) None else declaration.locations.inlandModeOfTransportCode
+        )
+      )
+    } map { _ =>
       navigator.continueTo(mode, nextPage(request.cacheModel, inlandOrBorder))
     }
 }

@@ -76,8 +76,11 @@ class InlandTransportDetailsController @Inject()(
   }
 
   private def updateCacheAndGoNextPage(mode: Mode, code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(code))))
-      .map(_ => navigator.continueTo(mode, nextPage(request.declarationType, code)))
+    updateDeclarationFromRequest { declaration =>
+      declaration.copy(locations = declaration.locations.copy(inlandModeOfTransportCode = Some(code)))
+    } map { _ =>
+      navigator.continueTo(mode, nextPage(request.declarationType, code))
+    }
 
   private def validateAndUpdateCache(mode: Mode, code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     validateWithTransportLeavingBorderCode(code).fold(updateCacheAndGoNextPage(mode, code))(returnFormWithErrors(mode, code, _))
