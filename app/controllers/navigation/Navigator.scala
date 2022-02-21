@@ -112,6 +112,7 @@ class Navigator @Inject()(
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
+    case IsLicenseRequired         => isLicenseRequiredPreviousPage
     case AdditionalInformation     => additionalInformationAddPreviousPage
     case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
     case TaricCodeFirst            => additionalTaricCodesPreviousPage
@@ -447,6 +448,12 @@ class Navigator @Inject()(
     }
 
   private def additionalDocumentsSummaryClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    if (cacheModel.listOfAdditionalInformationOfItem(itemId).nonEmpty)
+      routes.AdditionalInformationController.displayPage(mode, itemId)
+    else
+      routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
+
+  private def isLicenseRequiredPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.listOfAdditionalInformationOfItem(itemId).nonEmpty)
       routes.AdditionalInformationController.displayPage(mode, itemId)
     else
