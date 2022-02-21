@@ -15,8 +15,9 @@
  *@
 
 @import config.AppConfig
-@import controllers.navigation.Navigator
+@import controllers.navigation.{Navigator, ItemId}
 @import forms.common.YesNoAnswer
+@import forms.declaration.IsLicenseRequired
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
@@ -37,6 +38,7 @@
     yesNoRadios: yesNoRadios,
     tariffLink: tariffLink,
     saveButtons: saveButtons,
+    navigator: Navigator,
     formHelper: FormWithCSRF
 )
 
@@ -46,7 +48,7 @@
 
 @govukLayout(
     title = Title("tariff.declaration.item.isLicenseRequired.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), Call("GET", "/")))
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(IsLicenseRequired, mode, ItemId(itemId))))
 ) {
 
     @formHelper(action = controllers.declaration.routes.IsLicenseRequiredController.submitForm(mode, itemId), 'autoComplete -> "off") {
