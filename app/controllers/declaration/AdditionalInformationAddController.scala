@@ -47,11 +47,11 @@ class AdditionalInformationAddController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(additionalInformationPage(mode, itemId, form().withSubmissionErrors()))
+    Ok(additionalInformationPage(mode, itemId, form.withSubmissionErrors))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form().bindFromRequest()
+    val boundForm = form.bindFromRequest
 
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors))),

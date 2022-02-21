@@ -17,11 +17,13 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.AdditionalInformationController
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.AdditionalInformation
 import mock.ErrorHandlerMocks
 import models.Mode
 import models.declaration.AdditionalInformationData
+import models.declaration.AdditionalInformationData.maxNumberOfItems
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -78,9 +80,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
   "AdditionalInformationAdd controller" should {
 
     "return 200 (OK)" when {
-
       "display page method is invoked" in {
-
         val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe OK
@@ -90,8 +90,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
 
     "return 400 (BAD_REQUEST) during adding" when {
 
-      "user put incorrect data" in {
-
+      "user does not enter any data" in {
         val formData = Json.toJson(AdditionalInformation("", ""))
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(formData))
 
@@ -99,9 +98,25 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
         verifyPageInvoked()
       }
 
-      "user put duplicated item" in {
+      "user enters 'RRS01' as code" in {
+        val formData = Json.toJson(AdditionalInformation("RRS01", "description"))
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(formData))
 
-        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withAdditionalInformation(additionalInformation)))))
+        status(result) mustBe BAD_REQUEST
+        verifyPageInvoked()
+      }
+
+      "user enters 'LIC99' as code" in {
+        val formData = Json.toJson(AdditionalInformation("LIC99", "description"))
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(formData))
+
+        status(result) mustBe BAD_REQUEST
+        verifyPageInvoked()
+      }
+
+      "user enters duplicated item" in {
+        val item = anItem(withItemId("itemId"), withAdditionalInformation(additionalInformation))
+        withNewCaching(aDeclaration(withItems(item)))
 
         val formData = Json.toJson(additionalInformation)
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(formData))
@@ -110,18 +125,10 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
         verifyPageInvoked()
       }
 
-      "user reach maximum amount of items" in {
-
-        withNewCaching(
-          aDeclaration(
-            withItems(
-              anItem(
-                withItemId("itemId"),
-                withAdditionalInformationData(AdditionalInformationData(Seq.fill(AdditionalInformationData.maxNumberOfItems)(additionalInformation)))
-              )
-            )
-          )
-        )
+      "user reaches maximum amount of items" in {
+        val items = Seq.fill(maxNumberOfItems)(additionalInformation)
+        val modifier = withAdditionalInformationData(AdditionalInformationData(items))
+        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), modifier))))
 
         val formData = Json.toJson(AdditionalInformation("54321", "New data"))
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(formData))
@@ -132,24 +139,20 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
     }
 
     "return 303 (SEE_OTHER)" when {
-
-      "user correctly add new item" in {
-
-        withNewCaching(
-          aDeclaration(withItems(anItem(withItemId("itemId"), withAdditionalInformationData(AdditionalInformationData(Yes, Seq.empty)))))
-        )
+      "user correctly adds new item" in {
+        val modifier = withAdditionalInformationData(AdditionalInformationData(Yes, Seq.empty))
+        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), modifier))))
 
         val correctForm = Json.toJson(additionalInformation)
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe AdditionalInformationController.displayPage(Mode.Normal, itemId)
         verifyPageInvoked(0)
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation)
         savedDocuments mustBe Some(AdditionalInformationData(Seq(additionalInformation)))
       }
-
     }
   }
 }
