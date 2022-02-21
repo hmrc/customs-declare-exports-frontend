@@ -20,10 +20,12 @@ import base.ControllerSpec
 import base.ExportsTestData.itemWithPC
 import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
+import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.WarehouseIdentification
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import models.DeclarationType
 import models.DeclarationType._
-import models.{DeclarationType, Mode}
+import models.Mode.Normal
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -38,6 +40,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
   private val pageYesNo = mock[warehouse_identification_yesno]
   private val pageIdentification = mock[warehouse_identification]
+
   private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
 
   val controller = new WarehouseIdentificationController(
@@ -78,7 +81,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayPage(Mode.Normal)(request))
+    await(controller.displayPage(Normal)(request))
     theResponseForm
   }
 
@@ -90,7 +93,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Normal)(getRequest())
 
           status(result) must be(OK)
         }
@@ -98,7 +101,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
         "display page method is invoked and cache is not empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withWarehouseIdentification(Some(identification))))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Normal)(getRequest())
 
           status(result) must be(OK)
           theResponseForm.value mustBe Some(identification)
@@ -111,7 +114,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           val incorrectForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "incorrect")
 
-          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.saveIdentificationNumber(Normal)(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
         }
@@ -122,7 +125,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
           val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage()
@@ -136,7 +139,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           withNewCaching(withRequest(SUPPLEMENTARY_EIDR, withItem(itemWithPC("1040"))).cacheModel)
           val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
 
@@ -152,7 +155,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
             withNewCaching(withRequest(additionalType, withItem(itemWithPC("1040"))).cacheModel)
             val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-            val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(correctForm))
+            val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
 
             status(result) mustBe SEE_OTHER
             thePageNavigatedTo mustBe routes.InlandOrBorderController.displayPage()
@@ -167,7 +170,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           withNewCaching(request.cacheModel)
           val correctForm = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe routes.ExpressConsignmentController.displayPage()
@@ -179,7 +182,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Normal)(getRequest())
 
           status(result) must be(OK)
         }
@@ -187,7 +190,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
         "display page method is invoked and cache is not empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withWarehouseIdentification(Some(identification))))
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Normal)(getRequest())
 
           status(result) must be(OK)
           theResponseFormYesNo.value mustBe Some(identification)
@@ -200,7 +203,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           val incorrectForm = Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> "incorrect")
 
-          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.saveIdentificationNumber(Normal)(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
         }
@@ -212,7 +215,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           val correctForm = Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.SupervisingCustomsOfficeController.displayPage()
@@ -225,10 +228,45 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           val correctForm = Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> "R12341234")
 
-          val result = controller.saveIdentificationNumber(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveIdentificationNumber(Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.DepartureTransportController.displayPage()
+        }
+      }
+    }
+
+    val bodyNonClearance = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
+    val bodyForClearance = Json.obj(WarehouseIdentification.inWarehouseKey -> "No", WarehouseIdentification.warehouseIdKey -> None)
+
+    val resetInlandOrBorderConditions = List(
+      (STANDARD_FRONTIER, Border, bodyNonClearance),
+      (STANDARD_PRE_LODGED, Border, bodyNonClearance),
+      (SUPPLEMENTARY_SIMPLIFIED, Inland, bodyNonClearance),
+      (SUPPLEMENTARY_EIDR, Border, bodyNonClearance),
+      (SIMPLIFIED_FRONTIER, Border, bodyNonClearance),
+      (SIMPLIFIED_PRE_LODGED, Border, bodyNonClearance),
+      (OCCASIONAL_FRONTIER, Border, bodyNonClearance),
+      (OCCASIONAL_PRE_LODGED, Border, bodyNonClearance),
+      (CLEARANCE_FRONTIER, Border, bodyForClearance),
+      (CLEARANCE_PRE_LODGED, Inland, bodyForClearance)
+    )
+
+    resetInlandOrBorderConditions.foreach { data =>
+      val additionalType = data._1
+      val actualCachedInlandOrBorder = data._2
+      val body = data._3
+
+      s"AdditionalDeclarationType is $additionalType and" when {
+        "the cached InlandOrBorder is NOT None" should {
+          "reset InlandOrBorder after a successful bind" in {
+            val inlandOrBorder = withInlandOrBorder(Some(actualCachedInlandOrBorder))
+            withNewCaching(withRequest(additionalType, inlandOrBorder).cacheModel)
+
+            await(controller.saveIdentificationNumber(Normal)(postRequest(body)))
+
+            theCacheModelUpdated.locations.inlandOrBorder mustBe None
+          }
         }
       }
     }

@@ -136,12 +136,6 @@ case class ExportsDeclaration(
   def removeSupervisingCustomsOffice: ExportsDeclaration =
     copy(locations = locations.copy(supervisingCustomsOffice = None))
 
-  def updateTransportLeavingBorder(code: ModeOfTransportCode): ExportsDeclaration =
-    copy(transport = transport.copy(borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(code)))))
-
-  def updateTransportLeavingBorder(transportLeavingTheBorder: TransportLeavingTheBorder): ExportsDeclaration =
-    copy(transport = transport.copy(borderModeOfTransportCode = Some(transportLeavingTheBorder)))
-
   def updateDepartureTransport(departure: DepartureTransport): ExportsDeclaration =
     copy(
       transport = transport.copy(
@@ -197,7 +191,7 @@ case class ExportsDeclaration(
   def updatePreviousDocuments(previousDocuments: Seq[Document]): ExportsDeclaration =
     copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))
 
-  def updateReadyForSubmission(ready: Boolean) =
+  def updateReadyForSubmission(ready: Boolean): ExportsDeclaration =
     copy(readyForSubmission = Some(ready))
 
   def transform(function: ExportsDeclaration => ExportsDeclaration): ExportsDeclaration = function(this)

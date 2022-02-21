@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.helpers.SupervisingCustomsOfficeHelper
+import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import controllers.navigation.Navigator
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.SupervisingCustomsOffice.form
@@ -39,6 +39,7 @@ class SupervisingCustomsOfficeController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   supervisingCustomsOfficePage: supervising_customs_office,
+  inlandOrBorderHelper: InlandOrBorderHelper,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
@@ -59,6 +60,11 @@ class SupervisingCustomsOfficeController @Inject()(
       )
   }
 
-  private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(supervisingCustomsOffice = Some(formData))))
+  private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { declaration =>
+      declaration.copy(
+        locations = declaration.locations
+          .copy(supervisingCustomsOffice = Some(formData), inlandOrBorder = inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration))
+      )
+    }
 }

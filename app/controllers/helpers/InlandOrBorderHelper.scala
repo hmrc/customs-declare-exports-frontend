@@ -16,14 +16,23 @@
 
 package controllers.helpers
 
+import forms.declaration.InlandOrBorder
 import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import models.DeclarationType._
 import models.ExportsDeclaration
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class InlandOrBorderHelper @Inject()(depCodes: DepCodesHelper) {
+
+  val notAllowedOnInlandOrBorder = List(CLEARANCE, OCCASIONAL, SIMPLIFIED)
+
+  def resetInlandOrBorderIfRequired(declaration: ExportsDeclaration): Option[InlandOrBorder] =
+    if (declaration.locations.inlandOrBorder.isEmpty) None
+    else if (notAllowedOnInlandOrBorder.contains(declaration.`type`) || skipInlandOrBorder(declaration)) None
+    else declaration.locations.inlandOrBorder
 
   def skipInlandOrBorder(declaration: ExportsDeclaration): Boolean =
     declaration.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR) ||
