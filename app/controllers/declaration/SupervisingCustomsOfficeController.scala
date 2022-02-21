@@ -64,7 +64,7 @@ class SupervisingCustomsOfficeController @Inject()(
     updateDeclarationFromRequest { declaration =>
       declaration.copy(
         locations = declaration.locations
-          .copy(supervisingCustomsOffice = Some(formData), inlandOrBorder = inlandOrBorderHelper.inlandOrBorderValueIfOrNotToReset(declaration))
+          .copy(supervisingCustomsOffice = Some(formData), inlandOrBorder = inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration))
       )
     }
 }

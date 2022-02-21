@@ -294,7 +294,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
       }
     }
 
-    val inlandOrBorderIfOrNotToReset = List(
+    val resetInlandOrBorderConditions = List(
       (STANDARD_FRONTIER, Maritime, Border, Some(Border)),
       (STANDARD_FRONTIER, RoRo, Border, None),
       (STANDARD_PRE_LODGED, Maritime, Border, Some(Border)),
@@ -304,7 +304,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
       (CLEARANCE_PRE_LODGED, Maritime, Inland, None)
     )
 
-    inlandOrBorderIfOrNotToReset.foreach { data =>
+    resetInlandOrBorderConditions.foreach { data =>
       val additionalType = data._1
       val modeOfTransportCode = data._2
       val actualCachedInlandOrBorder = data._3

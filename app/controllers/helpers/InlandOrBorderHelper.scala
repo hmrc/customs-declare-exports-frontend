@@ -29,7 +29,7 @@ class InlandOrBorderHelper @Inject()(depCodes: DepCodesHelper) {
 
   val notAllowedOnInlandOrBorder = List(CLEARANCE, OCCASIONAL, SIMPLIFIED)
 
-  def inlandOrBorderValueIfOrNotToReset(declaration: ExportsDeclaration): Option[InlandOrBorder] =
+  def resetInlandOrBorderIfRequired(declaration: ExportsDeclaration): Option[InlandOrBorder] =
     if (declaration.locations.inlandOrBorder.isEmpty) None
     else if (notAllowedOnInlandOrBorder.contains(declaration.`type`) || skipInlandOrBorder(declaration)) None
     else declaration.locations.inlandOrBorder

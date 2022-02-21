@@ -279,7 +279,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
       }
     }
 
-    val inlandOrBorderIfOrNotToReset = List(
+    val resetInlandOrBorderConditions = List(
       (STANDARD_FRONTIER, Border, Some(Border)),
       (STANDARD_PRE_LODGED, Border, Some(Border)),
       (SUPPLEMENTARY_SIMPLIFIED, Inland, Some(Inland)),
@@ -292,7 +292,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
       (CLEARANCE_PRE_LODGED, Inland, None)
     )
 
-    inlandOrBorderIfOrNotToReset.foreach { data =>
+    resetInlandOrBorderConditions.foreach { data =>
       val additionalType = data._1
       val actualCachedInlandOrBorder = data._2
       val expectedCachedInlandOrBorder = data._3

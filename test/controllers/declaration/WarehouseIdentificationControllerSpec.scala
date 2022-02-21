@@ -239,7 +239,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
     val bodyNonClearance = Json.obj(WarehouseIdentification.warehouseIdKey -> "R12341234")
     val bodyForClearance = Json.obj(WarehouseIdentification.inWarehouseKey -> "No", WarehouseIdentification.warehouseIdKey -> None)
 
-    val inlandOrBorderIfOrNotToReset = List(
+    val resetInlandOrBorderConditions = List(
       (STANDARD_FRONTIER, Border, bodyNonClearance),
       (STANDARD_PRE_LODGED, Border, bodyNonClearance),
       (SUPPLEMENTARY_SIMPLIFIED, Inland, bodyNonClearance),
@@ -252,7 +252,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
       (CLEARANCE_PRE_LODGED, Inland, bodyForClearance)
     )
 
-    inlandOrBorderIfOrNotToReset.foreach { data =>
+    resetInlandOrBorderConditions.foreach { data =>
       val additionalType = data._1
       val actualCachedInlandOrBorder = data._2
       val body = data._3

@@ -74,7 +74,7 @@ class TransportLeavingTheBorderController @Inject()(
       declaration.copy(
         transport = declaration.transport.copy(borderModeOfTransportCode = Some(code)),
         locations = declaration.locations.copy(
-          inlandOrBorder = if (code.code == Some(RoRo)) None else inlandOrBorderHelper.inlandOrBorderValueIfOrNotToReset(declaration)
+          inlandOrBorder = if (code.code == Some(RoRo)) None else inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration)
         )
       )
     }
