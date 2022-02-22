@@ -34,7 +34,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInsetText, GovukWar
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
-import views.helpers.DeclarationHolderHelper.{bodyId, insetTextId, valuesToMatch, warningBodyId}
+import views.helpers.DeclarationHolderHelper.{bodyId, exrrHelpTextId, insetTextId, valuesToMatch, warningBodyId}
 import views.html.components.gds.{bulletList, link, numberedList, paragraphBody}
 
 @Singleton
@@ -85,11 +85,10 @@ class DeclarationHolderHelper @Inject()(
 
   case class arrivedComponents(warning: Option[Html], paragraph: Option[Html])
 
-  def componentsForArrived(implicit messages: Messages, request: JourneyRequest[_]): Option[arrivedComponents] = {
-    if(isArrived(request.cacheModel.additionalDeclarationType))
+  def componentsForArrived(implicit messages: Messages, request: JourneyRequest[_]): Option[arrivedComponents] =
+    if (isArrived(request.cacheModel.additionalDeclarationType))
       Some(arrivedComponents(warningTextForArrivedDeclarations, bodyText(listOfMessages("body.arrived.paragraph"), warningBodyId)))
     else None
-  }
 
   def hintForAuthorisationCode(implicit messages: Messages, request: JourneyRequest[_]): List[String] =
     valuesToMatch(request.cacheModel) match {
@@ -188,12 +187,12 @@ class DeclarationHolderHelper @Inject()(
 
   private def paragraphForEoriRadiosWhenEXRR(parties: Parties)(implicit messages: Messages): Html =
     parties.declarantIsExporter.fold {
-      paragraph(s"$eoriKey.body.exrr.v2", Some("EXRR-help"))
+      paragraph(s"$eoriKey.body.exrr.v2", Some(exrrHelpTextId))
     } { declarantIsExporter =>
-      if (declarantIsExporter.isExporter) paragraph(s"$eoriKey.body.exrr.v1", Some("EXRR-help"))
+      if (declarantIsExporter.isExporter) paragraph(s"$eoriKey.body.exrr.v1", Some(exrrHelpTextId))
       else {
         val version = if (parties.exporterDetails.flatMap(_.details.eori).isDefined) "v2" else "v3"
-        paragraph(s"$eoriKey.body.exrr.$version", Some("EXRR-help"))
+        paragraph(s"$eoriKey.body.exrr.$version", Some(exrrHelpTextId))
       }
     }
 
@@ -212,4 +211,5 @@ object DeclarationHolderHelper {
   val bodyId = "text-under-h1"
   val warningBodyId = "text-for-frontier"
   val insetTextId = "inset-text"
+  val exrrHelpTextId = "EXRR-help"
 }
