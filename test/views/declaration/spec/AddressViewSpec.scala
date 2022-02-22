@@ -23,11 +23,6 @@ import org.scalatest.Inspectors.forAll
 
 trait AddressViewSpec extends UnitViewSpec {
 
-  def assertIncorrectView(document: Document, field: String, errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
-    document must haveGovukGlobalErrorSummary
-    assertIncorrectElement(document, field: String, errorKey: String)
-  }
-
   def assertIncorrectElements(document: Document, fields: List[String], errorKey: String)(implicit request: JourneyRequest[_]): Assertion = {
     document must haveGovukGlobalErrorSummary
     forAll(fields)(assertIncorrectElement(document, _, errorKey))
