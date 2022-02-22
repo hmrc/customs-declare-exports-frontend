@@ -20,6 +20,7 @@ import config.AppConfig
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+
 import javax.inject.{Inject, Singleton}
 import models.DeclarationType._
 import models.ExportsDeclaration
@@ -28,16 +29,19 @@ import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInsetText, GovukWarningText}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
-import views.helpers.DeclarationHolderHelper.bodyClassId
+import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
+import views.helpers.DeclarationHolderHelper.{bodyId, insetTextId, valuesToMatch, warningBodyId}
 import views.html.components.gds.{bulletList, link, numberedList, paragraphBody}
 
 @Singleton
 class DeclarationHolderHelper @Inject()(
   bulletList: bulletList,
   govukInsetText: GovukInsetText,
+  govukWarningText: GovukWarningText,
   link: link,
   numberedList: numberedList,
   paragraphBody: paragraphBody
@@ -45,23 +49,17 @@ class DeclarationHolderHelper @Inject()(
 
   def bodyForDeclarationHolderEditPage(appConfig: AppConfig)(implicit messages: Messages, request: JourneyRequest[_]): Option[Html] = {
     val messageList = valuesToMatch(request.cacheModel) match {
-      case (STANDARD, Some(STANDARD_FRONTIER), _, _)                             => listOfMessages("body.exrr.roro.exports")
-      case (OCCASIONAL, Some(OCCASIONAL_FRONTIER), _, _)                         => listOfMessages("body.exrr.roro.exports")
-      case (SUPPLEMENTARY, _, _, _)                                              => listOfMessages("body.supplementary")
-      case (SIMPLIFIED, Some(SIMPLIFIED_PRE_LODGED), _, _)                       => listOfMessages("body.simplified")
-      case (SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Choice1040 | ChoiceOthers, _) => messagesForSimplifiedArrived
-      case (SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Choice1007, _)                => messagesWithLinkFor1007(appConfig, "simplified.arrived")
-      case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), Choice1040, Yes)              => listOfMessages("body.clearance.eidr.1040")
-      case (CLEARANCE, Some(CLEARANCE_FRONTIER), Choice1040, Yes)                => messagesForClearanceArrived1040
-      case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), ChoiceOthers, Yes)            => listOfMessages("body.clearance.eidr.others")
-      case (CLEARANCE, Some(CLEARANCE_FRONTIER), ChoiceOthers, Yes)              => messagesForClearanceArrivedOthers
-      case (CLEARANCE, Some(CLEARANCE_FRONTIER), _, No)                          => listOfMessages("body.exrr.roro.exports")
-      case (CLEARANCE, _, Choice1007, Yes)                                       => messagesWithLinkFor1007(appConfig, "clearance.eidr")
-      case _                                                                     => List.empty
+      case (SUPPLEMENTARY, _, _, _)                               => listOfMessages("body.supplementary")
+      case (SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Choice1007, _) => messagesWithLinkFor1007(appConfig, "simplified.arrived")
+      case (SIMPLIFIED, _, _, _)                                  => listOfMessages("body.simplified")
+      case (CLEARANCE, _, Choice1040, Yes)                        => listOfMessages("body.clearance.eidr.1040")
+      case (CLEARANCE, _, ChoiceOthers, Yes)                      => listOfMessages("body.clearance.eidr.others")
+      case (CLEARANCE, _, Choice1007, Yes)                        => messagesWithLinkFor1007(appConfig, "clearance.eidr")
+      case _                                                      => List.empty
     }
 
     if (messageList.isEmpty) None
-    else Some(HtmlFormat.fill(messageList.map(message => paragraphBody(message, s"govuk-body $bodyClassId"))))
+    else bodyText(messageList, bodyId)
   }
 
   private val bodyKey = "declaration.declarationHolderRequired.body"
@@ -85,11 +83,19 @@ class DeclarationHolderHelper @Inject()(
     HtmlFormat.fill(body)
   }
 
+  case class arrivedComponents(warning: Option[Html], paragraph: Option[Html])
+
+  def componentsForArrived(implicit messages: Messages, request: JourneyRequest[_]): Option[arrivedComponents] = {
+    if(isArrived(request.cacheModel.additionalDeclarationType))
+      Some(arrivedComponents(warningTextForArrivedDeclarations, bodyText(listOfMessages("body.arrived.paragraph"), warningBodyId)))
+    else None
+  }
+
   def hintForAuthorisationCode(implicit messages: Messages, request: JourneyRequest[_]): List[String] =
     valuesToMatch(request.cacheModel) match {
       case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1007, _)   => listOfMessages("authCode.hint.standard.prelodged.1007")
       case (STANDARD, Some(STANDARD_PRE_LODGED), ChoiceOthers, _) => listOfMessages("authCode.hint.standard.prelodged.others")
-      case (STANDARD, _, Choice1040, _)                           => listOfMessages("authCode.hint.standard.1040")
+      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040, _)   => listOfMessages("authCode.hint.standard.1040")
       case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), _, No)         => listOfMessages("authCode.hint.clearance")
       case _                                                      => List.empty
     }
@@ -117,8 +123,11 @@ class DeclarationHolderHelper @Inject()(
 
   private def insetText(appendable: Html, key: String)(implicit messages: Messages): Option[Html] = {
     val html = new Html(List(paragraphBody(messages(s"$insetKey.$key.title"), "govuk-label--s"), appendable))
-    Some(govukInsetText(InsetText(content = HtmlContent(html))))
+    Some(govukInsetText(InsetText(id = Some(insetTextId), content = HtmlContent(html))))
   }
+
+  private def bodyText(messageList: List[String], id: String): Option[Html] =
+    Some(HtmlFormat.fill(messageList.map(message => paragraphBody(message, s"govuk-body", Some(id)))))
 
   private def insetTextForExciseRemovals(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
     val call1 = Call("GET", appConfig.permanentExportOrDispatch.authHolder)
@@ -159,17 +168,15 @@ class DeclarationHolderHelper @Inject()(
     )
   }
 
+  private def warningTextForArrivedDeclarations()(implicit messages: Messages): Option[Html] =
+    Some(
+      govukWarningText(
+        WarningText(iconFallbackText = messages("site.warning"), content = Text(messages("declaration.declarationHolder.body.arrived.warning")))
+      )
+    )
+
   private def listOfMessages(key: String)(implicit messages: Messages): List[String] =
     List(messages(s"declaration.declarationHolder.$key"))
-
-  private def messagesForClearanceArrived1040(implicit messages: Messages): List[String] =
-    listOfMessages("body.clearance.eidr.1040") ++ listOfMessages("body.exrr.roro.exports")
-
-  private def messagesForClearanceArrivedOthers(implicit messages: Messages): List[String] =
-    listOfMessages("body.clearance.eidr.others") ++ listOfMessages("body.exrr.roro.exports")
-
-  private def messagesForSimplifiedArrived(implicit messages: Messages): List[String] =
-    listOfMessages("body.simplified") ++ listOfMessages("body.exrr.roro.exports")
 
   private def messagesWithLinkFor1007(appConfig: AppConfig, key: String)(implicit messages: Messages): List[String] =
     List(
@@ -181,26 +188,28 @@ class DeclarationHolderHelper @Inject()(
 
   private def paragraphForEoriRadiosWhenEXRR(parties: Parties)(implicit messages: Messages): Html =
     parties.declarantIsExporter.fold {
-      paragraph(s"$eoriKey.body.exrr.v2")
+      paragraph(s"$eoriKey.body.exrr.v2", Some("EXRR-help"))
     } { declarantIsExporter =>
-      if (declarantIsExporter.isExporter) paragraph(s"$eoriKey.body.exrr.v1")
+      if (declarantIsExporter.isExporter) paragraph(s"$eoriKey.body.exrr.v1", Some("EXRR-help"))
       else {
         val version = if (parties.exporterDetails.flatMap(_.details.eori).isDefined) "v2" else "v3"
-        paragraph(s"$eoriKey.body.exrr.$version")
+        paragraph(s"$eoriKey.body.exrr.$version", Some("EXRR-help"))
       }
     }
 
-  private def paragraph(key: String)(implicit messages: Messages): Html = paragraphBody(messages(key))
+  private def paragraph(key: String, id: Option[String] = None)(implicit messages: Messages): Html = paragraphBody(message = messages(key), id = id)
 
   private def row(key: String)(implicit messages: Messages): Html = Html(messages(key))
 
   private val eoriKey = "declaration.declarationHolder.eori"
-
-  private def valuesToMatch(model: ExportsDeclaration) =
-    (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice, model.parties.isEntryIntoDeclarantsRecords)
 }
 
 object DeclarationHolderHelper {
 
-  val bodyClassId = "text-under-h1"
+  def valuesToMatch(model: ExportsDeclaration) =
+    (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice, model.parties.isEntryIntoDeclarantsRecords)
+
+  val bodyId = "text-under-h1"
+  val warningBodyId = "text-for-frontier"
+  val insetTextId = "inset-text"
 }
