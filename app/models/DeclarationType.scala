@@ -23,4 +23,5 @@ object DeclarationType extends Enumeration {
   type DeclarationType = Value
   implicit val format: Format[DeclarationType.Value] = EnumJson.format(DeclarationType)
   val STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL, CLEARANCE = Value
+  val allDeclarationTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 }

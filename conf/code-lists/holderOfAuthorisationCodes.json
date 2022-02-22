@@ -71,8 +71,8 @@
   },
   {
     "code": "EXRR",
-    "en": "Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not held)",
-    "cy": "Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not held)"
+    "en": "Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not being used)",
+    "cy": "Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not being used)"
   },
   {
     "code": "FZ",
