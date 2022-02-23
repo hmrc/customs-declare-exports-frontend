@@ -29,6 +29,7 @@ import controllers.helpers.TransportSectionHelper._
 import controllers.routes.RootController
 import forms.declaration.InlandOrBorder
 import forms.declaration.InlandOrBorder.{fieldId, Border, Inland}
+import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED}
 import models.Mode.Normal
@@ -176,6 +177,16 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
             await(controller.submitPage(Normal)(postRequest(body)))
 
             theCacheModelUpdated.locations.inlandOrBorder.value mustBe Border
+          }
+
+          "reset the cached value from /inland-transport-details, if any, after a successful bind" in {
+            cacheRequest(additionalType, withInlandModeOfTransportCode(Maritime))
+
+            await(controller.submitPage(Normal)(postRequest(body)))
+
+            val locations = theCacheModelUpdated.locations
+            locations.inlandOrBorder.value mustBe Border
+            locations.inlandModeOfTransportCode mustBe None
           }
 
           s"redirect to ${expectedNextPage.url}" in {

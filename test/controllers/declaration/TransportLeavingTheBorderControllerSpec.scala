@@ -24,12 +24,13 @@ import controllers.declaration.routes.{
   SupervisingCustomsOfficeController,
   WarehouseIdentificationController
 }
-import controllers.helpers.SupervisingCustomsOfficeHelper
+import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import controllers.routes.RootController
-import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, RoRo}
+import forms.declaration.InlandOrBorder.{Border, Inland}
+import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, Maritime, RoRo}
 import forms.declaration.TransportLeavingTheBorder.suffixForLocationOfGoods
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{LocationOfGoods, ModeOfTransportCode, TransportLeavingTheBorder}
 import models.DeclarationType
 import models.DeclarationType._
@@ -49,6 +50,8 @@ import views.html.declaration.transport_leaving_the_border
 class TransportLeavingTheBorderControllerSpec extends ControllerSpec with OptionValues {
 
   private val transportLeavingTheBorder = mock[transport_leaving_the_border]
+
+  private val inlandOrBorderHelper = instanceOf[InlandOrBorderHelper]
   private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
 
   val controller = new TransportLeavingTheBorderController(
@@ -58,6 +61,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
     navigator,
     stubMessagesControllerComponents(),
     transportLeavingTheBorder,
+    inlandOrBorderHelper = inlandOrBorderHelper,
     supervisingCustomsOfficeHelper
   )(ec)
 
@@ -287,6 +291,38 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
         val result = controller.submitForm(Normal)(postRequest(body))
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+      }
+    }
+
+    val resetInlandOrBorderConditions = List(
+      (STANDARD_FRONTIER, Maritime, Border, Some(Border)),
+      (STANDARD_FRONTIER, RoRo, Border, None),
+      (STANDARD_PRE_LODGED, Maritime, Border, Some(Border)),
+      (SUPPLEMENTARY_SIMPLIFIED, Maritime, Inland, Some(Inland)),
+      (SUPPLEMENTARY_EIDR, Maritime, Border, None),
+      (CLEARANCE_FRONTIER, Maritime, Border, None),
+      (CLEARANCE_PRE_LODGED, Maritime, Inland, None)
+    )
+
+    resetInlandOrBorderConditions.foreach { data =>
+      val additionalType = data._1
+      val modeOfTransportCode = data._2
+      val actualCachedInlandOrBorder = data._3
+      val expectedCachedInlandOrBorder = data._4
+
+      s"AdditionalDeclarationType is $additionalType and" when {
+        s"the value selected on /transport-leaving-the-border is $modeOfTransportCode and" when {
+          s"the cached InlandOrBorder is $actualCachedInlandOrBorder" should {
+            s"${if (expectedCachedInlandOrBorder.isEmpty) "" else "not "} reset InlandOrBorder after a successful bind" in {
+              withNewCaching(withRequest(additionalType, withInlandOrBorder(Some(actualCachedInlandOrBorder))).cacheModel)
+
+              val body = Json.obj("transportLeavingTheBorder" -> modeOfTransportCode.value)
+              await(controller.submitForm(Normal)(postRequest(body)))
+
+              theCacheModelUpdated.locations.inlandOrBorder mustBe expectedCachedInlandOrBorder
+            }
+          }
+        }
       }
     }
   }

@@ -19,19 +19,19 @@ package views.declaration
 import base.ExportsTestData.eori
 import base.Injector
 import forms.common.Eori
-import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.YesNoAnswer.{allYesNoAnswers, No, Yes, YesNoAnswers}
 import forms.declaration.AuthorisationProcedureCodeChoice
-import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
+import forms.declaration.AuthorisationProcedureCodeChoice.{allProcedureCodes, Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.DeclarationHolder
-import models.DeclarationType.{CLEARANCE, DeclarationType, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{allDeclarationTypes, CLEARANCE, DeclarationType, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.{Assertion, GivenWhenThen}
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.helpers.DeclarationHolderHelper.bodyClassId
+import views.helpers.DeclarationHolderHelper.{bodyId, exrrHelpTextId, insetTextId, valuesToMatch, warningBodyId}
 import views.html.declaration.declarationHolder.declaration_holder_edit_content
 import views.tags.ViewTest
 
@@ -40,20 +40,20 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
 
   private val prefix = "declaration.declarationHolder"
   private val hintId = "authorisationTypeCode-hint"
-  private val insetId = "govuk-inset-text"
 
   "DeclarationHolderEditContent partial" should {
     "have message keys" in {
       messages must haveTranslationFor(s"$prefix.title")
       messages must haveTranslationFor(s"$prefix.paragraph")
       messages must haveTranslationFor(s"$prefix.body.1007.link")
-      messages must haveTranslationFor(s"$prefix.body.exrr.roro.exports")
       messages must haveTranslationFor(s"$prefix.body.clearance.eidr.1040")
       messages must haveTranslationFor(s"$prefix.body.clearance.eidr.1007")
       messages must haveTranslationFor(s"$prefix.body.clearance.eidr.others")
       messages must haveTranslationFor(s"$prefix.body.simplified")
       messages must haveTranslationFor(s"$prefix.body.simplified.arrived.1007")
       messages must haveTranslationFor(s"$prefix.body.supplementary")
+      messages must haveTranslationFor(s"$prefix.body.arrived.warning")
+      messages must haveTranslationFor(s"$prefix.body.arrived.paragraph")
       messages must haveTranslationFor(s"$prefix.authorisationCode")
       messages must haveTranslationFor(s"$prefix.authorisationCode.empty")
       messages must haveTranslationFor(s"$prefix.authCode.hint.clearance")
@@ -101,88 +101,66 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
 
     "display the expected body (the text under page's H1)" when {
 
-      onStandard(aDecl1(STANDARD, Some(STANDARD_FRONTIER))) { implicit request =>
-        And("the declaration is of type A")
-        createPartial.getElementsByClass(bodyClassId).text must include(messages(s"$prefix.body.exrr.roro.exports"))
-      }
-
-      onOccasional(aDecl1(OCCASIONAL, Some(OCCASIONAL_FRONTIER))) { implicit request =>
-        And("the declaration is of type B")
-        createPartial.getElementsByClass(bodyClassId).text must include(messages(s"$prefix.body.exrr.roro.exports"))
-      }
-
       onSimplified(aDecl1(SIMPLIFIED, Some(SIMPLIFIED_PRE_LODGED))) { implicit request =>
         And("the declaration is of type F")
-        createPartial.getElementsByClass(bodyClassId).text must include(messages(s"$prefix.body.simplified"))
+        createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.simplified"))
       }
 
       onSimplified(aDecl1(SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Some(Choice1040))) { implicit request =>
         And("the declaration is of type C")
         And("the Procedure Code is 1040")
-        val text = createPartial.getElementsByClass(bodyClassId).text
-        text must include(messages(s"$prefix.body.simplified"))
-        text must include(messages(s"$prefix.body.exrr.roro.exports"))
+        createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.simplified"))
+
       }
 
       onSimplified(aDecl1(SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Some(ChoiceOthers))) { implicit request =>
         And("the declaration is of type C")
         And("the Procedure Code is 'Others'")
-        val text = createPartial.getElementsByClass(bodyClassId).text
-        text must include(messages(s"$prefix.body.simplified"))
-        text must include(messages(s"$prefix.body.exrr.roro.exports"))
+        createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.simplified"))
       }
 
       onSimplified(aDecl1(SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Some(Choice1007))) { implicit request =>
         And("the declaration is of type C")
         And("the Procedure Code is 1007")
-        val bodyWithLink = createPartial.getElementsByClass(bodyClassId)
+        val bodyWithLink = createPartial.getElementById(bodyId)
         bodyWithLink.text mustBe messages(s"$prefix.body.simplified.arrived.1007", messages(s"$prefix.body.1007.link"))
-        bodyWithLink.get(0).child(0) must haveHref(minimalAppConfig.permanentExportOrDispatch.section)
+        bodyWithLink.child(0) must haveHref(minimalAppConfig.permanentExportOrDispatch.section)
       }
 
       onSupplementary { implicit request =>
-        createPartial.getElementsByClass(bodyClassId).text must include(messages(s"$prefix.body.supplementary"))
+        createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.supplementary"))
       }
 
       onClearance(aDecl1(CLEARANCE, Some(CLEARANCE_PRE_LODGED), Some(Choice1040), Some(YesNoAnswers.yes))) { implicit request =>
         And("the declaration is of type K and EIDR")
         And("the Procedure Code is 1040")
-        createPartial.getElementsByClass(bodyClassId).text must include(messages(s"$prefix.body.clearance.eidr.1040"))
+        createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.clearance.eidr.1040"))
       }
 
       onClearance(aDecl1(CLEARANCE, Some(CLEARANCE_FRONTIER), Some(Choice1040), Some(YesNoAnswers.yes))) { implicit request =>
         And("the declaration is of type J and EIDR")
         And("the Procedure Code is 1040")
-        val body = createPartial.getElementsByClass(bodyClassId).text
-        body must include(messages(s"$prefix.body.clearance.eidr.1040"))
-        body must include(messages(s"$prefix.body.exrr.roro.exports"))
+        createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.clearance.eidr.1040"))
       }
 
       onClearance(aDecl1(CLEARANCE, Some(CLEARANCE_PRE_LODGED), Some(ChoiceOthers), Some(YesNoAnswers.yes))) { implicit request =>
         And("the declaration is of type K and EIDR")
         And("the Procedure Code is 'Others'")
-        createPartial.getElementsByClass(bodyClassId).text must include(messages(s"$prefix.body.clearance.eidr.others"))
+        createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.clearance.eidr.others"))
       }
 
       onClearance(aDecl1(CLEARANCE, Some(CLEARANCE_FRONTIER), Some(ChoiceOthers), Some(YesNoAnswers.yes))) { implicit request =>
         And("the declaration is of type J and EIDR")
         And("the Procedure Code is 'Others'")
-        val body = createPartial.getElementsByClass(bodyClassId).text
-        body must include(messages(s"$prefix.body.clearance.eidr.others"))
-        body must include(messages(s"$prefix.body.exrr.roro.exports"))
-      }
-
-      onClearance(aDecl1(CLEARANCE, Some(CLEARANCE_FRONTIER), None, Some(YesNoAnswers.no))) { implicit request =>
-        And("the declaration is of type J and not EIDR")
-        createPartial.getElementsByClass(bodyClassId).text must include(messages(s"$prefix.body.exrr.roro.exports"))
+        createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.clearance.eidr.others"))
       }
 
       onClearance(aDecl1(CLEARANCE, None, Some(Choice1007), Some(YesNoAnswers.yes))) { implicit request =>
         And("the declaration is EIDR")
         And("the Procedure Code is 1007")
-        val bodyWithLink = createPartial.getElementsByClass(bodyClassId)
+        val bodyWithLink = createPartial.getElementById(bodyId)
         bodyWithLink.text mustBe messages(s"$prefix.body.clearance.eidr.1007", messages(s"$prefix.body.1007.link"))
-        bodyWithLink.get(0).child(0) must haveHref(minimalAppConfig.permanentExportOrDispatch.section)
+        bodyWithLink.child(0) must haveHref(minimalAppConfig.permanentExportOrDispatch.section)
       }
     }
 
@@ -200,7 +178,7 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
         createPartial.getElementById(hintId).text mustBe messages(s"$prefix.authCode.hint.standard.prelodged.others")
       }
 
-      onStandard(aDecl1(STANDARD, None, Some(Choice1040))) { implicit request =>
+      onStandard(aDecl1(STANDARD, Some(STANDARD_PRE_LODGED), Some(Choice1040))) { implicit request =>
         And("the Procedure Code is 1040")
         createPartial.getElementById(hintId).text mustBe messages(s"$prefix.authCode.hint.standard.1040")
       }
@@ -209,6 +187,24 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
         And("the declaration is of type K and not EIDR")
         createPartial.getElementById(hintId).text mustBe messages(s"$prefix.authCode.hint.clearance")
       }
+    }
+
+    "display the expected warning and paragraph" when {
+      val scenarios = Seq(
+        onStandard(aDeclaration(withAdditionalDeclarationType(STANDARD_FRONTIER)))(_),
+        onSimplified(aDeclaration(withAdditionalDeclarationType(SIMPLIFIED_FRONTIER)))(_),
+        onOccasional(aDeclaration(withAdditionalDeclarationType(OCCASIONAL_FRONTIER)))(_),
+        onClearance(aDeclaration(withAdditionalDeclarationType(CLEARANCE_FRONTIER)))(_)
+      )
+      scenarios.foreach(_ { implicit request =>
+        val partial = createPartial
+        val warning = partial.getElementsByClass("govuk-warning-text")
+        val warningParagraph = Option(partial.getElementById(s"$warningBodyId"))
+        warning.size mustBe 1
+        warning.get(0).child(1).text must include(messages(s"$prefix.body.arrived.warning"))
+        warningParagraph.isDefined mustBe true
+        warningParagraph.get.text mustBe messages(s"$prefix.body.arrived.paragraph")
+      })
     }
 
     "display the expected inset text below the 'Authorisation Type Code' input field" when {
@@ -227,7 +223,7 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
       ) { implicit request =>
         And("the Procedure Code is 1007")
 
-        val insetText = createPartial.getElementsByClass(insetId).get(0).children
+        val insetText = createPartial.getElementById(insetTextId).children
         insetText.get(0).text mustBe messages(s"$prefix.authCode.inset.special.title")
 
         val list = insetText.get(1).child(0)
@@ -248,7 +244,7 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
       def verifyInsetTextForExciseRemovals(implicit request: JourneyRequest[_]): Assertion = {
         And("the Procedure Code is 1007")
 
-        val insetText = createPartial.getElementsByClass(insetId).get(0).children
+        val insetText = createPartial.getElementById(insetTextId).children
         insetText.get(0).text mustBe messages(s"$prefix.authCode.inset.excise.title")
 
         val list = insetText.get(1).child(0)
@@ -268,12 +264,42 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
       }
     }
 
-    "not display any body (the text under page's H1) and, for the 'Authorisation Type Code' input field, any hint or inset Text" when {
-      onJourney(STANDARD, OCCASIONAL, SIMPLIFIED, SUPPLEMENTARY, CLEARANCE) { implicit request =>
+    "display body (the text under page's H1) and, for the 'Authorisation Type Code' input field, any hint or inset Text appropriately" when {
+      for {
+        decType <- allDeclarationTypes
+        addDecType <- allAdditionalDeclarationTypes
+        procCode <- allProcedureCodes
+        answer <- allYesNoAnswers
+      } onStandard(aDecl1(decType, Some(addDecType), Some(procCode), Some(answer))) { implicit request =>
         val partial = createPartial
-        partial.getElementsByClass(bodyClassId).size mustBe (if (request.declarationType == SUPPLEMENTARY) 1 else 0)
-        Option(partial.getElementById(hintId)) mustBe None
-        partial.getElementsByClass(insetId).size mustBe 0
+        Option(partial.getElementById(bodyId)).isDefined mustBe {
+          valuesToMatch(request.cacheModel) match {
+            case (SUPPLEMENTARY, _, _, _)          => true
+            case (SIMPLIFIED, _, _, _)             => true
+            case (CLEARANCE, _, Choice1040, Yes)   => true
+            case (CLEARANCE, _, ChoiceOthers, Yes) => true
+            case (CLEARANCE, _, Choice1007, Yes)   => true
+            case _                                 => false
+          }
+        }
+        Option(partial.getElementById(hintId)).isDefined mustBe {
+          valuesToMatch(request.cacheModel) match {
+            case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1007, _)   => true
+            case (STANDARD, Some(STANDARD_PRE_LODGED), ChoiceOthers, _) => true
+            case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040, _)   => true
+            case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), _, No)         => true
+            case _                                                      => false
+          }
+        }
+        Option(partial.getElementById(insetTextId)).isDefined mustBe {
+          valuesToMatch(request.cacheModel) match {
+            case (STANDARD, _, Choice1007, _)                             => true
+            case (STANDARD | SIMPLIFIED, _, ChoiceOthers, _)              => true
+            case (SIMPLIFIED, Some(SIMPLIFIED_PRE_LODGED), Choice1007, _) => true
+            case (CLEARANCE, _, ChoiceOthers, Yes)                        => true
+            case _                                                        => false
+          }
+        }
       }
     }
 
@@ -281,8 +307,7 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
 
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
         And("the declaration is not of type FRONTIER")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 2
+        Option(createPartial.getElementById(exrrHelpTextId)) mustBe None
       }
     }
 
@@ -290,130 +315,130 @@ class DeclarationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen w
 
       onStandard(aDecl2(STANDARD, STANDARD_FRONTIER)) { implicit request =>
         And("the declaration is of type A")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 4
-        paragraphs.get(2).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
       }
 
       onStandard(aDecl2(SIMPLIFIED, SIMPLIFIED_FRONTIER)) { implicit request =>
         And("the declaration is of type C")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 3
-        paragraphs.get(1).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
       }
 
       onStandard(aDecl2(OCCASIONAL, OCCASIONAL_FRONTIER)) { implicit request =>
         And("the declaration is of type B")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 4
-        paragraphs.get(2).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
       }
 
       onStandard(aDecl2(CLEARANCE, CLEARANCE_FRONTIER)) { implicit request =>
         And("the declaration is of type J")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 3
-        paragraphs.get(1).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
       }
 
       onStandard(aDecl2(STANDARD, STANDARD_FRONTIER, Some("Yes"))) { implicit request =>
         And("the declaration is of type A")
         And("the user answers 'Yes' on /are-you-the-exporter")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 4
-        paragraphs.get(2).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v1")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v1")
       }
 
       onStandard(aDecl2(SIMPLIFIED, SIMPLIFIED_FRONTIER, Some("Yes"))) { implicit request =>
         And("the declaration is of type C")
         And("the user answers 'Yes' on /are-you-the-exporter")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 3
-        paragraphs.get(1).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v1")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v1")
       }
 
       onStandard(aDecl2(OCCASIONAL, OCCASIONAL_FRONTIER, Some("Yes"))) { implicit request =>
         And("the declaration is of type B")
         And("the user answers 'Yes' on /are-you-the-exporter")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 4
-        paragraphs.get(2).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v1")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v1")
       }
 
       onStandard(aDecl2(CLEARANCE, CLEARANCE_FRONTIER, Some("Yes"))) { implicit request =>
         And("the declaration is of type J")
         And("the user answers 'Yes' on /are-you-the-exporter")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 3
-        paragraphs.get(1).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v1")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v1")
       }
 
       onStandard(aDecl2(STANDARD, STANDARD_FRONTIER, Some("No"))) { implicit request =>
         And("the declaration is of type A")
         And("the user answers 'No' on /are-you-the-exporter")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 4
-        paragraphs.get(2).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v3")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v3")
       }
 
       onStandard(aDecl2(SIMPLIFIED, SIMPLIFIED_FRONTIER, Some("No"))) { implicit request =>
         And("the declaration is of type C")
         And("the user answers 'No' on /are-you-the-exporter")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 3
-        paragraphs.get(1).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v3")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v3")
       }
 
       onStandard(aDecl2(OCCASIONAL, OCCASIONAL_FRONTIER, Some("No"))) { implicit request =>
         And("the declaration is of type B")
         And("the user answers 'No' on /are-you-the-exporter")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 4
-        paragraphs.get(2).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v3")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v3")
       }
 
       onStandard(aDecl2(CLEARANCE, CLEARANCE_FRONTIER, Some("No"))) { implicit request =>
         And("the declaration is of type J")
         And("the user answers 'No' on /are-you-the-exporter")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 3
-        paragraphs.get(1).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v3")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v3")
       }
 
       onStandard(aDecl2(STANDARD, STANDARD_FRONTIER, Some("No"), Some("GB12345678"))) { implicit request =>
         And("the declaration is of type A")
         And("the user answers 'No' on /are-you-the-exporter")
         And("the user enters an EORI on /exporter-eori-number")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 4
-        paragraphs.get(2).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
       }
 
       onStandard(aDecl2(SIMPLIFIED, SIMPLIFIED_FRONTIER, Some("No"), Some("GB12345678"))) { implicit request =>
         And("the declaration is of type C")
         And("the user answers 'No' on /are-you-the-exporter")
         And("the user enters an EORI on /exporter-eori-number")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 3
-        paragraphs.get(1).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
       }
 
       onStandard(aDecl2(OCCASIONAL, OCCASIONAL_FRONTIER, Some("No"), Some("GB12345678"))) { implicit request =>
         And("the declaration is of type B")
         And("the user answers 'No' on /are-you-the-exporter")
         And("the user enters an EORI on /exporter-eori-number")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 4
-        paragraphs.get(2).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
       }
 
       onStandard(aDecl2(CLEARANCE, CLEARANCE_FRONTIER, Some("No"), Some("GB12345678"))) { implicit request =>
         And("the declaration is of type J")
         And("the user answers 'No' on /are-you-the-exporter")
         And("the user enters an EORI on /exporter-eori-number")
-        val paragraphs = createPartial.getElementsByClass("govuk-body")
-        paragraphs.size mustBe 3
-        paragraphs.get(1).text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
+        val paragraph = Option(createPartial.getElementById(exrrHelpTextId))
+        paragraph.isDefined mustBe true
+        paragraph.get.text mustBe messages("declaration.declarationHolder.eori.body.exrr.v2")
       }
     }
   }
