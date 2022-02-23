@@ -56,6 +56,9 @@ class BorderTransportController @Inject()(
       case (Some(meansType), Some(meansId), meansNationality) =>
         form.withSubmissionErrors.fill(BorderTransport(meansNationality, meansType, meansId))
 
+      case (None, None, meansNationality) =>
+        form.withSubmissionErrors.fill(BorderTransport(meansNationality, "", ""))
+
       case _ => form.withSubmissionErrors
     }
 
