@@ -15,29 +15,27 @@
  *@
 
 @import config.AppConfig
+@import controllers.declaration.routes.CarrierEoriNumberController
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 @import forms.declaration.carrier.CarrierEoriNumber
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
     govukRadios: GovukRadios,
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     heading: heading,
-    insetText: exportsInsetText,
     body: paragraphBody,
-    saveButtons: saveButtons,
     tariffExpander: tariffExpander,
+    saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     navigator: Navigator,
     appConfig: AppConfig
@@ -55,56 +53,44 @@
     )
 }
 
-@insetContent = {
-    @heading(message = messages("declaration.carrierEori.inset.text.heading"), classes = "govuk-heading-s", tier = "h2")
-    @body(messages("declaration.carrierEori.inset.text.1"))
-    @body(messages("declaration.carrierEori.inset.text.2"))
-}
-
 @govukLayout(
     title = Title("declaration.carrierEori.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(CarrierEoriNumber, mode)))){
 
-    @formHelper(action = controllers.declaration.routes.CarrierEoriNumberController.submit(mode), 'autoComplete -> "off") {
+    @formHelper(action = CarrierEoriNumberController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("hasEori", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
 
         @heading(messages("declaration.carrierEori.title"))
 
-        @body(messages("declaration.carrierEori.paragraph"))
+        @body(messages("declaration.carrierEori.body.1"))
 
-        @insetText(content = HtmlContent(insetContent))
+        @body(messages("declaration.carrierEori.body.2"))
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages("declaration.carrierEori.title")),
-                classes = "govuk-visually-hidden"
-            )),
-            html = HtmlFormat.fill(List(
-                govukRadios(Radios(
-                    name = "hasEori",
-                    items = Seq(
-                        RadioItem(
-                            id = Some("Yes"),
-                            value = Some(yes),
-                            content = Text(messages("site.yes")),
-                            conditionalHtml = Some(eoriInput),
-                            checked = form("hasEori").value.contains("Yes")
-                        ),
-                        RadioItem(
-                            id = Some("No"),
-                            value = Some(no),
-                            content = Text(messages("site.no")),
-                            checked = form("hasEori").value.contains("No")
-                        )
-                    ),
-                    attributes = Map("id" -> "hasEori"),
-                    errorMessage = form("hasEori").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-                )),
-                tariffExpander(CarrierEoriNumber, request.declarationType)(messages, appConfig),
-                saveButtons()
-            ))
+        @govukRadios(Radios(
+            name = "hasEori",
+            items = Seq(
+                RadioItem(
+                    id = Some("Yes"),
+                    value = Some(yes),
+                    content = Text(messages("site.yes")),
+                    conditionalHtml = Some(eoriInput),
+                    checked = form("hasEori").value.contains("Yes")
+                ),
+                RadioItem(
+                    id = Some("No"),
+                    value = Some(no),
+                    content = Text(messages("site.no")),
+                    checked = form("hasEori").value.contains("No")
+                )
+            ),
+            attributes = Map("id" -> "hasEori"),
+            errorMessage = form("hasEori").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+
+        @tariffExpander(CarrierEoriNumber, request.declarationType)(messages, appConfig),
+
+        @saveButtons()
     }
 }

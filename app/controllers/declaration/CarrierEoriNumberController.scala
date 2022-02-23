@@ -16,14 +16,11 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{CarrierDetailsController, ConsigneeDetailsController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
-import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -33,6 +30,9 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.carrier_eori_number
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class CarrierEoriNumberController @Inject()(
   authenticate: AuthAction,

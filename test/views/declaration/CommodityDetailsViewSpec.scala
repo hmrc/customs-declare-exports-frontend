@@ -38,6 +38,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
   private def createView(form: Form[CommodityDetails])(implicit request: JourneyRequest[_]): Document =
     page(Mode.Normal, itemId, form)(request, messages)
 
+  // scalastyle:off
   def commodityDetailsView(
     declarationType: DeclarationType,
     form: Form[CommodityDetails],
@@ -95,6 +96,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
       saveButton.text mustBe messages(saveAndContinueCaption)
     }
   }
+  // scalastyle:on
 
   "Commodity Details View on empty page" when {
 
