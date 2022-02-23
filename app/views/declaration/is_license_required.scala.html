@@ -75,7 +75,7 @@
                 messages("tariff.declaration.item.isLicenseRequired.common.1.text",
                     tariffLink(
                         messages("tariff.declaration.item.isLicenseRequired.common.1.linkText.0", commodityCode),
-                        appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.common.1.0")
+                        s"${appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.common.1.0")}${commodityCode}#export"
                     )
                 ),
                 messages("tariff.declaration.item.isLicenseRequired.common.2.text"),
@@ -83,7 +83,7 @@
                 messages("tariff.declaration.item.isLicenseRequired.common.4.text",
                     tariffLink(
                         messages("tariff.declaration.item.isLicenseRequired.common.4.linkText.0"),
-                        s"${appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.common.4.0")}/$commodityCode#export"
+                        appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.common.4.0")
                     )
                 )).mkString("</br></br>"))
         ))
