@@ -39,7 +39,9 @@
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     navigator: Navigator,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    paragraphBody: paragraphBody,
+    notificationBanner: notificationBanner
 )
 
 @(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
@@ -58,11 +60,7 @@
 
     @paragraph(
         id = Some("link-ducr-to-mucr-hint2"),
-        message = messages("declaration.linkDucrToMucr.details.hint2", link(
-            text = messages("declaration.linkDucrToMucr.details.hint2.link"),
-            call = Call("GET", appConfig.customsMovementsFrontendUrl),
-            target = "_blank"
-        ))
+        message = messages("declaration.linkDucrToMucr.details.hint2")
     )
 }
 
@@ -77,7 +75,10 @@
 
         @heading(messages("declaration.linkDucrToMucr.title"))
 
-        @paragraph(messages("declaration.linkDucrToMucr.paragraph"))
+        @notificationBanner(
+          title = messages("declaration.linkDucrToMucr.banner.title"),
+          content = paragraphBody(messages("declaration.linkDucrToMucr.banner.content"))
+        )
 
         @yesNoRadios(
             form = form,
