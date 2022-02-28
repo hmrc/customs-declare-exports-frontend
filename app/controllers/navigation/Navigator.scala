@@ -18,14 +18,12 @@ package controllers.navigation
 
 import config.AppConfig
 import controllers.declaration.routes
-import controllers.helpers.InlandOrBorderHelper
+import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPage
 import controllers.helpers.LocationOfGoodsHelper.skipLocationOfGoods
-import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
 import controllers.helpers._
 import controllers.routes.{ChoiceController, RejectedNotificationsController, SubmissionsController}
 import forms.Choice.AllowedChoiceValues
-import forms.common.YesNoAnswer
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
@@ -548,23 +546,22 @@ class Navigator @Inject()(
     }
 
   private def declarationHolderAddPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.parties.declarationHoldersData.exists(_.holders.nonEmpty))
-      routes.DeclarationHolderSummaryController.displayPage(mode)
+    if (cacheModel.declarationHolders.nonEmpty) routes.DeclarationHolderSummaryController.displayPage(mode)
     else declarationHolderSummaryPreviousPage(cacheModel, mode)
 
-  private def declarationHolderSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call = {
-    val holdersData = cacheModel.parties.declarationHoldersData
+  private def declarationHolderSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     cacheModel.`type` match {
       case CLEARANCE if !cacheModel.isEntryIntoDeclarantsRecords => routes.ConsigneeDetailsController.displayPage(mode)
       case OCCASIONAL                                            => routes.AdditionalActorsSummaryController.displayPage(mode)
-      case _ if holdersData.exists(_.isRequired.isDefined) && holdersData.exists(_.holders.isEmpty) =>
+
+      case _ if cacheModel.declarationHolders.isEmpty && userCanLandOnIsAuthRequiredPage(cacheModel) =>
         routes.DeclarationHolderRequiredController.displayPage(mode)
+
       case _ => routes.AuthorisationProcedureCodeChoiceController.displayPage(mode)
     }
-  }
 
   private def destinationCountryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.parties.declarationHoldersData.exists(_.isRequired == YesNoAnswer.No))
+    if (cacheModel.declarationHolders.isEmpty && userCanLandOnIsAuthRequiredPage(cacheModel))
       routes.DeclarationHolderRequiredController.displayPage(mode)
     else
       routes.DeclarationHolderSummaryController.displayPage(mode)
