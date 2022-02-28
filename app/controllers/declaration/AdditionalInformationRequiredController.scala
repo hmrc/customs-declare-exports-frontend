@@ -22,6 +22,7 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformationRequired
+import models.DeclarationType.STANDARD
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -69,10 +70,14 @@ class AdditionalInformationRequiredController @Inject()(
 
   private def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformationRequired.error")
 
-  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
+  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
     yesNoAnswer.answer match {
       case YesNoAnswers.yes => AdditionalInformationController.displayPage(_, itemId)
-      case YesNoAnswers.no  => AdditionalDocumentsController.displayPage(_, itemId)
+      case YesNoAnswers.no =>
+        request.declarationType match {
+          case DeclarationType.CLEARANCE => AdditionalDocumentsController.displayPage(_, itemId)
+          case _                         => IsLicenseRequiredController.displayPage(_, itemId)
+        }
     }
 
   private def previousAnswer(itemId: String)(implicit request: JourneyRequest[AnyContent]): Form[YesNoAnswer] =
