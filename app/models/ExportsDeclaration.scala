@@ -147,14 +147,17 @@ case class ExportsDeclaration(
       )
     )
 
-  def updateBorderTransport(borderTransport: BorderTransport): ExportsDeclaration =
+  def updateBorderTransport(borderTransport: BorderTransport): ExportsDeclaration = {
+    val transportType = borderTransport.meansOfTransportCrossingTheBorderType.trim
+    val transportRef = borderTransport.meansOfTransportCrossingTheBorderIDNumber.trim
     copy(
       transport = transport.copy(
-        meansOfTransportCrossingTheBorderType = Some(borderTransport.meansOfTransportCrossingTheBorderType),
-        meansOfTransportCrossingTheBorderIDNumber = Some(borderTransport.meansOfTransportCrossingTheBorderIDNumber),
+        meansOfTransportCrossingTheBorderType = if (transportType.isEmpty) None else Some(transportType),
+        meansOfTransportCrossingTheBorderIDNumber = if (transportRef.isEmpty) None else Some(transportRef),
         meansOfTransportCrossingTheBorderNationality = borderTransport.meansOfTransportCrossingTheBorderNationality
       )
     )
+  }
 
   def listOfAdditionalInformationOfItem(itemId: String): Seq[AdditionalInformation] =
     itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default).items
