@@ -162,9 +162,6 @@ case class ExportsDeclaration(
   def procedureCodeOfItem(itemId: String): Option[ProcedureCodesData] =
     itemBy(itemId).flatMap(_.procedureCodes)
 
-  def updateAuthorisationProcedureCodeChoice(authorisationProcedureCodeChoice: AuthorisationProcedureCodeChoice): ExportsDeclaration =
-    copy(parties = parties.copy(authorisationProcedureCodeChoice = Some(authorisationProcedureCodeChoice)))
-
   def removeAuthorisationProcedureCodeChoice(): ExportsDeclaration =
     copy(parties = parties.copy(authorisationProcedureCodeChoice = None))
 

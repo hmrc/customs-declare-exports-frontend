@@ -17,23 +17,26 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.DeclarationHolderSummaryController
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
-import models.Mode
+import models.Mode.Normal
 import models.declaration.{DeclarationHoldersData, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.scalatest.OptionValues
+import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import play.twirl.api.HtmlFormat.Appendable
 import views.html.declaration.declarationHolder.declaration_holder_remove
 
-class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionValues with ErrorHandlerMocks {
+class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
 
   val mockRemovePage = mock[declaration_holder_remove]
 
@@ -61,7 +64,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withDeclarationHolders(declarationHolder)))
-    await(controller.displayPage(Mode.Normal, id)(request))
+    await(controller.displayPage(Normal, id)(request))
     theResponseForm
   }
 
@@ -77,7 +80,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
     captor.getValue
   }
 
-  private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
+  private def verifyRemovePageInvoked(numberOfTimes: Int = 1): Appendable =
     verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543443")), Some(EoriSource.OtherEori))
@@ -92,7 +95,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val result = controller.displayPage(Mode.Normal, id)(getRequest())
+          val result = controller.displayPage(Normal, id)(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
@@ -105,7 +108,7 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
         "display page method is invoked with invalid holderId" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val result = controller.displayPage(Mode.Normal, "invalid")(getRequest())
+          val result = controller.displayPage(Normal, "invalid")(getRequest())
 
           result.map(_ => ()).recover { case ex => ex.printStackTrace() }
 
@@ -122,11 +125,10 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
       "return 400 (BAD_REQUEST)" when {
 
         "provided with invalid holderId" in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, "invalid")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val body = Json.obj("yesNo" -> "Yes")
+          val result = controller.submitForm(Normal, "invalid")(postRequest(body))
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
@@ -135,8 +137,8 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
         "user submits an invalid answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val body = Json.obj("yesNo" -> "invalid")
+          val result = controller.submitForm(Normal, id)(postRequest(body))
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
@@ -145,69 +147,47 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with OptionVa
     }
   }
 
-  "DeclarationHolderRemoveController on submitForm" when {
+  "DeclarationHolderRemoveController on submitForm" should {
 
-    onEveryDeclarationJourney() { request =>
-      "user submits 'Yes' answer" when {
+    "redirect to the /authorisations-required page" when {
 
-        "after removal, cache still contains at least one DeclarationHolder" should {
-          "redirect to DeclarationHolderSummaryController" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder, declarationHolder_2)))
+      onEveryDeclarationJourney() { request =>
+        "user submits a 'Yes' answer and" when {
+          val body = Json.obj("yesNo" -> "Yes")
 
-            val requestBody = Seq("yesNo" -> "Yes")
-            val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          "after removal, cache still contains at least one DeclarationHolder" in {
+            And("'isRequired' should be set to None when not STANDARD_PRE_LODGED and not (Code1040 or CodeOther)")
+            val holdersData = DeclarationHoldersData(List(declarationHolder, declarationHolder_2), isRequired = Yes)
+            withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(holdersData)))
+
+            val result = controller.submitForm(Normal, id)(postRequest(body))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
+            thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Normal)
 
             theCacheModelUpdated.parties.declarationHoldersData mustBe Some(DeclarationHoldersData(Seq(declarationHolder_2)))
           }
-        }
 
-        "after removal, cache contains NO DeclarationHolder" when {
+          "after removal, cache contains NO DeclarationHolders" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          "cache contains DeclarationHoldersData.isRequired field" should {
+            val result = controller.submitForm(Normal, id)(postRequest(body))
 
-            "redirect to DeclarationHolderRequiredController" in {
-              withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(DeclarationHoldersData(Seq(declarationHolder), Yes))))
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Normal)
 
-              val requestBody = Seq("yesNo" -> "Yes")
-              val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-              await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
-
-              theCacheModelUpdated.parties.declarationHoldersData mustBe Some(DeclarationHoldersData(Seq.empty, Yes))
-            }
-          }
-
-          "cache does NOT contain DeclarationHoldersData.isRequired field" should {
-
-            "redirect to DeclarationHolderSummaryController" in {
-              withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(DeclarationHoldersData(Seq(declarationHolder), None))))
-
-              val requestBody = Seq("yesNo" -> "Yes")
-              val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-              await(result) mustBe aRedirectToTheNextPage
-              thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
-
-              theCacheModelUpdated.parties.declarationHoldersData mustBe Some(DeclarationHoldersData(Seq.empty))
-            }
+            theCacheModelUpdated.parties.declarationHoldersData mustBe None
           }
         }
-      }
 
-      "user submits 'No' answer" should {
-
-        "redirect to DeclarationHolderSummaryController" in {
+        "user submits a 'No' answer" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
 
-          val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, id)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val body = Json.obj("yesNo" -> "No")
+          val result = controller.submitForm(Normal, id)(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderSummaryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Normal)
 
           verifyTheCacheIsUnchanged()
         }

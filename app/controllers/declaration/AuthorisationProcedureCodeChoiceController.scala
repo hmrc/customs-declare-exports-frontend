@@ -18,11 +18,11 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{DeclarationHolderRequiredController, DeclarationHolderSummaryController}
+import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPage
 import controllers.navigation.Navigator
 import forms.declaration.AuthorisationProcedureCodeChoice
-import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import models.DeclarationType._
+import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -72,11 +72,17 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
   }
 
   private def nextPage(declaration: ExportsDeclaration): Mode => Call =
-    (declaration.`type`, declaration.additionalDeclarationType, declaration.parties.authorisationProcedureCodeChoice) match {
-      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040 | ChoiceOthers) => DeclarationHolderRequiredController.displayPage
-      case _                                                                => DeclarationHolderSummaryController.displayPage
-    }
+    if (userCanLandOnIsAuthRequiredPage(declaration)) DeclarationHolderRequiredController.displayPage
+    else DeclarationHolderSummaryController.displayPage
 
-  private def updateCache(choice: AuthorisationProcedureCodeChoice)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.updateAuthorisationProcedureCodeChoice(choice))
+  private def updateCache(choice: AuthorisationProcedureCodeChoice)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(declaration => {
+      def holdersData(maybeHoldersData: Option[DeclarationHoldersData]): Option[DeclarationHoldersData] =
+        if (userCanLandOnIsAuthRequiredPage(declaration)) maybeHoldersData else maybeHoldersData.map(_.copy(isRequired = None))
+
+      declaration.copy(
+        parties = declaration.parties
+          .copy(authorisationProcedureCodeChoice = Some(choice), declarationHoldersData = holdersData(declaration.parties.declarationHoldersData))
+      )
+    })
 }
