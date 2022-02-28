@@ -63,7 +63,7 @@ class AdditionalDocumentsRequiredController @Inject()(
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
     if (yesNoAnswer.answer == YesNoAnswers.yes) routes.AdditionalDocumentAddController.displayPage(_, itemId)
-    else routes.ItemsSummaryController.displayItemsSummaryPage(_)
+    else routes.ItemsSummaryController.displayItemsSummaryPage
 
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val documents =

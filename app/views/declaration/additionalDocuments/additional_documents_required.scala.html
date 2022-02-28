@@ -47,6 +47,25 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
+@title = @{
+    if(request.declarationType == models.DeclarationType.CLEARANCE){
+        "declaration.additionalDocumentsRequired.clearance.title"
+    } else {
+        "declaration.additionalDocumentsRequired.title"
+    }
+}
+
+@body = @{
+    if(request.declarationType == models.DeclarationType.CLEARANCE){
+        Seq("declaration.additionalDocumentsRequired.clearance.paragraph")
+    } else {
+        Seq(
+            "declaration.additionalDocumentsRequired.paragraph",
+            "declaration.additionalDocumentsRequired.paragraph.1"
+        )
+    }
+}
+
 @commodityCodeLink = {
     @request.cacheModel.commodityCodeOfItem(itemId).fold {
         @link(
@@ -83,23 +102,25 @@
 }
 
 @govukLayout(
-    title = Title("declaration.additionalDocumentsRequired.title", "declaration.section.5", hasErrors = hasErrors),
+    title = Title(title, "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalDocumentsRequired, mode, ItemId(itemId))))) {
 
     @formHelper(action = routes.AdditionalDocumentsRequiredController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
-        @heading(messages("declaration.additionalDocumentsRequired.title"))
+        @heading(messages(title))
 
-        @paragraph(messages("declaration.additionalDocumentsRequired.paragraph"))
+        @body.map{ msgKey =>
+           @paragraph(messages(msgKey))
+        }
 
         @yesNoRadios(
               form = form,
               inline = true,
               heading = Some(Fieldset(
                   legend = Some(Legend(
-                      content = Text(messages("declaration.additionalDocumentsRequired.title")),
+                      content = Text(messages(title)),
                       classes = "govuk-visually-hidden"
                   ))
               ))

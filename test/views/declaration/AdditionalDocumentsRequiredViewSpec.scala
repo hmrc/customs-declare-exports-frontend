@@ -57,10 +57,6 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
         view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
-      "display page title" in {
-        view.getElementsByTag("h1").first() must containMessage(s"$msgKey.title")
-      }
-
       "display two Yes/No radio buttons" in {
         val radios = view.getElementsByClass("govuk-radios").first.children
         radios.size mustBe 2
@@ -130,6 +126,10 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
     }
 
     onJourney(CLEARANCE)(aDeclaration(withItem(item))) { implicit request =>
+      "display page title" in {
+        createView().getElementsByTag("h1").first() must containMessage(s"$msgKey.clearance.title")
+      }
+
       "display a 'Back' button that links to the 'Additional Information' page" when {
 
         "Additional Information are present" in {
@@ -138,6 +138,10 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
       }
     }
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(item))) { implicit request =>
+      "display page title" in {
+        createView().getElementsByTag("h1").first() must containMessage(s"$msgKey.title")
+      }
+
       "display a 'Back' button that links to the 'Is License Required' page" in {
         verifyBackButton(routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId))
       }
