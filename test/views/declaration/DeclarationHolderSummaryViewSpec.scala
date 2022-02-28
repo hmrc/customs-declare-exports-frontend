@@ -17,15 +17,22 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.{
+  AdditionalActorsSummaryController,
+  AuthorisationProcedureCodeChoiceController,
+  ConsigneeDetailsController,
+  DeclarationHolderRequiredController
+}
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.common.{Eori, YesNoAnswer}
+import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.declaration.declarationHolder.DeclarationHolder
 import models.DeclarationType._
-import models.Mode
-import models.declaration.{DeclarationHoldersData, EoriSource, ExportDeclarationTestData, Parties}
+import models.Mode.Normal
+import models.declaration.{EoriSource, Parties}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -39,65 +46,30 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
   val declarationHolder1: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB123456543")), Some(EoriSource.OtherEori))
   val declarationHolder2: DeclarationHolder = DeclarationHolder(Some("CVA"), Some(Eori("GB6543253678")), Some(EoriSource.OtherEori))
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[YesNoAnswer] = YesNoAnswer.form(), holders: Seq[DeclarationHolder] = Seq.empty)(
-    implicit request: JourneyRequest[_]
-  ): Document = page(mode, form, holders)(request, messages)
+  private def createView(holders: Seq[DeclarationHolder] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
+    page(Normal, YesNoAnswer.form(), holders)
 
   "have proper messages for labels" in {
-    messages must haveTranslationFor("declaration.declarationHolders.table.heading")
-    messages must haveTranslationFor("declaration.declarationHolders.table.multiple.heading")
-    messages must haveTranslationFor("declaration.declarationHolders.table.change.hint")
-    messages must haveTranslationFor("declaration.declarationHolders.table.remove.hint")
-    messages must haveTranslationFor("declaration.declarationHolders.table.type")
-    messages must haveTranslationFor("declaration.declarationHolders.table.eori")
     messages must haveTranslationFor("declaration.declarationHolders.add.another")
   }
 
-  "DeclarationHolder Summary View back link" should {
+  "DeclarationHolder Summary View" should {
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
-      Seq(Yes, No).foreach { answer =>
-        s"cache contains DeclarationHoldersData.isRequired field with '${answer.get.answer}' answer" when {
-
-          "cache contains empty DeclarationHoldersData.holders field" should {
-
-            "display back link to Declaration Holder Required page" in {
-              val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, answer)))
-              val req = journeyRequest(request.cacheModel.copy(parties = parties))
-
-              val view = createView()(req)
-              view must containElementWithID("back-link")
-              view.getElementById("back-link") must haveHref(
-                controllers.declaration.routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
-              )
-            }
-          }
-
-          "cache contains non-empty DeclarationHoldersData.holders field" should {
-
-            "display back link to Authorisation Procedure Code Choice page" in {
-              val parties =
-                Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq(ExportDeclarationTestData.correctDeclarationHolder), answer)))
-              val req = journeyRequest(request.cacheModel.copy(parties = parties))
-
-              val view = createView()(req)
-              view must containElementWithID("back-link")
-              view.getElementById("back-link") must haveHref(
-                controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
-              )
-            }
-          }
-        }
-
+      "display a back button linking to the /authorisation-choice page" in {
+        val view = createView()
+        view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
       }
+    }
 
-      "cache does NOT contain DeclarationHoldersData.isRequired field" should {
-        "display back link to Authorisation Procedure Code Choice page" in {
-          val view = createView()
-          view must containElementWithID("back-link")
-          view.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
-          )
+    "display a back button linking to the /is-authorisation-required page" when {
+      "AdditionalDeclarationType is 'STANDARD_PRE_LODGED' and" when {
+        List(Choice1040, ChoiceOthers).foreach { choice =>
+          s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
+            val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
+            val view = createView()(request)
+            view.getElementById("back-link") must haveHref(DeclarationHolderRequiredController.displayPage(Normal))
+          }
         }
       }
     }
@@ -105,33 +77,26 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
     onJourney(OCCASIONAL) { implicit request =>
       "display back link to Other Parties page" in {
         val view = createView()
-        view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal))
+        view.getElementById("back-link") must haveHref(AdditionalActorsSummaryController.displayPage(Normal))
       }
     }
 
-    onJourney(CLEARANCE) { implicit request =>
-      "EIDR is true" must {
-        "display back link to Authorisation Choice page" in {
-          val parties = Parties(isEntryIntoDeclarantsRecords = Yes)
-          val req = journeyRequest(request.cacheModel.copy(parties = parties))
+    onClearance { implicit req =>
+      "display back link to Authorisation Choice page" when {
+        "EIDR is true" in {
+          val request = journeyRequest(req.cacheModel.copy(parties = Parties(isEntryIntoDeclarantsRecords = Yes)))
 
-          val view = createView()(req)
-          view must containElementWithID("back-link")
-          view.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
-          )
+          val view = createView()(request)
+          view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
         }
       }
 
-      "EIDR is false" must {
-        "display back link to Consignee Details page" in {
-          val parties = Parties(isEntryIntoDeclarantsRecords = No)
-          val req = journeyRequest(request.cacheModel.copy(parties = parties))
+      "display back link to Consignee Details page" when {
+        "EIDR is false" in {
+          val request = journeyRequest(req.cacheModel.copy(parties = Parties(isEntryIntoDeclarantsRecords = No)))
 
-          val view = createView()(req)
-          view must containElementWithID("back-link")
-          view.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage(Mode.Normal))
+          val view = createView()(request)
+          view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage(Normal))
         }
       }
     }
@@ -146,7 +111,7 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
       }
 
       "display page title for multiple items" in {
-        createView(holders = Seq.empty).getElementsByTag("h1").text() mustBe messages("declaration.declarationHolders.table.multiple.heading", "0")
+        view.getElementsByTag("h1").text mustBe messages("declaration.declarationHolders.table.multiple.heading", "0")
       }
 
       "display section header" in {
@@ -168,17 +133,17 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
     onEveryDeclarationJourney() { implicit request =>
       "display one row with data in table" in {
 
-        val view = createView(holders = Seq(declarationHolder1))
+        val view = createView(Seq(declarationHolder1))
 
         // check table header
-        view.select("table>thead>tr>th:nth-child(1)").text() mustBe messages("declaration.declarationHolders.table.type")
-        view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("declaration.declarationHolders.table.eori")
-        view.select("table>thead>tr>th:nth-child(3)").text() mustBe messages("site.change.header")
-        view.select("table>thead>tr>th:nth-child(4)").text() mustBe messages("site.remove.header")
+        view.select("table>thead>tr>th:nth-child(1)").text mustBe messages("declaration.declarationHolders.table.type")
+        view.select("table>thead>tr>th:nth-child(2)").text mustBe messages("declaration.declarationHolders.table.eori")
+        view.select("table>thead>tr>th:nth-child(3)").text mustBe messages("site.change.header")
+        view.select("table>thead>tr>th:nth-child(4)").text mustBe messages("site.remove.header")
 
         // check row
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() must include("ACE")
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB123456543"
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text must include("ACE")
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text mustBe "GB123456543"
 
         val changeLink = view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").get(0)
         changeLink must containMessage("site.change")
@@ -191,17 +156,17 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
 
       "display two rows with data in table" in {
 
-        val view = createView(holders = Seq(declarationHolder1, declarationHolder2))
+        val view = createView(Seq(declarationHolder1, declarationHolder2))
 
         // check table header
-        view.select("table>thead>tr>th:nth-child(1)").text() mustBe messages("declaration.declarationHolders.table.type")
-        view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("declaration.declarationHolders.table.eori")
-        view.select("table>thead>tr>th:nth-child(3)").text() mustBe messages("site.change.header")
-        view.select("table>thead>tr>th:nth-child(4)").text() mustBe messages("site.remove.header")
+        view.select("table>thead>tr>th:nth-child(1)").text mustBe messages("declaration.declarationHolders.table.type")
+        view.select("table>thead>tr>th:nth-child(2)").text mustBe messages("declaration.declarationHolders.table.eori")
+        view.select("table>thead>tr>th:nth-child(3)").text mustBe messages("site.change.header")
+        view.select("table>thead>tr>th:nth-child(4)").text mustBe messages("site.remove.header")
 
         // check rows
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() must include("ACE")
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "GB123456543"
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text must include("ACE")
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text mustBe "GB123456543"
 
         val changeLink1 = view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").get(0)
         changeLink1 must containMessage("site.change")
@@ -211,8 +176,8 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         removeLink1 must containMessage("site.remove")
         removeLink1 must containMessage("declaration.declarationHolders.table.remove.hint", "ACE-GB123456543")
 
-        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() must include("CVA")
-        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "GB6543253678"
+        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text must include("CVA")
+        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text mustBe "GB6543253678"
 
         val changeLink2 = view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)").get(0)
         changeLink2 must containMessage("site.change")

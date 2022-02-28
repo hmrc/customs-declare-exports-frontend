@@ -19,14 +19,22 @@ package views.declaration
 import base.ExportsTestData._
 import base.Injector
 import base.TestHelper.createRandomAlphanumericString
+import controllers.declaration.routes.{
+  AdditionalActorsSummaryController,
+  AuthorisationProcedureCodeChoiceController,
+  ConsigneeDetailsController,
+  DeclarationHolderRequiredController,
+  DeclarationHolderSummaryController
+}
 import controllers.helpers.SaveAndReturn
 import forms.common.Eori
-import forms.common.YesNoAnswer.{No, Yes}
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.declaration.declarationHolder.DeclarationHolder
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.Mode
+import models.DeclarationType.{allDeclarationTypes, CLEARANCE, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.Mode.Normal
 import models.declaration.EoriSource.{OtherEori, UserEori}
-import models.declaration.{DeclarationHoldersData, Parties}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -45,9 +53,10 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
     DeclarationHolder.form(eori, request.cacheModel.additionalDeclarationType)
 
   private def createView(form: Form[DeclarationHolder])(implicit request: JourneyRequest[_]): Document =
-    declarationHolderPage(Mode.Normal, form, eori)(request, messages)
+    declarationHolderPage(Normal, form, eori)(request, messages)
 
-  "Declaration Holder View on empty page" should {
+  "Declaration Holder View" should {
+
     onEveryDeclarationJourney() { implicit request =>
       val view = createView(createForm)
 
@@ -101,69 +110,69 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
-      Seq(Yes, No).foreach { answer =>
-        s"cache contains DeclarationHoldersData.isRequired field with '${answer.get.answer}' answer" should {
-          "display back link to Declaration Holder Required page" in {
-            val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, answer)))
-            val req = journeyRequest(request.cacheModel.copy(parties = parties))
+      "have a 'Back' link to the /authorisation-choice page" in {
+        val view = createView(createForm)
+        view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
+      }
+    }
 
-            val view = createView(createForm)(req)
-            view must containElementWithID("back-link")
-            view.getElementById("back-link") must haveHref(
-              controllers.declaration.routes.DeclarationHolderRequiredController.displayPage(Mode.Normal)
-            )
+    onOccasional { implicit request =>
+      "have a 'Back' link to the /other-parties-list page" in {
+        val view = createView(createForm)
+        view.getElementById("back-link") must haveHref(AdditionalActorsSummaryController.displayPage(Normal))
+      }
+    }
+  }
+
+  "Declaration Holder View" when {
+
+    val declarationHolder = DeclarationHolder(Some("test"), Some(Eori("test1")), Some(UserEori))
+
+    allDeclarationTypes.foreach { declarationType =>
+      s"DeclarationType is '$declarationType' and" when {
+        "the declaration already includes one or more declarationHolders" should {
+          "have a 'Back' link to the /authorisations-required page" in {
+            implicit val request = withRequestOfType(declarationType, withDeclarationHolders(declarationHolder))
+            val view = createView(createForm)
+            view.getElementById("back-link") must haveHref(DeclarationHolderSummaryController.displayPage(Normal))
           }
         }
-
       }
+    }
 
-      "cache does NOT contain DeclarationHoldersData.isRequired field" should {
-        "display back link to Authorisation Procedure Code Choice page" in {
+    List(Choice1040, ChoiceOthers).foreach { choice =>
+      "AdditionalDeclarationType is 'STANDARD_PRE_LODGED' and" when {
+        s"AuthorisationProcedureCodeChoice is '${choice.value}'" should {
+          "have a 'Back' link to the /is-authorisation-required page" in {
+            val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
+            val view = createView(createForm(request))(request)
+            view.getElementById("back-link") must haveHref(DeclarationHolderRequiredController.displayPage(Normal))
+          }
+        }
+      }
+    }
+
+    "DeclarationType is 'CLEARANCE' and" when {
+
+      "EIDR is true" should {
+        "have a 'Back' link to the /authorisation-choice page" in {
+          implicit val request = withRequestOfType(CLEARANCE, withEntryIntoDeclarantsRecords())
           val view = createView(createForm)
-          view must containElementWithID("back-link")
-          view.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
-          )
-        }
-      }
-    }
-
-    onJourney(OCCASIONAL) { implicit request =>
-      "display back link to Other Parties page" in {
-        val view = createView(createForm)
-        view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage(Mode.Normal))
-      }
-    }
-
-    onJourney(CLEARANCE) { implicit request =>
-      "EIDR is true" must {
-        "display back link to Authorisation Choice page" in {
-          val parties = Parties(isEntryIntoDeclarantsRecords = Yes)
-          val req = journeyRequest(request.cacheModel.copy(parties = parties))
-
-          val view = createView(createForm)(req)
-          view must containElementWithID("back-link")
-          view.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.AuthorisationProcedureCodeChoiceController.displayPage(Mode.Normal)
-          )
+          view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
         }
       }
 
-      "EIDR is false" must {
-        "display back link to Consignee Details page" in {
-          val parties = Parties(isEntryIntoDeclarantsRecords = No)
-          val req = journeyRequest(request.cacheModel.copy(parties = parties))
-
-          val view = createView(createForm)(req)
-          view must containElementWithID("back-link")
-          view.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage(Mode.Normal))
+      "EIDR is false" should {
+        "have a 'Back' link to the /consignee-details page" in {
+          implicit val request = withRequestOfType(CLEARANCE, withEntryIntoDeclarantsRecords(YesNoAnswers.no))
+          val view = createView(createForm)
+          view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage(Normal))
         }
       }
     }
   }
 
-  "Declaration Holder View for invalid input" should {
+  "Declaration Holder View when invalid input is entered" should {
     onEveryDeclarationJourney() { implicit request =>
       /*
        * Both add and save button returns the same errors, so
@@ -207,7 +216,7 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
     }
   }
 
-  "Declaration Holder View when filled" should {
+  "Declaration Holder View when valid input is entered" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in Authorisation Code input only" in {
         val declarationHolder = DeclarationHolder(Some("test"), None, Some(OtherEori))

@@ -176,8 +176,8 @@ trait ExportsDeclarationBuilder {
     eori: Option[Eori] = None,
     eoriSource: Option[EoriSource] = None
   ): ExportsDeclarationModifier = { cache =>
-    val existing: Seq[DeclarationHolder] = cache.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
-    val holdersData = DeclarationHoldersData(existing :+ DeclarationHolder(authorisationTypeCode, eori, eoriSource))
+    val holders = cache.declarationHolders
+    val holdersData = DeclarationHoldersData(holders :+ DeclarationHolder(authorisationTypeCode, eori, eoriSource))
     cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(holdersData)))
   }
 
