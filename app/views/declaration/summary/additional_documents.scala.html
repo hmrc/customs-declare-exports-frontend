@@ -18,6 +18,7 @@
 @import forms.declaration.additionaldocuments.AdditionalDocument
 @import models.declaration.ExportItem
 @import models.declaration.AdditionalDocuments
+@import models.DeclarationType.DeclarationType
 @import models.Mode
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -37,6 +38,7 @@
     mode: Mode,
     item: ExportItem,
     additionalDocuments: AdditionalDocuments,
+    declarationType: DeclarationType,
     actionsEnabled: Boolean = true
 )(implicit messages: Messages)
 
@@ -60,6 +62,7 @@
 
 @tableCaption = @{
     if(item.isLicenseRequired.contains(true)) messages("declaration.summary.items.item.licenses")
+    else if(declarationType == models.DeclarationType.CLEARANCE) messages("declaration.summary.items.item.clearance.additionalDocuments")
     else messages("declaration.summary.items.item.additionalDocuments")
 }
 
