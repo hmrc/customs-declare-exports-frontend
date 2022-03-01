@@ -42,9 +42,23 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[YesNoAnswer], commodityCode: String, representativeStatusCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[YesNoAnswer], representativeStatusCode: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@tariffLinkContent = @{
+    request.cacheModel.commodityCodeOfItem(itemId).map { commodityCode =>
+        tariffLink(
+            messages("tariff.declaration.item.isLicenseRequired.common.1.linkText.0", commodityCode),
+            s"${appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.common.1.0")}${commodityCode}#export"
+        )
+    }.getOrElse{
+        tariffLink(
+            messages("tariff.declaration.item.isLicenseRequired.common.1.linkText"),
+            s"${appConfig.tariffBrowseUrl}"
+        )
+    }
+}
 
 @govukLayout(
     title = Title("tariff.declaration.item.isLicenseRequired.title", "declaration.section.5", hasErrors = hasErrors),
@@ -72,12 +86,7 @@
             attributes = Map("id" -> "tariffReference"),
             summary = Text(messages("tariff.declaration.item.isLicenseRequired.expander.title")),
             content = HtmlContent(Seq(
-                messages("tariff.declaration.item.isLicenseRequired.common.1.text",
-                    tariffLink(
-                        messages("tariff.declaration.item.isLicenseRequired.common.1.linkText.0", commodityCode),
-                        s"${appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenseRequired.common.1.0")}${commodityCode}#export"
-                    )
-                ),
+                messages("tariff.declaration.item.isLicenseRequired.common.1.text", tariffLinkContent),
                 messages("tariff.declaration.item.isLicenseRequired.common.2.text"),
                 messages("tariff.declaration.item.isLicenseRequired.common.3.text"),
                 messages("tariff.declaration.item.isLicenseRequired.common.4.text",

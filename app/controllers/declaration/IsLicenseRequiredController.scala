@@ -49,42 +49,27 @@ class IsLicenseRequiredController @Inject()(
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    commodityCodeFromRequest(mode, itemId) { commodityCode =>
-      val formWithErrors = form.withSubmissionErrors
+    val formWithErrors = form.withSubmissionErrors
 
-      val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenseRequired).fold(form.withSubmissionErrors) {
-        case true  => formWithErrors.fill(YesNoAnswer(yes))
-        case false => formWithErrors.fill(YesNoAnswer(no))
-      }
-
-      Ok(is_license_required(mode, itemId, frm, commodityCode, representativeStatusCode))
-
+    val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenseRequired).fold(form.withSubmissionErrors) {
+      case true  => formWithErrors.fill(YesNoAnswer(yes))
+      case false => formWithErrors.fill(YesNoAnswer(no))
     }
+
+    Ok(is_license_required(mode, itemId, frm, representativeStatusCode))
+
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
       .fold(
-        formWithErrors =>
-          Future.successful {
-            commodityCodeFromRequest(mode, itemId) { commodityCode =>
-              BadRequest(is_license_required(mode, itemId, formWithErrors, commodityCode, representativeStatusCode))
-            }
-        },
+        formWithErrors => Future.successful(BadRequest(is_license_required(mode, itemId, formWithErrors, representativeStatusCode))),
         yesNo =>
           updateCache(yesNo, itemId) map { _ =>
             navigator.continueTo(mode, nextPage(yesNo, itemId))
         }
       )
   }
-
-  private def commodityCodeFromRequest(mode: Mode, itemId: String)(view: String => Result)(implicit request: JourneyRequest[AnyContent]) =
-    request.cacheModel.commodityCodeOfItem(itemId) match {
-      case Some(commodityCode) =>
-        view(commodityCode)
-      case _ =>
-        navigator.continueTo(mode, AdditionalInformationController.displayPage(_, itemId))
-    }
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     yesNoAnswer.answer match {
