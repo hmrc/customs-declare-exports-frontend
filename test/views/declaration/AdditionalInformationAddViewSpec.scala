@@ -35,7 +35,8 @@ import views.tags.ViewTest
 class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
-  private val form: Form[AdditionalInformation] = AdditionalInformation.form()
+
+  private val form: Form[AdditionalInformation] = AdditionalInformation.form
 
   private val page = instanceOf[additional_information_add]
 
@@ -103,7 +104,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
     onEveryDeclarationJourney() { implicit request =>
       "display data in both inputs" in {
 
-        val view = createView(form = AdditionalInformation.form.fill(AdditionalInformation("12345", "12345")))
+        val view = createView(form = form.fill(AdditionalInformation("12345", "12345")))
 
         view.getElementById("code").attr("value") mustBe "12345"
         view.getElementById("description").text() mustBe "12345"
@@ -112,7 +113,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
 
       "display data in code input" in {
 
-        val view = createView(form = AdditionalInformation.form.fill(AdditionalInformation("12345", "")))
+        val view = createView(form = form.fill(AdditionalInformation("12345", "")))
 
         view.getElementById("code").attr("value") mustBe "12345"
         view.getElementById("description").text() mustBe empty
@@ -120,7 +121,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
 
       "display data in description input" in {
 
-        val view = createView(form = AdditionalInformation.form.fill(AdditionalInformation("", "12345")))
+        val view = createView(form = form.fill(AdditionalInformation("", "12345")))
 
         view.getElementById("code").attr("value") mustBe empty
         view.getElementById("description").text() mustBe "12345"
@@ -153,7 +154,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
     onEveryDeclarationJourney() { implicit request =>
       "display error for missing code" in {
 
-        val view = createView(form = AdditionalInformation.form.fillAndValidate(AdditionalInformation("", "description")))
+        val view = createView(form = form.fillAndValidate(AdditionalInformation("", "description")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#code")
@@ -163,7 +164,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
 
       "display error for invalid code" in {
 
-        val view = createView(form = AdditionalInformation.form.fillAndValidate(AdditionalInformation("1234", "description")))
+        val view = createView(form = form.fillAndValidate(AdditionalInformation("1234", "description")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#code")
@@ -173,7 +174,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
 
       "display error for missing description" in {
 
-        val view = createView(form = AdditionalInformation.form.fillAndValidate(AdditionalInformation("12345", "")))
+        val view = createView(form = form.fillAndValidate(AdditionalInformation("12345", "")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#description")
@@ -183,9 +184,7 @@ class AdditionalInformationAddViewSpec extends UnitViewSpec with ExportsTestData
 
       "display error for invalid description" in {
 
-        val view = createView(
-          form = AdditionalInformation.form.fillAndValidate(AdditionalInformation("12345", TestHelper.createRandomAlphanumericString(101)))
-        )
+        val view = createView(form = form.fillAndValidate(AdditionalInformation("12345", TestHelper.createRandomAlphanumericString(101))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#description")

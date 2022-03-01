@@ -34,7 +34,7 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Inj
   private val page = instanceOf[transport_leaving_the_border]
 
   private def createView(implicit request: JourneyRequest[_]): Document =
-    page(TransportLeavingTheBorder.form(request.declarationType), Mode.Normal)
+    page(TransportLeavingTheBorder.form, Mode.Normal)
 
   "Transport Leaving The Border Page" must {
 

@@ -21,13 +21,13 @@
 @import models.codes.Country
 
 @(field: Field,
-  label: String,
-  labelClass: Option[String],
+  label: Option[String] = None,
+  labelClass: Option[String] = None,
   section: Option[String] = None,
   bodyHtml: Option[Html] = None,
   hintParagraphs: List[String] = List.empty,
   countryKey: Country => String,
-  isPageHeading: Boolean,
+  isPageHeading: Boolean = false,
   args: List[(Symbol, Any)] = List.empty,
   rightElement: Option[Html] = None
 )(implicit messages: Messages, countryAutoCompleteHelper: CountryHelper)
@@ -58,9 +58,13 @@ To avoid problems, we need to remove [] from field.
     }
 
     @if(isPageHeading) {<h1 class="govuk-label-wrapper">}
-    <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="govuk-label@if(labelClass.nonEmpty){ @labelClass}" >
-        @label
-    </label>
+
+    @label.map { text =>
+        <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="govuk-label@if(labelClass.nonEmpty){ @labelClass }" >
+            @text
+        </label>
+    }
+
     @if(isPageHeading) {</h1>}
 
     @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@error</span> }

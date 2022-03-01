@@ -16,15 +16,12 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes._
 import controllers.helpers.DeclarationHolderHelper.declarationHolders
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -34,6 +31,9 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_required
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationHolderRequiredController @Inject()(
   authenticate: AuthAction,
@@ -54,7 +54,7 @@ class DeclarationHolderRequiredController @Inject()(
     form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationHolderRequired(mode, formWithErrors))),
-        validYesNo => updateCache(validYesNo).map(_ => navigator.continueTo(mode, nextPage(validYesNo)))
+        validYesNo => updateCache(Some(validYesNo)).map(_ => navigator.continueTo(mode, nextPage(validYesNo)))
       )
   }
 
@@ -72,10 +72,10 @@ class DeclarationHolderRequiredController @Inject()(
       case YesNoAnswers.no  => DestinationCountryController.displayPage
     }
 
-  private def updateCache(yesNoAnswer: YesNoAnswer)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
-      val declarationHoldersData = DeclarationHoldersData(declarationHolders, Some(yesNoAnswer))
-      val updatedParties = model.parties.copy(declarationHoldersData = Some(declarationHoldersData))
-      model.copy(parties = updatedParties)
+  private def updateCache(yesNoAnswer: Option[YesNoAnswer])(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(declaration => {
+      val holders = if (yesNoAnswer == YesNoAnswer.Yes) declarationHolders else Seq.empty
+      val holdersData = Some(DeclarationHoldersData(holders, yesNoAnswer))
+      declaration.copy(parties = declaration.parties.copy(declarationHoldersData = holdersData))
     })
 }

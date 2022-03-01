@@ -15,13 +15,12 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes._
+@import controllers.declaration.routes.CarrierDetailsController
 @import controllers.navigation.Navigator
 @import forms.declaration.carrier.CarrierDetails
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.Styles._
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
@@ -29,16 +28,15 @@
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    saveButtons: saveButtons,
-    govukHint: GovukHint,
     link: link,
+    heading: heading,
+    body: paragraphBody,
     group_address: group_address,
-    exportsInputText: exportsInputText,
-    formHelper: FormWithCSRF,
     tariffExpander: tariffExpander,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
     navigator: Navigator,
     appConfig: AppConfig
 )
@@ -49,7 +47,7 @@
 
 @hintLink = {
     @link(
-        text = messages("declaration.carrierAddress.hint.link"),
+        text = messages("declaration.carrierAddress.body.2.link"),
         call = Call("GET", appConfig.companyInformationRegister),
         target = "_blank"
     )
@@ -64,17 +62,13 @@
 
         @sectionHeader(messages("declaration.section.2"))
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages("declaration.carrierAddress.title")),
-                classes = gdsPageLabel,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(immutable.Seq(
-              govukHint(Hint(content = HtmlContent(messages("declaration.carrierAddress.hint", hintLink)))),
-              group_address(form, "declaration.address", "details.address")
-            ))
-        ))
+        @heading(messages("declaration.carrierAddress.title"))
+
+        @body(messages("declaration.carrierAddress.body.1"))
+
+        @body(messages("declaration.carrierAddress.body.2", hintLink))
+
+        @group_address(form, "declaration.address", "details.address")
 
         @tariffExpander(CarrierDetails, request.declarationType)(messages, appConfig)
 

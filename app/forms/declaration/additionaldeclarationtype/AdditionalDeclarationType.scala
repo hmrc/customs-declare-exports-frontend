@@ -44,6 +44,19 @@ object AdditionalDeclarationType extends Enumeration {
   val CLEARANCE_FRONTIER = Value("J")
   val CLEARANCE_PRE_LODGED = Value("K")
 
+  val allAdditionalDeclarationTypes = Seq(
+    STANDARD_FRONTIER,
+    STANDARD_PRE_LODGED,
+    SUPPLEMENTARY_EIDR,
+    SUPPLEMENTARY_SIMPLIFIED,
+    SIMPLIFIED_FRONTIER,
+    SIMPLIFIED_PRE_LODGED,
+    OCCASIONAL_FRONTIER,
+    OCCASIONAL_PRE_LODGED,
+    CLEARANCE_FRONTIER,
+    CLEARANCE_PRE_LODGED
+  )
+
   def from(string: String): Option[AdditionalDeclarationType] = AdditionalDeclarationType.values.find(_.toString == string)
 
   def declarationType(additionalDeclarationType: AdditionalDeclarationType): DeclarationType =

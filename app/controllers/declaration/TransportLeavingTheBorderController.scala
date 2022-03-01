@@ -18,9 +18,11 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.WarehouseIdentificationController
-import controllers.helpers.SupervisingCustomsOfficeHelper
+import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import controllers.navigation.Navigator
+import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.TransportLeavingTheBorder
+import forms.declaration.TransportLeavingTheBorder.form
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -41,6 +43,7 @@ class TransportLeavingTheBorderController @Inject()(
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   transportAtBorder: transport_leaving_the_border,
+  inlandOrBorderHelper: InlandOrBorderHelper,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
@@ -48,17 +51,14 @@ class TransportLeavingTheBorderController @Inject()(
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val form = TransportLeavingTheBorder.form(request.declarationType).withSubmissionErrors
     request.cacheModel.transport.borderModeOfTransportCode match {
-      case Some(data) => Ok(transportAtBorder(form.fill(data), mode))
-      case _          => Ok(transportAtBorder(form, mode))
+      case Some(data) => Ok(transportAtBorder(form.withSubmissionErrors.fill(data), mode))
+      case _          => Ok(transportAtBorder(form.withSubmissionErrors, mode))
     }
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    TransportLeavingTheBorder
-      .form(request.declarationType)
-      .bindFromRequest
+    form.withSubmissionErrors.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(transportAtBorder(formWithErrors, mode))),
         updateCache(_).map(declaration => navigator.continueTo(mode, nextPage(declaration)))
@@ -69,6 +69,13 @@ class TransportLeavingTheBorderController @Inject()(
     if (declaration.`type` == CLEARANCE || declaration.requiresWarehouseId) WarehouseIdentificationController.displayPage
     else supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration)
 
-  private def updateCache(code: TransportLeavingTheBorder)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.updateTransportLeavingBorder(code))
+  private def updateCache(code: TransportLeavingTheBorder)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { declaration =>
+      declaration.copy(
+        transport = declaration.transport.copy(borderModeOfTransportCode = Some(code)),
+        locations = declaration.locations.copy(
+          inlandOrBorder = if (code.code == Some(RoRo)) None else inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration)
+        )
+      )
+    }
 }

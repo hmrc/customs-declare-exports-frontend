@@ -89,6 +89,8 @@
 @paragraphBody(messages("declaration.declarationHolder.paragraph"))
 
 @declHolderHelper.bodyForDeclarationHolderEditPage(appConfig)
+@declHolderHelper.componentsForArrived.map(_.warning)
+@declHolderHelper.componentsForArrived.map(_.paragraph)
 
 @field_accessible_autocomplete(
     field = form("authorisationTypeCode"),

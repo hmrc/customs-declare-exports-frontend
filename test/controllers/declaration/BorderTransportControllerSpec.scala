@@ -21,6 +21,7 @@ import connectors.CodeListConnector
 import controllers.routes.RootController
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport.{nationalityId, radioButtonGroupId}
+import forms.declaration.InlandOrBorder.Border
 import forms.declaration.TransportCodes._
 import models.DeclarationType._
 import models.Mode
@@ -97,68 +98,145 @@ class BorderTransportControllerSpec extends ControllerSpec {
     )
 
   "Transport Details Controller" when {
+
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
-      "return 200 (OK)" when {
+      "/inland-or-border is NOT 'Border'" should {
+        "return 200 (OK)" when {
 
-        "display page method is invoked and cache is empty" in {
-          withNewCaching(request.cacheModel)
+          "display page method is invoked and cache is empty" in {
+            withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-          status(result) must be(OK)
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+            status(result) must be(OK)
+          }
+
+          "display page method is invoked and cache is not empty" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withBorderTransport()))
+
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+            status(result) must be(OK)
+          }
         }
 
-        "display page method is invoked and cache is not empty" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withBorderTransport()))
+        "return 400 (BAD_REQUEST)" when {
+          "form contains incorrect values" in {
+            withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-          status(result) must be(OK)
+            val incorrectForm = formData("incorrect", "", "")
+
+            val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+            status(result) must be(BAD_REQUEST)
+          }
+        }
+
+        "return 303 (SEE_OTHER)" when {
+          "valid options are selected" in {
+            withNewCaching(request.cacheModel)
+
+            val correctForm = formData(ShipOrRoroImoNumber.value, "SHIP001", nationality)
+
+            val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe nextPage(request.declarationType)
+          }
         }
       }
 
-      "return 400 (BAD_REQUEST)" when {
-        "form contains incorrect values" in {
-          withNewCaching(request.cacheModel)
+      "/inland-or-border is 'Border'" should {
+        "return 200 (OK)" when {
 
-          val incorrectForm = formData("incorrect", "", "")
+          "display page method is invoked and cache is empty" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withInlandOrBorder(Some(Border))))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
-          status(result) must be(BAD_REQUEST)
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+            status(result) must be(OK)
+          }
+
+          "display page method is invoked and cache is not empty" in {
+            val borderTransport = withBorderTransport(Some(nationality))
+            withNewCaching(aDeclarationAfter(request.cacheModel, withInlandOrBorder(Some(Border)), borderTransport))
+
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+            status(result) must be(OK)
+          }
         }
-      }
 
-      "return 303 (SEE_OTHER)" when {
-        "valid options are selected" in {
-          withNewCaching(request.cacheModel)
+        "return 400 (BAD_REQUEST)" when {
+          "form contains incorrect values" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withInlandOrBorder(Some(Border))))
 
-          val correctForm = formData(ShipOrRoroImoNumber.value, "SHIP001", nationality)
+            val incorrectForm = Json.obj(nationalityId -> "Bla")
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+            val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+            status(result) must be(BAD_REQUEST)
+          }
+        }
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe nextPage(request.declarationType)
+        "return 303 (SEE_OTHER)" when {
+          "valid options are selected" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withInlandOrBorder(Some(Border))))
+
+            val correctForm = Json.obj(nationalityId -> nationality)
+
+            val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe nextPage(request.declarationType)
+          }
         }
       }
     }
 
     onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
-      "display page method is invoked" in {
-        withNewCaching(aDeclarationAfter(request.cacheModel, withBorderTransport()))
+      "/inland-or-border is NOT 'Border'" should {
+        "redirect to the Choice page at '/'" when {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          "the 'displayPage' method is invoked" in {
+            withNewCaching(request.cacheModel)
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) mustBe Some(RootController.displayPage().url)
+          }
+
+          "the 'submitForm' method is invoked" in {
+            withNewCaching(request.cacheModel)
+
+            val correctForm = formData(ShipOrRoroImoNumber.value, "SHIP001", nationality)
+
+            val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) mustBe Some(RootController.displayPage().url)
+          }
+        }
       }
 
-      "valid options are selected" in {
-        withNewCaching(request.cacheModel)
+      "/inland-or-border is 'Border'" should {
+        "redirect to the Choice page at '/'" when {
 
-        val correctForm = formData(ShipOrRoroImoNumber.value, "SHIP001", nationality)
+          "the 'displayPage' method is invoked" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withInlandOrBorder(Some(Border))))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+            val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(RootController.displayPage().url)
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) mustBe Some(RootController.displayPage().url)
+          }
+
+          "the 'submitForm' method is invoked" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withInlandOrBorder(Some(Border))))
+
+            val correctForm = formData(ShipOrRoroImoNumber.value, "SHIP001", nationality)
+
+            val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) mustBe Some(RootController.displayPage().url)
+          }
+        }
       }
     }
   }

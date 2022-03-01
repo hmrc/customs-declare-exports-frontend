@@ -48,9 +48,7 @@
 
 @components.fields.field_accessible_location_autocomplete_with_header(
     field = form(s"${addressPrefix}.country"),
-    label = messages(s"$labelPrefix.country"),
-    labelClass = None,
+    label = Some(messages(s"$labelPrefix.country")),
     hintParagraphs = List(messages("declaration.country.dropdown.hint")),
-    countryKey = (c: Country) => c.countryName,
-    isPageHeading = false
+    countryKey = (c: Country) => c.countryName
 )

@@ -105,7 +105,7 @@ case class ExportsDeclaration(
 
   def isCommodityCodeOfItemPrefixedWith(itemId: String, prefix: Seq[Int]): Boolean =
     commodityCodeOfItem(itemId) match {
-      case Some(commodityCode) if (commodityCode.trim.length > 0) =>
+      case Some(commodityCode) if commodityCode.trim.nonEmpty =>
         prefix.exists(digits => commodityCode.startsWith(digits.toString))
       case _ => false
     }
@@ -136,12 +136,6 @@ case class ExportsDeclaration(
   def removeSupervisingCustomsOffice: ExportsDeclaration =
     copy(locations = locations.copy(supervisingCustomsOffice = None))
 
-  def updateTransportLeavingBorder(code: ModeOfTransportCode): ExportsDeclaration =
-    copy(transport = transport.copy(borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(code)))))
-
-  def updateTransportLeavingBorder(transportLeavingTheBorder: TransportLeavingTheBorder): ExportsDeclaration =
-    copy(transport = transport.copy(borderModeOfTransportCode = Some(transportLeavingTheBorder)))
-
   def updateDepartureTransport(departure: DepartureTransport): ExportsDeclaration =
     copy(
       transport = transport.copy(
@@ -153,23 +147,23 @@ case class ExportsDeclaration(
       )
     )
 
-  def updateBorderTransport(borderTransport: BorderTransport): ExportsDeclaration =
+  def updateBorderTransport(borderTransport: BorderTransport): ExportsDeclaration = {
+    val transportType = borderTransport.meansOfTransportCrossingTheBorderType.trim
+    val transportRef = borderTransport.meansOfTransportCrossingTheBorderIDNumber.trim
     copy(
       transport = transport.copy(
-        meansOfTransportCrossingTheBorderType = Some(borderTransport.meansOfTransportCrossingTheBorderType),
-        meansOfTransportCrossingTheBorderIDNumber = Some(borderTransport.meansOfTransportCrossingTheBorderIDNumber),
+        meansOfTransportCrossingTheBorderType = if (transportType.isEmpty) None else Some(transportType),
+        meansOfTransportCrossingTheBorderIDNumber = if (transportRef.isEmpty) None else Some(transportRef),
         meansOfTransportCrossingTheBorderNationality = borderTransport.meansOfTransportCrossingTheBorderNationality
       )
     )
+  }
 
   def listOfAdditionalInformationOfItem(itemId: String): Seq[AdditionalInformation] =
     itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData.default).items
 
   def procedureCodeOfItem(itemId: String): Option[ProcedureCodesData] =
     itemBy(itemId).flatMap(_.procedureCodes)
-
-  def updateAuthorisationProcedureCodeChoice(authorisationProcedureCodeChoice: AuthorisationProcedureCodeChoice): ExportsDeclaration =
-    copy(parties = parties.copy(authorisationProcedureCodeChoice = Some(authorisationProcedureCodeChoice)))
 
   def removeAuthorisationProcedureCodeChoice(): ExportsDeclaration =
     copy(parties = parties.copy(authorisationProcedureCodeChoice = None))
@@ -197,7 +191,7 @@ case class ExportsDeclaration(
   def updatePreviousDocuments(previousDocuments: Seq[Document]): ExportsDeclaration =
     copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))
 
-  def updateReadyForSubmission(ready: Boolean) =
+  def updateReadyForSubmission(ready: Boolean): ExportsDeclaration =
     copy(readyForSubmission = Some(ready))
 
   def transform(function: ExportsDeclaration => ExportsDeclaration): ExportsDeclaration = function(this)

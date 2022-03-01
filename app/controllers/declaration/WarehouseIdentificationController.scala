@@ -16,13 +16,10 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.SupervisingCustomsOfficeHelper
+import controllers.navigation.Navigator
 import forms.declaration.WarehouseIdentification
-import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -32,6 +29,9 @@ import play.twirl.api.HtmlFormat
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.{warehouse_identification, warehouse_identification_yesno}
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class WarehouseIdentificationController @Inject()(
   authenticate: AuthAction,
@@ -74,6 +74,8 @@ class WarehouseIdentificationController @Inject()(
       case _                         => warehouseIdentificationPage(mode, form)
     }
 
-  private def updateCache(formData: WarehouseIdentification)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => model.copy(locations = model.locations.copy(warehouseIdentification = Some(formData))))
+  private def updateCache(formData: WarehouseIdentification)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { declaration =>
+      declaration.copy(locations = declaration.locations.copy(warehouseIdentification = Some(formData), inlandOrBorder = None))
+    }
 }

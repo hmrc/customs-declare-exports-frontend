@@ -17,13 +17,14 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes._
-import controllers.helpers.DeclarationHolderHelper.declarationHolders
+import controllers.declaration.routes.DeclarationHolderSummaryController
+import controllers.helpers.DeclarationHolderHelper.{declarationHolders, userCanLandOnIsAuthRequiredPage}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.declarationHolder.DeclarationHolder
 import handlers.ErrorHandler
+import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -65,7 +66,7 @@ class DeclarationHolderRemoveController @Inject()(
           _.answer match {
             case YesNoAnswers.yes =>
               updateExportsCache(holderToRemove)
-                .map(declaration => navigator.continueTo(mode, nextPageAfterRemoval(declaration)))
+                .map(_ => navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage))
 
             case YesNoAnswers.no =>
               Future.successful(navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage))
@@ -77,15 +78,15 @@ class DeclarationHolderRemoveController @Inject()(
   private val removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.remove.empty")
 
   private def updateExportsCache(holderToRemove: DeclarationHolder)(implicit r: JourneyRequest[_]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => {
-      val updatedHolders = declarationHolders.filterNot(_ == holderToRemove)
-      val updatedHoldersData = model.parties.declarationHoldersData.map(_.copy(holders = updatedHolders))
-      model.copy(parties = model.parties.copy(declarationHoldersData = updatedHoldersData))
-    })
+    updateDeclarationFromRequest(declaration => {
+      val maybeHoldersData = declaration.parties.declarationHoldersData
 
-  private def nextPageAfterRemoval(declaration: ExportsDeclaration): Mode => Call = {
-    val holdersData = declaration.parties.declarationHoldersData
-    if (holdersData.exists(_.holders.isEmpty) && holdersData.exists(_.isRequired.isDefined)) DeclarationHolderRequiredController.displayPage
-    else DeclarationHolderSummaryController.displayPage
-  }
+      val newHoldersData = maybeHoldersData.flatMap { holdersData =>
+        val holders = holdersData.holders.filterNot(_ == holderToRemove)
+        val isRequired = if (userCanLandOnIsAuthRequiredPage(declaration)) holdersData.isRequired else None
+        if (holders.isEmpty && isRequired.isEmpty) None else Some(DeclarationHoldersData(holders, isRequired))
+      }
+
+      declaration.copy(parties = declaration.parties.copy(declarationHoldersData = newHoldersData))
+    })
 }

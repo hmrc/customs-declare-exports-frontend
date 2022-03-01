@@ -184,7 +184,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
         }
 
         "update Cache with AuthorisationProcedureCodeChoice left unchanged" in {
-          withNewCaching(request.cacheModel.updateAuthorisationProcedureCodeChoice(Choice1040.value))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationProcedureCodeChoice(Choice1040)))
           val correctForm = Json.obj(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes)
 
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
@@ -221,7 +221,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
         }
 
         "update Cache with AuthorisationProcedureCodeChoice set to None" in {
-          withNewCaching(request.cacheModel.updateAuthorisationProcedureCodeChoice(Choice1040.value))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationProcedureCodeChoice(Choice1040)))
           val correctForm = Json.obj(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.no)
 
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue

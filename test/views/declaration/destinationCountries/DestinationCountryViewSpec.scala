@@ -19,13 +19,12 @@ package views.declaration.destinationCountries
 import base.Injector
 import connectors.CodeListConnector
 import controllers.declaration.routes
-import forms.common.YesNoAnswer.{No, Yes}
+import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}
-import models.codes.{Country => ModelCountry}
-import models.DeclarationType._
 import models.Mode
-import models.declaration.{DeclarationHoldersData, Parties}
+import models.codes.{Country => ModelCountry}
 import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -59,25 +58,24 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
   private def form(request: JourneyRequest[_]): Form[Country] =
     Countries.form(DestinationCountryPage)(request, messages(request), mockCodeListConnector)
 
-  private def view(implicit request: JourneyRequest[_]): Html = destinationCountryPage(Mode.Normal, form(request))(request, messages)
+  private def view(implicit request: JourneyRequest[_]): Html =
+    destinationCountryPage(Mode.Normal, form(request))(request, messages)
 
   "Destination country view spec" should {
-
     "have defined translation for used labels" in {
-
-      messages must haveTranslationFor("declaration.destinationCountry.title")
-      messages must haveTranslationFor("declaration.destinationCountry.body")
       messages must haveTranslationFor("declaration.destinationCountry.empty")
       messages must haveTranslationFor("declaration.destinationCountry.error")
-      messages must haveTranslationFor("declaration.section.3")
-      messages must haveTranslationFor("site.back")
-      messages must haveTranslationFor("site.save_and_continue")
-      messages must haveTranslationFor("site.save_and_come_back_later")
     }
   }
 
   onEveryDeclarationJourney() { implicit request =>
     "Destination country view spec" should {
+
+      "display a back button linking to the /authorisations-required page" in {
+        val backButton = view.getElementById("back-link")
+        backButton.text mustBe messages("site.back")
+        backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
+      }
 
       s"display page question for ${request.declarationType}" in {
         view(request).getElementsByTag("h1").text mustBe messages("declaration.destinationCountry.title")
@@ -101,80 +99,14 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     }
   }
 
-  onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
-    "Destination country view spec" should {
-
-      s"links to 'Declaration Holder Summary' page for ${request.declarationType}" when {
-
-        "cache contains DeclarationHoldersData.isRequired field with 'Yes' answer" in {
-          val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, Yes)))
-          val req = journeyRequest(request.cacheModel.copy(parties = parties))
-
-          val backButton = view(req).getElementById("back-link")
-
-          backButton.text mustBe messages("site.back")
-          backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
-        }
-
-        "cache does NOT contain DeclarationHoldersData.isRequired field" in {
-          val backButton = view(request).getElementById("back-link")
-
-          backButton.text mustBe messages("site.back")
-          backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
-        }
-      }
-
-      s"links to 'Declaration Holder Required' page for ${request.declarationType}" when {
-
-        "cache contains DeclarationHoldersData.isRequired field with 'No' answer" in {
-          val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, No)))
-          val req = journeyRequest(request.cacheModel.copy(parties = parties))
-
-          val backButton = view(req).getElementById("back-link")
-
+  "display a back button linking to the /is-authorisation-required page" when {
+    "AdditionalDeclarationType is 'STANDARD_PRE_LODGED' and" when {
+      List(Choice1040, ChoiceOthers).foreach { choice =>
+        s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
+          implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
+          val backButton = view.getElementById("back-link")
           backButton.text mustBe messages("site.back")
           backButton must haveHref(routes.DeclarationHolderRequiredController.displayPage())
-        }
-      }
-    }
-  }
-
-  onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
-    "Destination country view spec" should {
-
-      "display back button" that {
-
-        s"links to 'Declaration Holder Summary' page for ${request.declarationType}" when {
-
-          "cache contains DeclarationHoldersData.isRequired field with 'Yes' answer" in {
-            val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, Yes)))
-            val req = journeyRequest(request.cacheModel.copy(parties = parties))
-
-            val backButton = view(req).getElementById("back-link")
-
-            backButton.text mustBe messages("site.back")
-            backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
-          }
-
-          "cache does NOT contain DeclarationHoldersData.isRequired field" in {
-            val backButton = view(request).getElementById("back-link")
-
-            backButton.text mustBe messages("site.back")
-            backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
-          }
-        }
-
-        s"links to 'Declaration Holder Required' page for ${request.declarationType}" when {
-
-          "cache contains DeclarationHoldersData.isRequired field with 'No' answer" in {
-            val parties = Parties(declarationHoldersData = Some(DeclarationHoldersData(Seq.empty, No)))
-            val req = journeyRequest(request.cacheModel.copy(parties = parties))
-
-            val backButton = view(req).getElementById("back-link")
-
-            backButton.text mustBe messages("site.back")
-            backButton must haveHref(routes.DeclarationHolderRequiredController.displayPage())
-          }
         }
       }
     }

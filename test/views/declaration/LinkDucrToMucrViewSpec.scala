@@ -58,8 +58,10 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
         view.getElementsByTag("h1").first() must containMessage("declaration.linkDucrToMucr.title")
       }
 
-      "display the body paragraph" in {
-        view.getElementsByClass("govuk-body").first must containMessage("declaration.linkDucrToMucr.paragraph")
+      "display the notification banner" in {
+        val banner = view.getElementsByClass("govuk-notification-banner").first
+        banner.child(0) must containMessage("declaration.linkDucrToMucr.banner.title")
+        banner.child(1) must containMessage("declaration.linkDucrToMucr.banner.content")
       }
 
       "display two Yes/No radio buttons" in {
@@ -103,13 +105,7 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
           messages("declaration.linkDucrToMucr.details.hint1.link")
         )
 
-        val detailsHint2 = view.getElementById("link-ducr-to-mucr-hint2")
-        detailsHint2.child(0) must haveHref(appConfig.customsMovementsFrontendUrl)
-
-        removeBlanksIfAnyBeforeDot(detailsHint2.text) mustBe messages(
-          "declaration.linkDucrToMucr.details.hint2",
-          messages("declaration.linkDucrToMucr.details.hint2.link")
-        )
+        view.getElementById("link-ducr-to-mucr-hint2").text mustBe messages("declaration.linkDucrToMucr.details.hint2")
       }
     }
   }

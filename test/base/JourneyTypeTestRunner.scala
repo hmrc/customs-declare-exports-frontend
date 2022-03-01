@@ -112,6 +112,9 @@ trait JourneyTypeTestRunner extends UnitSpec with ExportsTestData {
   def additionalType(declaration: ExportsDeclaration): String =
     declaration.additionalDeclarationType.fold("")(at => s" and $at as additional declaration type")
 
+  def withRequestOfType(declarationType: DeclarationType, modifiers: ExportsDeclarationModifier*): JourneyRequest[AnyContent] =
+    journeyRequest(aDeclaration((List(withType(declarationType)) ++ modifiers.toList): _*))
+
   def withRequest(additionalType: AdditionalDeclarationType, modifiers: ExportsDeclarationModifier*): JourneyRequest[AnyContent] =
     journeyRequest(
       aDeclaration((List(withType(declarationType(additionalType)), withAdditionalDeclarationType(additionalType)) ++ modifiers.toList): _*)

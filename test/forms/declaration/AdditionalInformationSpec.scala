@@ -41,22 +41,32 @@ class AdditionalInformationSpec extends FormSpec with DeclarationPageBaseSpec {
 
     "has errors" when {
 
-      "code missing" in {
+      "no code is entered" in {
         val result = form.fillAndValidate(AdditionalInformation("", "description"))
         result.errors must contain("declaration.additionalInformation.code.empty")
       }
 
-      "code invalid" in {
+      "an invalid code is entered" in {
         val result = form.fillAndValidate(AdditionalInformation("123456", "description"))
         result.errors must contain("declaration.additionalInformation.code.error")
       }
 
-      "description missing" in {
+      "an invalid code is entered (RRS01)" in {
+        val result = form.fillAndValidate(AdditionalInformation("RRS01", "description"))
+        result.errors must contain("declaration.additionalInformation.code.error.rrs01")
+      }
+
+      "an invalid code is entered (LIC99)" in {
+        val result = form.fillAndValidate(AdditionalInformation("LIC99", "description"))
+        result.errors must contain("declaration.additionalInformation.code.error.lic99")
+      }
+
+      "no description is entered" in {
         val result = form.fillAndValidate(AdditionalInformation("12345", ""))
         result.errors must contain("declaration.additionalInformation.description.empty")
       }
 
-      "description invalid" in {
+      "an invalid description is entered" in {
         val result = form.fillAndValidate(AdditionalInformation("12345", "description!"))
         result.errors must contain("declaration.additionalInformation.description.error")
       }

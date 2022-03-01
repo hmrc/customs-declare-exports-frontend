@@ -38,9 +38,9 @@ object ModeOfTransportCode {
   val meaningfulModeOfTransportCodes: Set[ModeOfTransportCode] =
     Set(Maritime, Rail, Road, Air, PostalConsignment, RoRo, FixedTransportInstallations, InlandWaterway, Unknown)
 
-  def classicFormatter(errorKey: String): Formatter[ModeOfTransportCode] = formatter(meaningfulModeOfTransportCodes, errorKey)
+  def formatter(errorKey: String): Formatter[ModeOfTransportCode] = formatter(meaningfulModeOfTransportCodes, errorKey)
 
-  def clearanceJourneyFormatter(errorKey: String): Formatter[ModeOfTransportCode] = formatter(meaningfulModeOfTransportCodes + Empty, errorKey)
+  def formatterForClearance(errorKey: String): Formatter[ModeOfTransportCode] = formatter(meaningfulModeOfTransportCodes + Empty, errorKey)
 
   private def formatter(modeOfTransportCodesAllowed: Set[ModeOfTransportCode], errorKey: String): Formatter[ModeOfTransportCode] =
     new Formatter[ModeOfTransportCode] {

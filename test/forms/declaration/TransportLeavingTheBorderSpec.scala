@@ -18,120 +18,164 @@ package forms.declaration
 
 import base.JourneyTypeTestRunner
 import forms.common.DeclarationPageBaseSpec
-import models.DeclarationType._
+import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, Empty, RoRo}
+import forms.declaration.TransportLeavingTheBorder.{errorKey, suffixForLocationOfGoods}
+import org.scalatest.EitherValues
 
-class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {
+class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with EitherValues {
 
-  "TransportLeavingTheBorder classicMapping" should {
+  "TransportLeavingTheBorder's mapping for non-Clearance journeys" should {
 
-    "return Right" when {
-      "provided with allowed code" in {
+    "return no errors" when {
 
-        val input = Map("transportLeavingTheBorder" -> "1")
+      meaningfulModeOfTransportCodes.foreach { modeOfTransportCode =>
+        s"ModeOfTransportCode is $modeOfTransportCode and" when {
+          val input = Map("transportLeavingTheBorder" -> modeOfTransportCode.value)
 
-        val result = TransportLeavingTheBorder.classicMapping.bind(input)
+          "LocationOfGood's value is None" in {
+            val result = TransportLeavingTheBorder.mapping(false, None).bind(input)
 
-        result.isRight mustBe true
-        result.right.get mustBe TransportLeavingTheBorder(Some(ModeOfTransportCode.Maritime))
-      }
-    }
+            result.isRight mustBe true
+            result.value mustBe TransportLeavingTheBorder(Some(modeOfTransportCode))
+          }
 
-    "return form with errors" when {
+          s"LocationOfGood's value is present but does not end with '$suffixForLocationOfGoods'" in {
+            val result = TransportLeavingTheBorder.mapping(false, Some(LocationOfGoods("GBAUFEMLHRGGG"))).bind(input)
 
-      "provided with empty String" in {
-
-        val input = Map("transportLeavingTheBorder" -> "")
-
-        val result = TransportLeavingTheBorder.classicMapping.bind(input)
-
-        result.isLeft mustBe true
-        result.left.get.head.message mustBe "declaration.transportInformation.borderTransportMode.error.empty"
-      }
-
-      "provided with nocode value" in {
-
-        val input = Map("transportLeavingTheBorder" -> "nocode")
-
-        val result = TransportLeavingTheBorder.classicMapping.bind(input)
-
-        result.isLeft mustBe true
-        result.left.get.head.message mustBe "declaration.transportInformation.borderTransportMode.error.incorrect"
+            result.isRight mustBe true
+            result.value mustBe TransportLeavingTheBorder(Some(modeOfTransportCode))
+          }
+        }
       }
 
-      "provided with not allowed code" in {
+      "ModeOfTransportCode is RoRo and" when {
+        s"LocationOfGood's value is present and does end with '$suffixForLocationOfGoods'" in {
+          val input = Map("transportLeavingTheBorder" -> RoRo.value)
+          val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForLocationOfGoods"))
 
-        val input = Map("transportLeavingTheBorder" -> "123")
+          val result = TransportLeavingTheBorder.mapping(false, locationOfGoods).bind(input)
 
-        val result = TransportLeavingTheBorder.classicMapping.bind(input)
-
-        result.isLeft mustBe true
-        result.left.get.head.message mustBe "declaration.transportInformation.borderTransportMode.error.incorrect"
+          result.isRight mustBe true
+          result.value mustBe TransportLeavingTheBorder(Some(ModeOfTransportCode.RoRo))
+        }
       }
     }
   }
 
-  "TransportLeavingTheBorder clearanceMapping" should {
+  "TransportLeavingTheBorder's mapping for non-Clearance journeys" should {
 
-    "return Right" when {
+    "return errors" when {
 
-      "provided with nocode value" in {
-
-        val input = Map("transportLeavingTheBorder" -> "no-code")
-
-        val result = TransportLeavingTheBorder.clearanceMapping.bind(input)
-
-        result.isRight mustBe true
-        result.right.get mustBe TransportLeavingTheBorder(Some(ModeOfTransportCode.Empty))
-      }
-
-      "provided with allowed code" in {
-
-        val input = Map("transportLeavingTheBorder" -> "1")
-
-        val result = TransportLeavingTheBorder.clearanceMapping.bind(input)
-
-        result.isRight mustBe true
-        result.right.get mustBe TransportLeavingTheBorder(Some(ModeOfTransportCode.Maritime))
-      }
-    }
-
-    "return form with errors" when {
-
-      "provided with empty String" in {
-
+      "provided with an empty String" in {
         val input = Map("transportLeavingTheBorder" -> "")
 
-        val result = TransportLeavingTheBorder.clearanceMapping.bind(input)
+        val result = TransportLeavingTheBorder.mapping(false, None).bind(input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe "declaration.transportInformation.borderTransportMode.error.empty.optional"
+        result.left.get.head.message mustBe s"$errorKey.empty"
       }
 
-      "provided with not allowed code" in {
+      "provided with the 'Empty' ModeOfTransportCode value" in {
+        val input = Map("transportLeavingTheBorder" -> Empty.value)
 
-        val input = Map("transportLeavingTheBorder" -> "123")
-
-        val result = TransportLeavingTheBorder.clearanceMapping.bind(input)
+        val result = TransportLeavingTheBorder.mapping(false, None).bind(input)
 
         result.isLeft mustBe true
-        result.left.get.head.message mustBe "declaration.transportInformation.borderTransportMode.error.incorrect"
+        result.left.get.head.message mustBe s"$errorKey.incorrect"
+      }
+
+      "provided with an invalid ModeOfTransportCode value" in {
+        val input = Map("transportLeavingTheBorder" -> "123")
+
+        val result = TransportLeavingTheBorder.mapping(false, None).bind(input)
+
+        result.isLeft mustBe true
+        result.left.get.head.message mustBe s"$errorKey.incorrect"
+      }
+
+      s"LocationOfGood's value is present and does end with '$suffixForLocationOfGoods' and" when {
+        val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForLocationOfGoods"))
+
+        meaningfulModeOfTransportCodes.filter(_ != RoRo).foreach { modeOfTransportCode =>
+          s"ModeOfTransportCode is $modeOfTransportCode" in {
+            val input = Map("transportLeavingTheBorder" -> modeOfTransportCode.value)
+
+            val result = TransportLeavingTheBorder.mapping(false, locationOfGoods).bind(input)
+            result.left.get.head.message mustBe s"$errorKey.roro.required"
+          }
+        }
       }
     }
   }
 
-  "TransportLeavingTheBorder form method" should {
+  "TransportLeavingTheBorder's mapping for the Clearance journey" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      "return classicMapping" in {
+    "return no errors" when {
 
-        TransportLeavingTheBorder.form(request.declarationType).mapping mustBe TransportLeavingTheBorder.classicMapping
+      (meaningfulModeOfTransportCodes + Empty).foreach { modeOfTransportCode =>
+        s"ModeOfTransportCode is $modeOfTransportCode and" when {
+          val input = Map("transportLeavingTheBorder" -> modeOfTransportCode.value)
+
+          "LocationOfGood's value is None" in {
+            val result = TransportLeavingTheBorder.mapping(true, None).bind(input)
+
+            result.isRight mustBe true
+            result.value mustBe TransportLeavingTheBorder(Some(modeOfTransportCode))
+          }
+
+          s"LocationOfGood's value is present but does not end with '$suffixForLocationOfGoods'" in {
+            val result = TransportLeavingTheBorder.mapping(true, Some(LocationOfGoods("GBAUFEMLHRGGG"))).bind(input)
+
+            result.isRight mustBe true
+            result.value mustBe TransportLeavingTheBorder(Some(modeOfTransportCode))
+          }
+        }
+      }
+
+      "ModeOfTransportCode is RoRo and" when {
+        s"LocationOfGood's value is present and does end with '$suffixForLocationOfGoods'" in {
+          val input = Map("transportLeavingTheBorder" -> RoRo.value)
+          val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForLocationOfGoods"))
+
+          val result = TransportLeavingTheBorder.mapping(true, locationOfGoods).bind(input)
+
+          result.isRight mustBe true
+          result.value mustBe TransportLeavingTheBorder(Some(ModeOfTransportCode.RoRo))
+        }
       }
     }
 
-    onClearance { request =>
-      "return clearanceMapping" in {
+    "return errors" when {
 
-        TransportLeavingTheBorder.form(request.declarationType).mapping mustBe TransportLeavingTheBorder.clearanceMapping
+      "provided with an empty String" in {
+        val input = Map("transportLeavingTheBorder" -> "")
+
+        val result = TransportLeavingTheBorder.mapping(true, None).bind(input)
+
+        result.isLeft mustBe true
+        result.left.get.head.message mustBe s"$errorKey.empty.optional"
+      }
+
+      "provided with an invalid ModeOfTransportCode value" in {
+        val input = Map("transportLeavingTheBorder" -> "123")
+
+        val result = TransportLeavingTheBorder.mapping(true, None).bind(input)
+
+        result.isLeft mustBe true
+        result.left.get.head.message mustBe s"$errorKey.incorrect"
+      }
+
+      s"LocationOfGood's value is present and does end with '$suffixForLocationOfGoods' and" when {
+        val locationOfGoods = Some(LocationOfGoods(s"GBAUFEMLHR$suffixForLocationOfGoods"))
+
+        (meaningfulModeOfTransportCodes + Empty).filter(_ != RoRo).foreach { modeOfTransportCode =>
+          s"ModeOfTransportCode is $modeOfTransportCode" in {
+            val input = Map("transportLeavingTheBorder" -> modeOfTransportCode.value)
+
+            val result = TransportLeavingTheBorder.mapping(true, locationOfGoods).bind(input)
+            result.left.get.head.message mustBe s"$errorKey.roro.required"
+          }
+        }
       }
     }
   }

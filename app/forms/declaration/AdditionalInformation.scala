@@ -37,11 +37,13 @@ object AdditionalInformation extends DeclarationPage {
 
   val mapping = Forms.mapping(
     codeKey ->
-      text()
+      text
         .verifying("declaration.additionalInformation.code.empty", nonEmpty)
-        .verifying("declaration.additionalInformation.code.error", isEmpty or (isAlphanumeric and hasSpecificLength(5))),
+        .verifying("declaration.additionalInformation.code.error", isEmpty or (isAlphanumeric and hasSpecificLength(5)))
+        .verifying("declaration.additionalInformation.code.error.rrs01", code => isEmpty(code) or code != "RRS01")
+        .verifying("declaration.additionalInformation.code.error.lic99", code => isEmpty(code) or code != "LIC99"),
     descriptionKey ->
-      text()
+      text
         .verifying("declaration.additionalInformation.description.empty", nonEmpty)
         .verifying(
           "declaration.additionalInformation.description.error",
@@ -49,7 +51,7 @@ object AdditionalInformation extends DeclarationPage {
         )
   )(AdditionalInformation.apply)(AdditionalInformation.unapply)
 
-  def form(): Form[AdditionalInformation] = Form(mapping)
+  def form: Form[AdditionalInformation] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.item.additionalInformation.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

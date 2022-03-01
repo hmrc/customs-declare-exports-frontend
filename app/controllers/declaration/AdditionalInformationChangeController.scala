@@ -49,7 +49,7 @@ class AdditionalInformationChangeController @Inject()(
 
   def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     findAdditionalInformation(itemId, id) match {
-      case Some(document) => Ok(changePage(mode, itemId, id, form().fill(document).withSubmissionErrors()))
+      case Some(document) => Ok(changePage(mode, itemId, id, form.fill(document).withSubmissionErrors()))
       case _              => returnToSummary(mode, itemId)
     }
   }
@@ -57,7 +57,7 @@ class AdditionalInformationChangeController @Inject()(
   def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     findAdditionalInformation(itemId, id) match {
       case Some(existingInformation) =>
-        val boundForm = form().bindFromRequest()
+        val boundForm = form.bindFromRequest()
         boundForm.fold(
           formWithErrors => Future.successful(BadRequest(changePage(mode, itemId, id, formWithErrors))),
           updatedInformation => changeInformation(mode, itemId, id, existingInformation, updatedInformation, boundForm)
@@ -66,7 +66,7 @@ class AdditionalInformationChangeController @Inject()(
     }
   }
 
-  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+  private def returnToSummary(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(mode, routes.AdditionalInformationController.displayPage(_, itemId))
 
   private def findAdditionalInformation(itemId: String, id: String)(implicit request: JourneyRequest[AnyContent]): Option[AdditionalInformation] =
