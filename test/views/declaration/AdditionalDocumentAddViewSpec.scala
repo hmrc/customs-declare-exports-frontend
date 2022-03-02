@@ -65,7 +65,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
 
   "additional_document_add view" when {
 
-    onEveryDeclarationJourney(withItem(anItem(withoutAdditionalInformation()))) { implicit request =>
+    onJourney(CLEARANCE)(aDeclaration(withItem(anItem(withoutAdditionalInformation())))) { implicit request =>
       "display a 'Back' button that links to the 'Is Information Required' page" in {
         verifyBackButton(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
       }

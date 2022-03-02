@@ -425,22 +425,14 @@ class Navigator @Inject()(
   private def additionalDocumentsSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     routes.IsLicenseRequiredController.displayPage(mode, itemId)
 
-  private def additionalDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
-    if (cacheModel.listOfAdditionalDocuments(itemId).nonEmpty)
-      routes.AdditionalDocumentsController.displayPage(mode, itemId)
-    else {
-      if (cacheModel.listOfAdditionalInformationOfItem(itemId).isEmpty)
-        routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
-      else if (cacheModel.isAuthCodeRequiringAdditionalDocuments) additionalDocumentsSummaryPreviousPage(cacheModel, mode, itemId)
-      else {
+  private def additionalDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call = {
 
-        val isLicenseRequired = cacheModel.itemBy(itemId).exists(_.isLicenseRequired.contains(true))
+    val isLicenseRequired = cacheModel.itemBy(itemId).exists(_.isLicenseRequired.contains(true))
 
-        if (cacheModel.isAuthCodeRequiringAdditionalDocuments || isLicenseRequired) routes.IsLicenseRequiredController.displayPage(mode, itemId)
-        else routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId)
+    if (cacheModel.isAuthCodeRequiringAdditionalDocuments || isLicenseRequired) routes.IsLicenseRequiredController.displayPage(mode, itemId)
+    else routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId)
 
-      }
-    }
+  }
 
   private def additionalDocumentsSummaryClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.listOfAdditionalInformationOfItem(itemId).nonEmpty)
