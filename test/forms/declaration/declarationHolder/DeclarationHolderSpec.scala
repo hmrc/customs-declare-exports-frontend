@@ -19,7 +19,7 @@ package forms.declaration.declarationHolder
 import base.ExportsTestData._
 import base.JourneyTypeTestRunner
 import forms.common.{DeclarationPageBaseSpec, Eori}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{preLodgedTypes, STANDARD_PRE_LODGED}
 import forms.declaration.declarationHolder.DeclarationHolder._
 import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.correctDeclarationHolder
@@ -150,7 +150,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
 
       "provided with 'EXRR' as authorisationTypeCode with a pre-lodged declaration" in {
         val input = Map("authorisationTypeCode" -> "EXRR", "eori" -> eori, "eoriSource" -> eoriSource)
-        forAll(nonExrrAdditionalDeclarationTypes) { additionalDeclarationType =>
+        forAll(preLodgedTypes) { additionalDeclarationType =>
           val result = DeclarationHolder.mapping(eori, Some(additionalDeclarationType)).bind(input)
 
           result.isLeft mustBe true

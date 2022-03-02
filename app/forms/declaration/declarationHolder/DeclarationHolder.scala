@@ -62,14 +62,10 @@ object DeclarationHolder extends DeclarationPage {
       eoriSource -> requiredRadio("declaration.declarationHolder.eori.error.radio", EoriSource.values.map(_.toString))
     )(applyDeclarationHolder(userEori))(unapplyDeclarationHolder)
 
-  val nonExrrAdditionalDeclarationTypes =
-    List(STANDARD_PRE_LODGED, SIMPLIFIED_PRE_LODGED, OCCASIONAL_PRE_LODGED, CLEARANCE_PRE_LODGED)
-
   private def nonExrrSelectedForPrelodgedDecl(maybeCode: Option[String], maybeAdditionalDeclarationType: Option[AdditionalDeclarationType]): Boolean =
     maybeCode.fold(true) { authorisationCode =>
       maybeAdditionalDeclarationType.fold(true) { additionalDeclarationType =>
-        if (authorisationCode == "EXRR" && nonExrrAdditionalDeclarationTypes.contains(additionalDeclarationType)) false
-        else true
+        !(authorisationCode == "EXRR" && isPreLodged(additionalDeclarationType))
       }
     }
 

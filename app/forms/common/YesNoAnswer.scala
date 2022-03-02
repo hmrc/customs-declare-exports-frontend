@@ -47,8 +47,8 @@ object YesNoAnswer {
         .verifying(errorKey, isContainedIn(allowedValues))
     )(YesNoAnswer.apply)(YesNoAnswer.unapply)
 
-  val formId = "YesNo"
+  val formId = "yesNo"
 
-  def form(fieldName: String = "yesNo", errorKey: String = "error.yesNo.required"): Form[YesNoAnswer] =
+  def form(fieldName: String = formId, errorKey: String = "error.yesNo.required"): Form[YesNoAnswer] =
     Form(mapping(fieldName, errorKey))
 }
