@@ -83,14 +83,6 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
-      "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {
-
-        val backButton = view.getElementById("back-link")
-
-        backButton must containMessage(backCaption)
-        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
-      }
-
       "display 'Save and continue' button on page" in {
         val saveAndContinueButton = view.getElementById("submit")
         saveAndContinueButton must containMessage(saveAndContinueCaption)
@@ -106,10 +98,10 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
 
     val declarationWithAdditionalInfo = aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalInformation("1234", "Description"))))
 
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY)(declarationWithAdditionalInfo) { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY)(aDeclaration()) { implicit request =>
       val view = createView()
 
-      "display 'Back' button that links to 'Is License Required' page when additional info present" in {
+      "display 'Back' button that links to 'Is License Required' page" in {
 
         val backButton = view.getElementById("back-link")
 
@@ -129,6 +121,18 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
       }
 
+    }
+
+    onJourney(CLEARANCE)(aDeclaration()) { implicit request =>
+      val view = createView()
+
+      "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {
+
+        val backButton = view.getElementById("back-link")
+
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
+      }
     }
   }
 

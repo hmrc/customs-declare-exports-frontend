@@ -423,10 +423,7 @@ class Navigator @Inject()(
       routes.CommodityDetailsController.displayPage(mode, itemId)
 
   private def additionalDocumentsSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
-    if (cacheModel.listOfAdditionalInformationOfItem(itemId).isEmpty)
-      routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
-    else
-      routes.IsLicenseRequiredController.displayPage(mode, itemId)
+    routes.IsLicenseRequiredController.displayPage(mode, itemId)
 
   private def additionalDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.listOfAdditionalDocuments(itemId).nonEmpty)
