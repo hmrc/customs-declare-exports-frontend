@@ -31,7 +31,7 @@ class Waiver999LConfigSpec extends UnitWithMocksSpec {
 
   private def waiver999LConfig(configuration: Configuration) = new Waiver999LConfig(new FeatureSwitchConfig(configuration))
 
-  "BetaBannerConfig on isBetaBannerEnabled" should {
+  "999LConfig on is999LEnabled" should {
 
     "return true" when {
 
