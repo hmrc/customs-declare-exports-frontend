@@ -16,14 +16,15 @@
 
 package models.declaration
 
-import forms.declaration._
-import models.ExportsDeclaration
+import play.api.libs.json.{Json, OFormat}
 
-case class Items(totalNumberOfItems: Option[TotalNumberOfItems] = None, natureOfTransaction: Option[NatureOfTransaction] = None)
+case class Totals(
+  totalAmountInvoiced: Option[String],
+  totalAmountInvoicedCurrency: Option[String],
+  exchangeRate: Option[String],
+  totalPackage: Option[String]
+)
 
-object Items {
-  val id = "Items"
-
-  def apply(cacheData: ExportsDeclaration): Items =
-    Items(totalNumberOfItems = cacheData.totalNumberOfItems, natureOfTransaction = cacheData.natureOfTransaction)
+object Totals {
+  implicit val format: OFormat[Totals] = Json.format[Totals]
 }

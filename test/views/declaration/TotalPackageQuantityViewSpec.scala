@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.{OfficeOfExitController, TotalNumberOfItemsController}
 import forms.declaration.TotalPackageQuantity
 import models.DeclarationType._
 import models.Mode
@@ -86,7 +87,10 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
 
         "rendered with invalid form" should {
           "display error when all entered input is incorrect" in {
-            val form = TotalPackageQuantity.form(request.declarationType).withError("totalPackage", "declaration.totalPackageQuantity.error")
+            val form = TotalPackageQuantity
+              .form(request.declarationType)
+              .withError("totalPackage", "declaration.totalPackageQuantity.error")
+
             val view: Document = template.apply(Mode.Normal, form)(request, messages)
 
             view must haveGovukGlobalErrorSummary
@@ -104,13 +108,14 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         }
       }
     }
+
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "display back button" in {
         val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(TotalNumberOfItemsController.displayPage(Mode.Normal))
       }
     }
 
@@ -120,9 +125,8 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(OfficeOfExitController.displayPage(Mode.Normal))
       }
     }
   }
-
 }

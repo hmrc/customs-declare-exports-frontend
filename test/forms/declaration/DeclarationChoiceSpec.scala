@@ -26,7 +26,7 @@ class DeclarationChoiceSpec extends UnitSpec {
 
     "attach errors to form" when {
       "provided with  empty input" in {
-        val form = DeclarationChoice.form().bind(emptyChoiceJSON, JsonBindMaxChars)
+        val form = DeclarationChoice.form.bind(emptyChoiceJSON, JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -34,7 +34,7 @@ class DeclarationChoiceSpec extends UnitSpec {
       }
 
       "provided with a value not defined in AllowedChoiceValues" in {
-        val form = DeclarationChoice.form().bind(incorrectChoiceJSON, JsonBindMaxChars)
+        val form = DeclarationChoice.form.bind(incorrectChoiceJSON, JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -44,7 +44,7 @@ class DeclarationChoiceSpec extends UnitSpec {
 
     "not attach any error" when {
       "provided with valid input" in {
-        val form = DeclarationChoice.form().bind(correctChoiceJSON, JsonBindMaxChars)
+        val form = DeclarationChoice.form.bind(correctChoiceJSON, JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }

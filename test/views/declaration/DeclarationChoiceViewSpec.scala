@@ -38,7 +38,7 @@ import views.tags.ViewTest
 @ViewTest
 class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val form: Form[DeclarationChoice] = DeclarationChoice.form()
+  private val form: Form[DeclarationChoice] = DeclarationChoice.form
   private val choicePage = instanceOf[declaration_choice]
   private def createView(form: Form[DeclarationChoice] = form): Document =
     choicePage(Mode.Normal, form)(request, messages)
@@ -51,7 +51,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
     }
 
     "display radio buttons with description (not selected)" in {
-      val view = createView(DeclarationChoice.form())
+      val view = createView(DeclarationChoice.form)
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsUnChecked(view, "SUPPLEMENTARY")
@@ -79,7 +79,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
   "Choice View for invalid input" should {
 
     "display error when no choice is made" in {
-      val view = createView(DeclarationChoice.form().bind(Map[String, String]()))
+      val view = createView(DeclarationChoice.form.bind(Map[String, String]()))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", s"#${DeclarationType.STANDARD.toString}")
@@ -88,7 +88,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
     }
 
     "display error when choice is incorrect" in {
-      val view = createView(DeclarationChoice.form().bind(Map("type" -> "incorrect")))
+      val view = createView(DeclarationChoice.form.bind(Map("type" -> "incorrect")))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", s"#${DeclarationType.STANDARD.toString}")
@@ -99,7 +99,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
 
   "Choice View when filled" should {
     "display selected radio button - Create (SUPPLEMENTARY)" in {
-      val view = createView(DeclarationChoice.form().fill(DeclarationChoice(DeclarationType.SUPPLEMENTARY)))
+      val view = createView(DeclarationChoice.form.fill(DeclarationChoice(DeclarationType.SUPPLEMENTARY)))
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsChecked(view, "SUPPLEMENTARY")
@@ -138,7 +138,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
         appConfig
       )
 
-      val view = page(Mode.Normal, DeclarationChoice.form())(request, messages)
+      val view = page(Mode.Normal, DeclarationChoice.form)(request, messages)
 
       view.getElementsByTag("label").size mustBe 1
       view.getElementsByAttributeValue("for", "STANDARD") must containMessageForElements("declaration.type.standard")

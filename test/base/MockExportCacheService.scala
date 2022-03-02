@@ -16,10 +16,6 @@
 
 package base
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
-import scala.concurrent.Future
-
-import connectors.exchange.ExportsDeclarationExchange
 import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{never, times, verify, when}
@@ -29,6 +25,9 @@ import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.cache.{ExportsCacheService, ExportsDeclarationBuilder}
+
+import scala.collection.JavaConverters.asScalaIteratorConverter
+import scala.concurrent.Future
 
 trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder with BeforeAndAfterEach {
   self: Suite =>
@@ -40,7 +39,7 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
     when(mockExportsCacheService.update(any[ExportsDeclaration])(any()))
       .thenAnswer(withTheFirstArgument)
 
-    when(mockExportsCacheService.create(any[ExportsDeclarationExchange])(any()))
+    when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
       .thenReturn(Future.successful(dataToReturn.copy(id = existingDeclarationId)))
 
     when(mockExportsCacheService.get(anyString)(any()))
@@ -51,7 +50,7 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
     (invocation: InvocationOnMock) => Future.successful(invocation.getArgument(0))
 
   def withCreateResponse(declaration: ExportsDeclaration): Unit =
-    when(mockExportsCacheService.create(any[ExportsDeclarationExchange])(any()))
+    when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
       .thenReturn(Future.successful(declaration))
 
   def withNoDeclaration(): Unit =
@@ -69,15 +68,15 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
     captor.getAllValues.iterator.asScala.toList
   }
 
-  protected def theCacheModelCreated: ExportsDeclarationExchange = {
-    val captor = ArgumentCaptor.forClass(classOf[ExportsDeclarationExchange])
+  protected def theCacheModelCreated: ExportsDeclaration = {
+    val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
     verify(mockExportsCacheService).create(captor.capture())(any())
     captor.getValue
   }
 
   protected def verifyTheCacheIsUnchanged(): Unit = {
     verify(mockExportsCacheService, never()).update(any[ExportsDeclaration])(any())
-    verify(mockExportsCacheService, never()).create(any[ExportsDeclarationExchange])(any())
+    verify(mockExportsCacheService, never()).create(any[ExportsDeclaration])(any())
   }
 
   override protected def afterEach(): Unit = {
