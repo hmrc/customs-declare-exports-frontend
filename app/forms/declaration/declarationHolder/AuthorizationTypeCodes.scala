@@ -36,6 +36,9 @@ object AuthorizationTypeCodes {
   def isAuthCode(declaration: ExportsDeclaration, code: String): Boolean =
     declaration.declarationHolders.exists(_.authorisationTypeCode.exists(_ == code))
 
+  def isAuthCode(declaration: ExportsDeclaration, codes: Seq[String]): Boolean =
+    declaration.declarationHolders.exists(_.authorisationTypeCode.exists(codes.contains))
+
   val codesRequiringDocumentation = Set(
     "OPO",
     "REX",
