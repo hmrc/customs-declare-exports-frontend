@@ -16,20 +16,18 @@
 
 package services.cache
 
-import java.time.Instant
-
 import connectors.CustomsDeclareExportsConnector
-import connectors.exchange.ExportsDeclarationExchange
-import javax.inject.{Inject, Singleton}
 import models.ExportsDeclaration
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.Instant
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ExportsCacheService @Inject()(connector: CustomsDeclareExportsConnector)(implicit ec: ExecutionContext) {
 
-  def create(declaration: ExportsDeclarationExchange)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
+  def create(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
     connector.createDeclaration(declaration)
 
   def get(id: String)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = connector.findDeclaration(id)
