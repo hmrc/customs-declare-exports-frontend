@@ -20,6 +20,7 @@ import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
 import mock.ErrorHandlerMocks
+import models.DeclarationType._
 import models.Mode
 import models.declaration.AdditionalInformationData
 import org.mockito.ArgumentCaptor
@@ -152,16 +153,34 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         thePageNavigatedTo mustBe routes.AdditionalInformationAddController.displayPage(Mode.ErrorFix, itemId)
       }
 
-      "user submits valid No answer" in {
-        val item = anItem(withAdditionalInformation(additionalInformation))
-        withNewCaching(aDeclaration(withItems(item)))
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY)(aDeclaration()) { implicit request =>
+        "user submits valid No answer" in {
 
-        val requestBody = Json.obj("yesNo" -> "No")
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(anItem(withAdditionalInformation(additionalInformation)))))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId)
+          val requestBody = Json.obj("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId)
+        }
+
       }
+
+      onJourney(CLEARANCE)(aDeclaration()) { implicit request =>
+        "user submits valid No answer" in {
+
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(anItem(withAdditionalInformation(additionalInformation)))))
+
+          val requestBody = Json.obj("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+        }
+
+      }
+
     }
   }
 }

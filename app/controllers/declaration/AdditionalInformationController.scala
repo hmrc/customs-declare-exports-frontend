@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformationSummary
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -75,8 +75,10 @@ class AdditionalInformationController @Inject()(
     yesNoAnswer.answer match {
       case YesNoAnswers.yes =>
         navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
-      case _ =>
+      case YesNoAnswers.no if request.declarationType == DeclarationType.CLEARANCE =>
         navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
+      case _ =>
+        navigator.continueTo(mode, routes.IsLicenseRequiredController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
     }
 
   private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
