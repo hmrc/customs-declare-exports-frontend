@@ -19,6 +19,7 @@ package controllers.actions
 import base.{RequestBuilder, UnitWithMocksSpec}
 import com.typesafe.config.ConfigFactory
 import config.featureFlags.FeatureSwitchConfig
+import features.Feature
 import models.requests.JourneyRequest
 import models.{IdentityData, SignedInUser}
 import org.mockito.ArgumentCaptor
@@ -39,22 +40,12 @@ import scala.concurrent.Future
 
 class FeatureFlagActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with RequestBuilder {
 
-  private val cache = mock[ExportsCacheService]
   private val block = mock[JourneyRequest[_] => Future[Result]]
-  private val user = SignedInUser("eori", Enrolments(Set.empty), IdentityData())
-  private val declaration = aDeclaration()
-  private val refiner = new FeatureFlagAction(
-    new FeatureSwitchConfig(Configuration(ConfigFactory.parseString("microservice.services.features.default=disabled")))
-  )
-
-  private def request(declarationId: Option[String]): FakeRequest[AnyContentAsEmpty.type] = declarationId match {
-    case Some(id) =>
-      FakeRequest().withSession("declarationId" -> id)
-    case None => FakeRequest()
-  }
+  private val journey =
+    new JourneyRequest(buildAuthenticatedRequest(FakeRequest(), SignedInUser("eori", Enrolments(Set.empty), IdentityData())), aDeclaration())
 
   override def afterEach(): Unit = {
-    reset(cache, block)
+    reset(block)
     super.afterEach()
   }
 
@@ -62,28 +53,26 @@ class FeatureFlagActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach wi
 
     "permit request" when {
       "feature flag enabled" in {
+
         given(block.apply(any())).willReturn(Future.successful(Results.Ok))
-        given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
 
-        await(refiner.invokeBlock(???, block)) mustBe Results.Ok
+        val refiner =
+          new FeatureFlagAction(new FeatureSwitchConfig(Configuration(ConfigFactory.parseString("microservice.services.features.default=enabled"))))
 
-        val result = theRequestBuilt
-        result.cacheModel mustBe declaration
+        await(refiner(Feature.default).invokeBlock(journey, block)) mustBe Results.Ok
+
       }
 
-      def theRequestBuilt: JourneyRequest[_] = {
-        val captor = ArgumentCaptor.forClass(classOf[JourneyRequest[_]])
-        verify(block).apply(captor.capture())
-        captor.getValue
-      }
     }
 
     "block request" when {
 
       "feature flag disabled" in {
-        given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(None))
 
-        await(refiner.invokeBlock(???, block)) mustBe Results.Redirect(controllers.routes.RootController.displayPage())
+        val refiner =
+          new FeatureFlagAction(new FeatureSwitchConfig(Configuration(ConfigFactory.parseString("microservice.services.features.default=disabled"))))
+
+        await(refiner(Feature.default).invokeBlock(journey, block)) mustBe Results.Redirect(controllers.routes.RootController.displayPage())
       }
 
     }
