@@ -20,14 +20,13 @@ import forms.common.DeclarationPageBaseSpec
 import forms.declaration.TotalNumberOfItems._
 import models.viewmodels.TariffContentKey
 import play.api.data.FormError
-import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
 
-  private def formData(rate: Option[String] = None, amount: Option[String] = None, currency: Option[String] = None) =
+  private def formData(rate: Option[String] = None, amount: Option[String] = None, currency: Option[String] = None): Map[String, String] =
     rate.map(r => Map(exchangeRate -> r)).getOrElse(Map.empty[String, String]) ++
       amount.map(r => Map(totalAmountInvoiced -> r)).getOrElse(Map.empty[String, String]) ++
       currency.map(r => Map(totalAmountInvoicedCurrency -> r)).getOrElse(Map.empty[String, String])
@@ -255,17 +254,4 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
       }
     }
   }
-}
-
-object TotalNumberOfItemsSpec {
-  val correctTotalNumberOfItemsDecimalValues =
-    TotalNumberOfItems(Some("12312312312312.12"), Some("1212121.12345"), Some("GBP"))
-
-  val correctTotalNumberOfItemsDecimalValuesJSON: JsValue = JsObject(
-    Map(
-      "totalAmountInvoiced" -> JsString("1212312.12"),
-      "exchangeRate" -> JsString("1212121.12345"),
-      "totalAmountInvoicedCurrency" -> JsString("GBP")
-    )
-  )
 }

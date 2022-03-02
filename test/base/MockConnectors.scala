@@ -16,11 +16,7 @@
 
 package base
 
-import java.time.{ZoneOffset, ZonedDateTime}
-import java.util.UUID
-
 import connectors.CustomsDeclareExportsConnector
-import connectors.exchange.ExportsDeclarationExchange
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
@@ -32,6 +28,8 @@ import org.mockito.stubbing.{Answer, OngoingStubbing}
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.{ZoneOffset, ZonedDateTime}
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 // TODO This mock should extends BeforeAndAfterEach trait and has methods beforeEach and afterEach
@@ -39,7 +37,7 @@ trait MockConnectors extends MockitoSugar {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
 
   def successfulCustomsDeclareExportsResponse(): Unit =
-    when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclarationExchange])(any(), any()))
+    when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any()))
       .thenAnswer(withTheFirstArgument)
 
   private def withTheFirstArgument[T]: Answer[Future[T]] = new Answer[Future[T]] {
@@ -57,7 +55,7 @@ trait MockConnectors extends MockitoSugar {
       )
 
   def listOfSubmissions(): OngoingStubbing[Future[Seq[Submission]]] =
-    when(mockCustomsDeclareExportsConnector.fetchSubmissions()(any(), any()))
+    when(mockCustomsDeclareExportsConnector.fetchSubmissions(any(), any()))
       .thenReturn(
         Future.successful(
           Seq(

@@ -65,9 +65,7 @@ class EntryIntoDeclarantsRecordsController @Inject()(
       val updatedParties = validData.answer match {
         case YesNoAnswers.yes => model.parties.copy(isEntryIntoDeclarantsRecords = Some(validData))
         case YesNoAnswers.no =>
-          model
-            .removeAuthorisationProcedureCodeChoice()
-            .parties
+          model.removeAuthorisationProcedureCodeChoice.parties
             .copy(isEntryIntoDeclarantsRecords = Some(validData), personPresentingGoodsDetails = None)
       }
 

@@ -14,32 +14,29 @@
  * limitations under the License.
  *@
 
+@import controllers.declaration.routes.{NatureOfTransactionController, TotalNumberOfItemsController, TotalPackageQuantityController}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.linkContent
-@import views.html.components.gds.summary_list
-@import views.components.gds.ActionItemBuilder._
-@import views.html.declaration.summary._
+@import views.components.gds.ActionItemBuilder.actionItem
+@import views.html.components.gds.{linkContent, summary_list}
+@import views.html.declaration.summary.related_documents
 
 @this(
-        summaryList: summary_list,
-        linkContent: linkContent,
-        related_documents: related_documents
+    summaryList: summary_list,
+    linkContent: linkContent,
+    related_documents: related_documents
 )
 
-@(mode: Mode, declarationData: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
+@(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@hasTransactionData(declarationData: ExportsDeclaration) = @{
-   declarationData.totalNumberOfItems.isDefined || declarationData.natureOfTransaction.isDefined || declarationData.previousDocuments.isDefined
+@hasTransactionData = @{
+   declaration.totalNumberOfItems.isDefined || declaration.natureOfTransaction.isDefined || declaration.previousDocuments.isDefined
 }
 
-@actions(action: Actions) = @{
-    if(actionsEnabled) Some(action)
-    else None
-}
+@actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
-@if(hasTransactionData(declarationData)) {
-    @summaryList("declaration-transaction-summary", Some(messages("declaration.summary.transaction")), Seq(
-        declarationData.totalNumberOfItems.map(totalNumberOfItems =>
+@if(hasTransactionData) {
+    @summaryList("declaration-transaction-summary", Some(messages("declaration.summary.transaction")), List(
+        declaration.totalNumberOfItems.map { totalNumberOfItems =>
             SummaryListRow(
                 classes = "exchange-rate-row",
                 key = Key(
@@ -49,16 +46,17 @@
                     content = Text(totalNumberOfItems.exchangeRate.getOrElse(messages("site.no")))
                 ),
                 actions = actions(Actions(
-                    items = Seq(
+                    items = List(
                         actionItem(
-                            href = controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode).url,
+                            href = TotalNumberOfItemsController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.exchangeRate.change"))
                         )
-                    ))
+                    )
                 ))
-        ),
-        declarationData.totalNumberOfItems.flatMap(_.totalAmountInvoiced).map(totalAmountInvoiced =>
+            )
+        },
+        declaration.totalNumberOfItems.flatMap(_.totalAmountInvoiced.map { totalAmountInvoiced =>
             SummaryListRow(
                 classes = "item-amount-row",
                 key = Key(
@@ -66,40 +64,42 @@
                 ),
                 value = Value(
                     content = Text({
-                        val currencyCode = declarationData.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency).getOrElse("")
+                        val currencyCode = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency).getOrElse("")
                         s"$currencyCode $totalAmountInvoiced"
                     })
                 ),
                 actions = actions(Actions(
-                    items = Seq(
+                    items = List(
                         actionItem(
-                            href = controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode).url,
+                            href = TotalNumberOfItemsController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
                         )
-                    ))
+                    )
                 ))
-        ),
-        declarationData.totalPackageQuantity.map(totalPackageQuantity =>
+            )
+        }),
+        declaration.totalNumberOfItems.flatMap(_.totalPackage.map { totalPackage =>
             SummaryListRow(
                 classes = "total-no-of-packages-row",
                 key = Key(
                     content = Text(messages("declaration.summary.transaction.totalNoOfPackages"))
                 ),
                 value = Value(
-                    content = Text(totalPackageQuantity.totalPackage.getOrElse(""))
+                    content = Text(totalPackage)
                 ),
                 actions = actions(Actions(
-                    items = Seq(
+                    items = List(
                         actionItem(
-                            href = controllers.declaration.routes.TotalPackageQuantityController.displayPage(mode).url,
+                            href = TotalPackageQuantityController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.totalNoOfPackages.change"))
                         )
-                    ))
+                    )
                 ))
-        ),
-        declarationData.natureOfTransaction.map(natureOfTransaction =>
+           )
+        }),
+        declaration.natureOfTransaction.map { natureOfTransaction =>
             SummaryListRow(
                 classes = "nature-of-transaction-row",
                 key = Key(
@@ -109,20 +109,21 @@
                     content = Text(messages(s"declaration.summary.transaction.natureOfTransaction.${natureOfTransaction.natureType}"))
                 ),
                 actions = actions(Actions(
-                    items = Seq(
+                    items = List(
                         actionItem(
-                            href = controllers.declaration.routes.NatureOfTransactionController.displayPage(mode).url,
+                            href = NatureOfTransactionController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.natureOfTransaction.change"))
                         )
-                    ))
+                    )
                 ))
-        )
+           )
+        }
     ),
         classes = "govuk-!-margin-bottom-3"
     )
 
-    @declarationData.previousDocuments.map(previousDocuments =>
+    @declaration.previousDocuments.map(previousDocuments =>
         related_documents(mode, previousDocuments.documents, actionsEnabled)
     )
 }

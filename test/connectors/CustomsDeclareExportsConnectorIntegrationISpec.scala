@@ -19,13 +19,12 @@ package connectors
 import base.TestHelper._
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
-import connectors.exchange.ExportsDeclarationExchange
 import forms.{CancelDeclaration, Lrn}
-import models.{CancellationRequestSent, Page, Paginated}
-import models.declaration.notifications.Notification
-import models.declaration.submissions.{Action, Submission, SubmissionStatus}
-import models.declaration.submissions.RequestType.SubmissionRequest
 import models.CancellationStatus.CancellationStatusWrites
+import models.declaration.notifications.Notification
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{Action, Submission, SubmissionStatus}
+import models.{CancellationRequestSent, Page, Paginated}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status
@@ -40,8 +39,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
 
   private val id = "id"
   private val existingDeclaration = aDeclaration(withId(id))
-  private val newDeclarationExchange = ExportsDeclarationExchange.withoutId(aDeclaration())
-  private val existingDeclarationExchange = ExportsDeclarationExchange(existingDeclaration)
+
   private val action = Action(UUID.randomUUID().toString, SubmissionRequest)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, Seq(action))
   private val notification = Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
@@ -68,16 +66,17 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
           .willReturn(
             aResponse()
               .withStatus(Status.ACCEPTED)
-              .withBody(json(existingDeclarationExchange))
+              .withBody(json(existingDeclaration))
           )
       )
 
-      val response = await(connector.createDeclaration(newDeclarationExchange))
+      val newDeclaration = aDeclaration().copy(id = "")
+      val response = await(connector.createDeclaration(newDeclaration))
 
       response mustBe existingDeclaration
       verify(
         postRequestedFor(urlEqualTo("/declarations"))
-          .withRequestBody(containing(json(newDeclarationExchange)))
+          .withRequestBody(containing(json(newDeclaration)))
       )
     }
   }
@@ -89,7 +88,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
           .willReturn(
             aResponse()
               .withStatus(Status.ACCEPTED)
-              .withBody(json(existingDeclarationExchange))
+              .withBody(json(existingDeclaration))
           )
       )
 
@@ -98,7 +97,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
       response mustBe existingDeclaration
       verify(
         putRequestedFor(urlEqualTo(s"/declarations/id"))
-          .withRequestBody(containing(json(existingDeclarationExchange)))
+          .withRequestBody(containing(json(existingDeclaration)))
       )
     }
   }
@@ -164,7 +163,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(Paginated(Seq(existingDeclarationExchange), pagination, 1)))
+              .withBody(json(Paginated(Seq(existingDeclaration), pagination, 1)))
           )
       )
 
@@ -184,7 +183,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(Paginated(Seq(existingDeclarationExchange), pagination, 1)))
+              .withBody(json(Paginated(Seq(existingDeclaration), pagination, 1)))
           )
       )
 
@@ -202,7 +201,7 @@ class CustomsDeclareExportsConnectorIntegrationISpec extends ConnectorISpec with
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(existingDeclarationExchange))
+              .withBody(json(existingDeclaration))
           )
       )
 
