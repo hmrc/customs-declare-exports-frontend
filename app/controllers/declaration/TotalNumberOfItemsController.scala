@@ -16,14 +16,12 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.TotalPackageQuantityController
 import controllers.navigation.Navigator
 import forms.declaration.TotalNumberOfItems
 import forms.declaration.TotalNumberOfItems._
-import javax.inject.Inject
+import models.declaration.Totals
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -31,6 +29,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.total_number_of_items
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class TotalNumberOfItemsController @Inject()(
   authenticate: AuthAction,
@@ -46,7 +47,7 @@ class TotalNumberOfItemsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.totalNumberOfItems match {
-      case Some(data) => Ok(totalNumberOfItemsPage(mode, form.withSubmissionErrors.fill(data)))
+      case Some(data) => Ok(totalNumberOfItemsPage(mode, form.withSubmissionErrors.fill(TotalNumberOfItems(data))))
       case _          => Ok(totalNumberOfItemsPage(mode, form.withSubmissionErrors))
     }
   }
@@ -60,5 +61,16 @@ class TotalNumberOfItemsController @Inject()(
   }
 
   private def updateCache(totalNumberOfItems: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.copy(totalNumberOfItems = Some(totalNumberOfItems)))
+    updateDeclarationFromRequest { declaration =>
+      declaration.copy(
+        totalNumberOfItems = Some(
+          Totals(
+            totalAmountInvoiced = totalNumberOfItems.totalAmountInvoiced,
+            totalAmountInvoicedCurrency = totalNumberOfItems.totalAmountInvoicedCurrency,
+            exchangeRate = totalNumberOfItems.exchangeRate,
+            totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
+          )
+        )
+      )
+    }
 }

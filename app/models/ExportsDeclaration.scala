@@ -47,8 +47,7 @@ case class ExportsDeclaration(
   locations: Locations = Locations(),
   items: Seq[ExportItem] = Seq.empty,
   readyForSubmission: Option[Boolean] = None,
-  totalNumberOfItems: Option[TotalNumberOfItems] = None,
-  totalPackageQuantity: Option[TotalPackageQuantity] = None,
+  totalNumberOfItems: Option[Totals] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
@@ -73,7 +72,7 @@ case class ExportsDeclaration(
   def addOrUpdateContainer(container: Container): ExportsDeclaration =
     copy(transport = transport.addOrUpdateContainer(container))
 
-  def amend()(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
+  def asDraft(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
     val currentTime = Instant.now(clock)
     this.copy(status = DeclarationStatus.DRAFT, createdDateTime = currentTime, updatedDateTime = currentTime, sourceId = Some(id))
   }
@@ -165,7 +164,7 @@ case class ExportsDeclaration(
   def procedureCodeOfItem(itemId: String): Option[ProcedureCodesData] =
     itemBy(itemId).flatMap(_.procedureCodes)
 
-  def removeAuthorisationProcedureCodeChoice(): ExportsDeclaration =
+  def removeAuthorisationProcedureCodeChoice: ExportsDeclaration =
     copy(parties = parties.copy(authorisationProcedureCodeChoice = None))
 
   def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =

@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import controllers.declaration.routes.NatureOfTransactionController
+import controllers.routes.RootController
 import forms.declaration.TotalPackageQuantity
 import models.DeclarationType._
 import models.Mode
@@ -67,39 +69,43 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
   }
 
   "Total Package Quantity Controller" must {
+
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "return 200 (OK)" when {
+
         "cache is empty" in {
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
-
           status(result) mustBe OK
         }
+
         "cache is non empty" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withTotalPackageQuantity("1")))
 
           val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
-
           status(result) mustBe OK
         }
       }
+
       "return 400 (Bad Request)" when {
         "form is incorrect" in {
           withNewCaching(request.cacheModel)
 
-          val result = controller.saveTotalPackageQuantity(Mode.Normal).apply(postRequest(Json.obj("totalPackage" -> "one"), request.cacheModel))
-
+          val body = Json.obj("totalPackage" -> "one")
+          val result = controller.saveTotalPackageQuantity(Mode.Normal).apply(postRequest(body, request.cacheModel))
           status(result) mustBe BAD_REQUEST
         }
       }
-      val correctForm = Json.toJson(TotalPackageQuantity(Some("1")))
+
       "return 303 (See Other) redirect to next question" in {
         withNewCaching(request.cacheModel)
+
+        val correctForm = Json.toJson(TotalPackageQuantity(Some("1")))
         val result = controller.saveTotalPackageQuantity(Mode.Normal)(postRequest(correctForm, request.cacheModel))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayPage()
+        thePageNavigatedTo mustBe NatureOfTransactionController.displayPage()
       }
     }
 
@@ -110,9 +116,8 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
         val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain(controllers.routes.RootController.displayPage().url)
+        redirectLocation(result) must contain(RootController.displayPage().url)
       }
-
     }
   }
 }

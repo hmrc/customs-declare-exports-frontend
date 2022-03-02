@@ -92,20 +92,52 @@ trait ExportsDeclarationBuilder {
 
   def withoutTotalNumberOfItems(): ExportsDeclarationModifier = _.copy(totalNumberOfItems = None)
 
-  def withTotalNumberOfItems(totalNumberOfItems: TotalNumberOfItems): ExportsDeclarationModifier =
-    _.copy(totalNumberOfItems = Some(totalNumberOfItems))
+  def withTotalNumberOfItems(totalNumberOfItems: TotalNumberOfItems): ExportsDeclarationModifier = { declaration =>
+    declaration.copy(
+      totalNumberOfItems = Some(
+        Totals(
+          totalAmountInvoiced = totalNumberOfItems.totalAmountInvoiced,
+          totalAmountInvoicedCurrency = totalNumberOfItems.totalAmountInvoicedCurrency,
+          exchangeRate = totalNumberOfItems.exchangeRate,
+          totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
+        )
+      )
+    )
+  }
 
   def withTotalNumberOfItems(
     totalAmountInvoiced: Option[String] = None,
     exchangeRate: Option[String] = None,
     totalAmountInvoicedCurrency: Option[String] = None
-  ): ExportsDeclarationModifier =
-    _.copy(totalNumberOfItems = Some(TotalNumberOfItems(exchangeRate, totalAmountInvoiced, totalAmountInvoicedCurrency)))
+  ): ExportsDeclarationModifier = { declaration =>
+    declaration.copy(
+      totalNumberOfItems = Some(
+        Totals(
+          totalAmountInvoiced = totalAmountInvoiced,
+          totalAmountInvoicedCurrency = totalAmountInvoicedCurrency,
+          exchangeRate = exchangeRate,
+          totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
+        )
+      )
+    )
+  }
 
-  def withTotalPackageQuantity(quantity: String): ExportsDeclarationModifier =
-    _.copy(totalPackageQuantity = Some(TotalPackageQuantity(Some(quantity))))
+  def withTotalPackageQuantity(quantity: String): ExportsDeclarationModifier = { declaration =>
+    declaration.copy(
+      totalNumberOfItems = Some(
+        Totals(
+          totalAmountInvoiced = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoiced),
+          totalAmountInvoicedCurrency = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency),
+          exchangeRate = declaration.totalNumberOfItems.flatMap(_.exchangeRate),
+          totalPackage = Some(quantity)
+        )
+      )
+    )
+  }
 
-  def withoutTotalPackageQuantity: ExportsDeclarationModifier = _.copy(totalPackageQuantity = None)
+  def withoutTotalPackageQuantity: ExportsDeclarationModifier = { declaration =>
+    declaration.copy(totalNumberOfItems = declaration.totalNumberOfItems.map(_.copy(totalPackage = None)))
+  }
 
   def withAdditionalDeclarationType(decType: AdditionalDeclarationType = AdditionalDeclarationType.STANDARD_FRONTIER): ExportsDeclarationModifier =
     _.copy(additionalDeclarationType = Some(decType))
