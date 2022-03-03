@@ -63,7 +63,7 @@
 }
 
 @tableCaption = @{
-    if(licenseRequired) messages("declaration.summary.items.item.licenses")
+    if(licenseRequired) messages("declaration.summary.items.item.licences")
     else messages("declaration.summary.items.item.additionalDocuments")
 }
 
@@ -78,7 +78,7 @@
             Some(SummaryListRow(
                 classes = s"licenses-${item.sequenceId}-row",
                 key = Key(
-                    content = Text(messages("declaration.summary.items.item.licenses"))
+                    content = Text(messages("declaration.summary.items.item.licences"))
             ),
             value = Value(
             content = Text(messages("site.no"))
@@ -130,7 +130,7 @@
         Some(SummaryListRow(
             classes = s"licenses-${item.sequenceId}-row",
             key = Key(
-                content = Text(messages("declaration.summary.items.item.licenses"))
+                content = Text(messages("declaration.summary.items.item.licences"))
             ),
             value = Value(
                 content = Text(messages("site.no"))
