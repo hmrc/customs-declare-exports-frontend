@@ -58,8 +58,12 @@
     }
 }
 
+@licenseRequired = @{
+    item.isLicenseRequired.contains(true)
+}
+
 @tableCaption = @{
-    if(item.isLicenseRequired.contains(true)) messages("declaration.summary.items.item.licenses")
+    if(licenseRequired) messages("declaration.summary.items.item.licenses")
     else messages("declaration.summary.items.item.additionalDocuments")
 }
 
@@ -88,6 +92,10 @@
                 )
             )
         ))))))
+    }
+
+    @if(licenseRequired){
+        <h3 class="govuk-heading-s">@messages("declaration.summary.items.item.additionalDocuments")</h3>
     }
 
     @govukTable(Table(
