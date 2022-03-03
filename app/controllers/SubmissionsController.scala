@@ -16,14 +16,10 @@
 
 package controllers
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
-import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.helpers.SubmissionDisplayHelper
-import javax.inject.Inject
 import models.Mode.ErrorFix
 import models._
 import models.requests.ExportsSessionKeys
@@ -34,6 +30,9 @@ import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.summary.submitted_declaration_page
 import views.html.submissions
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionsController @Inject()(
   authenticate: AuthAction,
@@ -48,7 +47,7 @@ class SubmissionsController @Inject()(
   def displayListOfSubmissions(submissionsPages: SubmissionsPages = SubmissionsPages()): Action[AnyContent] =
     (authenticate andThen verifyEmail).async { implicit request =>
       for {
-        submissions <- customsDeclareExportsConnector.fetchSubmissions()
+        submissions <- customsDeclareExportsConnector.fetchSubmissions
         notifications <- customsDeclareExportsConnector.fetchNotifications()
 
         result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
@@ -65,7 +64,7 @@ class SubmissionsController @Inject()(
 
     actualDeclaration.flatMap {
       case Some(_) => Future.successful(Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)))
-      case _       => createNewDraftDec(id, redirect)
+      case _       => createDraftDeclaration(id, redirect)
     }
   }
 
@@ -98,19 +97,19 @@ class SubmissionsController @Inject()(
 
       actualDeclaration.flatMap {
         case Some(dec) if dec.sourceId.contains(id) => Future.successful(redirect)
-        case _                                      => createNewDraftDec(id, redirect)
+        case _                                      => createDraftDeclaration(id, redirect)
       }
     }
 
-  private def createNewDraftDec(id: String, redirect: Result)(implicit request: WrappedRequest[AnyContent]): Future[Result] =
+  private def createDraftDeclaration(id: String, redirect: Result)(implicit request: WrappedRequest[AnyContent]): Future[Result] =
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
-        val amendedDeclaration = ExportsDeclarationExchange.withoutId(declaration.amend())
         customsDeclareExportsConnector
-          .createDeclaration(amendedDeclaration)
-          .map { created =>
-            redirect.addingToSession(ExportsSessionKeys.declarationId -> created.id)
+          .createDeclaration(declaration.asDraft)
+          .map { draftDeclaration =>
+            redirect.addingToSession(ExportsSessionKeys.declarationId -> draftDeclaration.id)
           }
+
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }
 }

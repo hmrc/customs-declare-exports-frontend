@@ -16,25 +16,24 @@
 
 package controllers.declaration
 
-import java.time.Instant
-import scala.concurrent.{ExecutionContext, Future}
-import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.{AuthAction, VerifiedEmailAction}
+import controllers.declaration.routes.AdditionalDeclarationTypeController
 import forms.declaration.DeclarationChoice
 import forms.declaration.DeclarationChoice._
-
-import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, DeclarationType, SIMPLIFIED}
 import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import play.api.Logging
-import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declaration_choice
+
+import java.time.Instant
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationChoiceController @Inject()(
   authenticate: AuthAction,
@@ -48,37 +47,48 @@ class DeclarationChoiceController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     request.declarationId match {
       case Some(id) =>
-        exportsCacheService.get(id).map(_.map(_.`type`)).map {
-          case Some(data) => Ok(choicePage(mode, form().fill(DeclarationChoice(data))))
-          case _          => Ok(choicePage(mode, form()))
+        exportsCacheService.get(id).map {
+          case Some(declaration) => Ok(choicePage(mode, form.fill(DeclarationChoice(declaration.`type`))))
+          case _                 => Ok(choicePage(mode, form))
         }
-      case _ => Future.successful(Ok(choicePage(mode, form())))
+
+      case _ => Future.successful(Ok(choicePage(mode, form)))
     }
   }
 
   def submitChoice(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    form()
-      .bindFromRequest()
+    form.bindFromRequest
       .fold(
-        (formWithErrors: Form[DeclarationChoice]) => Future.successful(BadRequest(choicePage(mode, formWithErrors))),
-        choice => {
-          val declarationType = choice.value
-
+        formWithErrors => Future.successful(BadRequest(choicePage(mode, formWithErrors))),
+        declarationType =>
           request.declarationId match {
-            case Some(id) =>
-              updateDeclarationType(id, declarationType).map { _ =>
-                Redirect(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode))
-                  .addingToSession(ExportsSessionKeys.declarationId -> id)
-              }
-            case _ =>
-              create(declarationType) map { created =>
-                Redirect(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode))
-                  .addingToSession(ExportsSessionKeys.declarationId -> created.id)
-              }
-          }
+            case Some(id) => updateDeclarationType(id, declarationType.value).map(_ => nextPage(mode, id))
+            case _        => create(declarationType.value).map(created => nextPage(mode, created.id))
         }
       )
   }
+
+  private def clearAuthorisationProcedureCodeChoiceIfRequired(declaration: ExportsDeclaration): ExportsDeclaration =
+    declaration.`type` match {
+      case CLEARANCE | SIMPLIFIED => declaration.removeAuthorisationProcedureCodeChoice
+      case _                      => declaration
+    }
+
+  private def create(declarationType: DeclarationType)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
+    exportsCacheService.create(
+      ExportsDeclaration(
+        id = "",
+        status = DeclarationStatus.INITIAL,
+        createdDateTime = Instant.now,
+        updatedDateTime = Instant.now,
+        sourceId = None,
+        `type` = declarationType
+      )
+    )
+
+  private def nextPage(mode: Mode, declarationId: String)(implicit request: RequestHeader): Result =
+    Redirect(AdditionalDeclarationTypeController.displayPage(mode))
+      .addingToSession(ExportsSessionKeys.declarationId -> declarationId)
 
   private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = {
     val updatedDeclaration = exportsCacheService.get(id).map { maybeDeclaration =>
@@ -94,23 +104,4 @@ class DeclarationChoiceController @Inject()(
         Future.successful(None)
     }
   }
-
-  private def clearAuthorisationProcedureCodeChoiceIfRequired(dec: ExportsDeclaration): ExportsDeclaration =
-    dec.`type` match {
-      case CLEARANCE | SIMPLIFIED => dec.removeAuthorisationProcedureCodeChoice()
-      case _                      => dec
-    }
-
-  private def create(`type`: DeclarationType)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
-    exportsCacheService
-      .create(
-        ExportsDeclarationExchange(
-          None,
-          DeclarationStatus.INITIAL,
-          createdDateTime = Instant.now,
-          updatedDateTime = Instant.now,
-          sourceId = None,
-          `type`
-        )
-      )
 }

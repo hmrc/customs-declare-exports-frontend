@@ -18,6 +18,7 @@ package forms.declaration
 
 import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
 import models.DeclarationType.DeclarationType
+import models.declaration.Totals
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.{optional, text}
@@ -29,6 +30,9 @@ case class TotalNumberOfItems(exchangeRate: Option[String], totalAmountInvoiced:
 
 object TotalNumberOfItems extends DeclarationPage {
   implicit val format = Json.format[TotalNumberOfItems]
+
+  def apply(totals: Totals): TotalNumberOfItems =
+    TotalNumberOfItems(totals.exchangeRate, totals.totalAmountInvoiced, totals.totalAmountInvoicedCurrency)
 
   val formId = "TotalNumberOfItems"
   val exchangeRate = "exchangeRate"

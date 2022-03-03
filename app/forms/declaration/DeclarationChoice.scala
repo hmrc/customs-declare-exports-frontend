@@ -36,5 +36,5 @@ object DeclarationChoice extends DeclarationPage {
         )
   )
 
-  def form(): Form[DeclarationChoice] = Form(mapping)
+  def form: Form[DeclarationChoice] = Form(mapping)
 }
