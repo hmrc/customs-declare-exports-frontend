@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package features
+package config.featureFlags
 
-import play.api.mvc.PathBindable
+import features.Feature
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-object Feature extends Enumeration {
-  type Feature = Value
-  val betaBanner, default, ead, sfus, secureMessagingInbox, googleFormFeedbackLink, queryNotificationMessage, commodities, tdrUnauthorisedMessage,
-  waiver999L =
-    Value
+import javax.inject.{Inject, Singleton}
 
-  implicit object FeaturePathStringBinder
-      extends PathBindable.Parsing[Feature.Feature](
-        withName,
-        _.toString,
-        (k: String, e: Exception) => "Cannot parse %s as Feature: %s".format(k, e.getMessage)
-      )
+@Singleton
+class Waiver999LConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
+  val is999LEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.waiver999L)
 }
