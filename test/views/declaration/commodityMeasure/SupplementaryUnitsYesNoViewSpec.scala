@@ -76,7 +76,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
         val text = messages("declaration.supplementaryUnits.yesNo.body", linkWithCommodityCode)
         body.text mustBe text
 
-        val href = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
+        val href = appConfig.suppUnitsCommodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
         body.child(0) must haveHref(href)
       }
 

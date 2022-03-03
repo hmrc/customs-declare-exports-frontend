@@ -53,7 +53,7 @@
     @request.cacheModel.commodityCodeOfItem(itemId).map { commodityCode =>
         @link(
             text = messages("declaration.supplementaryUnits.yesNo.body.link.1", commodityCode),
-            call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)),
+            call = Call("GET", appConfig.suppUnitsCommodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)),
             target = "_blank"
         )
     }.getOrElse {
