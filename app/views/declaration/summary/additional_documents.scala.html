@@ -19,6 +19,7 @@
 @import models.declaration.ExportItem
 @import models.declaration.AdditionalDocuments
 @import models.Mode
+@import models.DeclarationType.DeclarationType
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
@@ -37,6 +38,7 @@
     mode: Mode,
     item: ExportItem,
     additionalDocuments: AdditionalDocuments,
+    declarationType: DeclarationType,
     actionsEnabled: Boolean = true
 )(implicit messages: Messages)
 
@@ -63,7 +65,7 @@
 }
 
 @tableCaption = @{
-    if(licenseRequired) messages("declaration.summary.items.item.licences")
+    if(licenseRequired && declarationType != DeclarationType.CLEARANCE) messages("declaration.summary.items.item.licences")
     else messages("declaration.summary.items.item.additionalDocuments")
 }
 
@@ -73,7 +75,7 @@
 
 @if(additionalDocuments.documents.nonEmpty){
 
-    @if(!item.isLicenseRequired.contains(true)){
+    @if(!licenseRequired && declarationType != DeclarationType.CLEARANCE){
         @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
             Some(SummaryListRow(
                 classes = s"licenses-${item.sequenceId}-row",
@@ -94,7 +96,7 @@
         ))))))
     }
 
-    @if(licenseRequired){
+    @if(licenseRequired && declarationType != DeclarationType.CLEARANCE){
         <h3 class="govuk-heading-s">@messages("declaration.summary.items.item.additionalDocuments")</h3>
     }
 
@@ -125,7 +127,8 @@
         attributes = Map("id" -> s"additional-documents-${item.sequenceId}-table")
     ))
 
-} else {
+} else if (declarationType != DeclarationType.CLEARANCE) {
+
     @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
         Some(SummaryListRow(
             classes = s"licenses-${item.sequenceId}-row",
@@ -163,4 +166,27 @@
             ))
         ))
     ))
+} else {
+
+@summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
+Some(SummaryListRow(
+classes = s"additional-documents-${item.sequenceId}-row",
+key = Key(
+content = Text(messages("declaration.summary.items.item.additionalDocuments"))
+),
+value = Value(
+content = Text(messages("site.no"))
+),
+actions = actions(Actions(
+items = Seq(
+actionItem(
+href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
+content = HtmlContent(linkContent(messages("site.change"))),
+visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+)
+)
+))
+))
+))
+
 }

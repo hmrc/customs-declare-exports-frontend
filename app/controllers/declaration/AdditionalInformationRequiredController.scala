@@ -72,12 +72,9 @@ class AdditionalInformationRequiredController @Inject()(
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
     yesNoAnswer.answer match {
-      case YesNoAnswers.yes => AdditionalInformationController.displayPage(_, itemId)
-      case YesNoAnswers.no =>
-        request.declarationType match {
-          case DeclarationType.CLEARANCE => AdditionalDocumentsController.displayPage(_, itemId)
-          case _                         => IsLicenseRequiredController.displayPage(_, itemId)
-        }
+      case YesNoAnswers.yes                                                        => AdditionalInformationController.displayPage(_, itemId)
+      case YesNoAnswers.no if request.declarationType == DeclarationType.CLEARANCE => AdditionalDocumentsController.displayPage(_, itemId)
+      case _                                                                       => IsLicenseRequiredController.displayPage(_, itemId)
     }
 
   private def previousAnswer(itemId: String)(implicit request: JourneyRequest[AnyContent]): Form[YesNoAnswer] =
