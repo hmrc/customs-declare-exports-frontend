@@ -42,6 +42,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
   val controller = new AdditionalInformationController(
     mockAuthAction,
     mockJourneyAction,
+    mockWaiver999LConfig,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
@@ -154,7 +155,11 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
       }
 
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY)(aDeclaration()) { implicit request =>
-        "user submits valid No answer" in {
+        "user submits valid No answer redirect to `Is License Required?` " in {
+
+          when {
+            mockWaiver999LConfig.is999LEnabled
+          } thenReturn true
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(anItem(withAdditionalInformation(additionalInformation)))))
 
@@ -168,7 +173,29 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
       }
 
       onJourney(CLEARANCE)(aDeclaration()) { implicit request =>
-        "user submits valid No answer" in {
+        "user submits valid No answer redirect to `Additional Documents` " in {
+
+          when {
+            mockWaiver999LConfig.is999LEnabled
+          } thenReturn true
+
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(anItem(withAdditionalInformation(additionalInformation)))))
+
+          val requestBody = Json.obj("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+        }
+
+      }
+
+      onEveryDeclarationJourney() { request =>
+        "user submits valid No answer redirect to `Additional Documents` if 999l disabled" in {
+
+          when {
+            mockWaiver999LConfig.is999LEnabled
+          } thenReturn false
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(anItem(withAdditionalInformation(additionalInformation)))))
 
