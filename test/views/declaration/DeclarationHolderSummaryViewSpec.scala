@@ -17,12 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.{
-  AdditionalActorsSummaryController,
-  AuthorisationProcedureCodeChoiceController,
-  ConsigneeDetailsController,
-  DeclarationHolderRequiredController
-}
+import controllers.declaration.routes.{AdditionalActorsSummaryController, AuthorisationProcedureCodeChoiceController, ConsigneeDetailsController}
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
@@ -62,27 +57,27 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
       }
     }
 
-    "display a back button linking to the /is-authorisation-required page" when {
+    "display a back button linking to the /authorisation-choice page" when {
       "AdditionalDeclarationType is 'STANDARD_PRE_LODGED' and" when {
         List(Choice1040, ChoiceOthers).foreach { choice =>
           s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
             val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
             val view = createView()(request)
-            view.getElementById("back-link") must haveHref(DeclarationHolderRequiredController.displayPage(Normal))
+            view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
           }
         }
       }
     }
 
-    onJourney(OCCASIONAL) { implicit request =>
-      "display back link to Other Parties page" in {
+    onOccasional { implicit request =>
+      "display a back button linking  to the /other-parties-involved page" in {
         val view = createView()
         view.getElementById("back-link") must haveHref(AdditionalActorsSummaryController.displayPage(Normal))
       }
     }
 
     onClearance { implicit req =>
-      "display back link to Authorisation Choice page" when {
+      "display a back button linking to the /authorisation-choice page" when {
         "EIDR is true" in {
           val request = journeyRequest(req.cacheModel.copy(parties = Parties(isEntryIntoDeclarantsRecords = Yes)))
 
@@ -91,7 +86,7 @@ class DeclarationHolderSummaryViewSpec extends UnitViewSpec with ExportsTestData
         }
       }
 
-      "display back link to Consignee Details page" when {
+      "display a back button linking to the /consignee-details page" when {
         "EIDR is false" in {
           val request = journeyRequest(req.cacheModel.copy(parties = Parties(isEntryIntoDeclarantsRecords = No)))
 

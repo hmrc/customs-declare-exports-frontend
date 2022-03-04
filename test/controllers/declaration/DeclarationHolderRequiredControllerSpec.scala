@@ -19,15 +19,18 @@ package controllers.declaration
 import base.ControllerSpec
 import controllers.declaration.routes.{DeclarationHolderAddController, DeclarationHolderSummaryController, DestinationCountryController}
 import forms.common.{Eori, YesNoAnswer}
+import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.DeclarationHolder
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY}
-import models.Mode
+import models.DeclarationType.{CLEARANCE, OCCASIONAL}
 import models.declaration.EoriSource
+import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -58,7 +61,7 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration(withDeclarationHolders()))
+    withNewCaching(aDeclaration(withType(OCCASIONAL), withDeclarationHolders()))
     await(controller.displayPage(Mode.Normal)(request))
     theResponseForm
   }
@@ -72,52 +75,34 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
     verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
-  "DeclarationHolder Required Controller" should {
+  "DeclarationHolderRequiredController.displayPage" when {
 
-    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY) { request =>
-      "return 200 (OK)" when {
-        "display page method (GET) is invoked and cache is empty" in {
-          withNewCaching(request.cacheModel)
+    "additional declaration type is STANDARD_PRE_LODGED and" when {
+      List(Choice1040, ChoiceOthers) foreach { choice =>
+        s"AuthorisationProcedureCodeChoice is '${choice.value}'" should {
+          val declaration = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice)).cacheModel
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+          verify200(declaration)
 
-          status(result) mustBe OK
-          verifyPageInvoked()
-        }
-      }
-
-      "return 303 (SEE_OTHER)" when {
-        "display page method (GET) is invoked and cache contains already one or more authorisations" in {
-          val declarationHolder: DeclarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")), Some(EoriSource.OtherEori))
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Mode.Normal)
+          verify303(declaration)
         }
       }
     }
 
-    onJourney(CLEARANCE, OCCASIONAL, STANDARD, SUPPLEMENTARY) { request =>
-      "return 400 (BAD_REQUEST)" when {
-        "the user submits the page but does not answer with yes or no" in {
-          withNewCaching(request.cacheModel)
-
-          val requestBody = Seq("yesNo" -> "")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-          status(result) mustBe BAD_REQUEST
-          verifyPageInvoked()
-        }
+    onJourney(CLEARANCE, OCCASIONAL) { request =>
+      "the declaration does not contain any authorisation" should {
+        verify200(request.cacheModel)
       }
 
-      "return 303 (SEE_OTHER)" when {
-        "the user submits the page answering Yes" in {
-          withNewCaching(request.cacheModel)
+      verify303(request.cacheModel)
+    }
 
-          val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+    List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, SIMPLIFIED_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED, SUPPLEMENTARY_EIDR) foreach { additionalType =>
+      s"the additional declaration type is $additionalType" should {
+        "redirect to the /add-authorisations-required page" in {
+          withNewCaching(withRequest(additionalType).cacheModel)
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage(Mode.Normal)
@@ -125,30 +110,92 @@ class DeclarationHolderRequiredControllerSpec extends ControllerSpec with Option
       }
     }
 
-    "re-direct to the next question" when {
-      onJourney(STANDARD, SUPPLEMENTARY) { request =>
-        "the user submits the page answering No" in {
-          withNewCaching(request.cacheModel)
+    def verify200(declaration: ExportsDeclaration): Unit =
+      "return 200 (OK)" in {
+        withNewCaching(declaration)
 
-          val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+        val result = controller.displayPage(Mode.Normal)(getRequest())
+
+        status(result) mustBe OK
+        verifyPageInvoked()
+      }
+
+    def verify303(declaration: ExportsDeclaration): Unit =
+      "the declaration contains already one or more authorisations" should {
+        "redirect to the /authorisations-required page" in {
+          val declarationHolder = DeclarationHolder(Some("ACE"), Some(Eori("GB56523343784324")), Some(EoriSource.OtherEori))
+          withNewCaching(aDeclarationAfter(declaration, withDeclarationHolders(declarationHolder)))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DestinationCountryController.displayPage(Mode.Normal)
+          thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Mode.Normal)
         }
       }
 
-      onJourney(CLEARANCE, OCCASIONAL) { request =>
-        "the user submits the page answering No" in {
-          withNewCaching(request.cacheModel)
+  }
 
-          val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+  "DeclarationHolderRequiredController.submitForm" when {
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe DestinationCountryController.displayPage(Mode.Normal)
+    "additional declaration type is STANDARD_PRE_LODGED and" when {
+      List(Choice1040, ChoiceOthers) foreach { choice =>
+        s"AuthorisationProcedureCodeChoice is '${choice.value}' and" when {
+          val declaration = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice)).cacheModel
+
+          verify303ReturnedOnYes(declaration)
+
+          verify303ReturnedOnNo(declaration)
+
+          verify400(declaration)
         }
       }
     }
+
+    onJourney(CLEARANCE, OCCASIONAL) { request =>
+      verify303ReturnedOnYes(request.cacheModel)
+
+      verify303ReturnedOnNo(request.cacheModel)
+
+      verify400(request.cacheModel)
+    }
+
+    def verify303ReturnedOnYes(declaration: ExportsDeclaration): Unit =
+      "the user submits the page answering Yes" should {
+        "redirect to the /add-authorisations-required page" in {
+          withNewCaching(declaration)
+
+          val body = Json.obj("yesNo" -> "Yes")
+          val result = controller.submitForm(Mode.Normal)(postRequest(body))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage(Mode.Normal)
+        }
+      }
+
+    def verify303ReturnedOnNo(declaration: ExportsDeclaration): Unit =
+      "the user submits the page answering No" should {
+        "redirect to the /destination-country page" in {
+          withNewCaching(declaration)
+
+          val body = Json.obj("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal)(postRequest(body))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe DestinationCountryController.displayPage(Mode.Normal)
+        }
+      }
+
+    def verify400(declaration: ExportsDeclaration): Unit =
+      "the user submits the page but does not answer with yes or no" should {
+        "return 400 (BAD_REQUEST)" in {
+          withNewCaching(declaration)
+
+          val body = Json.obj("yesNo" -> "")
+          val result = controller.submitForm(Mode.Normal)(postRequest(body))
+
+          status(result) mustBe BAD_REQUEST
+          verifyPageInvoked()
+        }
+      }
   }
 }

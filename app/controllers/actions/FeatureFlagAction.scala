@@ -23,8 +23,6 @@ import features.Feature
 import models.requests.JourneyRequest
 import play.api.Logging
 import play.api.mvc.{ActionRefiner, Result, Results}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,9 +43,7 @@ class FeatureFlagAction @Inject()(featureSwitchConfig: FeatureSwitchConfig)(impl
       override protected def refine[A](request: JourneyRequest[A]): RefineResult[A] = refineOnFeatureFlag(request, feature)
     }
 
-  private def refineOnFeatureFlag[A](request: JourneyRequest[A], feature: Feature.Value): RefineResult[A] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
+  private def refineOnFeatureFlag[A](request: JourneyRequest[A], feature: Feature.Value): RefineResult[A] =
     Future.successful {
       if (featureSwitchConfig.isFeatureOn(feature)) Right(request)
       else {
@@ -55,6 +51,4 @@ class FeatureFlagAction @Inject()(featureSwitchConfig: FeatureSwitchConfig)(impl
         Left(Results.Redirect(RootController.displayPage()))
       }
     }
-
-  }
 }

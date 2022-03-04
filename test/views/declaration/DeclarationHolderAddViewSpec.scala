@@ -20,19 +20,16 @@ import base.ExportsTestData._
 import base.Injector
 import base.TestHelper.createRandomAlphanumericString
 import controllers.declaration.routes.{
-  AdditionalActorsSummaryController,
   AuthorisationProcedureCodeChoiceController,
-  ConsigneeDetailsController,
   DeclarationHolderRequiredController,
   DeclarationHolderSummaryController
 }
 import controllers.helpers.SaveAndReturn
 import forms.common.Eori
-import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.declaration.declarationHolder.DeclarationHolder
-import models.DeclarationType.{allDeclarationTypes, CLEARANCE, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.Mode.Normal
 import models.declaration.EoriSource.{OtherEori, UserEori}
 import models.requests.JourneyRequest
@@ -116,10 +113,10 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
       }
     }
 
-    onOccasional { implicit request =>
-      "have a 'Back' link to the /other-parties-list page" in {
+    onJourney(CLEARANCE, OCCASIONAL) { implicit request =>
+      "have a 'Back' link to the /is-authorisation-required page" in {
         val view = createView(createForm)
-        view.getElementById("back-link") must haveHref(AdditionalActorsSummaryController.displayPage(Normal))
+        view.getElementById("back-link") must haveHref(DeclarationHolderRequiredController.displayPage(Normal))
       }
     }
   }
@@ -148,25 +145,6 @@ class DeclarationHolderAddViewSpec extends UnitViewSpec with CommonMessages with
             val view = createView(createForm(request))(request)
             view.getElementById("back-link") must haveHref(DeclarationHolderRequiredController.displayPage(Normal))
           }
-        }
-      }
-    }
-
-    "DeclarationType is 'CLEARANCE' and" when {
-
-      "EIDR is true" should {
-        "have a 'Back' link to the /authorisation-choice page" in {
-          implicit val request = withRequestOfType(CLEARANCE, withEntryIntoDeclarantsRecords())
-          val view = createView(createForm)
-          view.getElementById("back-link") must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
-        }
-      }
-
-      "EIDR is false" should {
-        "have a 'Back' link to the /consignee-details page" in {
-          implicit val request = withRequestOfType(CLEARANCE, withEntryIntoDeclarantsRecords(YesNoAnswers.no))
-          val view = createView(createForm)
-          view.getElementById("back-link") must haveHref(ConsigneeDetailsController.displayPage(Normal))
         }
       }
     }
