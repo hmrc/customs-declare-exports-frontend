@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes._
-import controllers.helpers.DeclarationHolderHelper.declarationHolders
+import controllers.helpers.DeclarationHolderHelper.{declarationHolders, userCanLandOnIsAuthRequiredPage}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -27,7 +27,7 @@ import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.declarationHolder.declaration_holder_required
@@ -46,8 +46,11 @@ class DeclarationHolderRequiredController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (declarationHolders.isEmpty) Ok(declarationHolderRequired(mode, formWithPreviousAnswer.withSubmissionErrors))
-    else navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage(_))
+    def sendIsAuthRequiredPage: Result = Ok(declarationHolderRequired(mode, formWithPreviousAnswer.withSubmissionErrors))
+
+    if (declarationHolders.nonEmpty) navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage(_))
+    else if (userCanLandOnIsAuthRequiredPage(request.cacheModel)) sendIsAuthRequiredPage
+    else navigator.continueTo(mode, DeclarationHolderAddController.displayPage(_))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

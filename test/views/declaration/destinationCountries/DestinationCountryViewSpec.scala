@@ -16,15 +16,21 @@
 
 package views.declaration.destinationCountries
 
-import base.Injector
+import base.{ExportsTestData, Injector}
 import connectors.CodeListConnector
 import controllers.declaration.routes
+import controllers.declaration.routes.{AuthorisationProcedureCodeChoiceController, DeclarationHolderRequiredController}
+import forms.common.Eori
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}
+import forms.declaration.declarationHolder.DeclarationHolder
+import models.DeclarationType._
 import models.Mode
+import models.Mode.Normal
 import models.codes.{Country => ModelCountry}
+import models.declaration.EoriSource
 import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -62,20 +68,59 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     destinationCountryPage(Mode.Normal, form(request))(request, messages)
 
   "Destination country view spec" should {
+
     "have defined translation for used labels" in {
       messages must haveTranslationFor("declaration.destinationCountry.empty")
       messages must haveTranslationFor("declaration.destinationCountry.error")
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED) { implicit request =>
+      "display a back button linking to the /authorisation-choice page" in {
+        val backButton = view.getElementById("back-link")
+        backButton.text mustBe messages("site.back")
+        backButton must haveHref(AuthorisationProcedureCodeChoiceController.displayPage(Normal))
+      }
+    }
+
+    "display a back button linking to the /is-authorisation-required page" when {
+      "AdditionalDeclarationType is 'STANDARD_PRE_LODGED' and" when {
+        List(Choice1040, ChoiceOthers).foreach { choice =>
+          s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
+            implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
+            val backButton = view.getElementById("back-link")
+            backButton.text mustBe messages("site.back")
+            backButton must haveHref(DeclarationHolderRequiredController.displayPage())
+          }
+        }
+      }
+    }
+
+    onJourney(CLEARANCE, OCCASIONAL) { implicit request =>
+      "display a back button linking to the /is-authorisation-required  page" in {
+        val backButton = view.getElementById("back-link")
+        backButton.text mustBe messages("site.back")
+        backButton must haveHref(DeclarationHolderRequiredController.displayPage(Normal))
+      }
+    }
+
+    "display a back button linking to the /authorisations-required page" when {
+      val holder = DeclarationHolder(Some("CSE"), Some(Eori(ExportsTestData.eori)), Some(EoriSource.OtherEori))
+
+      allDeclarationTypes.foreach { declarationType =>
+        s"on $declarationType journey and" when {
+          "the declaration contains at least one authorisation" in {
+            implicit val request = withRequestOfType(declarationType, withDeclarationHolders(holder))
+            val backButton = view.getElementById("back-link")
+            backButton.text mustBe messages("site.back")
+            backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
+          }
+        }
+      }
     }
   }
 
   onEveryDeclarationJourney() { implicit request =>
     "Destination country view spec" should {
-
-      "display a back button linking to the /authorisations-required page" in {
-        val backButton = view.getElementById("back-link")
-        backButton.text mustBe messages("site.back")
-        backButton must haveHref(routes.DeclarationHolderSummaryController.displayPage())
-      }
 
       s"display page question for ${request.declarationType}" in {
         view(request).getElementsByTag("h1").text mustBe messages("declaration.destinationCountry.title")
@@ -95,19 +140,6 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
       s"display 'Save and return' button for ${request.declarationType}" in {
         view(request).getElementById("submit_and_return").text mustBe messages("site.save_and_come_back_later")
-      }
-    }
-  }
-
-  "display a back button linking to the /is-authorisation-required page" when {
-    "AdditionalDeclarationType is 'STANDARD_PRE_LODGED' and" when {
-      List(Choice1040, ChoiceOthers).foreach { choice =>
-        s"AuthorisationProcedureCodeChoice is '${choice.value}'" in {
-          implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice))
-          val backButton = view.getElementById("back-link")
-          backButton.text mustBe messages("site.back")
-          backButton must haveHref(routes.DeclarationHolderRequiredController.displayPage())
-        }
       }
     }
   }

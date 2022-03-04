@@ -17,11 +17,14 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.DeclarationHolderSummaryController
+import controllers.declaration.routes.{DeclarationHolderAddController, DeclarationHolderRequiredController, DeclarationHolderSummaryController}
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Eori, YesNoAnswer}
+import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.declaration.declarationHolder.DeclarationHolder
 import mock.ErrorHandlerMocks
+import models.DeclarationType._
 import models.Mode.Normal
 import models.declaration.{DeclarationHoldersData, EoriSource}
 import org.mockito.ArgumentCaptor
@@ -153,30 +156,22 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
 
       onEveryDeclarationJourney() { request =>
         "user submits a 'Yes' answer and" when {
-          val body = Json.obj("yesNo" -> "Yes")
-
           "after removal, cache still contains at least one DeclarationHolder" in {
-            And("'isRequired' should be set to None when not STANDARD_PRE_LODGED and not (Code1040 or CodeOther)")
             val holdersData = DeclarationHoldersData(List(declarationHolder, declarationHolder_2), isRequired = Yes)
             withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(holdersData)))
 
+            val body = Json.obj("yesNo" -> "Yes")
             val result = controller.submitForm(Normal, id)(postRequest(body))
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Normal)
 
-            theCacheModelUpdated.parties.declarationHoldersData mustBe Some(DeclarationHoldersData(Seq(declarationHolder_2)))
-          }
-
-          "after removal, cache contains NO DeclarationHolders" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withDeclarationHolders(declarationHolder)))
-
-            val result = controller.submitForm(Normal, id)(postRequest(body))
-
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Normal)
-
-            theCacheModelUpdated.parties.declarationHoldersData mustBe None
+            And("'isRequired' should be set to None when the journey requires to skip /is-authorisation-required")
+            val expectedHoldersData = request.declarationType match {
+              case CLEARANCE | OCCASIONAL => DeclarationHoldersData(Seq(declarationHolder_2), Yes)
+              case _                      => DeclarationHoldersData(Seq(declarationHolder_2), None)
+            }
+            theCacheModelUpdated.parties.declarationHoldersData mustBe Some(expectedHoldersData)
           }
         }
 
@@ -190,6 +185,68 @@ class DeclarationHolderRemoveControllerSpec extends ControllerSpec with ErrorHan
           thePageNavigatedTo mustBe DeclarationHolderSummaryController.displayPage(Normal)
 
           verifyTheCacheIsUnchanged()
+        }
+      }
+    }
+  }
+
+  "DeclarationHolderRemoveController on submitForm" when {
+
+    "user submits a 'Yes' answer and" when {
+      val body = Json.obj("yesNo" -> "Yes")
+
+      "after removal, cache contains NO DeclarationHolders and" when {
+
+        List(STANDARD, SUPPLEMENTARY, SIMPLIFIED).foreach { declarationType =>
+          s"journey is $declarationType" should {
+            val declaration = withRequestOfType(declarationType).cacheModel
+
+            "redirect to the /add-authorisation-required page" in {
+              withNewCaching(aDeclarationAfter(declaration, withDeclarationHolders(declarationHolder)))
+
+              val result = controller.submitForm(Normal, id)(postRequest(body))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe DeclarationHolderAddController.displayPage(Normal)
+              theCacheModelUpdated.parties.declarationHoldersData mustBe None
+            }
+          }
+        }
+
+        List(CLEARANCE, OCCASIONAL).foreach { declarationType =>
+          s"journey is $declarationType" should {
+            val declaration = withRequestOfType(declarationType).cacheModel
+
+            "redirect to the /is-authorisation-required page" in {
+              withNewCaching(aDeclarationAfter(declaration, withDeclarationHolders(declarationHolder)))
+
+              val result = controller.submitForm(Normal, id)(postRequest(body))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe DeclarationHolderRequiredController.displayPage(Normal)
+
+              theCacheModelUpdated.parties.declarationHoldersData mustBe None
+            }
+          }
+        }
+
+        List(Choice1040, ChoiceOthers) foreach { choice =>
+          s"AuthorisationProcedureCodeChoice is '${choice.value}' and" when {
+            "additional declaration type is STANDARD_PRE_LODGED" should {
+              val declaration = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(choice)).cacheModel
+
+              "redirect to the /is-authorisation-required page" in {
+                withNewCaching(aDeclarationAfter(declaration, withDeclarationHolders(declarationHolder)))
+
+                val result = controller.submitForm(Normal, id)(postRequest(body))
+
+                await(result) mustBe aRedirectToTheNextPage
+                thePageNavigatedTo mustBe DeclarationHolderRequiredController.displayPage(Normal)
+
+                theCacheModelUpdated.parties.declarationHoldersData mustBe None
+              }
+            }
+          }
         }
       }
     }

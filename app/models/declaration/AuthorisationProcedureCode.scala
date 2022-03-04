@@ -25,7 +25,7 @@ object AuthorisationProcedureCode {
   case object Code1007 extends AuthorisationProcedureCode
   case object CodeOther extends AuthorisationProcedureCode
 
-  val values = Seq(Code1040, Code1007, CodeOther)
+  val values = List(Code1040, Code1007, CodeOther)
 
   lazy val lookupByValue: Map[String, AuthorisationProcedureCode] = values.map(entry => entry.toString -> entry).toMap
 

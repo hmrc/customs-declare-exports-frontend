@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{DeclarationHolderRequiredController, DeclarationHolderSummaryController}
+import controllers.declaration.routes.DeclarationHolderRequiredController
 import controllers.helpers.DeclarationHolderHelper.userCanLandOnIsAuthRequiredPage
 import controllers.navigation.Navigator
 import forms.declaration.AuthorisationProcedureCodeChoice
@@ -26,7 +26,7 @@ import models.declaration.DeclarationHoldersData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.authorisation_procedure_code_choice
@@ -67,13 +67,9 @@ class AuthorisationProcedureCodeChoiceController @Inject()(
     AuthorisationProcedureCodeChoice.form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(authorisationProcedureCodeChoice(formWithErrors, mode))),
-        updateCache(_).map(exportsDeclarationUpdated => navigator.continueTo(mode, nextPage(exportsDeclarationUpdated)))
+        updateCache(_).map(_ => navigator.continueTo(mode, DeclarationHolderRequiredController.displayPage))
       )
   }
-
-  private def nextPage(declaration: ExportsDeclaration): Mode => Call =
-    if (userCanLandOnIsAuthRequiredPage(declaration)) DeclarationHolderRequiredController.displayPage
-    else DeclarationHolderSummaryController.displayPage
 
   private def updateCache(choice: AuthorisationProcedureCodeChoice)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(declaration => {

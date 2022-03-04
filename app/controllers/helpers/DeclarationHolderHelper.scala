@@ -17,8 +17,9 @@
 package controllers.helpers
 
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.declarationHolder.DeclarationHolder
+import models.DeclarationType.{CLEARANCE, OCCASIONAL}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -33,6 +34,6 @@ object DeclarationHolderHelper {
   def userCanLandOnIsAuthRequiredPage(declaration: ExportsDeclaration): Boolean =
     (declaration.additionalDeclarationType, declaration.parties.authorisationProcedureCodeChoice) match {
       case (Some(STANDARD_PRE_LODGED), Choice1040 | ChoiceOthers) => true
-      case _                                                      => false
+      case _                                                      => declaration.isType(CLEARANCE) || declaration.isType(OCCASIONAL)
     }
 }

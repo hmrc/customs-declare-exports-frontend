@@ -37,7 +37,7 @@ object AuthorisationProcedureCodeChoice extends DeclarationPage {
   val Choice1007 = Some(AuthorisationProcedureCodeChoice(Code1007))
   val ChoiceOthers = Some(AuthorisationProcedureCodeChoice(CodeOther))
 
-  val allProcedureCodes = Seq(Choice1040, Choice1007, ChoiceOthers)
+  val allProcedureCodes = List(Choice1040, Choice1007, ChoiceOthers)
 
   val mapping: Mapping[AuthorisationProcedureCodeChoice] = Forms.mapping(
     formFieldName -> requiredRadio("declaration.authorisations.procedureCodeChoice.error.empty")
