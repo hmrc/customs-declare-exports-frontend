@@ -27,12 +27,15 @@ case class DocumentType(description: String, code: String) {
 
 object DocumentType {
 
+  val documentsExcludedFromDropdown = Seq("MCR", "CLE")
   private val deserialiser: (String, String) => DocumentType = (a: String, b: String) => DocumentType(a, b)
 
   // CEDS-3132: the resulting tariff list should be rendered in the same order as shown at:
   // https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/915216/Previous_document_codes_for_Data_Element_2-1_of_the_Customs_Declaration_Service_-_v2.csv/preview
   val allDocuments: List[DocumentType] = JsonFile
     .readFromJsonFile("/code-lists/document-type-autocomplete-list.json", deserialiser)
+
+  val documentsForDropdown: List[DocumentType] = allDocuments.filterNot(docType => documentsExcludedFromDropdown.contains(docType.code))
 
   val documentCodesMap: Map[String, DocumentType] =
     allDocuments.map(documentType => (documentType.code, documentType)).toMap
