@@ -18,16 +18,23 @@ package services
 
 import base.UnitSpec
 import org.scalatest.Inspectors.forAll
-import services.DocumentType.allDocuments
+import services.DocumentType.{allDocuments, documentsExcludedFromDropdown, documentsForDropdown}
 
 class DocumentTypeSpec extends UnitSpec {
 
   "Document Type" should {
 
-    "return document type in the expected order (no-order, as loaded)" in {
+    "return document type in the expected order with no exclusions" in {
       val ixs = List(0, 1, 2, 3, 4, 25, 26, 33, 34, allDocuments.size - 1)
-      val codes = List("235", "270", "271", "325", "337", "955", "CLE", "SDE", "CSE", "CPD")
+      val codes = List("380", "325", "271", "703", "740", "952", "955", "T2M", "SDE", "CPD")
       forAll(ixs zip codes)(t => allDocuments(t._1).code mustBe t._2)
+    }
+
+    "return document type in the expected order with dropdown exclusions" in {
+      val ixs = List(0, 1, 2, 3, 4, 25, 26, 33, 34, documentsForDropdown.size - 1)
+      val codes = List("380", "325", "271", "703", "740", "952", "955", "SDE", "CSE", "CPD")
+      forAll(ixs zip codes)(t => documentsForDropdown(t._1).code mustBe t._2)
+      forAll(documentsForDropdown)(t => documentsExcludedFromDropdown.contains(t.code))
     }
 
     "return correct text for asText method" in {
