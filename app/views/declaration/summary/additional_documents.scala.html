@@ -169,24 +169,24 @@
 } else {
 
 @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
-Some(SummaryListRow(
-classes = s"additional-documents-${item.sequenceId}-row",
-key = Key(
-content = Text(messages("declaration.summary.items.item.additionalDocuments"))
-),
-value = Value(
-content = Text(messages("site.no"))
-),
-actions = actions(Actions(
-items = Seq(
-actionItem(
-href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
-content = HtmlContent(linkContent(messages("site.change"))),
-visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
-)
-)
-))
-))
+    Some(SummaryListRow(
+        classes = s"additional-documents-${item.sequenceId}-row",
+        key = Key(
+            content = Text(messages("declaration.summary.items.item.additionalDocuments"))
+        ),
+        value = Value(
+            content =   Text(messages("site.no"))
+        ),
+        actions = actions(Actions(
+            items = Seq(
+                actionItem(
+                    href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
+                    content = HtmlContent(linkContent(messages("site.change"))),
+                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+                )
+            )
+        ))
+    ))
 ))
 
 }
