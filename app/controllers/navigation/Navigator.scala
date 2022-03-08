@@ -449,8 +449,6 @@ class Navigator @Inject()(
   private def additionalDocumentsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.listOfAdditionalDocuments(itemId).nonEmpty)
       routes.AdditionalDocumentsController.displayPage(mode, itemId)
-    else if (cacheModel.listOfAdditionalInformationOfItem(itemId).isEmpty)
-      routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
     else {
       if (cacheModel.isAuthCodeRequiringAdditionalDocuments) additionalDocumentsSummaryClearancePreviousPage(cacheModel, mode, itemId)
       else routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId)
