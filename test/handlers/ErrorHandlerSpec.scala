@@ -17,12 +17,11 @@
 package handlers
 
 import base.{Injector, UnitWithMocksSpec}
-import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import models.AuthKey.enrolment
 import org.scalatest.OptionValues
+import play.api.Configuration
 import play.api.http.Status
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import tools.Stubs
@@ -34,17 +33,13 @@ import scala.concurrent.Future
 
 class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues with Injector {
 
-  SharedMetricRegistries.clear()
+  override val configuration: Configuration = Configuration(
+    "urls.login" -> "http://localhost:9949/auth-login-stub/gg-sign-in",
+    "urls.loginContinue" -> "http://localhost:6791/customs-declare-exports/start"
+  )
 
   val errorPage = instanceOf[error_template]
-
-  val injector = GuiceApplicationBuilder()
-    .configure(
-      "urls.login" -> "http://localhost:9949/auth-login-stub/gg-sign-in",
-      "urls.loginContinue" -> "http://localhost:6791/customs-declare-exports/start"
-    )
-    .injector()
-  val appConfig = injector.instanceOf[AppConfig]
+  val appConfig = instanceOf[AppConfig]
   val request = FakeRequest("GET", "/foo")
 
   val errorHandler = new ErrorHandler(stubMessagesApi(), errorPage)(appConfig)
