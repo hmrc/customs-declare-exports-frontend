@@ -17,11 +17,14 @@
 package base
 
 import com.codahale.metrics.SharedMetricRegistries
+import play.api.Configuration
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.reflect.ClassTag
 
 trait Injector {
+
+  val configuration = Configuration.empty
 
   /**
     * Clearing shared metrics registries to avoid `A metric named jvm.attribute.vendor already exists` error.
@@ -32,7 +35,7 @@ trait Injector {
     */
   SharedMetricRegistries.clear()
 
-  private val injector = GuiceApplicationBuilder().injector()
+  private lazy val injector = GuiceApplicationBuilder().configure(configuration).injector()
 
   def instanceOf[T <: AnyRef](implicit classTag: ClassTag[T]): T = injector.instanceOf[T]
 }
