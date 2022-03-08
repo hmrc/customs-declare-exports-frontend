@@ -49,14 +49,12 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
   "PackageInformation Add View" should {
 
     "have necessary message keys" in {
-      messages must haveTranslationFor("declaration.packageInformation.paragraph.1")
-      messages must haveTranslationFor("declaration.packageInformation.paragraph.2")
-      messages must haveTranslationFor("declaration.packageInformation.typesOfPackages.paragraph.1")
-      messages must haveTranslationFor("declaration.packageInformation.typesOfPackages.paragraph.2")
-      messages must haveTranslationFor("declaration.packageInformation.typesOfPackages.paragraph.3")
+      messages must haveTranslationFor("declaration.packageInformation.paragraph")
+      messages must haveTranslationFor("declaration.packageInformation.typesOfPackages.paragraph")
       messages must haveTranslationFor("declaration.packageInformation.numberOfPackages.details.paragraph.1")
       messages must haveTranslationFor("declaration.packageInformation.numberOfPackages.details.paragraph.2")
-      messages must haveTranslationFor("declaration.packageInformation.numberOfPackages.details.paragraph.2.link")
+      messages must haveTranslationFor("declaration.packageInformation.numberOfPackages.details.paragraph.3")
+      messages must haveTranslationFor("declaration.packageInformation.numberOfPackages.details.paragraph.3.link")
       messages must haveTranslationFor("declaration.packageInformation.shippingMark.paragraph")
     }
 
@@ -85,14 +83,12 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
       "display the expected paragraphs" in {
         val indexedListOfParagraphs = List(
-          messages("declaration.packageInformation.paragraph.1"),
-          messages("declaration.packageInformation.paragraph.2"),
-          messages("declaration.packageInformation.typesOfPackages.paragraph.1"),
-          messages("declaration.packageInformation.typesOfPackages.paragraph.2"),
-          messages("declaration.packageInformation.typesOfPackages.paragraph.3"),
+          messages("declaration.packageInformation.paragraph"),
+          messages("declaration.packageInformation.typesOfPackages.paragraph"),
           messages("declaration.packageInformation.numberOfPackages.details.paragraph.1"),
-          messages("declaration.packageInformation.numberOfPackages.details.paragraph.2").substring(0, 8) ++
-            messages("declaration.packageInformation.numberOfPackages.details.paragraph.2.link"),
+          messages("declaration.packageInformation.numberOfPackages.details.paragraph.2"),
+          messages("declaration.packageInformation.numberOfPackages.details.paragraph.3").substring(0, 8) ++
+            messages("declaration.packageInformation.numberOfPackages.details.paragraph.3.link"),
           messages("declaration.packageInformation.shippingMark.paragraph"),
           messages("site.save_and_come_back_later")
         ).zipWithIndex
