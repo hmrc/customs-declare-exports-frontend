@@ -81,8 +81,7 @@ class IsLicenseRequiredController @Inject()(
     }
 
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
-    val isLicenseRequired =
-      if (yesNoAnswer.answer == YesNoAnswers.yes) true else false
+    val isLicenseRequired = yesNoAnswer.answer == YesNoAnswers.yes
 
     updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(isLicenseRequired = Some(isLicenseRequired))))
   }
