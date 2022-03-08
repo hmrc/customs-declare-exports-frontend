@@ -130,7 +130,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE) { request =>
+    onClearance { request =>
       "user submits valid No answer go to 'Additional Documents'" in {
 
         when {

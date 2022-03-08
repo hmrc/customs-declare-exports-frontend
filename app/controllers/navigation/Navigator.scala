@@ -163,6 +163,9 @@ class Navigator @Inject()(
     case AdditionalDocumentsRequired if waiver999LConfig.is999LEnabled => additionalDocumentsSummaryPreviousPage
     case AdditionalDocumentsSummary if waiver999LConfig.is999LEnabled  => additionalDocumentsSummaryPreviousPage
     case AdditionalDocument if waiver999LConfig.is999LEnabled          => additionalDocumentsPreviousPage
+    case AdditionalDocumentsRequired                                   => additionalDocumentsSummaryClearancePreviousPage
+    case AdditionalDocumentsSummary                                    => additionalDocumentsSummaryClearancePreviousPage
+    case AdditionalDocument                                            => additionalDocumentsClearancePreviousPage
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -254,6 +257,9 @@ class Navigator @Inject()(
     case AdditionalDocumentsRequired if waiver999LConfig.is999LEnabled => additionalDocumentsSummaryPreviousPage
     case AdditionalDocumentsSummary if waiver999LConfig.is999LEnabled  => additionalDocumentsSummaryPreviousPage
     case AdditionalDocument if waiver999LConfig.is999LEnabled          => additionalDocumentsPreviousPage
+    case AdditionalDocumentsRequired                                   => additionalDocumentsSummaryClearancePreviousPage
+    case AdditionalDocumentsSummary                                    => additionalDocumentsSummaryClearancePreviousPage
+    case AdditionalDocument                                            => additionalDocumentsClearancePreviousPage
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -298,9 +304,12 @@ class Navigator @Inject()(
   }
 
   val simplifiedCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
-    case AdditionalDocumentsRequired if waiver999LConfig.is999LEnabled => routes.IsLicenseRequiredController.displayPage
-    case AdditionalDocumentsSummary if waiver999LConfig.is999LEnabled  => routes.IsLicenseRequiredController.displayPage
+    case AdditionalDocumentsRequired if waiver999LConfig.is999LEnabled => additionalDocumentsSummaryPreviousPage
+    case AdditionalDocumentsSummary if waiver999LConfig.is999LEnabled  => additionalDocumentsSummaryPreviousPage
     case AdditionalDocument if waiver999LConfig.is999LEnabled          => additionalDocumentsPreviousPage
+    case AdditionalDocumentsRequired                                   => additionalDocumentsSummaryClearancePreviousPage
+    case AdditionalDocumentsSummary                                    => additionalDocumentsSummaryClearancePreviousPage
+    case AdditionalDocument                                            => additionalDocumentsClearancePreviousPage
   }
 
   val occasional: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -348,6 +357,9 @@ class Navigator @Inject()(
     case AdditionalDocumentsRequired if waiver999LConfig.is999LEnabled => additionalDocumentsSummaryPreviousPage
     case AdditionalDocumentsSummary if waiver999LConfig.is999LEnabled  => additionalDocumentsSummaryPreviousPage
     case AdditionalDocument if waiver999LConfig.is999LEnabled          => additionalDocumentsPreviousPage
+    case AdditionalDocumentsRequired                                   => additionalDocumentsSummaryClearancePreviousPage
+    case AdditionalDocumentsSummary                                    => additionalDocumentsSummaryClearancePreviousPage
+    case AdditionalDocument                                            => additionalDocumentsClearancePreviousPage
   }
 
   def continueTo(mode: Mode, factory: Mode => Call, isErrorFixInProgress: Boolean = false)(
@@ -432,6 +444,9 @@ class Navigator @Inject()(
     else routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId)
 
   }
+
+  private def additionalDocumentsSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    routes.IsLicenseRequiredController.displayPage(mode, itemId)
 
   private def additionalDocumentsSummaryClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.listOfAdditionalInformationOfItem(itemId).nonEmpty)
