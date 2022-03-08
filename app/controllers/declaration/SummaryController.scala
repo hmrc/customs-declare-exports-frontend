@@ -18,6 +18,9 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.declaration.SummaryController.continuePlaceholder
+import controllers.declaration.routes.TransportContainerController
+import controllers.routes.SavedDeclarationsController
 import forms.declaration.LegalDeclaration
 import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
@@ -29,7 +32,8 @@ import play.api.Logging
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services._
+import play.twirl.api.Html
+import services.SubmissionService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -76,9 +80,8 @@ class SummaryController @Inject()(
         (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors, mode))),
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
-            case Some(submission) =>
-              Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
-            case _ => handleError(s"Error from Customs Declarations API")
+            case Some(submission) => Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
+            case _                => handleError(s"Error from Customs Declarations API")
           }
         }
       )
@@ -98,12 +101,22 @@ class SummaryController @Inject()(
     val readyForSubmission = request.cacheModel.readyForSubmission.contains(true)
 
     mode match {
-      case Mode.Normal if readyForSubmission => Ok(normalSummaryPage(routes.TransportContainerController.displayContainerSummary(Mode.Normal)))
-      case Mode.Normal                       => Ok(draftSummaryPage(routes.TransportContainerController.displayContainerSummary(Mode.Normal)))
-      case Mode.Draft if readyForSubmission  => Ok(normalSummaryPage(controllers.routes.SavedDeclarationsController.displayDeclarations()))
-      case Mode.Draft                        => Ok(draftSummaryPage(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+      case Mode.Normal if readyForSubmission => Ok(normalSummaryPage(TransportContainerController.displayContainerSummary(Mode.Normal)))
+      case Mode.Normal                       => Ok(draftSummaryPage(TransportContainerController.displayContainerSummary(Mode.Normal)))
+      case Mode.Draft if readyForSubmission  => Ok(normalSummaryPage(SavedDeclarationsController.displayDeclarations()))
+      case Mode.Draft                        => Ok(amendDraftSummaryPage)
       case Mode.Amend                        => Ok(amendSummaryPage())
       case _                                 => handleError("Invalid mode on summary page")
+    }
+  }
+
+  private val hrefSourcePattern = """href="/customs-declare-exports/declaration/.+\?mode=Draft"""".r
+  private val hrefDestPattern = s"""href="$continuePlaceholder""""
+
+  private def amendDraftSummaryPage(implicit request: JourneyRequest[_]): Html = {
+    val page = draftSummaryPage(SavedDeclarationsController.displayDeclarations(), Some(continuePlaceholder)).toString
+    hrefSourcePattern.findAllIn(page).toList.lastOption.fold(Html(page)) { lastChangeLink =>
+      Html(page.replaceFirst(hrefDestPattern, lastChangeLink))
     }
   }
 
@@ -123,4 +136,9 @@ class SummaryController @Inject()(
       (submissionId -> submission.uuid) +
       (submissionDucr -> submission.ducr.fold("")(identity)) +
       (submissionLrn -> submission.lrn)
+}
+
+object SummaryController {
+
+  val continuePlaceholder = "continue-saved-declaration"
 }

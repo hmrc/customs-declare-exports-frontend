@@ -53,7 +53,7 @@
             labelClass = Some("govuk-label--m"),
             bodyHtml = Some(templateHelper.helpForDocumentCode),
             emptySelectValue = messages("declaration.previousDocuments.documentCode.empty"),
-            items = AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
+            items = AutoCompleteItem.fromDocumentType(DocumentType.documentsForDropdown)
         )
 
         @exportsInputText(

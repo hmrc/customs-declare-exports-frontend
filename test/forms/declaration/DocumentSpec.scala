@@ -28,32 +28,32 @@ class DocumentSpec extends DeclarationPageBaseSpec with OptionValues {
     "return form without errors" when {
 
       "provided with valid input" in {
-        val correctJson = json("MCR", "DocumentReference", "12")
+        val correctJson = json("DCS", "DocumentReference", "12")
         val form = Document.form.bind(correctJson, JsonBindMaxChars)
         form.errors mustBe empty
       }
 
       "provided document reference with '-' and '/'" in {
-        val correctJson = json("MCR", "GB/239355053000-PATYR8987", "123")
+        val correctJson = json("DCS", "GB/239355053000-PATYR8987", "123")
         val form = Document.form.bind(correctJson, JsonBindMaxChars)
         form.errors mustBe empty
       }
 
       "provided document reference with ':'" in {
-        val correctJson = json("MCR", "A:12345645", "123")
+        val correctJson = json("DCS", "A:12345645", "123")
         val form = Document.form.bind(correctJson, JsonBindMaxChars)
         form.errors mustBe empty
       }
 
       "the document reference contains multiple initial and/or trailing spaces" in {
-        val correctJson = json("MCR", "  ABCD1234  ", "123")
+        val correctJson = json("DCS", "  ABCD1234  ", "123")
         val form = Document.form.bind(correctJson, JsonBindMaxChars)
         form.errors mustBe empty
         form.value.value.documentReference mustBe "ABCD1234"
       }
 
       "the document reference includes single spaces" in {
-        val correctJson = json("MCR", "  ABC 123 987  ", "123")
+        val correctJson = json("DCS", "  ABC 123 987  ", "123")
         val form = Document.form.bind(correctJson, JsonBindMaxChars)
         form.errors mustBe empty
         form.value.value.documentReference mustBe "ABC 123 987"
@@ -77,42 +77,42 @@ class DocumentSpec extends DeclarationPageBaseSpec with OptionValues {
       }
 
       "an empty document reference is entered" in {
-        val withEmptyReference = json("MCR", "", "123")
+        val withEmptyReference = json("DCS", "", "123")
         val form = Document.form.bind(withEmptyReference, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.documentReference.empty")
       }
 
       "a too long document reference is entered" in {
-        val withTooLongReference = json("MCR", "abcd" * 9, "123")
+        val withTooLongReference = json("DCS", "abcd" * 9, "123")
         val form = Document.form.bind(withTooLongReference, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.documentReference.error.length")
       }
 
       "a document reference with invalid characters is entered" in {
-        val withIllegalReference = json("MCR", "abcd)", "123")
+        val withIllegalReference = json("DCS", "abcd)", "123")
         val form = Document.form.bind(withIllegalReference, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.documentReference.error")
       }
 
       "a document reference with consecutive spaces is entered" in {
-        val withIllegalReference = json("MCR", "abcd  1234", "123")
+        val withIllegalReference = json("DCS", "abcd  1234", "123")
         val form = Document.form.bind(withIllegalReference, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.documentReference.error.spaces")
       }
 
       "a too long goods-identifier is entered" in {
-        val withTooLongIdentifier = json("MCR", "abcd", "1234")
+        val withTooLongIdentifier = json("DCS", "abcd", "1234")
         val form = Document.form.bind(withTooLongIdentifier, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.goodsItemIdentifier.error")
       }
 
       "a document reference with invalid characters and consecutive spaces is entered" in {
-        val withIllegalReference = json("MCR", "abcd)  123", "123")
+        val withIllegalReference = json("DCS", "abcd)  123", "123")
         val form = Document.form.bind(withIllegalReference, JsonBindMaxChars)
         form.errors.length must be(2)
         form.errors.head.message must be("declaration.previousDocuments.documentReference.error")
@@ -120,7 +120,7 @@ class DocumentSpec extends DeclarationPageBaseSpec with OptionValues {
       }
 
       "a non-numeric goods-identifier is entered" in {
-        val withNonNumericIdentifier = json("MCR", "abcd", "A12")
+        val withNonNumericIdentifier = json("DCS", "abcd", "A12")
         val form = Document.form.bind(withNonNumericIdentifier, JsonBindMaxChars)
         form.errors.length must be(1)
         form.errors.head.message must be("declaration.previousDocuments.goodsItemIdentifier.error")

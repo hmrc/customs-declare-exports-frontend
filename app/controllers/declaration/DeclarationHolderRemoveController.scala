@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.DeclarationHolderSummaryController
+import controllers.declaration.routes.{DeclarationHolderAddController, DeclarationHolderRequiredController, DeclarationHolderSummaryController}
 import controllers.helpers.DeclarationHolderHelper.{declarationHolders, userCanLandOnIsAuthRequiredPage}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
@@ -61,19 +61,22 @@ class DeclarationHolderRemoveController @Inject()(
 
     maybeExistingHolder.fold(errorHandler.displayErrorPage) { holderToRemove =>
       removeYesNoForm.bindFromRequest
-        .fold(
-          formWithErrors => Future.successful(BadRequest(holderRemovePage(mode, holderToRemove, formWithErrors))),
-          _.answer match {
-            case YesNoAnswers.yes =>
-              updateExportsCache(holderToRemove)
-                .map(_ => navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage))
+        .fold(formWithErrors => Future.successful(BadRequest(holderRemovePage(mode, holderToRemove, formWithErrors))), _.answer match {
+          case YesNoAnswers.yes => updateExportsCache(holderToRemove).map(nextPage(mode, _))
 
-            case YesNoAnswers.no =>
-              Future.successful(navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage))
-          }
-        )
+          case YesNoAnswers.no =>
+            Future.successful(navigator.continueTo(mode, DeclarationHolderSummaryController.displayPage))
+        })
     }
   }
+
+  private def nextPage(mode: Mode, declaration: ExportsDeclaration)(implicit r: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(
+      mode,
+      if (declaration.declarationHolders.nonEmpty) DeclarationHolderSummaryController.displayPage
+      else if (userCanLandOnIsAuthRequiredPage(declaration)) DeclarationHolderRequiredController.displayPage
+      else DeclarationHolderAddController.displayPage
+    )
 
   private val removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.declarationHolders.remove.empty")
 

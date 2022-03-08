@@ -536,24 +536,14 @@ class Navigator @Inject()(
 
   private def declarationHolderAddPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.declarationHolders.nonEmpty) routes.DeclarationHolderSummaryController.displayPage(mode)
-    else declarationHolderSummaryPreviousPage(cacheModel, mode)
+    else if (userCanLandOnIsAuthRequiredPage(cacheModel)) routes.DeclarationHolderRequiredController.displayPage(mode)
+    else declarationHolderRequiredPreviousPage(cacheModel, mode)
 
   private def declarationHolderSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    cacheModel.`type` match {
-      case CLEARANCE if !cacheModel.isEntryIntoDeclarantsRecords => routes.ConsigneeDetailsController.displayPage(mode)
-      case OCCASIONAL                                            => routes.AdditionalActorsSummaryController.displayPage(mode)
-
-      case _ if cacheModel.declarationHolders.isEmpty && userCanLandOnIsAuthRequiredPage(cacheModel) =>
-        routes.DeclarationHolderRequiredController.displayPage(mode)
-
-      case _ => routes.AuthorisationProcedureCodeChoiceController.displayPage(mode)
-    }
+    declarationHolderRequiredPreviousPage(cacheModel, mode)
 
   private def destinationCountryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.declarationHolders.isEmpty && userCanLandOnIsAuthRequiredPage(cacheModel))
-      routes.DeclarationHolderRequiredController.displayPage(mode)
-    else
-      routes.DeclarationHolderSummaryController.displayPage(mode)
+    declarationHolderAddPreviousPage(cacheModel, mode)
 
   private def warehouseIdentificationPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     cacheModel.`type` match {

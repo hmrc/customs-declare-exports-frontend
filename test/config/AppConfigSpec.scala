@@ -400,6 +400,7 @@ object AppConfigSpec {
       |
       |urls.govUk = "https://www.gov.uk"
       |urls.commodityCodeTariffPage = "https://www.trade-tariff.service.gov.uk/commodities/NNNNNNNNNN#export"
+      |urls.suppUnitsCommodityCodeTariffPage = "https://www.trade-tariff.service.gov.uk/commodities/NNNNNNNNNN"
       |urls.previousProcedureCodes = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes"
       |urls.tradeTariffVol3ForCds2 = "https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2"
       |urls.commodityCodeHelp = "https://www.gov.uk/guidance/using-the-trade-tariff-tool-to-find-a-commodity-code"

@@ -16,25 +16,26 @@
 
 package controllers.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.AdditionalActorsAddController.AdditionalActorsFormGroupId
-import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper
+import controllers.navigation.Navigator
 import forms.NoneOfTheAbove
 import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActors.form
-import javax.inject.Inject
+import models.DeclarationType._
 import models.declaration.DeclarationAdditionalActorsData
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalActors.additional_actors_add
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalActorsAddController @Inject()(
   authenticate: AuthAction,
@@ -46,8 +47,7 @@ class AdditionalActorsAddController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  val validTypes =
-    Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
+  val validTypes = List(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val frm = form().withSubmissionErrors()
@@ -57,22 +57,20 @@ class AdditionalActorsAddController @Inject()(
     }
   }
 
-  def saveForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form().bindFromRequest()
-    val cachedActors = request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty)
+  def saveForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    val boundForm = form.bindFromRequest
     boundForm.fold(
-      formWithErrors => {
-        Future.successful(BadRequest(declarationAdditionalActorsPage(mode, formWithErrors)))
-      },
-      actor =>
-        if (actor.isDefined) {
-          addAdditionalActor(mode, boundForm, cachedActors)
-        } else if (cachedActors.nonEmpty) {
+      formWithErrors => Future.successful(BadRequest(declarationAdditionalActorsPage(mode, formWithErrors))),
+      actor => {
+        val cachedActors = request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty)
+        if (actor.isDefined) addAdditionalActor(mode, boundForm, cachedActors)
+        else if (cachedActors.nonEmpty)
           updateCache(DeclarationAdditionalActorsData(cachedActors))
             .map(_ => navigator.continueTo(mode, routes.AdditionalActorsSummaryController.displayPage))
-        } else
+        else
           updateCache(DeclarationAdditionalActorsData(cachedActors))
             .map(_ => navigator.continueTo(mode, routes.AuthorisationProcedureCodeChoiceController.displayPage))
+      }
     )
   }
 
