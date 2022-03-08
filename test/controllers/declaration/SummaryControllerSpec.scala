@@ -17,17 +17,22 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
+import controllers.declaration.SummaryController.continuePlaceholder
+import controllers.declaration.SummaryControllerSpec.{expectedHref, fakeSummaryPage}
+import controllers.declaration.routes.TransportContainerController
+import controllers.routes.SavedDeclarationsController
 import forms.declaration.LegalDeclaration
 import forms.{Lrn, LrnValidator}
 import mock.ErrorHandlerMocks
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys
 import models.{ExportsDeclaration, Mode}
+import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.Helpers._
-import play.twirl.api.HtmlFormat
+import play.twirl.api.{Html, HtmlFormat}
 import services.SubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.declaration.summary._
@@ -44,8 +49,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
   private val mockSubmissionService = mock[SubmissionService]
   private val mockLrnValidator = mock[LrnValidator]
 
-  private val normalModeBackLink = routes.TransportContainerController.displayContainerSummary(Mode.Normal)
-  private val draftModeBackLink = controllers.routes.SavedDeclarationsController.displayDeclarations()
+  private val normalModeBackLink = TransportContainerController.displayContainerSummary(Mode.Normal)
+  private val draftModeBackLink = SavedDeclarationsController.displayDeclarations()
 
   private val controller = new SummaryController(
     mockAuthAction,
@@ -69,7 +74,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     setupErrorHandler()
     when(normalSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(legalDeclarationPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
-    when(draftSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(draftSummaryPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(amendSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
@@ -85,8 +90,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
       "declaration contains mandatory data" when {
         "ready for submission" when {
-          "normal mode" in {
 
+          "normal mode" in {
             withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(true)))
 
             val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -95,8 +100,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
             verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink))(any(), any(), any())
             verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
           }
-          "draft mode" in {
 
+          "draft mode" in {
             withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(true)))
 
             val result = controller.displayPage(Mode.Draft)(getRequest())
@@ -106,57 +111,57 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
             verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
           }
         }
+
         "saved declaration" when {
 
           "readyForSubmission exists" when {
-            "normal mode" in {
 
+            "normal mode" in {
               withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(false)))
 
               val result = controller.displayPage(Mode.Normal)(getRequest())
 
               status(result) mustBe OK
-              verify(draftSummaryPage, times(1)).apply(eqTo(normalModeBackLink))(any(), any(), any())
+              verify(draftSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any())(any(), any(), any())
               verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
             }
-            "draft mode" in {
 
+            "draft mode" in {
               withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(false)))
 
               val result = controller.displayPage(Mode.Draft)(getRequest())
 
               status(result) mustBe OK
-              verify(draftSummaryPage, times(1)).apply(eqTo(draftModeBackLink))(any(), any(), any())
+              verify(draftSummaryPage, times(1)).apply(eqTo(draftModeBackLink), any())(any(), any(), any())
               verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
             }
           }
 
           "readyForSubmission does not exist" when {
-            "normal mode" in {
 
+            "normal mode" in {
               withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = None))
 
               val result = controller.displayPage(Mode.Normal)(getRequest())
 
               status(result) mustBe OK
-              verify(draftSummaryPage, times(1)).apply(eqTo(normalModeBackLink))(any(), any(), any())
+              verify(draftSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any())(any(), any(), any())
               verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
             }
-            "draft mode" in {
 
+            "draft mode" in {
               withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = None))
 
               val result = controller.displayPage(Mode.Draft)(getRequest())
 
               status(result) mustBe OK
-              verify(draftSummaryPage, times(1)).apply(eqTo(draftModeBackLink))(any(), any(), any())
+              verify(draftSummaryPage, times(1)).apply(eqTo(draftModeBackLink), any())(any(), any(), any())
               verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
             }
           }
-
         }
-        "amendment" in {
 
+        "amendment" in {
           withNewCaching(aDeclaration(withConsignmentReferences()))
 
           val result = controller.displayPage(Mode.Amend)(getRequest())
@@ -168,7 +173,6 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
       }
 
       "declaration doesn't contain mandatory data" in {
-
         withNewCaching(aDeclaration())
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -176,6 +180,20 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         status(result) mustBe OK
         verify(normalSummaryPage, times(0)).apply(any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(1)).apply()(any(), any())
+      }
+    }
+
+    "return a draft summary page with a 'Continue' button linking to the same page referenced by the last 'Change' link" when {
+      "the declaration is not ready for submission yet" in {
+        when(draftSummaryPage.apply(any(), any())(any(), any(), any())).thenReturn(fakeSummaryPage)
+
+        withNewCaching(aDeclaration(withConsignmentReferences()))
+
+        val result = controller.displayPage(Mode.Draft)(getRequest())
+
+        status(result) mustBe OK
+        val view = Jsoup.parse(contentAsString(result))
+        view.getElementById(continuePlaceholder).attr("href") mustBe expectedHref
       }
     }
   }
@@ -208,6 +226,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     }
 
     "Return 400 (Bad Request) during submission" when {
+
       "missing legal declaration data" in {
         withNewCaching(aDeclaration())
         val partialForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"))
@@ -249,4 +268,25 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
       }
     }
   }
+}
+
+object SummaryControllerSpec {
+
+  import controllers.declaration.SummaryController.continuePlaceholder
+
+  val expectedHref = "/customs-declare-exports/declaration/consignment-references?mode=Draft"
+
+  val fakeSummaryPage = Html(s"""
+       |<!DOCTYPE html>
+       |<html lang="en">
+       |<body>
+       |  <div>
+       |    <a href="/customs-declare-exports/declaration/declaration-choice?mode=Draft">Change</a>
+       |    <a href="/customs-declare-exports/declaration/type?mode=Draft">Change</a>
+       |    <a href="$expectedHref">Change</a>
+       |    <a href="$continuePlaceholder" id="$continuePlaceholder">Continue</a>
+       |  </div>
+       |</body>
+       |</html>
+       """.stripMargin)
 }
