@@ -29,8 +29,8 @@ trait FeatureFlagMocks extends MockExportCacheService with BeforeAndAfterEach {
 
   val mockWaiver999LConfig: Waiver999LConfig = mock[Waiver999LConfig]
 
-  def featureSwithConfig: FeatureSwitchConfig = mock[FeatureSwitchConfig]
+  val mockFeatureSwithConfig: FeatureSwitchConfig = mock[FeatureSwitchConfig]
 
-  def mockFeatureFlagAction = new FeatureFlagAction(featureSwithConfig)(ExecutionContext.global)
+  val mockFeatureFlagAction = new FeatureFlagAction(mockFeatureSwithConfig)(ExecutionContext.global)
 
 }

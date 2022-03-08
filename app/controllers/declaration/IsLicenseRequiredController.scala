@@ -16,13 +16,13 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, FeatureFlagAction, JourneyAction}
 import controllers.declaration.routes._
 import controllers.navigation.Navigator
+import features.Feature
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
-import forms.declaration.declarationHolder.AuthorizationTypeCodes
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -39,6 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IsLicenseRequiredController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  featureFlagAction: FeatureFlagAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -48,28 +49,30 @@ class IsLicenseRequiredController @Inject()(
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val formWithErrors = form.withSubmissionErrors
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] =
+    (authenticate andThen journeyType(validTypes) andThen featureFlagAction(Feature.waiver999L)) { implicit request =>
+      val formWithErrors = form.withSubmissionErrors
 
-    val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenseRequired).fold(form.withSubmissionErrors) {
-      case true  => formWithErrors.fill(YesNoAnswer(yes))
-      case false => formWithErrors.fill(YesNoAnswer(no))
+      val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenseRequired).fold(form.withSubmissionErrors) {
+        case true  => formWithErrors.fill(YesNoAnswer(yes))
+        case false => formWithErrors.fill(YesNoAnswer(no))
+      }
+
+      Ok(is_license_required(mode, itemId, frm, representativeStatusCode))
+
     }
 
-    Ok(is_license_required(mode, itemId, frm, representativeStatusCode))
-
-  }
-
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form.bindFromRequest
-      .fold(
-        formWithErrors => Future.successful(BadRequest(is_license_required(mode, itemId, formWithErrors, representativeStatusCode))),
-        yesNo =>
-          updateCache(yesNo, itemId) map { _ =>
-            navigator.continueTo(mode, AdditionalDocumentsController.displayPage(_, itemId))
-        }
-      )
-  }
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] =
+    (authenticate andThen journeyType andThen featureFlagAction(Feature.waiver999L)).async { implicit request =>
+      form.bindFromRequest
+        .fold(
+          formWithErrors => Future.successful(BadRequest(is_license_required(mode, itemId, formWithErrors, representativeStatusCode))),
+          yesNo =>
+            updateCache(yesNo, itemId) map { _ =>
+              navigator.continueTo(mode, AdditionalDocumentsController.displayPage(_, itemId))
+          }
+        )
+    }
 
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val isLicenseRequired = yesNoAnswer.answer == YesNoAnswers.yes

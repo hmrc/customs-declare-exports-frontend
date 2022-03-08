@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import features.Feature
 import forms.common.YesNoAnswer
 import forms.declaration.CommodityDetails
 import forms.declaration.declarationHolder.AuthorizationTypeCodes
@@ -43,6 +44,7 @@ class IsLicenseRequiredControllerSpec extends ControllerSpec with OptionValues {
     new IsLicenseRequiredController(
       mockAuthAction,
       mockJourneyAction,
+      mockFeatureFlagAction,
       mockExportsCacheService,
       navigator,
       stubMessagesControllerComponents(),
@@ -77,6 +79,10 @@ class IsLicenseRequiredControllerSpec extends ControllerSpec with OptionValues {
   "IsLicenseRequired Controller" should {
 
     onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY) { _ =>
+      when {
+        mockFeatureSwithConfig.isFeatureOn(Feature.waiver999L)
+      } thenReturn true
+
       "return 200 (OK)" that {
 
         "display page method is invoked" in {
@@ -119,4 +125,5 @@ class IsLicenseRequiredControllerSpec extends ControllerSpec with OptionValues {
     }
 
   }
+
 }
