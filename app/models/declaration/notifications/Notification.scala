@@ -31,6 +31,8 @@ case class Notification(actionId: String, mrn: String, dateTimeIssued: ZonedDate
 
   lazy val isStatusDMSAcc: Boolean = status == ACCEPTED
 
+  lazy val isStatusDMSCle: Boolean = status == CLEARED
+
   lazy val isStatusDMSDocOrDMSCtl: Boolean = status == ADDITIONAL_DOCUMENTS_REQUIRED || status == UNDERGOING_PHYSICAL_CHECK
 
   lazy val isStatusDMSQry: Boolean = status == QUERY_NOTIFICATION_MESSAGE

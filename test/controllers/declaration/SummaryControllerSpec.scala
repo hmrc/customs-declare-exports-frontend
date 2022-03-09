@@ -31,6 +31,7 @@ import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import services.SubmissionService
@@ -209,14 +210,15 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         when(mockSubmissionService.submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext]))
           .thenReturn(Future.successful(Some(expectedSubmission)))
 
-        val formData = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
-        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestAsFormUrlEncoded(formData: _*))
+        val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com", "confirmation" -> "true")
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequest(body))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(routes.ConfirmationController.displayHoldingPage.url))
 
         val actualSession = session(result)
         actualSession.get(ExportsSessionKeys.declarationId) must be(None)
+        actualSession.get(ExportsSessionKeys.declarationType) must be(Some(""))
         actualSession.get(ExportsSessionKeys.submissionDucr) must be(expectedSubmission.ducr)
         actualSession.get(ExportsSessionKeys.submissionId) must be(Some(expectedSubmission.uuid))
         actualSession.get(ExportsSessionKeys.submissionLrn) must be(Some(expectedSubmission.lrn))
@@ -229,8 +231,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
       "missing legal declaration data" in {
         withNewCaching(aDeclaration())
-        val partialForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"))
-        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestAsFormUrlEncoded(partialForm: _*))
+        val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com")
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequest(body))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -259,8 +261,8 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         withNewCaching(aDeclaration())
         when(mockSubmissionService.submit(any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
 
-        val correctForm = List(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
-        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com", "confirmation" -> "true")
+        val result = controller.submitDeclaration(models.Mode.Normal)(postRequest(body))
 
         status(result) mustBe INTERNAL_SERVER_ERROR
         verify(normalSummaryPage, times(0)).apply(any())(any(), any(), any())
