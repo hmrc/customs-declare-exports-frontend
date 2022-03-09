@@ -18,12 +18,11 @@ package controllers.declaration
 
 import java.time.ZonedDateTime
 import java.util.UUID
-
 import scala.concurrent.Future
-
 import base.{ControllerWithoutFormSpec, Injector}
 import config.AppConfig
 import controllers.routes.{RejectedNotificationsController, SubmissionsController}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_FRONTIER
 import handlers.ErrorHandler
 import mock.ErrorHandlerMocks
 import models.declaration.notifications.Notification
@@ -204,7 +203,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
 
         status(result) mustBe OK
 
-        val confirmation = Confirmation(request.email, submissionId, Some(ducr), Some(lrn), None)
+        val confirmation = Confirmation(request.email, submissionId, STANDARD_FRONTIER.toString, Some(ducr), Some(lrn), None)
         val expectedView = confirmationPage(confirmation)(request, messages)
 
         val actualView = viewOf(result)
@@ -220,7 +219,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with BeforeAn
 
         status(result) mustBe OK
 
-        val confirmation = Confirmation(request.email, submissionId, Some(ducr), Some(lrn), Some(notificationDMSRCV))
+        val confirmation = Confirmation(request.email, submissionId, STANDARD_FRONTIER.toString, Some(ducr), Some(lrn), Some(notificationDMSRCV))
         val expectedView = confirmationPage(confirmation)(request, messages)
 
         val actualView = viewOf(result)

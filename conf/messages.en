@@ -1958,6 +1958,12 @@ declaration.confirmation.accepted.title = Declaration accepted
 declaration.confirmation.accepted.next.1 = Further customs checks may be carried out. You will be notified about any action required on {0}, which is your registered CDS email address, and on {1}.
 declaration.confirmation.accepted.next.2 = If the status of your declaration has not changed within 2 hours from the time of this acceptance, {0}, you should {1}.
 
+declaration.confirmation.cleared.title = Declaration accepted, goods have permission to progress
+declaration.confirmation.cleared.body.1 = Your declaration{0}{1} has been cleared and given permission to progress.
+declaration.confirmation.cleared.heading = What you can do now
+declaration.confirmation.cleared.body.2 = You can check the status of your declaration and print out the export accompanying document (EAD) on {0}.
+declaration.confirmation.cleared.body.3 = If your haulier is using the Goods Vehicle Movement Service (GVMS), ensure they have the Declaration Unique Consignment Reference (DUCR) so they can create a goods movement reference (GMR). If you already gave them the DUCR, the GMR can now be completed.
+
 declaration.confirmation.needsDocument.title = Your declaration needs documents attached
 declaration.confirmation.needsDocument.warning = You need to upload documents ready for checking at customs.
 declaration.confirmation.needsDocument.body.2 = Check the requirements and upload documents from {0}.
