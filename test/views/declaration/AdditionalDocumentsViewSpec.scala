@@ -50,8 +50,8 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
   "additional_documents view" should {
 
     "have correct message keys" in {
-      messages must haveTranslationFor("declaration.additionalDocument.table.heading")
-      messages must haveTranslationFor("declaration.additionalDocument.table.multiple.heading")
+      messages must haveTranslationFor("declaration.additionalDocument.summary.heading")
+      messages must haveTranslationFor("declaration.additionalDocument.summary.multiple.heading")
       messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode")
       messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier")
       messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.body")
@@ -75,7 +75,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
       val view = createView()
 
       "display page title" in {
-        view.getElementsByTag("h1") must containMessageForElements("declaration.additionalDocument.table.multiple.heading", "0")
+        view.getElementsByTag("h1").text mustBe messages("declaration.additionalDocument.summary.multiple.heading", "0")
       }
 
       "display section header" in {
@@ -83,11 +83,14 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
       }
 
       "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {
-
         val backButton = view.getElementById("back-link")
-
         backButton must containMessage(backCaption)
         backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
+      }
+
+      "display the expected warning text" in {
+        val warningText = s"! ${messages("site.warning")} ${messages("declaration.additionalDocument.summary.warning.text")}"
+        view.getElementsByClass("govuk-warning-text").first.text mustBe warningText
       }
 
       "display 'Save and continue' button on page" in {
@@ -173,7 +176,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
             val removeLink = row.select(".govuk-link").get(0)
 
             removeLink must containMessage("site.change")
-            removeLink must containMessage("declaration.additionalDocument.table.change.hint", "ABCDEF1234567890")
+            removeLink must containMessage("declaration.additionalDocument.summary.change.hint", "ABCDEF1234567890")
             removeLink must haveHref(
               routes.AdditionalDocumentChangeController.displayPage(Mode.Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
             )
@@ -183,7 +186,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
             val removeLink = row.select(".govuk-link").get(1)
 
             removeLink must containMessage("site.remove")
-            removeLink must containMessage("declaration.additionalDocument.table.remove.hint", "ABCDEF1234567890")
+            removeLink must containMessage("declaration.additionalDocument.summary.remove.hint", "ABCDEF1234567890")
             removeLink must haveHref(
               routes.AdditionalDocumentRemoveController.displayPage(Mode.Normal, itemId, ListItem.createId(0, correctAdditionalDocument))
             )
