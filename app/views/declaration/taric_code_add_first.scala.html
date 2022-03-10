@@ -32,12 +32,11 @@
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
     govukRadios: GovukRadios,
-    govukDetails : GovukDetails,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
+    heading: heading,
     paragraphBody: paragraphBody,
     link: link,
     insetText: exportsInsetText,
@@ -84,14 +83,14 @@
 
         @bodySection
 
-        @insetText(content = HtmlContent(messages(
-            "declaration.taricAdditionalCodes.addfirst.inset.text",
-            link(
+        @insetText(content = HtmlContent(HtmlFormat.fill(List(
+            heading(message = messages("site.example"), classes = "govuk-heading-s", tier = "h2"),
+            paragraphBody(messages("declaration.taricAdditionalCodes.addfirst.inset.text", link(
                 messages("declaration.taricAdditionalCodes.addfirst.inset.text.link"),
                 Call("GET", appConfig.commodityCode9306909000),
                 "_blank"
-           )
-        )))
+            )))
+        ))))
 
         @govukRadios(Radios(
             name = hasTaricCodeKey,

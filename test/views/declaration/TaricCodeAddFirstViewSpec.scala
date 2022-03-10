@@ -18,6 +18,7 @@ package views.declaration
 
 import base.Injector
 import config.AppConfig
+import controllers.declaration.routes.UNDangerousGoodsCodeController
 import forms.declaration.{CommodityDetails, TaricCodeFirst}
 import models.Mode
 import org.jsoup.nodes.Document
@@ -45,11 +46,16 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
   "Taric Code Add First View" should {
     val view = createView()
 
-    "display page title" in {
+    "display a 'Back' button that links to 'UN Dangerous Goods' page" in {
+      val backButton = view.getElementById("back-link")
+      backButton.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId))
+    }
+
+    "display the expected page title" in {
       view.getElementsByTag("h1") must containMessageForElements("declaration.taricAdditionalCodes.addfirst.header")
     }
 
-    "display the expected body (the text under page's H1)" when {
+    "display the expected body" when {
 
       "a commodity code has been entered" in {
         val commodityCode = "4602191000"
@@ -72,27 +78,23 @@ class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with S
     }
 
     "display the expected inset paragraph" in {
-      val paragraph = view.getElementsByClass("govuk-inset-text").get(0)
+      val insetText = view.getElementsByClass("govuk-inset-text").get(0)
 
-      val text =
-        messages("declaration.taricAdditionalCodes.addfirst.inset.text", messages("declaration.taricAdditionalCodes.addfirst.inset.text.link"))
-      removeBlanksIfAnyBeforeDot(paragraph.text) mustBe text
+      insetText.child(0).text mustBe messages("site.example")
+
+      val paragraph = insetText.child(1)
+
+      val linkText = messages("declaration.taricAdditionalCodes.addfirst.inset.text.link")
+      paragraph.text mustBe messages("declaration.taricAdditionalCodes.addfirst.inset.text", linkText)
       paragraph.child(0) must haveHref(appConfig.commodityCode9306909000)
     }
 
-    "display 'Back' button that links to 'UN Dangerous Goods' page" in {
-      val backButton = view.getElementById("back-link")
-      backButton.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
-      )
-    }
-
-    "display 'Save and continue' button on page" in {
+    "display a 'Save and continue' button" in {
       val saveButton = view.getElementById("submit")
       saveButton must containMessage(saveAndContinueCaption)
     }
 
-    "display 'Save and return' button on page" in {
+    "display a 'Save and return' button" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton must containMessage(saveAndReturnCaption)
     }
