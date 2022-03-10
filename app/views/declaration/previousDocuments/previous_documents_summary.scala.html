@@ -29,8 +29,6 @@
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
 
-@import scala.collection.immutable
-
 @this(
     templateHelper: PreviousDocumentsHelper,
     govukLayout: gdsMainTemplate,
@@ -139,7 +137,7 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 warning,
                 documentsTable,
                 addAnotherQuestion("declaration.previousDocuments.addAnotherDocument", form),
