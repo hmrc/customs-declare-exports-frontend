@@ -26,18 +26,18 @@
 @import controllers.navigation.ItemId
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        pageTitle: pageTitle,
-        label: label,
-        appConfig: AppConfig,
-        navigator: Navigator,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    pageTitle: pageTitle,
+    label: label,
+    appConfig: AppConfig,
+    navigator: Navigator,
+    formHelper: FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[TaricCode])(implicit request: JourneyRequest[_], messages: Messages)

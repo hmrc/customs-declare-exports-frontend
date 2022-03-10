@@ -81,15 +81,18 @@ class ConfirmationController @Inject()(
           Future.successful(Redirect(RejectedNotificationsController.displayPage(submissionId)))
 
         case Some(notification) =>
-          val confirmation = Confirmation(request.email, submissionId, extractDucr, extractLrn, Some(notification))
+          val confirmation = Confirmation(request.email, submissionId, extractDeclarationType, extractDucr, extractLrn, Some(notification))
           Future.successful(Ok(confirmationPage(confirmation)))
 
         case _ =>
-          val confirmation = Confirmation(request.email, submissionId, extractDucr, extractLrn, None)
+          val confirmation = Confirmation(request.email, submissionId, extractDeclarationType, extractDucr, extractLrn, None)
           Future.successful(Ok(confirmationPage(confirmation)))
       }
     }
   }
+
+  private def extractDeclarationType(implicit request: AuthenticatedRequest[_]): String =
+    request.session.data.get(ExportsSessionKeys.declarationType).fold("")(identity)
 
   private def extractDucr(implicit request: AuthenticatedRequest[_]): Option[String] =
     request.session.data.get(ExportsSessionKeys.submissionDucr).map(_.trim).filter(_.nonEmpty)

@@ -131,8 +131,9 @@ class SummaryController @Inject()(
     InternalServerError(errorHandler.globalErrorPage())
   }
 
-  private def session(submission: Submission)(implicit request: Request[_]): Session =
+  private def session(submission: Submission)(implicit request: JourneyRequest[_]): Session =
     request.session - declarationId +
+      (declarationType -> request.cacheModel.additionalDeclarationType.fold("")(_.toString)) +
       (submissionId -> submission.uuid) +
       (submissionDucr -> submission.ducr.fold("")(identity)) +
       (submissionLrn -> submission.lrn)

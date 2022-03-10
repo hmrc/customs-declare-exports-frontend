@@ -58,7 +58,7 @@ class AdditionalDocumentsController @Inject()(
       .fold(showFormWithErrors, yesNoAnswer => nextPage(mode, yesNoAnswer, itemId))
   }
 
-  private def yesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalDocument.add.another.empty")
+  private def yesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalDocument.summary.add.another.empty")
 
   private def cachedAdditionalDocuments(itemId: String)(implicit request: JourneyRequest[_]): Seq[AdditionalDocument] =
     request.cacheModel.listOfAdditionalDocuments(itemId)

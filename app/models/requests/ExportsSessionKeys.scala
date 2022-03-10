@@ -19,6 +19,7 @@ package models.requests
 object ExportsSessionKeys {
 
   val declarationId = "declarationId"
+  val declarationType = "declarationType"
   val submissionDucr = "submission.ducr"
   val submissionId = "submission.uuid"
   val submissionLrn = "submission.lrn"

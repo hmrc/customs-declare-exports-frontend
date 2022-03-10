@@ -16,20 +16,20 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.{Navigator, ItemId}
-@import models.requests.JourneyRequest
 @import forms.declaration.additionaldocuments.AdditionalDocument
 @import forms.declaration.additionaldocuments.AdditionalDocumentsSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
-@import views.html.components.gds._
-@import views.components.gds.Styles._
+@import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import utils.ListItem._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukWarningText: GovukWarningText,
     govukFieldset: GovukFieldset,
     govukTable : GovukTable,
     govukInput: GovukInput,
@@ -53,16 +53,23 @@
 
 @title = @{
     if(documents.size == 1)
-        Title("declaration.additionalDocument.table.heading", "declaration.section.5")
+        Title("declaration.additionalDocument.summary.heading", "declaration.section.5")
     else
-        Title("declaration.additionalDocument.table.multiple.heading", "declaration.section.5", documents.size.toString)
+        Title("declaration.additionalDocument.summary.multiple.heading", "declaration.section.5", documents.size.toString)
 }
 
 @header = @{
     if(documents.size == 1)
-        Text(messages("declaration.additionalDocument.table.heading"))
+        Text(messages("declaration.additionalDocument.summary.heading"))
     else
-        Text(messages("declaration.additionalDocument.table.multiple.heading", documents.size))
+        Text(messages("declaration.additionalDocument.summary.multiple.heading", documents.size))
+}
+
+@warning = {
+    @govukWarningText(WarningText(
+        iconFallbackText = messages("site.warning"),
+        content = Text(messages("declaration.additionalDocument.summary.warning.text"))
+    ))
 }
 
 @documentsTable = {
@@ -87,7 +94,7 @@
                         content = HtmlContent(link(
                             messages("site.change"),
                             AdditionalDocumentChangeController.displayPage(mode, itemId, createId(index, document)),
-                            textHidden = Some(messages("declaration.additionalDocument.table.change.hint", document.documentIdentifier.getOrElse("")))
+                            textHidden = Some(messages("declaration.additionalDocument.summary.change.hint", document.documentIdentifier.getOrElse("")))
                         )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"additional-documents-table-row$index-change_button")
@@ -96,7 +103,7 @@
                         content = HtmlContent(link(
                             messages("site.remove"),
                             AdditionalDocumentRemoveController.displayPage(mode, itemId, createId(index, document)),
-                            textHidden = Some(messages("declaration.additionalDocument.table.remove.hint", document.documentIdentifier.getOrElse("")))
+                            textHidden = Some(messages("declaration.additionalDocument.summary.remove.hint", document.documentIdentifier.getOrElse("")))
                         )),
                         classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"additional-documents-table-row$index-remove_button")
@@ -123,7 +130,7 @@
                     content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
                 )
             )),
-            caption = Some(messages("declaration.additionalDocument.table.caption")),
+            caption = Some(messages("declaration.additionalDocument.summary.caption")),
             captionClasses = "govuk-visually-hidden"
         ))
     }
@@ -145,9 +152,10 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
+                warning,
                 documentsTable,
-                addAnotherQuestion("declaration.additionalDocument.add.another", form),
+                addAnotherQuestion("declaration.additionalDocument.summary.add.another", form),
                 saveButtons()
             ))
         ))
