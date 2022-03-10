@@ -18,7 +18,6 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.helpers.MultipleItemsHelper.remove
-import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.helpers._
 import controllers.navigation.Navigator
 import forms.declaration.procedurecodes.AdditionalProcedureCode
@@ -63,7 +62,6 @@ class AdditionalProcedureCodesController @Inject()(
       case (Some(procedureCode), Some(validAdditionalProcedureCodes)) if !validAdditionalProcedureCodes.isEmpty =>
         val frm = form().withSubmissionErrors()
         Ok(additionalProcedureCodesPage(mode, itemId, frm, procedureCode, validAdditionalProcedureCodes, cachedData.additionalProcedureCodes))
-
       case _ =>
         Redirect(routes.ProcedureCodesController.displayPage(mode, itemId))
     }

@@ -17,9 +17,12 @@
 package views.declaration.procedureCodes
 
 import base.Injector
-import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
+import forms.common.YesNoAnswer.allYesNoAnswers
+import forms.declaration.countries.Country
 import forms.declaration.procedurecodes.AdditionalProcedureCode
+import models.DeclarationType.CLEARANCE
 import models.Mode
+import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -50,6 +53,8 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.additionalProcedureCodes.title")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.paragraph")
+      messages must haveTranslationFor("declaration.additionalProcedureCodes.jersey.hint")
+      messages must haveTranslationFor("declaration.additionalProcedureCodes.jersey.clearanceNonEidr.hint")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.table.header")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.inset")
       messages must haveTranslationFor("declaration.additionalProcedureCodes.inset.linkText")
@@ -121,6 +126,23 @@ class AdditionalProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData
 
           view.getElementsByTag("tr").get(1).text() must include("456")
           view.getElementsByTag("tr").get(2).text() must include("123")
+        }
+      }
+    }
+
+    "display the correct hint" when {
+      for {
+        answer <- allYesNoAnswers
+        country <- List(Country(Some("JE")), Country(Some("GG")))
+      } onEveryDeclarationJourney(withDestinationCountry(country), withEntryIntoDeclarantsRecords(answer)) { implicit request =>
+        s"$country entered in destination country and EIDR answer is $answer" in {
+          val view = createView()
+
+          view.getElementById("additionalProcedureCode-hint") must {
+            if (request.cacheModel.isNotEntryIntoDeclarantsRecords && request.declarationType == CLEARANCE)
+              containMessage("declaration.additionalProcedureCodes.jersey.clearanceNonEidr.hint")
+            else containMessage("declaration.additionalProcedureCodes.jersey.hint")
+          }
         }
       }
     }
