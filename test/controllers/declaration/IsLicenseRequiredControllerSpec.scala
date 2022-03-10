@@ -79,31 +79,13 @@ class IsLicenseRequiredControllerSpec extends ControllerSpec with OptionValues {
     onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY) { _ =>
       "return 200 (OK)" that {
 
-        "display page method is invoked and cache is empty" when {
-          "declarant in exporter" in {
-            withNewCaching(declaration)
+        "display page method is invoked" in {
+          withNewCaching(declaration)
 
-            val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
-            status(result) mustBe OK
-            verifyPageInvoked()
-          }
-          "direct representative" in {
-            withNewCaching(declaration)
-
-            val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
-
-            status(result) mustBe OK
-            verifyPageInvoked()
-          }
-          "indirect representative" in {
-            withNewCaching(declaration)
-
-            val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
-
-            status(result) mustBe OK
-            verifyPageInvoked()
-          }
+          status(result) mustBe OK
+          verifyPageInvoked()
         }
       }
 
@@ -123,43 +105,16 @@ class IsLicenseRequiredControllerSpec extends ControllerSpec with OptionValues {
 
       "return 303 (SEE_OTHER)" when {
 
-        "user submits valid Yes answer" in {
+        "user submits valid answer" in {
           withNewCaching(declaration)
 
           val requestBody = Seq("yesNo" -> "Yes")
           val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
         }
 
-        "user submits valid No answer" when {
-          "NO authorisation from List" in {
-            withNewCaching(declaration)
-
-            val requestBody = Seq("yesNo" -> "No")
-            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(Mode.Normal, itemId)
-          }
-
-          "authorisation from List" in {
-
-            val declaration = aDeclaration(
-              withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails))),
-              withDeclarationHolders(authorisationTypeCode = Some(AuthorizationTypeCodes.codesRequiringDocumentation.head))
-            )
-
-            withNewCaching(declaration)
-
-            val requestBody = Seq("yesNo" -> "No")
-            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
-          }
-        }
       }
     }
 
