@@ -79,7 +79,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
     onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY) { _ =>
       when {
-        mockFeatureSwithConfig.isFeatureOn(Feature.waiver999L)
+        mockFeatureSwitchConfig.isFeatureOn(Feature.waiver999L)
       } thenReturn true
 
       "return 200 (OK)" that {
