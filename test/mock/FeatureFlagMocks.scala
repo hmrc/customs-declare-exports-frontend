@@ -17,7 +17,7 @@
 package mock
 
 import base.MockExportCacheService
-import config.featureFlags.{FeatureSwitchConfig, SfusConfig, Waiver999LConfig}
+import config.featureFlags._
 import controllers.actions.FeatureFlagAction
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
@@ -28,6 +28,13 @@ trait FeatureFlagMocks extends MockExportCacheService with BeforeAndAfterEach {
   self: MockitoSugar with Suite =>
 
   val mockWaiver999LConfig: Waiver999LConfig = mock[Waiver999LConfig]
+  val mockEadConfig: EadConfig = mock[EadConfig]
+  val mockQueryNotificationMessageConfig: QueryNotificationMessageConfig = mock[QueryNotificationMessageConfig]
+  val mockSecureMessagingConfig: SecureMessagingConfig = mock[SecureMessagingConfig]
+  val mockSecureMessagingInboxConfig: SecureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
+  val mockSfusConfig: SfusConfig = mock[SfusConfig]
+  val mockTariffApiConfig: TariffApiConfig = mock[TariffApiConfig]
+  val mockTdrUnauthorisedMsgConfig: TdrUnauthorisedMsgConfig = mock[TdrUnauthorisedMsgConfig]
 
   val mockFeatureSwithConfig: FeatureSwitchConfig = mock[FeatureSwitchConfig]
 

@@ -18,13 +18,12 @@ package services
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
-
 import base.UnitWithMocksSpec
-import config.featureFlags.TariffApiConfig
 import connectors.TariffApiConnector
 import forms.declaration.CommodityDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
+import _root_.mock.FeatureFlagMocks
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterEach, EitherValues}
 import play.api.libs.json.Json
@@ -32,17 +31,17 @@ import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRe
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 
 class TariffApiServiceSpec
-    extends UnitWithMocksSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ExportsItemBuilder with EitherValues with ScalaFutures {
+    extends UnitWithMocksSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ExportsItemBuilder with EitherValues with ScalaFutures
+    with FeatureFlagMocks {
 
-  private val tariffApiConfig = mock[TariffApiConfig]
   private val tariffApiConnector = mock[TariffApiConnector]
 
-  private val tariffApiService = new TariffApiService(tariffApiConfig, tariffApiConnector)(global)
+  private val tariffApiService = new TariffApiService(mockTariffApiConfig, tariffApiConnector)(global)
 
   override def beforeEach(): Unit = {
-    reset(tariffApiConfig, tariffApiConnector)
+    reset(mockTariffApiConfig, tariffApiConnector)
 
-    when(tariffApiConfig.isCommoditiesEnabled).thenReturn(true)
+    when(mockTariffApiConfig.isCommoditiesEnabled).thenReturn(true)
     when(tariffApiConnector.getCommodity(any())).thenReturn(Future.successful(None))
   }
 
@@ -64,7 +63,7 @@ class TariffApiServiceSpec
 
     "the feature flag 'isCommoditiesEnabled' is disabled" should {
       "return 'None'" in {
-        when(tariffApiConfig.isCommoditiesEnabled).thenReturn(false)
+        when(mockTariffApiConfig.isCommoditiesEnabled).thenReturn(false)
         retrieveCommodityInfoIfAny().futureValue.left.value mustBe CommodityCodeNotFound
       }
     }

@@ -37,22 +37,20 @@ import views.tags.ViewTest
 class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with BeforeAndAfterEach {
 
   private val form: Form[Choice] = Choice.form()
-  private val sfusConfig = mock[SfusConfig]
-  private val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
 
   private val injector =
-    new OverridableInjector(bind[SfusConfig].toInstance(sfusConfig), bind[SecureMessagingInboxConfig].toInstance(secureMessagingInboxConfig))
+    new OverridableInjector(bind[SfusConfig].toInstance(mockSfusConfig), bind[SecureMessagingInboxConfig].toInstance(mockSecureMessagingInboxConfig))
   private val choicePage = injector.instanceOf[choice_page]
 
   private def createView(form: Form[Choice] = form, journeys: Seq[String] = allJourneys): Document = choicePage(form, journeys)(request, messages)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(sfusConfig, secureMessagingInboxConfig)
+    reset(mockSfusConfig, mockSecureMessagingInboxConfig)
   }
 
   override protected def afterEach(): Unit = {
-    reset(sfusConfig, secureMessagingInboxConfig)
+    reset(mockSfusConfig, mockSecureMessagingInboxConfig)
     super.afterEach()
   }
 
@@ -66,18 +64,18 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
   private def withSecureMessagingFeatureStatus(flag: SecureMessagingFeatureStatus): Unit = {
     flag match {
       case SFUS =>
-        when(secureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(true)
-        when(secureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(false)
+        when(mockSecureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(true)
+        when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(false)
       case EXPORTS =>
-        when(secureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
-        when(secureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(true)
+        when(mockSecureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
+        when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(true)
       case _ =>
-        when(secureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
-        when(secureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(false)
+        when(mockSecureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
+        when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(false)
     }
 
-    when(sfusConfig.sfusUploadLink).thenReturn(dummyUploadLink)
-    when(secureMessagingInboxConfig.sfusInboxLink).thenReturn(dummyInboxLink)
+    when(mockSfusConfig.sfusUploadLink).thenReturn(dummyUploadLink)
+    when(mockSecureMessagingInboxConfig.sfusInboxLink).thenReturn(dummyInboxLink)
   }
 
   "Choice View on empty page" should {

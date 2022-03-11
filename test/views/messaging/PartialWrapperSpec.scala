@@ -31,14 +31,13 @@ import views.html.messaging.partial_wrapper
 
 class PartialWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
 
-  private val secureMessagingConfig = mock[SecureMessagingConfig]
-  private val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(secureMessagingConfig))
+  private val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig))
 
   private val partialWrapperPage = injector.instanceOf[partial_wrapper]
   private val partialContent = "Partial Content"
 
   override def afterEach(): Unit = {
-    reset(secureMessagingConfig)
+    reset(mockSecureMessagingConfig)
     super.afterEach()
   }
 
@@ -102,7 +101,7 @@ class PartialWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
   }
 
   private def genView(titleKey: String, backLinkUrl: Option[Call]): Document = {
-    when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+    when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
     partialWrapperPage(HtmlFormat.raw(partialContent), titleKey, routes.SubmissionsController.displayListOfSubmissions().url, backLinkUrl)(
       request,
       messages

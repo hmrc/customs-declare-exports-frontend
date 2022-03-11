@@ -41,8 +41,7 @@ import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 @ViewTest
 class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with ExportsTestData with Stubs {
 
-  private val secureMessagingConfig = mock[SecureMessagingConfig]
-  private val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(secureMessagingConfig))
+  private val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig))
 
   private val page = injector.instanceOf[submissions]
 
@@ -55,7 +54,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
+    when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
   }
 
   private val zone: ZoneId = ZoneId.of("UTC")
@@ -120,7 +119,7 @@ class SubmissionsViewSpec extends UnitViewSpec with BeforeAndAfterEach with Expo
 
     "contain the navigation banner" when {
       "the Secure Messaging flag is set to 'true'" in {
-        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
         val view = createView()
 
         val navigationBanner = view.getElementById("navigation-banner")

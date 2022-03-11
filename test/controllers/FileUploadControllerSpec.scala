@@ -17,7 +17,6 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
-import config.featureFlags.SfusConfig
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
@@ -25,7 +24,6 @@ import services.audit.AuditService
 
 class FileUploadControllerSpec extends ControllerWithoutFormSpec {
 
-  val mockSfusConfig = mock[SfusConfig]
   val mockAuditService = mock[AuditService]
   val dummySfusLink = "dummySfusLink"
   val mrn = "mrn"
