@@ -50,7 +50,7 @@ case class ExportItem(
   commodityMeasure: Option[CommodityMeasure] = None,
   additionalInformation: Option[AdditionalInformationData] = None,
   additionalDocuments: Option[AdditionalDocuments] = None,
-  isLicenseRequired: Option[Boolean] = None
+  isLicenceRequired: Option[Boolean] = None
 ) {
   def hasFiscalReferences: Boolean =
     fiscalInformation.exists(_.onwardSupplyRelief == yes)

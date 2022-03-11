@@ -116,7 +116,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.IsLicenseRequiredController.displayPage(mode, itemId))
+        backButton must haveHref(routes.IsLicenceRequiredController.displayPage(mode, itemId))
       }
 
     }

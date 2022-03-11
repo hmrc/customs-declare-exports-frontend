@@ -83,7 +83,7 @@ class AdditionalInformationController @Inject()(
       case YesNoAnswers.no if isClearanceJourney || !waiver999LConfig.is999LEnabled =>
         navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
       case _ =>
-        navigator.continueTo(mode, routes.IsLicenseRequiredController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
+        navigator.continueTo(mode, routes.IsLicenceRequiredController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
     }
 
   }

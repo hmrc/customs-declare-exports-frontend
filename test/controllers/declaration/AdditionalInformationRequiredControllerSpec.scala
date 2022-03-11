@@ -161,7 +161,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe routes.IsLicenceRequiredController.displayPage(Mode.Normal, itemId)
       }
 
     }

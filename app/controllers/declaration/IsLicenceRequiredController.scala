@@ -31,19 +31,19 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.is_license_required
+import views.html.declaration.is_licence_required
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsLicenseRequiredController @Inject()(
+class IsLicenceRequiredController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   featureFlagAction: FeatureFlagAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  is_license_required: is_license_required
+  is_licence_required: is_licence_required
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
@@ -53,12 +53,12 @@ class IsLicenseRequiredController @Inject()(
     (authenticate andThen journeyType(validTypes) andThen featureFlagAction(Feature.waiver999L)) { implicit request =>
       val formWithErrors = form.withSubmissionErrors
 
-      val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenseRequired).fold(form.withSubmissionErrors) {
+      val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenceRequired).fold(form.withSubmissionErrors) {
         case true  => formWithErrors.fill(YesNoAnswer(yes))
         case false => formWithErrors.fill(YesNoAnswer(no))
       }
 
-      Ok(is_license_required(mode, itemId, frm, representativeStatusCode))
+      Ok(is_licence_required(mode, itemId, frm, representativeStatusCode))
 
     }
 
@@ -66,7 +66,7 @@ class IsLicenseRequiredController @Inject()(
     (authenticate andThen journeyType andThen featureFlagAction(Feature.waiver999L)).async { implicit request =>
       form.bindFromRequest
         .fold(
-          formWithErrors => Future.successful(BadRequest(is_license_required(mode, itemId, formWithErrors, representativeStatusCode))),
+          formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors, representativeStatusCode))),
           yesNo =>
             updateCache(yesNo, itemId) map { _ =>
               navigator.continueTo(mode, AdditionalDocumentsController.displayPage(_, itemId))
@@ -75,9 +75,9 @@ class IsLicenseRequiredController @Inject()(
     }
 
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
-    val isLicenseRequired = yesNoAnswer.answer == YesNoAnswers.yes
+    val isLicenceRequired = yesNoAnswer.answer == YesNoAnswers.yes
 
-    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(isLicenseRequired = Some(isLicenseRequired))))
+    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(isLicenceRequired = Some(isLicenceRequired))))
   }
 
   private def representativeStatusCode(implicit request: JourneyRequest[AnyContent]): Option[String] =

@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import config.featureFlags.Waiver999LConfig
-import controllers.actions.{AuthAction, FeatureFlagAction, JourneyAction}
-import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationController, IsLicenseRequiredController}
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationController, IsLicenceRequiredController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -80,7 +80,7 @@ class AdditionalInformationRequiredController @Inject()(
     yesNoAnswer.answer match {
       case YesNoAnswers.yes                                                         => AdditionalInformationController.displayPage(_, itemId)
       case YesNoAnswers.no if isClearanceJourney || !waiver999LConfig.is999LEnabled => AdditionalDocumentsController.displayPage(_, itemId)
-      case _                                                                        => IsLicenseRequiredController.displayPage(_, itemId)
+      case _                                                                        => IsLicenceRequiredController.displayPage(_, itemId)
 
     }
   }

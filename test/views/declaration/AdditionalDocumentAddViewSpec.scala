@@ -74,7 +74,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
       onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(TestDeclaration.licenseRequired) { implicit request =>
         "display a 'Back' button that links to the 'Is License Required' page" when {
           "license is required" in {
-            verifyBackButton(routes.IsLicenseRequiredController.displayPage(mode, itemId))
+            verifyBackButton(routes.IsLicenceRequiredController.displayPage(mode, itemId))
           }
         }
       }
@@ -83,7 +83,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
         "display a 'Back' button that links to the 'Is License Required' page" when {
           "license is not required" when {
             "the authorisation code requires additional documents" in {
-              verifyBackButton(routes.IsLicenseRequiredController.displayPage(mode, itemId))
+              verifyBackButton(routes.IsLicenceRequiredController.displayPage(mode, itemId))
             }
 
           }

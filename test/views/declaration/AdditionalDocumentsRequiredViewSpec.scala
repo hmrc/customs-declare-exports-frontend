@@ -143,7 +143,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
     }
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(item))) { implicit request =>
       "display a 'Back' button that links to the 'Is License Required' page" in {
-        verifyBackButton(routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId))
+        verifyBackButton(routes.IsLicenceRequiredController.displayPage(Mode.Normal, itemId))
       }
     }
   }

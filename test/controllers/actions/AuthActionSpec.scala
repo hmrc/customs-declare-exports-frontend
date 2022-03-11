@@ -17,7 +17,6 @@
 package controllers.actions
 
 import base.{ControllerWithoutFormSpec, Injector}
-import config.featureFlags.SecureMessagingInboxConfig
 import controllers.{routes, ChoiceController}
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._

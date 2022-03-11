@@ -20,7 +20,6 @@ import base.ControllerSpec
 import features.Feature
 import forms.common.YesNoAnswer
 import forms.declaration.CommodityDetails
-import forms.declaration.declarationHolder.AuthorizationTypeCodes
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -30,18 +29,18 @@ import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.is_license_required
+import views.html.declaration.is_licence_required
 
-class IsLicenseRequiredControllerSpec extends ControllerSpec with OptionValues {
+class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
   private val itemId = "itemId"
   private val commodityDetails = CommodityDetails(Some("1234567890"), Some("description"))
   private val declaration = aDeclaration(withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails))))
 
-  private val mockPage = mock[is_license_required]
+  private val mockPage = mock[is_licence_required]
 
   private val controller =
-    new IsLicenseRequiredController(
+    new IsLicenceRequiredController(
       mockAuthAction,
       mockJourneyAction,
       mockFeatureFlagAction,
@@ -76,7 +75,7 @@ class IsLicenseRequiredControllerSpec extends ControllerSpec with OptionValues {
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
     verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
-  "IsLicenseRequired Controller" should {
+  "IsLicenceRequired Controller" should {
 
     onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY) { _ =>
       when {

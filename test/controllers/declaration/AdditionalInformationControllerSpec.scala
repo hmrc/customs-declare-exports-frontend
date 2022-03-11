@@ -167,7 +167,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
           val result = controller.submitForm(Mode.Normal, itemId)(postRequest(requestBody))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe routes.IsLicenceRequiredController.displayPage(Mode.Normal, itemId)
         }
 
       }
