@@ -37,9 +37,6 @@
     declarationHolder: DeclarationHolderHelper,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
-    insetText: exportsInsetText,
-    paragraphBody: paragraphBody,
-    bulletList: bulletList,
     appConfig: AppConfig,
     yesNoRadios: yesNoRadios,
     navigator: Navigator,
@@ -49,24 +46,6 @@
 @(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
-
-@insetSection = {
-    @paragraphBody(messages("declaration.declarationHolderRequired.inset.para1"))
-
-    @bulletList(Seq(
-        Html(messages("declaration.declarationHolderRequired.inset.bullet1.text")),
-        Html(messages("declaration.declarationHolderRequired.inset.bullet2.text")),
-    ))
-
-    @paragraphBody(messages("declaration.declarationHolderRequired.inset.para2"))
-}
-
-@maybeInset = @{
-    if (request.declarationType == DeclarationType.OCCASIONAL)
-        HtmlFormat.empty
-    else
-        insetText(content = HtmlContent(insetSection))
-}
 
 @govukLayout(
     title = Title("declaration.declarationHolderRequired.title", "declaration.section.2", hasErrors = hasErrors),
@@ -79,14 +58,14 @@
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("declaration.declarationHolderRequired.title")),
+                content = Text(declarationHolder.titleForDeclarationHolderRequiredPage),
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(List(
                 declarationHolder.bodyForDeclarationHolderRequiredPage,
                 yesNoRadios(form, inline = true),
-                maybeInset,
+                declarationHolder.insetTextForDeclarationHolderRequiredPage,
                 tariffExpander(DeclarationHolderRequired, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))

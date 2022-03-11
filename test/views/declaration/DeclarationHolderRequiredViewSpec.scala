@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{OCCASIONAL_FRONTIER, OCCASIONAL_PRE_LODGED, STANDARD_PRE_LODGED}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
 import models.Mode
 import models.declaration.Parties
@@ -49,25 +49,30 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
   "Declaration Holder Required View" should {
 
     "have correct message keys" in {
-      messages must haveTranslationFor(s"$prefix.title")
-      messages must haveTranslationFor(s"$prefix.body.default")
-      messages must haveTranslationFor(s"$prefix.body.standard.prelodged.1040")
-      messages must haveTranslationFor(s"$prefix.body.occasional.1")
-      messages must haveTranslationFor(s"$prefix.body.occasional.2")
-      messages must haveTranslationFor(s"$prefix.body.occasional.bullet.1")
-      messages must haveTranslationFor(s"$prefix.body.occasional.bullet.2")
-      messages must haveTranslationFor(s"$prefix.body.standard.prelodged.others")
-      messages must haveTranslationFor(s"$prefix.inset.para1")
-      messages must haveTranslationFor(s"$prefix.inset.para2")
-      messages must haveTranslationFor(s"$prefix.inset.bullet1.text")
-      messages must haveTranslationFor(s"$prefix.inset.bullet2.text")
       messages must haveTranslationFor(s"$prefix.tradeTariff.link")
       messages must haveTranslationFor("tariff.declaration.addAuthorisationRequired.clearance.text")
       messages must haveTranslationFor(s"$prefix.empty")
     }
   }
 
+  "Declaration Holder Required View on empty page" when {
+    "the additional declaration type is STANDARD_PRE_LODGED and" when {
+      "the Authorisation Procedure Code is 1040" should {
+        implicit val request = withRequest(STANDARD_PRE_LODGED, withAuthorisationProcedureCodeChoice(Choice1040))
+
+        "display the expected page title" in {
+          view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements(s"$prefix.title.standard.prelodged.1040")
+        }
+
+        "not display any inset text" in {
+          view.getElementsByClass("govuk-inset-text").size mustBe 0
+        }
+      }
+    }
+  }
+
   "Declaration Holder Required View on empty page" should {
+
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
         view.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements(s"$prefix.title")
@@ -102,13 +107,14 @@ class DeclarationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestDat
           messages(s"$prefix.inset.bullet2.text"),
           messages(s"$prefix.inset.para2")
         ).mkString(" ")
+
         inset.get(0) must containText(expected)
       }
     }
 
     onOccasional { implicit request =>
-      "not display inset text" in {
-        view.getElementsByClass("govuk-inset-text").size() mustBe 0
+      "not display any inset text" in {
+        view.getElementsByClass("govuk-inset-text").size mustBe 0
       }
     }
 
