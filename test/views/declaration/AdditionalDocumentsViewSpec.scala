@@ -66,7 +66,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
       messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName")
       messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName.error.length")
       messages must haveTranslationFor("declaration.additionalDocument.error.maximumAmount")
-      messages must haveTranslationFor("declaration.additionalDocument.error.duplicated")
+      messages must haveTranslationFor("declaration.additionalDocument.error.duplicate")
       messages must haveTranslationFor("declaration.additionalDocument.error.notDefined")
     }
   }

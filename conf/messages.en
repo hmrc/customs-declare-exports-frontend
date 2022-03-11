@@ -809,8 +809,9 @@ saved.declarations.remove.submitButton = Continue
 saved.declarations.remove.option.error.empty = Select yes if you want to remove this declaration
 
 declaration.declarationHolderRequired.title = Do you want to add any authorisations?
+declaration.declarationHolderRequired.title.standard.prelodged.1040 = Do you have any authorisations you want to declare?
 declaration.declarationHolderRequired.body.default = Authorisations allow you to use specific procedures or types of declaration.
-declaration.declarationHolderRequired.body.standard.prelodged.1040 = Authorisations allow you to use specific procedures or types of declaration. For the standard export procedure that you have selected (procedure code 1040) that is a pre-lodged, standard declaration, you do not have to hold any authorisations.
+declaration.declarationHolderRequired.body.standard.prelodged.1040 = Authorisations from HMRC, such as Approved Economic Operator, can speed up customs processing.
 declaration.declarationHolderRequired.body.occasional.1 = You indicated you’re making a simplified declaration (occasional use).
 declaration.declarationHolderRequired.body.occasional.2 = You do not have to hold any authorisations to do this for a pre-lodged declaration. If you are making an arrived declaration you need to add one of these authorisations:
 declaration.declarationHolderRequired.body.occasional.bullet.1 = CSE (customs supervised exports) if you hold it
@@ -1011,6 +1012,8 @@ declaration.procedureCodes.readMoreExpander.reExportFollowingSpecialProcedure.li
 
 declaration.additionalProcedureCodes.title = Add any additional procedure codes to {0}
 declaration.additionalProcedureCodes.paragraph = Add each code that applies to this item, or select and add the code ‘000’ which means that no other additional procedure codes apply. List shows all the permitted additional procedure codes for your selected procedure.
+declaration.additionalProcedureCodes.jersey.hint = You need to add additional procedure code F75, as this is a requirement when dispatching goods to a Special Fiscal Territory of the UK
+declaration.additionalProcedureCodes.jersey.clearanceNonEidr.hint = You need to add additional procedure code 15F, as this is a requirement when dispatching goods to a Special Fiscal Territory of the UK
 declaration.additionalProcedureCodes.inset = List shows all the permitted additional procedure codes for {0}. For descriptions and conditions of each code, go to {1}.
 declaration.additionalProcedureCodes.inset.linkText = Appendix 2: DE 1/11: Additional Procedure Codes (opens in new tab)
 declaration.additionalProcedureCodes.table.header = Additional procedure codes
@@ -1140,7 +1143,7 @@ declaration.additionalDocument.documentQuantity = Quantity of the measurement un
 declaration.additionalDocument.documentQuantity.hint = For example, 246,000.50
 declaration.additionalDocument.documentQuantity.error = Enter a quantity in the correct format
 declaration.additionalDocument.error.maximumAmount = Maximum number of documents added
-declaration.additionalDocument.error.duplicated = Document details already added
+declaration.additionalDocument.error.duplicate = Document details already added
 declaration.additionalDocument.error.notDefined = Enter document information
 declaration.additionalDocument.summary.heading = You’ve added details for 1 document or reference
 declaration.additionalDocument.summary.multiple.heading = You’ve added details for {0} documents or references

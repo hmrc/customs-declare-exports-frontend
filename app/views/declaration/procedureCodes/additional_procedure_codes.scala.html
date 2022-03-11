@@ -19,7 +19,7 @@
 @import controllers.navigation.ItemId
 @import controllers.navigation.Navigator
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
+@import views.helpers.{BackButton, Title, AdditionalProcedureCodesHelper}
 @import views.html.components.gds._
 @import views.components.gds.Styles._
 @import config.AppConfig
@@ -44,7 +44,8 @@
   saveButtons: saveButtons,
   formHelper: FormWithCSRF,
   navigator: Navigator,
-  appConfig: AppConfig
+  appConfig: AppConfig,
+  addProcCodesHelper: AdditionalProcedureCodesHelper
 )
 
 @(mode: Mode, itemId: String, form: Form[AdditionalProcedureCode], procedureCode: ProcedureCode, validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
@@ -79,6 +80,7 @@
   }
 }
 
+@hint = @{if(addProcCodesHelper.hintText.isEmpty) List.empty else List(messages(addProcCodesHelper.hintText.get))}
 
 @govukLayout(
   title = Title("declaration.additionalProcedureCodes.title", "declaration.section.5", procedureCode.code, hasErrors = hasErrors),
@@ -97,6 +99,7 @@
       field = form(additionalProcedureCodeKey),
       label = messages("declaration.additionalProcedureCodes.title", procedureCode.code),
       labelClass = Some("govuk-visually-hidden"),
+      hintParagraphs = hint,
       emptySelectValue = messages("declaration.additionalProcedureCodes.error.empty"),
       items = AutoCompleteItem.fromAdditionalProcedureCodes(validAdditionalProcedureCodes.toList),
       isPageHeading = false,

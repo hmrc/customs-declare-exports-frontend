@@ -17,7 +17,6 @@
 package config.featureFlags
 
 import features.Feature
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
 
