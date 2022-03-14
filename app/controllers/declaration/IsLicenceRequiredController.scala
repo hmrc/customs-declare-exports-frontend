@@ -69,9 +69,18 @@ class IsLicenceRequiredController @Inject()(
           formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors, representativeStatusCode))),
           yesNo =>
             updateCache(yesNo, itemId) map { _ =>
-              navigator.continueTo(mode, AdditionalDocumentsController.displayPage(_, itemId))
+              navigator.continueTo(mode, nextPage(yesNo, itemId))
           }
         )
+    }
+
+  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+    yesNoAnswer.answer match {
+      case YesNoAnswers.yes => AdditionalDocumentsController.displayPage(_, itemId)
+      case YesNoAnswers.no if request.cacheModel.isAuthCodeRequiringAdditionalDocuments =>
+        AdditionalDocumentsController.displayPage(_, itemId)
+      case YesNoAnswers.no =>
+        AdditionalDocumentsRequiredController.displayPage(_, itemId)
     }
 
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
