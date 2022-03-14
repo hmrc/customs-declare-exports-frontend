@@ -64,9 +64,11 @@ class TariffApiService @Inject()(tariffApiConfig: TariffApiConfig, tariffApiConn
       } yield extractCommodityInfo(commodityCode, abbrTag)
     ).flatten
 
+    def nonEmpty(commodityInfo: CommodityInfo): Boolean = commodityInfo.description.nonEmpty && commodityInfo.units.nonEmpty
+
     maybeCommodityInfo match {
-      case Some(commodityInfo) if commodityInfo.description.nonEmpty && commodityInfo.units.nonEmpty => Right(commodityInfo)
-      case _                                                                                         => Left(SupplementaryUnitsNotRequired)
+      case Some(commodityInfo) if nonEmpty(commodityInfo) => Right(commodityInfo)
+      case _                                              => Left(SupplementaryUnitsNotRequired)
     }
   }
 
