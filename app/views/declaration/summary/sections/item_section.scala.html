@@ -299,25 +299,27 @@
         )
     ),
     if (List(STANDARD, SUPPLEMENTARY).contains(declarationType))
-        item.commodityMeasure.map(commodityMeasure =>
-            SummaryListRow(
-                classes = s"item-${item.sequenceId}-supplementaryUnits-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.items.item.supplementaryUnits"))
-                ),
-                value = Value(
-                    content = Text(commodityMeasure.supplementaryUnits.getOrElse(messages("declaration.summary.items.item.supplementaryUnitsNotRequired")))
-                ),
-                actions = actions(Actions(
-                    items = Seq(
-                        actionItem(
-                            href = routes.SupplementaryUnitsController.displayPage(mode, item.id).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.items.item.supplementaryUnits.change", item.sequenceId))
+        item.commodityMeasure.flatMap(commodityMeasure =>
+            commodityMeasure.supplementaryUnits.map(supplementaryUnits =>
+                SummaryListRow(
+                    classes = s"item-${item.sequenceId}-supplementaryUnits-row",
+                    key = Key(
+                        content = Text(messages("declaration.summary.items.item.supplementaryUnits"))
+                    ),
+                    value = Value(
+                        content = Text(supplementaryUnits)
+                    ),
+                    actions = actions(Actions(
+                        items = Seq(
+                            actionItem(
+                                href = routes.SupplementaryUnitsController.displayPage(mode, item.id).url,
+                                content = HtmlContent(linkContent(messages("site.change"))),
+                                visuallyHiddenText = Some(messages("declaration.summary.items.item.supplementaryUnits.change", item.sequenceId))
+                            )
                         )
-                    )
-                ))
-            )
+                    ))
+                )
+           )
         )
     else None
 ),
