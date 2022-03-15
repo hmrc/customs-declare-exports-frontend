@@ -17,5 +17,13 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
+import play.api.libs.json.{Json, OFormat}
 
-object IsLicenceRequired extends DeclarationPage
+object IsLicenceRequired extends DeclarationPage {
+  implicit val format: OFormat[NatureOfTransaction] = Json.format[NatureOfTransaction]
+
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    Seq(TariffContentKey("tariff.declaration.item.isLicenceRequired.common"))
+}
