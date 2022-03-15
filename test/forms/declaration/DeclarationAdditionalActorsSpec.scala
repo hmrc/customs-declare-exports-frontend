@@ -27,7 +27,7 @@ class DeclarationAdditionalActorsSpec extends DeclarationPageBaseSpec {
 
     "return form with errors" when {
       "provided with empty input for party type CS" in {
-        val form = DeclarationAdditionalActors.form().bind(emptyAdditionalActorsJSON("CS"), JsonBindMaxChars)
+        val form = DeclarationAdditionalActors.form.bind(emptyAdditionalActorsJSON("CS"), JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -35,7 +35,7 @@ class DeclarationAdditionalActorsSpec extends DeclarationPageBaseSpec {
       }
 
       "provided with empty input for party type MF" in {
-        val form = DeclarationAdditionalActors.form().bind(emptyAdditionalActorsJSON("MF"), JsonBindMaxChars)
+        val form = DeclarationAdditionalActors.form.bind(emptyAdditionalActorsJSON("MF"), JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -43,7 +43,7 @@ class DeclarationAdditionalActorsSpec extends DeclarationPageBaseSpec {
       }
 
       "provided with empty input for party type FW" in {
-        val form = DeclarationAdditionalActors.form().bind(emptyAdditionalActorsJSON("FW"), JsonBindMaxChars)
+        val form = DeclarationAdditionalActors.form.bind(emptyAdditionalActorsJSON("FW"), JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -51,7 +51,7 @@ class DeclarationAdditionalActorsSpec extends DeclarationPageBaseSpec {
       }
 
       "provided with empty input for party type WH" in {
-        val form = DeclarationAdditionalActors.form().bind(emptyAdditionalActorsJSON("WH"), JsonBindMaxChars)
+        val form = DeclarationAdditionalActors.form.bind(emptyAdditionalActorsJSON("WH"), JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -61,7 +61,7 @@ class DeclarationAdditionalActorsSpec extends DeclarationPageBaseSpec {
       "provided with unknown value for party type" in {
         val declarationAdditionalActorsInputData =
           JsObject(Map("eori" -> JsString("GB12345678912345"), "partyType" -> JsString("Incorrect")))
-        val form = DeclarationAdditionalActors.form().bind(declarationAdditionalActorsInputData, JsonBindMaxChars)
+        val form = DeclarationAdditionalActors.form.bind(declarationAdditionalActorsInputData, JsonBindMaxChars)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -71,7 +71,7 @@ class DeclarationAdditionalActorsSpec extends DeclarationPageBaseSpec {
 
     "return form without errors" when {
       "provided with valid input" in {
-        val form = DeclarationAdditionalActors.form().bind(correctAdditionalActorsJSON, JsonBindMaxChars)
+        val form = DeclarationAdditionalActors.form.bind(correctAdditionalActorsJSON, JsonBindMaxChars)
 
         form.hasErrors must be(false)
       }

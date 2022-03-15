@@ -14,35 +14,33 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import controllers.declaration.AdditionalActorsAddController.AdditionalActorsFormGroupId
 @import forms.declaration.DeclarationAdditionalActors
+@import forms.declaration.DeclarationAdditionalActors.additionalActorsFormGroupId
 @import forms.declaration.DeclarationAdditionalActors.PartyType._
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
-@import views.components.gds.Styles._
-@import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
-@import config.AppConfig
 
 @this(govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukButton: GovukButton,
-        formGroupWrapper: formGroupWrapper,
-        govukRadios: GovukRadios,
-        govukTable : GovukTable,
-        paragraphBody: paragraphBody,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        tariffExpander: tariffExpander,
-        saveButtons: saveButtons,
-        formHelper: FormWithCSRF,
-        navigator: Navigator,
-        appConfig: AppConfig
+    govukFieldset: GovukFieldset,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    formGroupWrapper: formGroupWrapper,
+    paragraphBody: paragraphBody,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    tariffExpander: tariffExpander,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
 )
 
 
@@ -50,22 +48,25 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@inputField(partyType: String) = @{Some(exportsInputText(
-    field = form(s"eori$partyType"),
-    inputClasses = Some("govuk-input govuk-!-width-three-quarters"),
-    labelKey = "declaration.additionalActors.eori"
+@inputField(partyType: String) = @{
+    Some(exportsInputText(
+        field = form(s"eori$partyType"),
+        inputClasses = Some("govuk-input govuk-!-width-three-quarters"),
+        labelKey = "declaration.additionalActors.eori"
     ))
 }
 
-@removeButton(value: Option[String]) = @{ govukButton(Button(
-    classes = "govuk-button--secondary govuk-!-margin-0",
-    content = Text(messages("site.remove")),
-    name = Some(messages("declaration.partyType.remove.hint")),
-    value = value
-))}
+@removeButton(value: Option[String]) = @{
+    govukButton(Button(
+        classes = "govuk-button--secondary govuk-!-margin-0",
+        content = Text(messages("site.remove")),
+        name = Some(messages("declaration.partyType.remove.hint")),
+        value = value
+    ))
+}
 
 @radios = {
-    @formGroupWrapper(field = form(AdditionalActorsFormGroupId)){
+    @formGroupWrapper(field = form(additionalActorsFormGroupId)) {
         @govukRadios(Radios(
             name = "partyType",
             items = Seq(
@@ -127,7 +128,7 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
               paragraphBody(messages("declaration.additionalActors.body.text")),
               radios,
               tariffExpander(DeclarationAdditionalActors, request.declarationType)(messages, appConfig),

@@ -47,6 +47,8 @@ object DeclarationAdditionalActors extends DeclarationPage {
   private val allowedPartyTypes =
     Set(PartyType.Consolidator, PartyType.Manufacturer, PartyType.FreightForwarder, PartyType.WarehouseKeeper)
 
+  val additionalActorsFormGroupId: String = "additionalActors"
+
   val formId = "DeclarationAdditionalActors"
 
   val mapping: Mapping[DeclarationAdditionalActors] = Forms.mapping(
@@ -77,7 +79,7 @@ object DeclarationAdditionalActors extends DeclarationPage {
     }
   }
 
-  def form(): Form[DeclarationAdditionalActors] = Form(mapping)
+  def form: Form[DeclarationAdditionalActors] = Form(mapping)
 
   object PartyType {
     val Consolidator = "CS"
