@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import com.typesafe.config.ConfigFactory
 import config.AppConfig
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
@@ -26,6 +27,7 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
+import play.api.Configuration
 import play.api.data.Form
 import play.api.mvc.Call
 import views.declaration.spec.UnitViewSpec
@@ -35,6 +37,8 @@ import views.tags.ViewTest
 
 @ViewTest
 class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessages with Injector {
+
+  override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
 
   private val appConfig = instanceOf[AppConfig]
   private val additionalDocumentsRequiredPage = instanceOf[additional_documents_required]
@@ -139,7 +143,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
     }
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(item))) { implicit request =>
       "display a 'Back' button that links to the 'Is License Required' page" in {
-        verifyBackButton(routes.IsLicenseRequiredController.displayPage(Mode.Normal, itemId))
+        verifyBackButton(routes.IsLicenceRequiredController.displayPage(Mode.Normal, itemId))
       }
     }
   }

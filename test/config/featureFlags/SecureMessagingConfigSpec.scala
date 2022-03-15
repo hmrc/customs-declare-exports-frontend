@@ -17,13 +17,14 @@
 package config.featureFlags
 
 import com.typesafe.config.ConfigFactory
+import mock.FeatureFlagMocks
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class SecureMessagingConfigSpec extends PlaySpec with MockitoSugar {
+class SecureMessagingConfigSpec extends PlaySpec with MockitoSugar with FeatureFlagMocks {
 
   private def generateConfig(obfuscated: String = "", secureMessagingEnabled: Boolean = true) = {
     val config = Configuration(ConfigFactory.parseString(s"""microservice.services.secure-messaging {
@@ -37,10 +38,9 @@ class SecureMessagingConfigSpec extends PlaySpec with MockitoSugar {
         |}
       """.stripMargin))
 
-    val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
-    when(secureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(secureMessagingEnabled)
+    when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(secureMessagingEnabled)
 
-    new SecureMessagingConfig(new ServicesConfig(config), secureMessagingInboxConfig)
+    new SecureMessagingConfig(new ServicesConfig(config), mockSecureMessagingInboxConfig)
   }
 
   "SecureMessagingConfig" when {

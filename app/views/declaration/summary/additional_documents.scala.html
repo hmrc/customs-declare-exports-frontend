@@ -60,12 +60,12 @@
     }
 }
 
-@licenseRequired = @{
-    item.isLicenseRequired.contains(true)
+@licenceRequired = @{
+    item.isLicenceRequired.contains(true)
 }
 
 @tableCaption = @{
-    if(licenseRequired && declarationType != DeclarationType.CLEARANCE) messages("declaration.summary.items.item.licences")
+    if(licenceRequired && declarationType != DeclarationType.CLEARANCE) messages("declaration.summary.items.item.licences")
     else messages("declaration.summary.items.item.additionalDocuments")
 }
 
@@ -75,10 +75,10 @@
 
 @if(additionalDocuments.documents.nonEmpty){
 
-    @if(!licenseRequired && declarationType != DeclarationType.CLEARANCE){
+    @if(!licenceRequired && declarationType != DeclarationType.CLEARANCE){
         @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
             Some(SummaryListRow(
-                classes = s"licenses-${item.sequenceId}-row",
+                classes = s"licences-${item.sequenceId}-row",
                 key = Key(
                     content = Text(messages("declaration.summary.items.item.licences"))
             ),
@@ -88,7 +88,7 @@
         actions = actions(Actions(
             items = Seq(
                 actionItem(
-                    href = routes.IsLicenseRequiredController.displayPage(mode, item.id).url,
+                    href = routes.IsLicenceRequiredController.displayPage(mode, item.id).url,
                     content = HtmlContent(linkContent(messages("site.change"))),
                     visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
                 )
@@ -96,7 +96,7 @@
         ))))))
     }
 
-    @if(licenseRequired && declarationType != DeclarationType.CLEARANCE){
+    @if(licenceRequired && declarationType != DeclarationType.CLEARANCE){
         <h3 class="govuk-heading-s">@messages("declaration.summary.items.item.additionalDocuments")</h3>
     }
 
@@ -131,7 +131,7 @@
 
     @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
         Some(SummaryListRow(
-            classes = s"licenses-${item.sequenceId}-row",
+            classes = s"licences-${item.sequenceId}-row",
             key = Key(
                 content = Text(messages("declaration.summary.items.item.licences"))
             ),
@@ -141,7 +141,7 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                    href = routes.IsLicenseRequiredController.displayPage(mode, item.id).url,
+                    href = routes.IsLicenceRequiredController.displayPage(mode, item.id).url,
                     content = HtmlContent(linkContent(messages("site.change"))),
                     visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
                 )

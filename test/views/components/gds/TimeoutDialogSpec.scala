@@ -43,15 +43,14 @@ class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAc
           timeoutDialog.countdown="200 millis"
           """)))
       val timeoutDialogConfig = new TimeoutDialogConfig(serviceConfig)
-      val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
 
       val injector = new OverridableInjector(
         bind[TimeoutDialogConfig].toInstance(timeoutDialogConfig),
-        bind[SecureMessagingInboxConfig].toInstance(secureMessagingInboxConfig)
+        bind[SecureMessagingInboxConfig].toInstance(mockSecureMessagingInboxConfig)
       )
       val choicePage = injector.instanceOf[choice_page]
 
-      when(secureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
+      when(mockSecureMessagingInboxConfig.isSfusSecureMessagingEnabled).thenReturn(false)
       val view = choicePage(form, Seq.empty[String])(getAuthenticatedRequest(), messages)
 
       val metas = view.getElementsByTag("meta").iterator.asScala.toList.filter(_.attr("name") == "hmrc-timeout-dialog")

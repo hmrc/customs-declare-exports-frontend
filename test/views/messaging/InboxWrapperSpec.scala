@@ -30,8 +30,7 @@ import views.html.messaging.inbox_wrapper
 
 class InboxWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
 
-  private val secureMessagingConfig = mock[SecureMessagingConfig]
-  private val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(secureMessagingConfig))
+  private val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig))
 
   private val inboxWrapperPage = injector.instanceOf[inbox_wrapper]
   private val partialContent = "Partial Content"
@@ -40,7 +39,7 @@ class InboxWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
+    when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
   }
 
   "Inbox Wrapper page" should {
@@ -51,7 +50,7 @@ class InboxWrapperSpec extends UnitViewSpec with BeforeAndAfterEach {
 
     "contain the navigation banner" when {
       "the Secure Messaging flag is set to 'true'" in {
-        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
         val view = inboxWrapperPage(HtmlFormat.raw(partialContent))(FakeRequest(), messages)
         val banner = view.getElementById("navigation-banner")
         assert(Option(banner).isDefined && banner.childrenSize == 2)

@@ -17,7 +17,7 @@
 package base
 
 import controllers.helpers.{Add, AddField, SaveAndContinue, SaveAndReturn}
-import mock.{JourneyActionMocks, VerifiedEmailMocks}
+import mock.{FeatureFlagMocks, JourneyActionMocks, VerifiedEmailMocks}
 import models.ExportsDeclaration
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
@@ -40,7 +40,7 @@ trait ControllerWithoutFormSpec extends ControllerSpec {
 
 trait ControllerSpec
     extends UnitSpec with MockAuthAction with MockConnectors with MockExportCacheService with MockNavigator with JourneyTypeTestRunner
-    with ExportsItemBuilder with JourneyActionMocks with DefaultAwaitTimeout with VerifiedEmailMocks {
+    with ExportsItemBuilder with JourneyActionMocks with FeatureFlagMocks with DefaultAwaitTimeout with VerifiedEmailMocks {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
