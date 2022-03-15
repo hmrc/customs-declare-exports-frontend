@@ -28,6 +28,7 @@ import controllers.helpers._
 import controllers.routes.{RejectedNotificationsController, SubmissionsController}
 import forms.declaration.AdditionalInformationSummary
 import forms.declaration.carrier.CarrierDetails
+import mock.FeatureFlagMocks
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import models.{DeclarationType, ExportsDeclaration, Mode, SignedInUser}
@@ -52,7 +53,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class NavigatorSpec
     extends UnitWithMocksSpec with ExportsDeclarationBuilder with JourneyTypeTestRunner with MockExportCacheService with RequestBuilder
-    with ScalaFutures {
+    with ScalaFutures with FeatureFlagMocks {
 
   private val mode = Mode.Normal
   private val call: Mode => Call = _ => Call("GET", "url")
@@ -63,7 +64,8 @@ class NavigatorSpec
   private val inlandOrBorderHelper = mock[InlandOrBorderHelper]
   private val supervisingCustomsOfficeHelper = mock[SupervisingCustomsOfficeHelper]
 
-  private val navigator = new Navigator(config, auditService, tariffApiService, inlandOrBorderHelper, supervisingCustomsOfficeHelper)
+  private val navigator =
+    new Navigator(config, mockWaiver999LConfig, auditService, tariffApiService, inlandOrBorderHelper, supervisingCustomsOfficeHelper)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

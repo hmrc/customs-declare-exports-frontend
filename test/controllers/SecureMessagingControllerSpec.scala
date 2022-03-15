@@ -17,7 +17,6 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
-import config.featureFlags.SecureMessagingConfig
 import connectors.SecureMessagingFrontendConnector
 import controllers.actions.SecureMessagingAction
 import models.messaging.{ConversationPartial, InboxPartial, ReplyResultPartial}
@@ -36,8 +35,7 @@ import scala.concurrent.Future
 
 class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
 
-  val secureMessagingConfig = mock[SecureMessagingConfig]
-  val secureMessagingAction = new SecureMessagingAction(secureMessagingConfig)
+  val secureMessagingAction = new SecureMessagingAction(mockSecureMessagingConfig)
 
   val secureMessagingFrontendConnector = mock[SecureMessagingFrontendConnector]
 
@@ -65,17 +63,17 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
     when(inboxWrapperPage.apply(any[HtmlFormat.Appendable])(any[Request[_]], any[Messages])).thenReturn(HtmlFormat.empty)
     when(partialWrapperPage.apply(any[HtmlFormat.Appendable], any[String], any[String], any[Option[Call]])(any[Request[_]], any[Messages]))
       .thenReturn(HtmlFormat.empty)
-    when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+    when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
   }
 
   override def afterEach(): Unit =
-    reset(inboxWrapperPage, secureMessagingConfig, secureMessagingFrontendConnector)
+    reset(inboxWrapperPage, mockSecureMessagingConfig, secureMessagingFrontendConnector)
 
   "SecureMessagingController displayInbox" when {
 
     "the SecureMessaging flag is disabled" should {
       "throw IllegalStateException" in {
-        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
+        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
 
         an[IllegalStateException] mustBe thrownBy {
           await(controller.displayInbox()(getRequest()))
@@ -115,7 +113,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
     "feature flag for SecureMessaging is disabled" should {
 
       "throw IllegalStateException" in {
-        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
+        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
 
         an[IllegalStateException] mustBe thrownBy {
           await(controller.displayConversation(clientId, conversationId)(getRequest()))
@@ -130,7 +128,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
         "successfully returns a ConversationPartial" should {
 
           "wrap the partial in the conversation display wrapper" in {
-            when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+            when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
             when(secureMessagingFrontendConnector.retrieveConversationPartial(any[String], any[String])(any[HeaderCarrier]))
               .thenReturn(Future.successful(ConversationPartial("")))
 
@@ -145,7 +143,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
         "unsuccessfully returns a failed Future" should {
 
           "display the 'Sorry' page to the user" in {
-            when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+            when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
 
             when(secureMessagingFrontendConnector.retrieveConversationPartial(any[String], any[String])(any[HeaderCarrier]))
               .thenReturn(Future.failed(new Exception("Whoopse")))
@@ -166,7 +164,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
     "feature flag for SecureMessaging is disabled" should {
 
       "throw IllegalStateException" in {
-        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
+        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
 
         an[IllegalStateException] mustBe thrownBy {
           await(controller.displayReplyResult(clientId, conversationId)(getRequest()))
@@ -181,7 +179,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
         "returns a ReplyResultPartial" should {
 
           "wrap the partial in the reply_result page" in {
-            when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+            when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
 
             when(secureMessagingFrontendConnector.retrieveReplyResult(any[String], any[String])(any[HeaderCarrier]))
               .thenReturn(Future.successful(ReplyResultPartial("")))
@@ -195,7 +193,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
         "returns a failed Future" should {
 
           "throw an exception" in {
-            when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+            when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
 
             when(secureMessagingFrontendConnector.retrieveReplyResult(any[String], any[String])(any[HeaderCarrier]))
               .thenReturn(Future.failed(new Exception("Whoopse")))
@@ -216,7 +214,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
     "feature flag for SecureMessaging is disabled" should {
 
       "throw IllegalStateException" in {
-        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
+        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
 
         an[IllegalStateException] mustBe thrownBy {
           await(controller.submitReply(clientId, conversationId)(getRequest()))
@@ -227,7 +225,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
     "feature flag for SecureMessaging is enabled" should {
 
       "call secure message connector" in {
-        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
         when(secureMessagingFrontendConnector.submitReply(any[String], any[String], any[Map[String, Seq[String]]])(any[HeaderCarrier]))
           .thenReturn(Future.successful(None))
 
@@ -239,7 +237,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
 
       "returns a successful Future of None" that {
         "wraps the returned partial in the partial_wrapper page" in {
-          when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+          when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
 
           when(secureMessagingFrontendConnector.submitReply(any[String], any[String], any[Map[String, Seq[String]]])(any[HeaderCarrier]))
             .thenReturn(Future.successful(Some(ConversationPartial("<html></html>"))))
@@ -256,7 +254,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
 
       "returns a successful Future of Some(ConversationPartial)" that {
         "wraps the returned partial in the partial_wrapper page" in {
-          when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+          when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
 
           when(secureMessagingFrontendConnector.submitReply(any[String], any[String], any[Map[String, Seq[String]]])(any[HeaderCarrier]))
             .thenReturn(Future.successful(Some(ConversationPartial("<html></html>"))))
@@ -273,7 +271,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
 
       "returns a failed Future" should {
         "return a 500 response to the user" in {
-          when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+          when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
 
           when(secureMessagingFrontendConnector.submitReply(any[String], any[String], any[Map[String, Seq[String]]])(any[HeaderCarrier]))
             .thenReturn(Future.failed(new Exception("Whoops!")))

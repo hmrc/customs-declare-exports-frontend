@@ -17,15 +17,18 @@
 package views.declaration
 
 import base.Injector
+import com.typesafe.config.ConfigFactory
 import controllers.declaration.routes
 import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalDocumentSpec._
 import forms.declaration.additionaldocuments.AdditionalDocument
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.OptionValues
+import play.api.Configuration
 import play.api.data.Form
 import tools.Stubs
 import utils.ListItem
@@ -37,11 +40,14 @@ import views.tags.ViewTest
 @ViewTest
 class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
+  override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
+
   private val itemId = "a7sc78"
   private val mode = Mode.Normal
 
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val additionalDocumentsPage = instanceOf[additional_documents]
+
   private def createView(form: Form[YesNoAnswer] = form, cachedDocuments: Seq[AdditionalDocument] = Seq())(
     implicit request: JourneyRequest[_]
   ): Document =
@@ -82,12 +88,6 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         view.getElementById("section-header") must containMessage("declaration.section.5")
       }
 
-      "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {
-        val backButton = view.getElementById("back-link")
-        backButton must containMessage(backCaption)
-        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
-      }
-
       "display the expected warning text" in {
         val warningText = s"! ${messages("site.warning")} ${messages("declaration.additionalDocument.summary.warning.text")}"
         view.getElementsByClass("govuk-warning-text").first.text mustBe warningText
@@ -105,10 +105,25 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
   }
 
   "additional_documents view on empty page with cached Additional Information" should {
-    onEveryDeclarationJourney(withItem(anItem(withItemId(itemId), withAdditionalInformation("1234", "Description")))) { implicit request =>
+
+    val declarationWithAdditionalInfo = aDeclaration(withItem(anItem(withItemId(itemId), withAdditionalInformation("1234", "Description"))))
+
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY)(aDeclaration()) { implicit request =>
       val view = createView()
 
-      "display 'Back' button that links to 'Additional Information' page when additional info present" in {
+      "display 'Back' button that links to 'Is License Required' page" in {
+
+        val backButton = view.getElementById("back-link")
+
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.IsLicenceRequiredController.displayPage(mode, itemId))
+      }
+
+    }
+    onJourney(CLEARANCE)(declarationWithAdditionalInfo) { implicit request =>
+      val view = createView()
+
+      "display 'Back' button that links to 'Additional Info' page when additional info present" in {
 
         val backButton = view.getElementById("back-link")
 
@@ -116,6 +131,18 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
       }
 
+    }
+
+    onJourney(CLEARANCE)(aDeclaration()) { implicit request =>
+      val view = createView()
+
+      "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {
+
+        val backButton = view.getElementById("back-link")
+
+        backButton must containMessage(backCaption)
+        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
+      }
     }
   }
 

@@ -76,13 +76,12 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   "Declaration details page" should {
 
-    val secureMessagingConfig = mock[SecureMessagingConfig]
-    val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(secureMessagingConfig))
+    val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig))
     val page = injector.instanceOf[declaration_details]
 
     "contain the navigation banner" when {
       "the Secure Messaging feature flag is enabled" in {
-        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
         val view = page(submission, notifications)(verifiedEmailRequest(), messages)
 
         val banner = view.getElementById("navigation-banner")
@@ -97,7 +96,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     "not contain the navigation banner" when {
       "the Secure Messaging feature flag is disabled" in {
-        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
+        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
         val view = page(submission, notifications)(verifiedEmailRequest(), messages)
         Option(view.getElementById("navigation-banner")) mustBe None
       }
@@ -106,12 +105,11 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   "Declaration details page" when {
 
-    val eadConfig = mock[EadConfig]
-    val injector = new OverridableInjector(bind[EadConfig].toInstance(eadConfig))
+    val injector = new OverridableInjector(bind[EadConfig].toInstance(mockEadConfig))
     val page = injector.instanceOf[declaration_details]
 
     "the EAD feature flag is enabled" should {
-      when(eadConfig.isEadEnabled).thenReturn(true)
+      when(mockEadConfig.isEadEnabled).thenReturn(true)
 
       "contain the PDF-for-EAD link for any accepted notification's status" in {
         SubmissionStatus.values
@@ -147,7 +145,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     "the EAD feature flag is disabled" should {
       "not contain the PDF-for-EAD link" in {
-        when(eadConfig.isEadEnabled).thenReturn(false)
+        when(mockEadConfig.isEadEnabled).thenReturn(false)
         val page = injector.instanceOf[declaration_details]
         val view = page(submission, notifications)(verifiedEmailRequest(), messages)
         Option(view.getElementById("generate-ead")) mustBe None
@@ -204,17 +202,18 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     val dummyInboxLink = "dummyInboxLink"
 
-    val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
-    when(secureMessagingInboxConfig.sfusInboxLink).thenReturn(dummyInboxLink)
+    when(mockSecureMessagingInboxConfig.sfusInboxLink).thenReturn(dummyInboxLink)
 
     val dummySfusLink = "dummyInboxLink"
 
-    val sfusConfig = mock[SfusConfig]
-    when(sfusConfig.isSfusUploadEnabled).thenReturn(true)
-    when(sfusConfig.sfusUploadLink).thenReturn(dummySfusLink)
+    when(mockSfusConfig.isSfusUploadEnabled).thenReturn(true)
+    when(mockSfusConfig.sfusUploadLink).thenReturn(dummySfusLink)
 
     val injector =
-      new OverridableInjector(bind[SecureMessagingInboxConfig].toInstance(secureMessagingInboxConfig), bind[SfusConfig].toInstance(sfusConfig))
+      new OverridableInjector(
+        bind[SecureMessagingInboxConfig].toInstance(mockSecureMessagingInboxConfig),
+        bind[SfusConfig].toInstance(mockSfusConfig)
+      )
 
     val page = injector.instanceOf[declaration_details]
     val view = page(submission, notifications)(verifiedEmailRequest(), messages)

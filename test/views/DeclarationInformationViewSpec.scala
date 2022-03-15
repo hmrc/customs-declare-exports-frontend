@@ -71,8 +71,6 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val secureMessagingInboxConfigSfus = new SecureMessagingInboxConfig(Configuration(configWithFeaturesEnabled))
   private val secureMessagingInboxConfigDisabled = new SecureMessagingInboxConfig(Configuration(configWithFeaturesDisabled))
 
-  private val secureMessagingConfig = mock[SecureMessagingConfig]
-
   private def submission(mrn: Option[String] = Some("mrn")): Submission =
     Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = mrn, ducr = Some("ducr"), actions = Seq.empty)
 
@@ -110,7 +108,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       eadConfigEnabled,
       sfusConfigEnabled,
       secureMessagingInboxConfigSfus,
-      secureMessagingConfig
+      mockSecureMessagingConfig
     )
 
   private val declarationInformationPageWithoutFeatures =
@@ -123,7 +121,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       eadConfigDisabled,
       sfusConfigDisabled,
       secureMessagingInboxConfigDisabled,
-      secureMessagingConfig
+      mockSecureMessagingConfig
     )
 
   private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications)(request, messages)
@@ -149,8 +147,8 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
     "contain the navigation banner" when {
       "the Secure Messaging flag is set to 'true'" in {
-        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
-        val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(secureMessagingConfig))
+        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
+        val injector = new OverridableInjector(bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig))
         val page = injector.instanceOf[declaration_information]
         val view = page(submission, notifications)(request, messages)
 
@@ -166,7 +164,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
     "not contain the navigation banner" when {
       "the Secure Messaging flag is set to 'false'" in {
-        when(secureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
+        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
         Option(viewWithFeatures.getElementById("navigation-banner")) mustBe None
       }
     }

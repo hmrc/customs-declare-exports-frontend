@@ -16,8 +16,10 @@
 
 @import controllers.declaration.routes
 @import forms.declaration.additionaldocuments.AdditionalDocument
+@import models.declaration.ExportItem
 @import models.declaration.AdditionalDocuments
 @import models.Mode
+@import models.DeclarationType.DeclarationType
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
@@ -34,9 +36,9 @@
 
 @(
     mode: Mode,
-    itemId: String,
-    itemNo: Int,
+    item: ExportItem,
     additionalDocuments: AdditionalDocuments,
+    declarationType: DeclarationType,
     actionsEnabled: Boolean = true
 )(implicit messages: Messages)
 
@@ -45,12 +47,12 @@
         if(actionsEnabled)
             link(
                 messages("site.change"),
-                routes.AdditionalDocumentsController.displayPage(mode, itemId),
+                routes.AdditionalDocumentsController.displayPage(mode, item.id),
                 textHidden = Some(messages(
                     "declaration.summary.items.item.additionalDocuments.change",
                     document.documentTypeCode.getOrElse(""),
                     document.documentIdentifier.getOrElse(""),
-                    itemNo
+                    item.sequenceId
                 ))
             )
         else
@@ -58,11 +60,46 @@
     }
 }
 
+@licenceRequired = @{
+    item.isLicenceRequired.contains(true)
+}
+
+@tableCaption = @{
+    if(licenceRequired && declarationType != DeclarationType.CLEARANCE) messages("declaration.summary.items.item.licences")
+    else messages("declaration.summary.items.item.additionalDocuments")
+}
+
 @actions(action: Actions) = @{
     if (actionsEnabled) Some(action) else None
 }
 
 @if(additionalDocuments.documents.nonEmpty){
+
+    @if(!licenceRequired && declarationType != DeclarationType.CLEARANCE){
+        @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
+            Some(SummaryListRow(
+                classes = s"licences-${item.sequenceId}-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.items.item.licences"))
+            ),
+            value = Value(
+            content = Text(messages("site.no"))
+        ),
+        actions = actions(Actions(
+            items = Seq(
+                actionItem(
+                    href = routes.IsLicenceRequiredController.displayPage(mode, item.id).url,
+                    content = HtmlContent(linkContent(messages("site.change"))),
+                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+                )
+            )
+        ))))))
+    }
+
+    @if(licenceRequired && declarationType != DeclarationType.CLEARANCE){
+        <h3 class="govuk-heading-s">@messages("declaration.summary.items.item.additionalDocuments")</h3>
+    }
+
     @govukTable(Table(
         rows = additionalDocuments.documents.map(document =>
             Seq(
@@ -86,13 +123,32 @@
                 content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
             )
         )),
-        caption = Some(messages("declaration.summary.items.item.additionalDocuments")),
-        attributes = Map("id" -> s"additional-documents-$itemNo-table")
+        caption = Some(tableCaption),
+        attributes = Map("id" -> s"additional-documents-${item.sequenceId}-table")
     ))
-} else {
-    @summaryList(s"additional-documents-$itemNo", None, Seq(
+
+} else if (declarationType != DeclarationType.CLEARANCE) {
+
+    @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
         Some(SummaryListRow(
-            classes = s"additional-documents-$itemNo-row",
+            classes = s"licences-${item.sequenceId}-row",
+            key = Key(
+                content = Text(messages("declaration.summary.items.item.licences"))
+            ),
+            value = Value(
+                content = Text(messages("site.no"))
+            ),
+            actions = actions(Actions(
+                items = Seq(
+                    actionItem(
+                    href = routes.IsLicenceRequiredController.displayPage(mode, item.id).url,
+                    content = HtmlContent(linkContent(messages("site.change"))),
+                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+                )
+            )
+        )))),
+        Some(SummaryListRow(
+            classes = s"additional-documents-${item.sequenceId}-row",
             key = Key(
                 content = Text(messages("declaration.summary.items.item.additionalDocuments"))
             ),
@@ -102,12 +158,35 @@
             actions = actions(Actions(
                 items = Seq(
                     actionItem(
-                        href = routes.AdditionalDocumentsController.displayPage(mode, itemId).url,
+                        href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
                         content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", itemNo))
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
                     )
                 )
             ))
         ))
     ))
+} else {
+
+@summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
+    Some(SummaryListRow(
+        classes = s"additional-documents-${item.sequenceId}-row",
+        key = Key(
+            content = Text(messages("declaration.summary.items.item.additionalDocuments"))
+        ),
+        value = Value(
+            content =   Text(messages("site.no"))
+        ),
+        actions = actions(Actions(
+            items = Seq(
+                actionItem(
+                    href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
+                    content = HtmlContent(linkContent(messages("site.change"))),
+                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+                )
+            )
+        ))
+    ))
+))
+
 }

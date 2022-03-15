@@ -118,6 +118,10 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.tariffCommoditiesUrl must be("https://www.trade-tariff.service.gov.uk/commodities/")
     }
 
+    "have tariffBrowse URL" in {
+      validAppConfig.tariffBrowseUrl must be("https://www.trade-tariff.service.gov.uk/browse/")
+    }
+
     "have companyInformationRegister URL" in {
       validAppConfig.companyInformationRegister must be("http://companyInformationRegister")
     }
@@ -408,6 +412,7 @@ object AppConfigSpec {
       |urls.exitSurveyUrl="http://localhost:9514/feedback/customs-declare-exports-frontend"
       |urls.emailFrontendUrl="http://localhost:9898/manage-email-cds/service/customs-declare-exports"
       |urls.tradeTariff="https://www.gov.uk/trade-tariff"
+      |urls.tariffBrowse="https://www.trade-tariff.service.gov.uk/browse/"
       |urls.tariffCommodities="https://www.trade-tariff.service.gov.uk/commodities/"
       |urls.ecicsTool = "https://ec.europa.eu/taxation_customs/dds2/ecics/chemicalsubstance_consultation.jsp"
       |urls.sfusUpload = "http://localhost:6793/cds-file-upload-service/mrn-entry"

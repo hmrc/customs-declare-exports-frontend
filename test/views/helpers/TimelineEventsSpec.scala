@@ -17,9 +17,7 @@
 package views.helpers
 
 import java.time.{ZoneId, ZonedDateTime}
-
 import base.Injector
-import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus._
 import models.declaration.submissions.{Submission, SubmissionStatus}
@@ -31,21 +29,19 @@ import views.html.components.upload_files_partial_for_timeline
 
 class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injector {
 
-  private val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
-  private val sfusConfig = mock[SfusConfig]
   private val submission = mock[Submission]
   private val uploadFilesPartialForTimeline = instanceOf[upload_files_partial_for_timeline]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(secureMessagingInboxConfig.sfusInboxLink).thenReturn("dummyInboxLink")
+    when(mockSecureMessagingInboxConfig.sfusInboxLink).thenReturn("dummyInboxLink")
     when(submission.mrn).thenReturn(Some("mrn"))
     when(submission.uuid).thenReturn("id")
   }
 
   private def createTimeline(notifications: Seq[Notification], enableSfusConfig: Boolean = true): Seq[TimelineEvent] = {
-    when(sfusConfig.isSfusUploadEnabled).thenReturn(enableSfusConfig)
-    new TimelineEvents(new linkButton(), secureMessagingInboxConfig, sfusConfig, uploadFilesPartialForTimeline)(submission, notifications)
+    when(mockSfusConfig.isSfusUploadEnabled).thenReturn(enableSfusConfig)
+    new TimelineEvents(new linkButton(), mockSecureMessagingInboxConfig, mockSfusConfig, uploadFilesPartialForTimeline)(submission, notifications)
   }
 
   "TimelineEvents" should {

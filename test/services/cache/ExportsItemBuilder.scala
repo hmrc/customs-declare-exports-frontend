@@ -123,4 +123,10 @@ trait ExportsItemBuilder {
 
   def withAdditionalDocuments(additionalDocuments: AdditionalDocuments): ItemModifier =
     cache => cache.copy(additionalDocuments = Some(additionalDocuments))
+
+  def withLicenseRequired(): ItemModifier =
+    cache => cache.copy(isLicenceRequired = Some(true))
+
+  def withLicenseNotRequired(): ItemModifier =
+    cache => cache.copy(isLicenceRequired = Some(false))
 }

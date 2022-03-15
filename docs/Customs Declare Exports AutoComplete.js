@@ -901,6 +901,13 @@ function additionalInformationSummary(){
     }
 }
 
+function isLicenceRequired(){
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/is-license-required')) {
+        document.getElementById('code_yes').checked = 'checked';
+        document.getElementById('submit').click()
+    }
+}
+
 // additional documents
 function getAdCode(dec) {
 
@@ -1255,6 +1262,7 @@ function completeJourney() {
     additionalInformationSummary();
     isAdditionalInformationRequired();
     addAdditionalInformation();
+    isLicenceRequired();
     areAdditionalDocumentsRequired();
     addDocumentsSummary();
     addDocuments();

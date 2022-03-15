@@ -17,7 +17,6 @@
 package controllers.actions
 
 import base.{ControllerWithoutFormSpec, Injector}
-import config.featureFlags.SecureMessagingInboxConfig
 import controllers.{routes, ChoiceController}
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
@@ -30,7 +29,6 @@ import java.net.URLEncoder
 class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
 
   val choicePage = instanceOf[choice_page]
-  val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
   override val appConfig = mock[AppConfig]
 
   override val mockAuthAction =
@@ -49,7 +47,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       mockAuthAction,
       mockVerifiedEmailAction,
       stubMessagesControllerComponents(),
-      secureMessagingInboxConfig,
+      mockSecureMessagingInboxConfig,
       choicePage,
       appConfig
     )

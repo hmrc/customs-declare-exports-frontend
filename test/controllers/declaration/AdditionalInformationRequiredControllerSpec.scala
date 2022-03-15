@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import forms.common.YesNoAnswer
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -38,6 +38,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
   val controller = new AdditionalInformationRequiredController(
     mockAuthAction,
     mockJourneyAction,
+    mockWaiver999LConfig,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
@@ -126,16 +127,61 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
           thePageNavigatedTo mustBe routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
         }
 
-        "user submits valid No answer" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
-
-          val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
-        }
       }
+    }
+
+    onClearance { request =>
+      "user submits valid No answer go to 'Additional Documents'" in {
+
+        when {
+          mockWaiver999LConfig.is999LEnabled
+        } thenReturn true
+
+        withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
+
+        val requestBody = Seq("yesNo" -> "No")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+      }
+
+    }
+
+    onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED) { request =>
+      "user submits valid No answer go to 'Is License Required?'" in {
+
+        when {
+          mockWaiver999LConfig.is999LEnabled
+        } thenReturn true
+
+        withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
+
+        val requestBody = Seq("yesNo" -> "No")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.IsLicenceRequiredController.displayPage(Mode.Normal, itemId)
+      }
+
+    }
+
+    onEveryDeclarationJourney() { request =>
+      "user submits valid No answer go to 'Additional Documents' when 999L disabled" in {
+
+        when {
+          mockWaiver999LConfig.is999LEnabled
+        } thenReturn false
+
+        withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId)))))
+
+        val requestBody = Seq("yesNo" -> "No")
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+      }
+
     }
 
   }

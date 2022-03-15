@@ -16,13 +16,13 @@
 
 package controllers.declaration
 
+import config.featureFlags.Waiver999LConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{AdditionalDocumentsController, AdditionalInformationRequiredController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AdditionalInformationSummary
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -38,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  waiver999LConfig: Waiver999LConfig,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -57,7 +58,7 @@ class AdditionalInformationController @Inject()(
         Future.successful(navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId)))
 
       case _ =>
-        Future.successful(navigator.continueTo(mode, AdditionalInformationRequiredController.displayPage(_, itemId)))
+        Future.successful(navigator.continueTo(mode, routes.AdditionalInformationRequiredController.displayPage(_, itemId)))
     }
   }
 
@@ -72,13 +73,20 @@ class AdditionalInformationController @Inject()(
   private def cachedAdditionalInformationData(itemId: String)(implicit request: JourneyRequest[_]): Option[AdditionalInformationData] =
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation)
 
-  private def nextPage(mode: Mode, yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+  private def nextPage(mode: Mode, yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result = {
+
+    val isClearanceJourney = request.declarationType == DeclarationType.CLEARANCE
+
     yesNoAnswer.answer match {
       case YesNoAnswers.yes =>
         navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
+      case YesNoAnswers.no if isClearanceJourney || !waiver999LConfig.is999LEnabled =>
+        navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
       case _ =>
-        navigator.continueTo(mode, AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
+        navigator.continueTo(mode, routes.IsLicenceRequiredController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
     }
+
+  }
 
   private def resolveBackLink(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
     navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, mode, itemId)
