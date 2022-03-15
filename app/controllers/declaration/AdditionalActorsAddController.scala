@@ -17,12 +17,11 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.AdditionalActorsAddController.AdditionalActorsFormGroupId
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import forms.NoneOfTheAbove
 import forms.declaration.DeclarationAdditionalActors
-import forms.declaration.DeclarationAdditionalActors.form
+import forms.declaration.DeclarationAdditionalActors.{additionalActorsFormGroupId, form}
 import models.DeclarationType._
 import models.declaration.DeclarationAdditionalActorsData
 import models.requests.JourneyRequest
@@ -50,7 +49,7 @@ class AdditionalActorsAddController @Inject()(
   val validTypes = List(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = form.withSubmissionErrors
     request.cacheModel.parties.declarationAdditionalActorsData match {
       case Some(_) => Ok(declarationAdditionalActorsPage(mode, frm.fill(DeclarationAdditionalActors(None, Some(NoneOfTheAbove.value)))))
       case _       => Ok(declarationAdditionalActorsPage(mode, frm))
@@ -78,7 +77,7 @@ class AdditionalActorsAddController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedActors, DeclarationAdditionalActorsData.maxNumberOfActors, AdditionalActorsFormGroupId, "declaration.additionalActors")
+      .add(boundForm, cachedActors, DeclarationAdditionalActorsData.maxNumberOfActors, additionalActorsFormGroupId, "declaration.additionalActors")
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationAdditionalActorsPage(mode, formWithErrors))),
         updatedActors =>
@@ -91,8 +90,4 @@ class AdditionalActorsAddController @Inject()(
       val updatedParties = model.parties.copy(declarationAdditionalActorsData = Some(formData))
       model.copy(parties = updatedParties)
     })
-}
-
-object AdditionalActorsAddController {
-  val AdditionalActorsFormGroupId: String = "additionalActors"
 }

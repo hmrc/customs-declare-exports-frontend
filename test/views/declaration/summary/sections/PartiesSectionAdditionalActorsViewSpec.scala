@@ -17,6 +17,7 @@
 package views.declaration.summary.sections
 
 import base.Injector
+import controllers.declaration.routes.{AdditionalActorsAddController, AdditionalActorsSummaryController}
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import models.Mode
@@ -28,11 +29,20 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
 
   val eori1 = "eori1"
   val partyType1 = "CS"
+
   val eori2 = "eori2"
   val partyType2 = "MF"
 
-  val additionalActors =
-    Seq(DeclarationAdditionalActors(Some(Eori(eori1)), Some(partyType1)), DeclarationAdditionalActors(Some(Eori(eori2)), Some(partyType2)))
+  val eori3 = "eori3"
+  val partyType3 = "WH"
+
+  val prefix = "declaration.summary.parties.additional"
+
+  val additionalActors = List(
+    DeclarationAdditionalActors(Some(Eori(eori1)), Some(partyType1)),
+    DeclarationAdditionalActors(Some(Eori(eori2)), Some(partyType2)),
+    DeclarationAdditionalActors(Some(Eori(eori3)), Some(partyType3))
+  )
 
   private val section = instanceOf[parties_section_additional_actors]
 
@@ -48,7 +58,7 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.parties.additional.empty.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.AdditionalActorsAddController.displayPage(Mode.Normal))
+      row must haveSummaryActionsHref(AdditionalActorsAddController.displayPage(Mode.Normal))
     }
 
     "display additional actors if exists" in {
@@ -56,28 +66,35 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
       val view = section(Mode.Normal, additionalActors)(messages)
       val table = view.getElementById("additionalActors-table")
 
-      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.parties.additional")
+      table.getElementsByTag("caption").text mustBe messages("declaration.summary.parties.additional")
 
-      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.additionalActors.partyType")
-      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.additionalActors.eori")
-      table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("site.change.header")
+      table.getElementsByClass("govuk-table__header").get(0).text mustBe messages("declaration.additionalActors.partyType")
+      table.getElementsByClass("govuk-table__header").get(1).text mustBe messages("declaration.additionalActors.eori")
+      table.getElementsByClass("govuk-table__header").get(2).text mustBe messages("site.change.header")
 
-      val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
-      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages("declaration.partyType.CS")
-      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori1
-      val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row1ChangeLink must haveHref(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage())
+      val row1 = table.getElementsByClass("govuk-table__body").first.getElementsByClass("govuk-table__row").get(0)
+      row1.getElementsByClass("govuk-table__cell").get(0).text mustBe messages(s"$prefix.CS")
+      row1.getElementsByClass("govuk-table__cell").get(1).text mustBe eori1
+      val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first
+      row1ChangeLink must haveHref(AdditionalActorsSummaryController.displayPage())
       row1ChangeLink must containMessage("site.change")
-      row1ChangeLink must containMessage("declaration.summary.parties.additional.change", messages("declaration.partyType.CS"), eori1)
+      row1ChangeLink must containMessage("declaration.summary.parties.additional.change", messages(s"$prefix.CS"), eori1)
 
-      val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages("declaration.partyType.MF")
-      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe eori2
-      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row2ChangeLink must haveHref(controllers.declaration.routes.AdditionalActorsSummaryController.displayPage())
+      val row2 = table.getElementsByClass("govuk-table__body").first.getElementsByClass("govuk-table__row").get(1)
+      row2.getElementsByClass("govuk-table__cell").get(0).text mustBe messages(s"$prefix.MF")
+      row2.getElementsByClass("govuk-table__cell").get(1).text mustBe eori2
+      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first
+      row2ChangeLink must haveHref(AdditionalActorsSummaryController.displayPage())
       row2ChangeLink must containMessage("site.change")
-      row2ChangeLink must containMessage("declaration.summary.parties.additional.change", messages("declaration.partyType.MF"), eori2)
-    }
+      row2ChangeLink must containMessage("declaration.summary.parties.additional.change", messages(s"$prefix.MF"), eori2)
 
+      val row3 = table.getElementsByClass("govuk-table__body").first.getElementsByClass("govuk-table__row").get(2)
+      row3.getElementsByClass("govuk-table__cell").get(0).text mustBe messages(s"$prefix.WH")
+      row3.getElementsByClass("govuk-table__cell").get(1).text mustBe eori3
+      val row3ChangeLink = row3.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first
+      row3ChangeLink must haveHref(AdditionalActorsSummaryController.displayPage())
+      row3ChangeLink must containMessage("site.change")
+      row3ChangeLink must containMessage("declaration.summary.parties.additional.change", messages(s"$prefix.WH"), eori3)
+    }
   }
 }

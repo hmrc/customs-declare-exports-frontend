@@ -20,6 +20,7 @@ import forms.declaration.DeclarationAdditionalActors
 import play.api.libs.json.Json
 
 case class DeclarationAdditionalActorsData(actors: Seq[DeclarationAdditionalActors]) {
+
   def addActor(actor: DeclarationAdditionalActors): DeclarationAdditionalActorsData =
     if (actor.isAllowed) DeclarationAdditionalActorsData(actor +: actors) else this
 }

@@ -16,13 +16,11 @@
 
 @import controllers.declaration.routes
 @import forms.declaration.DeclarationAdditionalActors
+@import forms.declaration.DeclarationAdditionalActors.additionalActorsFormGroupId
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.link
-@import views.html.components.gds.linkContent
-@import views.html.components.gds.spanVisuallyHidden
-@import views.html.components.gds.summary_list
-@import views.declaration.summary.TableCell
 @import views.components.gds.ActionItemBuilder._
+@import views.declaration.summary.TableCell
+@import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list}
 
 @this(
     govukTable: GovukTable,
@@ -34,13 +32,21 @@
 
 @(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors], actionsEnabled: Boolean = true)(implicit messages: Messages)
 
-@actions(action: Actions) = @{
-    if(actionsEnabled) Some(action)
-    else None
+@actions = @{
+    if (actionsEnabled == false) None
+    else Some(Actions(
+        items = List(
+            actionItem(
+                href = routes.AdditionalActorsAddController.displayPage(mode).url,
+                content = HtmlContent(linkContent(messages("site.change"))),
+                visuallyHiddenText = Some(messages("declaration.summary.parties.additional.empty.change"))
+            )
+        )
+    ))
 }
 
 @actorPartyType(actor: DeclarationAdditionalActors) = @{
-    actor.partyType.map(partyType => messages(s"declaration.partyType.$partyType")).getOrElse("")
+    actor.partyType.map(partyType => messages(s"declaration.summary.parties.additional.$partyType")).getOrElse("")
 }
 
 @actorEori(actor: DeclarationAdditionalActors) = @{
@@ -65,7 +71,7 @@
 }
 
 @if(additionalActors.isEmpty) {
-    @summaryList("additionalActors", None, Seq(
+    @summaryList(additionalActorsFormGroupId, None, Seq(
         Some(SummaryListRow(
             classes = "additionalActors-row",
             key = Key(
@@ -74,15 +80,7 @@
             value = Value(
                 content = Text(messages("site.no"))
             ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionItem(
-                        href = routes.AdditionalActorsAddController.displayPage(mode).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.parties.additional.empty.change"))
-                    )
-                )
-            ))
+            actions = actions
         ))
     ),
         classes = "govuk-!-margin-bottom-3"
