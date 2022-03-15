@@ -98,27 +98,22 @@ class SupplementaryUnitsController @Inject()(
   private def hasSupplementaryUnits(commodityMeasure: CommodityMeasure): Boolean =
     commodityMeasure.supplementaryUnits.isDefined || commodityMeasure.supplementaryUnitsNotRequired.isDefined
 
-  private def updateExportsCacheAndContinueToNextPage(mode: Mode, itemId: String, updatedItem: SupplementaryUnits)(
+  private def updateExportsCacheAndContinueToNextPage(mode: Mode, itemId: String, newUnits: SupplementaryUnits)(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Result] =
     updateDeclarationFromRequest {
-      _.updatedItem(itemId, item => item.copy(commodityMeasure = updateCommodityMeasure(item, updatedItem)))
+      _.updatedItem(itemId, item => item.copy(commodityMeasure = updateCommodityMeasure(item, newUnits)))
     }.map { _ =>
       navigator.continueTo(mode, AdditionalInformationRequiredController.displayPage(_, itemId))
     }
 
-  private def updateCommodityMeasure(item: ExportItem, updatedItem: SupplementaryUnits): Option[CommodityMeasure] =
+  private def updateCommodityMeasure(item: ExportItem, newUnits: SupplementaryUnits): Option[CommodityMeasure] = {
+    val notRequired = newUnits.supplementaryUnits.fold(Some(true))(_ => Some(false))
     item.commodityMeasure match {
       case Some(commodityMeasure) =>
-        Some(
-          CommodityMeasure(
-            updatedItem.supplementaryUnits,
-            updatedItem.supplementaryUnits.fold(Some(true))(_ => Some(false)),
-            commodityMeasure.grossMass,
-            commodityMeasure.netMass
-          )
-        )
+        Some(CommodityMeasure(newUnits.supplementaryUnits, notRequired, commodityMeasure.grossMass, commodityMeasure.netMass))
 
-      case _ => Some(CommodityMeasure(updatedItem.supplementaryUnits, updatedItem.supplementaryUnits.fold(Some(true))(_ => Some(false)), None, None))
+      case _ => Some(CommodityMeasure(newUnits.supplementaryUnits, notRequired, None, None))
     }
+  }
 }

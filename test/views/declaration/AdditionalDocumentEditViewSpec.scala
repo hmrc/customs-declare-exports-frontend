@@ -136,7 +136,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       messages must haveTranslationFor("declaration.additionalDocument.documentQuantity.error")
 
       messages must haveTranslationFor("declaration.additionalDocument.error.maximumAmount")
-      messages must haveTranslationFor("declaration.additionalDocument.error.duplicated")
+      messages must haveTranslationFor("declaration.additionalDocument.error.duplicate")
       messages must haveTranslationFor("declaration.additionalDocument.error.notDefined")
 
       messages must haveTranslationFor("declaration.additionalDocument.summary.documentTypeCode")

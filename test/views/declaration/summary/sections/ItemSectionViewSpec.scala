@@ -29,6 +29,8 @@ import views.html.declaration.summary.sections.item_section
 
 class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
+  val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
+
   private val itemWithAnswers = anItem(
     withItemId("itemId"),
     withSequenceId(1),
@@ -42,7 +44,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
     withTaricCodes(TaricCode("999"), TaricCode("888")),
     withNactCodes(NactCode("111"), NactCode("222")),
     withPackageInformation("PB", 10, "marks"),
-    withCommodityMeasure(CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))),
+    withCommodityMeasure(commodityMeasure),
     withAdditionalInformation("1234", "additionalDescription"),
     withAdditionalDocuments(YesNoAnswer.Yes, AdditionalDocument(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None))
   )
@@ -179,6 +181,15 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
         row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.supplementaryUnits.change", "1")
 
         row must haveSummaryActionsHref(SupplementaryUnitsController.displayPage(Mode.Normal, itemWithAnswers.id))
+      }
+
+      // CEDS-3668
+      "not have a 'Supplementary Units' row" when {
+        "the declaration has a 'CommodityMeasure' instance with 'supplementaryUnits' undefined" in {
+          val item = itemWithAnswers.copy(commodityMeasure = Some(commodityMeasure.copy(supplementaryUnits = None)))
+          val view = itemSection(Mode.Normal, item, DeclarationType.STANDARD)(messages)
+          view.getElementsByClass("item-1-supplementaryUnits-row") mustBe empty
+        }
       }
 
       "have gross weight with change button" in {

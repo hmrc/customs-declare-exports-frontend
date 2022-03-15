@@ -18,7 +18,6 @@ package controllers
 
 import base.ControllerWithoutFormSpec
 import base.ExportsTestData._
-import config.featureFlags.SecureMessagingInboxConfig
 import config.AppConfig
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
@@ -39,7 +38,6 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
   import ChoiceControllerSpec._
 
   val choicePage = mock[choice_page]
-  val secureMessagingInboxConfig = mock[SecureMessagingInboxConfig]
   override val appConfig = mock[AppConfig]
 
   val controller =
@@ -47,7 +45,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
       mockAuthAction,
       mockVerifiedEmailAction,
       stubMessagesControllerComponents(),
-      secureMessagingInboxConfig,
+      mockSecureMessagingInboxConfig,
       choicePage,
       appConfig
     )
@@ -60,7 +58,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
   }
 
   override protected def afterEach(): Unit = {
-    reset(choicePage, appConfig, secureMessagingInboxConfig)
+    reset(choicePage, appConfig, mockSecureMessagingInboxConfig)
     super.afterEach()
   }
 
@@ -194,13 +192,13 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   "ChoiceController availableJourneys" should {
     "contain all journey types when isExportsSecureMessagingEnabled returns true" in {
-      when(secureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(true)
+      when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(true)
 
       val choiceCtrl = new ChoiceController(
         mockAuthAction,
         mockVerifiedEmailAction,
         stubMessagesControllerComponents(),
-        secureMessagingInboxConfig,
+        mockSecureMessagingInboxConfig,
         choicePage,
         appConfig
       )
@@ -208,13 +206,13 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
     }
 
     "contain all journey types apart from 'Inbox' when isExportsSecureMessagingEnabled returns false" in {
-      when(secureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(false)
+      when(mockSecureMessagingInboxConfig.isExportsSecureMessagingEnabled).thenReturn(false)
 
       val choiceCtrl = new ChoiceController(
         mockAuthAction,
         mockVerifiedEmailAction,
         stubMessagesControllerComponents(),
-        secureMessagingInboxConfig,
+        mockSecureMessagingInboxConfig,
         choicePage,
         appConfig
       )

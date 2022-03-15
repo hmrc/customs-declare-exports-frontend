@@ -18,4 +18,4 @@ package forms.declaration
 
 import forms.DeclarationPage
 
-object IsLicenseRequired extends DeclarationPage
+object IsLicenceRequired extends DeclarationPage

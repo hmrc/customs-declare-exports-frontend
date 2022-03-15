@@ -30,14 +30,12 @@ import views.tags.ViewTest
 @ViewTest
 class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with BeforeAndAfterEach {
 
-  val tdrUnauthorisedMsgConfig = mock[TdrUnauthorisedMsgConfig]
-
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(tdrUnauthorisedMsgConfig)
+    reset(mockTdrUnauthorisedMsgConfig)
   }
 
-  val injector = new OverridableInjector(bind[TdrUnauthorisedMsgConfig].toInstance(tdrUnauthorisedMsgConfig))
+  val injector = new OverridableInjector(bind[TdrUnauthorisedMsgConfig].toInstance(mockTdrUnauthorisedMsgConfig))
   val unauthorisedPage = injector.instanceOf[unauthorised]
 
   "Unauthorised Page view" when {
@@ -92,7 +90,7 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
   }
 
   private def getUnauthorisedPageView(tdrEnabled: Boolean) = {
-    when(tdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled).thenReturn(tdrEnabled)
+    when(mockTdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled).thenReturn(tdrEnabled)
     unauthorisedPage()(request, messages)
   }
 }

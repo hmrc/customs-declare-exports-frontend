@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import com.typesafe.config.ConfigFactory
 import controllers.declaration.routes
 import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer
@@ -27,6 +28,7 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.OptionValues
+import play.api.Configuration
 import play.api.data.Form
 import tools.Stubs
 import utils.ListItem
@@ -38,11 +40,14 @@ import views.tags.ViewTest
 @ViewTest
 class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
+  override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
+
   private val itemId = "a7sc78"
   private val mode = Mode.Normal
 
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val additionalDocumentsPage = instanceOf[additional_documents]
+
   private def createView(form: Form[YesNoAnswer] = form, cachedDocuments: Seq[AdditionalDocument] = Seq())(
     implicit request: JourneyRequest[_]
   ): Document =
@@ -66,7 +71,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
       messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName")
       messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName.error.length")
       messages must haveTranslationFor("declaration.additionalDocument.error.maximumAmount")
-      messages must haveTranslationFor("declaration.additionalDocument.error.duplicated")
+      messages must haveTranslationFor("declaration.additionalDocument.error.duplicate")
       messages must haveTranslationFor("declaration.additionalDocument.error.notDefined")
     }
   }
@@ -111,7 +116,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
-        backButton must haveHref(routes.IsLicenseRequiredController.displayPage(mode, itemId))
+        backButton must haveHref(routes.IsLicenceRequiredController.displayPage(mode, itemId))
       }
 
     }

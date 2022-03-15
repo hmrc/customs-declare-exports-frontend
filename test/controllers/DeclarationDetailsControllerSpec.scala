@@ -22,7 +22,6 @@ import java.util.UUID
 import scala.concurrent.Future
 
 import base.ControllerWithoutFormSpec
-import config.featureFlags.QueryNotificationMessageConfig
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
@@ -49,7 +48,6 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     actions = Seq(Action(id = actionId, requestType = SubmissionRequest, requestTimestamp = ZonedDateTime.now))
   )
 
-  private val queryNotificationMessageConfig = mock[QueryNotificationMessageConfig]
   private val declarationInformationPage = mock[declaration_information]
   private val declarationDetailsPage = mock[declaration_details]
 
@@ -58,7 +56,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
-    queryNotificationMessageConfig,
+    mockQueryNotificationMessageConfig,
     declarationInformationPage,
     declarationDetailsPage
   )(ec)
@@ -72,7 +70,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
   }
 
   override protected def afterEach(): Unit =
-    reset(queryNotificationMessageConfig, declarationInformationPage, declarationDetailsPage, mockCustomsDeclareExportsConnector)
+    reset(mockQueryNotificationMessageConfig, declarationInformationPage, declarationDetailsPage, mockCustomsDeclareExportsConnector)
 
   "displayPage method of Declaration Details page" should {
 
@@ -142,7 +140,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
         isQueryNotificationMessageEnabled: Boolean,
         notifications: Seq[Notification] = List(notification)
       ): OngoingStubbing[Future[Seq[Notification]]] = {
-        when(queryNotificationMessageConfig.isQueryNotificationMessageEnabled).thenReturn(isQueryNotificationMessageEnabled)
+        when(mockQueryNotificationMessageConfig.isQueryNotificationMessageEnabled).thenReturn(isQueryNotificationMessageEnabled)
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(Some(submission)))
         when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(notifications))
       }

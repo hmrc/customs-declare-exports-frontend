@@ -20,8 +20,6 @@ import config.AppConfig
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-
-import javax.inject.{Inject, Singleton}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.Parties
@@ -34,8 +32,10 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInsetText, GovukWar
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
-import views.helpers.DeclarationHolderHelper.{bodyId, exrrHelpTextId, insetTextId, valuesToMatch, warningBodyId}
+import views.helpers.DeclarationHolderHelper._
 import views.html.components.gds.{bulletList, link, numberedList, paragraphBody}
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class DeclarationHolderHelper @Inject()(
@@ -62,6 +62,7 @@ class DeclarationHolderHelper @Inject()(
     else bodyText(messageList, bodyId)
   }
 
+  private val key = "declaration.declarationHolderRequired"
   private val bodyKey = "declaration.declarationHolderRequired.body"
 
   def bodyForDeclarationHolderRequiredPage(implicit messages: Messages, request: JourneyRequest[_]): Html = {
@@ -81,6 +82,35 @@ class DeclarationHolderHelper @Inject()(
     }
 
     HtmlFormat.fill(body)
+  }
+
+  def insetTextForDeclarationHolderRequiredPage(implicit messages: Messages, request: JourneyRequest[_]): Html = {
+    val model = request.cacheModel
+    (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice) match {
+      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040) => HtmlFormat.empty
+      case (OCCASIONAL, _, _)                                => HtmlFormat.empty
+
+      case _ =>
+        val content = HtmlContent(
+          new Html(
+            List(
+              paragraphBody(messages(s"$key.inset.para1")),
+              bulletList(List(Html(messages(s"$key.inset.bullet1.text")), Html(messages(s"$key.inset.bullet2.text")))),
+              paragraphBody(messages(s"$key.inset.para2"))
+            )
+          )
+        )
+
+        govukInsetText(InsetText(content = content))
+    }
+  }
+
+  def titleForDeclarationHolderRequiredPage(implicit messages: Messages, request: JourneyRequest[_]): String = {
+    val model = request.cacheModel
+    (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice) match {
+      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040) => messages(s"$key.title.standard.prelodged.1040")
+      case _                                                 => messages(s"$key.title")
+    }
   }
 
   case class arrivedComponents(warning: Option[Html], paragraph: Option[Html])
