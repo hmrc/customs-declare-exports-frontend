@@ -51,11 +51,11 @@ class IsLicenceRequiredController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes) andThen featureFlagAction(Feature.waiver999L)) { implicit request =>
-      val formWithErrors = form.withSubmissionErrors
+      val formWithErrors = form.withSubmissionErrors.fill(_)
 
       val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenceRequired).fold(form.withSubmissionErrors) {
-        case true  => formWithErrors.fill(YesNoAnswer(yes))
-        case false => formWithErrors.fill(YesNoAnswer(no))
+        case true  => formWithErrors(YesNoAnswer(yes))
+        case false => formWithErrors(YesNoAnswer(no))
       }
 
       Ok(is_licence_required(mode, itemId, frm, representativeStatusCode))
