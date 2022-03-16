@@ -17,16 +17,20 @@
 package views.declaration.summary
 
 import base.Injector
+import com.typesafe.config.ConfigFactory
 import controllers.declaration.routes
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
 import models.{DeclarationType, Mode}
 import models.declaration.AdditionalDocuments
+import play.api.Configuration
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.additional_documents
 
 class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+
+  override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
 
   private val item = anItem(withItemId("itemId"), withSequenceId(1))
 

@@ -72,6 +72,7 @@
 
 @tableCaption = @{
     if(licenceRequired && showWaiverInfo) messages("declaration.summary.items.item.licences")
+    else if(declarationType == models.DeclarationType.CLEARANCE || !showWaiverInfo) messages("declaration.summary.items.item.clearance.additionalDocuments")
     else messages("declaration.summary.items.item.additionalDocuments")
 }
 
