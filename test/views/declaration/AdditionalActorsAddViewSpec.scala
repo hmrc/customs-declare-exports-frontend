@@ -25,6 +25,7 @@ import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import play.api.data.Form
 import services.cache.ExportsTestData
 import tools.Stubs
@@ -45,17 +46,11 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
   "Declaration Additional Actors" should {
 
     "have correct message keys" in {
-
-      messages must haveTranslationFor("declaration.additionalActors.title")
       messages must haveTranslationFor("declaration.additionalActors.body.text")
       messages must haveTranslationFor("declaration.additionalActors.eori")
       messages must haveTranslationFor("declaration.eori.empty")
       messages must haveTranslationFor("declaration.additionalActors.partyType")
       messages must haveTranslationFor("declaration.partyType")
-      messages must haveTranslationFor("declaration.partyType.CS")
-      messages must haveTranslationFor("declaration.partyType.MF")
-      messages must haveTranslationFor("declaration.partyType.FW")
-      messages must haveTranslationFor("declaration.partyType.WH")
       messages must haveTranslationFor("declaration.partyType.empty")
       messages must haveTranslationFor("declaration.partyType.error")
     }
@@ -67,20 +62,17 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
       val view = createView(form)
 
       "display page title" in {
-
         view.getElementsByClass("govuk-fieldset__heading").first() must containMessage("declaration.additionalActors.title")
       }
 
       "display section header" in {
-
         view.getElementById("section-header") must containMessage("declaration.section.2")
       }
 
       "display five radio buttons with description (not selected)" in {
-
         val view = createView(DeclarationAdditionalActors.form.fill(DeclarationAdditionalActors(Some(Eori("")), Some(""))))
 
-        def checkOption(key: String, messagePrefix: String = "declaration.partyType.") = {
+        def checkOption(key: String, messagePrefix: String = "declaration.partyType."): Assertion = {
           val option = view.getElementById(key)
           option.attr("checked") mustBe empty
           val optionLabel = view.getElementsByAttributeValueMatching("for", key).first()
@@ -93,6 +85,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
         checkOption("WH")
         checkOption("no", "site.")
 
+        view.getElementById("WH-item-hint").text mustBe messages("declaration.partyType.warehouseKeeper.hint")
       }
 
       "display 'Save and continue' button on page" in {
@@ -133,7 +126,6 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
       }
 
       "display errors when EORI is provided, but is incorrect" in {
-
         incorrectEori("CS")
         incorrectEori("MF")
         incorrectEori("FW")
@@ -158,7 +150,6 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
       "display EORI with CS selected" in {
-
         val view = createViewAndFill(request, "CS")
 
         view.getElementById("eoriCS").attr("value") mustBe "GB1234"
@@ -167,7 +158,6 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
       }
 
       "display EORI with MF selected" in {
-
         val view = createViewAndFill(request, "MF")
 
         view.getElementById("eoriMF").attr("value") mustBe "GB1234"
@@ -176,7 +166,6 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
       }
 
       "display EORI with FW selected" in {
-
         val view = createViewAndFill(request, "FW")
 
         view.getElementById("eoriFW").attr("value") mustBe "GB1234"
@@ -185,7 +174,6 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
       }
 
       "display EORI with WH selected" in {
-
         val view = createViewAndFill(request, "WH")
 
         view.getElementById("eoriWH").attr("value") mustBe "GB1234"
