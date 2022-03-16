@@ -15,6 +15,7 @@
  *@
 
 @import controllers.declaration.routes
+@import config.featureFlags.Waiver999LConfig
 @import forms.declaration.additionaldocuments.AdditionalDocument
 @import models.declaration.ExportItem
 @import models.declaration.AdditionalDocuments
@@ -31,7 +32,8 @@
     link: link,
     linkContent: linkContent,
     spanVisuallyHidden: spanVisuallyHidden,
-    summaryList: summary_list
+    summaryList: summary_list,
+    waiver999LConfig: Waiver999LConfig,
 )
 
 @(
@@ -64,8 +66,12 @@
     item.isLicenceRequired.contains(true)
 }
 
+@showWaiverInfo = @{
+    declarationType != DeclarationType.CLEARANCE && waiver999LConfig.is999LEnabled
+}
+
 @tableCaption = @{
-    if(licenceRequired && declarationType != DeclarationType.CLEARANCE) messages("declaration.summary.items.item.licences")
+    if(licenceRequired && showWaiverInfo) messages("declaration.summary.items.item.licences")
     else messages("declaration.summary.items.item.additionalDocuments")
 }
 
@@ -75,7 +81,7 @@
 
 @if(additionalDocuments.documents.nonEmpty){
 
-    @if(!licenceRequired && declarationType != DeclarationType.CLEARANCE){
+    @if(!licenceRequired && showWaiverInfo){
         @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
             Some(SummaryListRow(
                 classes = s"licences-${item.sequenceId}-row",
@@ -96,7 +102,7 @@
         ))))))
     }
 
-    @if(licenceRequired && declarationType != DeclarationType.CLEARANCE){
+    @if(licenceRequired && showWaiverInfo){
         <h3 class="govuk-heading-s">@messages("declaration.summary.items.item.additionalDocuments")</h3>
     }
 
@@ -127,7 +133,7 @@
         attributes = Map("id" -> s"additional-documents-${item.sequenceId}-table")
     ))
 
-} else if (declarationType != DeclarationType.CLEARANCE) {
+} else if (showWaiverInfo) {
 
     @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
         Some(SummaryListRow(
@@ -168,25 +174,25 @@
     ))
 } else {
 
-@summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
-    Some(SummaryListRow(
-        classes = s"additional-documents-${item.sequenceId}-row",
-        key = Key(
-            content = Text(messages("declaration.summary.items.item.additionalDocuments"))
-        ),
-        value = Value(
-            content =   Text(messages("site.no"))
-        ),
-        actions = actions(Actions(
-            items = Seq(
-                actionItem(
-                    href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
-                    content = HtmlContent(linkContent(messages("site.change"))),
-                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+    @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
+        Some(SummaryListRow(
+            classes = s"additional-documents-${item.sequenceId}-row",
+            key = Key(
+                content = Text(messages("declaration.summary.items.item.additionalDocuments"))
+            ),
+            value = Value(
+                content =   Text(messages("site.no"))
+            ),
+            actions = actions(Actions(
+                items = Seq(
+                    actionItem(
+                        href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
+                        content = HtmlContent(linkContent(messages("site.change"))),
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+                    )
                 )
-            )
+            ))
         ))
     ))
-))
 
 }
