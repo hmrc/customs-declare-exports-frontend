@@ -36,7 +36,7 @@ import views.tags.ViewTest
 @ViewTest
 class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with ExportsTestData with Stubs with Injector {
 
-  private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
+  private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form
   private val declarationAdditionalActorsPage = instanceOf[additional_actors_add]
 
   private def createView(form: Form[DeclarationAdditionalActors])(implicit request: JourneyRequest[_]): Document =
@@ -78,7 +78,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
 
       "display five radio buttons with description (not selected)" in {
 
-        val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(Eori("")), Some(""))))
+        val view = createView(DeclarationAdditionalActors.form.fill(DeclarationAdditionalActors(Some(Eori("")), Some(""))))
 
         def checkOption(key: String, messagePrefix: String = "declaration.partyType.") = {
           val option = view.getElementById(key)
@@ -122,8 +122,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>
       def incorrectEori(partyType: String) = {
         val view = createView(
-          DeclarationAdditionalActors
-            .form()
+          DeclarationAdditionalActors.form
             .fillAndValidate(DeclarationAdditionalActors(Some(Eori(TestHelper.createRandomAlphanumericString(18))), Some(partyType)))
         )
 
@@ -147,7 +146,7 @@ class AdditionalActorsAddViewSpec extends UnitViewSpec with CommonMessages with 
   "Declaration Additional Actors View when filled" must {
 
     def createViewAndFill(request: JourneyRequest[_], partyType: String) =
-      createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(Eori("GB1234")), Some(partyType))))(request)
+      createView(DeclarationAdditionalActors.form.fill(DeclarationAdditionalActors(Some(Eori("GB1234")), Some(partyType))))(request)
 
     def ensureRadioIsChecked(view: Document, partyType: String): Unit =
       view.getElementById(partyType).getElementsByAttribute("checked").size() mustBe 1
