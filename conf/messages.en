@@ -1070,7 +1070,6 @@ declaration.additionalFiscalReferences.remove.empty = Select yes if you want to 
 declaration.additionalFiscalReferences.error.duplicate = VAT details already added
 
 declaration.additionalDocumentsRequired.title = Do you need to declare any additional documents for this item?
-declaration.additionalDocumentsRequired.paragraph = These may include licences, permits or certificates for your goods, in addition to the documents that you already added to your declaration in section 4.
 declaration.additionalDocumentsRequired.inset.text1 = How do I know if my goods require licences, certificates or exemptions?
 declaration.additionalDocumentsRequired.inset.text2 = The {0} will list any requirements in the ‘Exports’ tab in the column ‘Conditions that apply’.
 declaration.additionalDocumentsRequired.inset.link2 = Tariff entry for {0}, the code you entered (opens in new tab)
@@ -1078,6 +1077,11 @@ declaration.additionalDocumentsRequired.inset.link2Alt = Tariff entry for your c
 declaration.additionalDocumentsRequired.inset.text3 = If you are unsure if your commodity requires a licence or allows an exemption, see as an example, {0}. This requires a C673 certificate, or a Y927 exemption.
 declaration.additionalDocumentsRequired.inset.link3 = commodity code 0306310010 (opens in new tab)
 declaration.additionalDocumentsRequired.empty = Select yes if you want to declare additional documents
+declaration.additionalDocumentsRequired.title = Do you need to enter any other document details?
+declaration.additionalDocumentsRequired.clearance.title = Do you need to declare any additional documents for this item?
+declaration.additionalDocumentsRequired.paragraph = Even with no licence requirement, your goods might need other documents such as certificates or information sheets.
+declaration.additionalDocumentsRequired.paragraph.1 = These are in addition to the documents that you already added to your declaration in section 4, such as invoice and packing list.
+declaration.additionalDocumentsRequired.clearance.paragraph = These may include licences, permits or certificates for your goods, in addition to the documents that you already added to your declaration in section 4.
 
 declaration.additionalDocument.title = Declare each additional document required for this item
 declaration.additionalDocument.title.fromAuthCode = Declare each document code and authorisation number
