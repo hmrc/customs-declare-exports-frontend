@@ -17,17 +17,21 @@
 package views.declaration.summary.sections
 
 import base.Injector
+import com.typesafe.config.ConfigFactory
 import controllers.declaration.routes._
 import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldocuments.AdditionalDocument
 import models.declaration.CommodityMeasure
 import models.{DeclarationType, Mode}
+import play.api.Configuration
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.sections.item_section
 
 class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+
+  override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
 
   val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
 
