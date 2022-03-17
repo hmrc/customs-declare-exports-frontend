@@ -43,7 +43,7 @@ class CommodityDetailsController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form(request.declarationType).withSubmissionErrors()
+    val frm = form(request.declarationType).withSubmissionErrors
     request.cacheModel.itemBy(itemId).flatMap(_.commodityDetails) match {
       case Some(commodityDetails) => Ok(commodityDetailsPage(mode, itemId, frm.fill(commodityDetails)))
       case _                      => Ok(commodityDetailsPage(mode, itemId, frm))
@@ -51,8 +51,7 @@ class CommodityDetailsController @Inject()(
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form(request.declarationType)
-      .bindFromRequest()
+    form(request.declarationType).bindFromRequest
       .fold(
         (formWithErrors: Form[CommodityDetails]) => Future.successful(BadRequest(commodityDetailsPage(mode, itemId, formWithErrors))),
         validForm => updateExportsCache(itemId, validForm).map(_ => redirectToNextPage(mode, itemId))
@@ -64,9 +63,9 @@ class CommodityDetailsController @Inject()(
       if (request.cacheModel.itemBy(itemId).exists(_.isExportInventoryCleansingRecord))
         navigator.continueTo(mode, controllers.declaration.routes.CommodityMeasureController.displayPage(_, itemId))
       else
-        navigator.continueTo(mode, controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId))
+        navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId))
     } else {
-      navigator.continueTo(mode, controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(_, itemId))
+      navigator.continueTo(mode, routes.UNDangerousGoodsCodeController.displayPage(_, itemId))
     }
 
   private def updateExportsCache(itemId: String, updatedItem: CommodityDetails)(

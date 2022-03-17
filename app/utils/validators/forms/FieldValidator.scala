@@ -43,7 +43,7 @@ object FieldValidator {
   }
 
   private def noMoreDecimalPlacesThanRegexValue(decimalPlaces: Int): Pattern =
-    Pattern.compile(s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$")
+    Pattern.compile(s"^([0-9]*)([\\.]?[0-9]{0,$decimalPlaces})$$")
 
   private val allowedSpecialChars = Set(',', '.', '-', '\'', '/', ' ')
   private val allowedNewLineChars = Set('\r', '\n')
@@ -66,6 +66,8 @@ object FieldValidator {
   val noShorterThan: Int => String => Boolean = (length: Int) => (input: String) => input.length >= length
 
   val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
+
+  val hasSpecificLengths: Seq[Int] => String => Boolean = (lengths: Seq[Int]) => (input: String) => lengths.contains(input.length)
 
   val lengthInRange: Int => Int => String => Boolean = (min: Int) => (max: Int) => (input: String) => input.length >= min && input.length <= max
 
