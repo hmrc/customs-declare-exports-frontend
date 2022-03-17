@@ -37,7 +37,7 @@ object CommodityDetails extends DeclarationPage {
   val descriptionOfGoodsMaxLength = 280
   val commodityCodeChemicalPrefixes = Seq(28, 29, 38)
 
-  private val combinedNomenclatureCodeMaxLength = 10
+  private val combinedNomenclatureCodeAcceptedLengths = List(8, 10)
 
   private def mappingCombinedNomenclatureCodeRequired: Mapping[Option[String]] =
     mappingCombinedNomenclatureCodeOptional
@@ -50,7 +50,7 @@ object CommodityDetails extends DeclarationPage {
         .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.invalid", isEmpty or isNumeric)
         .verifying(
           "declaration.commodityDetails.combinedNomenclatureCode.error.length",
-          isEmpty or hasSpecificLength(combinedNomenclatureCodeMaxLength)
+          isEmpty or hasSpecificLengths(combinedNomenclatureCodeAcceptedLengths)
         )
     )
 

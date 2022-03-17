@@ -661,7 +661,6 @@ declaration.additionalActors.remove.empty = Select yes if you need to remove thi
 declaration.additionalActors.remove.title = Are you sure you want to remove this party?
 declaration.additionalActors.error.duplicate = Additional party already added
 
-
 declaration.eori.empty = Enter an EORI number
 declaration.eori.error.format = EORI number must be in the correct format with no spaces. For example, GB123456789000
 
@@ -1375,11 +1374,12 @@ declaration.exchangeRate.hint = For example, if the contract states that a rate 
 
 declaration.commodityDetails.title = Commodity code and item details
 declaration.commodityDetails.combinedNomenclatureCode.label = What is the commodity code for this item?
-declaration.commodityDetails.combinedNomenclatureCode.body = The commodity code stems from the HS (Harmonized System) code that identifies goods for customs. Find out {0}.
-declaration.commodityDetails.combinedNomenclatureCode.body.link = how to get the right commodity code for your goods (opens in new tab)
-declaration.commodityDetails.combinedNomenclatureCode.hint = All commodity codes are 10 digits, for example 4203400090.
+declaration.commodityDetails.combinedNomenclatureCode.body.1 = The commodity code stems from the HS (Harmonized System) code that identifies goods for customs. Find out {0}.
+declaration.commodityDetails.combinedNomenclatureCode.body.1.link = how to get the right commodity code for your goods (opens in new tab)
+declaration.commodityDetails.combinedNomenclatureCode.body.2 = You only need to enter 8 digits for an export declaration. If you provide the full 10-digit code, then we can help you find the Tariff requirements for your goods.
+declaration.commodityDetails.combinedNomenclatureCode.hint = Enter all 10 digits, for example 4203400090. If you do not have the full code you may still enter 42034000.
 declaration.commodityDetails.combinedNomenclatureCode.error.empty = Enter a commodity code in the correct format
-declaration.commodityDetails.combinedNomenclatureCode.error.length = Enter a full 10-number commodity code
+declaration.commodityDetails.combinedNomenclatureCode.error.length = Enter 8 digits or 10 digits
 declaration.commodityDetails.combinedNomenclatureCode.error.invalid = Enter a commodity code in numbers only
 declaration.commodityDetails.description.label = Describe the goods
 declaration.commodityDetails.description.body = Enter a precise description that includes any branding, internal measurements or internal packaging.
