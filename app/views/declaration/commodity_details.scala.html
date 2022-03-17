@@ -47,9 +47,10 @@
 
 @commodityCodeBody = {
     @paragraphBody(messages(
-        "declaration.commodityDetails.combinedNomenclatureCode.body",
-        tariffLink(messages("declaration.commodityDetails.combinedNomenclatureCode.body.link"), appConfig.commodityCodeHelpUrl)
+        "declaration.commodityDetails.combinedNomenclatureCode.body.1",
+        tariffLink(messages("declaration.commodityDetails.combinedNomenclatureCode.body.1.link"), appConfig.commodityCodeHelpUrl)
     ))
+    @paragraphBody(messages("declaration.commodityDetails.combinedNomenclatureCode.body.2"))
 }
 
 @govukLayout(
@@ -60,6 +61,7 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))
+
         @pageTitle(messages("declaration.commodityDetails.title"))
 
         @inputText(
