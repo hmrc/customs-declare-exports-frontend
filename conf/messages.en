@@ -1169,7 +1169,7 @@ declaration.additionalDocument.remove.measurementUnitAndQualifier = Measurement 
 declaration.additionalDocument.remove.documentQuantity = Quantity of the measurement unit
 
 declaration.totalPackageQuantity.title = What is the total number of packages in this declaration?
-declaration.totalPackageQuantity.paragraph = Count the smallest external package type that the goods have been packed in for export. Where two of your goods items have different commodity codes you cannot count a package that contains both of them as a single package.
+declaration.totalPackageQuantity.paragraph = Count the smallest external package type that the goods have been packed in for export.
 declaration.totalPackageQuantity.hint = For example, for cartons of books packed on pallets in a container, the package type would be the pallet.
 declaration.totalPackageQuantity.empty = Enter a total number of packages
 declaration.totalPackageQuantity.error = Total number of packages must be 99999999 or fewer
