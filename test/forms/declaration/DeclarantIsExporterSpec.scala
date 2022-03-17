@@ -16,9 +16,8 @@
 
 package forms.declaration
 
-import forms.common.DeclarationPageBaseSpec
+import forms.common.{DeclarationPageBaseSpec, YesNoAnswer}
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.DeclarantIsExporter.answerKey
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class DeclarantIsExporterSpec extends DeclarationPageBaseSpec {
@@ -56,12 +55,11 @@ class DeclarantIsExporterSpec extends DeclarationPageBaseSpec {
     }
   }
 
-  "DeclarantIsExporter" when {
-    testTariffContentKeys(DeclarantIsExporter, "tariff.declaration.areYouTheExporter")
-  }
 }
 
 object DeclarantIsExporterSpec {
+
+  private val answerKey = YesNoAnswer.formId
 
   val emptyJSON: JsValue = JsObject(Map(answerKey -> JsString("")))
   val invalidJSON: JsValue = JsObject(Map(answerKey -> JsString("invalid")))

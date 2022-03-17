@@ -26,24 +26,26 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class DeclarantIsExporter(answer: String) {
-  def isExporter: Boolean = answer == yes
+case class DeclarantIsExporter(yesNo: String) {
+  def isExporter: Boolean = yesNo == yes
 }
 
 object DeclarantIsExporter extends DeclarationPage {
 
   implicit val format: OFormat[DeclarantIsExporter] = Json.format[DeclarantIsExporter]
 
-  val answerKey = "answer"
-
   private val mapping =
     Forms.mapping(
-      answerKey -> requiredRadio("declaration.declarant.exporter.error")
+      YesNoAnswer.formId -> requiredRadio("declaration.declarant.exporter.error")
         .verifying("declaration.declarant.exporter.error", isContainedIn(YesNoAnswer.allowedValues))
     )(DeclarantIsExporter.apply)(DeclarantIsExporter.unapply)
 
   def form(): Form[DeclarantIsExporter] = Form(mapping)
 
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.areYouTheExporter.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] = {
+
+    val tariffContentKey = s"tariff.declaration.areYouTheExporter.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"
+
+    Seq(TariffContentKey(tariffContentKey), TariffContentKey(s"$tariffContentKey.1"))
+  }
 }
