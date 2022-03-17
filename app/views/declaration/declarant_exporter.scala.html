@@ -17,7 +17,7 @@
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer.YesNoAnswers
 @import forms.declaration.DeclarantIsExporter
-@import forms.declaration.DeclarantIsExporter.answerKey
+@import views.helpers.ErrorMapper.yesNoErrors
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
@@ -30,8 +30,10 @@
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    govukRadios: GovukRadios,
+    yesNoRadios: yesNoRadios,
+    heading: heading,
     saveButtons: saveButtons,
+    paragraphBody: paragraphBody,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     navigator: Navigator,
@@ -47,34 +49,24 @@
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(DeclarantIsExporter, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(radioGroupErrors(answerKey, "answer_yes", form.errors))
+        @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
 
-        @govukRadios(Radios(
-            name = answerKey,
-            fieldset = Some(Fieldset(
+        @heading(messages("declaration.declarant.exporter.title"))
+
+        @paragraphBody(messages("declaration.mucr.body"))
+
+        @yesNoRadios(
+            form = form,
+            noKey = Some("declaration.declarant.exporter.answer.no"),
+            heading = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.declarant.exporter.title")),
-                    classes = gdsPageLegend
-                ))
-            )),
-            items = Seq(
-                RadioItem(
-                    id = Some("answer_yes"),
-                    value = Some(YesNoAnswers.yes),
-                    content = Text(messages("declaration.declarant.exporter.answer.yes")),
-                    checked = form(answerKey).value.contains(YesNoAnswers.yes)
-                ),
-                RadioItem(
-                    id = Some("answer_no"),
-                    value = Some(YesNoAnswers.no),
-                    content = Text(messages("declaration.declarant.exporter.answer.no")),
-                    checked = form(answerKey).value.contains(YesNoAnswers.no)
-                )
-            ),
-            errorMessage = form(answerKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-        ))
+                    classes = "govuk-visually-hidden"
+               ))
+            ))
+        )
 
         @tariffExpander(DeclarantIsExporter, request.declarationType)(messages, appConfig)
 

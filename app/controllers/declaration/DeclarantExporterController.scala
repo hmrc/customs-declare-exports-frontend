@@ -53,7 +53,9 @@ class DeclarantExporterController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarantExporterPage(mode, formWithErrors))),
+        formWithErrors => {
+          Future.successful(BadRequest(declarantExporterPage(mode, formWithErrors)))
+        },
         validForm =>
           updateCache(validForm)
             .map(_ => navigator.continueTo(mode, nextPage(validForm)))
