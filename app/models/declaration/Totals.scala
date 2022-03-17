@@ -22,6 +22,7 @@ case class Totals(
   totalAmountInvoiced: Option[String],
   totalAmountInvoicedCurrency: Option[String],
   exchangeRate: Option[String],
+  exchangeRateAnswer: Option[String],
   totalPackage: Option[String]
 )
 

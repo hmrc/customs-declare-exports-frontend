@@ -65,9 +65,10 @@ class TotalNumberOfItemsController @Inject()(
       declaration.copy(
         totalNumberOfItems = Some(
           Totals(
-            totalAmountInvoiced = totalNumberOfItems.totalAmountInvoiced,
+            totalAmountInvoiced = Some(totalNumberOfItems.totalAmountInvoiced),
             totalAmountInvoicedCurrency = totalNumberOfItems.totalAmountInvoicedCurrency,
             exchangeRate = totalNumberOfItems.exchangeRate,
+            exchangeRateAnswer = Some(totalNumberOfItems.exchangeRateAnswer),
             totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
           )
         )
