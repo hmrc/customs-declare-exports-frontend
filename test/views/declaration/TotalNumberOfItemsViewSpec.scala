@@ -132,7 +132,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       "display error when all entered input is incorrect" in {
 
         val view =
-          createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("abcd"), Some("dsfsd"))))
+          createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), "abcd", Some("dsfsd"), "kjf")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoiced")
@@ -145,7 +145,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       "display error when Total Amount Invoiced is incorrect" in {
 
         val view =
-          createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12345"), Some("abcd"), Some(validCurrencyCode))))
+          createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12345"), "abcd", Some(validCurrencyCode), "Yes")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoiced")
@@ -156,7 +156,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       "display error when Exchange Rate is incorrect" in {
 
         val view =
-          createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("123.12"), Some(validCurrencyCode))))
+          createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), "123.12", Some(validCurrencyCode), "Yes")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#exchangeRate")
@@ -185,7 +185,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
     onEveryDeclarationJourney() { implicit request =>
       "display data in Total Amount Invoiced input" in {
 
-        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, Some("123.123"), None)))
+        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, "123.123", None, "")))
 
         view.getElementById("totalAmountInvoiced").attr("value") must be("123.123")
         view.getElementById("exchangeRate").attr("value") mustBe empty
@@ -194,7 +194,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
 
       "display data in Exchange Rate input" in {
 
-        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.12345"), None, None)))
+        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.12345"), "", None, "")))
 
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
         view.getElementById("exchangeRate").attr("value") must be("123.12345")
@@ -203,7 +203,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
 
       "display data in Currency code input" in {
 
-        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, None, Some(validCurrencyCode))))
+        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, "", Some(validCurrencyCode), "")))
 
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
         view.getElementById("exchangeRate").attr("value") mustBe empty
@@ -213,7 +213,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       "display data in all inputs" in {
 
         val view =
-          createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.12345"), Some("123.123"), Some(validCurrencyCode))))
+          createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.12345"), "123.123", Some(validCurrencyCode), "Yes")))
 
         view.getElementById("totalAmountInvoiced").attr("value") must be("123.123")
         view.getElementById("exchangeRate").attr("value") must be("123.12345")

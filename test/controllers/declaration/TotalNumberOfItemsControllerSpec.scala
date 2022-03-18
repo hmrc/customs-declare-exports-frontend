@@ -67,7 +67,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
     mockExportsCacheService
   )(ec)
 
-  val totalNumberOfItems = TotalNumberOfItems(None, None, None)
+  val totalNumberOfItems = TotalNumberOfItems(None, "", None, "")
 
   def verifyPage(numberOfTimes: Int = 1) = verify(mockTotalNumberOfItemsPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
@@ -97,7 +97,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
       "return 400 (BAD_REQUEST) when form is incorrect" in {
         withNewCaching(request.cacheModel)
-        val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None, None))
+        val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), "", None, ""))
         val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
@@ -106,7 +106,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
       "return 303 (SEE_OTHER) when information provided by user are correct" in {
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(TotalNumberOfItems(None, None, None))
+        val correctForm = Json.toJson(TotalNumberOfItems(None, "", None, ""))
         val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage

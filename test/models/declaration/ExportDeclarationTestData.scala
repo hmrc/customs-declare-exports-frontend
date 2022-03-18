@@ -62,7 +62,7 @@ object ExportDeclarationTestData {
     additionalDeclarationType = Some(SUPPLEMENTARY_SIMPLIFIED),
     consignmentReferences = Some(correctConsignmentReferences),
     natureOfTransaction = Some(correctNatureOfTransaction),
-    totalNumberOfItems = Some(Totals(Some("12312312312312.12"), Some("1212121.12345"), Some("GBP"), None)),
+    totalNumberOfItems = Some(Totals(Some("12312312312312.12"), Some("1212121.12345"), Some("GBP"), Some("Yes"), None)),
     transport = Transport(
       expressConsignment = Yes,
       transportPayment = Some(TransportPayment(cash)),
@@ -128,7 +128,7 @@ object ExportDeclarationTestData {
           Some(List(PackageInformation("pkgAA", Some("AA"), Some(2), Some("mark1")), PackageInformation("pkgBB", Some("AB"), Some(4), Some("mark2"))))
       )
     ),
-    totalNumberOfItems = Some(Totals(Some("1212312.12"), Some("1212121.12345"), Some("GBP"), Some("123"))),
+    totalNumberOfItems = Some(Totals(Some("1212312.12"), Some("1212121.12345"), Some("GBP"), Some("Yes"), Some("123"))),
     parties = Parties(
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),
