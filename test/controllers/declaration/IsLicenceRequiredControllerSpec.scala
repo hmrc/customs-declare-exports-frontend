@@ -59,14 +59,14 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any[Mode], any[String], captor.capture(), any())(any(), any())
+    verify(mockPage).apply(any[Mode], any[String], captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit =
@@ -74,7 +74,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
   super.afterEach()
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   "IsLicenceRequired Controller" should {
 

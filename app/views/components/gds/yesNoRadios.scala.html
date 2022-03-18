@@ -26,6 +26,8 @@
     yesKey: Option[String] = None,
     noKey: Option[String] = None,
     hint: Option[Hint] = None,
+    yesHint: Option[String] = None,
+    noHint: Option[String] = None,
     inline: Boolean = false
 )(implicit messages: Messages)
 
@@ -59,12 +61,14 @@
             id = Some("code_yes"),
             value = Some(yes),
             content = yesContent,
+            hint = yesHint.map{ hint => Hint(content = Text(messages(hint)))},
             checked = form("yesNo").value.contains(yes)
         ),
         RadioItem(
             id = Some("code_no"),
             value = Some(no),
             content = noContent,
+            hint = noHint.map{ hint => Hint(content = Text(messages(hint)))},
             checked = form("yesNo").value.contains(no)
         )
     ),

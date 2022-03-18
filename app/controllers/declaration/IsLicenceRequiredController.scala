@@ -51,14 +51,14 @@ class IsLicenceRequiredController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes) andThen featureFlagAction(Feature.waiver999L)) { implicit request =>
-      val formWithErrors = form.withSubmissionErrors
+      val formWithErrors = form.withSubmissionErrors.fill(_)
 
       val frm = request.cacheModel.itemBy(itemId).flatMap(_.isLicenceRequired).fold(form.withSubmissionErrors) {
-        case true  => formWithErrors.fill(YesNoAnswer(yes))
-        case false => formWithErrors.fill(YesNoAnswer(no))
+        case true  => formWithErrors(YesNoAnswer(yes))
+        case false => formWithErrors(YesNoAnswer(no))
       }
 
-      Ok(is_licence_required(mode, itemId, frm, representativeStatusCode))
+      Ok(is_licence_required(mode, itemId, frm))
 
     }
 
@@ -66,7 +66,7 @@ class IsLicenceRequiredController @Inject()(
     (authenticate andThen journeyType andThen featureFlagAction(Feature.waiver999L)).async { implicit request =>
       form.bindFromRequest
         .fold(
-          formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors, representativeStatusCode))),
+          formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors))),
           yesNo =>
             updateCache(yesNo, itemId) map { _ =>
               navigator.continueTo(mode, nextPage(yesNo, itemId))
@@ -88,12 +88,6 @@ class IsLicenceRequiredController @Inject()(
 
     updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(isLicenceRequired = Some(isLicenceRequired))))
   }
-
-  private def representativeStatusCode(implicit request: JourneyRequest[AnyContent]): Option[String] =
-    (request.cacheModel.parties.representativeDetails flatMap { _.statusCode }) orElse {
-      if (request.cacheModel.parties.declarantIsExporter exists { _.isExporter }) Some("1")
-      else None
-    }
 
   private def form: Form[YesNoAnswer] = YesNoAnswer.form()
 }
