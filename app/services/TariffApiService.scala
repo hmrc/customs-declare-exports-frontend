@@ -41,10 +41,12 @@ class TariffApiService @Inject()(tariffApiConfig: TariffApiConfig, tariffApiConn
         .getOrElse(Future.successful(Left(CommodityCodeNotFound)))
 
   private def retrieveCommodityInfoIfAny(commodityCode: String): Future[TariffApiResult] =
-    tariffApiConnector.getCommodity(commodityCode).map {
-      case Some(json) => extractIncludedObj(commodityCode, json)
-      case _          => Left(CommodityCodeNotFound)
-    }
+    if (commodityCode.length != 10) Future.successful(Left(CommodityCodeNotFound))
+    else
+      tariffApiConnector.getCommodityOnCondition(commodityCode).map {
+        case Some(json) => extractIncludedObj(commodityCode, json)
+        case _          => Left(CommodityCodeNotFound)
+      }
 
   private def extractIncludedObj(commodityCode: String, json: JsValue): TariffApiResult =
     parseJsValue[JsArray](json, "included") match {

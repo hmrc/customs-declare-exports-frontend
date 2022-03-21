@@ -23,7 +23,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.CommodityDetails
 import forms.declaration.commodityMeasure.SupplementaryUnits
 import forms.declaration.commodityMeasure.SupplementaryUnits.{hasSupplementaryUnits, supplementaryUnits}
-import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{DeclarationType, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -44,141 +44,177 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with ExportsTestData 
   private val itemId = "item1"
   private val yesNoPage = true
 
+  private def request(declarationType: DeclarationType, maybeCommodityCode: Option[String] = None): JourneyRequest[_] =
+    maybeCommodityCode.fold(journeyRequest()) { commodityCode =>
+      val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
+      withRequestOfType(declarationType, withItem(item))
+    }
+
   private def createView(form: Form[SupplementaryUnits] = SupplementaryUnits.form(yesNoPage))(implicit request: JourneyRequest[_]): Document =
     page(Mode.Normal, itemId, form)(request, messages)
 
-  "SupplementaryUnitsYesNo View" should {
-    onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
-      val view = createView()
+  "SupplementaryUnitsYesNo View" when {
 
-      "display 'Back' button that links to 'Commodity Details' page" in {
-        val backButton = view.getElementById("back-link")
-        backButton must containMessage("site.back")
-        backButton must haveHref(CommodityMeasureController.displayPage(Mode.Normal, itemId))
-      }
+    List(STANDARD, SUPPLEMENTARY).foreach { declarationType =>
+      s"the declarationType is $declarationType" should {
+        val view = createView()(request(declarationType))
 
-      "display page title" in {
-        view.getElementsByTag("h1").text mustBe messages("declaration.supplementaryUnits.yesNo.title")
-      }
+        "display 'Back' button that links to 'Commodity Details' page" in {
+          val backButton = view.getElementById("back-link")
+          backButton must containMessage("site.back")
+          backButton must haveHref(CommodityMeasureController.displayPage(Mode.Normal, itemId))
+        }
 
-      "display section header" in {
-        view.getElementById("section-header") must containMessage("declaration.section.5")
-      }
+        "display page title" in {
+          view.getElementsByTag("h1").text mustBe messages("declaration.supplementaryUnits.yesNo.title")
+        }
 
-      "display body text when a commodity code has been selected" in {
-        val commodityCode = "4602191000"
-        val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
-        val view = createView()(journeyRequest(aDeclarationAfter(request.cacheModel, withItem(item))))
+        "display section header" in {
+          view.getElementById("section-header") must containMessage("declaration.section.5")
+        }
 
-        val body = view.getElementsByClass("govuk-body").get(0)
+        "display the expected body text when a commodity code of 10-digits has been entered" in {
+          val commodityCode = "4602191000"
+          val view = createView()(request(declarationType, Some(commodityCode)))
 
-        val linkWithCommodityCode = messages("declaration.supplementaryUnits.yesNo.body.link.1", commodityCode)
-        val text = messages("declaration.supplementaryUnits.yesNo.body", linkWithCommodityCode)
-        body.text mustBe text
+          val body = view.getElementsByClass("govuk-body").get(0)
 
-        val href = appConfig.suppUnitsCommodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
-        body.child(0) must haveHref(href)
-      }
+          val expectedLinkText = messages("declaration.supplementaryUnits.yesNo.body.link.1", commodityCode)
+          val expectedHref = appConfig.suppUnitsCommodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
 
-      "display body text when no commodity code has been selected" in {
-        val body = view.getElementsByClass("govuk-body").get(0)
+          body.text mustBe messages("declaration.supplementaryUnits.yesNo.body", expectedLinkText)
+          body.child(0) must haveHref(expectedHref)
+        }
 
-        val linkWithoutCommodityCode = messages("declaration.supplementaryUnits.yesNo.body.link.2")
-        val text = messages("declaration.supplementaryUnits.yesNo.body", linkWithoutCommodityCode)
-        body.text mustBe text
+        "display the expected body text when a commodity code of 8-digits has been entered" in {
+          val commodityCode = "46021910"
+          val view = createView()(request(declarationType, Some(commodityCode)))
 
-        body.child(0) must haveHref(appConfig.tradeTariffSections)
-      }
+          val body = view.getElementsByClass("govuk-body").get(0)
 
-      "display radio button with Yes option" in {
-        val label = view.getElementsByTag("label").get(0)
-        label.attr("for") mustBe "Yes"
-        label.text mustBe messages("site.yes")
+          val expectedLinkText = messages("declaration.supplementaryUnits.yesNo.body.link.1", commodityCode)
+          val expectedHref = appConfig.suppUnitsCommodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, s"${commodityCode}00")
 
-        val radio = view.getElementById("Yes")
-        radio.attr("type") mustBe "radio"
-        radio.attr("name") mustBe hasSupplementaryUnits
-        radio.attr("value") mustBe YesNoAnswers.yes
-      }
+          body.text mustBe messages("declaration.supplementaryUnits.yesNo.body", expectedLinkText)
+          body.child(0) must haveHref(expectedHref)
+        }
 
-      "include a 'supplementaryUnits' field" in {
-        val label = view.getElementsByTag("label").get(1)
-        label.attr("for") mustBe supplementaryUnits
-        label.text mustBe messages("declaration.supplementaryUnits.quantity.label")
+        "display the expected body text when no commodity code has been entered" in {
+          val body = view.getElementsByClass("govuk-body").get(0)
 
-        val hint = view.getElementsByClass("govuk-hint").get(0)
-        hint.text mustBe messages("declaration.supplementaryUnits.hint")
+          val expectedLinkText = messages("declaration.supplementaryUnits.yesNo.body.link.2")
 
-        view.getElementById(supplementaryUnits).tag.toString mustBe "input"
-      }
+          body.text mustBe messages("declaration.supplementaryUnits.yesNo.body", expectedLinkText)
+          body.child(0) must haveHref(appConfig.tradeTariffSections)
+        }
 
-      "display radio button with No option" in {
-        val label = view.getElementsByTag("label").get(2)
-        label.attr("for") mustBe "No"
-        label.text mustBe messages("site.no")
+        "display radio button with Yes option" in {
+          val label = view.getElementsByTag("label").get(0)
+          label.attr("for") mustBe "Yes"
+          label.text mustBe messages("site.yes")
 
-        val radio = view.getElementById("No")
-        radio.attr("type") mustBe "radio"
-        radio.attr("name") mustBe hasSupplementaryUnits
-        radio.attr("value") mustBe YesNoAnswers.no
-      }
+          val radio = view.getElementById("Yes")
+          radio.attr("type") mustBe "radio"
+          radio.attr("name") mustBe hasSupplementaryUnits
+          radio.attr("value") mustBe YesNoAnswers.yes
+        }
 
-      "display the expected tariff details" in {
-        val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-        tariffTitle.first must containMessage("tariff.expander.title.common")
+        "include a 'supplementaryUnits' field" in {
+          val label = view.getElementsByTag("label").get(1)
+          label.attr("for") mustBe supplementaryUnits
+          label.text mustBe messages("declaration.supplementaryUnits.quantity.label")
 
-        val tariffDetails = view.getElementsByClass("govuk-details__text").first
-        removeBlanksIfAnyBeforeDot(tariffDetails.text) mustBe messages(
-          "tariff.declaration.item.supplementaryUnits.common.text",
-          messages("tariff.declaration.item.supplementaryUnits.common.linkText.0")
-        )
-      }
+          val hint = view.getElementsByClass("govuk-hint").get(0)
+          hint.text mustBe messages("declaration.supplementaryUnits.hint")
 
-      "display 'Save and continue' button on page" in {
-        val saveButton = view.getElementById("submit")
-        saveButton must containMessage("site.save_and_continue")
-      }
+          view.getElementById(supplementaryUnits).tag.toString mustBe "input"
+        }
 
-      "display 'Save and return' button on page" in {
-        val saveAndReturnButton = view.getElementById("submit_and_return")
-        saveAndReturnButton must containMessage("site.save_and_come_back_later")
-      }
+        "display radio button with No option" in {
+          val label = view.getElementsByTag("label").get(2)
+          label.attr("for") mustBe "No"
+          label.text mustBe messages("site.no")
 
-      "not display any error when the value entered in the 'supplementaryUnits' field is valid" in {
-        val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some("100"))))
-        view mustNot haveGovukGlobalErrorSummary
-      }
+          val radio = view.getElementById("No")
+          radio.attr("type") mustBe "radio"
+          radio.attr("name") mustBe hasSupplementaryUnits
+          radio.attr("value") mustBe YesNoAnswers.no
+        }
 
-      "display an error when the value entered in the 'supplementaryUnits' field is invalid" in {
-        val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some("ABC"))))
+        "display the expected tariff details" in {
+          val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
+          tariffTitle.first must containMessage("tariff.expander.title.common")
 
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
-        view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.error")
-      }
+          val tariffDetails = view.getElementsByClass("govuk-details__text").first
+          removeBlanksIfAnyBeforeDot(tariffDetails.text) mustBe messages(
+            "tariff.declaration.item.supplementaryUnits.common.text",
+            messages("tariff.declaration.item.supplementaryUnits.common.linkText.0")
+          )
+        }
 
-      "display an error when the value entered in the 'supplementaryUnits' field consists of zeroes only" in {
-        val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some("0000"))))
+        "display 'Save and continue' button on page" in {
+          val saveButton = view.getElementById("submit")
+          saveButton must containMessage("site.save_and_continue")
+        }
 
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
-        view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.empty")
-      }
+        "display 'Save and return' button on page" in {
+          val saveAndReturnButton = view.getElementById("submit_and_return")
+          saveAndReturnButton must containMessage("site.save_and_come_back_later")
+        }
 
-      "display an error when the value entered in the 'supplementaryUnits' field is too long" in {
-        val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some("12345678901234567"))))
+        "not display any error when the value entered in the 'supplementaryUnits' field is valid" in {
+          implicit val theRequest = request(declarationType)
+          val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some("100"))))
+          view mustNot haveGovukGlobalErrorSummary
+        }
 
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
-        view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.length")
-      }
+        "display an error when the value entered in the 'supplementaryUnits' field is invalid" in {
+          val view = createView(
+            SupplementaryUnits
+              .form(yesNoPage)
+              .fillAndValidate(SupplementaryUnits(Some("ABC")))
+          )(request(declarationType))
 
-      "display error when the 'supplementaryUnits' field is left empty" in {
-        val view = createView(SupplementaryUnits.form(yesNoPage).fillAndValidate(SupplementaryUnits(Some(""))))
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
+          view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.error")
+        }
 
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
-        view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.empty")
+        "display an error when the value entered in the 'supplementaryUnits' field consists of zeroes only" in {
+          val view = createView(
+            SupplementaryUnits
+              .form(yesNoPage)
+              .fillAndValidate(SupplementaryUnits(Some("0000")))
+          )(request(declarationType))
+
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
+          view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.empty")
+        }
+
+        "display an error when the value entered in the 'supplementaryUnits' field is too long" in {
+          val view = createView(
+            SupplementaryUnits
+              .form(yesNoPage)
+              .fillAndValidate(SupplementaryUnits(Some("12345678901234567")))
+          )(request(declarationType))
+
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
+          view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.length")
+        }
+
+        "display error when the 'supplementaryUnits' field is left empty" in {
+          val view = createView(
+            SupplementaryUnits
+              .form(yesNoPage)
+              .fillAndValidate(SupplementaryUnits(Some("")))
+          )(request(declarationType))
+
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
+          view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.empty")
+        }
       }
     }
   }

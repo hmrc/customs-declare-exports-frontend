@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper
+import controllers.navigation.Navigator
 import forms.declaration.TaricCode.taricCodeLimit
 import forms.declaration.{TaricCode, TaricCodeFirst}
 import models.requests.JourneyRequest
@@ -46,37 +46,32 @@ class TaricCodeAddController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
-      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodeAdd(mode, itemId, TaricCode.form().withSubmissionErrors()))
+      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodeAdd(mode, itemId, TaricCode.form.withSubmissionErrors))
 
       case Some(_) =>
-        val form = TaricCodeFirst.form().fill(TaricCodeFirst.none).withSubmissionErrors()
-        Ok(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), form))
+        val form = TaricCodeFirst.form.fill(TaricCodeFirst.none).withSubmissionErrors
+        Ok(taricCodeAddFirstPage(mode, itemId, form))
 
       case _ =>
-        val form = TaricCodeFirst.form().withSubmissionErrors()
-        Ok(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), form))
+        val form = TaricCodeFirst.form.withSubmissionErrors
+        Ok(taricCodeAddFirstPage(mode, itemId, form))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     def showFormWithErrors(formWithErrors: Form[TaricCodeFirst]): Future[Result] =
-      Future.successful(BadRequest(taricCodeAddFirstPage(mode, itemId, commodityCode(itemId), formWithErrors)))
+      Future.successful(BadRequest(taricCodeAddFirstPage(mode, itemId, formWithErrors)))
 
     val exportItem = request.cacheModel.itemBy(itemId)
     exportItem.flatMap(_.taricCodes) match {
       case Some(taricCodes) if taricCodes.nonEmpty =>
-        saveAdditionalTaricCode(mode, itemId, TaricCode.form().bindFromRequest(), taricCodes)
+        saveAdditionalTaricCode(mode, itemId, TaricCode.form.bindFromRequest, taricCodes)
 
       case _ =>
-        TaricCodeFirst
-          .form()
-          .bindFromRequest()
+        TaricCodeFirst.form.bindFromRequest
           .fold(showFormWithErrors, validForm => saveFirstTaricCode(mode, itemId, validForm.code))
     }
   }
-
-  private def commodityCode(itemId: String)(implicit request: JourneyRequest[_]): Option[String] =
-    request.cacheModel.commodityCodeOfItem(itemId)
 
   private def saveFirstTaricCode(mode: Mode, itemId: String, maybeCode: Option[String])(
     implicit request: JourneyRequest[AnyContent]

@@ -42,7 +42,7 @@ class TariffApiServiceSpec
     reset(mockTariffApiConfig, tariffApiConnector)
 
     when(mockTariffApiConfig.isCommoditiesEnabled).thenReturn(true)
-    when(tariffApiConnector.getCommodity(any())).thenReturn(Future.successful(None))
+    when(tariffApiConnector.getCommodityOnCondition(any())).thenReturn(Future.successful(None))
   }
 
   private val commodityCode = "2208303000"
@@ -55,7 +55,7 @@ class TariffApiServiceSpec
 
   private def extractCommodityInfoIfAnyFromJson(json: String): TariffApiResult = {
     val response = Future.successful(Some(Json.parse(json)))
-    when(tariffApiConnector.getCommodity(any())).thenReturn(response)
+    when(tariffApiConnector.getCommodityOnCondition(any())).thenReturn(response)
     retrieveCommodityInfoIfAny().futureValue
   }
 
@@ -70,10 +70,14 @@ class TariffApiServiceSpec
 
     "the feature flag 'isCommoditiesEnabled' is enabled" should {
 
-      "return 'None'" when {
+      "return a 'Left[NoInfoForCommodity]' value" when {
 
         "the given declaration does not contain an item with a commodity code" in {
           retrieveCommodityInfoIfAny(None).futureValue.left.value mustBe CommodityCodeNotFound
+        }
+
+        "the given declaration does contain an item with a commodity code of 8-digits" in {
+          retrieveCommodityInfoIfAny(Some("22083030")).futureValue.left.value mustBe CommodityCodeNotFound
         }
 
         "the Tariff API responds with a 404 http status code (NOT_FOUND)" in {
