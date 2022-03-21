@@ -21,11 +21,11 @@
 @import forms.declaration.additionaldocuments.AdditionalDocument._
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{AdditionalDocument => AdditionalDocHelper}
+@import views.helpers.CommodityCodeHelper.commodityCodeOfItem
 @import views.html.components.gds._
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
     govukFieldset: GovukFieldset,
@@ -49,6 +49,7 @@
 @(mode: Mode, itemId: String, form: Form[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
 
 @guidance = @{ appConfig.guidance }
+
 @measurementInput(field: Field, labelKey: String, inputClasses: String) = {
     @govukInput(Input(
         id = field.id,
@@ -113,25 +114,25 @@
                   classes = "govuk-fieldset__legend--m"
               )),
               attributes = Map("id" -> "measurementUnitAndQualifier"),
-              html = HtmlFormat.fill(immutable.Seq(measurementUnitAndQualifierContent))
+              html = HtmlFormat.fill(List(measurementUnitAndQualifierContent))
           ))
       </div>
 }
 
 @expander1Content = {
-    @request.cacheModel.commodityCodeOfItem(itemId).map { commodityCode =>
-        @paragraphBody(messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.text",
-            link(
-                text = messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.link1.text", commodityCode),
-                call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)),
-                target = "_blank"
-            )
-        ))
-    }.getOrElse {
+    @commodityCodeOfItem(itemId).fold {
         @paragraphBody(messages("declaration.additionalDocument.expander.paragraph1.withoutCommodityCode.text",
             link(
                 text = messages("declaration.additionalDocument.expander.paragraph1.withoutCommodityCode.link1.text"),
                 call = Call("GET", appConfig.tradeTariffSections),
+                target = "_blank"
+            )
+        ))
+    } { commodityCode =>
+        @paragraphBody(messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.text",
+            link(
+                text = messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.link1.text", commodityCode.codeAsShown),
+                call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
                 target = "_blank"
             )
         ))
@@ -262,7 +263,7 @@
             classes = gdsPageLegend,
             isPageHeading = true
         )),
-        html = HtmlFormat.fill(immutable.Seq(
+        html = HtmlFormat.fill(List(
             additionalDocument.pageBody,
             govukDetails(Details(
                 summary = Text(messages("declaration.additionalDocument.expander.title")),

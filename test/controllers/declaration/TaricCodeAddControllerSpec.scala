@@ -48,7 +48,7 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockAddFirstPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAddFirstPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -71,7 +71,7 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
   def theTaricCodeFirst: Form[TaricCodeFirst] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[TaricCodeFirst]])
-    verify(mockAddFirstPage).apply(any(), any(), any(), captor.capture())(any(), any())
+    verify(mockAddFirstPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -79,7 +79,7 @@ class TaricCodeAddControllerSpec extends ControllerSpec with OptionValues {
     verify(mockAddPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   private def verifyAddPageFirstInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockAddFirstPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
+    verify(mockAddFirstPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
 
   val item = anItem()
 
