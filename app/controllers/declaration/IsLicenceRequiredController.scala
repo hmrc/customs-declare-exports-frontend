@@ -23,6 +23,7 @@ import features.Feature
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
+import forms.declaration.IsLicenceRequired
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -89,5 +90,5 @@ class IsLicenceRequiredController @Inject()(
     updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(isLicenceRequired = Some(isLicenceRequired))))
   }
 
-  private def form: Form[YesNoAnswer] = YesNoAnswer.form()
+  private def form: Form[YesNoAnswer] = IsLicenceRequired.form
 }

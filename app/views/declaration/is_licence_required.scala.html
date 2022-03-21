@@ -51,17 +51,17 @@
 @tariffLinkContent = @{
     request.cacheModel.commodityCodeOfItem(itemId).map { commodityCode =>
 
-        messages("tariff.declaration.item.isLicenceRequired.inset.1.text",
+        messages("declaration.item.isLicenceRequired.inset.1.text",
             tariffLink(
-                messages("tariff.declaration.item.isLicenceRequired.inset.1.linkText.0", commodityCode),
+                messages("declaration.item.isLicenceRequired.inset.1.linkText.0", commodityCode),
                 s"${appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenceRequired.inset.1.0")}${commodityCode}#export"
             )
         )
 
     }.getOrElse{
-        messages("tariff.declaration.item.isLicenceRequired.inset.1.text",
+        messages("declaration.item.isLicenceRequired.inset.1.text",
             tariffLink(
-                messages("tariff.declaration.item.isLicenceRequired.inset.1.linkText"),
+                messages("declaration.item.isLicenceRequired.inset.1.linkText"),
                 s"${appConfig.tariffBrowseUrl}"
             )
         )
@@ -69,7 +69,7 @@
 }
 
 @govukLayout(
-    title = Title("tariff.declaration.item.isLicenceRequired.title", "declaration.section.5", hasErrors = hasErrors),
+    title = Title("declaration.item.isLicenceRequired.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(IsLicenceRequired, mode, ItemId(itemId))))
 ) {
 
@@ -79,28 +79,28 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
-        @heading(messages("tariff.declaration.item.isLicenceRequired.title"), Styles.gdsPageLegend)
+        @heading(messages("declaration.item.isLicenceRequired.title"), Styles.gdsPageLegend)
 
-       @paragraphBody(messages(s"tariff.declaration.item.isLicenceRequired.body"))
+       @paragraphBody(messages("declaration.item.isLicenceRequired.body"))
 
         @yesNoRadios(
             form,
-            noHint = Some("tariff.declaration.item.isLicenceRequired.no.hint")
+            noHint = Some("declaration.item.isLicenceRequired.no.hint")
         )
 
         @insetText(
             content = HtmlContent(Seq(
-            heading(messages("tariff.declaration.item.isLicenceRequired.inset.title"), classes = "govuk-heading", tier = "strong"),
-            tariffLinkContent,
-            messages("tariff.declaration.item.isLicenceRequired.inset.2.text"),
-            messages("tariff.declaration.item.isLicenceRequired.inset.3.text",
-                tariffLink(
-                    messages("tariff.declaration.item.isLicenceRequired.inset.3.linkText"),
-                    appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenceRequired.inset.3")
-                )
-            ),
-            messages("tariff.declaration.item.isLicenceRequired.inset.4.text")
-            ).mkString("</br></br>"))
+                heading(messages("declaration.item.isLicenceRequired.inset.title"), classes = "govuk-heading", tier = "strong"),
+                paragraphBody(tariffLinkContent),
+                paragraphBody(messages("declaration.item.isLicenceRequired.inset.2.text")),
+                paragraphBody(messages("declaration.item.isLicenceRequired.inset.3.text",
+                    tariffLink(
+                        messages("declaration.item.isLicenceRequired.inset.3.linkText"),
+                        appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenceRequired.inset.3")
+                    )
+                )),
+                paragraphBody(messages("declaration.item.isLicenceRequired.inset.4.text"))
+            ).mkString)
         )
 
         @tariffExpander(IsLicenceRequired, request.declarationType)(messages, appConfig)
