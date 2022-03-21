@@ -50,13 +50,16 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
       view.getElementById("title").text mustBe messages("declaration.commodityDetails.title")
     }
 
-    "display a body text for the commodity code input field" in {
-      val element = view.getElementsByClass("govuk-body").get(0)
-      removeBlanksIfAnyBeforeDot(element.text) mustBe messages(
-        "declaration.commodityDetails.combinedNomenclatureCode.body",
-        messages("declaration.commodityDetails.combinedNomenclatureCode.body.link")
+    "display body texts for the commodity code input field" in {
+      val body1 = view.getElementsByClass("govuk-body").get(0)
+      removeBlanksIfAnyBeforeDot(body1.text) mustBe messages(
+        "declaration.commodityDetails.combinedNomenclatureCode.body.1",
+        messages("declaration.commodityDetails.combinedNomenclatureCode.body.1.link")
       )
-      element.child(0) must haveHref("https://www.gov.uk/guidance/using-the-trade-tariff-tool-to-find-a-commodity-code")
+      body1.child(0) must haveHref("https://www.gov.uk/guidance/using-the-trade-tariff-tool-to-find-a-commodity-code")
+
+      val body2 = view.getElementsByClass("govuk-body").get(1).text
+      body2 mustBe messages("declaration.commodityDetails.combinedNomenclatureCode.body.2")
     }
 
     "display a hint text for the commodity code input field" in {
@@ -70,7 +73,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
     }
 
     "display a body text for the description textarea field" in {
-      val element = view.getElementsByClass("govuk-body").get(1)
+      val element = view.getElementsByClass("govuk-body").get(2)
       element.text mustBe messages("declaration.commodityDetails.description.body")
     }
 

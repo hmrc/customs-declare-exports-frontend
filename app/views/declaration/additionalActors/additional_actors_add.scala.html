@@ -95,6 +95,7 @@
                     id = Some(WarehouseKeeper.toString),
                     value = Some(WarehouseKeeper.toString),
                     content = Text(messages(s"declaration.partyType.$WarehouseKeeper")),
+                    hint = Some(Hint(content = Text(messages(s"declaration.partyType.warehouseKeeper.hint")))),
                     conditionalHtml = inputField(WarehouseKeeper),
                     checked = form("partyType").value.contains(WarehouseKeeper.toString)
                 ),
