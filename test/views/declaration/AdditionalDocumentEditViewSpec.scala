@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.{Injector, TestHelper}
+import config.AppConfig
 import controllers.helpers.SaveAndReturn
 import forms.common.Date.{dayKey, monthKey, yearKey}
 import forms.common.Eori
@@ -42,6 +43,8 @@ import views.html.declaration.additionalDocuments.additional_document_edit
 
 class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
+  private val appConfig = instanceOf[AppConfig]
+
   private val itemId = "a7sc78"
   private val mode = Mode.Normal
 
@@ -59,107 +62,109 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
     additionalDocumentEditPage(mode, itemId, input.fold(form)(form.fillAndValidate))(request, messages)
   }
 
+  private val prefix = "declaration.additionalDocument"
+
   "AdditionalDocument Add/Change Controller" should {
 
     "have correct message keys" in {
-      messages must haveTranslationFor("declaration.additionalDocument.title")
-      messages must haveTranslationFor("declaration.additionalDocument.title.fromAuthCode")
-      messages must haveTranslationFor("declaration.additionalDocument.text")
-      messages must haveTranslationFor("declaration.additionalDocument.text.fromAuthCode.paragraph1")
-      messages must haveTranslationFor("declaration.additionalDocument.text.fromAuthCode.paragraph2")
+      messages must haveTranslationFor(s"$prefix.title")
+      messages must haveTranslationFor(s"$prefix.title.fromAuthCode")
+      messages must haveTranslationFor(s"$prefix.text")
+      messages must haveTranslationFor(s"$prefix.text.fromAuthCode.paragraph1")
+      messages must haveTranslationFor(s"$prefix.text.fromAuthCode.paragraph2")
 
-      messages must haveTranslationFor("declaration.additionalDocument.expander.title")
-      messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph1.withCommodityCode.text")
-      messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph1.withCommodityCode.link1.text")
-      messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph1.withoutCommodityCode.text")
-      messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph1.withoutCommodityCode.link1.text")
-      messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph2.text")
-      messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph3.text")
-      messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph3.link1.text")
-      messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph4.text")
-      messages must haveTranslationFor("declaration.additionalDocument.expander.paragraph4.link1.text")
+      messages must haveTranslationFor(s"$prefix.expander.title")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph1.withCommodityCode.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph1.withCommodityCode.link1.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph1.withoutCommodityCode.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph1.withoutCommodityCode.link1.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph2.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph3.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph3.link1.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph4.text")
+      messages must haveTranslationFor(s"$prefix.expander.paragraph4.link1.text")
 
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.text")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.hint")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.text.fromAuthCode")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.hint.fromAuthCode")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.expander.title")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.expander.paragraph1.text")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.expander.paragraph1.link1.text")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.expander.paragraph2.text")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.expander.paragraph2.link1.text")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.expander.paragraph3.text")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.empty")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.empty.fromAuthCode")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.error")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode.Y999.error")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.text")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.hint")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.text.fromAuthCode")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.hint.fromAuthCode")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.expander.title")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.expander.paragraph1.text")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.expander.paragraph1.link1.text")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.expander.paragraph2.text")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.expander.paragraph2.link1.text")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.expander.paragraph3.text")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.empty")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.empty.fromAuthCode")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.error")
+      messages must haveTranslationFor(s"$prefix.documentTypeCode.Y999.error")
 
-      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier")
-      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.body")
-      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph1")
-      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph2")
-      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.error")
+      messages must haveTranslationFor(s"$prefix.documentIdentifier")
+      messages must haveTranslationFor(s"$prefix.documentIdentifier.body")
+      messages must haveTranslationFor(s"$prefix.documentIdentifier.inset.fromAuthCode.paragraph1")
+      messages must haveTranslationFor(s"$prefix.documentIdentifier.inset.fromAuthCode.paragraph2")
+      messages must haveTranslationFor(s"$prefix.documentIdentifier.error")
 
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatus")
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatus.text")
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatus.error")
+      messages must haveTranslationFor(s"$prefix.documentStatus")
+      messages must haveTranslationFor(s"$prefix.documentStatus.text")
+      messages must haveTranslationFor(s"$prefix.documentStatus.error")
 
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason")
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason.text")
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason.hint")
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason.error")
+      messages must haveTranslationFor(s"$prefix.documentStatusReason")
+      messages must haveTranslationFor(s"$prefix.documentStatusReason.text")
+      messages must haveTranslationFor(s"$prefix.documentStatusReason.hint")
+      messages must haveTranslationFor(s"$prefix.documentStatusReason.error")
 
-      messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName")
-      messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName.text")
-      messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName.error.length")
+      messages must haveTranslationFor(s"$prefix.issuingAuthorityName")
+      messages must haveTranslationFor(s"$prefix.issuingAuthorityName.text")
+      messages must haveTranslationFor(s"$prefix.issuingAuthorityName.error.length")
 
-      messages must haveTranslationFor("declaration.additionalDocument.dateOfValidity")
-      messages must haveTranslationFor("declaration.additionalDocument.dateOfValidity.hint")
-      messages must haveTranslationFor("declaration.additionalDocument.dateOfValidity.error.format")
-      messages must haveTranslationFor("declaration.additionalDocument.dateOfValidity.error.outOfRange")
+      messages must haveTranslationFor(s"$prefix.dateOfValidity")
+      messages must haveTranslationFor(s"$prefix.dateOfValidity.hint")
+      messages must haveTranslationFor(s"$prefix.dateOfValidity.error.format")
+      messages must haveTranslationFor(s"$prefix.dateOfValidity.error.outOfRange")
 
-      messages must haveTranslationFor("declaration.additionalDocument.measurementUnit.header")
-      messages must haveTranslationFor("declaration.additionalDocument.measurementUnit.text")
-      messages must haveTranslationFor("declaration.additionalDocument.measurementUnit.hint")
-      messages must haveTranslationFor("declaration.additionalDocument.measurementUnit.link.text")
-      messages must haveTranslationFor("declaration.additionalDocument.measurementUnit.error")
-      messages must haveTranslationFor("declaration.additionalDocument.measurementUnit")
+      messages must haveTranslationFor(s"$prefix.measurementUnit.header")
+      messages must haveTranslationFor(s"$prefix.measurementUnit.text")
+      messages must haveTranslationFor(s"$prefix.measurementUnit.hint")
+      messages must haveTranslationFor(s"$prefix.measurementUnit.link.text")
+      messages must haveTranslationFor(s"$prefix.measurementUnit.error")
+      messages must haveTranslationFor(s"$prefix.measurementUnit")
 
-      messages must haveTranslationFor("declaration.additionalDocument.qualifier")
-      messages must haveTranslationFor("declaration.additionalDocument.qualifier.error")
+      messages must haveTranslationFor(s"$prefix.qualifier")
+      messages must haveTranslationFor(s"$prefix.qualifier.error")
 
-      messages must haveTranslationFor("declaration.additionalDocument.measurementUnitAndQualifier.error")
+      messages must haveTranslationFor(s"$prefix.measurementUnitAndQualifier.error")
 
-      messages must haveTranslationFor("declaration.additionalDocument.documentQuantity")
-      messages must haveTranslationFor("declaration.additionalDocument.documentQuantity.hint")
-      messages must haveTranslationFor("declaration.additionalDocument.documentQuantity.error")
+      messages must haveTranslationFor(s"$prefix.documentQuantity")
+      messages must haveTranslationFor(s"$prefix.documentQuantity.hint")
+      messages must haveTranslationFor(s"$prefix.documentQuantity.error")
 
-      messages must haveTranslationFor("declaration.additionalDocument.error.maximumAmount")
-      messages must haveTranslationFor("declaration.additionalDocument.error.duplicate")
-      messages must haveTranslationFor("declaration.additionalDocument.error.notDefined")
+      messages must haveTranslationFor(s"$prefix.error.maximumAmount")
+      messages must haveTranslationFor(s"$prefix.error.duplicate")
+      messages must haveTranslationFor(s"$prefix.error.notDefined")
 
-      messages must haveTranslationFor("declaration.additionalDocument.summary.documentTypeCode")
-      messages must haveTranslationFor("declaration.additionalDocument.summary.documentIdentifier")
-      messages must haveTranslationFor("declaration.additionalDocument.summary.statusCode")
-      messages must haveTranslationFor("declaration.additionalDocument.summary.heading")
-      messages must haveTranslationFor("declaration.additionalDocument.summary.multiple.heading")
-      messages must haveTranslationFor("declaration.additionalDocument.summary.caption")
-      messages must haveTranslationFor("declaration.additionalDocument.summary.add.another")
-      messages must haveTranslationFor("declaration.additionalDocument.summary.add.another.empty")
-      messages must haveTranslationFor("declaration.additionalDocument.summary.change.hint")
-      messages must haveTranslationFor("declaration.additionalDocument.summary.remove.hint")
+      messages must haveTranslationFor(s"$prefix.summary.documentTypeCode")
+      messages must haveTranslationFor(s"$prefix.summary.documentIdentifier")
+      messages must haveTranslationFor(s"$prefix.summary.statusCode")
+      messages must haveTranslationFor(s"$prefix.summary.heading")
+      messages must haveTranslationFor(s"$prefix.summary.multiple.heading")
+      messages must haveTranslationFor(s"$prefix.summary.caption")
+      messages must haveTranslationFor(s"$prefix.summary.add.another")
+      messages must haveTranslationFor(s"$prefix.summary.add.another.empty")
+      messages must haveTranslationFor(s"$prefix.summary.change.hint")
+      messages must haveTranslationFor(s"$prefix.summary.remove.hint")
 
-      messages must haveTranslationFor("declaration.additionalDocument.remove.empty")
-      messages must haveTranslationFor("declaration.additionalDocument.remove.title")
-      messages must haveTranslationFor("declaration.additionalDocument.remove.code")
-      messages must haveTranslationFor("declaration.additionalDocument.remove.reference")
-      messages must haveTranslationFor("declaration.additionalDocument.remove.statusCode")
-      messages must haveTranslationFor("declaration.additionalDocument.remove.statusReason")
-      messages must haveTranslationFor("declaration.additionalDocument.remove.issuingAuthorityName")
-      messages must haveTranslationFor("declaration.additionalDocument.remove.dateOfValidity")
-      messages must haveTranslationFor("declaration.additionalDocument.remove.measurementUnitAndQualifier")
-      messages must haveTranslationFor("declaration.additionalDocument.remove.documentQuantity")
+      messages must haveTranslationFor(s"$prefix.remove.empty")
+      messages must haveTranslationFor(s"$prefix.remove.title")
+      messages must haveTranslationFor(s"$prefix.remove.code")
+      messages must haveTranslationFor(s"$prefix.remove.reference")
+      messages must haveTranslationFor(s"$prefix.remove.statusCode")
+      messages must haveTranslationFor(s"$prefix.remove.statusReason")
+      messages must haveTranslationFor(s"$prefix.remove.issuingAuthorityName")
+      messages must haveTranslationFor(s"$prefix.remove.dateOfValidity")
+      messages must haveTranslationFor(s"$prefix.remove.measurementUnitAndQualifier")
+      messages must haveTranslationFor(s"$prefix.remove.documentQuantity")
     }
   }
 
@@ -173,29 +178,27 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         val view = createView()
 
         "display the expected page title" in {
-          view.getElementsByTag("h1") must containMessageForElements("declaration.additionalDocument.title.fromAuthCode")
+          view.getElementsByTag("h1") must containMessageForElements(s"$prefix.title.fromAuthCode")
         }
 
         "display the expected page hint" in {
           val text = view.getElementsByClass("govuk-body")
-          text.get(0).text() mustBe messages("declaration.additionalDocument.text.fromAuthCode.paragraph1")
-          text.get(1).text() mustBe messages("declaration.additionalDocument.text.fromAuthCode.paragraph2")
+          text.get(0).text() mustBe messages(s"$prefix.text.fromAuthCode.paragraph1")
+          text.get(1).text() mustBe messages(s"$prefix.text.fromAuthCode.paragraph2")
         }
 
         "display empty input with label for Document type code" in {
-          view.getElementsByAttributeValue("for", documentTypeCodeKey) must containMessageForElements(
-            "declaration.additionalDocument.documentTypeCode"
-          )
-          view.getElementById(s"$documentTypeCodeKey-text") must containMessage("declaration.additionalDocument.documentTypeCode.text.fromAuthCode")
-          view.getElementById(s"$documentTypeCodeKey-hint") must containMessage("declaration.additionalDocument.documentTypeCode.hint.fromAuthCode")
+          view.getElementsByAttributeValue("for", documentTypeCodeKey) must containMessageForElements(s"$prefix.documentTypeCode")
+          view.getElementById(s"$documentTypeCodeKey-text") must containMessage(s"$prefix.documentTypeCode.text.fromAuthCode")
+          view.getElementById(s"$documentTypeCodeKey-hint") must containMessage(s"$prefix.documentTypeCode.hint.fromAuthCode")
           view.getElementById(documentTypeCodeKey).attr("value") mustBe empty
         }
 
         "display the expected insets placed after the 'Document Identifier' input field" in {
           val insets = view.getElementsByClass("govuk-inset-text").get(0)
           val paragraphs = insets.getElementsByTag("p")
-          paragraphs.get(0).text() mustBe messages("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph1")
-          paragraphs.get(1).text() mustBe messages("declaration.additionalDocument.documentIdentifier.inset.fromAuthCode.paragraph2")
+          paragraphs.get(0).text() mustBe messages(s"$prefix.documentIdentifier.inset.fromAuthCode.paragraph1")
+          paragraphs.get(1).text() mustBe messages(s"$prefix.documentIdentifier.inset.fromAuthCode.paragraph2")
 
           Option(insets.previousElementSibling().getElementById(documentIdentifierKey)) must not be None
         }
@@ -209,7 +212,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       val view = createView()
 
       "display the expected page title" in {
-        view.getElementsByTag("h1") must containMessageForElements("declaration.additionalDocument.title")
+        view.getElementsByTag("h1") must containMessageForElements(s"$prefix.title")
       }
 
       "display section header" in {
@@ -218,35 +221,33 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
 
       "display the expected page hint" in {
         val texts = view.getElementsByClass("govuk-body")
-        texts.get(0).text() mustBe messages("declaration.additionalDocument.text")
+        texts.get(0).text() mustBe messages(s"$prefix.text")
       }
 
       "display the top expander" when {
         "commodityCode is not present" in {
           val topExpander = view.getElementById("top-expander")
 
-          topExpander must containHtml(messages("declaration.additionalDocument.expander.title"))
+          topExpander must containHtml(messages(s"$prefix.expander.title"))
           topExpander
             .getElementsByClass("govuk-body")
-            .get(0) must containText(messages("declaration.additionalDocument.expander.paragraph1.withoutCommodityCode.link1.text"))
+            .get(0) must containText(messages(s"$prefix.expander.paragraph1.withoutCommodityCode.link1.text"))
         }
       }
 
       "display empty input with label for Document type code" in {
-        view.getElementsByAttributeValue("for", documentTypeCodeKey) must containMessageForElements("declaration.additionalDocument.documentTypeCode")
-        view.getElementById(s"$documentTypeCodeKey-hint") must containMessage("declaration.additionalDocument.documentTypeCode.hint")
+        view.getElementsByAttributeValue("for", documentTypeCodeKey) must containMessageForElements(s"$prefix.documentTypeCode")
+        view.getElementById(s"$documentTypeCodeKey-hint") must containMessage(s"$prefix.documentTypeCode.hint")
         view.getElementById(documentTypeCodeKey).attr("value") mustBe empty
       }
 
       "display the documentTypeCode expander" in {
-        view.getElementById("documentTypeCode-expander") must containHtml(messages("declaration.additionalDocument.documentTypeCode.expander.title"))
+        view.getElementById("documentTypeCode-expander") must containHtml(messages(s"$prefix.documentTypeCode.expander.title"))
       }
 
       "display empty input with label and hint for Document identifier" in {
-        view.getElementsByAttributeValue("for", documentIdentifierKey) must containMessageForElements(
-          "declaration.additionalDocument.documentIdentifier"
-        )
-        view.getElementById(s"$documentIdentifierKey-text") must containMessage("declaration.additionalDocument.documentIdentifier.body")
+        view.getElementsByAttributeValue("for", documentIdentifierKey) must containMessageForElements(s"$prefix.documentIdentifier")
+        view.getElementById(s"$documentIdentifierKey-text") must containMessage(s"$prefix.documentIdentifier.body")
         view.getElementById(documentIdentifierKey).attr("value") mustBe empty
       }
 
@@ -255,58 +256,50 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       }
 
       "display empty input with label for Document status" in {
-        view.getElementsByAttributeValue("for", documentStatusKey) must containMessageForElements("declaration.additionalDocument.documentStatus")
-        view.getElementById(s"$documentStatusKey-text") must containMessage("declaration.additionalDocument.documentStatus.text")
+        view.getElementsByAttributeValue("for", documentStatusKey) must containMessageForElements(s"$prefix.documentStatus")
+        view.getElementById(s"$documentStatusKey-text") must containMessage(s"$prefix.documentStatus.text")
         view.getElementById(s"$documentStatusKey").attr("value") mustBe empty
       }
 
       "display empty input with label for Document status reason" in {
-        view.getElementsByAttributeValue("for", documentStatusReasonKey) must containMessageForElements(
-          "declaration.additionalDocument.documentStatusReason"
-        )
-        view.getElementById(s"$documentStatusReasonKey-text") must containMessage("declaration.additionalDocument.documentStatusReason.text")
-        view.getElementById(s"$documentStatusReasonKey-hint") must containMessage("declaration.additionalDocument.documentStatusReason.hint")
+        view.getElementsByAttributeValue("for", documentStatusReasonKey) must containMessageForElements(s"$prefix.documentStatusReason")
+        view.getElementById(s"$documentStatusReasonKey-text") must containMessage(s"$prefix.documentStatusReason.text")
+        view.getElementById(s"$documentStatusReasonKey-hint") must containMessage(s"$prefix.documentStatusReason.hint")
         view.getElementById(documentStatusReasonKey).attr("value") mustBe empty
       }
 
       "display empty input with label for Issuing Authority Name" in {
-        view.getElementsByAttributeValue("for", issuingAuthorityNameKey) must containMessageForElements(
-          "declaration.additionalDocument.issuingAuthorityName"
-        )
-        view.getElementById(s"$issuingAuthorityNameKey-text") must containMessage("declaration.additionalDocument.issuingAuthorityName.text")
+        view.getElementsByAttributeValue("for", issuingAuthorityNameKey) must containMessageForElements(s"$prefix.issuingAuthorityName")
+        view.getElementById(s"$issuingAuthorityNameKey-text") must containMessage(s"$prefix.issuingAuthorityName.text")
         view.getElementById(issuingAuthorityNameKey).attr("value") mustBe empty
       }
 
       "display empty input with label for Date of Validity" in {
-        view.getElementById(dateOfValidityKey).getElementsByTag("legend") must containMessageForElements(
-          "declaration.additionalDocument.dateOfValidity"
-        )
-        view.getElementById(s"$dateOfValidityKey-input-hint") must containMessage("declaration.additionalDocument.dateOfValidity.hint")
+        view.getElementById(dateOfValidityKey).getElementsByTag("legend") must containMessageForElements(s"$prefix.dateOfValidity")
+        view.getElementById(s"$dateOfValidityKey-input-hint") must containMessage(s"$prefix.dateOfValidity.hint")
       }
 
       "display empty input with label for Measurement Unit" in {
         view.getElementById("measurementUnitAndQualifier").getElementsByTag("legend") must containMessageForElements(
-          "declaration.additionalDocument.measurementUnit.header"
+          s"$prefix.measurementUnit.header"
         )
         view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$measurementUnitKey") must containMessageForElements(
-          "declaration.additionalDocument.measurementUnit"
+          s"$prefix.measurementUnit"
         )
         view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") mustBe empty
-        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$qualifierKey") must containMessageForElements(
-          "declaration.additionalDocument.qualifier"
-        )
+        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$qualifierKey") must containMessageForElements(s"$prefix.qualifier")
         view.getElementById(s"${documentWriteOffKey}_$qualifierKey").attr("value") mustBe empty
-        view.getElementById(s"${documentWriteOffKey}-text") must containMessage("declaration.additionalDocument.measurementUnit.link.text")
+        view.getElementById(s"${documentWriteOffKey}-text") must containMessage(s"$prefix.measurementUnit.link.text")
       }
 
       "display empty input with label for Document quantity" in {
         view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$documentQuantityKey") must containMessageForElements(
-          "declaration.additionalDocument.documentQuantity"
+          s"$prefix.documentQuantity"
         )
         view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") mustBe empty
         view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey-hint") must containMessage(
-          "declaration.additionalDocument.documentQuantity.hint",
-          messages("declaration.additionalDocument.measurementUnit.hint")
+          s"$prefix.documentQuantity.hint",
+          messages(s"$prefix.measurementUnit.hint")
         )
       }
 
@@ -322,19 +315,43 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
   }
 
   "additional_document_edit view on empty page" should {
+
     "display the top expander" when {
       val commodityCode = "4602191000"
       val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
 
       onEveryDeclarationJourney(withItem(item)) { implicit request =>
-        "commodityCode is present" in {
-
+        "a commodityCode with 10-digits is present" in {
           val topExpander = createView().getElementById("top-expander")
 
-          topExpander must containHtml(messages("declaration.additionalDocument.expander.title"))
-          topExpander
-            .getElementsByClass("govuk-body")
-            .get(0) must containText(messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.link1.text", commodityCode))
+          topExpander must containHtml(messages(s"$prefix.expander.title"))
+          val commodityCodeBody = topExpander.getElementsByClass("govuk-body").get(0)
+
+          val expectedLinkText = messages(s"$prefix.expander.paragraph1.withCommodityCode.link1.text", commodityCode)
+          val expectedHref = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
+
+          commodityCodeBody.text mustBe messages(s"$prefix.expander.paragraph1.withCommodityCode.text", expectedLinkText)
+          commodityCodeBody.child(0) must haveHref(expectedHref)
+        }
+      }
+    }
+
+    "display the top expander" when {
+      val commodityCode = "46021910"
+      val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
+
+      onEveryDeclarationJourney(withItem(item)) { implicit request =>
+        "a commodityCode with 8-digits is present" in {
+          val topExpander = createView().getElementById("top-expander")
+
+          topExpander must containHtml(messages(s"$prefix.expander.title"))
+          val commodityCodeBody = topExpander.getElementsByClass("govuk-body").get(0)
+
+          val expectedLinkText = messages(s"$prefix.expander.paragraph1.withCommodityCode.link1.text", commodityCode)
+          val expectedHref = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, s"${commodityCode}00")
+
+          commodityCodeBody.text mustBe messages(s"$prefix.expander.paragraph1.withCommodityCode.text", expectedLinkText)
+          commodityCodeBody.child(0) must haveHref(expectedHref)
         }
       }
     }
@@ -350,7 +367,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
 
-        view must containErrorElementWithMessageKey("declaration.additionalDocument.documentTypeCode.error")
+        view must containErrorElementWithMessageKey(s"$prefix.documentTypeCode.error")
       }
 
       "display error for empty Document type code" in {
@@ -359,7 +376,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
 
-        view must containErrorElementWithMessageKey("declaration.additionalDocument.documentTypeCode.empty")
+        view must containErrorElementWithMessageKey(s"$prefix.documentTypeCode.empty")
       }
 
       "display error for Y999 Document type code" in {
@@ -368,7 +385,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
 
-        view must containErrorElementWithMessageKey("declaration.additionalDocument.documentTypeCode.Y999.error")
+        view must containErrorElementWithMessageKey(s"$prefix.documentTypeCode.Y999.error")
       }
 
       "display error for empty Document type code when required after the entered authorisation code" in {
@@ -377,7 +394,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
 
-        view must containErrorElementWithMessageKey("declaration.additionalDocument.documentTypeCode.empty.fromAuthCode")
+        view must containErrorElementWithMessageKey(s"$prefix.documentTypeCode.empty.fromAuthCode")
       }
 
       "display error for invalid Document identifier" in {
@@ -386,7 +403,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentIdentifierKey")
 
-        view must containErrorElementWithMessageKey("declaration.additionalDocument.documentIdentifier.error")
+        view must containErrorElementWithMessageKey(s"$prefix.documentIdentifier.error")
       }
 
       "display error for invalid Document status" in {
@@ -395,7 +412,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentStatusKey")
 
-        view must containErrorElementWithMessageKey("declaration.additionalDocument.documentStatus.error")
+        view must containErrorElementWithMessageKey(s"$prefix.documentStatus.error")
       }
 
       "display error for invalid Document status reason" in {
@@ -405,7 +422,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$documentStatusReasonKey")
 
-        view must containErrorElementWithMessageKey("declaration.additionalDocument.documentStatusReason.error")
+        view must containErrorElementWithMessageKey(s"$prefix.documentStatusReason.error")
       }
 
       "display error for invalid Issuing Authority Name" in {
@@ -415,7 +432,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", s"#$issuingAuthorityNameKey")
 
-        view must containErrorElementWithMessageKey("declaration.additionalDocument.issuingAuthorityName.error.length")
+        view must containErrorElementWithMessageKey(s"$prefix.issuingAuthorityName.error.length")
       }
 
       "display error for invalid Date of Validity" when {
@@ -428,7 +445,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$dateOfValidityKey")
 
-          view must containErrorElementWithMessageKey("declaration.additionalDocument.dateOfValidity.error.outOfRange")
+          view must containErrorElementWithMessageKey(s"$prefix.dateOfValidity.error.outOfRange")
         }
 
         "provided with non-existing month and day" in {
@@ -439,7 +456,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$dateOfValidityKey")
 
-          view must containErrorElementWithMessageKey("declaration.additionalDocument.dateOfValidity.error.format")
+          view must containErrorElementWithMessageKey(s"$prefix.dateOfValidity.error.format")
         }
 
         "provided with partial date" in {
@@ -467,7 +484,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$measurementUnitKey")
 
-          view must containErrorElementWithMessageKey("declaration.additionalDocument.measurementUnit.error")
+          view must containErrorElementWithMessageKey(s"$prefix.measurementUnit.error")
         }
 
         "unit text contains special characters" in {
@@ -477,7 +494,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$measurementUnitKey")
 
-          view must containErrorElementWithMessageKey("declaration.additionalDocument.measurementUnit.error")
+          view must containErrorElementWithMessageKey(s"$prefix.measurementUnit.error")
         }
 
       }
@@ -493,7 +510,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-          view must containErrorElementWithMessageKey("declaration.additionalDocument.documentQuantity.error")
+          view must containErrorElementWithMessageKey(s"$prefix.documentQuantity.error")
         }
 
         "there is a scale error" in {
@@ -503,7 +520,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-          view must containErrorElementWithMessageKey("declaration.additionalDocument.documentQuantity.error")
+          view must containErrorElementWithMessageKey(s"$prefix.documentQuantity.error")
         }
 
         "there is an error in quantity" in {
@@ -513,7 +530,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-          view must containErrorElementWithMessageKey("declaration.additionalDocument.documentQuantity.error")
+          view must containErrorElementWithMessageKey(s"$prefix.documentQuantity.error")
         }
       }
 
@@ -535,14 +552,14 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         forAll(keys)(key => view must containErrorElementWithTagAndHref("a", s"#${key}"))
 
         val errorIds = List(
-          "declaration.additionalDocument.documentTypeCode.error",
-          "declaration.additionalDocument.documentIdentifier.error",
-          "declaration.additionalDocument.documentStatus.error",
-          "declaration.additionalDocument.documentStatusReason.error",
-          "declaration.additionalDocument.issuingAuthorityName.error.length",
-          "declaration.additionalDocument.dateOfValidity.error.format",
-          "declaration.additionalDocument.measurementUnit.error",
-          "declaration.additionalDocument.documentQuantity.error"
+          s"$prefix.documentTypeCode.error",
+          s"$prefix.documentIdentifier.error",
+          s"$prefix.documentStatus.error",
+          s"$prefix.documentStatusReason.error",
+          s"$prefix.issuingAuthorityName.error.length",
+          s"$prefix.dateOfValidity.error.format",
+          s"$prefix.measurementUnit.error",
+          s"$prefix.documentQuantity.error"
         )
         forAll(errorIds)(errorId => view must containErrorElementWithMessageKey(errorId))
       }
