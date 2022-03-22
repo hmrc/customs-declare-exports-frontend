@@ -27,6 +27,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
+@import views.helpers.CommodityCodeHelper.commodityCodeOfItem
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
 
@@ -48,25 +49,22 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, maybeCommodityCode: Option[String], form: Form[TaricCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[TaricCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@bodySection = {
-    @maybeCommodityCode.fold {
-        @paragraphBody(messages(
-            "declaration.taricAdditionalCodes.addfirst.body",
-            link(messages("declaration.taricAdditionalCodes.addfirst.body.altlink"), Call("GET", appConfig.tradeTariffUrl), "_blank")
-        ))
+@linkForCommodityCode = {
+    @commodityCodeOfItem(itemId).fold {
+        @link(
+            text = messages("declaration.taricAdditionalCodes.addfirst.body.altlink"),
+            Call("GET", appConfig.tradeTariffUrl), "_blank"
+        )
     } { commodityCode =>
-        @paragraphBody(messages(
-            "declaration.taricAdditionalCodes.addfirst.body",
-            link(
-                messages("declaration.taricAdditionalCodes.addfirst.body.link", commodityCode),
-                Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)),
-                "_blank"
-            )
-        ))
+        @link(
+            text = messages("declaration.taricAdditionalCodes.addfirst.body.link", commodityCode.codeAsShown),
+          Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
+          "_blank"
+        )
     }
 }
 
@@ -81,7 +79,7 @@
 
         @pageTitle(messages("declaration.taricAdditionalCodes.addfirst.header"))
 
-        @bodySection
+        @paragraphBody(messages("declaration.taricAdditionalCodes.addfirst.body", linkForCommodityCode))
 
         @insetText(content = HtmlContent(HtmlFormat.fill(List(
             heading(message = messages("site.example"), classes = "govuk-heading-s", tier = "h2"),

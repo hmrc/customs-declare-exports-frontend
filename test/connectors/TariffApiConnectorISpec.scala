@@ -48,13 +48,13 @@ class TariffApiConnectorISpec extends ConnectorISpec with OptionValues with Scal
 
   "TariffAPIConnector" when {
 
-    "getCommodity" should {
+    "getCommodityOnCondition" should {
 
       "respond with json" in {
         val response = aResponse.withStatus(OK).withBody(exampleSuccessResponse)
         stubForTariffCommodities(get(anyUrl()).willReturn(response))
 
-        val result = testConnector.getCommodity(commodityCode).futureValue
+        val result = testConnector.getCommodityOnCondition(commodityCode).futureValue
         result.value mustBe Json.parse(exampleSuccessResponse)
       }
 
@@ -62,7 +62,7 @@ class TariffApiConnectorISpec extends ConnectorISpec with OptionValues with Scal
         val response = aResponse.withStatus(NOT_FOUND)
         stubForTariffCommodities(get(anyUrl()).willReturn(response))
 
-        whenReady(testConnector.getCommodity(commodityCode)) { result =>
+        whenReady(testConnector.getCommodityOnCondition(commodityCode)) { result =>
           result mustBe None
         }
       }
