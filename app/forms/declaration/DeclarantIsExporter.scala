@@ -26,17 +26,19 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class DeclarantIsExporter(yesNo: String) {
-  def isExporter: Boolean = yesNo == yes
+case class DeclarantIsExporter(answer: String) {
+  def isExporter: Boolean = answer == yes
 }
 
 object DeclarantIsExporter extends DeclarationPage {
 
   implicit val format: OFormat[DeclarantIsExporter] = Json.format[DeclarantIsExporter]
 
+  val answerKey = "answer"
+
   private val mapping =
     Forms.mapping(
-      YesNoAnswer.formId -> requiredRadio("declaration.declarant.exporter.error")
+      answerKey -> requiredRadio("declaration.declarant.exporter.error")
         .verifying("declaration.declarant.exporter.error", isContainedIn(YesNoAnswer.allowedValues))
     )(DeclarantIsExporter.apply)(DeclarantIsExporter.unapply)
 

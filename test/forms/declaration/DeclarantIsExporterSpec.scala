@@ -59,7 +59,7 @@ class DeclarantIsExporterSpec extends DeclarationPageBaseSpec {
 
 object DeclarantIsExporterSpec {
 
-  private val answerKey = YesNoAnswer.formId
+  private val answerKey = DeclarantIsExporter.answerKey
 
   val emptyJSON: JsValue = JsObject(Map(answerKey -> JsString("")))
   val invalidJSON: JsValue = JsObject(Map(answerKey -> JsString("invalid")))

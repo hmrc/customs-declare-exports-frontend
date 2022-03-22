@@ -94,7 +94,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
           status(result) mustBe (OK)
           verifyPage(1)
 
-          theResponseForm.value.map(_.yesNo) mustBe Some("Yes")
+          theResponseForm.value.map(_.answer) mustBe Some("Yes")
         }
 
       }

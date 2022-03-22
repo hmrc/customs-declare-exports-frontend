@@ -26,6 +26,6 @@ object ErrorMapper {
   def radioGroupErrors(groupKey: String, firstOption: String, errors: Seq[FormError]): Seq[FormError] =
     errors.map(err => err.copy(key = if (err.key == groupKey) firstOption else err.key))
 
-  def yesNoErrors(errors: Seq[FormError]): Seq[FormError] =
-    radioGroupErrors("yesNo", "code_yes", errors)
+  def yesNoErrors(errors: Seq[FormError], answerKey: String = "yesNo"): Seq[FormError] =
+    radioGroupErrors(answerKey, "code_yes", errors)
 }
