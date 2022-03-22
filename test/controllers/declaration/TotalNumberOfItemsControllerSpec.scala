@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.ControllerSpec
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.TotalNumberOfItems
 import models.DeclarationType._
 import models.Mode
@@ -67,7 +69,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
     mockExportsCacheService
   )(ec)
 
-  val totalNumberOfItems = TotalNumberOfItems(None, "", None, "")
+  val totalNumberOfItems = TotalNumberOfItems(None, "100", None, YesNoAnswers.yes)
 
   def verifyPage(numberOfTimes: Int = 1) = verify(mockTotalNumberOfItemsPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
@@ -106,12 +108,12 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
       "return 303 (SEE_OTHER) when information provided by user are correct" in {
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(TotalNumberOfItems(None, "", None, ""))
+        val correctForm = Json.toJson(totalNumberOfItems)
         val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
-        verifyPage(0)
+        verifyPage()
       }
 
     }

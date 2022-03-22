@@ -17,6 +17,8 @@
 package forms.declaration
 
 import forms.MappingHelper.requiredRadio
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
 import models.DeclarationType.DeclarationType
 import models.declaration.Totals
@@ -27,10 +29,12 @@ import play.api.libs.json.Json
 import uk.gov.voa.play.form.Condition
 import utils.validators.forms.FieldValidator._
 
-case class TotalNumberOfItems(exchangeRate: Option[String],
-                              totalAmountInvoiced: String,
-                              totalAmountInvoicedCurrency: Option[String],
-                              exchangeRateAnswer: String)
+case class TotalNumberOfItems(
+  exchangeRate: Option[String],
+  totalAmountInvoiced: String,
+  totalAmountInvoicedCurrency: Option[String],
+  exchangeRateAnswer: String
+)
 
 object TotalNumberOfItems extends DeclarationPage {
   implicit val format = Json.format[TotalNumberOfItems]
@@ -42,7 +46,6 @@ object TotalNumberOfItems extends DeclarationPage {
       totals.totalAmountInvoicedCurrency,
       totals.exchangeRateAnswer.fold("")(x => x)
     )
-
 
   val formId = "TotalNumberOfItems"
   val exchangeRate = "exchangeRate"
@@ -76,15 +79,15 @@ object TotalNumberOfItems extends DeclarationPage {
   val removeCommasFirstOption = (validator: String => Boolean) => (input: Option[String]) => input.fold(false)(x => validator(x.replaceAll(",", "")))
   val notJustCommasOption = (input: Option[String]) => !input.fold(false)(_.forall(_.equals(',')))
 
-  val equalsIgnoreCaseOptionString = (value: String) => (input: Option[String]) => input.map(_.equalsIgnoreCase(value)).getOrElse(false)
+  val equalsIgnoreCaseOptionString = (value: String) => (input: Option[String]) => input.exists(_.equalsIgnoreCase(value))
   val isEmptyOptionString = (input: Option[String]) => isEmpty(input.getOrElse(""))
   val nonEmptyOptionString = (input: Option[String]) => nonEmpty(input.getOrElse(""))
   val isAlphabeticOptionString = (input: Option[String]) => isAlphabetic(input.getOrElse(""))
   val lengthInRangeOptionString = (min: Int) => (max: Int) => (input: Option[String]) => lengthInRange(min)(max)(input.getOrElse(""))
 
-  def isFieldEmpty(field: String): Condition = _.get(field).map(_.isEmpty()).getOrElse(true)
-  def isFieldNotEmpty(field: String): Condition = _.get(field).map(!_.isEmpty()).getOrElse(false)
-  def isFieldIgnoreCaseString(field: String, value: String): Condition = _.get(field).map(_.equalsIgnoreCase(value)).getOrElse(false)
+  def isFieldEmpty(field: String): Condition = _.get(field).forall(_.isEmpty())
+  def isFieldNotEmpty(field: String): Condition = _.get(field).exists(_.nonEmpty)
+  def isFieldIgnoreCaseString(field: String, value: String): Condition = _.get(field).exists(_.equalsIgnoreCase(value))
   def isAmountLessThan(field: String, amount: Int): Condition = _.get(field).fold(false)(x => x.nonEmpty && x.toInt < amount)
 
   //We allow the user to enter commas when specifying these optional numerical values but we strip out the commas with `removeCommasFirst` before validating
@@ -105,11 +108,7 @@ object TotalNumberOfItems extends DeclarationPage {
             rateFieldErrorKey,
             notJustCommasOption and removeCommasFirstOption(ofPattern(exchangeRatePattern))
           ),
-          ConditionalConstraint(
-            isFieldIgnoreCaseString(exchangeRateAnswer, "Yes"),
-            exchangeRateYesRadioSelectedErrorKey,
-            nonEmptyOptionString
-          )
+          ConditionalConstraint(isFieldIgnoreCaseString(exchangeRateAnswer, "Yes"), exchangeRateYesRadioSelectedErrorKey, nonEmptyOptionString)
         )
       ),
     totalAmountInvoiced ->
@@ -138,7 +137,7 @@ object TotalNumberOfItems extends DeclarationPage {
         )
       ),
     exchangeRateAnswer ->
-      requiredRadio(exchangeRateNoAnswerErrorKey)
+      requiredRadio(exchangeRateNoAnswerErrorKey, YesNoAnswer.allowedValues)
   )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
 
   def form(): Form[TotalNumberOfItems] = Form(mapping)

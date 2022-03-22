@@ -17,6 +17,7 @@
 package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.TotalNumberOfItems._
 import models.viewmodels.TariffContentKey
 import play.api.data.FormError
@@ -24,12 +25,21 @@ import play.api.data.FormError
 class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+    List(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
 
-  private def formData(rate: Option[String] = None, amount: Option[String] = None, currency: Option[String] = None): Map[String, String] =
-    rate.map(r => Map(exchangeRate -> r)).getOrElse(Map.empty[String, String]) ++
-      amount.map(r => Map(totalAmountInvoiced -> r)).getOrElse(Map.empty[String, String]) ++
-      currency.map(r => Map(totalAmountInvoicedCurrency -> r)).getOrElse(Map.empty[String, String])
+  private def mapTo(formData: Option[String], fieldName: String) =
+    formData.map(r => Map(fieldName -> r)).getOrElse(Map.empty[String, String])
+
+  private def formData(
+    rate: Option[String] = None,
+    amount: Option[String] = None,
+    currency: Option[String] = None,
+    rateYesNo: Option[String] = None
+  ): Map[String, String] =
+    mapTo(rate, exchangeRate) ++
+      mapTo(amount, totalAmountInvoiced) ++
+      mapTo(currency, totalAmountInvoicedCurrency) ++
+      mapTo(rateYesNo, exchangeRateAnswer)
 
   private val exchangeFormErrors = Seq(FormError(exchangeRate, rateFieldErrorKey))
   private val invoicedFormErrors = Seq(FormError(totalAmountInvoiced, invoiceFieldErrorKey))
@@ -45,11 +55,6 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
     testTariffContentKeysNoSpecialisation(TotalNumberOfItems, "tariff.declaration.totalNumbersOfItems")
 
     "return no errors" when {
-
-      "form fields are empty" in {
-        val form = TotalNumberOfItems.form().bind(formData())
-        form.errors.size mustBe 0
-      }
 
       "only exchange rate form field is populated" in {
         val form = TotalNumberOfItems.form().bind(formData(rate = Some("12")))
@@ -127,6 +132,12 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
     }
 
     "return errors" when {
+
+      "form fields are empty" in {
+        val form = TotalNumberOfItems.form().bind(formData())
+        form.errors.size mustBe 2
+      }
+
       "exchange rate specified" that {
         "contains a char other than a digit, period or comma" in {
           withClue("contains an alpha char") {
@@ -233,12 +244,16 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
         "has not got an exchange rate specified" should {
           "reject codes that are not three char in length" in {
             withClue("less than three chars") {
-              val form = TotalNumberOfItems.form().bind(formData(amount = Some("12"), currency = Some("GB")))
+              val form = TotalNumberOfItems
+                .form()
+                .bind(formData(amount = Some("12"), currency = Some("GB"), rateYesNo = Some(YesNoAnswers.no)))
               form.errors mustBe currencyInvalidWithoutExchangeRateFormErrors
             }
 
             withClue("more than three chars") {
-              val form = TotalNumberOfItems.form().bind(formData(amount = Some("12"), currency = Some("GBPP")))
+              val form = TotalNumberOfItems
+                .form()
+                .bind(formData(amount = Some("12"), currency = Some("GBPP"), rateYesNo = Some(YesNoAnswers.no)))
               form.errors mustBe currencyInvalidWithoutExchangeRateFormErrors
             }
           }
@@ -246,7 +261,9 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
         "has an exchange rate specified also" should {
           "not accept any value other than GBP" in {
-            val form = TotalNumberOfItems.form().bind(formData(rate = Some("12"), amount = Some("12"), currency = Some("USD")))
+            val form = TotalNumberOfItems
+              .form()
+              .bind(formData(rate = Some("12"), amount = Some("12"), currency = Some("USD"), rateYesNo = Some(YesNoAnswers.yes)))
 
             form.errors mustBe currencyInvalidWithExchangeRateFormErrors
           }
