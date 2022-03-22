@@ -27,32 +27,37 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
-import play.api.Configuration
+import play.api.{Configuration, Environment}
 import play.api.data.Form
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.additionalDocuments.additional_documents_required
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessages with Injector {
+class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessages {
 
-  override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
-
-  private val appConfig = instanceOf[AppConfig]
-  private val additionalDocumentsRequiredPage = instanceOf[additional_documents_required]
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
 
   private val itemId = "itemId"
   private val item = anItem(withItemId(itemId), withAdditionalInformation("1234", "description"))
 
-  private def createView(form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
-    additionalDocumentsRequiredPage(Mode.Normal, itemId, form)(request, messages)
-
   private val msgKey = "declaration.additionalDocumentsRequired"
 
   "'Additional Documents Required' view" should {
+
+    val injector = new Injector {
+      override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
+    }
+
+    val appConfig = injector.instanceOf[AppConfig]
+    val additionalDocumentsRequiredPage = injector.instanceOf[additional_documents_required]
+
+    def createView(form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
+      additionalDocumentsRequiredPage(Mode.Normal, itemId, form)(request, messages)
 
     onEveryDeclarationJourney() { implicit request =>
       val view = createView()
@@ -165,11 +170,32 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
         verifyBackButton(routes.IsLicenceRequiredController.displayPage(Mode.Normal, itemId))
       }
     }
+
+    def verifyBackButton(call: Call)(implicit request: JourneyRequest[_]): Assertion = {
+      val backButton = createView().getElementById("back-link")
+      backButton must containMessage(backCaption)
+      backButton must haveHref(call)
+    }
+
   }
 
-  private def verifyBackButton(call: Call)(implicit request: JourneyRequest[_]): Assertion = {
-    val backButton = createView().getElementById("back-link")
-    backButton must containMessage(backCaption)
-    backButton must haveHref(call)
+  "'Additional Documents Required' view with 999l disabled" should {
+
+    val injector = new Injector {
+      override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=disabled"))
+    }
+
+    val additionalDocumentsRequiredPage = injector.instanceOf[additional_documents_required]
+
+    def createView(form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Document =
+      additionalDocumentsRequiredPage(Mode.Normal, itemId, form)(request, messages)
+
+    onEveryDeclarationJourney() { implicit request =>
+      "display page title" in {
+        createView().getElementsByTag("h1").first() must containMessage(s"$msgKey.clearance.title")
+      }
+    }
+
   }
+
 }

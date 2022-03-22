@@ -28,23 +28,25 @@ import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.additional_documents
 
-class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
-
-  override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
+class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
   private val item = anItem(withItemId("itemId"), withSequenceId(1))
 
-  private val additionalDocumentsSection = instanceOf[additional_documents]
   private val documents = Seq(
     AdditionalDocument(Some("typ1"), Some("identifier1"), None, None, None, None, None),
     AdditionalDocument(Some("typ2"), Some("identifier2"), None, None, None, None, None)
   )
 
-  "Supporting documents view" should {
+  "Supporting documents view" when {
 
-    "display title only and change link" when {
+    val injector = new Injector {
+      override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=enabled"))
+    }
+    val additionalDocumentsSection = injector.instanceOf[additional_documents]
 
-      "there is no documents" in {
+    "without documents" should {
+
+      "display title only and change link" in {
 
         val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(None, Seq.empty), DeclarationType.STANDARD)(messages)
         val row = view.getElementsByClass("additional-documents-1-row")
@@ -56,66 +58,131 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData with
 
         row must haveSummaryActionsHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, "itemId"))
       }
+
     }
 
-    "display all additional documents with change buttons" in {
+    "with documents" should {
 
-      val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), DeclarationType.STANDARD)(messages)
-      val table = view.getElementById("additional-documents-1-table")
+      onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)(
+        aDeclaration(withItem(anItem(withLicenseRequired())))
+      ) { implicit request =>
+        "licence required" should {
+          "display table caption" in {
+            val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
+            val table = view.getElementById("additional-documents-1-table")
 
-      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
+            table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
 
-      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.additionalDocuments.code")
-      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.items.item.additionalDocuments.identifier")
-      table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("site.change.header")
+          }
 
-      val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
-      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ1"
-      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier1"
-      val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row1ChangeLink must haveHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, "itemId"))
-      row1ChangeLink must containMessage("site.change")
-      row1ChangeLink must containMessage("declaration.summary.items.item.additionalDocuments.change", "typ1", "identifier1", 1)
+          "show h3 header" in {}
+        }
+      }
+      onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)(
+        aDeclaration(withItem(anItem(withLicenseNotRequired())))
+      ) { implicit request =>
+        "no licence required" should {
+          "display table caption" in {
+            val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
+            val table = view.getElementById("additional-documents-1-table")
 
-      val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ2"
-      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier2"
-      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
-      row2ChangeLink must haveHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, "itemId"))
-      row2ChangeLink must containMessage("site.change")
-      row2ChangeLink must containMessage("declaration.summary.items.item.additionalDocuments.change", "typ2", "identifier2", 1)
-    }
+            table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
 
-    "display all additional documents without change buttons" when {
+          }
 
-      "actionsEnabled is false" in {
+          "show row with link to `IsLicenceRequiredController`" in {}
+        }
+      }
 
-        val view =
-          additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), DeclarationType.STANDARD, actionsEnabled = false)(
-            messages
-          )
+      onJourney(DeclarationType.CLEARANCE) { implicit request =>
+        "display table caption" in {
+          val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
+          val table = view.getElementById("additional-documents-1-table")
+
+          table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
+
+        }
+      }
+
+      "display all additional documents with change buttons" in {
+
+        val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), DeclarationType.STANDARD)(messages)
         val table = view.getElementById("additional-documents-1-table")
-
-        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
 
         table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.additionalDocuments.code")
         table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.items.item.additionalDocuments.identifier")
+        table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("site.change.header")
 
         val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
         row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ1"
         row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier1"
-        val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2)
-        row1ChangeLink.attr("href") mustBe empty
-        row1ChangeLink.text() mustBe empty
+        val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+        row1ChangeLink must haveHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, "itemId"))
+        row1ChangeLink must containMessage("site.change")
+        row1ChangeLink must containMessage("declaration.summary.items.item.additionalDocuments.change", "typ1", "identifier1", 1)
 
         val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
         row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ2"
         row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier2"
-        val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2)
-        row2ChangeLink.attr("href") mustBe empty
-        row2ChangeLink.text() mustBe empty
+        val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+        row2ChangeLink must haveHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, "itemId"))
+        row2ChangeLink must containMessage("site.change")
+        row2ChangeLink must containMessage("declaration.summary.items.item.additionalDocuments.change", "typ2", "identifier2", 1)
+      }
+
+      "display all additional documents without change buttons" when {
+
+        "actionsEnabled is false" in {
+
+          val view =
+            additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), DeclarationType.STANDARD, actionsEnabled = false)(
+              messages
+            )
+          val table = view.getElementById("additional-documents-1-table")
+
+          table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.additionalDocuments.code")
+          table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages(
+            "declaration.summary.items.item.additionalDocuments.identifier"
+          )
+
+          val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+          row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ1"
+          row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier1"
+          val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2)
+          row1ChangeLink.attr("href") mustBe empty
+          row1ChangeLink.text() mustBe empty
+
+          val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+          row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ2"
+          row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier2"
+          val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2)
+          row2ChangeLink.attr("href") mustBe empty
+          row2ChangeLink.text() mustBe empty
+        }
+
       }
 
     }
   }
+
+  "Supporting documents view with 999l disabled" when {
+
+    val injector = new Injector {
+      override val configuration: Configuration = Configuration(ConfigFactory.parseString("microservice.services.features.waiver999L=disabled"))
+    }
+    val additionalDocumentsSection = injector.instanceOf[additional_documents]
+
+    "with documents" should {
+
+      "display table caption" in {
+
+        val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), DeclarationType.STANDARD)(messages)
+        val table = view.getElementById("additional-documents-1-table")
+
+        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
+      }
+    }
+
+  }
+
 }
