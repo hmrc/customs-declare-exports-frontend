@@ -26,6 +26,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
+@import views.helpers.CommodityCodeHelper.commodityCodeOfItem
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
 
@@ -50,16 +51,16 @@
 @hasErrors = @{ form.hasErrors || form.hasGlobalErrors }
 
 @linkForCommodityCode = {
-    @request.cacheModel.commodityCodeOfItem(itemId).map { commodityCode =>
-        @link(
-            text = messages("declaration.supplementaryUnits.yesNo.body.link.1", commodityCode),
-            call = Call("GET", appConfig.suppUnitsCommodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)),
-            target = "_blank"
-        )
-    }.getOrElse {
+    @commodityCodeOfItem(itemId).fold {
         @link(
             text = messages("declaration.supplementaryUnits.yesNo.body.link.2"),
             call = Call("GET", appConfig.tradeTariffSections),
+            target = "_blank"
+        )
+    } { commodityCode =>
+        @link(
+            text = messages("declaration.supplementaryUnits.yesNo.body.link.1", commodityCode.codeAsShown),
+            call = Call("GET", appConfig.suppUnitsCommodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
             target = "_blank"
         )
     }

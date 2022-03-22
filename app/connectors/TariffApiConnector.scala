@@ -33,7 +33,11 @@ class TariffApiConnector @Inject()(config: TariffApiConfig, httpClient: HttpClie
 
   private val logger = Logger(this.getClass)
 
-  def getCommodity(commodityCode: String): Future[Option[JsValue]] = {
+  def getCommodityOnCondition(commodityCode: String): Future[Option[JsValue]] =
+    if (commodityCode.length == 10) getCommodity(commodityCode)
+    else Future.successful(None)
+
+  private def getCommodity(commodityCode: String): Future[Option[JsValue]] = {
     logger.debug(s"Request's Commodity code to Tariff API is [$commodityCode]")
     val timer = metrics.startTimer(MetricIdentifiers.tariffCommoditiesMetric)
 

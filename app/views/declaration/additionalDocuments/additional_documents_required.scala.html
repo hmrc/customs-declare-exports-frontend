@@ -26,6 +26,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
+@import views.helpers.CommodityCodeHelper.commodityCodeOfItem
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
 
@@ -73,18 +74,18 @@
 }
 
 @commodityCodeLink = {
-    @request.cacheModel.commodityCodeOfItem(itemId).fold {
+    @commodityCodeOfItem(itemId).fold {
         @link(
             id = Some("general-trade-tariff-inset-link"),
-            call = Call("GET", appConfig.tradeTariffUrl),
             text = messages("declaration.additionalDocumentsRequired.inset.link2Alt"),
+            call = Call("GET", appConfig.tradeTariffUrl),
             target = "_blank"
         )
     } { commodityCode =>
         @link(
             id = Some("commodity-code-inset-link"),
-            call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)),
-            text = messages("declaration.additionalDocumentsRequired.inset.link2", commodityCode),
+            text = messages("declaration.additionalDocumentsRequired.inset.link2", commodityCode.codeAsShown),
+            call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
             target = "_blank"
         )
     }

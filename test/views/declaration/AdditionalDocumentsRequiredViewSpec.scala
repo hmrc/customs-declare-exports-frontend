@@ -87,19 +87,34 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with CommonMessag
 
       "display the 2nd paragraph within the inset text and the expected link" when {
 
-        "a commodity code was selected" in {
+        "a commodity code with 10-digits has been entered" in {
           val commodityCode = "4602191000"
-          val commodityDetails = CommodityDetails(Some(commodityCode), None)
-          val item = anItem(withItemId(itemId), withCommodityDetails(commodityDetails))
+          val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
           val aDeclaration = aDeclarationAfter(request.cacheModel, withItem(item))
 
           val view = createView()(journeyRequest(aDeclaration))
-
           val paragraph = view.getElementsByClass("govuk-inset-text").get(0).children.get(1)
-          paragraph.text mustBe messages(s"$msgKey.inset.text2", messages(s"$msgKey.inset.link2", commodityCode))
 
-          val href = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
-          paragraph.child(0) must haveHref(href)
+          val expectedLinkText = messages(s"$msgKey.inset.link2", commodityCode)
+          val expectedHref = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
+
+          paragraph.text mustBe messages(s"$msgKey.inset.text2", expectedLinkText)
+          paragraph.child(0) must haveHref(expectedHref)
+        }
+
+        "a commodity code with 8-digits has been entered" in {
+          val commodityCode = "46021910"
+          val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
+          val aDeclaration = aDeclarationAfter(request.cacheModel, withItem(item))
+
+          val view = createView()(journeyRequest(aDeclaration))
+          val paragraph = view.getElementsByClass("govuk-inset-text").get(0).children.get(1)
+
+          val expectedLinkText = messages(s"$msgKey.inset.link2", commodityCode)
+          val expectedHref = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, s"${commodityCode}00")
+
+          paragraph.text mustBe messages(s"$msgKey.inset.text2", expectedLinkText)
+          paragraph.child(0) must haveHref(expectedHref)
         }
 
         "no commodity code was selected" in {
