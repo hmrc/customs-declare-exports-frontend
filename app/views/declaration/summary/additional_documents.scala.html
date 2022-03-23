@@ -72,6 +72,7 @@
 
 @tableCaption = @{
     if(licenceRequired && showWaiverInfo) messages("declaration.summary.items.item.licences")
+    else if(declarationType == models.DeclarationType.CLEARANCE || !waiver999LConfig.is999LEnabled) messages("declaration.summary.items.item.clearance.additionalDocuments")
     else messages("declaration.summary.items.item.additionalDocuments")
 }
 
@@ -82,7 +83,7 @@
 @if(additionalDocuments.documents.nonEmpty){
 
     @if(!licenceRequired && showWaiverInfo){
-        @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
+        @summaryList(s"licences-${item.sequenceId}", None, Seq(
             Some(SummaryListRow(
                 classes = s"licences-${item.sequenceId}-row",
                 key = Key(
