@@ -44,6 +44,10 @@ object DeclarantIsExporter extends DeclarationPage {
 
   def form(): Form[DeclarantIsExporter] = Form(mapping)
 
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.areYouTheExporter.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] = {
+
+    val tariffContentKey = s"tariff.declaration.areYouTheExporter.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"
+
+    Seq(TariffContentKey(tariffContentKey), TariffContentKey(s"$tariffContentKey.1"))
+  }
 }

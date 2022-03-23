@@ -24,8 +24,7 @@ import controllers.helpers.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.YesNoAnswer.YesNoAnswers.yes
-import forms.declaration.{CommodityDetails, DeclarantIsExporter, IsLicenceRequired}
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
+import forms.declaration.{CommodityDetails, IsLicenceRequired}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document

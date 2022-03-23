@@ -177,6 +177,8 @@ tariff.declaration.declarantDetails.clearance.text = Go to data element 3/18 Dec
 tariff.declaration.declarantDetails.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
 tariff.declaration.areYouTheExporter.common.text = For details, go to<br>{0}.
 tariff.declaration.areYouTheExporter.common.linkText.0 = data element 3/2 - Exporter Identification Number (opens in new tab)
+tariff.declaration.areYouTheExporter.common.1.text = A ‘Yes’ answer will send 00400 EXPORTER for data element 2/2, which is required if you are the exporter.
+tariff.declaration.areYouTheExporter.clearance.1.text = A ‘Yes’ answer will send 00400 EXPORTER for data element 2/2, which is required if you are the exporter.
 tariff.declaration.areYouTheExporter.clearance.text = Go to data element 3/2 Exporter Identification Number in the<br>{0}.
 tariff.declaration.areYouTheExporter.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
 tariff.declaration.exporterEoriNumber.common.text = For details, go to<br>{0}.
@@ -571,6 +573,7 @@ declaration.mucr.error.length = MUCR must be 35 characters or fewer
 
 declaration.declarant.exporter.title = Are you the exporter?
 declaration.declarant.exporter.answer.yes = Yes
+declaration.declarant.exporter.body = The exporter is the seller, or the person deciding to export the goods.
 declaration.declarant.exporter.answer.no = No, I’m representing the exporter
 declaration.declarant.exporter.error = Select yes if you are the exporter
 

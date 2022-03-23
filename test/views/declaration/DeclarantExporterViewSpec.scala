@@ -45,6 +45,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
 
     "have correct message keys" in {
       messages must haveTranslationFor("declaration.declarant.exporter.title")
+      messages must haveTranslationFor("declaration.declarant.exporter.body")
       messages must haveTranslationFor("declaration.declarant.exporter.answer.yes")
       messages must haveTranslationFor("declaration.declarant.exporter.answer.no")
       messages must haveTranslationFor("declaration.declarant.exporter.error")
@@ -57,7 +58,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
-        createView().getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.declarant.exporter.title")
+        createView().getElementsByClass(Styles.gdsPageHeading) must containMessageForElements("declaration.declarant.exporter.title")
       }
 
       "display section header" in {
@@ -65,16 +66,21 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         createView().getElementById("section-header") must containMessage("declaration.section.2")
       }
 
+      "display paragraph body" in {
+
+        createView().getElementsByTag("p") must containMessageForElements("declaration.declarant.exporter.body")
+      }
+
       "display radio button with Yes option" in {
         val view = createView()
-        view.getElementById("answer_yes").attr("value") mustBe YesNoAnswers.yes
-        view.getElementsByAttributeValue("for", "answer_yes") must containMessageForElements("declaration.declarant.exporter.answer.yes")
+        view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
+        view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("declaration.declarant.exporter.answer.yes")
       }
 
       "display radio button with No option" in {
         val view = createView()
-        view.getElementById("answer_no").attr("value") mustBe YesNoAnswers.no
-        view.getElementsByAttributeValue("for", "answer_no") must containMessageForElements("declaration.declarant.exporter.answer.no")
+        view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
+        view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.declarant.exporter.answer.no")
       }
 
       "display 'Save and continue' button on page" in {
@@ -128,7 +134,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         val view = createView(DeclarantIsExporter.form().fillAndValidate(DeclarantIsExporter("")))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#answer_yes")
+        view must containErrorElementWithTagAndHref("a", "#code_yes")
 
         view must containErrorElementWithMessageKey("declaration.declarant.exporter.error")
       }
@@ -142,7 +148,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         )
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#answer_yes")
+        view must containErrorElementWithTagAndHref("a", "#code_yes")
 
         view must containErrorElementWithMessageKey("declaration.declarant.exporter.error")
       }
@@ -158,7 +164,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         val form = DeclarantIsExporter.form().fill(DeclarantIsExporter(YesNoAnswers.yes))
         val view = createView(form)
 
-        view.getElementById("answer_yes") must beSelected
+        view.getElementById("code_yes") must beSelected
       }
     }
   }

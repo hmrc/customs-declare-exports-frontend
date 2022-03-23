@@ -25,6 +25,7 @@
     heading: Option[Fieldset] = None,
     yesKey: Option[String] = None,
     noKey: Option[String] = None,
+    answerKey: String = "yesNo",
     hint: Option[Hint] = None,
     yesHint: Option[String] = None,
     noHint: Option[String] = None,
@@ -52,7 +53,7 @@
 }
 
 @govukRadios(Radios(
-    name = "yesNo",
+    name = answerKey,
     fieldset = heading,
     hint = hint,
     classes = classes,
@@ -62,15 +63,15 @@
             value = Some(yes),
             content = yesContent,
             hint = yesHint.map{ hint => Hint(content = Text(messages(hint)))},
-            checked = form("yesNo").value.contains(yes)
+            checked = form(answerKey).value.contains(yes)
         ),
         RadioItem(
             id = Some("code_no"),
             value = Some(no),
             content = noContent,
             hint = noHint.map{ hint => Hint(content = Text(messages(hint)))},
-            checked = form("yesNo").value.contains(no)
+            checked = form(answerKey).value.contains(no)
         )
     ),
-    errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
+    errorMessage = form(answerKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
 ))
