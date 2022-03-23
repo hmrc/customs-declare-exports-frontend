@@ -83,7 +83,7 @@
 @if(additionalDocuments.documents.nonEmpty){
 
     @if(!licenceRequired && showWaiverInfo){
-        @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
+        @summaryList(s"licences-${item.sequenceId}", None, Seq(
             Some(SummaryListRow(
                 classes = s"licences-${item.sequenceId}-row",
                 key = Key(

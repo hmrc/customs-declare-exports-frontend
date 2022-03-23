@@ -31,6 +31,7 @@ import views.html.declaration.summary.additional_documents
 class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
   private val item = anItem(withItemId("itemId"), withSequenceId(1))
+  private val itemWithLicenceReq = anItem(withItemId("itemId"), withSequenceId(1)).copy(isLicenceRequired = Some(true))
 
   private val documents = Seq(
     AdditionalDocument(Some("typ1"), Some("identifier1"), None, None, None, None, None),
@@ -64,22 +65,31 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
     "with documents" should {
 
       onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)(
-        aDeclaration(withItem(anItem(withLicenseRequired())))
+        aDeclaration(withItem(itemWithLicenceReq))
       ) { implicit request =>
         "licence required" should {
           "display table caption" in {
-            val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
+            val view =
+              additionalDocumentsSection(Mode.Normal, itemWithLicenceReq, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
             val table = view.getElementById("additional-documents-1-table")
 
-            table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
+            table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.licences")
 
           }
 
-          "show h3 header" in {}
+          "show h3 header" in {
+
+            val view =
+              additionalDocumentsSection(Mode.Normal, itemWithLicenceReq, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
+
+            view.getElementsByTag("h3") must containMessageForElements("declaration.summary.items.item.additionalDocuments")
+
+          }
         }
       }
+
       onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)(
-        aDeclaration(withItem(anItem(withLicenseNotRequired())))
+        aDeclaration(withItem(item))
       ) { implicit request =>
         "no licence required" should {
           "display table caption" in {
@@ -90,7 +100,19 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
           }
 
-          "show row with link to `IsLicenceRequiredController`" in {}
+          "show row with link to `IsLicenceRequiredController`" in {
+
+            val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
+            val row = view.getElementsByClass("licences-1-row")
+
+            row must haveSummaryKey(messages("declaration.summary.items.item.licences"))
+            row must haveSummaryValue("No")
+
+            row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
+
+            row must haveSummaryActionsHref(routes.IsLicenceRequiredController.displayPage(Mode.Normal, "itemId"))
+
+          }
         }
       }
 
@@ -99,7 +121,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
           val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
           val table = view.getElementById("additional-documents-1-table")
 
-          table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
+          table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.clearance.additionalDocuments")
 
         }
       }
@@ -179,7 +201,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
         val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), DeclarationType.STANDARD)(messages)
         val table = view.getElementById("additional-documents-1-table")
 
-        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
+        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.clearance.additionalDocuments")
       }
     }
 
