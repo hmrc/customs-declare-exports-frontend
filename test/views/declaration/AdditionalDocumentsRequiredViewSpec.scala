@@ -27,11 +27,9 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
-import play.api.{Configuration, Environment}
+import play.api.Configuration
 import play.api.data.Form
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.additionalDocuments.additional_documents_required
