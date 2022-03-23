@@ -565,7 +565,6 @@ declaration.linkDucrToMucr.details.hint1.link = element 2/1 Previous Documents (
 declaration.linkDucrToMucr.details.hint2 = Your loader will need to shut the MUCR before the departure of the goods.
 
 declaration.mucr.title = Enter the MUCR
-declaration.mucr.body = The exporter is the seller, or the person deciding to export the goods.
 declaration.mucr.paragraph = To check the correct format, see the ‘Notes’ section on {0}.
 declaration.mucr.paragraph.link = data element 2/1 Previous Documents (opens in new tab)
 declaration.mucr.error.empty = Enter a MUCR
@@ -574,6 +573,7 @@ declaration.mucr.error.length = MUCR must be 35 characters or fewer
 
 declaration.declarant.exporter.title = Are you the exporter?
 declaration.declarant.exporter.answer.yes = Yes
+declaration.declarant.exporter.body = The exporter is the seller, or the person deciding to export the goods.
 declaration.declarant.exporter.answer.no = No, I’m representing the exporter
 declaration.declarant.exporter.error = Select yes if you are the exporter
 
