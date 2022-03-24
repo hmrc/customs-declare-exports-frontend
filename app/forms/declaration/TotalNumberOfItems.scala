@@ -24,10 +24,12 @@ import models.DeclarationType.DeclarationType
 import models.declaration.Totals
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{nonEmptyText, optional, text}
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.Condition
 import utils.validators.forms.FieldValidator._
+
+import java.io
 
 case class TotalNumberOfItems(
   exchangeRate: Option[String],
@@ -60,7 +62,7 @@ object TotalNumberOfItems extends DeclarationPage {
   val invoiceCurrencyFieldWithExchangeRateErrorKey = "declaration.totalAmountInvoicedCurrency.exchangeRatePresent.error.invalid"
   val invoiceCurrencyFieldWithoutExchangeRateErrorKey = "declaration.totalAmountInvoicedCurrency.exchangeRateMissing.error.invalid"
   val exchangeRateNoFixedRateErrorKey = "declaration.exchangeRate.noFixedRate.error"
-  val exchangeRateNoAnswerErrorKey = "declaration.exchangeRate.noAnswer.error"
+  val exchangeRateNoAnswerErrorKey = "declaration.exchangeRate.required.error"
   val exchangeRateYesRadioSelectedErrorKey = "declaration.exchangeRate.yesRadioSelected.error"
 
   val totalAmountInvoicedPattern = Seq("[0-9]{0,16}[.]{0,1}", "[0-9]{0,15}[.][0-9]{1}", "[0-9]{0,14}[.][0-9]{1,2}").mkString("|")
@@ -88,33 +90,36 @@ object TotalNumberOfItems extends DeclarationPage {
   def isFieldEmpty(field: String): Condition = _.get(field).forall(_.isEmpty())
   def isFieldNotEmpty(field: String): Condition = _.get(field).exists(_.nonEmpty)
   def isFieldIgnoreCaseString(field: String, value: String): Condition = _.get(field).exists(_.equalsIgnoreCase(value))
-  def isAmountLessThan(field: String, amount: Int): Condition = _.get(field).fold(false)(x => x.nonEmpty && x.toInt < amount)
+
+  def isAmountLessThan(field: String): Condition =
+    _.get(field).fold(false)(
+      x =>
+        if (isNumeric(x)) x.nonEmpty && x.toInt < 100000
+        else false
+    )
+  def isNumber(field: String): Condition = _.get(field).exists(isNumeric)
 
   //We allow the user to enter commas when specifying these optional numerical values but we strip out the commas with `removeCommasFirst` before validating
   //the number of digits. To prevent the validation from allowing an invalid value like ",,,," we also must use the `notJustCommas`
   //function to specifically guard against this.
-  val mapping = Forms.mapping(
-    exchangeRate ->
+  val mapping: Mapping[TotalNumberOfItems] = Forms.mapping(
+    exchangeRate -> optional(
+      text()
+        .verifying(rateFieldErrorKey, isEmpty or (notJustCommas and removeCommasFirst(ofPattern(exchangeRatePattern))))
+    ),
+    totalAmountInvoiced ->
       AdditionalConstraintsMapping(
-        optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
+        text()
+          .verifying(invoiceFieldErrorEmptyKey, nonEmpty)
+          .verifying(invoiceFieldErrorKey, isEmpty or (notJustCommas and removeCommasFirst(ofPattern(totalAmountInvoicedPattern)))),
         Seq(
           ConditionalConstraint(
-            isFieldIgnoreCaseString(totalAmountInvoicedCurrency, "GBP") and isAmountLessThan(totalAmountInvoiced, 100000),
+            isFieldIgnoreCaseString(totalAmountInvoicedCurrency, "GBP") and isAmountLessThan(totalAmountInvoiced),
             exchangeRateNoFixedRateErrorKey,
-            isEmptyOptionString
-          ),
-          ConditionalConstraint(
-            isFieldNotEmpty(exchangeRate),
-            rateFieldErrorKey,
-            notJustCommasOption and removeCommasFirstOption(ofPattern(exchangeRatePattern))
-          ),
-          ConditionalConstraint(isFieldIgnoreCaseString(exchangeRateAnswer, "Yes"), exchangeRateYesRadioSelectedErrorKey, nonEmptyOptionString)
+            (input: String) => false
+          )
         )
       ),
-    totalAmountInvoiced ->
-      text()
-        .verifying(invoiceFieldErrorEmptyKey, nonEmpty)
-        .verifying(invoiceFieldErrorKey, isEmpty or (notJustCommas and removeCommasFirst(ofPattern(totalAmountInvoicedPattern)))),
     totalAmountInvoicedCurrency ->
       AdditionalConstraintsMapping(
         optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
@@ -122,7 +127,7 @@ object TotalNumberOfItems extends DeclarationPage {
           ConditionalConstraint(
             isFieldEmpty(totalAmountInvoicedCurrency) and isFieldNotEmpty(totalAmountInvoiced),
             invoiceCurrencyFieldErrorKey,
-            (input: Option[String]) => false
+            (_: Option[String]) => false
           ),
           ConditionalConstraint(
             isFieldNotEmpty(exchangeRate),
