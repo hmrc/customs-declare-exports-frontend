@@ -423,7 +423,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
             withClue("more than three chars") {
               val form = TotalNumberOfItems
                 .form()
-                .bind(invoiceAmountWithValidFields(Some("12")))
+                .bind(formData(amount = Some("12"), currency = Some("GBPP"), rateYesNo = Some(YesNoAnswers.no)))
               form.errors mustBe currencyInvalidWithoutExchangeRateFormErrors
             }
           }

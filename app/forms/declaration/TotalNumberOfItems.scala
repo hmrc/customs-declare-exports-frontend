@@ -92,11 +92,7 @@ object TotalNumberOfItems extends DeclarationPage {
   def isFieldIgnoreCaseString(field: String, value: String): Condition = _.get(field).exists(_.equalsIgnoreCase(value))
 
   def isAmountLessThan(field: String): Condition =
-    _.get(field).fold(false)(
-      x =>
-        if (isNumeric(x)) x.nonEmpty && x.toInt < 100000
-        else false
-    )
+    _.get(field).fold(false)(x => isNumeric(x) && (x.nonEmpty && x.toInt < 100000))
   def isNumber(field: String): Condition = _.get(field).exists(isNumeric)
 
   //We allow the user to enter commas when specifying these optional numerical values but we strip out the commas with `removeCommasFirst` before validating
