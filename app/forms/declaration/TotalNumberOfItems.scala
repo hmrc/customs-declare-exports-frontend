@@ -18,18 +18,16 @@ package forms.declaration
 
 import forms.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
 import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
 import models.DeclarationType.DeclarationType
 import models.declaration.Totals
 import models.viewmodels.TariffContentKey
-import play.api.data.Forms.{nonEmptyText, optional, text}
+import play.api.data.Forms._
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.Condition
 import utils.validators.forms.FieldValidator._
 
-import java.io
 import scala.util.Try
 
 case class TotalNumberOfItems(
@@ -147,5 +145,5 @@ object TotalNumberOfItems extends DeclarationPage {
   def form(): Form[TotalNumberOfItems] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.totalNumbersOfItems.2.common"), TariffContentKey("tariff.declaration.totalNumbersOfItems.1.common"))
+    Seq(TariffContentKey("tariff.declaration.totalNumbersOfItems.1.common"), TariffContentKey("tariff.declaration.totalNumbersOfItems.2.common"))
 }

@@ -64,14 +64,6 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
   private val validTotalAmountInvoicedOver100k = "100001"
   private val validExchangeRate = "100"
 
-  //1. IF box 2 Total amount invoiced is blank
-  //THEN show VE:
-  //Enter the total amount invoiced
-
-  //2. IF currency code is GBP AND amount invoiced is less than 100,000
-  //THEN any value in fixed rate of exchange triggers:
-  //You have declared a total invoiced value less than GBP 100,000 so a fixed rate of exchange should not be entered
-
   "TotalNumberOfItems" should {
     testTariffContentKeysNoSpecialisation(TotalNumberOfItems, "tariff.declaration.totalNumbersOfItems")
 
