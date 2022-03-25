@@ -30,6 +30,7 @@ import uk.gov.voa.play.form.Condition
 import utils.validators.forms.FieldValidator._
 
 import java.io
+import scala.util.Try
 
 case class TotalNumberOfItems(
   exchangeRate: Option[String],
@@ -92,7 +93,9 @@ object TotalNumberOfItems extends DeclarationPage {
   def isFieldIgnoreCaseString(field: String, value: String): Condition = _.get(field).exists(_.equalsIgnoreCase(value))
 
   def isAmountLessThan(field: String): Condition =
-    _.get(field).fold(false)(x => isNumeric(x) && (x.nonEmpty && x.toInt < 100000))
+    _.get(field).fold(false) {
+      removeCommasFirst(x => Try(x.toInt).isSuccess && isNumeric(x) && (x.nonEmpty && x.toInt < 100000))
+    }
   def isNumber(field: String): Condition = _.get(field).exists(isNumeric)
 
   //We allow the user to enter commas when specifying these optional numerical values but we strip out the commas with `removeCommasFirst` before validating
