@@ -21,8 +21,8 @@ import play.api.libs.json.{Json, OFormat}
 case class Totals(
   totalAmountInvoiced: Option[String],
   totalAmountInvoicedCurrency: Option[String],
+  agreedExchangeRate: Option[String],
   exchangeRate: Option[String],
-  exchangeRateAnswer: Option[String],
   totalPackage: Option[String]
 )
 

@@ -39,7 +39,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
     mapTo(rate, exchangeRate) ++
       mapTo(amount, totalAmountInvoiced) ++
       mapTo(currency, totalAmountInvoicedCurrency) ++
-      mapTo(rateYesNo, exchangeRateAnswer)
+      mapTo(rateYesNo, agreedExchangeRateYesNo)
 
   private def exchangeRateWithValidFields(exchangeRate: Option[String]): Map[String, String] =
     formData(
@@ -180,7 +180,10 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
           .form()
           .bind(Map(totalAmountInvoiced -> ""))
 
-        form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorEmptyKey), FormError(exchangeRateAnswer, exchangeRateNoAnswerErrorKey))
+        form.errors mustBe Seq(
+          FormError(totalAmountInvoiced, invoiceFieldErrorEmptyKey),
+          FormError(agreedExchangeRateYesNo, exchangeRateNoAnswerErrorKey)
+        )
       }
 
       "exchange rate specified" that {
@@ -398,8 +401,8 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
           "amount invoiced is less than 100,000" in {
             val form = TotalNumberOfItems
               .form()
-              .bind(formData(amount = Some("12"), currency = Some("GBP"), rateYesNo = Some(YesNoAnswers.no)))
-            form.errors mustBe Seq(FormError(totalAmountInvoiced, exchangeRateNoFixedRateErrorKey))
+              .bind(formData(amount = Some("12"), currency = Some("GBP"), rate = Some("100"), rateYesNo = Some(YesNoAnswers.yes)))
+            form.errors mustBe Seq(FormError(exchangeRate, exchangeRateNoFixedRateErrorKey))
           }
         }
 

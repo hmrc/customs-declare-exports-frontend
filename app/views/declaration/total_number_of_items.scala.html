@@ -151,31 +151,31 @@
                     classes = "govuk-visually-hidden"
                 ))
             )),
-            idPrefix = Some("exchangeRateAnswer"),
-            name = "exchangeRateAnswer",
+            idPrefix = Some("agreedExchangeRate"),
+            name = "agreedExchangeRate",
             items = Seq(
                 RadioItem(
                     id = Some("code_yes"),
                     content = Text(messages("declaration.exchangeRate.yes")),
                     value = Some("Yes"),
                     conditionalHtml = Some(exchangeRateInput),
-                    checked = form("exchangeRateAnswer").value.contains("Yes")
+                    checked = form("agreedExchangeRate").value.contains("Yes")
                 ),
                 RadioItem(
                     id = Some("code_no"),
                     content = Text(messages("declaration.exchangeRate.no")),
                     value = Some("No"),
-                    checked = form("exchangeRateAnswer").value.contains("No")
+                    checked = form("agreedExchangeRate").value.contains("No")
                 )
             ),
-            errorMessage = form("exchangeRateAnswer").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
+            errorMessage = form("agreedExchangeRate").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
         ))
 
         @govukDetails(Details(
             summary = Text(messages("declaration.exchangeRate.expander.title")),
             content = HtmlContent(expanderContent),
             id = Some("exchange-rate-expander")
-        )),
+        ))
 
         @tariffExpander(TotalNumberOfItems, request.declarationType)(messages, appConfig)
 

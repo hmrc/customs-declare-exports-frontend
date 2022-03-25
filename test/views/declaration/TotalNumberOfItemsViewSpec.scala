@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import forms.common.YesNoAnswer.{Yes, YesNoAnswers}
 import forms.declaration.TotalNumberOfItems
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.Mode
@@ -44,28 +45,21 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.invoice.details.title")
-      messages must haveTranslationFor("declaration.invoice.details.body")
+      messages must haveTranslationFor("declaration.invoice.details.body.1")
+      messages must haveTranslationFor("declaration.invoice.details.body.2")
       messages must haveTranslationFor("declaration.totalAmountInvoiced")
       messages must haveTranslationFor("declaration.totalAmountInvoiced.hint")
       messages must haveTranslationFor("declaration.totalAmountInvoiced.error")
       messages must haveTranslationFor("declaration.exchangeRate")
       messages must haveTranslationFor("declaration.exchangeRate.error")
-      messages must haveTranslationFor("declaration.exchangeRate.hint")
+      messages must haveTranslationFor("declaration.exchangeRate.input.hint")
       messages must haveTranslationFor("error.summary.title")
       messages must haveTranslationFor("declaration.totalAmountInvoicedCurrency.error.empty")
       messages must haveTranslationFor("declaration.totalAmountInvoicedCurrency.exchangeRateMissing.error.invalid")
       messages must haveTranslationFor("declaration.totalAmountInvoicedCurrency.exchangeRatePresent.error.invalid")
-      messages must haveTranslationFor("declaration.totalAmountInvoiced.paragraph1.text")
-      messages must haveTranslationFor("declaration.totalAmountInvoiced.paragraph1.link.text")
-      messages must haveTranslationFor("declaration.totalAmountInvoiced.paragraph2.text")
-      messages must haveTranslationFor("declaration.totalAmountInvoiced.paragraph2.link.text")
       messages must haveTranslationFor("declaration.totalAmountInvoiced.amount.label")
       messages must haveTranslationFor("declaration.totalAmountInvoiced.currency.label")
       messages must haveTranslationFor("declaration.exchangeRate.paragraph1.text")
-      messages must haveTranslationFor("declaration.exchangeRate.bullet1.text")
-      messages must haveTranslationFor("declaration.exchangeRate.bullet2.text")
-      messages must haveTranslationFor("declaration.exchangeRate.paragraph2.text")
-      messages must haveTranslationFor("declaration.exchangeRate.paragraph2.link.text")
     }
 
     onEveryDeclarationJourney() { implicit request =>
@@ -98,8 +92,8 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       }
 
       "display empty input with label for Exchange Rate" in {
-        view.getElementsByAttributeValue("for", "exchangeRate") must containMessageForElements("declaration.exchangeRate")
-        view.getElementById("exchangeRate-hint") must containMessage("declaration.exchangeRate.hint")
+        view.getElementsByAttributeValue("for", "exchangeRate") must containMessageForElements("declaration.exchangeRate.input.label")
+        view.getElementById("exchangeRate-hint") must containMessage("declaration.exchangeRate.input.hint")
         view.getElementById("exchangeRate").attr("value") mustBe empty
       }
 
@@ -132,7 +126,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       "display error when all entered input is incorrect" in {
 
         val view =
-          createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), "abcd", Some("dsfsd"), "kjf")))
+          createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), "abcd", "kjf", Some("dsfsd"))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoiced")
@@ -145,7 +139,9 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       "display error when Total Amount Invoiced is incorrect" in {
 
         val view =
-          createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12345"), "abcd", Some(validCurrencyCode), "Yes")))
+          createView(
+            form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12345"), "abcd", YesNoAnswers.yes, Some(validCurrencyCode)))
+          )
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoiced")
@@ -156,7 +152,9 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       "display error when Exchange Rate is incorrect" in {
 
         val view =
-          createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), "123.12", Some(validCurrencyCode), "Yes")))
+          createView(
+            form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), "123.12", YesNoAnswers.yes, Some(validCurrencyCode)))
+          )
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#exchangeRate")
@@ -185,7 +183,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
     onEveryDeclarationJourney() { implicit request =>
       "display data in Total Amount Invoiced input" in {
 
-        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, "123.123", None, "")))
+        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, "123.123", YesNoAnswers.no, None)))
 
         view.getElementById("totalAmountInvoiced").attr("value") must be("123.123")
         view.getElementById("exchangeRate").attr("value") mustBe empty
@@ -194,7 +192,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
 
       "display data in Exchange Rate input" in {
 
-        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.12345"), "", None, "")))
+        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.12345"), "", YesNoAnswers.no, None)))
 
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
         view.getElementById("exchangeRate").attr("value") must be("123.12345")
@@ -203,7 +201,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
 
       "display data in Currency code input" in {
 
-        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, "", Some(validCurrencyCode), "")))
+        val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, "", YesNoAnswers.yes, Some(validCurrencyCode))))
 
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
         view.getElementById("exchangeRate").attr("value") mustBe empty
@@ -213,7 +211,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       "display data in all inputs" in {
 
         val view =
-          createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.12345"), "123.123", Some(validCurrencyCode), "Yes")))
+          createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.12345"), "123.123", YesNoAnswers.yes, Some(validCurrencyCode))))
 
         view.getElementById("totalAmountInvoiced").attr("value") must be("123.123")
         view.getElementById("exchangeRate").attr("value") must be("123.12345")

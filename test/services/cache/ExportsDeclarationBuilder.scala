@@ -99,7 +99,7 @@ trait ExportsDeclarationBuilder {
           totalAmountInvoiced = Some(totalNumberOfItems.totalAmountInvoiced),
           totalAmountInvoicedCurrency = totalNumberOfItems.totalAmountInvoicedCurrency,
           exchangeRate = totalNumberOfItems.exchangeRate,
-          exchangeRateAnswer = Some(totalNumberOfItems.exchangeRateAnswer),
+          agreedExchangeRate = Some(totalNumberOfItems.agreedExchangeRate),
           totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
         )
       )
@@ -110,7 +110,7 @@ trait ExportsDeclarationBuilder {
     totalAmountInvoiced: Option[String] = None,
     exchangeRate: Option[String] = None,
     totalAmountInvoicedCurrency: Option[String] = None,
-    exchangeRateAnswer: Option[String] = None
+    agreedExchangeRate: Option[String] = None
   ): ExportsDeclarationModifier = { declaration =>
     declaration.copy(
       totalNumberOfItems = Some(
@@ -118,7 +118,7 @@ trait ExportsDeclarationBuilder {
           totalAmountInvoiced = totalAmountInvoiced,
           totalAmountInvoicedCurrency = totalAmountInvoicedCurrency,
           exchangeRate = exchangeRate,
-          exchangeRateAnswer = exchangeRateAnswer,
+          agreedExchangeRate = agreedExchangeRate,
           totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
         )
       )
@@ -132,7 +132,7 @@ trait ExportsDeclarationBuilder {
           totalAmountInvoiced = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoiced),
           totalAmountInvoicedCurrency = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency),
           exchangeRate = declaration.totalNumberOfItems.flatMap(_.exchangeRate),
-          exchangeRateAnswer = declaration.totalNumberOfItems.flatMap(_.exchangeRateAnswer),
+          agreedExchangeRate = declaration.totalNumberOfItems.flatMap(_.agreedExchangeRate),
           totalPackage = Some(quantity)
         )
       )
