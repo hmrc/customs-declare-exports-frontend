@@ -58,16 +58,16 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
     "have correct message keys" in {
       messages must haveTranslationFor("declaration.additionalDocument.summary.heading")
       messages must haveTranslationFor("declaration.additionalDocument.summary.multiple.heading")
-      messages must haveTranslationFor("declaration.additionalDocument.documentTypeCode")
-      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier")
-      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.body")
-      messages must haveTranslationFor("declaration.additionalDocument.documentIdentifier.error")
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason")
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatusReason.error")
-      messages must haveTranslationFor("declaration.additionalDocument.documentQuantity")
-      messages must haveTranslationFor("declaration.additionalDocument.documentQuantity.error")
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatus")
-      messages must haveTranslationFor("declaration.additionalDocument.documentStatus.error")
+      messages must haveTranslationFor("declaration.additionalDocument.code")
+      messages must haveTranslationFor("declaration.additionalDocument.identifier")
+      messages must haveTranslationFor("declaration.additionalDocument.identifier.body")
+      messages must haveTranslationFor("declaration.additionalDocument.identifier.error")
+      messages must haveTranslationFor("declaration.additionalDocument.statusReason")
+      messages must haveTranslationFor("declaration.additionalDocument.statusReason.error")
+      messages must haveTranslationFor("declaration.additionalDocument.quantity")
+      messages must haveTranslationFor("declaration.additionalDocument.quantity.error")
+      messages must haveTranslationFor("declaration.additionalDocument.status")
+      messages must haveTranslationFor("declaration.additionalDocument.status.error")
       messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName")
       messages must haveTranslationFor("declaration.additionalDocument.issuingAuthorityName.error.length")
       messages must haveTranslationFor("declaration.additionalDocument.error.maximumAmount")
@@ -170,7 +170,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
           val header = view.getElementById("additional_documents")
 
           "have header for Document Type" in {
-            header.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.additionalDocument.summary.documentTypeCode")
+            header.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.additionalDocument.summary.code")
           }
 
           "have header for Document Identifier" in {

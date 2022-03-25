@@ -39,7 +39,7 @@
 }
 
 @holderTypeCode(holder: DeclarationHolder) = @{
-    holder.authorisationTypeCode.fold("")(holderOfAuthorisationCodes.getCodeDescription(messages.lang.toLocale, _))
+    holder.authorisationTypeCode.fold("")(holderOfAuthorisationCodes.codeDescription(messages.lang.toLocale, _))
 }
 
 @holderEori(holder: DeclarationHolder) = @{

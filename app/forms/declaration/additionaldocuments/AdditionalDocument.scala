@@ -57,7 +57,7 @@ object AdditionalDocument extends DeclarationPage {
 
   private val issuingAuthorityNameMaxLength = 70
 
-  val documentTypeCodeKey = "documentTypeCode"
+  val documentCodeKey = "documentCode"
   val documentIdentifierKey = "documentIdentifier"
   val documentStatusKey = "documentStatus"
   val documentStatusReasonKey = "documentStatusReason"
@@ -67,20 +67,20 @@ object AdditionalDocument extends DeclarationPage {
   // scalastyle:off
   private def mapping(cacheModel: ExportsDeclaration): Mapping[AdditionalDocument] = {
     val keyWhenDocumentTypeCodeEmpty =
-      if (cacheModel.isAuthCodeRequiringAdditionalDocuments) "declaration.additionalDocument.documentTypeCode.empty.fromAuthCode"
-      else "declaration.additionalDocument.documentTypeCode.empty"
+      if (cacheModel.hasAuthCodeRequiringAdditionalDocs) "declaration.additionalDocument.code.empty.fromAuthCode"
+      else "declaration.additionalDocument.code.empty"
 
     val documentTypeCodeRequired = optional(
       text()
         .verifying(keyWhenDocumentTypeCodeEmpty, nonEmpty)
-        .verifying("declaration.additionalDocument.documentTypeCode.error", isEmpty or (hasSpecificLength(4) and isAlphanumeric))
+        .verifying("declaration.additionalDocument.code.error", isEmpty or (hasSpecificLength(4) and isAlphanumeric))
     ).verifying(keyWhenDocumentTypeCodeEmpty, isPresent)
 
     val nonEmptyOptionString = (input: Option[String]) => nonEmpty(input.getOrElse(""))
 
     Forms
       .mapping(
-        documentTypeCodeKey -> documentTypeCodeRequired,
+        documentCodeKey -> documentTypeCodeRequired,
         documentIdentifierKey -> optional(
           text()
             .transform(_.trim, (s: String) => s)
@@ -97,7 +97,7 @@ object AdditionalDocument extends DeclarationPage {
           ),
           Seq(
             ConditionalConstraint(
-              isAnyOf(documentTypeCodeKey, documentCodesRequiringAReason),
+              isAnyOf(documentCodeKey, documentCodesRequiringAReason),
               "declaration.additionalDocument.documentStatusReason.required.forDocumentCode",
               nonEmptyOptionString
             ),

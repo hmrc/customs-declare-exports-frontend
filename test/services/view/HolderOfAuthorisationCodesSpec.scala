@@ -46,9 +46,9 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
     when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
 
-  "HolderOfAuthorisationCodes.getCodeDescription" should {
+  "HolderOfAuthorisationCodes.codeDescription" should {
     "return the description of a 'Holder of Authorisation' code in the expected format" in {
-      val description = holderOfAuthorisationCodes.getCodeDescription(ENGLISH, "UKCS")
+      val description = holderOfAuthorisationCodes.codeDescription(ENGLISH, "UKCS")
       description mustBe "UKCS - UK Continental Shelf"
     }
   }
