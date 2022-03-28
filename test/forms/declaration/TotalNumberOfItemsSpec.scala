@@ -398,11 +398,36 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
       "currency code specified" that {
 
         "is GBP" when {
-          "amount invoiced is less than 100,000" in {
-            val form = TotalNumberOfItems
-              .form()
-              .bind(formData(amount = Some("12"), currency = Some("GBP"), rate = Some("100"), rateYesNo = Some(YesNoAnswers.yes)))
-            form.errors mustBe Seq(FormError(exchangeRate, exchangeRateNoFixedRateErrorKey))
+          "amount invoiced is less than 100,000" when {
+            "all numeric" in {
+              val form = TotalNumberOfItems
+                .form()
+                .bind(formData(amount = Some("100"), currency = Some("GBP"), rate = Some("12"), rateYesNo = Some(YesNoAnswers.yes)))
+              form.errors mustBe Seq(FormError(exchangeRate, exchangeRateNoFixedRateErrorKey))
+            }
+
+            "commas" in {
+              val form = TotalNumberOfItems
+                .form()
+                .bind(formData(amount = Some("10,000"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
+              form.errors mustBe Seq(FormError(exchangeRate, exchangeRateNoFixedRateErrorKey))
+            }
+
+            "decimals" when {
+              "decimal in number" in {
+                val form = TotalNumberOfItems
+                  .form()
+                  .bind(formData(amount = Some("10.00"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
+                form.errors mustBe Seq(FormError(exchangeRate, exchangeRateNoFixedRateErrorKey))
+              }
+
+              "starts with decimal" in {
+                val form = TotalNumberOfItems
+                  .form()
+                  .bind(formData(amount = Some(".10"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
+                form.errors mustBe Seq(FormError(exchangeRate, exchangeRateNoFixedRateErrorKey))
+              }
+            }
           }
         }
 

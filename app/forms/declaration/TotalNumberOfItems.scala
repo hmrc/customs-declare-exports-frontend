@@ -79,6 +79,15 @@ object TotalNumberOfItems extends DeclarationPage {
   val notJustCommas = (input: String) => !input.forall(_.equals(','))
   val removeCommasFirstOption = (validator: String => Boolean) => (input: Option[String]) => input.fold(false)(x => validator(x.replaceAll(",", "")))
   val notJustCommasOption = (input: Option[String]) => !input.fold(false)(_.forall(_.equals(',')))
+  val wholeNumber = (validator: String => Boolean) =>
+    (input: String) =>
+      validator {
+        val decimalPoint = input.indexOf(".")
+
+        if (decimalPoint > 0) input.substring(0, decimalPoint)
+        else if (decimalPoint == 0) "0"
+        else input
+  }
 
   val equalsIgnoreCaseOptionString = (value: String) => (input: Option[String]) => input.exists(_.equalsIgnoreCase(value))
   val isEmptyOptionString = (input: Option[String]) => isEmpty(input.getOrElse(""))
@@ -92,7 +101,7 @@ object TotalNumberOfItems extends DeclarationPage {
 
   def isAmountLessThan(field: String): Condition =
     _.get(field).fold(false) {
-      removeCommasFirst(x => Try(x.toInt).isSuccess && isNumeric(x) && (x.nonEmpty && x.toInt < 100000))
+      wholeNumber(removeCommasFirst(x => Try(x.toInt).isSuccess && isNumeric(x) && (x.nonEmpty && x.toInt < 100000)))
     }
   def isNumber(field: String): Condition = _.get(field).exists(isNumeric)
 
