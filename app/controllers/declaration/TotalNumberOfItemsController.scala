@@ -66,7 +66,7 @@ class TotalNumberOfItemsController @Inject()(
           Totals(
             totalAmountInvoiced = Some(totalNumberOfItems.totalAmountInvoiced),
             totalAmountInvoicedCurrency = totalNumberOfItems.totalAmountInvoicedCurrency,
-            exchangeRate = totalNumberOfItems.exchangeRate,
+            exchangeRate = if (totalNumberOfItems.agreedExchangeRate.toLowerCase == "no") None else totalNumberOfItems.exchangeRate,
             agreedExchangeRate = Some(totalNumberOfItems.agreedExchangeRate),
             totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
           )
