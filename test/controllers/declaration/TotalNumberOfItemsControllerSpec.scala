@@ -69,11 +69,18 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
     mockExportsCacheService
   )(ec)
 
-  val totalNumberOfItems = TotalNumberOfItems(
+  val totalNumberOfItemsNoExchange = TotalNumberOfItems(
     totalAmountInvoiced = "100",
     totalAmountInvoicedCurrency = Some("GBP"),
     agreedExchangeRate = YesNoAnswers.no,
     exchangeRate = None
+  )
+
+  val totalNumberOfItemsWithExchange = TotalNumberOfItems(
+    totalAmountInvoiced = "100",
+    totalAmountInvoicedCurrency = Some("GBP"),
+    agreedExchangeRate = YesNoAnswers.yes,
+    exchangeRate = Some("1")
   )
 
   def verifyPage(numberOfTimes: Int = 1) = verify(mockTotalNumberOfItemsPage, times(numberOfTimes)).apply(any(), any())(any(), any())
@@ -92,7 +99,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
       }
 
       "display page method is invoked and cache contains data" in {
-        withNewCaching(aDeclaration(withType(request.declarationType), withTotalNumberOfItems(totalNumberOfItems)))
+        withNewCaching(aDeclaration(withType(request.declarationType), withTotalNumberOfItems(totalNumberOfItemsNoExchange)))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -113,12 +120,20 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
       "return 303 (SEE_OTHER) when information provided by user are correct" in {
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(totalNumberOfItems)
+        val correctForm = Json.toJson(totalNumberOfItemsNoExchange)
         val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
         verifyPage(0)
+      }
+
+      "empty fixed rate of exchange value from cache when 'No' is submitted" in {
+        withNewCaching(aDeclaration(withType(request.declarationType), withTotalNumberOfItems(totalNumberOfItemsWithExchange)))
+        val correctForm = Json.toJson(totalNumberOfItemsNoExchange)
+        await(controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm)))
+
+        theCacheModelUpdated.totalNumberOfItems.get.exchangeRate mustBe None
       }
 
     }
