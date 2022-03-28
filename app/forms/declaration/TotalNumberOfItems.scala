@@ -31,10 +31,10 @@ import utils.validators.forms.FieldValidator._
 import scala.util.Try
 
 case class TotalNumberOfItems(
-  exchangeRate: Option[String],
   totalAmountInvoiced: String,
+  totalAmountInvoicedCurrency: Option[String],
   agreedExchangeRate: String,
-  totalAmountInvoicedCurrency: Option[String]
+  exchangeRate: Option[String]
 )
 
 object TotalNumberOfItems extends DeclarationPage {
@@ -42,10 +42,10 @@ object TotalNumberOfItems extends DeclarationPage {
 
   def apply(totals: Totals): TotalNumberOfItems =
     TotalNumberOfItems(
-      totals.exchangeRate,
       totals.totalAmountInvoiced.fold("")(x => x),
+      totals.totalAmountInvoicedCurrency,
       totals.agreedExchangeRate.fold("")(x => x),
-      totals.totalAmountInvoicedCurrency
+      totals.exchangeRate
     )
 
   val formId = "TotalNumberOfItems"
@@ -100,28 +100,10 @@ object TotalNumberOfItems extends DeclarationPage {
   //the number of digits. To prevent the validation from allowing an invalid value like ",,,," we also must use the `notJustCommas`
   //function to specifically guard against this.
   val mapping: Mapping[TotalNumberOfItems] = Forms.mapping(
-    exchangeRate -> AdditionalConstraintsMapping(
-      optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
-      Seq(
-        ConditionalConstraint(
-          isFieldIgnoreCaseString(totalAmountInvoicedCurrency, "GBP") and isAmountLessThan(totalAmountInvoiced),
-          exchangeRateNoFixedRateErrorKey,
-          isEmptyOptionString
-        ),
-        ConditionalConstraint(
-          isFieldNotEmpty(exchangeRate),
-          rateFieldErrorKey,
-          notJustCommasOption and removeCommasFirstOption(ofPattern(exchangeRatePattern))
-        ),
-        ConditionalConstraint(isFieldIgnoreCaseString(agreedExchangeRateYesNo, "Yes"), exchangeRateYesRadioSelectedErrorKey, nonEmptyOptionString)
-      )
-    ),
     totalAmountInvoiced ->
       text()
         .verifying(invoiceFieldErrorEmptyKey, nonEmpty)
         .verifying(invoiceFieldErrorKey, isEmpty or (notJustCommas and removeCommasFirst(ofPattern(totalAmountInvoicedPattern)))),
-    agreedExchangeRateYesNo ->
-      requiredRadio(exchangeRateNoAnswerErrorKey, YesNoAnswer.allowedValues),
     totalAmountInvoicedCurrency ->
       AdditionalConstraintsMapping(
         optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
@@ -142,7 +124,25 @@ object TotalNumberOfItems extends DeclarationPage {
             isEmptyOptionString or (isAlphabeticOptionString and lengthInRangeOptionString(3)(3))
           )
         )
+      ),
+    agreedExchangeRateYesNo ->
+      requiredRadio(exchangeRateNoAnswerErrorKey, YesNoAnswer.allowedValues),
+    exchangeRate -> AdditionalConstraintsMapping(
+      optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
+      Seq(
+        ConditionalConstraint(
+          isFieldIgnoreCaseString(totalAmountInvoicedCurrency, "GBP") and isAmountLessThan(totalAmountInvoiced),
+          exchangeRateNoFixedRateErrorKey,
+          isEmptyOptionString
+        ),
+        ConditionalConstraint(
+          isFieldNotEmpty(exchangeRate),
+          rateFieldErrorKey,
+          notJustCommasOption and removeCommasFirstOption(ofPattern(exchangeRatePattern))
+        ),
+        ConditionalConstraint(isFieldIgnoreCaseString(agreedExchangeRateYesNo, "Yes"), exchangeRateYesRadioSelectedErrorKey, nonEmptyOptionString)
       )
+    )
   )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
 
   def form(): Form[TotalNumberOfItems] = Form(mapping)

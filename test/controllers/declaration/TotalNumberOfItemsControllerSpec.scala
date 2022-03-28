@@ -69,7 +69,12 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
     mockExportsCacheService
   )(ec)
 
-  val totalNumberOfItems = TotalNumberOfItems(Some("GBP"), "100", YesNoAnswers.no, None)
+  val totalNumberOfItems = TotalNumberOfItems(
+    totalAmountInvoiced = "100",
+    totalAmountInvoicedCurrency = Some("GBP"),
+    agreedExchangeRate = YesNoAnswers.no,
+    exchangeRate = None
+  )
 
   def verifyPage(numberOfTimes: Int = 1) = verify(mockTotalNumberOfItemsPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
@@ -99,7 +104,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
       "return 400 (BAD_REQUEST) when form is incorrect" in {
         withNewCaching(request.cacheModel)
-        val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), "", "", None))
+        val incorrectForm = Json.toJson(TotalNumberOfItems("", None, "", Some("abc")))
         val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
@@ -113,7 +118,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
-        verifyPage()
+        verifyPage(0)
       }
 
     }
