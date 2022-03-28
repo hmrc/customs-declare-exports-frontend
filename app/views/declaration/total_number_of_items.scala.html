@@ -40,6 +40,7 @@
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     link: link,
+    yesNoRadios: yesNoRadios,
     paragraphBody: paragraphBody,
     bulletList: bulletList,
     formHelper: FormWithCSRF,
@@ -144,32 +145,11 @@
         @heading(messages("declaration.exchangeRate"), "govuk-heading-m", "h2")
         @paragraphBody(messages("declaration.exchangeRate.paragraph1.text"))
 
-        @govukRadios(Radios(
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.exchangeRate")),
-                    classes = "govuk-visually-hidden"
-                ))
-            )),
-            idPrefix = Some("agreedExchangeRate"),
-            name = "agreedExchangeRate",
-            items = Seq(
-                RadioItem(
-                    id = Some("code_yes"),
-                    content = Text(messages("declaration.exchangeRate.yes")),
-                    value = Some("Yes"),
-                    conditionalHtml = Some(exchangeRateInput),
-                    checked = form("agreedExchangeRate").value.contains("Yes")
-                ),
-                RadioItem(
-                    id = Some("code_no"),
-                    content = Text(messages("declaration.exchangeRate.no")),
-                    value = Some("No"),
-                    checked = form("agreedExchangeRate").value.contains("No")
-                )
-            ),
-            errorMessage = form("agreedExchangeRate").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
-        ))
+        @yesNoRadios(
+            form,
+            answerKey = "agreedExchangeRate",
+            yesConditionalHtml = Some(exchangeRateInput)
+        )
 
         @govukDetails(Details(
             summary = Text(messages("declaration.exchangeRate.expander.title")),
