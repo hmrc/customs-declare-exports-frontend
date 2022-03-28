@@ -117,12 +117,12 @@
 @pageFields = {
     @formGroupWrapper(field = form(AdditionalDocumentFormGroupId)){
         @exportsInputText(
-            field = form(documentCodeKey),
+            field = form(documentTypeCodeKey),
             labelKey = "declaration.additionalDocument.code",
             hintKey = Some(additionalDocumentHelper.documentCodeHint(itemId)),
             inputClasses = Some("govuk-input--width-4"),
             bodyHtml = Some(paragraphBody(
-                id = Some(s"$documentCodeKey-body"),
+                id = Some(s"$documentTypeCodeKey-body"),
                 message = messages(additionalDocumentHelper.documentCodeBody(itemId))
             ))
         )

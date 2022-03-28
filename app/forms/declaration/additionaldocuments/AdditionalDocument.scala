@@ -57,7 +57,7 @@ object AdditionalDocument extends DeclarationPage {
 
   private val issuingAuthorityNameMaxLength = 70
 
-  val documentCodeKey = "documentCode"
+  val documentTypeCodeKey = "documentTypeCode"
   val documentIdentifierKey = "documentIdentifier"
   val documentStatusKey = "documentStatus"
   val documentStatusReasonKey = "documentStatusReason"
@@ -80,30 +80,30 @@ object AdditionalDocument extends DeclarationPage {
 
     Forms
       .mapping(
-        documentCodeKey -> documentTypeCodeRequired,
+        documentTypeCodeKey -> documentTypeCodeRequired,
         documentIdentifierKey -> optional(
           text()
             .transform(_.trim, (s: String) => s)
             .verifying(
-              "declaration.additionalDocument.documentIdentifier.error",
+              "declaration.additionalDocument.identifier.error",
               nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
             )
         ),
-        documentStatusKey -> optional(text().verifying("declaration.additionalDocument.documentStatus.error", noLongerThan(2) and isAlphabetic)),
+        documentStatusKey -> optional(text().verifying("declaration.additionalDocument.status.error", noLongerThan(2) and isAlphabetic)),
         documentStatusReasonKey -> AdditionalConstraintsMapping(
           optional(
             text()
-              .verifying("declaration.additionalDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
+              .verifying("declaration.additionalDocument.statusReason.error", noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
           ),
           Seq(
             ConditionalConstraint(
-              isAnyOf(documentCodeKey, documentCodesRequiringAReason),
-              "declaration.additionalDocument.documentStatusReason.required.forDocumentCode",
+              isAnyOf(documentTypeCodeKey, documentCodesRequiringAReason),
+              "declaration.additionalDocument.statusReason.required.forDocumentCode",
               nonEmptyOptionString
             ),
             ConditionalConstraint(
               isAnyOf(documentStatusKey, statusCodesRequiringAReason),
-              "declaration.additionalDocument.documentStatusReason.required.forStatusCode",
+              "declaration.additionalDocument.statusReason.required.forStatusCode",
               nonEmptyOptionString
             )
           )

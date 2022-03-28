@@ -38,7 +38,7 @@ import javax.inject.{Inject, Singleton}
 class AdditionalDocumentHelper @Inject()(
   appConfig: AppConfig,
   authCodeHelper: HolderOfAuthorisationCodes,
-  govukDetails : GovukDetails,
+  govukDetails: GovukDetails,
   insetText: GovukInsetText,
   bulletList: bulletList,
   link: link,
@@ -60,8 +60,8 @@ class AdditionalDocumentHelper @Inject()(
 
     versionSelection(itemId) match {
       case 1 | 2 => expander(new Html(topExpanderCommonParagraphs(itemId)))
-      case 4 => HtmlFormat.empty
-      case _ => expander(new Html(topExpanderCommonParagraphs(itemId) :+ topExpanderLastParagraph))
+      case 4     => HtmlFormat.empty
+      case _     => expander(new Html(topExpanderCommonParagraphs(itemId) :+ topExpanderLastParagraph))
     }
   }
 
@@ -81,11 +81,9 @@ class AdditionalDocumentHelper @Inject()(
       paragraph(messages(s"$prefix.code.expander.body.3"))
     )
 
-    govukDetails(Details(
-      id = Some("documentCode-expander"),
-      summary = Text(messages(s"$prefix.code.expander.title")),
-      content = HtmlContent(new Html(content))
-    ))
+    govukDetails(
+      Details(id = Some("documentCode-expander"), summary = Text(messages(s"$prefix.code.expander.title")), content = HtmlContent(new Html(content)))
+    )
   }
 
   def documentIdentifierBody(itemId: String)(implicit messages: Messages, request: JourneyRequest[_]): Html =
@@ -99,10 +97,7 @@ class AdditionalDocumentHelper @Inject()(
     def insets(content: List[Html]): Option[Html] = Some(insetText(InsetText(content = HtmlContent(new Html(content)))))
 
     versionSelection(itemId) match {
-      case 2 | 5 => insets(List(
-        paragraph(messages(s"$prefix.identifier.inset.body.1")),
-        paragraph(messages(s"$prefix.identifier.inset.body.2"))
-      ))
+      case 2 | 5 => insets(List(paragraph(messages(s"$prefix.identifier.inset.body.1")), paragraph(messages(s"$prefix.identifier.inset.body.2"))))
 
       case 3 => insets(List(paragraph(messages(s"$prefix.v3.identifier.inset.body"))))
 
@@ -112,62 +107,70 @@ class AdditionalDocumentHelper @Inject()(
 
   private def bodyV1(implicit messages: Messages, request: JourneyRequest[_]): Html = {
     val authCodes = request.cacheModel.authCodesRequiringAdditionalDocs
-    new Html(List(
-      paragraph(messages(s"$prefix.v1.body.1")),
-      paragraph(messages(s"$prefix.v1.body.2")),
-      bulletList(authCodeHelper.codeDescriptions(messages.lang.toLocale, authCodes).map(Html(_)))
-    ))
+    new Html(
+      List(
+        paragraph(messages(s"$prefix.v1.body.1")),
+        paragraph(messages(s"$prefix.v1.body.2")),
+        bulletList(authCodeHelper.codeDescriptions(messages.lang.toLocale, authCodes).map(Html(_)))
+      )
+    )
   }
 
   private def bodyV3(implicit messages: Messages, request: JourneyRequest[_]): Html = {
     val authCodes = request.cacheModel.authCodesRequiringAdditionalDocs
-    new Html(List(
-      paragraph(messages(s"$prefix.v3.body.1")),
-      bulletList(authCodeHelper.codeDescriptions(messages.lang.toLocale, authCodes).map(Html(_))),
-      paragraph(messages(s"$prefix.v3.body.2"))
-    ))
+    new Html(
+      List(
+        paragraph(messages(s"$prefix.v3.body.1")),
+        bulletList(authCodeHelper.codeDescriptions(messages.lang.toLocale, authCodes).map(Html(_))),
+        paragraph(messages(s"$prefix.v3.body.2"))
+      )
+    )
   }
 
-  private def bodyV5(implicit messages: Messages): Html = {
-    new Html(List(
-      paragraph(messages(s"$prefix.v5.body.1")),
-      paragraph(messages(s"$prefix.v5.body.2"))
-    ))
-  }
+  private def bodyV5(implicit messages: Messages): Html =
+    new Html(List(paragraph(messages(s"$prefix.v5.body.1")), paragraph(messages(s"$prefix.v5.body.2"))))
 
   private def topExpanderCommonParagraphs(itemId: String)(implicit messages: Messages, request: JourneyRequest[_]): List[Html] =
     List(
       commodityCodeOfItem(itemId).fold {
-        paragraph(messages(s"$prefix.expander.body.1.withoutCommodityCode",
+        paragraph(
+          messages(
+            s"$prefix.expander.body.1.withoutCommodityCode",
             link(
               text = messages(s"$prefix.expander.body.1.withoutCommodityCode.link"),
               call = Call("GET", appConfig.tradeTariffSections),
               target = "_blank"
             )
-        ))
+          )
+        )
       } { commodityCode =>
-        paragraph(messages(s"$prefix.expander.body.1.withCommodityCode",
+        paragraph(
+          messages(
+            s"$prefix.expander.body.1.withCommodityCode",
             link(
               text = messages(s"$prefix.expander.body.1.withCommodityCode.link", commodityCode.codeAsShown),
               call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
               target = "_blank"
             )
-        ))
+          )
+        )
       },
       paragraph(messages(s"$prefix.expander.body.2")),
-      paragraph(messages(s"$prefix.expander.body.3",
-        link(
-          text = messages(s"$prefix.expander.body.3.link"),
-          call = Call("GET", appConfig.additionalDocumentsLicenceTypes),
-          target = "_blank"
+      paragraph(
+        messages(
+          s"$prefix.expander.body.3",
+          link(text = messages(s"$prefix.expander.body.3.link"), call = Call("GET", appConfig.additionalDocumentsLicenceTypes), target = "_blank")
         )
-      ))
+      )
     )
 
   private def topExpanderLastParagraph(implicit messages: Messages): Html =
-    paragraph(messages(s"$prefix.expander.body.4",
-      link(messages(s"$prefix.expander.body.4.link"), Call("GET", appConfig.guidance.commodityCode0306310010), "_blank")
-    ))
+    paragraph(
+      messages(
+        s"$prefix.expander.body.4",
+        link(messages(s"$prefix.expander.body.4.link"), Call("GET", appConfig.guidance.commodityCode0306310010), "_blank")
+      )
+    )
 }
 
 object AdditionalDocumentHelper {
@@ -182,11 +185,11 @@ object AdditionalDocumentHelper {
     val hasAuthCodeRequiringAdditionalDocs = request.cacheModel.hasAuthCodeRequiringAdditionalDocs
 
     (model.`type`, hasAuthCodeRequiringAdditionalDocs, model.isLicenseRequired(itemId)) match {
-      case (CLEARANCE, true,  _) => 5
+      case (CLEARANCE, true, _)  => 5
       case (CLEARANCE, false, _) => 6
-      case (_, true,  true)      => 1
+      case (_, true, true)       => 1
       case (_, false, true)      => 2
-      case (_, true,  false)     => 3
+      case (_, true, false)      => 3
       case (_, false, false)     => 4
     }
   }

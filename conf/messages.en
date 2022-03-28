@@ -1109,9 +1109,9 @@ declaration.additionalDocument.v6.code.body = Document codes are 4-character cod
 declaration.additionalDocument.v6.code.hint = For example, 9005, C639.
 
 declaration.additionalDocument.expander.title = How to enter licences, certificates and exemptions
-declaration.additionalDocument.expander.body.1.withCommodityCode = The {0} will list any requirements. Look in the ‘Exports’ tab in the column ‘Conditions that apply’.
+declaration.additionalDocument.expander.body.1.withCommodityCode = The {0} will list any requirements. Look in the ‘Exports’ tab in the column ‘Conditions’.
 declaration.additionalDocument.expander.body.1.withCommodityCode.link = Tariff entry for {0}, the code you entered (opens in new tab)
-declaration.additionalDocument.expander.body.1.withoutCommodityCode = The entry for your commodity code in the {0} will list any requirements. Look in the ‘Exports’ tab in the column ‘Conditions that apply’.
+declaration.additionalDocument.expander.body.1.withoutCommodityCode = The entry for your commodity code in the {0} will list any requirements. Look in the ‘Exports’ tab in the column ‘Conditions’.
 declaration.additionalDocument.expander.body.1.withoutCommodityCode.link = Trade Tariff (opens in new tab)
 declaration.additionalDocument.expander.body.2 = If more than one licence requirement is shown, you can declare any one of them, along with the reference number that will identify the licence to HMRC (the document identifier).
 declaration.additionalDocument.expander.body.3 = If you want to declare a licence and you do not know which document code to enter for the licence, you can check {0}.

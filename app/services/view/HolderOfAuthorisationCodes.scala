@@ -39,9 +39,11 @@ class HolderOfAuthorisationCodes @Inject()(codeListConnector: CodeListConnector)
     codeListConnector.getHolderOfAuthorisationCodes(locale).get(code).fold("")(description)
 
   def codeDescriptions(locale: Locale, holders: Seq[DeclarationHolder]): Seq[String] =
-    holders.flatMap { _.authorisationTypeCode.map { code =>
-      codeListConnector.getHolderOfAuthorisationCodes(locale).get(code).fold("")(description)
-    }}
+    holders.flatMap {
+      _.authorisationTypeCode.map { code =>
+        codeListConnector.getHolderOfAuthorisationCodes(locale).get(code).fold("")(description)
+      }
+    }
 
   private def description(h: HolderOfAuthorisationCode): String = s"${h.code} - ${h.description}"
 }

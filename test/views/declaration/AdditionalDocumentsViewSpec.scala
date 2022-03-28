@@ -170,7 +170,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with CommonMessages with 
           val header = view.getElementById("additional_documents")
 
           "have header for Document Type" in {
-            header.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.additionalDocument.summary.code")
+            header.getElementsByClass("govuk-table__header").get(0) must containMessage("declaration.additionalDocument.summary.documentCode")
           }
 
           "have header for Document Identifier" in {

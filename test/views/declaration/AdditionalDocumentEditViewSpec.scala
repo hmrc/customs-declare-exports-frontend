@@ -18,48 +18,55 @@ package views.declaration
 
 import base.{Injector, TestHelper}
 import config.AppConfig
+import connectors.FileBasedCodeListConnector
 import controllers.helpers.SaveAndReturn
 import forms.common.Date.{dayKey, monthKey, yearKey}
-import forms.common.Eori
 import forms.declaration.AdditionalDocumentSpec._
 import forms.declaration.CommodityDetails
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.additionaldocuments.AdditionalDocument._
 import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec.incorrectDocumentWriteOff
 import forms.declaration.declarationHolder.DeclarationHolder
+import models.ExportsDeclaration
+import models.Mode.Normal
 import models.declaration.ExportDeclarationTestData.{allRecords, declaration}
+import models.declaration.ExportItem
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
-import models.declaration.EoriSource
 import org.jsoup.nodes.Document
 import org.scalatest.Inspectors.forAll
 import org.scalatest.{Assertion, OptionValues}
 import play.api.data.Form
+import services.view.HolderOfAuthorisationCodes
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.additionalDocuments.additional_document_edit
+
+import java.util.Locale.ENGLISH
 
 class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
   private val appConfig = instanceOf[AppConfig]
 
   private val itemId = "a7sc78"
-  private val mode = Mode.Normal
 
   private val additionalDocumentEditPage = instanceOf[additional_document_edit]
 
+  private def createView(implicit request: JourneyRequest[_]): Document =
+    additionalDocumentEditPage(Normal, itemId, AdditionalDocument.form(request.cacheModel))(request, messages)
+
   private def createView(input: Map[String, String])(implicit request: JourneyRequest[_]): Document = {
     val form: Form[AdditionalDocument] = AdditionalDocument.form(declaration).bind(input)
-    additionalDocumentEditPage(mode, itemId, form)(request, messages)
+    additionalDocumentEditPage(Normal, itemId, form)(request, messages)
   }
 
-  private def createView(input: Option[AdditionalDocument] = None, exportsDeclaration: ExportsDeclaration = declaration)(
+  private def createView(input: Option[AdditionalDocument] = None, declaration: ExportsDeclaration = declaration)(
     implicit request: JourneyRequest[_]
   ): Document = {
-    val form: Form[AdditionalDocument] = AdditionalDocument.form(exportsDeclaration)
-    additionalDocumentEditPage(mode, itemId, input.fold(form)(form.fillAndValidate))(request, messages)
+    val form: Form[AdditionalDocument] = AdditionalDocument.form(declaration)
+    additionalDocumentEditPage(Normal, itemId, input.fold(form)(form.fillAndValidate))(request, messages)
   }
 
   private val prefix = "declaration.additionalDocument"
@@ -67,7 +74,6 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
   "AdditionalDocument Add/Change Controller" should {
 
     "have correct message keys" in {
-
       messages must haveTranslationFor(s"$prefix.status")
       messages must haveTranslationFor(s"$prefix.status.text")
       messages must haveTranslationFor(s"$prefix.status.error")
@@ -130,91 +136,262 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
     }
   }
 
-  "additional_document_edit view on empty page" when {
+  "additional_document_edit view" when {
 
-    "the entered authorisation code requires additional documents" should {
+    val clearanceJourneys = List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED)
+    val holders = List(DeclarationHolder(Some("OPO"), None, None), DeclarationHolder(Some("FZ"), None, None))
 
-      val declarationHolder = DeclarationHolder(Some("OPO"), Some(Eori("GB123456789012")), Some(EoriSource.OtherEori))
+    val authCodeHelper = new HolderOfAuthorisationCodes(new FileBasedCodeListConnector(appConfig))
 
-      onEveryDeclarationJourney(withDeclarationHolders(declarationHolder)) { implicit request =>
-        val view = createView()
+    allAdditionalDeclarationTypes.filterNot(clearanceJourneys.contains).foreach { declarationType =>
+      s"the declaration is of type $declarationType and" when {
 
-        "display the expected page title" in {
-          view.getElementsByTag("h1") must containMessageForElements(s"$prefix.title.fromAuthCode")
+        val itemWithLicenseRequired = anItem(withItemId(itemId), withLicenseRequired())
+
+        "has auth Codes requiring additional docs, and a license is required ('V1' content)" should {
+          implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*), withItem(itemWithLicenseRequired))
+
+          "display the expected page title" in {
+            createView.getElementsByTag("h1").text mustBe messages(s"$prefix.v1.title")
+          }
+
+          "display the expected page body" in {
+            val view = createView
+            val text = view.getElementsByClass("govuk-body")
+            text.get(0).text mustBe messages(s"$prefix.v1.body.1")
+            text.get(1).text mustBe messages(s"$prefix.v1.body.2")
+
+            val bulletPoints = view.getElementsByClass("govuk-list--bullet").first.children
+            bulletPoints.size mustBe 2
+            bulletPoints.get(0).text mustBe authCodeHelper.codeDescription(ENGLISH, "OPO")
+            bulletPoints.get(1).text mustBe authCodeHelper.codeDescription(ENGLISH, "FZ")
+          }
+
+          "display the expected top expander" in { topExpander(false) }
+          "display the expected 'Document Code' section" in { documentCode(1) }
+          "display the 'Document Code' expander" in { documentCodeExpander }
+          "display the expected 'Document Identifier' section" in { documentIdentifier(1) }
+          "NOT display any inset text" in { createView.getElementsByClass("govuk-inset-text").size mustBe 0 }
         }
 
-        "display the expected page hint" in {
-          val text = view.getElementsByClass("govuk-body")
-          text.get(0).text() mustBe messages(s"$prefix.text.fromAuthCode.paragraph1")
-          text.get(1).text() mustBe messages(s"$prefix.text.fromAuthCode.paragraph2")
+        "does NOT have auth Codes requiring additional docs, but a license is required ('V2' content)" should {
+          implicit val request = withRequest(declarationType, withItem(itemWithLicenseRequired))
+
+          "display the expected page title" in {
+            createView.getElementsByTag("h1").text mustBe messages(s"$prefix.v2.title")
+          }
+
+          "display the expected page body" in {
+            createView.getElementsByClass("govuk-body").get(0).text mustBe messages(s"$prefix.v2.body")
+          }
+
+          "display the expected top expander" in { topExpander(false) }
+          "display the expected 'Document Code' section" in { documentCode(2) }
+          "display the 'Document Code' expander" in { documentCodeExpander }
+          "display the expected 'Document Identifier' section" in { documentIdentifier(2) }
+
+          "display the expected insets placed after the 'Document Identifier' input field" in {
+            val insets = createView.getElementsByClass("govuk-inset-text")
+            val paragraphs = insets.get(0).getElementsByClass("govuk-body")
+            paragraphs.size mustBe 2
+            paragraphs.get(0).text mustBe messages(s"$prefix.identifier.inset.body.1")
+            paragraphs.get(1).text mustBe messages(s"$prefix.identifier.inset.body.2")
+          }
         }
 
-        "display empty input with label for Document type code" in {
-          view.getElementsByAttributeValue("for", documentCodeKey) must containMessageForElements(s"$prefix.code")
-          view.getElementById(s"$documentCodeKey-text") must containMessage(s"$prefix.code.text.fromAuthCode")
-          view.getElementById(s"$documentCodeKey-hint") must containMessage(s"$prefix.code.hint.fromAuthCode")
-          view.getElementById(documentCodeKey).attr("value") mustBe empty
+        "has auth Codes requiring additional docs, but a license is NOT required ('V3' content)" should {
+          implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*))
+
+          "display the expected page title" in {
+            createView.getElementsByTag("h1").text mustBe messages(s"$prefix.v3.title")
+          }
+
+          "display the expected page body" in {
+            val view = createView
+            val text = view.getElementsByClass("govuk-body")
+            text.get(0).text mustBe messages(s"$prefix.v3.body.1")
+            text.get(1).text mustBe messages(s"$prefix.v3.body.2")
+
+            val bulletPoints = view.getElementsByClass("govuk-list--bullet").first.children
+            bulletPoints.size mustBe 2
+            bulletPoints.get(0).text mustBe authCodeHelper.codeDescription(ENGLISH, "OPO")
+            bulletPoints.get(1).text mustBe authCodeHelper.codeDescription(ENGLISH, "FZ")
+          }
+
+          "display the expected top expander" in { topExpander(true) }
+          "display the expected 'Document Code' section" in { documentCode(3) }
+          "display the 'Document Code' expander" in { documentCodeExpander }
+          "display the expected 'Document Identifier' section" in { documentIdentifier(3) }
+
+          "display the expected insets placed after the 'Document Identifier' input field" in {
+            val insets = createView.getElementsByClass("govuk-inset-text")
+            val paragraphs = insets.get(0).getElementsByClass("govuk-body")
+            paragraphs.size mustBe 1
+            paragraphs.get(0).text mustBe messages(s"$prefix.v3.identifier.inset.body")
+          }
         }
 
-        "display the expected insets placed after the 'Document Identifier' input field" in {
-          val insets = view.getElementsByClass("govuk-inset-text").get(0)
-          val paragraphs = insets.getElementsByTag("p")
-          paragraphs.get(0).text() mustBe messages(s"$prefix.identifier.inset.body.1")
-          paragraphs.get(1).text() mustBe messages(s"$prefix.identifier.inset.body.2")
+        "does NOT have auth Codes requiring additional docs, and a license is NOT required ('V4' content)" should {
+          implicit val request = withRequest(declarationType)
 
-          Option(insets.previousElementSibling().getElementById(documentIdentifierKey)) must not be None
+          "display the expected page title" in {
+            createView.getElementsByTag("h1").text mustBe messages(s"$prefix.v4.title")
+          }
+
+          "display the expected page body" in {
+            createView.getElementsByClass("govuk-body").get(0).text mustBe messages(s"$prefix.v4.body")
+          }
+
+          "NOT display the top expander" in { Option(createView.getElementById("top-expander")) mustBe None }
+          "display the expected 'Document Code' section" in { documentCode(4) }
+          "display the 'Document Code' expander" in { documentCodeExpander }
+          "display the expected 'Document Identifier' section" in { documentIdentifier(4) }
+          "NOT display any inset text" in { createView.getElementsByClass("govuk-inset-text").size mustBe 0 }
         }
       }
+    }
+
+    clearanceJourneys.foreach { declarationType =>
+      s"the declaration is of type $declarationType and" when {
+
+        "has auth Codes requiring additional docs ('V5' content)" should {
+          implicit val request = withRequest(declarationType, withDeclarationHolders(holders: _*))
+
+          "display the expected page title" in {
+            createView.getElementsByTag("h1").text mustBe messages(s"$prefix.v5.title")
+          }
+
+          "display the expected page body" in {
+            val view = createView
+            val text = view.getElementsByClass("govuk-body")
+            text.get(0).text mustBe messages(s"$prefix.v5.body.1")
+            text.get(1).text mustBe messages(s"$prefix.v5.body.2")
+          }
+
+          "display the expected top expander" in { topExpander(true) }
+          "display the expected 'Document Code' section" in { documentCode(5) }
+          "display the 'Document Code' expander" in { documentCodeExpander }
+          "display the expected 'Document Identifier' section" in { documentIdentifier(5) }
+
+          "display the expected insets placed after the 'Document Identifier' input field" in {
+            val insets = createView.getElementsByClass("govuk-inset-text")
+            val paragraphs = insets.get(0).getElementsByClass("govuk-body")
+            paragraphs.size mustBe 2
+            paragraphs.get(0).text mustBe messages(s"$prefix.identifier.inset.body.1")
+            paragraphs.get(1).text mustBe messages(s"$prefix.identifier.inset.body.2")
+          }
+        }
+
+        "does NOT have auth Codes requiring additional docs ('V6' content)" should {
+          implicit val request = withRequest(declarationType)
+
+          "display the expected page title" in {
+            createView.getElementsByTag("h1").text mustBe messages(s"$prefix.v6.title")
+          }
+
+          "display the expected page body" in {
+            createView.getElementsByClass("govuk-body").get(0).text mustBe messages(s"$prefix.v6.body")
+          }
+
+          "display the expected top expander" in { topExpander(true) }
+          "display the expected 'Document Code' section" in { documentCode(6) }
+          "display the 'Document Code' expander" in { documentCodeExpander }
+          "display the expected 'Document Identifier' section" in { documentIdentifier(6) }
+          "NOT display any inset text" in { createView.getElementsByClass("govuk-inset-text").size mustBe 0 }
+        }
+      }
+    }
+
+    def topExpander(hasLastParagraph: Boolean)(implicit request: JourneyRequest[_]): Unit =
+      List("", "46021910", "4602191000").foreach { commodityCode =>
+        val declaration = request.cacheModel
+        val commodityDetails = if (commodityCode.isEmpty) None else Some(CommodityDetails(Some(commodityCode), None))
+        val item = declaration.items.headOption.fold(ExportItem(itemId, commodityDetails = commodityDetails)) {
+          _.copy(commodityDetails = commodityDetails)
+        }
+
+        val topExpander = createView(journeyRequest(declaration.copy(items = List(item)))).getElementById("top-expander")
+
+        topExpander.child(0).text mustBe messages(s"$prefix.expander.title")
+
+        val paragraphs = topExpander.getElementsByClass("govuk-body")
+        paragraphs.size mustBe (if (hasLastParagraph) 4 else 3)
+
+        if (commodityCode.isEmpty) {
+          val placeholder1 = messages(s"$prefix.expander.body.1.withoutCommodityCode.link")
+          paragraphs.get(0).text mustBe messages(s"$prefix.expander.body.1.withoutCommodityCode", placeholder1)
+          paragraphs.get(0).child(0) must haveHref(appConfig.tradeTariffSections)
+        } else {
+          val commodityCodeAsRef = if (commodityCode.length == 8) s"${commodityCode}00" else commodityCode
+          val placeholder1 = messages(s"$prefix.expander.body.1.withCommodityCode.link", commodityCode)
+          paragraphs.get(0).text mustBe messages(s"$prefix.expander.body.1.withCommodityCode", placeholder1)
+
+          val expectedHref = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCodeAsRef)
+          paragraphs.get(0).child(0) must haveHref(expectedHref)
+        }
+
+        paragraphs.get(1).text mustBe messages(s"$prefix.expander.body.2")
+        paragraphs.get(2).text mustBe messages(s"$prefix.expander.body.3", messages(s"$prefix.expander.body.3.link"))
+        paragraphs.get(2).child(0) must haveHref(appConfig.additionalDocumentsLicenceTypes)
+
+        if (hasLastParagraph) {
+          paragraphs.get(3).text mustBe messages(s"$prefix.expander.body.4", messages(s"$prefix.expander.body.4.link"))
+          paragraphs.get(3).child(0) must haveHref(appConfig.guidance.commodityCode0306310010)
+        }
+      }
+
+    def documentCode(version: Int)(implicit request: JourneyRequest[_]): Unit = {
+      val view = createView
+      view.getElementsByAttributeValue("for", documentTypeCodeKey) must containMessageForElements(s"$prefix.code")
+      view.getElementById(s"$documentTypeCodeKey-body") must containMessage(s"$prefix.v$version.code.body")
+      view.getElementById(s"$documentTypeCodeKey-hint") must containMessage(s"$prefix.v$version.code.hint")
+      view.getElementById(documentTypeCodeKey).attr("value") mustBe empty
+    }
+
+    def documentCodeExpander(implicit request: JourneyRequest[_]): Unit = {
+      val expander = createView.getElementById("documentCode-expander")
+
+      expander.child(0).text mustBe messages(s"$prefix.code.expander.title")
+
+      val paragraphs = expander.getElementsByClass("govuk-body")
+      paragraphs.size mustBe 3
+
+      paragraphs.get(0).text mustBe messages(s"$prefix.code.expander.body.1", messages(s"$prefix.code.expander.body.1.link"))
+      paragraphs.get(0).child(0) must haveHref(appConfig.additionalDocumentsUnionCodes)
+
+      paragraphs.get(1).text mustBe messages(s"$prefix.code.expander.body.2", messages(s"$prefix.code.expander.body.2.link"))
+      paragraphs.get(1).child(0) must haveHref(appConfig.additionalDocumentsReferenceCodes)
+
+      paragraphs.get(2).text mustBe messages(s"$prefix.code.expander.body.3")
+    }
+
+    def documentIdentifier(version: Int)(implicit request: JourneyRequest[_]): Unit = {
+      val view = createView
+      view.getElementsByAttributeValue("for", documentIdentifierKey) must containMessageForElements(s"$prefix.identifier")
+
+      val paragraphs = view.getElementsByClass("govuk-body")
+      version match {
+        case 1 => paragraphs.get(9).text mustBe messages(s"$prefix.identifier.body")
+        case 2 => paragraphs.get(8).text mustBe messages(s"$prefix.identifier.body")
+        case 3 =>
+          paragraphs.get(10).text mustBe messages(s"$prefix.v3.identifier.body.1")
+          paragraphs.get(11).text mustBe messages(s"$prefix.v3.identifier.body.2")
+
+        case 4 => paragraphs.get(5).text mustBe messages(s"$prefix.v4.identifier.body")
+        case 5 => paragraphs.get(10).text mustBe messages(s"$prefix.identifier.body")
+        case 6 => paragraphs.get(9).text mustBe messages(s"$prefix.identifier.body")
+      }
+
+      view.getElementById(documentIdentifierKey).attr("value") mustBe empty
     }
   }
 
   "additional_document_edit view on empty page" should {
-
     onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
-      "display the expected page title" in {
-        view.getElementsByTag("h1") must containMessageForElements(s"$prefix.title")
-      }
-
       "display section header" in {
         view.getElementById("section-header") must containMessage("declaration.section.5")
-      }
-
-      "display the expected page hint" in {
-        val texts = view.getElementsByClass("govuk-body")
-        texts.get(0).text() mustBe messages(s"$prefix.text")
-      }
-
-      "display the top expander" when {
-        "commodityCode is not present" in {
-          val topExpander = view.getElementById("top-expander")
-
-          topExpander must containHtml(messages(s"$prefix.expander.title"))
-          topExpander
-            .getElementsByClass("govuk-body")
-            .get(0) must containText(messages(s"$prefix.expander.body.1.withoutCommodityCode.link1.text"))
-        }
-      }
-
-      "display empty input with label for Document type code" in {
-        view.getElementsByAttributeValue("for", documentCodeKey) must containMessageForElements(s"$prefix.code")
-        view.getElementById(s"$documentCodeKey-hint") must containMessage(s"$prefix.code.hint")
-        view.getElementById(documentCodeKey).attr("value") mustBe empty
-      }
-
-      "display the documentTypeCode expander" in {
-        view.getElementById("documentTypeCode-expander") must containHtml(messages(s"$prefix.code.expander.title"))
-      }
-
-      "display empty input with label and hint for Document identifier" in {
-        view.getElementsByAttributeValue("for", documentIdentifierKey) must containMessageForElements(s"$prefix.identifier")
-        view.getElementById(s"$documentIdentifierKey-text") must containMessage(s"$prefix.identifier.body")
-        view.getElementById(documentIdentifierKey).attr("value") mustBe empty
-      }
-
-      "not have any inset text" in {
-        view.getElementsByClass("govuk-inset-text").size mustBe 0
       }
 
       "display empty input with label for Document status" in {
@@ -255,9 +432,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       }
 
       "display empty input with label for Document quantity" in {
-        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$documentQuantityKey") must containMessageForElements(
-          s"$prefix.quantity"
-        )
+        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$documentQuantityKey") must containMessageForElements(s"$prefix.quantity")
         view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") mustBe empty
         view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey-hint") must containMessage(
           s"$prefix.quantity.hint",
@@ -265,56 +440,13 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         )
       }
 
-      "display'Save and continue' button on page" in {
+      "display 'Save and continue' button on page" in {
         val saveAndContinueButton = view.getElementById("submit")
         saveAndContinueButton must containMessage(saveAndContinueCaption)
 
         val saveAndReturnButton = view.getElementById("submit_and_return")
         saveAndReturnButton must containMessage(saveAndReturnCaption)
         saveAndReturnButton must haveAttribute("name", SaveAndReturn.toString)
-      }
-    }
-  }
-
-  "additional_document_edit view on empty page" should {
-
-    "display the top expander" when {
-      val commodityCode = "4602191000"
-      val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
-
-      onEveryDeclarationJourney(withItem(item)) { implicit request =>
-        "a commodityCode with 10-digits is present" in {
-          val topExpander = createView().getElementById("top-expander")
-
-          topExpander must containHtml(messages(s"$prefix.expander.title"))
-          val commodityCodeBody = topExpander.getElementsByClass("govuk-body").get(0)
-
-          val expectedLinkText = messages(s"$prefix.expander.body.1.withCommodityCode.link1.text", commodityCode)
-          val expectedHref = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
-
-          commodityCodeBody.text mustBe messages(s"$prefix.expander.body.1.withCommodityCode.text", expectedLinkText)
-          commodityCodeBody.child(0) must haveHref(expectedHref)
-        }
-      }
-    }
-
-    "display the top expander" when {
-      val commodityCode = "46021910"
-      val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
-
-      onEveryDeclarationJourney(withItem(item)) { implicit request =>
-        "a commodityCode with 8-digits is present" in {
-          val topExpander = createView().getElementById("top-expander")
-
-          topExpander must containHtml(messages(s"$prefix.expander.title"))
-          val commodityCodeBody = topExpander.getElementsByClass("govuk-body").get(0)
-
-          val expectedLinkText = messages(s"$prefix.expander.body.1.withCommodityCode.link1.text", commodityCode)
-          val expectedHref = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, s"${commodityCode}00")
-
-          commodityCodeBody.text mustBe messages(s"$prefix.expander.body.1.withCommodityCode.text", expectedLinkText)
-          commodityCodeBody.child(0) must haveHref(expectedHref)
-        }
       }
     }
   }
@@ -327,7 +459,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         val view = createView(Some(correctAdditionalDocument.copy(documentTypeCode = invalidDocumentTypeCode)))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", s"#$documentCodeKey")
+        view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
 
         view must containErrorElementWithMessageKey(s"$prefix.code.error")
       }
@@ -336,7 +468,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         val view = createView(Some(correctAdditionalDocument.copy(documentTypeCode = None)))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", s"#$documentCodeKey")
+        view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
 
         view must containErrorElementWithMessageKey(s"$prefix.code.empty")
       }
@@ -345,7 +477,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         val view = createView(Some(correctAdditionalDocument.copy(documentTypeCode = None)), allRecords)
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", s"#$documentCodeKey")
+        view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
 
         view must containErrorElementWithMessageKey(s"$prefix.code.empty.fromAuthCode")
       }
@@ -493,7 +625,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view must haveGovukGlobalErrorSummary
 
         val keys = List(
-          documentCodeKey,
+          documentTypeCodeKey,
           documentIdentifierKey,
           documentStatusKey,
           documentStatusReasonKey,
@@ -524,16 +656,16 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       "display data in all inputs" in {
         val data = correctAdditionalDocument
         val form = AdditionalDocument.form(declaration).fill(data)
-        val view = additionalDocumentEditPage(mode, itemId, form)(request, messages)
+        val view = additionalDocumentEditPage(Normal, itemId, form)(request, messages)
 
         def assert[T](elementId: String, value: Option[T]): Assertion =
           view.getElementById(elementId).attr("value") mustBe value.value.toString
 
-        assert(documentCodeKey, data.documentTypeCode)
+        assert(documentTypeCodeKey, data.documentTypeCode)
         assert(documentIdentifierKey, data.documentIdentifier)
         assert(documentStatusKey, data.documentStatus)
         assert(documentStatusReasonKey, data.documentStatusReason)
-        view.getElementById(issuingAuthorityNameKey).text() mustBe data.issuingAuthorityName.value
+        view.getElementById(issuingAuthorityNameKey).text mustBe data.issuingAuthorityName.value
         assert(s"${dateOfValidityKey}_$dayKey", data.dateOfValidity.value.day)
         assert(s"${dateOfValidityKey}_$monthKey", data.dateOfValidity.value.month)
         assert(s"${dateOfValidityKey}_$yearKey", data.dateOfValidity.value.year)
