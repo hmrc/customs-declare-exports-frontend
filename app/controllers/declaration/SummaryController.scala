@@ -18,7 +18,7 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
-import controllers.declaration.SummaryController.continuePlaceholder
+import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
 import controllers.declaration.routes.TransportContainerController
 import controllers.routes.SavedDeclarationsController
 import forms.declaration.LegalDeclaration
@@ -61,9 +61,9 @@ class SummaryController @Inject()(
 
   val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage(mode)
-    else Ok(summaryPageNoData())
+    else Future.successful(Ok(summaryPageNoData()))
   }
 
   def displayDeclarationPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
@@ -71,42 +71,46 @@ class SummaryController @Inject()(
       case Mode.Draft | Mode.Normal | Mode.Amend => Ok(legalDeclarationPage(form, mode))
       case _                                     => handleError("Invalid mode on summary page")
     }
-
   }
 
   def submitDeclaration(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    def submit(form: Form[LegalDeclaration]): Future[Result] =
-      form.bindFromRequest.fold(
-        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors, mode))),
-        legalDeclaration => {
-          submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
-            case Some(submission) => Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
-            case _                => handleError(s"Error from Customs Declarations API")
-          }
+    form.bindFromRequest.fold(
+      (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legalDeclarationPage(formWithErrors, mode))),
+      legalDeclaration => {
+        submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
+          case Some(submission) => Redirect(routes.ConfirmationController.displayHoldingPage).withSession(session(submission))
+          case _                => handleError(s"Error from Customs Declarations API")
         }
-      )
-
-    val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
-
-    isLrnADuplicate(maybeLrn).flatMap {
-      case true =>
-        val allErrors = form.errors ++ Seq(FormError("lrn", "declaration.consignmentReferences.lrn.error.notExpiredYet"))
-        submit(form.copy(errors = allErrors))
-      case _ => submit(form)
-    }
+      }
+    )
   }
 
-  private def displaySummaryPage(mode: Mode)(implicit request: JourneyRequest[_]): Result = {
+  private def displaySummaryPage(mode: Mode)(implicit request: JourneyRequest[_]): Future[Result] = {
 
     val readyForSubmission = request.cacheModel.readyForSubmission.contains(true)
+    val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
 
-    mode match {
-      case Mode.Normal if readyForSubmission => Ok(normalSummaryPage(TransportContainerController.displayContainerSummary(Mode.Normal)))
-      case Mode.Normal                       => Ok(draftSummaryPage(TransportContainerController.displayContainerSummary(Mode.Normal)))
-      case Mode.Draft if readyForSubmission  => Ok(normalSummaryPage(SavedDeclarationsController.displayDeclarations()))
-      case Mode.Draft                        => Ok(amendDraftSummaryPage)
-      case Mode.Amend                        => Ok(amendSummaryPage())
-      case _                                 => handleError("Invalid mode on summary page")
+    isLrnADuplicate(maybeLrn).map { lrnIsDuplicate =>
+      (mode, lrnIsDuplicate) match {
+        case (Mode.Normal, true) if readyForSubmission =>
+          Ok(normalSummaryPage(TransportContainerController.displayContainerSummary(Mode.Normal), Seq(lrnDuplicateError)))
+        case (Mode.Normal, _) if readyForSubmission =>
+          Ok(normalSummaryPage(TransportContainerController.displayContainerSummary(Mode.Normal)))
+        case (Mode.Normal, _) =>
+          Ok(draftSummaryPage(TransportContainerController.displayContainerSummary(Mode.Normal)))
+        case (Mode.Draft, true) if readyForSubmission =>
+          Ok(normalSummaryPage(SavedDeclarationsController.displayDeclarations(), Seq(lrnDuplicateError)))
+        case (Mode.Draft, _) if readyForSubmission =>
+          Ok(normalSummaryPage(SavedDeclarationsController.displayDeclarations()))
+        case (Mode.Draft, _) =>
+          Ok(amendDraftSummaryPage)
+        case (Mode.Amend, true) =>
+          Ok(amendSummaryPage(Seq(lrnDuplicateError)))
+        case (Mode.Amend, _) =>
+          Ok(amendSummaryPage())
+        case _ =>
+          handleError("Invalid mode on summary page")
+      }
     }
   }
 
@@ -141,5 +145,6 @@ class SummaryController @Inject()(
 
 object SummaryController {
 
+  val lrnDuplicateError: FormError = FormError("lrn", "declaration.consignmentReferences.lrn.error.notExpiredYet")
   val continuePlaceholder = "continue-saved-declaration"
 }
