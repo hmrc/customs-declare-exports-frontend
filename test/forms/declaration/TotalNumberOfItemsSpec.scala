@@ -32,9 +32,9 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
   private def formData(
     rate: Option[String] = None,
-    amount: Option[String] = None,
+    amount: Option[String],
     currency: Option[String] = None,
-    rateYesNo: Option[String] = None
+    rateYesNo: Option[String]
   ): Map[String, String] =
     mapTo(rate, exchangeRate) ++
       mapTo(amount, totalAmountInvoiced) ++

@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import forms.common.YesNoAnswer.{Yes, YesNoAnswers}
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.TotalNumberOfItems
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.Mode

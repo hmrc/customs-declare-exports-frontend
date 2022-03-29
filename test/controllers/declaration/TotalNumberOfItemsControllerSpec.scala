@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.TotalNumberOfItems
 import models.DeclarationType._
