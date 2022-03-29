@@ -36,14 +36,37 @@
 
 @if(hasTransactionData) {
     @summaryList("declaration-transaction-summary", Some(messages("declaration.summary.transaction")), List(
-        declaration.totalNumberOfItems.map { totalNumberOfItems =>
+        declaration.totalNumberOfItems.flatMap(_.totalAmountInvoiced.map { totalAmountInvoiced =>
+        SummaryListRow(
+        classes = "item-amount-row",
+        key = Key(
+        content = Text(messages("declaration.summary.transaction.itemAmount"))
+        ),
+        value = Value(
+        content = Text({
+        val currencyCode = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency).getOrElse("")
+        s"$currencyCode $totalAmountInvoiced"
+        })
+        ),
+        actions = actions(Actions(
+        items = List(
+        actionItem(
+        href = InvoiceAndExchangeRateController.displayPage(mode).url,
+        content = HtmlContent(linkContent(messages("site.change"))),
+        visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
+        )
+        )
+        ))
+        )
+        }),
+        declaration.totalNumberOfItems.flatMap { _.exchangeRate.map { exchangeRate =>
             SummaryListRow(
                 classes = "exchange-rate-row",
                 key = Key(
                     content = Text(messages("declaration.summary.transaction.exchangeRate"))
                 ),
                 value = Value(
-                    content = Text(totalNumberOfItems.exchangeRate.getOrElse(messages("site.no")))
+                    content = Text(exchangeRate)
                 ),
                 actions = actions(Actions(
                     items = List(
@@ -55,30 +78,7 @@
                     )
                 ))
             )
-        },
-        declaration.totalNumberOfItems.flatMap(_.totalAmountInvoiced.map { totalAmountInvoiced =>
-            SummaryListRow(
-                classes = "item-amount-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.transaction.itemAmount"))
-                ),
-                value = Value(
-                    content = Text({
-                        val currencyCode = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency).getOrElse("")
-                        s"$currencyCode $totalAmountInvoiced"
-                    })
-                ),
-                actions = actions(Actions(
-                    items = List(
-                        actionItem(
-                            href = InvoiceAndExchangeRateController.displayPage(mode).url,
-                            content = HtmlContent(linkContent(messages("site.change"))),
-                            visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
-                        )
-                    )
-                ))
-            )
-        }),
+        }},
         declaration.totalNumberOfItems.flatMap(_.totalPackage.map { totalPackage =>
             SummaryListRow(
                 classes = "total-no-of-packages-row",
