@@ -609,7 +609,7 @@ class Navigator @Inject()(
 
   private def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration, mode: Mode): Call = {
     val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
-    if (postalOrFTI) routes.SupervisingCustomsOfficeController.displayPage(mode)
+    if (postalOrFTI) routes.WarehouseIdentificationController.displayPage(mode)
     else routes.DepartureTransportController.displayPage(mode)
   }
 

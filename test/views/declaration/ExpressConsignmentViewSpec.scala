@@ -130,7 +130,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
           val view: Document = createView()(requestWithUpdatedDec)
 
           s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-            verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
+            verifyBackButton(view, routes.WarehouseIdentificationController.displayPage(Mode.Normal))
           }
         }
       }
