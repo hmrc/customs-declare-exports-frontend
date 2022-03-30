@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import controllers.declaration.SummaryController.continuePlaceholder
+import controllers.declaration.SummaryController.{continuePlaceholder, lrnDuplicateError}
 import controllers.declaration.SummaryControllerSpec.{expectedHref, fakeSummaryPage}
 import controllers.declaration.routes.TransportContainerController
 import controllers.routes.SavedDeclarationsController
@@ -28,9 +28,12 @@ import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys
 import models.{ExportsDeclaration, Mode}
 import org.jsoup.Jsoup
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers.AnyMustWrapper
+import play.api.data.FormError
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
@@ -73,11 +76,12 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(normalSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(normalSummaryPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(legalDeclarationPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(draftSummaryPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
-    when(amendSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(amendSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockLrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(false))
   }
 
   override protected def afterEach(): Unit = {
@@ -98,7 +102,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
             val result = controller.displayPage(Mode.Normal)(getRequest())
 
             status(result) mustBe OK
-            verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink))(any(), any(), any())
+            verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any())(any(), any(), any())
             verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
           }
 
@@ -108,7 +112,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
             val result = controller.displayPage(Mode.Draft)(getRequest())
 
             status(result) mustBe OK
-            verify(normalSummaryPage, times(1)).apply(eqTo(draftModeBackLink))(any(), any(), any())
+            verify(normalSummaryPage, times(1)).apply(eqTo(draftModeBackLink), any())(any(), any(), any())
             verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
           }
         }
@@ -168,7 +172,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
           val result = controller.displayPage(Mode.Amend)(getRequest())
 
           status(result) mustBe OK
-          verify(amendSummaryPage, times(1)).apply()(any(), any(), any())
+          verify(amendSummaryPage, times(1)).apply(any())(any(), any(), any())
           verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
         }
       }
@@ -179,8 +183,47 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(normalSummaryPage, times(0)).apply(any())(any(), any(), any())
+        verify(normalSummaryPage, times(0)).apply(any(), any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(1)).apply()(any(), any())
+      }
+    }
+
+    "pass an error to page if LRN is a duplicate" when {
+
+      def duplicateLrnSetup() = {
+        when(mockLrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any[HeaderCarrier], any[ExecutionContext]))
+          .thenReturn(Future.successful(true))
+        withNewCaching(aDeclaration(withConsignmentReferences()).copy(readyForSubmission = Some(true)))
+      }
+
+      "Mode is normal and ready for submission" in {
+        duplicateLrnSetup()
+        val captor = ArgumentCaptor.forClass(classOf[Seq[FormError]])
+
+        await(controller.displayPage(Mode.Normal)(getRequest()))
+
+        verify(normalSummaryPage, times(1)).apply(any(), captor.capture())(any(), any(), any())
+        captor.getValue must be(Seq(lrnDuplicateError))
+      }
+
+      "Mode is Draft and ready for submission" in {
+        duplicateLrnSetup()
+        val captor = ArgumentCaptor.forClass(classOf[Seq[FormError]])
+
+        await(controller.displayPage(Mode.Draft)(getRequest()))
+
+        verify(normalSummaryPage, times(1)).apply(any(), captor.capture())(any(), any(), any())
+        captor.getValue must be(Seq(lrnDuplicateError))
+      }
+
+      "Mode is Amend" in {
+        duplicateLrnSetup()
+        val captor = ArgumentCaptor.forClass(classOf[Seq[FormError]])
+
+        await(controller.displayPage(Mode.Amend)(getRequest()))
+
+        verify(amendSummaryPage, times(1)).apply(captor.capture())(any(), any(), any())
+        captor.getValue must be(Seq(lrnDuplicateError))
       }
     }
 
@@ -243,17 +286,6 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
 
         status(result) must be(BAD_REQUEST)
       }
-
-      "lrn has been submitted in the past 48 hours" in {
-        withNewCaching(aDeclaration(withConsignmentReferences()))
-
-        when(mockLrnValidator.hasBeenSubmittedInThePast48Hours(any[Lrn])(any[HeaderCarrier], any[ExecutionContext]))
-          .thenReturn(Future.successful(true))
-
-        val result = controller.submitDeclaration(models.Mode.Normal)(postRequestWithSubmissionError)
-
-        status(result) must be(BAD_REQUEST)
-      }
     }
 
     "return 500 (INTERNAL_SERVER_ERROR) during submission" when {
@@ -265,7 +297,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
         val result = controller.submitDeclaration(models.Mode.Normal)(postRequest(body))
 
         status(result) mustBe INTERNAL_SERVER_ERROR
-        verify(normalSummaryPage, times(0)).apply(any())(any(), any(), any())
+        verify(normalSummaryPage, times(0)).apply(any(), any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
       }
     }

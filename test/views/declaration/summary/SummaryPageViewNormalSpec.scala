@@ -33,13 +33,19 @@ class SummaryPageViewNormalSpec extends SummaryPageViewSpec {
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
     normal_summaryPage(backLink)(journeyRequest(declaration), messages, minimalAppConfig)
 
+  def viewWithError(declaration: ExportsDeclaration = aDeclaration()): Document =
+    normal_summaryPage(backLink, dummyFormError)(journeyRequest(declaration), messages, minimalAppConfig)
+
   "Summary page" should {
 
     val document = view(aDeclaration())
+    val documentWithError = viewWithError(aDeclaration())
 
     behave like commonBehaviour(document)
 
     behave like sectionsVisiblity(view)
+
+    behave like displayErrorSummary(documentWithError)
 
     "should display correct title" in {
       document.getElementById("title").text() mustBe messages("declaration.summary.normal-header")
