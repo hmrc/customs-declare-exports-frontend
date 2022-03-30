@@ -16,7 +16,7 @@
 
 package forms.declaration
 
-import forms.common.{DeclarationPageBaseSpec, YesNoAnswer}
+import forms.common.DeclarationPageBaseSpec
 import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.libs.json.{JsObject, JsString, JsValue}
 

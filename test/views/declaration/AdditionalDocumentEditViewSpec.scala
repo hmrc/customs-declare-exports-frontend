@@ -98,7 +98,6 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
       messages must haveTranslationFor(s"$prefix.documentTypeCode.empty")
       messages must haveTranslationFor(s"$prefix.documentTypeCode.empty.fromAuthCode")
       messages must haveTranslationFor(s"$prefix.documentTypeCode.error")
-      messages must haveTranslationFor(s"$prefix.documentTypeCode.Y999.error")
 
       messages must haveTranslationFor(s"$prefix.documentIdentifier")
       messages must haveTranslationFor(s"$prefix.documentIdentifier.body")
@@ -377,15 +376,6 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with CommonMessages wi
         view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
 
         view must containErrorElementWithMessageKey(s"$prefix.documentTypeCode.empty")
-      }
-
-      "display error for Y999 Document type code" in {
-        val view = createView(Some(correctAdditionalDocument.copy(documentTypeCode = Some("Y999"))))
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
-
-        view must containErrorElementWithMessageKey(s"$prefix.documentTypeCode.Y999.error")
       }
 
       "display error for empty Document type code when required after the entered authorisation code" in {
