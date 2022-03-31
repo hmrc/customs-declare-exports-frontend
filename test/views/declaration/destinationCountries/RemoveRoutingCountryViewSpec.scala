@@ -75,7 +75,7 @@ class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
       val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe messages("site.back")
-      backButton must haveHref(routes.RoutingCountriesSummaryController.displayPage())
+      backButton must haveHref(routes.RoutingCountriesController.displayRoutingCountry())
     }
 
     "display 'Save and continue' button" in {

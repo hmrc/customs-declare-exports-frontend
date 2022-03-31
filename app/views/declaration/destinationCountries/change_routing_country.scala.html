@@ -50,7 +50,7 @@
     title = Title(s"declaration.routingCountry.title", "declaration.section.3", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(ChangeCountryPage, mode)))){
 
-    @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitChangeCountry(mode, countryToChange), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @components.fields.field_accessible_location_autocomplete_with_header(

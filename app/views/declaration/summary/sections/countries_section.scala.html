@@ -51,7 +51,7 @@
                 actions = actions(Actions(
                     items = Seq(
                         actionItem(
-                            href = controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode).url,
+                            href = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.countries.routingCountries.change"))
                         )

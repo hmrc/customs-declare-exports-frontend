@@ -18,7 +18,7 @@ package controllers.declaration
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController, RoutingCountriesSummaryController}
+import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingCountryQuestionYesNo._
 import forms.declaration.countries.Countries
@@ -48,18 +48,14 @@ class RoutingCountriesController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (fastForward && request.cacheModel.containRoutingCountries()) {
-      navigator.continueTo(mode, RoutingCountriesSummaryController.displayPage)
-    } else {
-      val destinationCountryCode = request.cacheModel.locations.destinationCountry.flatMap(_.code)
-      val destinationCountryName =
-        destinationCountryCode.map(ServiceCountries.findByCode(_)).map(countryHelper.getShortNameForCountry(_)).getOrElse("")
+    val destinationCountryCode = request.cacheModel.locations.destinationCountry.flatMap(_.code)
+    val destinationCountryName =
+      destinationCountryCode.map(ServiceCountries.findByCode(_)).map(countryHelper.getShortNameForCountry).getOrElse("")
 
-      val frm = formFirst().withSubmissionErrors()
-      request.cacheModel.locations.hasRoutingCountries match {
-        case Some(answer) => Ok(routingQuestionPage(mode, frm.fill(answer), destinationCountryName))
-        case None         => Ok(routingQuestionPage(mode, frm, destinationCountryName))
-      }
+    val frm = formFirst().withSubmissionErrors()
+    request.cacheModel.locations.hasRoutingCountries match {
+      case Some(answer) => Ok(routingQuestionPage(mode, frm.fill(answer), destinationCountryName))
+      case None         => Ok(routingQuestionPage(mode, frm, destinationCountryName))
     }
   }
 
@@ -113,7 +109,7 @@ class RoutingCountriesController @Inject()(
           val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
 
           updateDeclarationFromRequest(_.updateCountriesOfRouting(newRoutingCountries)).map { _ =>
-            navigator.continueTo(mode, RoutingCountriesSummaryController.displayPage, mode.isErrorFix)
+            navigator.continueTo(mode, LocationOfGoodsController.displayPage, mode.isErrorFix)
           }
         }
       )

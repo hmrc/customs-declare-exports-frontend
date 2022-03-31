@@ -351,7 +351,7 @@ class LocationOfGoodsViewSpec extends UnitViewSpec with Stubs with Injector with
   "Goods Location view" should {
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
-      behave like viewWithCorrectBackButton(request.declarationType, routes.RoutingCountriesSummaryController.displayPage())
+      behave like viewWithCorrectBackButton(request.declarationType, routes.RoutingCountriesController.displayRoutingCountry())
     }
 
     onJourney(SUPPLEMENTARY, CLEARANCE) { request =>

@@ -89,7 +89,7 @@ class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
         val backButton = firstRoutingView(request).getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
-        backButton must haveHref(routes.RoutingCountriesSummaryController.displayPage())
+        backButton must haveHref(routes.RoutingCountriesController.displayRoutingCountry())
       }
 
       s"display back button that links to 'Countries summary' for next routing country page for ${request.declarationType}" in {
@@ -97,7 +97,7 @@ class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
         val backButton = firstRoutingView(request).getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
-        backButton must haveHref(routes.RoutingCountriesSummaryController.displayPage())
+        backButton must haveHref(routes.RoutingCountriesController.displayRoutingCountry())
       }
 
       s"display 'Save and continue' button for ${request.declarationType}" in {

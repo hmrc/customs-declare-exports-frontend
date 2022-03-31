@@ -89,7 +89,7 @@
     title = Title("declaration.routingCountries.remove.title", "declaration.section.3", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(RemoveCountryPage, mode)))){
 
-    @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitRemoveCountry(mode, countryToRemove.countryCode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
 
         @errorSummary(radioGroupErrors("answer", "Yes", form.errors))
 

@@ -179,18 +179,6 @@ GET         /countries-of-routing                controllers.declaration.Routing
 
 POST        /countries-of-routing                controllers.declaration.RoutingCountriesController.submitRoutingCountry(mode: models.Mode ?= models.Mode.Normal)
 
-GET         /countries-summary                   controllers.declaration.RoutingCountriesSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /countries-summary                   controllers.declaration.RoutingCountriesSummaryController.submit(mode: models.Mode ?= models.Mode.Normal)
-
-GET         /country-of-routing/:code/remove     controllers.declaration.RoutingCountriesSummaryController.displayRemoveCountryPage(mode: models.Mode ?= models.Mode.Normal, code: String)
-
-POST        /country-of-routing/:code/remove     controllers.declaration.RoutingCountriesSummaryController.submitRemoveCountry(mode: models.Mode ?= models.Mode.Normal, code: String)
-
-GET         /country-of-routing/:code/change     controllers.declaration.RoutingCountriesSummaryController.displayChangeCountryPage(mode: models.Mode ?= models.Mode.Normal, code: String)
-
-POST        /country-of-routing/:code/change     controllers.declaration.RoutingCountriesSummaryController.submitChangeCountry(mode: models.Mode ?= models.Mode.Normal, code: String)
-
 # Location of goods
 
 GET         /location-of-goods                   controllers.declaration.LocationOfGoodsController.displayPage(mode: models.Mode ?= models.Mode.Normal)

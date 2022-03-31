@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerSpec
 import connectors.CodeListConnector
-import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController, RoutingCountriesSummaryController}
+import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -152,16 +152,6 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
 
-      "user is coming to the page with fastForward flag and countries in the cache" in {
-
-        withNewCaching(aDeclaration(withRoutingCountries()))
-
-        val result = controller.displayRoutingQuestion(Mode.Normal, true)(getRequest())
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage()
-      }
-
       "user answered Yes for Routing Question" in {
 
         withNewCaching(aDeclaration(withDestinationCountry()))
@@ -215,7 +205,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.submitRoutingCountry(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage()
+        thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
       }
 
       "user is during error fixing and the naswer is yes" in {
@@ -230,17 +220,6 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix)
       }
 
-      "user submitted correct routing country during error fixing" in {
-
-        withNewCaching(aDeclaration(withRoutingQuestion()))
-
-        val correctForm = JsObject(Seq("countryCode" -> JsString("GB")))
-
-        val result = controller.submitRoutingCountry(Mode.ErrorFix)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RoutingCountriesSummaryController.displayPage(Mode.ErrorFix)
-      }
     }
   }
 }
