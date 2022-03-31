@@ -38,14 +38,14 @@ class AdditionalDocumentSpec extends UnitSpec {
 
         "is empty, but the user has selected 'yes' in the related 'yes/no' page" in {
           val input = emptyAdditionalDocumentMap
-          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.empty"))
+          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.code.empty"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
         "is empty, but it was required after the entered authorisation code" in {
           val input = emptyAdditionalDocumentMap
-          val expectedError = FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.empty.fromAuthCode")
+          val expectedError = FormError(documentTypeCodeKey, "declaration.additionalDocument.code.empty.fromAuthCode")
 
           val form = AdditionalDocument.form(allRecords).bind(input)
           form.errors must contain(expectedError)
@@ -53,21 +53,21 @@ class AdditionalDocumentSpec extends UnitSpec {
 
         "is longer than 5 characters" in {
           val input = Map(documentTypeCodeKey -> "123456")
-          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.error"))
+          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.code.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
         "is shorter than 4 characters" in {
           val input = Map(documentTypeCodeKey -> "123")
-          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.error"))
+          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.code.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
         "contains special characters" in {
           val input = Map(documentTypeCodeKey -> "12!$")
-          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.documentTypeCode.error"))
+          val expectedErrors = Seq(FormError(documentTypeCodeKey, "declaration.additionalDocument.code.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -78,7 +78,7 @@ class AdditionalDocumentSpec extends UnitSpec {
         "is longer than 35 characters" in {
           val input = Map(documentTypeCodeKey -> "AB12", documentIdentifierKey -> TestHelper.createRandomAlphanumericString(36))
           val expectedErrors =
-            Seq(FormError(documentIdentifierKey, "declaration.additionalDocument.documentIdentifier.error"))
+            Seq(FormError(documentIdentifierKey, "declaration.additionalDocument.identifier.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -86,7 +86,7 @@ class AdditionalDocumentSpec extends UnitSpec {
         "contains special characters" in {
           val input = Map(documentTypeCodeKey -> "AB12", documentIdentifierKey -> "12#$")
           val expectedErrors =
-            Seq(FormError(documentIdentifierKey, "declaration.additionalDocument.documentIdentifier.error"))
+            Seq(FormError(documentIdentifierKey, "declaration.additionalDocument.identifier.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -96,21 +96,21 @@ class AdditionalDocumentSpec extends UnitSpec {
 
         "is longer than 2 characters" in {
           val input = Map(documentTypeCodeKey -> "AB12", documentStatusKey -> "ABC")
-          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.documentStatus.error"))
+          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.status.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
         "contains special characters" in {
           val input = Map(documentTypeCodeKey -> "AB12", documentStatusKey -> "A@")
-          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.documentStatus.error"))
+          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.status.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
         "contains digits" in {
           val input = Map(documentTypeCodeKey -> "AB12", documentStatusKey -> "A4")
-          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.documentStatus.error"))
+          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.additionalDocument.status.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -122,21 +122,21 @@ class AdditionalDocumentSpec extends UnitSpec {
 
         "they entered a Document code requiring a Status Reason" in {
           val input = Map(documentTypeCodeKey -> documentTypeCodeRequiringAReason, documentStatusKey -> "A4")
-          val expectedErrors = Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.required.forDocumentCode"))
+          val expectedErrors = Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.statusReason.required.forDocumentCode"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
         "they entered a Status code requiring a Status Reason" in {
           val input = Map(documentTypeCodeKey -> "AB12", documentStatusKey -> documentStatusRequiringAReason)
-          val expectedErrors = Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.required.forStatusCode"))
+          val expectedErrors = Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.statusReason.required.forStatusCode"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
         "they entered a Document code and a Status code that both requiring a Status Reason" in {
           val input = Map(documentTypeCodeKey -> documentTypeCodeRequiringAReason, documentStatusKey -> documentStatusRequiringAReason)
-          val expectedErrors = Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.required.forDocumentCode"))
+          val expectedErrors = Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.statusReason.required.forDocumentCode"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -147,7 +147,7 @@ class AdditionalDocumentSpec extends UnitSpec {
         "is longer than 35 characters" in {
           val input = Map(documentTypeCodeKey -> "AB12", documentStatusReasonKey -> TestHelper.createRandomAlphanumericString(36))
           val expectedErrors =
-            Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.error"))
+            Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.statusReason.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -155,7 +155,7 @@ class AdditionalDocumentSpec extends UnitSpec {
         "contains special characters" in {
           val input = Map(documentTypeCodeKey -> "AB12", documentStatusReasonKey -> "AB!@#$")
           val expectedErrors =
-            Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.documentStatusReason.error"))
+            Seq(FormError(documentStatusReasonKey, "declaration.additionalDocument.statusReason.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -197,7 +197,7 @@ class AdditionalDocumentSpec extends UnitSpec {
           )
           val expectedErrors = Seq(
             FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.additionalDocument.measurementUnit.error"),
-            FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.additionalDocument.documentQuantity.error")
+            FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.additionalDocument.quantity.error")
           )
 
           testFailedValidationErrors(input, expectedErrors)

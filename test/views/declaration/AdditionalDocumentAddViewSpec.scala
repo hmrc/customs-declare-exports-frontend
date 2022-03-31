@@ -69,7 +69,7 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
 
   "additional_document_add view" when {
 
-    "asked previously 'Is License Required?'" when {
+    "asked previously 'Is License Required?'" should {
 
       onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(TestDeclaration.licenseRequired) { implicit request =>
         "display a 'Back' button that links to the 'Is License Required' page" when {
@@ -107,7 +107,6 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
     }
 
     "additional documents are present" should {
-
       onJourney(CLEARANCE)(TestDeclaration.withDocs) { implicit request =>
         "display a 'Back' button that links to the 'Additional Documents Required' page" in {
           verifyBackButton(routes.AdditionalDocumentsController.displayPage(mode, itemId))
@@ -123,7 +122,6 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
             verifyBackButton(routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId))
           }
         }
-
       }
 
       "the authorisation code requires additional documents" should {
@@ -133,7 +131,6 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with CommonMessages wit
             verifyBackButton(routes.AdditionalInformationController.displayPage(mode, itemId))
           }
         }
-
       }
     }
 

@@ -69,7 +69,7 @@
             rows = holders.zipWithIndex.map { case (holder, index) =>
                 Seq(
                     TableRow(
-                        content = Text(holder.authorisationTypeCode.fold("")(holderOfAuthorisationCodes.getCodeDescription(messages.lang.toLocale, _))),
+                        content = Text(holder.authorisationTypeCode.fold("")(holderOfAuthorisationCodes.codeDescription(messages.lang.toLocale, _))),
                         attributes = Map("id" -> s"holder_type_$index")
                     ),
                     TableRow(

@@ -17,10 +17,10 @@
 package services.view
 
 import java.util.Locale.ENGLISH
-
 import base.UnitWithMocksSpec
 import config.AppConfig
 import connectors.FileBasedCodeListConnector
+import forms.declaration.declarationHolder.DeclarationHolder
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 
@@ -46,13 +46,6 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
     when(appConfig.goodsLocationCodeFile).thenReturn("/code-lists/manyCodes.json")
   }
 
-  "HolderOfAuthorisationCodes.getCodeDescription" should {
-    "return the description of a 'Holder of Authorisation' code in the expected format" in {
-      val description = holderOfAuthorisationCodes.getCodeDescription(ENGLISH, "UKCS")
-      description mustBe "UKCS - UK Continental Shelf"
-    }
-  }
-
   "HolderOfAuthorisationCodes.asListOfAutoCompleteItems" should {
     "return 'Holder of Authorisation' codes as AutoCompleteItems" in {
       val autoCompleteItems = holderOfAuthorisationCodes.asListOfAutoCompleteItems(ENGLISH)
@@ -66,6 +59,35 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
 
       autoCompleteItems(40) mustBe AutoCompleteItem("ACE - Authorised consignee for Union transit", "ACE")
       autoCompleteItems(44) mustBe AutoCompleteItem("FP - Freeports Special Procedure", "FP")
+    }
+  }
+
+  "HolderOfAuthorisationCodes.codeDescription" should {
+    "return the description of a 'Holder of Authorisation' code in the expected format" in {
+      val description = holderOfAuthorisationCodes.codeDescription(ENGLISH, "UKCS")
+      description mustBe "UKCS - UK Continental Shelf"
+    }
+  }
+
+  "HolderOfAuthorisationCodes.codeDescriptions" should {
+
+    "return an empty sequence when 'holders' param is empty" in {
+      val descriptions = holderOfAuthorisationCodes.codeDescriptions(ENGLISH, List.empty)
+      descriptions mustBe Seq.empty
+    }
+
+    "return an empty sequence when 'holders' param does not contain auth codes" in {
+      val holders = List(DeclarationHolder(None, None, None))
+      val descriptions = holderOfAuthorisationCodes.codeDescriptions(ENGLISH, holders)
+      descriptions mustBe Seq.empty
+    }
+
+    "return descriptions of 'Holder of Authorisation' codes in the expected format" in {
+      val holders =
+        List(DeclarationHolder(Some("APEX"), None, None), DeclarationHolder(None, None, None), DeclarationHolder(Some("UKCS"), None, None))
+      val descriptions = holderOfAuthorisationCodes.codeDescriptions(ENGLISH, holders)
+      descriptions.head mustBe "APEX - Approved Exporter"
+      descriptions.last mustBe "UKCS - UK Continental Shelf"
     }
   }
 }
