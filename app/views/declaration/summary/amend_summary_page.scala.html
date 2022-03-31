@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes
+@import controllers.declaration.routes.SummaryController
 @import models.Mode
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
@@ -36,10 +36,16 @@
     transaction_section: transaction_section,
     items_section: items_section,
     transport_section: transport_section,
+    errorSummary: errorSummary,
     linkButton: linkButton
 )
 
-@()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(errors: Seq[FormError] = Seq.empty[FormError])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+
+@continueLink = @{
+  if (errors.isEmpty) linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage(models.Mode.Amend))
+  else linkButton("site.confirm_and_continue", SummaryController.displayPage(models.Mode.Amend))
+}
 
 @govukLayout(
  title = Title("declaration.summary.amend-header"),
@@ -47,29 +53,31 @@
  useCustomContentWidth = true
 ) {
 
- @pageTitle(messages("declaration.summary.amend-header"))
+  @pageTitle(messages("declaration.summary.amend-header"))
 
-@govukWarningText(WarningText(
-    iconFallbackText = messages("site.warning"),
-    content = Text(messages("declaration.summary.warning"))
-))
+  @errorSummary(errors)
 
- @references_section(Mode.ChangeAmend, request.cacheModel)
+  @govukWarningText(WarningText(
+      iconFallbackText = messages("site.warning"),
+      content = Text(messages("declaration.summary.warning"))
+  ))
 
- @parties_section(Mode.ChangeAmend, request.cacheModel)
+  @references_section(Mode.ChangeAmend, request.cacheModel)
 
- @countries_section(Mode.ChangeAmend, request.cacheModel)
+  @parties_section(Mode.ChangeAmend, request.cacheModel)
 
- @locations_section(Mode.ChangeAmend, request.cacheModel)
+  @countries_section(Mode.ChangeAmend, request.cacheModel)
 
- @transaction_section(Mode.ChangeAmend, request.cacheModel)
+  @locations_section(Mode.ChangeAmend, request.cacheModel)
 
- @items_section(Mode.ChangeAmend, request.cacheModel)
+  @transaction_section(Mode.ChangeAmend, request.cacheModel)
 
- @transport_section(Mode.ChangeAmend, request.cacheModel)
+  @items_section(Mode.ChangeAmend, request.cacheModel)
 
- @linkButton("site.confirm_and_continue", routes.SummaryController.displayDeclarationPage(models.Mode.Amend))
+  @transport_section(Mode.ChangeAmend, request.cacheModel)
 
- <br />
+  @continueLink
+
+  <br />
 
 }

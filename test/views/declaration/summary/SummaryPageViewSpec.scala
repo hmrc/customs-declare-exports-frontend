@@ -17,13 +17,17 @@
 package views.declaration.summary
 
 import base.Injector
+import controllers.declaration.SummaryController.lrnDuplicateError
 import forms.declaration.CommodityDetails
 import models.ExportsDeclaration
 import org.jsoup.nodes.Document
+import play.api.data.FormError
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 
 trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
+
+  val dummyFormError = Seq(FormError("dummy", "error.unknown"))
 
   def commonBehaviour(document: Document): Unit =
     "have references section" in {
@@ -34,6 +38,13 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     "warning text should be displayed" in {
       val warningText = s"! ${messages("site.warning")} ${messages("declaration.summary.warning")}"
       document.getElementsByClass("govuk-warning-text").text mustBe warningText
+    }
+
+  def displayErrorSummary(document: Document): Unit =
+    "error summary should be displayed" in {
+      val errorSummary = document.getElementsByClass("govuk-error-summary")
+      errorSummary.text contains messages("error.unknown")
+      errorSummary.size mustBe dummyFormError.length
     }
 
   // scalastyle:off
