@@ -53,11 +53,10 @@ class TotalNumberOfItemsController @Inject()(
   }
 
   def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form.bindFromRequest
-      .fold(
-        formWithErrors => Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(mode, TotalPackageQuantityController.displayPage))
-      )
+    form.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
+      updateCache(_).map(_ => navigator.continueTo(mode, TotalPackageQuantityController.displayPage))
+    )
   }
 
   private def updateCache(totalNumberOfItems: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
@@ -65,9 +64,10 @@ class TotalNumberOfItemsController @Inject()(
       declaration.copy(
         totalNumberOfItems = Some(
           Totals(
-            totalAmountInvoiced = totalNumberOfItems.totalAmountInvoiced,
+            totalAmountInvoiced = Some(totalNumberOfItems.totalAmountInvoiced),
             totalAmountInvoicedCurrency = totalNumberOfItems.totalAmountInvoicedCurrency,
-            exchangeRate = totalNumberOfItems.exchangeRate,
+            exchangeRate = if (totalNumberOfItems.agreedExchangeRate.toLowerCase == "no") None else totalNumberOfItems.exchangeRate,
+            agreedExchangeRate = Some(totalNumberOfItems.agreedExchangeRate),
             totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
           )
         )
