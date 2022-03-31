@@ -16,7 +16,7 @@
 
 package views.declaration.summary
 
-import models.{ExportsDeclaration}
+import models.ExportsDeclaration
 import org.jsoup.nodes.Document
 import views.html.declaration.summary._
 import views.html.declaration.summary.sections._
@@ -29,9 +29,15 @@ class SummaryPageViewAmmendSpec extends SummaryPageViewSpec {
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
     amend_summaryPage()(journeyRequest(declaration), messages, minimalAppConfig)
 
+  def viewWithError(declaration: ExportsDeclaration = aDeclaration()): Document =
+    amend_summaryPage(dummyFormError)(journeyRequest(declaration), messages, minimalAppConfig)
+
   "Summary page" should {
 
     val document = view(aDeclaration())
+    val documentWithError = viewWithError(aDeclaration())
+
+    behave like displayErrorSummary(documentWithError)
 
     behave like commonBehaviour(document)
 
