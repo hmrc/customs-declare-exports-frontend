@@ -654,7 +654,7 @@ function officeOfExit(){
     }
 }
 
-function totalNumberOfItems(){
+function invoiceAndExchangeRate(){
     if (currentPageIs('/customs-declare-exports/declaration/invoices-and-exchange-rate')) {
         selectRadioOptionFromInputs(document.getElementsByName('agreedExchangeRate'), 0)
         document.getElementById('exchangeRate').value ='1.49';
@@ -1237,7 +1237,7 @@ function completeJourney() {
     officeOfExit();
 
     // transaction
-    totalNumberOfItems();
+    invoiceAndExchangeRate();
     totalPackageQuantity();
     natureOfTransaction();
     previousDocuments();

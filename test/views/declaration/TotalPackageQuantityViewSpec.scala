@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.{OfficeOfExitController, TotalNumberOfItemsController}
+import controllers.declaration.routes.{OfficeOfExitController, InvoiceAndExchangeRateController}
 import forms.declaration.TotalPackageQuantity
 import models.DeclarationType._
 import models.Mode
@@ -115,7 +115,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(TotalNumberOfItemsController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateController.displayPage(Mode.Normal))
       }
     }
 

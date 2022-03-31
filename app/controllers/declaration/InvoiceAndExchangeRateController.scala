@@ -19,26 +19,26 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.TotalPackageQuantityController
 import controllers.navigation.Navigator
-import forms.declaration.TotalNumberOfItems
-import forms.declaration.TotalNumberOfItems._
-import models.declaration.Totals
+import forms.declaration.InvoiceAndExchangeRate
+import forms.declaration.InvoiceAndExchangeRate._
+import models.declaration.InvoiceAndPackageTotals
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.total_number_of_items
+import views.html.declaration.invoice_and_exchange_rate
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TotalNumberOfItemsController @Inject()(
+class InvoiceAndExchangeRateController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  totalNumberOfItemsPage: total_number_of_items,
+  invoiceAndExchangeRatePage: invoice_and_exchange_rate,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
@@ -47,28 +47,30 @@ class TotalNumberOfItemsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.totalNumberOfItems match {
-      case Some(data) => Ok(totalNumberOfItemsPage(mode, form.withSubmissionErrors.fill(TotalNumberOfItems(data))))
-      case _          => Ok(totalNumberOfItemsPage(mode, form.withSubmissionErrors))
+      case Some(data) => Ok(invoiceAndExchangeRatePage(mode, form.withSubmissionErrors.fill(InvoiceAndExchangeRate(data))))
+      case _          => Ok(invoiceAndExchangeRatePage(mode, form.withSubmissionErrors))
     }
   }
 
   def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     form.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
+      formWithErrors => Future.successful(BadRequest(invoiceAndExchangeRatePage(mode, formWithErrors))),
       updateCache(_).map(_ => navigator.continueTo(mode, TotalPackageQuantityController.displayPage))
     )
   }
 
-  private def updateCache(totalNumberOfItems: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+  private def updateCache(invoiceAndExchangeRate: InvoiceAndExchangeRate)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
       declaration.copy(
         totalNumberOfItems = Some(
-          Totals(
-            totalAmountInvoiced = Some(totalNumberOfItems.totalAmountInvoiced),
-            totalAmountInvoicedCurrency = totalNumberOfItems.totalAmountInvoicedCurrency,
-            exchangeRate = if (totalNumberOfItems.agreedExchangeRate.toLowerCase == "no") None else totalNumberOfItems.exchangeRate,
-            agreedExchangeRate = Some(totalNumberOfItems.agreedExchangeRate),
-            totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
+          InvoiceAndPackageTotals(
+            totalAmountInvoiced = Some(invoiceAndExchangeRate.totalAmountInvoiced),
+            totalAmountInvoicedCurrency = invoiceAndExchangeRate.totalAmountInvoicedCurrency,
+            agreedExchangeRate = Some(invoiceAndExchangeRate.agreedExchangeRate),
+            totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage),
+            exchangeRate =
+              if (invoiceAndExchangeRate.agreedExchangeRate.toLowerCase == "no") None
+              else invoiceAndExchangeRate.exchangeRate
           )
         )
       )

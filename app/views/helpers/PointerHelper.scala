@@ -107,7 +107,7 @@ object PointerHelper extends Logging {
   //mappings to pages that require only one parameter
   private val urlMapping1Param: Map[String, Mode => Call] = Map(
     "declaration.consignmentReferences.lrn" -> routes.ConsignmentReferencesController.displayPage,
-    "declaration.totalNumberOfItems.totalAmountInvoiced" -> routes.TotalNumberOfItemsController.displayPage,
+    "declaration.totalNumberOfItems.totalAmountInvoiced" -> routes.InvoiceAndExchangeRateController.displayPage,
     "declaration.totalPackageQuantity" -> routes.TotalPackageQuantityController.displayPage,
     "declaration.parties.representativeDetails.details.eori" -> routes.RepresentativeEntityController.displayPage,
     "declaration.parties.representativeDetails.statusCode" -> routes.RepresentativeStatusController.displayPage,
@@ -125,7 +125,7 @@ object PointerHelper extends Logging {
     "declaration.parties.carrierDetails.details.address.postCode" -> routes.CarrierDetailsController.displayPage,
     "declaration.borderTransport.paymentMethod" -> routes.TransportPaymentController.displayPage,
     "declaration.locations.destinationCountries.countriesOfRouting.$" -> routes.RoutingCountriesSummaryController.displayPage, //?? RoutingCountriesSummaryController.displayChangeCountryPage
-    "declaration.totalNumberOfItems.exchangeRate" -> routes.TotalNumberOfItemsController.displayPage,
+    "declaration.totalNumberOfItems.exchangeRate" -> routes.InvoiceAndExchangeRateController.displayPage,
     "declaration.declarantDetails.details.eori" -> routes.DeclarantDetailsController.displayPage, //Alters if dec is CLEARANCE and isEXS and personPresentingGoodsDetails is nonEmpty
     "declaration.locations.officeOfExit.officeId" -> routes.OfficeOfExitController.displayPage,
     "declaration.parties.exporterDetails.details.eori" -> routes.ExporterEoriNumberController.displayPage,

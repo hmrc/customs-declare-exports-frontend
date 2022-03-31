@@ -205,9 +205,9 @@ POST        /office-of-exit                      controllers.declaration.OfficeO
 
 # Total number of items
 
-GET         /invoices-and-exchange-rate          controllers.declaration.TotalNumberOfItemsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /invoices-and-exchange-rate          controllers.declaration.InvoiceAndExchangeRateController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /invoices-and-exchange-rate          controllers.declaration.TotalNumberOfItemsController.saveNoOfItems(mode: models.Mode ?= models.Mode.Normal)
+POST        /invoices-and-exchange-rate          controllers.declaration.InvoiceAndExchangeRateController.saveNoOfItems(mode: models.Mode ?= models.Mode.Normal)
 
 # Total package quantity
 

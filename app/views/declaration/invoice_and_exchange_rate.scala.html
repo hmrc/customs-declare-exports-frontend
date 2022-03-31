@@ -16,8 +16,8 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import forms.declaration.TotalNumberOfItems
-@import forms.declaration.TotalNumberOfItems._
+@import forms.declaration.InvoiceAndExchangeRate
+@import forms.declaration.InvoiceAndExchangeRate._
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -48,7 +48,7 @@
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[TotalNumberOfItems])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[InvoiceAndExchangeRate])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -123,9 +123,9 @@
 
 @govukLayout(
     title = Title("declaration.invoice.details.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TotalNumberOfItems, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(InvoiceAndExchangeRate, mode)))) {
 
-    @formHelper(action = TotalNumberOfItemsController.saveNoOfItems(mode), 'autoComplete -> "off") {
+    @formHelper(action = InvoiceAndExchangeRateController.saveNoOfItems(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.4"))
@@ -157,7 +157,7 @@
             id = Some("exchange-rate-expander")
         ))
 
-        @tariffExpander(TotalNumberOfItems, request.declarationType)(messages, appConfig)
+        @tariffExpander(InvoiceAndExchangeRate, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

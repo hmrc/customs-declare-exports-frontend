@@ -87,7 +87,7 @@ class Navigator @Inject()(
     case TransportLeavingTheBorder     => routes.ItemsSummaryController.displayItemsSummaryPage
     case TransportPayment              => routes.ExpressConsignmentController.displayPage
     case CarrierDetails                => routes.CarrierEoriNumberController.displayPage
-    case TotalNumberOfItems            => routes.OfficeOfExitController.displayPage
+    case InvoiceAndExchangeRate            => routes.OfficeOfExitController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -132,7 +132,7 @@ class Navigator @Inject()(
     case LocationOfGoods             => routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
-    case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
+    case TotalPackageQuantity        => routes.InvoiceAndExchangeRateController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
@@ -227,7 +227,7 @@ class Navigator @Inject()(
     case OfficeOfExit                => routes.LocationOfGoodsController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
-    case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
+    case TotalPackageQuantity        => routes.InvoiceAndExchangeRateController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
@@ -275,7 +275,7 @@ class Navigator @Inject()(
     case LocationOfGoods             => routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
-    case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
+    case TotalPackageQuantity        => routes.InvoiceAndExchangeRateController.displayPage
     case DocumentSummary             => routes.OfficeOfExitController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
@@ -325,7 +325,7 @@ class Navigator @Inject()(
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case ChangeCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
-    case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
+    case TotalPackageQuantity        => routes.InvoiceAndExchangeRateController.displayPage
     case DocumentSummary             => routes.OfficeOfExitController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }

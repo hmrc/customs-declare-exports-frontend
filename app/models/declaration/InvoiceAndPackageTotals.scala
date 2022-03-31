@@ -18,7 +18,7 @@ package models.declaration
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Totals(
+case class InvoiceAndPackageTotals(
   totalAmountInvoiced: Option[String],
   totalAmountInvoicedCurrency: Option[String],
   agreedExchangeRate: Option[String],
@@ -26,6 +26,6 @@ case class Totals(
   totalPackage: Option[String]
 )
 
-object Totals {
-  implicit val format: OFormat[Totals] = Json.format[Totals]
+object InvoiceAndPackageTotals {
+  implicit val format: OFormat[InvoiceAndPackageTotals] = Json.format[InvoiceAndPackageTotals]
 }
