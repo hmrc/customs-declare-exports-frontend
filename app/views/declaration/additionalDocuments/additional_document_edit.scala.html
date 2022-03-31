@@ -23,18 +23,18 @@
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.{AdditionalDocument => AdditionalDocHelper}
+@import views.helpers.AdditionalDocumentHelper
 @import views.helpers.CommodityCodeHelper.commodityCodeOfItem
 @import views.html.components.gds._
 
 @this(
+    additionalDocumentHelper: AdditionalDocumentHelper,
     govukFieldset: GovukFieldset,
     govukInput: GovukInput,
-    govukDetails : GovukDetails,
-    govukHint: GovukHint,
     errorSummary: errorSummary,
-    formGroupWrapper: formGroupWrapper,
     sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    formGroupWrapper: formGroupWrapper,
     exportsInputText: exportsInputText,
     exportsInputTextArea: exportsInputTextArea,
     exportsDateInput: exportsDateInput,
@@ -42,13 +42,10 @@
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     link: link,
-    additionalDocument: AdditionalDocHelper,
     appConfig: AppConfig
 )
 
 @(mode: Mode, itemId: String, form: Form[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
-
-@guidance = @{ appConfig.guidance }
 
 @measurementInput(field: Field, labelKey: String, inputClasses: String) = {
     @govukInput(Input(
@@ -60,12 +57,11 @@
     ))
 }
 
-@measurementUnitField = @{form(s"$documentWriteOffKey.$measurementUnitKey")}
-@qualifierField = @{form(s"$documentWriteOffKey.$qualifierKey")}
-@measurementErrors = @{measurementUnitField.errors ++ qualifierField.errors}
+@measurementUnitField = @{ form(s"$documentWriteOffKey.$measurementUnitKey") }
+@qualifierField = @{ form(s"$documentWriteOffKey.$qualifierKey") }
+@measurementErrors = @{ measurementUnitField.errors ++ qualifierField.errors }
 
 @measurementUnitAndQualifierContent = {
-
     <p class="govuk-body" id="documentWriteOff-text">
         @Html(messages("declaration.additionalDocument.measurementUnit.text",
             link(
@@ -107,7 +103,6 @@
 
 @measurementUnitAndQualifier = {
       <div class="govuk-form-group @if(measurementErrors.nonEmpty){govuk-form-group--error}">
-
           @govukFieldset(Fieldset(
               legend = Some(Legend(
                   content = Text(messages("declaration.additionalDocument.measurementUnit.header")),
@@ -119,114 +114,51 @@
       </div>
 }
 
-@expander1Content = {
-    @commodityCodeOfItem(itemId).fold {
-        @paragraphBody(messages("declaration.additionalDocument.expander.paragraph1.withoutCommodityCode.text",
-            link(
-                text = messages("declaration.additionalDocument.expander.paragraph1.withoutCommodityCode.link1.text"),
-                call = Call("GET", appConfig.tradeTariffSections),
-                target = "_blank"
-            )
-        ))
-    } { commodityCode =>
-        @paragraphBody(messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.text",
-            link(
-                text = messages("declaration.additionalDocument.expander.paragraph1.withCommodityCode.link1.text", commodityCode.codeAsShown),
-                call = Call("GET", appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)),
-                target = "_blank"
-            )
-        ))
-    }
-
-    @paragraphBody(messages("declaration.additionalDocument.expander.paragraph2.text"))
-
-    @paragraphBody(messages("declaration.additionalDocument.expander.paragraph3.text",
-        link(
-            text = messages("declaration.additionalDocument.expander.paragraph3.link1.text"),
-            call = Call("GET", appConfig.additionalDocumentsLicenceTypes),
-            target = "_blank"
-        )
-    ))
-
-    @paragraphBody(messages("declaration.additionalDocument.expander.paragraph4.text",
-        link(
-            text = messages("declaration.additionalDocument.expander.paragraph4.link1.text"),
-            call = Call("GET", guidance.commodityCode0306310010),
-            target = "_blank"
-        )
-    ))
-}
-
-@expander2Content = {
-
-    @paragraphBody(messages("declaration.additionalDocument.documentTypeCode.expander.paragraph1.text",
-        link(
-            text = messages("declaration.additionalDocument.documentTypeCode.expander.paragraph1.link1.text"),
-            call = Call("GET", appConfig.additionalDocumentsUnionCodes),
-            target = "_blank"
-        )
-    ))
-
-    @paragraphBody(messages("declaration.additionalDocument.documentTypeCode.expander.paragraph2.text",
-        link(
-            text = messages("declaration.additionalDocument.documentTypeCode.expander.paragraph2.link1.text"),
-            call = Call("GET", appConfig.additionalDocumentsReferenceCodes),
-            target = "_blank"
-        )
-    ))
-
-    @paragraphBody(messages("declaration.additionalDocument.documentTypeCode.expander.paragraph3.text"))
-}
-
-
 @pageFields = {
     @formGroupWrapper(field = form(AdditionalDocumentFormGroupId)){
         @exportsInputText(
             field = form(documentTypeCodeKey),
-            labelKey = "declaration.additionalDocument.documentTypeCode",
-            hintKey = Some(additionalDocument.documentCodeHint),
+            labelKey = "declaration.additionalDocument.code",
+            hintKey = Some(additionalDocumentHelper.documentCodeHint(itemId)),
             inputClasses = Some("govuk-input--width-4"),
             bodyHtml = Some(paragraphBody(
-                message = messages(additionalDocument.documentCodeText),
-                id = Some(s"$documentTypeCodeKey-text")
+                id = Some(s"$documentTypeCodeKey-body"),
+                message = messages(additionalDocumentHelper.documentCodeBody(itemId))
             ))
         )
-        @govukDetails(Details(
-            summary = Text(messages("declaration.additionalDocument.documentTypeCode.expander.title")),
-            content = HtmlContent(expander2Content),
-            id = Some("documentTypeCode-expander"))
-        )
+
+        @additionalDocumentHelper.documentCodeExpander
+
         @exportsInputText(
             field = form(documentIdentifierKey),
-            labelKey = "declaration.additionalDocument.documentIdentifier",
+            labelKey = "declaration.additionalDocument.identifier",
             inputClasses = Some("govuk-input--width-30"),
-            bodyHtml = Some(paragraphBody(
-                message = messages("declaration.additionalDocument.documentIdentifier.body"),
-                id = Some(s"$documentIdentifierKey-text")
-            ))
+            bodyHtml = Some(additionalDocumentHelper.documentIdentifierBody(itemId))
         )
-        @{
-            additionalDocument.documentIdentifierInsets
-        }
+
+        @additionalDocumentHelper.documentIdentifierInsets(itemId)
+
         @exportsInputText(
             field = form(documentStatusKey),
-            labelKey = "declaration.additionalDocument.documentStatus",
+            labelKey = "declaration.additionalDocument.status",
             inputClasses = Some("govuk-input--width-2"),
             bodyHtml = Some(paragraphBody(
-                message = messages("declaration.additionalDocument.documentStatus.text"),
+                message = messages("declaration.additionalDocument.status.text"),
                 id = Some(s"$documentStatusKey-text")
             ))
         )
+
         @exportsInputText(
             field = form(documentStatusReasonKey),
-            labelKey = "declaration.additionalDocument.documentStatusReason",
-            hintKey = Some("declaration.additionalDocument.documentStatusReason.hint"),
+            labelKey = "declaration.additionalDocument.statusReason",
+            hintKey = Some("declaration.additionalDocument.statusReason.hint"),
             inputClasses = Some("govuk-input--width-30"),
             bodyHtml = Some(paragraphBody(
-                message = messages("declaration.additionalDocument.documentStatusReason.text"),
+                message = messages("declaration.additionalDocument.statusReason.text"),
                 id = Some(s"$documentStatusReasonKey-text")
             ))
         )
+
         @exportsInputTextArea(
             field = form(issuingAuthorityNameKey),
             labelKey = "declaration.additionalDocument.issuingAuthorityName",
@@ -236,18 +168,21 @@
                 id = Some(s"$issuingAuthorityNameKey-text")
             ))
         )
+
         @exportsDateInput(
             fieldName = dateOfValidityKey,
             form = form,
             hintKey = Some("declaration.additionalDocument.dateOfValidity.hint"),
             labelKey = "declaration.additionalDocument.dateOfValidity"
         )
+
         @measurementUnitAndQualifier
+
         @exportsInputText(
             field = form(s"$documentWriteOffKey.$documentQuantityKey"),
-            labelKey = "declaration.additionalDocument.documentQuantity",
+            labelKey = "declaration.additionalDocument.quantity",
             labelClasses = "govuk-label--m",
-            hintKey = Some("declaration.additionalDocument.documentQuantity.hint"),
+            hintKey = Some("declaration.additionalDocument.quantity.hint"),
             inputClasses = Some("govuk-input--width-20")
         )
     }
@@ -257,20 +192,14 @@
 
 @sectionHeader(messages("declaration.section.5"))
 
-    @govukFieldset(Fieldset(
-        legend = Some(Legend(
-            content = Text(messages(AdditionalDocHelper.title)),
-            classes = gdsPageLegend,
-            isPageHeading = true
-        )),
-        html = HtmlFormat.fill(List(
-            additionalDocument.pageBody,
-            govukDetails(Details(
-                summary = Text(messages("declaration.additionalDocument.expander.title")),
-                content = HtmlContent(expander1Content),
-                id = Some("top-expander"))),
-            pageFields,
-            tariffExpander(AdditionalDocument, request.declarationType)(messages, appConfig),
-            saveButtons()
-        ))
-    ))
+@pageTitle(messages(AdditionalDocumentHelper.title(itemId)))
+
+@additionalDocumentHelper.body(itemId)
+
+@additionalDocumentHelper.topExpander(itemId)
+
+@pageFields
+
+@tariffExpander(AdditionalDocument, request.declarationType)(messages, appConfig),
+
+@saveButtons()

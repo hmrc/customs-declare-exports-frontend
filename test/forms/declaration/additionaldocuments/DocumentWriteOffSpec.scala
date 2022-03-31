@@ -51,7 +51,7 @@ class DocumentWriteOffSpec extends UnitSpec {
         "has more than 16 digits in total" in {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("1234567890.1234567")))
-          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.additionalDocument.documentQuantity.error"))
+          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.additionalDocument.quantity.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -59,7 +59,7 @@ class DocumentWriteOffSpec extends UnitSpec {
         "has more than 6 decimal places" in {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("0.1234567")))
-          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.additionalDocument.documentQuantity.error"))
+          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.additionalDocument.quantity.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -67,7 +67,7 @@ class DocumentWriteOffSpec extends UnitSpec {
         "is smaller than zero" in {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("-1.23")))
-          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.additionalDocument.documentQuantity.error"))
+          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.additionalDocument.quantity.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }

@@ -72,7 +72,7 @@ class AdditionalDocumentsController @Inject()(
     }
 
   private def redirectIfNoDocuments(mode: Mode, itemId: String)(implicit request: JourneyRequest[_]): Mode => Call =
-    if (mode.isErrorFix || request.cacheModel.isAuthCodeRequiringAdditionalDocuments)
+    if (mode.isErrorFix || request.cacheModel.hasAuthCodeRequiringAdditionalDocs)
       routes.AdditionalDocumentAddController.displayPage(_, itemId)
     else routes.AdditionalDocumentsRequiredController.displayPage(_, itemId)
 }

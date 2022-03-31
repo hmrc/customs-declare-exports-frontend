@@ -67,13 +67,13 @@ object AdditionalDocument extends DeclarationPage {
   // scalastyle:off
   private def mapping(cacheModel: ExportsDeclaration): Mapping[AdditionalDocument] = {
     val keyWhenDocumentTypeCodeEmpty =
-      if (cacheModel.isAuthCodeRequiringAdditionalDocuments) "declaration.additionalDocument.documentTypeCode.empty.fromAuthCode"
-      else "declaration.additionalDocument.documentTypeCode.empty"
+      if (cacheModel.hasAuthCodeRequiringAdditionalDocs) "declaration.additionalDocument.code.empty.fromAuthCode"
+      else "declaration.additionalDocument.code.empty"
 
     val documentTypeCodeRequired = optional(
       text()
         .verifying(keyWhenDocumentTypeCodeEmpty, nonEmpty)
-        .verifying("declaration.additionalDocument.documentTypeCode.error", isEmpty or (hasSpecificLength(4) and isAlphanumeric))
+        .verifying("declaration.additionalDocument.code.error", isEmpty or (hasSpecificLength(4) and isAlphanumeric))
     ).verifying(keyWhenDocumentTypeCodeEmpty, isPresent)
 
     val nonEmptyOptionString = (input: Option[String]) => nonEmpty(input.getOrElse(""))
@@ -85,25 +85,25 @@ object AdditionalDocument extends DeclarationPage {
           text()
             .transform(_.trim, (s: String) => s)
             .verifying(
-              "declaration.additionalDocument.documentIdentifier.error",
+              "declaration.additionalDocument.identifier.error",
               nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
             )
         ),
-        documentStatusKey -> optional(text().verifying("declaration.additionalDocument.documentStatus.error", noLongerThan(2) and isAlphabetic)),
+        documentStatusKey -> optional(text().verifying("declaration.additionalDocument.status.error", noLongerThan(2) and isAlphabetic)),
         documentStatusReasonKey -> AdditionalConstraintsMapping(
           optional(
             text()
-              .verifying("declaration.additionalDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
+              .verifying("declaration.additionalDocument.statusReason.error", noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
           ),
           Seq(
             ConditionalConstraint(
               isAnyOf(documentTypeCodeKey, documentCodesRequiringAReason),
-              "declaration.additionalDocument.documentStatusReason.required.forDocumentCode",
+              "declaration.additionalDocument.statusReason.required.forDocumentCode",
               nonEmptyOptionString
             ),
             ConditionalConstraint(
               isAnyOf(documentStatusKey, statusCodesRequiringAReason),
-              "declaration.additionalDocument.documentStatusReason.required.forStatusCode",
+              "declaration.additionalDocument.statusReason.required.forStatusCode",
               nonEmptyOptionString
             )
           )

@@ -63,6 +63,11 @@ case class ExportsDeclaration(
   def additionalDocuments(itemId: String): AdditionalDocuments =
     additionalDocumentsIfAny(itemId).getOrElse(AdditionalDocuments(None, Seq.empty))
 
+  def authCodesRequiringAdditionalDocs: Seq[DeclarationHolder] =
+    parties.declarationHoldersData
+      .map(_.holders.filter(_.isAdditionalDocumentationRequired))
+      .getOrElse(List.empty)
+
   def listOfAdditionalDocuments(itemId: String): Seq[AdditionalDocument] =
     additionalDocumentsIfAny(itemId).map(_.documents).getOrElse(Seq.empty)
 
@@ -99,7 +104,7 @@ case class ExportsDeclaration(
 
   def isAdditionalDeclarationType(adt: AdditionalDeclarationType): Boolean = additionalDeclarationType.exists(_ == adt)
 
-  def isAuthCodeRequiringAdditionalDocuments: Boolean =
+  def hasAuthCodeRequiringAdditionalDocs: Boolean =
     parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
 
   def isCommodityCodeOfItemPrefixedWith(itemId: String, prefix: Seq[Int]): Boolean =
@@ -120,6 +125,8 @@ case class ExportsDeclaration(
   def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
 
   def isInlandOrBorder(inlandOrBorder: InlandOrBorder): Boolean = locations.inlandOrBorder.exists(_ == inlandOrBorder)
+
+  def isLicenseRequired(itemId: String): Boolean = itemBy(itemId).exists(_.isLicenceRequired.contains(true))
 
   def isType(declarationType: DeclarationType): Boolean = `type` == declarationType
 

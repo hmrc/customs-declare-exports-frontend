@@ -67,7 +67,7 @@ object DocumentWriteOff {
       documentQuantityKey -> optional(
         text()
           .verifying(
-            "declaration.additionalDocument.documentQuantity.error",
+            "declaration.additionalDocument.quantity.error",
             input =>
               input.isEmpty || noLongerThan(documentQuantityMaxLength)(input.replaceAll("\\.", ""))
                 && isDecimalWithNoMoreDecimalPlacesThan(documentQuantityMaxDecimalPlaces)(input)
@@ -86,7 +86,7 @@ object DocumentWriteOff {
 
     def missingQuantity =
       if (writeOff.measurementUnit.isDefined && writeOff.documentQuantity.isEmpty)
-        Seq(FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.additionalDocument.documentQuantity.error"))
+        Seq(FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.additionalDocument.quantity.error"))
       else Seq.empty
 
     missingUnits ++ missingQuantity

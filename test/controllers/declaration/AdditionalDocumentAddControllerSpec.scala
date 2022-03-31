@@ -78,9 +78,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
   "AdditionalDocumentAddController" should {
 
     "return 200 (OK)" when {
-
       "display page method is invoked" in {
-
         val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe OK
@@ -89,7 +87,6 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
     }
 
     "return 400 (BAD_REQUEST) during adding" when {
-
       def verifyBadRequest(incorrectForm: Seq[(String, String)]): HtmlFormat.Appendable = {
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
@@ -143,9 +140,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
     }
 
     "return 303 (SEE_OTHER)" when {
-
       "user correctly add new item" in {
-
         val correctForm = Json.toJson(additionalDocument)
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
