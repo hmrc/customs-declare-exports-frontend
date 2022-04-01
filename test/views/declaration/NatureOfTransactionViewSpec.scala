@@ -19,6 +19,7 @@ package views.declaration
 import base.Injector
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
+import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -40,10 +41,12 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
     page(mode, form)(request, messages)
 
   "Nature Of Transaction View on empty page" should {
-    onEveryDeclarationJourney() { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.natureOfTransaction.heading")
         messages must haveTranslationFor("declaration.natureOfTransaction.sale")
+        messages must haveTranslationFor("declaration.natureOfTransaction.businessPurchase")
+        messages must haveTranslationFor("declaration.natureOfTransaction.houseRemoval")
         messages must haveTranslationFor("declaration.natureOfTransaction.return")
         messages must haveTranslationFor("declaration.natureOfTransaction.return.hint")
         messages must haveTranslationFor("declaration.natureOfTransaction.donation")
@@ -58,8 +61,6 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
         messages must haveTranslationFor("declaration.natureOfTransaction.other")
         messages must haveTranslationFor("declaration.natureOfTransaction.empty")
         messages must haveTranslationFor("declaration.natureOfTransaction.error")
-        messages must haveTranslationFor("declaration.natureOfTransaction.inset.text.1")
-        messages must haveTranslationFor("declaration.natureOfTransaction.inset.text.2")
       }
 
       val view = createView()
@@ -74,6 +75,14 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
       "display radio button with Sale option" in {
         view.getElementById("Sale").attr("value") mustBe Sale
         view.getElementsByAttributeValue("for", "Sale") must containMessageForElements("declaration.natureOfTransaction.sale")
+      }
+      "display radio button with Business Purchase option" in {
+        view.getElementById("BusinessPurchase").attr("value") mustBe BusinessPurchase
+        view.getElementsByAttributeValue("for", "BusinessPurchase") must containMessageForElements("declaration.natureOfTransaction.businessPurchase")
+      }
+      "display radio button with House Removal option" in {
+        view.getElementById("HouseRemoval").attr("value") mustBe HouseRemoval
+        view.getElementsByAttributeValue("for", "HouseRemoval") must containMessageForElements("declaration.natureOfTransaction.houseRemoval")
       }
       "display radio button with Return option" in {
         view.getElementById("Return").attr("value") mustBe Return
@@ -108,11 +117,6 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
         view.getElementsByAttributeValue("for", "Other") must containMessageForElements("declaration.natureOfTransaction.other")
       }
 
-      "display inset text" in {
-        val insetTextSection = view.getElementsByClass("govuk-inset-text").first()
-        insetTextSection must containMessage("declaration.natureOfTransaction.inset.text.1")
-      }
-
       "display 'Back' button that links to 'Total Number Of Items' page" in {
 
         val backButton = view.getElementById("back-link")
@@ -134,7 +138,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
   }
 
   "Nature Of Transaction View for invalid input" should {
-    onEveryDeclarationJourney() { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "display error when nature of transaction is empty" in {
         val view = createView(form = NatureOfTransaction.form().fillAndValidate(NatureOfTransaction("")))
 

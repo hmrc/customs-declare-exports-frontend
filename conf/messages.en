@@ -1638,9 +1638,6 @@ declaration.natureOfTransaction.construction = Goods being supplied under a cont
 declaration.natureOfTransaction.other = Other
 declaration.natureOfTransaction.empty = Select what sort of export it is
 declaration.natureOfTransaction.error = This sort of export is not allowed with entered procedure code
-declaration.natureOfTransaction.inset.text.heading = VAT reclaim
-declaration.natureOfTransaction.inset.text.1 = For new items purchased in the UK for use solely outside the UK where VAT is being reclaimed, select ‘Goods being sold’.
-declaration.natureOfTransaction.inset.text.2 = For house removals and export of vehicles where VAT is not being reclaimed, select ‘Other’.
 
 declaration.packageInformation.title = Enter the packing details for this item
 declaration.packageInformation.paragraph = Packaging is the wrapping, crate, pallet or container that is being used for transportation.
