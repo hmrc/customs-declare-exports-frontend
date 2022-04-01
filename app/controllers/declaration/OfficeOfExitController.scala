@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{PreviousDocumentsSummaryController, InvoiceAndExchangeRateController}
+import controllers.declaration.routes.{PreviousDocumentsSummaryController, InvoiceAndExchangeRateChoiceController}
 import controllers.navigation.Navigator
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.officeOfExit.OfficeOfExit.form
@@ -60,7 +60,7 @@ class OfficeOfExitController @Inject()(
 
   private def nextPage(declarationType: DeclarationType): Mode => Call =
     declarationType match {
-      case SUPPLEMENTARY | STANDARD            => InvoiceAndExchangeRateController.displayPage
+      case SUPPLEMENTARY | STANDARD            => InvoiceAndExchangeRateChoiceController.displayPage
       case SIMPLIFIED | OCCASIONAL | CLEARANCE => PreviousDocumentsSummaryController.displayPage
     }
 

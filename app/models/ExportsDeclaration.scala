@@ -104,6 +104,11 @@ case class ExportsDeclaration(
 
   def isAdditionalDeclarationType(adt: AdditionalDeclarationType): Boolean = additionalDeclarationType.exists(_ == adt)
 
+  def isInvoiceAmountGreaterThan100000: Boolean =
+    totalNumberOfItems.exists(_.totalAmountInvoiced.fold(false)(_.trim.nonEmpty))
+
+  def isInvoiceAmountLessThan100000: Boolean = !isInvoiceAmountGreaterThan100000
+
   def hasAuthCodeRequiringAdditionalDocs: Boolean =
     parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))
 

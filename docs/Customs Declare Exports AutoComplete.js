@@ -290,7 +290,7 @@ function declarantDetails(){
 
 function isDeclarantExporter(){
     if (currentPageIs('/customs-declare-exports/declaration/are-you-the-exporter')) {
-        document.getElementById('answer_yes').checked = 'checked';
+        document.getElementById('code_yes').checked = 'checked';
         document.getElementById('submit').click();
     }
 }
@@ -650,6 +650,13 @@ function officeOfExit(){
             default:
                 selectFromAutoPredict(document.getElementById('officeId-container'), "GB000434");
         }
+        document.getElementById('submit').click();
+    }
+}
+
+function invoiceAndExchangeRateChoice() {
+    if (currentPageIs('/customs-declare-exports/declaration/invoices-and-exchange-rate-choice')) {
+        document.getElementById('code_no').checked = 'checked';
         document.getElementById('submit').click();
     }
 }
@@ -1237,6 +1244,7 @@ function completeJourney() {
     officeOfExit();
 
     // transaction
+    invoiceAndExchangeRateChoice();
     invoiceAndExchangeRate();
     totalPackageQuantity();
     natureOfTransaction();
