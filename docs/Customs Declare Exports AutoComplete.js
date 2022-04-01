@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.67
+// @version      1.68
 // @description  decs supported: (Std-Arrived A), (Occ-Arrived B), (Smp-Arrived C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Arrived J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -656,9 +656,10 @@ function officeOfExit(){
 
 function totalNumberOfItems(){
     if (currentPageIs('/customs-declare-exports/declaration/invoices-and-exchange-rate')) {
+        selectRadioOptionFromInputs(document.getElementsByName('agreedExchangeRate'), 0)
         document.getElementById('exchangeRate').value ='1.49';
         document.getElementById('totalAmountInvoicedCurrency').value ='GBP';
-        document.getElementById('totalAmountInvoiced').value ='56764';
+        document.getElementById('totalAmountInvoiced').value ='567640';
         document.getElementById('submit').click();
     }
 }

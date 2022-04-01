@@ -133,9 +133,9 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
     "return 303 (SEE_OTHER)" when {
 
       "user correctly changed document" in {
-
-        val correctForm = Seq(("documentTypeCode", "1001"), ("documentWriteOff.documentQuantity", "123"), ("documentWriteOff.measurementUnit", "KGM"))
-        val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val correctForm =
+          Json.obj("documentTypeCode" -> "1001", "documentWriteOff.documentQuantity" -> "123", "documentWriteOff.measurementUnit" -> "KGM")
+        val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
@@ -155,7 +155,6 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
       }
 
       "user does not change document" in {
-
         val unchangedForm = Json.toJson(existingDocument1)
         val result = controller.submitForm(Mode.Normal, itemId, documentId)(postRequest(unchangedForm))
 

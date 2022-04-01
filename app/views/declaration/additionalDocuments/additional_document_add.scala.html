@@ -19,7 +19,7 @@
 @import models.requests.JourneyRequest
 @import forms.declaration.additionaldocuments.AdditionalDocument
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import views.helpers.{AdditionalDocument => AdditionalDocHelper, BackButton, Title}
+@import views.helpers.{AdditionalDocumentHelper, BackButton, Title}
 @import views.html.components.gds._
 
 @this(
@@ -34,11 +34,10 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
-    title = Title(AdditionalDocHelper.title, "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalDocument, mode, ItemId(itemId))))) {
-
+    title = Title(AdditionalDocumentHelper.title(itemId), "declaration.section.5", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(AdditionalDocument, mode, ItemId(itemId))))
+) {
     @formHelper(action = AdditionalDocumentAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
-
         @editContent(mode, itemId, form)
     }
 }

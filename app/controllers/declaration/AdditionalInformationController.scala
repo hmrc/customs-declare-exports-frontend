@@ -74,14 +74,15 @@ class AdditionalInformationController @Inject()(
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation)
 
   private def nextPage(mode: Mode, yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result = {
-
     val isClearanceJourney = request.declarationType == DeclarationType.CLEARANCE
 
     yesNoAnswer.answer match {
       case YesNoAnswers.yes =>
         navigator.continueTo(mode, routes.AdditionalInformationAddController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
+
       case YesNoAnswers.no if isClearanceJourney || !waiver999LConfig.is999LEnabled =>
         navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
+
       case _ =>
         navigator.continueTo(mode, routes.IsLicenceRequiredController.displayPage(_, itemId), mode.isErrorFix)(request, hc)
     }

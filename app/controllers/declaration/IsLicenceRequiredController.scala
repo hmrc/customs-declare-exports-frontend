@@ -78,15 +78,16 @@ class IsLicenceRequiredController @Inject()(
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     yesNoAnswer.answer match {
       case YesNoAnswers.yes => AdditionalDocumentAddController.displayPage(_, itemId)
-      case YesNoAnswers.no if request.cacheModel.isAuthCodeRequiringAdditionalDocuments =>
+
+      case YesNoAnswers.no if request.cacheModel.hasAuthCodeRequiringAdditionalDocs =>
         AdditionalDocumentAddController.displayPage(_, itemId)
+
       case YesNoAnswers.no =>
         AdditionalDocumentsRequiredController.displayPage(_, itemId)
     }
 
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
     val isLicenceRequired = yesNoAnswer.answer == YesNoAnswers.yes
-
     updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(isLicenceRequired = Some(isLicenceRequired))))
   }
 

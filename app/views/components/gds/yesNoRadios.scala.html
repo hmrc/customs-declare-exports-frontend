@@ -29,6 +29,8 @@
     hint: Option[Hint] = None,
     yesHint: Option[String] = None,
     noHint: Option[String] = None,
+    yesConditionalHtml: Option[Html] = None,
+    noConditionalHtml: Option[Html] = None,
     inline: Boolean = false
 )(implicit messages: Messages)
 
@@ -62,6 +64,7 @@
             id = Some("code_yes"),
             value = Some(yes),
             content = yesContent,
+            conditionalHtml = yesConditionalHtml,
             hint = yesHint.map{ hint => Hint(content = Text(messages(hint)))},
             checked = form(answerKey).value.contains(yes)
         ),
@@ -69,6 +72,7 @@
             id = Some("code_no"),
             value = Some(no),
             content = noContent,
+            conditionalHtml = noConditionalHtml,
             hint = noHint.map{ hint => Hint(content = Text(messages(hint)))},
             checked = form(answerKey).value.contains(no)
         )

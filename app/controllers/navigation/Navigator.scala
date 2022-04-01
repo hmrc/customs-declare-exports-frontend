@@ -437,12 +437,9 @@ class Navigator @Inject()(
       routes.CommodityDetailsController.displayPage(mode, itemId)
 
   private def additionalDocumentsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call = {
-
-    val isLicenseRequired = cacheModel.itemBy(itemId).exists(_.isLicenceRequired.contains(true))
-
-    if (cacheModel.isAuthCodeRequiringAdditionalDocuments || isLicenseRequired) routes.IsLicenceRequiredController.displayPage(mode, itemId)
+    val isLicenseRequired = cacheModel.hasAuthCodeRequiringAdditionalDocs || cacheModel.isLicenseRequired(itemId)
+    if (isLicenseRequired) routes.IsLicenceRequiredController.displayPage(mode, itemId)
     else routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId)
-
   }
 
   private def additionalDocumentsSummaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
@@ -463,10 +460,8 @@ class Navigator @Inject()(
   private def additionalDocumentsNoWaiverPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.listOfAdditionalDocuments(itemId).nonEmpty)
       routes.AdditionalDocumentsController.displayPage(mode, itemId)
-    else {
-      if (cacheModel.isAuthCodeRequiringAdditionalDocuments) additionalDocumentsSummaryNoWaiverPreviousPage(cacheModel, mode, itemId)
-      else routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId)
-    }
+    else if (cacheModel.hasAuthCodeRequiringAdditionalDocs) additionalDocumentsSummaryNoWaiverPreviousPage(cacheModel, mode, itemId)
+    else routes.AdditionalDocumentsRequiredController.displayPage(mode, itemId)
 
   private def additionalInformationAddPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.itemBy(itemId).flatMap(_.additionalInformation).exists(_.items.nonEmpty))

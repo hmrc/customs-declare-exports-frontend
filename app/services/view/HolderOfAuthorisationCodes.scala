@@ -19,17 +19,13 @@ package services.view
 import java.util.Locale
 import connectors.CodeListConnector
 import forms.declaration.declarationHolder.AuthorizationTypeCodes.codeFilteredFromView
+import forms.declaration.declarationHolder.DeclarationHolder
 
 import javax.inject.{Inject, Singleton}
 import models.codes.HolderOfAuthorisationCode
 
 @Singleton
 class HolderOfAuthorisationCodes @Inject()(codeListConnector: CodeListConnector) {
-
-  private def description(h: HolderOfAuthorisationCode): String = s"${h.code} - ${h.description}"
-
-  def getCodeDescription(locale: Locale, code: String): String =
-    codeListConnector.getHolderOfAuthorisationCodes(locale).get(code).fold("")(description)
 
   def asListOfAutoCompleteItems(locale: Locale): List[AutoCompleteItem] =
     codeListConnector
@@ -38,4 +34,16 @@ class HolderOfAuthorisationCodes @Inject()(codeListConnector: CodeListConnector)
       .filter(_.code != codeFilteredFromView)
       .map(h => AutoCompleteItem(description(h), h.code))
       .toList
+
+  def codeDescription(locale: Locale, code: String): String =
+    codeListConnector.getHolderOfAuthorisationCodes(locale).get(code).fold("")(description)
+
+  def codeDescriptions(locale: Locale, holders: Seq[DeclarationHolder]): Seq[String] =
+    holders.flatMap {
+      _.authorisationTypeCode.map { code =>
+        codeListConnector.getHolderOfAuthorisationCodes(locale).get(code).fold("")(description)
+      }
+    }
+
+  private def description(h: HolderOfAuthorisationCode): String = s"${h.code} - ${h.description}"
 }

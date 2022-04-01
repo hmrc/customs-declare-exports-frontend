@@ -70,7 +70,7 @@ class TotalPackageQuantityController @Inject()(
     if (totalPackage.totalPackage.isEmpty && request.cacheModel.totalNumberOfItems.isEmpty) Future.successful(request.cacheModel)
     else
       updateDeclarationFromRequest { declaration =>
-        val totals = declaration.totalNumberOfItems.fold(Totals(None, None, None, totalPackage = totalPackage.totalPackage)) {
+        val totals = declaration.totalNumberOfItems.fold(Totals(None, None, None, None, totalPackage = totalPackage.totalPackage)) {
           _.copy(totalPackage = totalPackage.totalPackage)
         }
         declaration.copy(totalNumberOfItems = Some(totals))
