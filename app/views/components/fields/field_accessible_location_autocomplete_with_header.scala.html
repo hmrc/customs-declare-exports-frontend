@@ -67,7 +67,7 @@ To avoid problems, we need to remove [] from field.
 
     @if(isPageHeading) {</h1>}
 
-    @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@error</span> }
+    @allErrors.map { error => <p id="error-message-@{field.name}-input" class="govuk-error-message">@error</p> }
 
     @bodyHtml.map(identity)
 

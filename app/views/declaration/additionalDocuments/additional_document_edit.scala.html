@@ -72,15 +72,15 @@
         ))
     </p>
 
-    <span class="govuk-hint" id="documentWriteOff-hint">
+    <div class="govuk-hint" id="documentWriteOff-hint">
         @Html(messages("declaration.additionalDocument.measurementUnit.hint"))
-    </span>
+    </div>
 
     @if(measurementErrors.nonEmpty){
-        <span class="govuk-error-message">
+        <p class="govuk-error-message">
             <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
             @Html(measurementErrors.map(err => messages(err.message, err.args:_*)).mkString("<br>"))
-        </span>
+        </p>
     }
 
     <div class="govuk-date-input">

@@ -88,15 +88,16 @@ trait Stubs {
   val minimalAppConfig = appConfig
 
   val gdsGovukLayout = new GovukLayout(
-    new GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink()),
+    new GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink(), new FixedWidthPageLayout()),
     new GovukHeader(),
     new GovukFooter(),
     new GovukBackLink(),
-    new TwoThirdsMainContent()
+    new TwoThirdsMainContent(),
+    new FixedWidthPageLayout()
   )
 
   val gdsGovukFlexibleLayout = new govukFlexibleLayout(
-    new GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink()),
+    new GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink(), new FixedWidthPageLayout()),
     new GovukHeader(),
     new GovukFooter(),
     new GovukBackLink()
