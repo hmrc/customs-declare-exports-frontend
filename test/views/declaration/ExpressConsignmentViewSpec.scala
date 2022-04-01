@@ -22,8 +22,10 @@ import controllers.declaration.routes
 import controllers.helpers.SupervisingCustomsOfficeHelperSpec.skipDepartureTransportPageCodes
 import forms.common.YesNoAnswer
 import forms.declaration.ModeOfTransportCode.meaningfulModeOfTransportCodes
+import forms.declaration.TransportLeavingTheBorder
 import models.DeclarationType._
-import models.Mode
+import models.{DeclarationType, Mode}
+import models.declaration.Transport
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -122,6 +124,23 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       }
     }
 
+    onClearance(aDeclaration(withType(DeclarationType.CLEARANCE), withItem(anItem(withProcedureCodes(Some("1040"), Seq("000")))))) {
+      implicit request =>
+        "display 'Back' button to the 'Warehouse Details' page" when {
+          skipDepartureTransportPageCodes.foreach { modeOfTransportCode =>
+            val cachedDec =
+              request.cacheModel.copy(transport = Transport(borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(modeOfTransportCode)))))
+            val requestWithUpdatedDec = new JourneyRequest(getAuthenticatedRequest(), cachedDec)
+            val view: Document = createView()(requestWithUpdatedDec)
+
+            s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
+              verifyBackButton(view, routes.WarehouseIdentificationController.displayPage(Mode.Normal))
+            }
+          }
+        }
+
+    }
+
     onClearance { implicit request =>
       "display 'Back' button to the 'Supervising Customs Office' page" when {
         skipDepartureTransportPageCodes.foreach { modeOfTransportCode =>
@@ -130,7 +149,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
           val view: Document = createView()(requestWithUpdatedDec)
 
           s"transportLeavingBoarderCode is ${modeOfTransportCode}" in {
-            verifyBackButton(view, routes.WarehouseIdentificationController.displayPage(Mode.Normal))
+            verifyBackButton(view, routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
           }
         }
       }
