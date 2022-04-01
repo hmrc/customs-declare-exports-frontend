@@ -664,6 +664,7 @@ function invoiceAndExchangeRateChoice() {
 function invoiceAndExchangeRate(){
     if (currentPageIs('/customs-declare-exports/declaration/invoices-and-exchange-rate')) {
         selectRadioOptionFromInputs(document.getElementsByName('agreedExchangeRate'), 0)
+        document.getElementById('code_yes').checked = 'checked';
         document.getElementById('exchangeRate').value ='1.49';
         document.getElementById('totalAmountInvoicedCurrency').value ='GBP';
         document.getElementById('totalAmountInvoiced').value ='567640';
