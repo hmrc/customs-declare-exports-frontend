@@ -888,19 +888,6 @@ declaration.routingCountry.empty = Select the next country the goods will pass t
 declaration.firstRoutingCountry.question = Where will the goods be sent through first?
 declaration.firstRoutingCountry.empty = Select the first country the goods will pass through
 
-declaration.routingCountries.summary.title = Countries of routing
-declaration.routingCountries.summary.header = You have added 1 country of routing
-declaration.routingCountries.summary.header.plural = You have added {0} countries of routing
-declaration.routingCountries.summary.table.caption = Countries added
-declaration.routingCountries.summary.question = Do you need to add any more countries?
-declaration.routingCountries.summary.table.code = Country code
-declaration.routingCountries.summary.change.hint = Change country {0}.
-declaration.routingCountries.summary.remove.hint = Remove country {0}.
-
-declaration.routingCountries.remove.title = Remove routing country
-declaration.routingCountries.remove.question = Are you sure you want to remove this routing country?
-declaration.routingCountries.remove.countryHeader = Country
-
 declaration.routingCountries.duplication = Routing country already added
 declaration.routingCountries.limit = Maximum number of routing countries added
 
