@@ -72,7 +72,6 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
   "should return a 200 (OK)" when {
     onEveryDeclarationJourney() { request =>
       "display page method is invoked and cache is empty" in {
-
         withNewCaching(request.cacheModel)
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -84,7 +83,6 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "display page method is invoked and cache contains Office Of Exit inside UK" in {
-
         val officeId = "GB123456"
         withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId)))
 
@@ -101,7 +99,6 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
   "should return a 400 (BAD_REQUEST)" when {
     onEveryDeclarationJourney() { request =>
       "form is incorrect" in {
-
         withNewCaching(request.cacheModel)
 
         val incorrectForm = Json.toJson(OfficeOfExit("!@#$"))
@@ -127,7 +124,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.InvoiceAndExchangeRateController.displayPage()
+        thePageNavigatedTo mustBe routes.InvoiceAndExchangeRateChoiceController.displayPage()
         checkViewInteractions(0)
         theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput)))
       }
@@ -145,7 +142,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage()
+        thePageNavigatedTo mustBe routes.PreviousDocumentsSummaryController.displayPage()
         checkViewInteractions(0)
         theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput)))
       }

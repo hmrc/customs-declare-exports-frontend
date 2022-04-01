@@ -52,7 +52,7 @@ class InvoiceAndExchangeRateChoiceController @Inject()(
     val declaration = request.cacheModel
 
     if (declaration.isInvoiceAmountGreaterThan100000) Ok(invoiceAndExchangeRateChoicePage(mode, frm.fill(YesNoAnswer(no))))
-    else if (declaration.totalNumberOfItems.isDefined)  Ok(invoiceAndExchangeRateChoicePage(mode, frm.fill(YesNoAnswer(yes))))
+    else if (declaration.totalNumberOfItems.isDefined) Ok(invoiceAndExchangeRateChoicePage(mode, frm.fill(YesNoAnswer(yes))))
     else Ok(invoiceAndExchangeRateChoicePage(mode, frm))
   }
 
@@ -71,7 +71,10 @@ class InvoiceAndExchangeRateChoiceController @Inject()(
       declaration.copy(
         totalNumberOfItems = Some(
           InvoiceAndPackageTotals(
-            totalAmountInvoiced = None, totalAmountInvoicedCurrency = None, agreedExchangeRate = None, exchangeRate = None,
+            totalAmountInvoiced = None,
+            totalAmountInvoicedCurrency = None,
+            agreedExchangeRate = None,
+            exchangeRate = None,
             totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
           )
         )

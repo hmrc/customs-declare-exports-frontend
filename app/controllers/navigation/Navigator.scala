@@ -110,7 +110,6 @@ class Navigator @Inject()(
     case WarehouseIdentification          => warehouseIdentificationPreviousPage
     case AuthorisationProcedureCodeChoice => authorisationProcedureCodeChoicePreviousPage
     case OfficeOfExit                     => officeOfExitPreviousPage
-    case TotalPackageQuantity             => totalPackageQuantityPreviousPage
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -152,6 +151,7 @@ class Navigator @Inject()(
     case ContainerFirst            => containerFirstPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case DestinationCountryPage    => destinationCountryPreviousPage
+    case TotalPackageQuantity      => totalPackageQuantityPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
@@ -182,7 +182,6 @@ class Navigator @Inject()(
     case LocationOfGoods              => routes.DestinationCountryController.displayPage
     case ConsignorEoriNumber          => routes.IsExsController.displayPage
     case ConsignorDetails             => routes.ConsignorEoriNumberController.displayPage
-    case OfficeOfExit                 => routes.LocationOfGoodsController.displayPage
     case DocumentSummary              => routes.OfficeOfExitController.displayPage
     case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
@@ -243,13 +242,14 @@ class Navigator @Inject()(
     case ConsigneeDetails          => consigneeDetailsSupplementaryPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case DestinationCountryPage    => destinationCountryPreviousPage
+    case OfficeOfExit              => officeOfExitPreviousPage
+    case TotalPackageQuantity      => totalPackageQuantityPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
     case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
     case ContainerFirst            => containerFirstPreviousPageOnSupplementary
     case RepresentativeAgent       => representativeAgentPreviousPage
-    case OfficeOfExit              => officeOfExitPreviousPage
   }
 
   val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {

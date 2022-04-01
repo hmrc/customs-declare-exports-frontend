@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{PreviousDocumentsSummaryController, InvoiceAndExchangeRateChoiceController}
+import controllers.declaration.routes.{InvoiceAndExchangeRateChoiceController, PreviousDocumentsSummaryController}
 import controllers.navigation.Navigator
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.officeOfExit.OfficeOfExit.form

@@ -25,4 +25,3 @@ object InvoiceAndExchangeRateChoice extends DeclarationPage {
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     List(TariffContentKey("tariff.declaration.totalNumbersOfItems.1.common"))
 }
-

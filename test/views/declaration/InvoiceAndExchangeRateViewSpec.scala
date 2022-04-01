@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes.InvoiceAndExchangeRateChoiceController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.InvoiceAndExchangeRate
 import forms.declaration.InvoiceAndExchangeRate.form
@@ -104,7 +105,7 @@ class InvoiceAndExchangeRateViewSpec extends UnitViewSpec with ExportsTestData w
         val backButton = createView()(requestWithOfficeOfExitInsideUK).getElementById("back-link")
 
         backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Normal))
+        backButton.getElementById("back-link") must haveHref(InvoiceAndExchangeRateChoiceController.displayPage(Normal))
       }
 
       "display 'Save and continue' button on page" in {
@@ -122,7 +123,6 @@ class InvoiceAndExchangeRateViewSpec extends UnitViewSpec with ExportsTestData w
 
   "Total Number Of Items View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
-
       "display error when all entered input is incorrect" in {
         val view = createView(form.fillAndValidate(InvoiceAndExchangeRate("abcd", Some("dsfsd"), "kjf", Some("abcd"))))
 
@@ -155,11 +155,7 @@ class InvoiceAndExchangeRateViewSpec extends UnitViewSpec with ExportsTestData w
       }
 
       "display error when Currency Code is incorrect" in {
-        val invoiceAndExchangeRate = Map(
-          "exchangeRate" -> "123.12345",
-          "totalAmountInvoiced" -> "123.12",
-          "totalAmountInvoicedCurrency" -> "US"
-        )
+        val invoiceAndExchangeRate = Map("exchangeRate" -> "123.12345", "totalAmountInvoiced" -> "123.12", "totalAmountInvoicedCurrency" -> "US")
         val view = createView(form.bind(invoiceAndExchangeRate))
 
         view must haveGovukGlobalErrorSummary
@@ -172,7 +168,6 @@ class InvoiceAndExchangeRateViewSpec extends UnitViewSpec with ExportsTestData w
 
   "Total Number Of Items View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
-
       "display data in Total Amount Invoiced input" in {
         val invoiceAndExchangeRate = InvoiceAndExchangeRate("123.123", None, YesNoAnswers.no, None)
         val view = createView(form.fill(invoiceAndExchangeRate))
