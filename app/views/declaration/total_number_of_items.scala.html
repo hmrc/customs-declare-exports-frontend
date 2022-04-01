@@ -68,15 +68,15 @@
 
 @currencyCodeAndAmountContent = {
 
-    <span class="govuk-hint" id="totalAmountInvoiced-hint">
+    <div class="govuk-hint" id="totalAmountInvoiced-hint">
         @Html(messages("declaration.totalAmountInvoiced.hint"))
-    </span>
+    </div>
 
     @if(totalAmountInvoicedErrors.nonEmpty){
-        <span class="govuk-error-message">
+        <p class="govuk-error-message">
             <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
             @Html(totalAmountInvoicedErrors.map(err => messages(err.message, err.args:_*)).mkString("<br>"))
-        </span>
+        </p>
     }
 
     <div class="govuk-date-input">

@@ -63,7 +63,8 @@
                     class="form-control @if(yearField.hasErrors){form-control-error}"
                     id="@{dayField.id}"
                     name="@{dayField.name}"
-                    type="number"
+                    type="text"
+                    inputmode="numeric"
                     pattern="[0-9]*"
                     value=@{dayField.value}
                     @if(dayField.hasErrors){ aria-describedby="error-message-@{dayField.id}-input" }
@@ -75,7 +76,8 @@
                     class="form-control @if(yearField.hasErrors){form-control-error}"
                     id="@{monthField.id}"
                     name="@{monthField.name}"
-                    type="number"
+                    type="text"
+                    inputmode="numeric"
                     pattern="[0-9]*"
                     value=@{monthField.value}
                     @if(monthField.hasErrors){ aria-describedby="error-message-@{monthField.id}-input" }
@@ -87,7 +89,8 @@
                     class="form-control @if(yearField.hasErrors){form-control-error}"
                     id="@{yearField.id}"
                     name="@{yearField.name}"
-                    type="number"
+                    type="text"
+                    inputmode="numeric"
                     value=@{yearField.value}
                     @if(yearField.hasErrors){ aria-describedby="error-message-@{yearField.id}-input" }
                 >

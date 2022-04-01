@@ -78,3 +78,6 @@ GET         /entry                                         controllers.GuidanceC
 GET         /complete-declaration                          controllers.GuidanceController.completeDeclaration
 GET         /error-explanation                             controllers.GuidanceController.errorExplanation
 GET         /send-by-roro                                  controllers.GuidanceController.sendByRoro
+
+# HMRC Frontend Static Assets
+->          /hmrc-frontend                                   hmrcfrontend.Routes
