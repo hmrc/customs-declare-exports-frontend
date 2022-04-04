@@ -70,7 +70,7 @@
 @paragraphBody(messages("declaration.additionalInformation.code.paragraph", link(
     id = Some("trade_tariff_link"),
     text = messages("declaration.additionalInformation.code.paragraph.link"),
-    call = Call("GET", appConfig.tradeTariffUrl)
+    call = Call("GET", appConfig.additionalInformationAppendix4)
 )))
 
 @govukFieldset(Fieldset(
