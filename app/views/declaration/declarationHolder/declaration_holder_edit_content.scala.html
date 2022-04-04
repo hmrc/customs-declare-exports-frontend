@@ -16,7 +16,7 @@
 
 @import config.AppConfig
 @import forms.declaration.declarationHolder.DeclarationHolder
-@import forms.declaration.declarationHolder.DeclarationHolder.{DeclarationHolderFormGroupId, eoriSource}
+@import forms.declaration.declarationHolder.DeclarationHolder.{DeclarationHolderFormGroupId, EoriSourceId}
 @import models.requests.JourneyRequest
 @import models.declaration.EoriSource._
 @import play.twirl.api.HtmlFormat
@@ -60,24 +60,24 @@
     @declHolderHelper.textForEoriRadiosWhenEXRR
 
     @govukRadios(Radios(
-        name = eoriSource,
+        name = EoriSourceId,
         items = Seq(
             RadioItem(
                 id = Some(UserEori.toString),
                 value = Some(UserEori.toString),
                 content = Text(messages("declaration.declarationHolder.eori.user.text", userEori)),
-                checked = form(eoriSource).value.contains(UserEori.toString)
+                checked = form(EoriSourceId).value.contains(UserEori.toString)
             ),
             RadioItem(
                 id = Some(OtherEori.toString),
                 value = Some(OtherEori.toString),
                 content = Text(messages("declaration.declarationHolder.eori.other.text")),
-                checked = form(eoriSource).value.contains(OtherEori.toString),
+                checked = form(EoriSourceId).value.contains(OtherEori.toString),
                 conditionalHtml = Some(otherEoriInput),
             )
         ),
-        attributes = Map("id" -> eoriSource),
-        errorMessage = form(eoriSource).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        attributes = Map("id" -> EoriSourceId),
+        errorMessage = form(EoriSourceId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
     ))
 }
 

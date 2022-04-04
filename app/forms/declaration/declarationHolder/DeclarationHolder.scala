@@ -46,20 +46,21 @@ object DeclarationHolder extends DeclarationPage {
   implicit val format = Json.format[DeclarationHolder]
 
   val DeclarationHolderFormGroupId: String = "declarationHolder"
-
-  val eoriSource = "eoriSource"
+  val AuthorisationTypeCodeId = "authorisationTypeCode"
+  val EoriId = "eori"
+  val EoriSourceId = "eoriSource"
 
   def form(eori: String, additionalDeclarationType: Option[AdditionalDeclarationType]): Form[DeclarationHolder] =
     Form(mapping(eori, additionalDeclarationType))
 
   def mapping(userEori: String, additionalDeclarationType: Option[AdditionalDeclarationType]): Mapping[DeclarationHolder] =
     Forms.mapping(
-      "authorisationTypeCode" ->
+      AuthorisationTypeCodeId ->
         optional(text())
           .verifying("declaration.declarationHolder.authorisationCode.empty", _.isDefined)
           .verifying("declaration.declarationHolder.EXRR.error.prelodged", nonExrrSelectedForPrelodgedDecl(_, additionalDeclarationType)),
-      "eori" -> mandatoryIfEqual(eoriSource, EoriSource.OtherEori.toString, Eori.mapping("declaration.declarationHolder.eori.other.error.empty")),
-      eoriSource -> requiredRadio("declaration.declarationHolder.eori.error.radio", EoriSource.values.map(_.toString))
+      EoriId -> mandatoryIfEqual(EoriSourceId, EoriSource.OtherEori.toString, Eori.mapping("declaration.declarationHolder.eori.other.error.empty")),
+      EoriSourceId -> requiredRadio("declaration.declarationHolder.eori.error.radio", EoriSource.values.map(_.toString))
     )(applyDeclarationHolder(userEori))(unapplyDeclarationHolder)
 
   private def nonExrrSelectedForPrelodgedDecl(maybeCode: Option[String], maybeAdditionalDeclarationType: Option[AdditionalDeclarationType]): Boolean =
@@ -97,7 +98,7 @@ object DeclarationHolder extends DeclarationPage {
         val mustNotAlreadyContainCodes: List[String] = mutuallyExclusiveAuthCodes.filter(_ != code)
 
         if (!holders.map(_.authorisationTypeCode.getOrElse("")).containsSlice(mustNotAlreadyContainCodes)) None
-        else Some(FormError(DeclarationHolderFormGroupId, s"declaration.declarationHolder.${code}.error.exclusive"))
+        else Some(FormError(AuthorisationTypeCodeId, s"declaration.declarationHolder.${code}.error.exclusive"))
 
       case _ => None
     }
