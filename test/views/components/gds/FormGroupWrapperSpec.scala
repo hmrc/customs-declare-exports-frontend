@@ -78,12 +78,12 @@ class FormGroupWrapperSpec extends UnitViewSpec with Injector {
         actualClassNames mustBe expectedClassNames
       }
 
-      "contain span element with error message" in {
+      "contain paragraph element with error message" in {
 
-        val spanElement = formGroupWrapperViewWithError.getElementById(s"$testFieldKey-error")
+        val paragraphElement = formGroupWrapperViewWithError.getElementById(s"$testFieldKey-error")
 
-        asScalaSet(spanElement.classNames()).toSeq mustBe Seq("govuk-error-message")
-        spanElement must containMessage(testErrorMessageKey)
+        asScalaSet(paragraphElement.classNames()).toSeq mustBe Seq("govuk-error-message")
+        paragraphElement must containMessage(testErrorMessageKey)
       }
 
       "contain provided content" in {

@@ -76,6 +76,18 @@
                     checked = form("natureType").value.contains(Sale)
                 ),
                 RadioItem(
+                    id = Some("BusinessPurchase"),
+                    value = Some(BusinessPurchase),
+                    content = Text(messages("declaration.natureOfTransaction.businessPurchase")),
+                    checked = form("natureType").value.contains(BusinessPurchase)
+                ),
+                RadioItem(
+                    id = Some("HouseRemoval"),
+                    value = Some(HouseRemoval),
+                    content = Text(messages("declaration.natureOfTransaction.houseRemoval")),
+                    checked = form("natureType").value.contains(HouseRemoval)
+                ),
+                RadioItem(
                     id = Some("Return"),
                     value = Some(Return),
                     content = Text(messages("declaration.natureOfTransaction.return")),
@@ -130,8 +142,6 @@
             ),
             errorMessage = form("natureType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @insetText(content = HtmlContent(insetContent))
 
         @tariffExpander(NatureOfTransaction, request.declarationType)(messages, appConfig)
 

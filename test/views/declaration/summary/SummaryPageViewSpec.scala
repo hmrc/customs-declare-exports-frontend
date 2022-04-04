@@ -17,7 +17,6 @@
 package views.declaration.summary
 
 import base.Injector
-import controllers.declaration.SummaryController.lrnDuplicateError
 import forms.declaration.CommodityDetails
 import models.ExportsDeclaration
 import org.jsoup.nodes.Document
