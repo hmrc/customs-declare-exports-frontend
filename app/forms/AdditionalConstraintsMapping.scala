@@ -45,8 +45,7 @@ case class AdditionalConstraintsMapping[T](
 
   def bind(data: Map[String, String]): Either[Seq[FormError], T] =
     conditionalAdditionalConstraints
-      .filter(_.shouldConstraintBeApplied(data))
-      .headOption
+      .find(_.shouldConstraintBeApplied(data))
       .fold(baseMappings.bind(data)) { additionalCondition =>
         baseMappings.verifying(additionalCondition.errorKey, additionalCondition.constraint).bind(data)
       }

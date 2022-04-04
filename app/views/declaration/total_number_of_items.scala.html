@@ -31,13 +31,16 @@
     govukInput: GovukInput,
     govukFieldset: GovukFieldset,
     govukDetails : GovukDetails,
+    govukRadios : GovukRadios,
     pageTitle: pageTitle,
+    heading: heading,
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     link: link,
+    yesNoRadios: yesNoRadios,
     paragraphBody: paragraphBody,
     bulletList: bulletList,
     formHelper: FormWithCSRF,
@@ -65,32 +68,15 @@
 
 @currencyCodeAndAmountContent = {
 
-    @paragraphBody(messages("declaration.totalAmountInvoiced.paragraph1.text",
-        link(
-            text = messages("declaration.totalAmountInvoiced.paragraph1.link.text"),
-            call = Call("GET", appConfig.currencyCodesForDataElement410),
-            target = "_blank"
-        )
-    ))
-
-    @paragraphBody(messages("declaration.totalAmountInvoiced.paragraph2.text",
-        link(
-            text = messages("declaration.totalAmountInvoiced.paragraph2.link.text"),
-            call = Call("GET", appConfig.exchangeRatesForCustoms),
-            target = "_blank"
-        )
-    ))
-
-    <span class="govuk-hint" id="totalAmountInvoiced-hint">
+    <div class="govuk-hint" id="totalAmountInvoiced-hint">
         @Html(messages("declaration.totalAmountInvoiced.hint"))
-    </span>
-
+    </div>
 
     @if(totalAmountInvoicedErrors.nonEmpty){
-        <span class="govuk-error-message">
+        <p class="govuk-error-message">
             <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
             @Html(totalAmountInvoicedErrors.map(err => messages(err.message, err.args:_*)).mkString("<br>"))
-        </span>
+        </p>
     }
 
     <div class="govuk-date-input">
@@ -113,34 +99,27 @@
 
 @currencyCodeAndAmount = {
     <div class="govuk-form-group @if(totalAmountInvoicedErrors.nonEmpty){govuk-form-group--error}">
-
     @govukFieldset(Fieldset(
-        legend = Some(Legend(
-            content = Text(messages("declaration.totalAmountInvoiced")),
-            classes = "govuk-fieldset__legend--m"
-        )),
         attributes = Map("id" -> "currencyCodeAndAmount"),
         html = HtmlFormat.fill(List(currencyCodeAndAmountContent))
     ))
     </div>
 }
 
-@exchangeRateContent = @{HtmlFormat.fill(List(
-    paragraphBody(messages("declaration.exchangeRate.paragraph1.text")),
-    bulletList(
-        List(
-            Html(messages("declaration.exchangeRate.bullet1.text")),
-            Html(messages("declaration.exchangeRate.bullet2.text"))
-        )
-    ),
-    paragraphBody(messages("declaration.exchangeRate.paragraph2.text",
-        link(
-            text = messages("declaration.exchangeRate.paragraph2.link.text"),
-            call = Call("GET", appConfig.exchangeRatesForCustoms),
-            target = "_blank"
-        )
-    ))
-))}
+@exchangeRateInput = {
+    @exportsInputText(
+        field = form(exchangeRate),
+        labelKey = "declaration.exchangeRate.input.label",
+        hintKey = Some("declaration.exchangeRate.input.hint"),
+        inputClasses = Some("govuk-input--width-10")
+    )
+}
+
+@expanderContent = {
+    @paragraphBody(messages("declaration.exchangeRate.expander.paragraph.1"))
+    @paragraphBody(messages("declaration.exchangeRate.expander.paragraph.2"))
+}
+
 
 @govukLayout(
     title = Title("declaration.invoice.details.title", "declaration.section.4", hasErrors = hasErrors),
@@ -152,17 +131,31 @@
         @sectionHeader(messages("declaration.section.4"))
         @pageTitle(messages("declaration.invoice.details.title"))
 
-        @paragraphBody(messages("declaration.invoice.details.body"))
-
-        @exportsInputText(
-            field = form(exchangeRate),
-            labelKey = "declaration.exchangeRate",
-            bodyHtml = Some(exchangeRateContent),
-            hintKey = Some("declaration.exchangeRate.hint"),
-            inputClasses = Some("govuk-input--width-10")
-        )
+        @paragraphBody(messages("declaration.invoice.details.body.1"))
+        @paragraphBody(messages("declaration.invoice.details.body.2",
+            link(
+                text = messages("declaration.invoice.details.body.2.link.text"),
+                call = Call("GET", appConfig.exchangeRatesForCustoms),
+                target = "_blank"
+            )
+        ))
 
         @currencyCodeAndAmount
+
+        @heading(messages("declaration.exchangeRate"), "govuk-heading-m", "h2")
+        @paragraphBody(messages("declaration.exchangeRate.paragraph1.text"))
+
+        @yesNoRadios(
+            form,
+            answerKey = "agreedExchangeRate",
+            yesConditionalHtml = Some(exchangeRateInput)
+        )
+
+        @govukDetails(Details(
+            summary = Text(messages("declaration.exchangeRate.expander.title")),
+            content = HtmlContent(expanderContent),
+            id = Some("exchange-rate-expander")
+        ))
 
         @tariffExpander(TotalNumberOfItems, request.declarationType)(messages, appConfig)
 

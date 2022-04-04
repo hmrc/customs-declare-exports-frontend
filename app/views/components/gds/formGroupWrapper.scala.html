@@ -24,9 +24,9 @@
 
 @errorMessage = {
   @if(field.hasErrors) {
-    <span id=@{s"${field.id}-error"} class="govuk-error-message">
+    <p id=@{s"${field.id}-error"} class="govuk-error-message">
       <span class="govuk-visually-hidden">Error:</span> @messages(field.error.map(_.message).getOrElse(""))
-    </span>
+    </p>
   }
 }
 
