@@ -104,6 +104,11 @@ case class ExportsDeclaration(
 
   def isAdditionalDeclarationType(adt: AdditionalDeclarationType): Boolean = additionalDeclarationType.exists(_ == adt)
 
+  // Note that the methods' names (if the value is or not actually >= 100,000) do not reflect their actual behaviours,
+  // (defined or not defined) but rather the business rule behind them, which is used to drive the navigation.
+  // The business rule requires that when non-empty, the value in totalAmountInvoiced "should" (because potentially a
+  // user could still enter an amount < 100,000) always be >= 100,000, whereas if empty, or not defined, it is because
+  // the amount was < 100,000.
   def isInvoiceAmountGreaterThan100000: Boolean =
     totalNumberOfItems.exists(_.totalAmountInvoiced.fold(false)(_.trim.nonEmpty))
 
