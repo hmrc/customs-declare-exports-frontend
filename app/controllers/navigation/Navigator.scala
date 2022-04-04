@@ -604,7 +604,8 @@ class Navigator @Inject()(
 
   private def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration, mode: Mode): Call = {
     val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
-    if (postalOrFTI) routes.SupervisingCustomsOfficeController.displayPage(mode)
+    if (postalOrFTI && supervisingCustomsOfficeHelper.checkProcedureCodes(cacheModel)) routes.WarehouseIdentificationController.displayPage(mode)
+    else if (postalOrFTI) routes.SupervisingCustomsOfficeController.displayPage(mode)
     else routes.DepartureTransportController.displayPage(mode)
   }
 

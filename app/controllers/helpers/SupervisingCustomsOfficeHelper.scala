@@ -42,9 +42,11 @@ class SupervisingCustomsOfficeHelper @Inject()(inlandOrBorderHelper: InlandOrBor
      If this condition is NOT verified the user can land on the Supervising-Customs-Office page.
    */
   def isConditionForAllProcedureCodesVerified(cachedModel: ExportsDeclaration): Boolean =
+    checkProcedureCodes(cachedModel) && !isAuthCode(cachedModel, codeThatOverrideInlandOrBorderSkip)
+
+  def checkProcedureCodes(cachedModel: ExportsDeclaration): Boolean =
     cachedModel.items.nonEmpty &&
-      cachedModel.items.forall(_.procedureCodes.forall(isConditionForProcedureCodesDataVerified)) &&
-      !isAuthCode(cachedModel, codeThatOverrideInlandOrBorderSkip)
+      cachedModel.items.forall(_.procedureCodes.forall(isConditionForProcedureCodesDataVerified))
 
   def landOnOrSkipToNextPage(declaration: ExportsDeclaration): Mode => Call =
     if (isConditionForAllProcedureCodesVerified(declaration)) nextPage(declaration)
