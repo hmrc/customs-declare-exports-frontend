@@ -22,7 +22,7 @@ import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountri
 import controllers.navigation.Navigator
 import forms.declaration.RoutingCountryQuestionYesNo._
 import forms.declaration.countries.Countries
-import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
+import forms.declaration.countries.Countries.RoutingCountryPage
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -48,14 +48,10 @@ class RoutingCountriesController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val destinationCountryCode = request.cacheModel.locations.destinationCountry.flatMap(_.code)
-    val destinationCountryName =
-      destinationCountryCode.map(ServiceCountries.findByCode(_)).map(countryHelper.getShortNameForCountry).getOrElse("")
-
     val frm = formFirst().withSubmissionErrors()
     request.cacheModel.locations.hasRoutingCountries match {
-      case Some(answer) => Ok(routingQuestionPage(mode, frm.fill(answer), destinationCountryName))
-      case None         => Ok(routingQuestionPage(mode, frm, destinationCountryName))
+      case Some(answer) => Ok(routingQuestionPage(mode, frm.fill(answer), destinationCountryNameFromLocations))
+      case None         => Ok(routingQuestionPage(mode, frm, destinationCountryNameFromLocations))
     }
   }
 
@@ -75,7 +71,7 @@ class RoutingCountriesController @Inject()(
     if (answer) {
       updateDeclarationFromRequest(_.updateRoutingQuestion(answer))
     } else {
-      updateDeclarationFromRequest(_.clearRoutingCountries)
+      updateDeclarationFromRequest(_.clearRoutingCountries())
     }
 
   private def redirectFromRoutingAnswer(mode: Mode, answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
@@ -86,25 +82,24 @@ class RoutingCountriesController @Inject()(
 
   def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val routingAnswer = request.cacheModel.locations.hasRoutingCountries
-    val page = if (request.cacheModel.locations.routingCountries.nonEmpty) NextRoutingCountryPage else FirstRoutingCountryPage
 
     routingAnswer match {
-      case Some(answer) if answer => Ok(countryOfRoutingPage(mode, Countries.form(page), page))
+      case Some(answer) if answer =>
+        Ok(countryOfRoutingPage(mode, Countries.form(RoutingCountryPage), RoutingCountryPage, destinationCountryNameFromConsigneeDetails))
       case _ =>
         navigator.continueTo(mode, RoutingCountriesController.displayRoutingQuestion(_, fastForward = false))
     }
   }
 
   def submitRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val hasCountriesAdded = request.cacheModel.locations.routingCountries.nonEmpty
     val cachedCountries = request.cacheModel.locations.routingCountries
-    val page = if (hasCountriesAdded) NextRoutingCountryPage else FirstRoutingCountryPage
 
     Countries
-      .form(page, cachedCountries)
+      .form(RoutingCountryPage, cachedCountries)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, page))),
+        formWithErrors =>
+          Future.successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, RoutingCountryPage, destinationCountryNameFromConsigneeDetails))),
         validCountry => {
           val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
 
@@ -114,4 +109,19 @@ class RoutingCountriesController @Inject()(
         }
       )
   }
+
+  private def destinationCountryNameFromLocations(implicit request: JourneyRequest[_]): String =
+    request.cacheModel.locations.destinationCountry
+      .flatMap(_.code)
+      .map(ServiceCountries.findByCode(_))
+      .map(countryHelper.getShortNameForCountry)
+      .getOrElse("")
+
+  private def destinationCountryNameFromConsigneeDetails(implicit request: JourneyRequest[_]): String =
+    request.cacheModel.parties.consigneeDetails
+      .map(_.details)
+      .flatMap(_.address)
+      .map(_.country)
+      .getOrElse("")
+
 }

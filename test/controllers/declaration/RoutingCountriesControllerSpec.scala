@@ -57,7 +57,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
     authorizedUser()
     when(mockRoutingQuestionPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockCountryOfRoutingPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCountryOfRoutingPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
   }
 
@@ -110,7 +110,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockCountryOfRoutingPage).apply(any(), any(), any())(any(), any())
+        verify(mockCountryOfRoutingPage).apply(any(), any(), any(), any())(any(), any())
       }
     }
 

@@ -32,6 +32,7 @@
     govukRadios: GovukRadios,
     govukDetails : GovukDetails,
     govukFieldset: GovukFieldset,
+    body: paragraphBody,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
@@ -40,12 +41,17 @@
     appConfig: AppConfig
 )(implicit countryAutoCompleteHelper: CountryHelper)
 
-@(mode: Mode, form: Form[Country], page: CountryPage)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[Country], page: CountryPage, destinationCountryName: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
-    title = Title(s"declaration.${page.id}.question", "declaration.section.3", hasErrors = hasErrors),
+    title = Title(
+        headingKey = "declaration.routingCountries.title",
+        sectionKey = "declaration.section.3",
+        headingArg = destinationCountryName,
+        hasErrors = hasErrors
+    ),
     backButton = Some(BackButton(messages("site.back"), routes.RoutingCountriesController.displayRoutingQuestion()))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
@@ -53,11 +59,16 @@
 
         @sectionHeader(messages("declaration.section.3"))
 
+
+
         @components.fields.field_accessible_location_autocomplete_with_header(
             field = form("countryCode"),
-            label = Some(messages(s"declaration.${page.id}.question")),
+            label = Some(messages("declaration.routingCountries.title", destinationCountryName)),
             labelClass = Some(gdsPageLabel),
             hintParagraphs = List(messages("declaration.country.dropdown.hint")),
+            bodyHtml = Some(
+                Html(Seq("declaration.routingCountries.body.p1", "declaration.routingCountries.body.p2").map(msg => body(messages(msg))).mkString)
+            ),
             countryKey = (c: CountryModel) => c.countryCode,
             isPageHeading = true
         )
