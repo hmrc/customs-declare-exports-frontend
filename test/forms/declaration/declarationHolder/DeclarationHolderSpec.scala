@@ -222,7 +222,7 @@ class DeclarationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTest
 
   "DeclarationHolder.validateMutuallyExclusiveAuthCodes" when {
     def holder(code: String) = DeclarationHolder(Some(code), None, None)
-    def error(code: String) = FormError(DeclarationHolderFormGroupId, s"declaration.declarationHolder.${code}.error.exclusive")
+    def error(code: String) = FormError(AuthorisationTypeCodeId, s"declaration.declarationHolder.${code}.error.exclusive")
 
     "the user enters a new 'CSE' authorisation and the cache already includes an 'EXRR' one" should {
       "return a FormError" in {
