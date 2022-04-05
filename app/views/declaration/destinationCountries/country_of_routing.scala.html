@@ -36,6 +36,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
+    addButton: addButton,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
@@ -59,8 +60,6 @@
 
         @sectionHeader(messages("declaration.section.3"))
 
-
-
         @components.fields.field_accessible_location_autocomplete_with_header(
             field = form("countryCode"),
             label = Some(messages("declaration.routingCountries.title", destinationCountryName)),
@@ -70,7 +69,8 @@
                 Html(Seq("declaration.routingCountries.body.p1", "declaration.routingCountries.body.p2").map(msg => body(messages(msg))).mkString)
             ),
             countryKey = (c: CountryModel) => c.countryCode,
-            isPageHeading = true
+            isPageHeading = true,
+            rightElement = Some(addButton(hiddenLabel = Some(messages("declaration.additionalProcedureCodes.add.hint"))))
         )
 
         @tariffExpander(page, request.declarationType)(messages, appConfig)
