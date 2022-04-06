@@ -14,11 +14,12 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes.{NatureOfTransactionController, InvoiceAndExchangeRateController, TotalPackageQuantityController}
+@import controllers.declaration.routes.{NatureOfTransactionController, InvoiceAndExchangeRateController, TotalPackageQuantityController, InvoiceAndExchangeRateChoiceController}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder.actionItem
 @import views.html.components.gds.{linkContent, summary_list}
 @import views.html.declaration.summary.related_documents
+@import models.DeclarationType._
 
 @this(
     summaryList: summary_list,
@@ -29,36 +30,52 @@
 @(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @hasTransactionData = @{
-   declaration.totalNumberOfItems.isDefined || declaration.natureOfTransaction.isDefined || declaration.previousDocuments.isDefined
+   declaration.totalNumberOfItems.isDefined || declaration.natureOfTransaction.isDefined || declaration.previousDocuments.isDefined ||
+    ((declaration.isType(STANDARD) || declaration.isType(SUPPLEMENTARY)) && declaration.isInvoiceAmountLessThan100000)
+}
+
+@totalAmountInvoicedRowContent = @{
+    val currencyCode = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency).getOrElse("")
+    val totalAmountInvoiced = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoiced).getOrElse("")
+    if (declaration.isInvoiceAmountLessThan100000) messages("declaration.totalAmountInvoiced.value.lessThan100000")
+    else s"$currencyCode $totalAmountInvoiced"
+}
+
+@totalAmountInvoicedActionItemUrl = @{
+    if (declaration.isInvoiceAmountLessThan100000) InvoiceAndExchangeRateChoiceController.displayPage(mode).url
+    else InvoiceAndExchangeRateController.displayPage(mode).url
+}
+
+@totalAmountInvoicedRow = @{
+    if (declaration.isType(STANDARD) || declaration.isType(SUPPLEMENTARY))
+        Some(SummaryListRow(
+            classes = "item-amount-row",
+            key = Key(
+                content = Text(messages("declaration.summary.transaction.itemAmount"))
+            ),
+            value = Value(
+                content = Text({
+                    totalAmountInvoicedRowContent
+                })
+            ),
+            actions = actions(Actions(
+                items = List(
+                    actionItem(
+                        href = totalAmountInvoicedActionItemUrl,
+                        content = HtmlContent(linkContent(messages("site.change"))),
+                        visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
+                    )
+                )
+            ))
+        ))
+    else None
 }
 
 @actions(action: Actions) = @{ if (actionsEnabled) Some(action) else None }
 
 @if(hasTransactionData) {
     @summaryList("declaration-transaction-summary", Some(messages("declaration.summary.transaction")), List(
-        declaration.totalNumberOfItems.flatMap(_.totalAmountInvoiced.map { totalAmountInvoiced =>
-        SummaryListRow(
-        classes = "item-amount-row",
-        key = Key(
-        content = Text(messages("declaration.summary.transaction.itemAmount"))
-        ),
-        value = Value(
-        content = Text({
-        val currencyCode = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency).getOrElse("")
-        s"$currencyCode $totalAmountInvoiced"
-        })
-        ),
-        actions = actions(Actions(
-        items = List(
-        actionItem(
-        href = InvoiceAndExchangeRateController.displayPage(mode).url,
-        content = HtmlContent(linkContent(messages("site.change"))),
-        visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
-        )
-        )
-        ))
-        )
-        }),
+        totalAmountInvoicedRow,
         declaration.totalNumberOfItems.flatMap { _.exchangeRate.map { exchangeRate =>
             SummaryListRow(
                 classes = "exchange-rate-row",

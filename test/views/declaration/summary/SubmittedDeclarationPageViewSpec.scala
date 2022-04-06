@@ -18,6 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import forms.declaration.CommodityDetails
+import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus
@@ -108,10 +109,12 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
       links(view) mustBe empty
     }
 
-    "not have transaction section" in {
-
-      Option(createView().getElementById("declaration-transaction-summary")) mustBe None
-    }
+    for (decType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
+      yield
+        s"not have transaction section in $decType declaration" in {
+          val view = createView(declaration = aDeclaration(withType(decType)))
+          Option(view.getElementById("declaration-transaction-summary")) mustBe None
+        }
 
     "have transaction section" in {
 

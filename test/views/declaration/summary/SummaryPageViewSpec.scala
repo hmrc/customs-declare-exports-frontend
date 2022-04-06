@@ -18,6 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import forms.declaration.CommodityDetails
+import models.DeclarationType._
 import models.ExportsDeclaration
 import org.jsoup.nodes.Document
 import play.api.data.FormError
@@ -74,9 +75,11 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
         .text() must include("office-Id")
     }
 
-    "not have transaction section" in {
-      view(aDeclaration()).getElementById("declaration-transaction-summary") mustBe null
-    }
+    for (decType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
+      yield
+        s"not have transaction section in $decType declaration" in {
+          view(aDeclaration(withType(decType))).getElementById("declaration-transaction-summary") mustBe null
+        }
 
     "have transaction section" in {
       view(aDeclaration(withNatureOfTransaction("1"))).getElementById("declaration-transaction-summary").text() mustNot be(empty)
