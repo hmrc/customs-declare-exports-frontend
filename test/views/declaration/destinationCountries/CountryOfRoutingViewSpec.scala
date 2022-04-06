@@ -58,7 +58,7 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
     Countries.form(RoutingCountryPage)(request, messages(request), mockCodeListConnector)
 
   private def routingView(implicit request: JourneyRequest[_]): Html =
-    countryOfRoutingPage(Mode.Normal, routingForm(request), RoutingCountryPage, "Somewhere")(request, messages)
+    countryOfRoutingPage(Mode.Normal, routingForm(request), "Somewhere", Seq.empty[ModelCountry])(request, messages)
 
   "Routing Country view" should {
 

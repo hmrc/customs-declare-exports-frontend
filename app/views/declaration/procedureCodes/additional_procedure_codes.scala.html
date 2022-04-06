@@ -23,8 +23,9 @@
 @import views.html.components.gds._
 @import views.html.components.addToTable
 @import views.components.gds.Styles._
-@import config.AppConfig
+@import models.viewmodels.ListRows
 @import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
+@import config.AppConfig
 @import forms.declaration.procedurecodes.AdditionalProcedureCode
 @import forms.declaration.procedurecodes.AdditionalProcedureCode.additionalProcedureCodeKey
 @import services.view.AutoCompleteItem
@@ -80,7 +81,7 @@
       rightElement = Some(addButton(hiddenLabel = Some(messages("declaration.additionalProcedureCodes.add.hint"))))
     )
 
-    @addToTable(codes, "additionalProcedureCodes")
+    @addToTable(ListRows(codes, "additionalProcedureCodes"))
 
     @tariffExpander(AdditionalProcedureCode, request.declarationType)(messages, appConfig)
     @saveButtons()

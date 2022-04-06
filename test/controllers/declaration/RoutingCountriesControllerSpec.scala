@@ -19,6 +19,7 @@ package controllers.declaration
 import base.ControllerSpec
 import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
+import controllers.helpers.Remove
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -58,7 +59,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
     authorizedUser()
     when(mockRoutingQuestionPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCountryOfRoutingPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
+    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB"), "FR" -> Country("France", "FR")))
   }
 
   override protected def afterEach(): Unit = {
@@ -152,72 +153,117 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
 
-      "user answered Yes for Routing Question" in {
+      "Routing Question" when {
+        "Yes" in {
 
-        withNewCaching(aDeclaration(withDestinationCountry()))
+          withNewCaching(aDeclaration(withDestinationCountry()))
 
-        val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
+          val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
 
-        val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(correctForm))
+          val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(correctForm))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
+        }
+
+        "No" in {
+
+          withNewCaching(aDeclaration(withDestinationCountry()))
+
+          val correctForm = JsObject(Seq("answer" -> JsString("No")))
+
+          val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
+        }
+
+        "error fixing and the answer is yes" in {
+
+          withNewCaching(aDeclaration(withDestinationCountry()))
+
+          val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
+
+          val result = controller.submitRoutingAnswer(Mode.ErrorFix)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix)
+        }
       }
 
-      "user answered No for Routing Question" in {
+      "unauthorised for Routing Countries" when {
 
-        withNewCaching(aDeclaration(withDestinationCountry()))
+        "without Routing Question" in {
 
-        val correctForm = JsObject(Seq("answer" -> JsString("No")))
+          withNewCaching(aDeclaration(withoutRoutingQuestion()))
 
-        val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(correctForm))
+          val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion(fastForward = false)
+        }
+
+        "No for Routing Question" in {
+
+          withNewCaching(aDeclaration(withRoutingQuestion(false)))
+
+          val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion(fastForward = false)
+        }
+
       }
 
-      "user try to get Routing Countries page without Routing Question" in {
+      "adding a country" when {
+        "use submitted correct routing country" in {
 
-        withNewCaching(aDeclaration(withoutRoutingQuestion()))
+          withNewCaching(aDeclaration(withRoutingQuestion()))
 
-        val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
+          val correctForm = Seq("countryCode" -> "GB", addActionUrlEncoded())
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion(fastForward = false)
+          val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
+        }
       }
 
-      "user try to get Routing Countries when answered No for Routing Question" in {
+      "removing a country" when {
 
-        withNewCaching(aDeclaration(withRoutingQuestion(false)))
+        val removeAction = (Remove.toString, "FR")
 
-        val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
+        "country removed not in list" in {
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion(fastForward = false)
-      }
+          withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(FormCountry(Some("PL")), FormCountry(Some("GB"))))))
 
-      "use submitted correct routing country" in {
+          val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(Seq(removeAction): _*))
 
-        withNewCaching(aDeclaration(withRoutingQuestion()))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
 
-        val correctForm = JsObject(Seq("countryCode" -> JsString("GB")))
+          val updatedCountries = theCacheModelUpdated.locations.routingCountries
+          theCacheModelUpdated.containRoutingCountries mustBe true
+          updatedCountries.contains(FormCountry(Some("PL"))) mustBe true
+          updatedCountries.contains(FormCountry(Some("GB"))) mustBe true
+        }
 
-        val result = controller.submitRoutingCountry(Mode.Normal)(postRequest(correctForm))
+        "user remove country that exists in cache" in {
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
-      }
+          withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(FormCountry(Some("GB")), FormCountry(Some("FR"))))))
 
-      "user is during error fixing and the naswer is yes" in {
+          val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
 
-        withNewCaching(aDeclaration(withDestinationCountry()))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
 
-        val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
+          val updatedCountries = theCacheModelUpdated.locations.routingCountries
+          theCacheModelUpdated.containRoutingCountries mustBe true
+          updatedCountries.contains(FormCountry(Some("FR"))) mustBe false
+          updatedCountries.contains(FormCountry(Some("GB"))) mustBe true
 
-        val result = controller.submitRoutingAnswer(Mode.ErrorFix)(postRequest(correctForm))
+        }
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix)
       }
 
     }

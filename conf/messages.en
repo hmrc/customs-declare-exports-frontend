@@ -886,6 +886,7 @@ declaration.routingCountry.empty = Select the next country the goods will pass t
 declaration.routingCountries.title = Add the countries of routing between Great Britain and {0}
 declaration.routingCountries.body.p1 = If goods are going by road or rail, add the countries on the land route in order. For deep sea or air movements, add the countries where the goods will be moved to a different vessel or plane.
 declaration.routingCountries.body.p2 = It is enough to provide the countries that you currently understand to be in the intended route.
+declaration.routingCountries.table.header = Countries of routing
 
 declaration.routingCountries.duplication = Routing country already added
 declaration.routingCountries.limit = Maximum number of routing countries added

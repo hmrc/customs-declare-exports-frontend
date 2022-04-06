@@ -1,6 +1,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
 @import views.components.gds.Styles._
+@import models.viewmodels.ListRows
 
 @this(
   govukLayout: gdsMainTemplate,
@@ -9,25 +10,28 @@
   removeButton: removeButton
 )
 
-@(codes: Seq[String], msgKey: String)(implicit messages: Messages)
+@(listRows: ListRows)(implicit messages: Messages)
 
-  @if(codes.nonEmpty) {
+  @if(listRows.rowLabels.nonEmpty) {
     @govukTable(Table(
-      rows = codes.zipWithIndex.reverse.map{ case(code, index) =>
+      rows = listRows.rowLabels.zipWithIndex.reverse.map{ case(code, index) =>
         Seq(
           TableRow(
             content = Text(code),
-            attributes = Map("id" -> s"$msgKey-table-row$index-label")
+            attributes = Map("id" -> s"${listRows.msgKey}-table-row$index-label")
           ),
           TableRow(
-            content = HtmlContent(removeButton(value = Some(code), hiddenLabel = Some(messages(s"declaration.$msgKey.remove.hint", code)))),
-            attributes = Map("id" -> s"$msgKey-table-row$index-remove_button")
+            content = HtmlContent(removeButton(
+              value = Some(listRows.removeKeys.map(_(index)).getOrElse(code)),
+              hiddenLabel = Some(messages(s"declaration.${listRows.msgKey}.remove.hint", code))
+            )),
+            attributes = Map("id" -> s"${listRows.msgKey}-table-row$index-remove_button")
           )
         )
       },
       head = Some(List(
         HeadCell(
-          content = Text(messages(s"declaration.$msgKey.table.header"))
+          content = Text(messages(s"declaration.${listRows.msgKey}.table.header"))
         ),
         HeadCell(
           content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))

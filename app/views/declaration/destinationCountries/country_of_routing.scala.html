@@ -19,12 +19,14 @@
 @import views.helpers.CountryHelper
 @import forms.declaration.countries.Countries._
 @import forms.declaration.countries.Country
+@import views.html.components.addToTable
 @import models.codes.{Country => CountryModel}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.{BackButton, Title}
+@import views.helpers.{BackButton, Title, CountryHelper}
 @import views.html.components.gds._
+@import models.viewmodels.ListRows
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -32,6 +34,7 @@
     govukRadios: GovukRadios,
     govukDetails : GovukDetails,
     govukFieldset: GovukFieldset,
+    addToTable: addToTable,
     body: paragraphBody,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
@@ -40,9 +43,9 @@
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
-)(implicit countryAutoCompleteHelper: CountryHelper)
+)(implicit countryHelper: CountryHelper)
 
-@(mode: Mode, form: Form[Country], page: CountryPage, destinationCountryName: String)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[Country], destinationCountryName: String, routingCounties: Seq[CountryModel])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
@@ -70,10 +73,16 @@
             ),
             countryKey = (c: CountryModel) => c.countryCode,
             isPageHeading = true,
-            rightElement = Some(addButton(hiddenLabel = Some(messages("declaration.additionalProcedureCodes.add.hint"))))
+            rightElement = Some(addButton())
         )
 
-        @tariffExpander(page, request.declarationType)(messages, appConfig)
+        @addToTable(ListRows(
+            rowLabels = routingCounties.map(countryHelper.getShortNameForCountry),
+            msgKey = "routingCountries",
+            removeKeys = Some(routingCounties.map(_.countryCode))
+        ))
+
+        @tariffExpander(RoutingCountryPage, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

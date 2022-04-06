@@ -19,12 +19,13 @@ package controllers.declaration
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
+import controllers.helpers.{Add, FormAction, Remove}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingCountryQuestionYesNo._
-import forms.declaration.countries.Countries
+import forms.declaration.countries.{Countries, Country}
 import forms.declaration.countries.Countries.RoutingCountryPage
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{codes, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
@@ -85,30 +86,46 @@ class RoutingCountriesController @Inject()(
 
     routingAnswer match {
       case Some(answer) if answer =>
-        Ok(countryOfRoutingPage(mode, Countries.form(RoutingCountryPage), RoutingCountryPage, destinationCountryNameFromConsigneeDetails))
+        Ok(countryOfRoutingPage(mode, Countries.form(RoutingCountryPage), destinationCountryNameFromConsigneeDetails, routingCountriesList))
       case _ =>
         navigator.continueTo(mode, RoutingCountriesController.displayRoutingQuestion(_, fastForward = false))
     }
   }
 
   def submitRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val cachedCountries = request.cacheModel.locations.routingCountries
+    FormAction.bindFromRequest() match {
+      case Add =>
+        Countries
+          .form(RoutingCountryPage, request.cacheModel.locations.routingCountries)
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future
+                .successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, destinationCountryNameFromConsigneeDetails, routingCountriesList))),
+            validCountry => {
+              val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
 
-    Countries
-      .form(RoutingCountryPage, cachedCountries)
-      .bindFromRequest()
-      .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, RoutingCountryPage, destinationCountryNameFromConsigneeDetails))),
-        validCountry => {
-          val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
+              updateDeclarationFromRequest(_.updateCountriesOfRouting(newRoutingCountries)).map { _ =>
+                navigator.continueTo(mode, RoutingCountriesController.displayRoutingCountry, mode.isErrorFix)
+              }
+            }
+          )
+      case Remove(values) => {
+        val countryByCode = values.headOption map services.Countries.findByCode
 
-          updateDeclarationFromRequest(_.updateCountriesOfRouting(newRoutingCountries)).map { _ =>
-            navigator.continueTo(mode, LocationOfGoodsController.displayPage, mode.isErrorFix)
-          }
-        }
-      )
+        countryByCode map { country =>
+          updateDeclarationFromRequest(_.removeCountryOfRouting(Country(Some(country.countryCode))))
+            .map(_ => navigator.continueTo(mode, RoutingCountriesController.displayRoutingCountry, mode.isErrorFix))
+        } getOrElse Future.successful(navigator.continueTo(mode, RoutingCountriesController.displayRoutingCountry, mode.isErrorFix))
+
+      }
+    }
   }
+
+  private def routingCountriesList(implicit request: JourneyRequest[_]): Seq[models.codes.Country] =
+    request.cacheModel.locations.routingCountries
+      .flatMap(_.code)
+      .map(ServiceCountries.findByCode(_))
 
   private def destinationCountryNameFromLocations(implicit request: JourneyRequest[_]): String =
     request.cacheModel.locations.destinationCountry
