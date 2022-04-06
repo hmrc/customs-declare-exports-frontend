@@ -19,7 +19,6 @@ package services
 import connectors.CodeListConnector
 import models.codes.Country
 import play.api.i18n.Messages
-import views.helpers.CountryHelper
 
 object Countries {
 
@@ -42,14 +41,6 @@ object Countries {
     codeListConnector
       .getCountryCodes(messages.lang.toLocale)
       .exists(codeCountryPair => codeCountryPair._2.countryName == countryName)
-
-  def findByCountryName(
-    countryName: String
-  )(implicit messages: Messages, codeListConnector: CodeListConnector, countryHelper: CountryHelper): Option[Country] =
-    codeListConnector
-      .getCountryCodes(messages.lang.toLocale)
-      .find(codeCountryPair => codeCountryPair._2.countryName == countryName)
-      .map(_._2)
 
   def getListOfAllCountries()(implicit messages: Messages, codeListConnector: CodeListConnector): List[Country] =
     codeListConnector.getCountryCodes(messages.lang.toLocale).values.toList.sortBy(_.countryName)
