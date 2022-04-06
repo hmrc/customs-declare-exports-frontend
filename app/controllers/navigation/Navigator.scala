@@ -87,7 +87,8 @@ class Navigator @Inject()(
     case TransportLeavingTheBorder     => routes.ItemsSummaryController.displayItemsSummaryPage
     case TransportPayment              => routes.ExpressConsignmentController.displayPage
     case CarrierDetails                => routes.CarrierEoriNumberController.displayPage
-    case TotalNumberOfItems            => routes.OfficeOfExitController.displayPage
+    case InvoiceAndExchangeRateChoice  => routes.OfficeOfExitController.displayPage
+    case InvoiceAndExchangeRate        => routes.InvoiceAndExchangeRateChoiceController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -132,7 +133,6 @@ class Navigator @Inject()(
     case LocationOfGoods             => routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
-    case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
@@ -151,6 +151,7 @@ class Navigator @Inject()(
     case ContainerFirst            => containerFirstPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case DestinationCountryPage    => destinationCountryPreviousPage
+    case TotalPackageQuantity      => totalPackageQuantityPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
@@ -181,8 +182,6 @@ class Navigator @Inject()(
     case LocationOfGoods              => routes.DestinationCountryController.displayPage
     case ConsignorEoriNumber          => routes.IsExsController.displayPage
     case ConsignorDetails             => routes.ConsignorEoriNumberController.displayPage
-    case OfficeOfExit                 => routes.LocationOfGoodsController.displayPage
-    case TotalPackageQuantity         => routes.OfficeOfExitController.displayPage
     case DocumentSummary              => routes.OfficeOfExitController.displayPage
     case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
@@ -227,7 +226,6 @@ class Navigator @Inject()(
     case OfficeOfExit                => routes.LocationOfGoodsController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
-    case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
@@ -244,13 +242,14 @@ class Navigator @Inject()(
     case ConsigneeDetails          => consigneeDetailsSupplementaryPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case DestinationCountryPage    => destinationCountryPreviousPage
+    case OfficeOfExit              => officeOfExitPreviousPage
+    case TotalPackageQuantity      => totalPackageQuantityPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
     case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
     case ContainerFirst            => containerFirstPreviousPageOnSupplementary
     case RepresentativeAgent       => representativeAgentPreviousPage
-    case OfficeOfExit              => officeOfExitPreviousPage
   }
 
   val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -275,7 +274,6 @@ class Navigator @Inject()(
     case LocationOfGoods             => routes.RoutingCountriesSummaryController.displayPage
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
-    case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
     case DocumentSummary             => routes.OfficeOfExitController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
@@ -325,7 +323,6 @@ class Navigator @Inject()(
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case ChangeCountryPage           => routes.RoutingCountriesSummaryController.displayPage
     case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
-    case TotalPackageQuantity        => routes.TotalNumberOfItemsController.displayPage
     case DocumentSummary             => routes.OfficeOfExitController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
@@ -627,6 +624,10 @@ class Navigator @Inject()(
       routes.ConsigneeDetailsController.displayPage(mode)
     else
       routes.AdditionalActorsSummaryController.displayPage(mode)
+
+  private def totalPackageQuantityPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isInvoiceAmountGreaterThan100000) routes.InvoiceAndExchangeRateController.displayPage(mode)
+    else routes.InvoiceAndExchangeRateChoiceController.displayPage(mode)
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {

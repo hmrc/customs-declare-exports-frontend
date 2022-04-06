@@ -17,28 +17,29 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.TotalPackageQuantityController
+import controllers.declaration.routes.{InvoiceAndExchangeRateController, TotalPackageQuantityController}
 import controllers.navigation.Navigator
-import forms.declaration.TotalNumberOfItems
-import forms.declaration.TotalNumberOfItems._
-import models.declaration.Totals
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
+import forms.common.YesNoAnswer.form
+import models.declaration.InvoiceAndPackageTotals
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.total_number_of_items
+import views.html.declaration.invoice_and_exchange_rate_choice
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TotalNumberOfItemsController @Inject()(
+class InvoiceAndExchangeRateChoiceController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  totalNumberOfItemsPage: total_number_of_items,
+  invoiceAndExchangeRateChoicePage: invoice_and_exchange_rate_choice,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
@@ -46,28 +47,34 @@ class TotalNumberOfItemsController @Inject()(
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    request.cacheModel.totalNumberOfItems match {
-      case Some(data) => Ok(totalNumberOfItemsPage(mode, form.withSubmissionErrors.fill(TotalNumberOfItems(data))))
-      case _          => Ok(totalNumberOfItemsPage(mode, form.withSubmissionErrors))
-    }
+    val frm = form(errorKey = "declaration.invoice.amount.choice.answer.empty").withSubmissionErrors
+
+    val declaration = request.cacheModel
+
+    if (declaration.isInvoiceAmountGreaterThan100000) Ok(invoiceAndExchangeRateChoicePage(mode, frm.fill(YesNoAnswer(no))))
+    else if (declaration.totalNumberOfItems.isDefined) Ok(invoiceAndExchangeRateChoicePage(mode, frm.fill(YesNoAnswer(yes))))
+    else Ok(invoiceAndExchangeRateChoicePage(mode, frm))
   }
 
-  def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
-      updateCache(_).map(_ => navigator.continueTo(mode, TotalPackageQuantityController.displayPage))
-    )
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    form(errorKey = "declaration.invoice.amount.choice.answer.empty").bindFromRequest
+      .fold(
+        formWithErrors => Future.successful(BadRequest(invoiceAndExchangeRateChoicePage(mode, formWithErrors))),
+        yesNoAnswer =>
+          if (yesNoAnswer.answer == no) Future.successful(navigator.continueTo(mode, InvoiceAndExchangeRateController.displayPage))
+          else resetCachedInvoiceData.map(_ => navigator.continueTo(mode, TotalPackageQuantityController.displayPage))
+      )
   }
 
-  private def updateCache(totalNumberOfItems: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+  private def resetCachedInvoiceData(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
       declaration.copy(
         totalNumberOfItems = Some(
-          Totals(
-            totalAmountInvoiced = Some(totalNumberOfItems.totalAmountInvoiced),
-            totalAmountInvoicedCurrency = totalNumberOfItems.totalAmountInvoicedCurrency,
-            exchangeRate = if (totalNumberOfItems.agreedExchangeRate.toLowerCase == "no") None else totalNumberOfItems.exchangeRate,
-            agreedExchangeRate = Some(totalNumberOfItems.agreedExchangeRate),
+          InvoiceAndPackageTotals(
+            totalAmountInvoiced = None,
+            totalAmountInvoicedCurrency = None,
+            agreedExchangeRate = None,
+            exchangeRate = None,
             totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
           )
         )

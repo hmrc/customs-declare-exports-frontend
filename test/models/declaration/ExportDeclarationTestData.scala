@@ -16,8 +16,6 @@
 
 package models.declaration
 
-import java.time.Instant
-import java.util.UUID
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Date, Eori}
 import forms.declaration.ConsignmentReferencesSpec._
@@ -38,6 +36,9 @@ import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 import play.api.libs.json._
+
+import java.time.Instant
+import java.util.UUID
 
 object ExportDeclarationTestData {
 
@@ -62,7 +63,7 @@ object ExportDeclarationTestData {
     additionalDeclarationType = Some(SUPPLEMENTARY_SIMPLIFIED),
     consignmentReferences = Some(correctConsignmentReferences),
     natureOfTransaction = Some(correctNatureOfTransaction),
-    totalNumberOfItems = Some(Totals(Some("12312312312312.12"), Some("1212121.12345"), Some("GBP"), Some("Yes"), None)),
+    totalNumberOfItems = Some(InvoiceAndPackageTotals(Some("12312312312312.12"), Some("1212121.12345"), Some("GBP"), Some("Yes"), None)),
     transport = Transport(
       expressConsignment = Yes,
       transportPayment = Some(TransportPayment(cash)),
@@ -128,7 +129,7 @@ object ExportDeclarationTestData {
           Some(List(PackageInformation("pkgAA", Some("AA"), Some(2), Some("mark1")), PackageInformation("pkgBB", Some("AB"), Some(4), Some("mark2"))))
       )
     ),
-    totalNumberOfItems = Some(Totals(Some("1212312.12"), Some("1212121.12345"), Some("GBP"), Some("Yes"), Some("123"))),
+    totalNumberOfItems = Some(InvoiceAndPackageTotals(Some("1212312.12"), Some("1212121.12345"), Some("GBP"), Some("Yes"), Some("123"))),
     parties = Parties(
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),

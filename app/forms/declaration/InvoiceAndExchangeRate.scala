@@ -21,35 +21,33 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
 import models.DeclarationType.DeclarationType
-import models.declaration.Totals
+import models.declaration.InvoiceAndPackageTotals
 import models.viewmodels.TariffContentKey
-import play.api.data.Forms._
+import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.Json
 import uk.gov.voa.play.form.Condition
 import utils.validators.forms.FieldValidator._
 
 import scala.util.Try
 
-case class TotalNumberOfItems(
+case class InvoiceAndExchangeRate(
   totalAmountInvoiced: String,
   totalAmountInvoicedCurrency: Option[String],
   agreedExchangeRate: String,
   exchangeRate: Option[String]
 )
 
-object TotalNumberOfItems extends DeclarationPage {
-  implicit val format = Json.format[TotalNumberOfItems]
+object InvoiceAndExchangeRate extends DeclarationPage {
 
-  def apply(totals: Totals): TotalNumberOfItems =
-    TotalNumberOfItems(
+  def apply(totals: InvoiceAndPackageTotals): InvoiceAndExchangeRate =
+    InvoiceAndExchangeRate(
       totals.totalAmountInvoiced.fold("")(x => x),
       totals.totalAmountInvoicedCurrency,
       totals.agreedExchangeRate.fold("")(x => x),
       totals.exchangeRate
     )
 
-  val formId = "TotalNumberOfItems"
+  val formId = "InvoiceAndExchangeRate"
   val totalAmountInvoiced = "totalAmountInvoiced"
   val totalAmountInvoicedCurrency = "totalAmountInvoicedCurrency"
   val agreedExchangeRateYesNo = "agreedExchangeRate"
@@ -114,14 +112,14 @@ object TotalNumberOfItems extends DeclarationPage {
   //We allow the user to enter commas when specifying these optional numerical values but we strip out the commas with `validateWithoutCommas` before validating
   //the number of digits. To prevent the validation from allowing an invalid value like ",,,," we also must use the `isNotOnlyCommas`
   //function to specifically guard against this.
-  val mapping: Mapping[TotalNumberOfItems] = Forms.mapping(
+  val mapping: Mapping[InvoiceAndExchangeRate] = Forms.mapping(
     totalAmountInvoiced -> validateTotalAmountInvoiced,
     totalAmountInvoicedCurrency -> validateTotalAmountInvoicedCurrency,
     agreedExchangeRateYesNo -> validateAgreedExchangeRateYesNo,
     exchangeRate -> validateExchangeRate
-  )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
+  )(InvoiceAndExchangeRate.apply)(InvoiceAndExchangeRate.unapply)
 
-  def form(): Form[TotalNumberOfItems] = Form(mapping)
+  def form(): Form[InvoiceAndExchangeRate] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.totalNumbersOfItems.1.common"), TariffContentKey("tariff.declaration.totalNumbersOfItems.2.common"))

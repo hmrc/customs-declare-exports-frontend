@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.TotalPackageQuantity
 import models.DeclarationType.DeclarationType
-import models.declaration.Totals
+import models.declaration.InvoiceAndPackageTotals
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -70,9 +70,11 @@ class TotalPackageQuantityController @Inject()(
     if (totalPackage.totalPackage.isEmpty && request.cacheModel.totalNumberOfItems.isEmpty) Future.successful(request.cacheModel)
     else
       updateDeclarationFromRequest { declaration =>
-        val totals = declaration.totalNumberOfItems.fold(Totals(None, None, None, None, totalPackage = totalPackage.totalPackage)) {
+        val invoiceAndPackageTotals = declaration.totalNumberOfItems.fold {
+          InvoiceAndPackageTotals(None, None, None, None, totalPackage = totalPackage.totalPackage)
+        } {
           _.copy(totalPackage = totalPackage.totalPackage)
         }
-        declaration.copy(totalNumberOfItems = Some(totals))
+        declaration.copy(totalNumberOfItems = Some(invoiceAndPackageTotals))
       }
 }

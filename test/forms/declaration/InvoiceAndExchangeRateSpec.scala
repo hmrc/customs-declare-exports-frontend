@@ -18,11 +18,11 @@ package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.TotalNumberOfItems._
+import forms.declaration.InvoiceAndExchangeRate._
 import models.viewmodels.TariffContentKey
 import play.api.data.FormError
 
-class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
+class InvoiceAndExchangeRateSpec extends DeclarationPageBaseSpec {
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
     List(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
@@ -64,43 +64,43 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
   private val validTotalAmountInvoicedOver100k = "100001"
   private val validExchangeRate = "100"
 
-  "TotalNumberOfItems" should {
-    testTariffContentKeysNoSpecialisation(TotalNumberOfItems, "tariff.declaration.totalNumbersOfItems")
+  "InvoiceAndExchangeRate" should {
+    testTariffContentKeysNoSpecialisation(InvoiceAndExchangeRate, "tariff.declaration.totalNumbersOfItems")
 
     "return no errors" when {
 
       "exchange rate form field" when {
 
         "populated with max whole value" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(exchangeRateWithValidFields(Some("100000000000")))
           form.errors.size mustBe 0
         }
 
         "populated with max decimal value" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(exchangeRateWithValidFields(Some("1000000.12345")))
           form.errors.size mustBe 0
         }
 
         "populated with commas" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(exchangeRateWithValidFields(Some(",,1,0,2,3.12")))
           form.errors.size mustBe 0
         }
 
         "populated with a leading period char" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(exchangeRateWithValidFields(Some(".12")))
           form.errors.size mustBe 0
         }
 
         "populated with a trailing period char" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(exchangeRateWithValidFields(Some("12.")))
           form.errors.size mustBe 0
@@ -111,35 +111,35 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
       "invoice amount form field" when {
 
         "populated with max whole value" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(invoiceAmountWithValidFields(Some("1000000000000000")))
           form.errors.size mustBe 0
         }
 
         "populated with max decimal value" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(invoiceAmountWithValidFields(Some("10000000000000.12")))
           form.errors.size mustBe 0
         }
 
         "populated with commas" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(invoiceAmountWithValidFields(Some(",,1,0,2,3.12")))
           form.errors.size mustBe 0
         }
 
         "populated with a leading period char" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(invoiceAmountWithValidFields(Some(".12")))
           form.errors.size mustBe 0
         }
 
         "populated with a trailing period char" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(invoiceAmountWithValidFields(Some("12.")))
           form.errors.size mustBe 0
@@ -148,7 +148,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
       }
 
       "when all form fields are populated" in {
-        val form = TotalNumberOfItems
+        val form = InvoiceAndExchangeRate
           .form()
           .bind(
             formData(
@@ -164,7 +164,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
     "convert currency of amount invoiced to upper case" when {
       "the user enters a currency in lower case" in {
-        val form = TotalNumberOfItems
+        val form = InvoiceAndExchangeRate
           .form()
           .bind(formData(currency = Some("gbp"), amount = Some(validTotalAmountInvoicedOver100k), rateYesNo = Some(YesNoAnswers.no)))
 
@@ -176,7 +176,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
     "return errors" when {
 
       "form fields are empty" in {
-        val form = TotalNumberOfItems
+        val form = InvoiceAndExchangeRate
           .form()
           .bind(Map(totalAmountInvoiced -> ""))
 
@@ -190,7 +190,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
         "contains a char other than a digit, period or comma" in {
           withClue("contains an alpha char") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(
                 formData(
@@ -204,7 +204,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
           }
 
           withClue("contains a special char") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(
                 formData(
@@ -220,7 +220,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
         "contains too many digits" in {
           withClue("More than 12 whole number digits") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(
                 formData(
@@ -234,7 +234,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
           }
 
           withClue("12 whole numbers and 1 decimal digits") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(
                 formData(
@@ -248,7 +248,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
           }
 
           withClue("11 whole numbers and 2 decimal digits") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(
                 formData(
@@ -262,7 +262,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
           }
 
           withClue("10 whole numbers and 3 decimal digits") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(
                 formData(
@@ -276,7 +276,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
           }
 
           withClue("9 whole numbers and 4 decimal digits") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(
                 formData(
@@ -290,7 +290,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
           }
 
           withClue("8 whole numbers and 5 decimal digits") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(
                 formData(
@@ -304,7 +304,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
           }
 
           withClue("more than 5 decimal digits") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(
                 formData(
@@ -319,7 +319,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
         }
 
         "contains only commas" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(
               formData(
@@ -335,7 +335,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
       "invoice amount specified" that {
         "does not have a currency code populated" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(formData(amount = Some("12"), rateYesNo = Some(YesNoAnswers.no)))
           form.errors mustBe currencyEmptyFormErrors
@@ -343,14 +343,14 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
         "contains a char other than a digit, period or comma" in {
           withClue("contains an alpha char") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(invoiceAmountWithValidFields(Some("12E")))
             form.errors mustBe invoicedFormErrors
           }
 
           withClue("contains a special char") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(invoiceAmountWithValidFields(Some("12%")))
             form.errors mustBe invoicedFormErrors
@@ -359,28 +359,28 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
         "contains too many digits" in {
           withClue("More than 16 whole number digits") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(invoiceAmountWithValidFields(Some("12345678901234567")))
             form.errors mustBe invoicedFormErrors
           }
 
           withClue("16 whole numbers and 1 decimal digits") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(invoiceAmountWithValidFields(Some("1234567890123456.1")))
             form.errors mustBe invoicedFormErrors
           }
 
           withClue("15 whole numbers and 2 decimal digits") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(invoiceAmountWithValidFields(Some("123456789012345.12")))
             form.errors mustBe invoicedFormErrors
           }
 
           withClue("more than 2 decimal digits") {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(invoiceAmountWithValidFields(Some("0.123")))
             form.errors mustBe invoicedFormErrors
@@ -388,7 +388,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
         }
 
         "contains only commas" in {
-          val form = TotalNumberOfItems
+          val form = InvoiceAndExchangeRate
             .form()
             .bind(invoiceAmountWithValidFields(Some(",,,")))
           form.errors mustBe invoicedFormErrors
@@ -400,14 +400,14 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
         "is GBP" when {
           "amount invoiced is less than 100,000" when {
             "all numeric" in {
-              val form = TotalNumberOfItems
+              val form = InvoiceAndExchangeRate
                 .form()
                 .bind(formData(amount = Some("100"), currency = Some("GBP"), rate = Some("12"), rateYesNo = Some(YesNoAnswers.yes)))
               form.errors mustBe Seq(FormError(exchangeRate, exchangeRateNoFixedRateErrorKey))
             }
 
             "commas" in {
-              val form = TotalNumberOfItems
+              val form = InvoiceAndExchangeRate
                 .form()
                 .bind(formData(amount = Some("10,000"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
               form.errors mustBe Seq(FormError(exchangeRate, exchangeRateNoFixedRateErrorKey))
@@ -415,14 +415,14 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
             "decimals" when {
               "decimal in number" in {
-                val form = TotalNumberOfItems
+                val form = InvoiceAndExchangeRate
                   .form()
                   .bind(formData(amount = Some("10.00"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
                 form.errors mustBe Seq(FormError(exchangeRate, exchangeRateNoFixedRateErrorKey))
               }
 
               "starts with decimal" in {
-                val form = TotalNumberOfItems
+                val form = InvoiceAndExchangeRate
                   .form()
                   .bind(formData(amount = Some(".10"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
                 form.errors mustBe Seq(FormError(exchangeRate, exchangeRateNoFixedRateErrorKey))
@@ -434,14 +434,14 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
         "has not got an exchange rate specified" should {
           "reject codes that are not three char in length" in {
             withClue("less than three chars") {
-              val form = TotalNumberOfItems
+              val form = InvoiceAndExchangeRate
                 .form()
                 .bind(formData(amount = Some("12"), currency = Some("GB"), rateYesNo = Some(YesNoAnswers.no)))
               form.errors mustBe currencyInvalidWithoutExchangeRateFormErrors
             }
 
             withClue("more than three chars") {
-              val form = TotalNumberOfItems
+              val form = InvoiceAndExchangeRate
                 .form()
                 .bind(formData(amount = Some("12"), currency = Some("GBPP"), rateYesNo = Some(YesNoAnswers.no)))
               form.errors mustBe currencyInvalidWithoutExchangeRateFormErrors
@@ -451,7 +451,7 @@ class TotalNumberOfItemsSpec extends DeclarationPageBaseSpec {
 
         "has an exchange rate specified also" should {
           "not accept any value other than GBP" in {
-            val form = TotalNumberOfItems
+            val form = InvoiceAndExchangeRate
               .form()
               .bind(formData(rate = Some("12"), amount = Some("12"), currency = Some("USD"), rateYesNo = Some(YesNoAnswers.yes)))
 

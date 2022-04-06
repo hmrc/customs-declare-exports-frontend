@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package models.declaration
+package forms.declaration
 
-import play.api.libs.json.{Json, OFormat}
+import forms.DeclarationPage
+import models.DeclarationType.DeclarationType
+import models.viewmodels.TariffContentKey
 
-case class Totals(
-  totalAmountInvoiced: Option[String],
-  totalAmountInvoicedCurrency: Option[String],
-  agreedExchangeRate: Option[String],
-  exchangeRate: Option[String],
-  totalPackage: Option[String]
-)
+object InvoiceAndExchangeRateChoice extends DeclarationPage {
 
-object Totals {
-  implicit val format: OFormat[Totals] = Json.format[Totals]
+  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
+    List(TariffContentKey("tariff.declaration.totalNumbersOfItems.1.common"))
 }
