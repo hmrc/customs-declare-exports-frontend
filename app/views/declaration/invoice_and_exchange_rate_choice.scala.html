@@ -15,61 +15,58 @@
  *@
 
 @import config.AppConfig
+@import controllers.declaration.routes
 @import controllers.navigation.Navigator
-@import forms.common.YesNoAnswer.YesNoAnswers
-@import forms.declaration.DeclarantIsExporter
+@import forms.common.YesNoAnswer
+@import forms.declaration.InvoiceAndExchangeRateChoice
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.Styles._
-@import views.html.components.gds._
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    yesNoRadios: yesNoRadios,
     heading: heading,
-    saveButtons: saveButtons,
     paragraphBody: paragraphBody,
+    yesNoRadios: yesNoRadios,
+    saveAndContinue: saveAndContinue,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     navigator: Navigator,
     appConfig: AppConfig
 )
 
-@(mode: Mode, form: Form[DeclarantIsExporter])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
-    title = Title("declaration.declarant.exporter.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DeclarantIsExporter, mode)))) {
+    title = Title("declaration.invoice.amount.choice.title", "declaration.section.4", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(InvoiceAndExchangeRateChoice, mode)))) {
 
-    @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(mode), 'autoComplete -> "off") {
-        @errorSummary(yesNoErrors(form.errors, DeclarantIsExporter.answerKey))
+    @formHelper(action = routes.InvoiceAndExchangeRateChoiceController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("declaration.section.2"))
+        @sectionHeader(messages("declaration.section.4"))
 
-        @heading(messages("declaration.declarant.exporter.title"))
-
-        @paragraphBody(messages("declaration.declarant.exporter.body"))
+        @heading(messages("declaration.invoice.amount.choice.title"))
 
         @yesNoRadios(
             form = form,
-            answerKey = "answer",
-            noKey = Some("declaration.declarant.exporter.answer.no"),
+            noKey = Some("declaration.invoice.amount.choice.answer.no"),
             heading = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.declarant.exporter.title")),
+                    content = Text(messages("declaration.invoice.amount.choice.title")),
                     classes = "govuk-visually-hidden"
                ))
             ))
         )
 
-        @tariffExpander(DeclarantIsExporter, request.declarationType)(messages, appConfig)
+        @tariffExpander(InvoiceAndExchangeRateChoice, request.declarationType)(messages, appConfig)
 
-        @saveButtons()
+        @saveAndContinue()
     }
 }

@@ -1,0 +1,78 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers.declaration
+
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.TotalPackageQuantityController
+import controllers.navigation.Navigator
+import forms.declaration.InvoiceAndExchangeRate
+import forms.declaration.InvoiceAndExchangeRate._
+import models.declaration.InvoiceAndPackageTotals
+import models.requests.JourneyRequest
+import models.{DeclarationType, ExportsDeclaration, Mode}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.cache.ExportsCacheService
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.html.declaration.invoice_and_exchange_rate
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
+
+class InvoiceAndExchangeRateController @Inject()(
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
+  navigator: Navigator,
+  mcc: MessagesControllerComponents,
+  invoiceAndExchangeRatePage: invoice_and_exchange_rate,
+  override val exportsCacheService: ExportsCacheService
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
+
+  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
+
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    request.cacheModel.totalNumberOfItems match {
+      case Some(data) => Ok(invoiceAndExchangeRatePage(mode, form.withSubmissionErrors.fill(InvoiceAndExchangeRate(data))))
+      case _          => Ok(invoiceAndExchangeRatePage(mode, form.withSubmissionErrors))
+    }
+  }
+
+  def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    form.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(invoiceAndExchangeRatePage(mode, formWithErrors))),
+      updateCache(_).map(_ => navigator.continueTo(mode, TotalPackageQuantityController.displayPage))
+    )
+  }
+
+  private def updateCache(invoiceAndExchangeRate: InvoiceAndExchangeRate)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { declaration =>
+      declaration.copy(
+        totalNumberOfItems = Some(
+          InvoiceAndPackageTotals(
+            totalAmountInvoiced = Some(invoiceAndExchangeRate.totalAmountInvoiced),
+            totalAmountInvoicedCurrency = invoiceAndExchangeRate.totalAmountInvoicedCurrency,
+            agreedExchangeRate = Some(invoiceAndExchangeRate.agreedExchangeRate),
+            totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage),
+            exchangeRate =
+              if (invoiceAndExchangeRate.agreedExchangeRate.toLowerCase == "no") None
+              else invoiceAndExchangeRate.exchangeRate
+          )
+        )
+      )
+    }
+}

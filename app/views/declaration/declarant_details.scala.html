@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import controllers.declaration.routes
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer.YesNoAnswers
 @import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation}
@@ -21,18 +23,14 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
-@import views.components.gds.Styles._
-@import views.html.components.gds._
 @import views.helpers.ErrorMapper.radioGroupErrors
-@import config.AppConfig
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    govukRadios: GovukRadios,
-    exportsInputText: exportsInputText,
-    govukDetails : GovukDetails,
     heading: heading,
     paragraphBody: paragraphBody,
     saveButtons: saveButtons,
@@ -65,10 +63,11 @@
     title = Title("declaration.declarant.title", sectionMessagesKey, request.eori, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(DeclarantDetails, mode)))) {
 
-    @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(isEoriKey, "code_yes", form.errors))
 
         @sectionHeader(messages(sectionMessagesKey))
+
         @heading(messages("declaration.declarant.title", request.eori))
 
         @paragraphBody(messages("declaration.declarant.paragraph"))

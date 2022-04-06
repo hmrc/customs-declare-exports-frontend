@@ -92,14 +92,14 @@ trait ExportsDeclarationBuilder {
 
   def withoutTotalNumberOfItems(): ExportsDeclarationModifier = _.copy(totalNumberOfItems = None)
 
-  def withTotalNumberOfItems(totalNumberOfItems: TotalNumberOfItems): ExportsDeclarationModifier = { declaration =>
+  def withTotalNumberOfItems(invoiceAndExchangeRate: InvoiceAndExchangeRate): ExportsDeclarationModifier = { declaration =>
     declaration.copy(
       totalNumberOfItems = Some(
-        Totals(
-          totalAmountInvoiced = Some(totalNumberOfItems.totalAmountInvoiced),
-          totalAmountInvoicedCurrency = totalNumberOfItems.totalAmountInvoicedCurrency,
-          exchangeRate = totalNumberOfItems.exchangeRate,
-          agreedExchangeRate = Some(totalNumberOfItems.agreedExchangeRate),
+        InvoiceAndPackageTotals(
+          totalAmountInvoiced = Some(invoiceAndExchangeRate.totalAmountInvoiced),
+          totalAmountInvoicedCurrency = invoiceAndExchangeRate.totalAmountInvoicedCurrency,
+          exchangeRate = invoiceAndExchangeRate.exchangeRate,
+          agreedExchangeRate = Some(invoiceAndExchangeRate.agreedExchangeRate),
           totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
         )
       )
@@ -114,7 +114,7 @@ trait ExportsDeclarationBuilder {
   ): ExportsDeclarationModifier = { declaration =>
     declaration.copy(
       totalNumberOfItems = Some(
-        Totals(
+        InvoiceAndPackageTotals(
           totalAmountInvoiced = totalAmountInvoiced,
           totalAmountInvoicedCurrency = totalAmountInvoicedCurrency,
           exchangeRate = exchangeRate,
@@ -128,7 +128,7 @@ trait ExportsDeclarationBuilder {
   def withTotalPackageQuantity(quantity: String): ExportsDeclarationModifier = { declaration =>
     declaration.copy(
       totalNumberOfItems = Some(
-        Totals(
+        InvoiceAndPackageTotals(
           totalAmountInvoiced = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoiced),
           totalAmountInvoicedCurrency = declaration.totalNumberOfItems.flatMap(_.totalAmountInvoicedCurrency),
           exchangeRate = declaration.totalNumberOfItems.flatMap(_.exchangeRate),

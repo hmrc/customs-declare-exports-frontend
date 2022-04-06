@@ -47,7 +47,7 @@ case class ExportsDeclaration(
   locations: Locations = Locations(),
   items: Seq[ExportItem] = Seq.empty,
   readyForSubmission: Option[Boolean] = None,
-  totalNumberOfItems: Option[Totals] = None,
+  totalNumberOfItems: Option[InvoiceAndPackageTotals] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
@@ -103,6 +103,16 @@ case class ExportsDeclaration(
   def hasPreviousDocuments: Boolean = previousDocuments.map(_.documents).exists(_.nonEmpty)
 
   def isAdditionalDeclarationType(adt: AdditionalDeclarationType): Boolean = additionalDeclarationType.exists(_ == adt)
+
+  // Note that the methods' names (if the value is or not actually >= 100,000) do not reflect their actual behaviours,
+  // (defined or not defined) but rather the business rule behind them, which is used to drive the navigation.
+  // The business rule requires that when non-empty, the value in totalAmountInvoiced "should" (because potentially a
+  // user could still enter an amount < 100,000) always be >= 100,000, whereas if empty, or not defined, it is because
+  // the amount was < 100,000.
+  def isInvoiceAmountGreaterThan100000: Boolean =
+    totalNumberOfItems.exists(_.totalAmountInvoiced.fold(false)(_.trim.nonEmpty))
+
+  def isInvoiceAmountLessThan100000: Boolean = !isInvoiceAmountGreaterThan100000
 
   def hasAuthCodeRequiringAdditionalDocs: Boolean =
     parties.declarationHoldersData.exists(_.holders.exists(_.isAdditionalDocumentationRequired))

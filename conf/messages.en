@@ -252,10 +252,10 @@ tariff.declaration.officeOfExitOutsideUk.common.text = For details and a link to
 tariff.declaration.officeOfExitOutsideUk.common.linkText.0 = data element 5/12 - Customs Office of Exit (opens in new tab)
 tariff.declaration.officeOfExitOutsideUk.clearance.text = Go to data element 5/12 Customs Office of Exit in the<br>{0}.
 tariff.declaration.officeOfExitOutsideUk.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
-tariff.declaration.totalNumbersOfItems.2.common.text = For details about the invoice exchange rate, go to<br>{0}.<br><br> Links open in new tab.
-tariff.declaration.totalNumbersOfItems.2.common.linkText.0 = data element 4/15 - Invoice Exchange Rate
 tariff.declaration.totalNumbersOfItems.1.common.text = For details about total amount invoiced, go to<br>{0}.
 tariff.declaration.totalNumbersOfItems.1.common.linkText.0 = data element 4/11 - Total Amount Invoiced
+tariff.declaration.totalNumbersOfItems.2.common.text = For details about the invoice exchange rate, go to<br>{0}.<br><br> Links open in new tab.
+tariff.declaration.totalNumbersOfItems.2.common.linkText.0 = data element 4/15 - Invoice Exchange Rate
 tariff.declaration.totalPackageQuantity.common.text = For details, go to<br>{0}.
 tariff.declaration.totalPackageQuantity.common.linkText.0 = data element 6/18 - Total packages (opens in new tab)
 tariff.declaration.natureOfTransaction.common.text = This answer will complete<br>{0}.
@@ -1369,6 +1369,10 @@ declaration.transportInformation.containers.bullet1 = shipping containers
 declaration.transportInformation.containers.bullet2 = air freight containers
 declaration.transportInformation.containers.bullet3 = swap bodies and semi-trailers used for road and rail transport
 declaration.transportInformation.error.duplicate = Container ID already added
+
+declaration.invoice.amount.choice.title = Is the total amount invoiced less than £100,000 in value?
+declaration.invoice.amount.choice.answer.no = No, it has a total value of £100,000 or more
+declaration.invoice.amount.choice.answer.empty = Select yes if the total amount invoiced is less than £100,000 in value
 
 declaration.invoice.details.title = What is the total amount invoiced?
 declaration.invoice.details.body.1 = Enter the total amount in the currency of the invoice or invoices.

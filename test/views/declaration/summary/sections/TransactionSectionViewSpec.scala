@@ -46,7 +46,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.itemAmount.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.InvoiceAndExchangeRateController.displayPage())
     }
 
     "have exchange rate with change button" in {
@@ -58,7 +58,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.exchangeRate.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.InvoiceAndExchangeRateController.displayPage())
     }
 
     "have exchange rate value displayed as 'No' if no exchange rate present" in {
@@ -70,7 +70,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.transaction.exchangeRate.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.InvoiceAndExchangeRateController.displayPage())
     }
 
     "have total package with change button" in {

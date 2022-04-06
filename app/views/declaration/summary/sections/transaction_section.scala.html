@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes.{NatureOfTransactionController, TotalNumberOfItemsController, TotalPackageQuantityController}
+@import controllers.declaration.routes.{NatureOfTransactionController, InvoiceAndExchangeRateController, TotalPackageQuantityController}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder.actionItem
 @import views.html.components.gds.{linkContent, summary_list}
@@ -48,7 +48,7 @@
                 actions = actions(Actions(
                     items = List(
                         actionItem(
-                            href = TotalNumberOfItemsController.displayPage(mode).url,
+                            href = InvoiceAndExchangeRateController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.exchangeRate.change"))
                         )
@@ -71,7 +71,7 @@
                 actions = actions(Actions(
                     items = List(
                         actionItem(
-                            href = TotalNumberOfItemsController.displayPage(mode).url,
+                            href = InvoiceAndExchangeRateController.displayPage(mode).url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
                         )

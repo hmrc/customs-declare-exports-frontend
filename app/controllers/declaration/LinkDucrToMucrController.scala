@@ -43,7 +43,7 @@ class LinkDucrToMucrController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = form().withSubmissionErrors
     request.cacheModel.linkDucrToMucr match {
       case Some(yesNoAnswer) => Ok(linkDucrToMucrPage(mode, frm.fill(yesNoAnswer)))
       case _                 => Ok(linkDucrToMucrPage(mode, frm))

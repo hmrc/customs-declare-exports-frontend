@@ -290,7 +290,7 @@ function declarantDetails(){
 
 function isDeclarantExporter(){
     if (currentPageIs('/customs-declare-exports/declaration/are-you-the-exporter')) {
-        document.getElementById('answer_yes').checked = 'checked';
+        document.getElementById('code_yes').checked = 'checked';
         document.getElementById('submit').click();
     }
 }
@@ -654,9 +654,17 @@ function officeOfExit(){
     }
 }
 
-function totalNumberOfItems(){
+function invoiceAndExchangeRateChoice() {
+    if (currentPageIs('/customs-declare-exports/declaration/invoices-and-exchange-rate-choice')) {
+        document.getElementById('code_no').checked = 'checked';
+        document.getElementById('submit').click();
+    }
+}
+
+function invoiceAndExchangeRate(){
     if (currentPageIs('/customs-declare-exports/declaration/invoices-and-exchange-rate')) {
         selectRadioOptionFromInputs(document.getElementsByName('agreedExchangeRate'), 0)
+        document.getElementById('code_yes').checked = 'checked';
         document.getElementById('exchangeRate').value ='1.49';
         document.getElementById('totalAmountInvoicedCurrency').value ='GBP';
         document.getElementById('totalAmountInvoiced').value ='567640';
@@ -1237,7 +1245,8 @@ function completeJourney() {
     officeOfExit();
 
     // transaction
-    totalNumberOfItems();
+    invoiceAndExchangeRateChoice();
+    invoiceAndExchangeRate();
     totalPackageQuantity();
     natureOfTransaction();
     previousDocuments();
