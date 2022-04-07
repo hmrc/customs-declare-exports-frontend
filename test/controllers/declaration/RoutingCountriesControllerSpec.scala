@@ -70,7 +70,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
-    await(controller.displayRoutingQuestion(Mode.Normal, false)(request))
+    await(controller.displayRoutingQuestion(Mode.Normal)(request))
     theRoutingQuestionForm
   }
 
@@ -88,7 +88,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withRoutingQuestion(true), withRoutingCountries()))
 
-        val result = controller.displayRoutingQuestion(Mode.Normal, false)(getRequest())
+        val result = controller.displayRoutingQuestion(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         theRoutingQuestionForm.value mustBe Some(true)
@@ -98,7 +98,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withRoutingQuestion(false), withoutRoutingCountries()))
 
-        val result = controller.displayRoutingQuestion(Mode.Normal, true)(getRequest())
+        val result = controller.displayRoutingQuestion(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         theRoutingQuestionForm.value mustBe Some(false)
@@ -200,7 +200,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion(fastForward = false)
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion()
         }
 
         "No for Routing Question" in {
@@ -210,7 +210,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion(fastForward = false)
+          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingQuestion()
         }
 
       }
@@ -248,7 +248,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           updatedCountries.contains(FormCountry(Some("GB"))) mustBe true
         }
 
-        "user remove country that exists in cache" in {
+        "removing country that exists in cache" in {
 
           withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(FormCountry(Some("GB")), FormCountry(Some("FR"))))))
 
@@ -263,6 +263,16 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           updatedCountries.contains(FormCountry(Some("GB"))) mustBe true
 
         }
+
+      }
+
+      "save and continue" when {
+
+        "country is added to input field" in {}
+
+        "there are no countries in list" in {}
+
+        "there are countries in list" in {}
 
       }
 

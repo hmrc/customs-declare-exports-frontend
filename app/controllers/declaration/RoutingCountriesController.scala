@@ -49,7 +49,7 @@ class RoutingCountriesController @Inject()(
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, countryHelper: CountryHelper)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayRoutingQuestion(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = formFirst().withSubmissionErrors()
     request.cacheModel.locations.hasRoutingCountries match {
       case Some(answer) => Ok(routingQuestionPage(mode, frm.fill(answer), destinationCountryNameFromLocations))
@@ -84,7 +84,7 @@ class RoutingCountriesController @Inject()(
       case Some(answer) if answer =>
         Ok(countryOfRoutingPage(mode, Countries.form(RoutingCountryPage), destinationCountryNameFromConsigneeDetails, routingCountriesList))
       case _ =>
-        navigator.continueTo(mode, RoutingCountriesController.displayRoutingQuestion(_, fastForward = false))
+        navigator.continueTo(mode, RoutingCountriesController.displayRoutingQuestion)
     }
   }
 
