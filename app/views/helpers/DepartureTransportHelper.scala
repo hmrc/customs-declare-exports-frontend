@@ -18,8 +18,9 @@ package views.helpers
 
 import forms.declaration.DepartureTransport.radioButtonGroupId
 import forms.declaration.InlandOrBorder.Border
-import forms.declaration.{TransportCode, TransportCodes}
+import forms.declaration.ModeOfTransportCode.Road
 import forms.declaration.TransportCodes._
+import forms.declaration.{TransportCode, TransportCodes}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
@@ -54,7 +55,8 @@ class DepartureTransportHelper @Inject()(
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
   private def bodyUnderHeading(implicit messages: Messages, request: JourneyRequest[_]): Html =
-    if (versionSelection == 2) new Html(List(paragraph("body.v2"), paragraph("body")))
+    if (versionSelection == 2 && request.cacheModel.hasInlandModeOfTransportCode(Road))
+      new Html(List(paragraph("body.v2"), paragraph("body")))
     else paragraph("body")
 
   private def hasPCsEqualTo0019(declaration: ExportsDeclaration): Boolean =
