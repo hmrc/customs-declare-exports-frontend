@@ -89,23 +89,31 @@ class RoutingCountriesController @Inject()(
   }
 
   def submitRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val isFormEmpty = Countries
+      .form(RoutingCountryPage, request.cacheModel.locations.routingCountries)
+      .bindFromRequest()
+      .apply("countryCode")
+      .value
+      .isEmpty
+
     FormAction.bindFromRequest() match {
       case Add =>
         validateAndRedirect(navigator.continueTo(mode, RoutingCountriesController.displayRoutingCountry, mode.isErrorFix), mode)
+
+      case SaveAndContinue | SaveAndReturn if isFormEmpty && request.cacheModel.containRoutingCountries =>
+        Future.successful(navigator.continueTo(mode, LocationOfGoodsController.displayPage))
 
       case SaveAndContinue | SaveAndReturn =>
         validateAndRedirect(navigator.continueTo(mode, LocationOfGoodsController.displayPage), mode)
 
       case Remove(values) =>
+        val continueTo = navigator.continueTo(mode, RoutingCountriesController.displayRoutingCountry, mode.isErrorFix)
+
         values.headOption
           .map(services.Countries.findByCode)
-          .map { country =>
-            updateAndRedirect(
-              _.removeCountryOfRouting(Country(Some(country.countryCode))),
-              navigator.continueTo(mode, RoutingCountriesController.displayRoutingCountry, mode.isErrorFix)
-            )
-          }
-          .getOrElse(Future.successful(navigator.continueTo(mode, RoutingCountriesController.displayRoutingCountry, mode.isErrorFix)))
+          .fold(Future.successful(continueTo))({ country =>
+            updateAndRedirect(_.removeCountryOfRouting(Country(Some(country.countryCode))), continueTo)
+          })
     }
   }
 

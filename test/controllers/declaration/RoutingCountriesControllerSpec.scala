@@ -140,6 +140,22 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         status(result) mustBe BAD_REQUEST
       }
+
+      "save and continue in Routing Countries" when {
+
+        "there are no countries in list" in {
+
+          withNewCaching(aDeclaration(withRoutingQuestion()))
+
+          val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(Seq(saveAndContinueActionUrlEncoded): _*))
+
+          status(result) mustBe BAD_REQUEST
+
+          verifyTheCacheIsUnchanged()
+
+        }
+
+      }
     }
 
     "return 303 (SEE_OTHER)" when {
@@ -317,26 +333,13 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           }
         }
 
-        "there are no countries in list" in {
-
-          withNewCaching(aDeclaration(withRoutingQuestion()))
-
-          val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(Seq(saveAndContinueActionUrlEncoded): _*))
-
-          theCacheModelUpdated.containRoutingCountries mustBe false
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry()
-
-        }
-
         "there are countries in list" in {
 
-          withNewCaching(aDeclaration(withRoutingQuestion()))
+          withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries()))
 
           val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(Seq(saveAndContinueActionUrlEncoded): _*))
 
-          theCacheModelUpdated.containRoutingCountries mustBe true
+          verifyTheCacheIsUnchanged()
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe LocationOfGoodsController.displayPage()
