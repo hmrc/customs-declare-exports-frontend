@@ -108,12 +108,12 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     }
 
     "display active transport nationality with change button" in {
-      val row = view.getElementsByClass("active-transport-nationality-row")
+      val row = view.getElementsByClass("active-transport-country-row")
 
-      row must haveSummaryKey(messages("declaration.summary.transport.activeTransportNationality"))
+      row must haveSummaryKey(messages("declaration.summary.transport.registrationCountry"))
       row must haveSummaryValue("United Kingdom")
 
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.activeTransportNationality.change")
+      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.registrationCountry.change")
 
       row must haveSummaryActionsHref(routes.BorderTransportController.displayPage())
     }
@@ -167,7 +167,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     "not display active transport nationality if question not answered" in {
       val view = section(mode, aDeclarationAfter(data, withoutBorderTransport()))(messages)
-      view.getElementsByClass("active-transport-nationality-row") mustBe empty
+      view.getElementsByClass("active-transport-country-row") mustBe empty
     }
 
     "not display transport payment if question not answered" in {

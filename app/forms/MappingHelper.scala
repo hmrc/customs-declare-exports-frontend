@@ -21,8 +21,12 @@ import play.api.data.format.Formatter
 import play.api.data.{FieldMapping, FormError}
 
 object MappingHelper {
+
+  def requiredRadioWithArgs(requiredKey: String = "error.required", args: Seq[Any]): FieldMapping[String] =
+    of(radioFormatter(requiredKey, List.empty, args))
+
   def requiredRadio(requiredKey: String = "error.required"): FieldMapping[String] =
-    of(radioFormatter(requiredKey))
+    of(radioFormatter(requiredKey, List.empty))
 
   def requiredRadio(requiredKey: String, choices: Seq[String]): FieldMapping[String] =
     of(radioFormatter(requiredKey, choices))
@@ -33,20 +37,21 @@ object MappingHelper {
   private def optionalRadioFormatter(requiredKey: String, allowedKeys: Seq[String]): Formatter[String] = new Formatter[String] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
-        case Some(s) if !allowedKeys.contains(s) => Left(Seq(FormError(key, requiredKey)))
+        case Some(s) if !allowedKeys.contains(s) => Left(List(FormError(key, requiredKey)))
         case s                                   => Right(s.getOrElse(""))
       }
     override def unbind(key: String, value: String): Map[String, String] = Map(key -> value)
   }
 
-  private def radioFormatter(requiredKey: String, allowedKeys: Seq[String] = Seq()): Formatter[String] = new Formatter[String] {
+  private def radioFormatter(requiredKey: String, choices: Seq[String], args: Seq[Any] = List.empty): Formatter[String] = new Formatter[String] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
-        case Some("")                           => Left(Seq(FormError(key, requiredKey)))
-        case Some(s) if allowedKeys.isEmpty     => Right(s)
-        case Some(s) if allowedKeys.contains(s) => Right(s)
-        case _                                  => Left(Seq(FormError(key, requiredKey)))
+        case Some("")                       => Left(List(FormError(key, requiredKey, args)))
+        case Some(s) if choices.isEmpty     => Right(s)
+        case Some(s) if choices.contains(s) => Right(s)
+        case _                              => Left(List(FormError(key, requiredKey, args)))
       }
+
     override def unbind(key: String, value: String): Map[String, String] = Map(key -> value)
   }
 }

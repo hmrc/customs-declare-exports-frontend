@@ -1,0 +1,104 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes.TransportCountryController
+@import controllers.navigation.Navigator
+@import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
+@import forms.declaration.ModeOfTransportCode.RoRo
+@import forms.declaration.TransportCountry
+@import forms.declaration.TransportCountry.{hasTransportCountry, prefix, transportCountry}
+@import models.codes.Country
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{BackButton, CountryHelper, ModeOfTransportCodeHelper, Title}
+@import views.html.components.gds._
+@import views.helpers.ErrorMapper.radioGroupErrors
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    heading: heading,
+    body: paragraphBody,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig,
+    navigator: Navigator,
+    formHelper: FormWithCSRF
+)(implicit countryAutoCompleteHelper: CountryHelper)
+
+@(mode: Mode, transportMode: String, form: Form[TransportCountry])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{ form.hasErrors || form.hasGlobalErrors }
+
+@bodyOfCountryInputIfRoRo = @{
+    if (transportMode != ModeOfTransportCodeHelper.transportMode(Some(RoRo))) HtmlFormat.empty
+    else body(id = Some(s"body-$transportCountry"), message = messages(s"$prefix.roro.body"))
+}
+
+@govukLayout(
+    title = Title(s"$prefix.title", "declaration.section.6", transportMode, hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TransportCountry, mode)))
+) {
+    @formHelper(action = TransportCountryController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(radioGroupErrors(hasTransportCountry, "code_yes", form.errors))
+
+        @sectionHeader(messages("declaration.section.6"))
+
+        @heading(messages(s"$prefix.title", transportMode))
+
+        @bodyOfCountryInputIfRoRo
+
+        @govukRadios(Radios(
+            name = hasTransportCountry,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages(s"$prefix.title", transportMode)),
+                    classes = "govuk-visually-hidden"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("code_yes"),
+                    value = Some(yes),
+                    content = Text(messages("site.yes")),
+                    conditionalHtml = Some(components.fields.field_accessible_location_autocomplete_with_header(
+                        field = form(transportCountry),
+                        label = Some(messages(s"$prefix.country.label", transportMode)),
+                        hintParagraphs = List(messages("declaration.country.dropdown.hint")),
+                        countryKey = (c: Country) => c.countryName
+                    )),
+                    checked = form(hasTransportCountry).value.contains(yes)
+                ),
+                RadioItem(
+                    id = Some("code_no"),
+                    value = Some(no),
+                    content = Text(messages("site.no")),
+                    checked = form(hasTransportCountry).value.contains(no)
+                )
+            ),
+            errorMessage = form(hasTransportCountry).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @tariffExpander(TransportCountry, request.declarationType)(messages, appConfig)
+
+        @saveButtons()
+    }
+}

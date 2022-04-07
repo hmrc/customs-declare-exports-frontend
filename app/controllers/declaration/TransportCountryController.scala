@@ -18,61 +18,62 @@ package controllers.declaration
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.TransportCountryController
+import controllers.declaration.routes.{ExpressConsignmentController, TransportContainerController}
 import controllers.navigation.Navigator
-import forms.declaration.BorderTransport
-import forms.declaration.BorderTransport._
+import forms.declaration.TransportCountry
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.border_transport
+import views.helpers.ModeOfTransportCodeHelper
+import views.html.declaration.transport_country
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BorderTransportController @Inject()(
+class TransportCountryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  borderTransport: border_transport
+  transportCountry: transport_country
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val transport = request.cacheModel.transport
-    val frm = (
-      transport.meansOfTransportCrossingTheBorderType,
-      transport.meansOfTransportCrossingTheBorderIDNumber,
-      transport.meansOfTransportCrossingTheBorderNationality
-    ) match {
-      case (Some(meansType), Some(meansId), meansNationality) =>
-        form.withSubmissionErrors.fill(BorderTransport(meansNationality, meansType, meansId))
+    val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
+    val form = TransportCountry.form(transportMode).withSubmissionErrors
+    request.cacheModel.transport.transportCrossingTheBorderNationality match {
+      case Some(data) =>
+        Ok(transportCountry(mode, transportMode, form.fill(data)))
 
-      case (None, None, meansNationality) =>
-        form.withSubmissionErrors.fill(BorderTransport(meansNationality, "", ""))
-
-      case _ => form.withSubmissionErrors
+      case _ => Ok(transportCountry(mode, transportMode, form))
     }
-
-    Ok(borderTransport(mode, frm))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form.bindFromRequest
+    val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
+    TransportCountry.form(transportMode).bindFromRequest
       .fold(
-        formWithErrors => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
-        updateCache(_).map(_ => navigator.continueTo(mode, TransportCountryController.displayPage))
+        formWithErrors => Future.successful(BadRequest(transportCountry(mode, transportMode, formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(mode, nextPage))
       )
   }
 
-  private def updateCache(borderTransport: BorderTransport)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.updateBorderTransport(borderTransport))
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+    request.declarationType match {
+      case STANDARD      => ExpressConsignmentController.displayPage
+      case SUPPLEMENTARY => TransportContainerController.displayContainerSummary
+    }
+
+  private def updateCache(transportCountry: TransportCountry)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest { declaration =>
+      declaration.copy(transport = declaration.transport.copy(transportCrossingTheBorderNationality = Some(transportCountry)))
+    }
 }
