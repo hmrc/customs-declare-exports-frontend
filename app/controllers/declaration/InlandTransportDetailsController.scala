@@ -59,7 +59,10 @@ class InlandTransportDetailsController @Inject()(
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     form.bindFromRequest
-      .fold(formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))), validateAndUpdateCache(mode, _))
+      .fold(
+        formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))),
+        validateAndUpdateCache(mode, _)
+      )
   }
 
   private def nextPage(declarationType: DeclarationType, code: InlandModeOfTransportCode): Mode => Call =
@@ -77,7 +80,15 @@ class InlandTransportDetailsController @Inject()(
 
   private def updateCacheAndGoNextPage(mode: Mode, code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { declaration =>
-      declaration.copy(locations = declaration.locations.copy(inlandModeOfTransportCode = Some(code)))
+      val transportCrossingTheBorderNationality =
+        if (isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode)) None else declaration.transport.transportCrossingTheBorderNationality
+
+      declaration.copy(
+        transport = declaration.transport.copy(
+          transportCrossingTheBorderNationality = transportCrossingTheBorderNationality
+        ),
+        locations = declaration.locations.copy(inlandModeOfTransportCode = Some(code))
+      )
     } map { _ =>
       navigator.continueTo(mode, nextPage(request.declarationType, code))
     }

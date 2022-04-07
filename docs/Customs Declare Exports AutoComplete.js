@@ -1150,7 +1150,7 @@ function borderTransport(){
 function transportCountry(){
     if (currentPageIs('/customs-declare-exports/declaration/transport-country')) {
         document.getElementById('code_yes').checked = 'checked';
-        selectFromAutoPredict(document.getElementById('transportCountry-container'), "South Africa");
+        selectFromAutoPredict(document.getElementById('transportCountry-container'), 'South Africa');
         document.getElementById('submit').click()
     }
 }
