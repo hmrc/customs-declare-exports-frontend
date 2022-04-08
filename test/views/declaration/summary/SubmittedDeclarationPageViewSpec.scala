@@ -54,12 +54,10 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
   "SubmittedDeclarationPageView" should {
 
     "display correct title" in {
-
       createView().getElementById("title").text() mustBe messages("declaration.summary.submitted-header")
     }
 
     "display correct back link" in {
-
       val backButton = createView(aDeclaration(withId("declaration-id"))).getElementById("back-link")
 
       backButton.text() mustBe messages("site.back")
@@ -67,7 +65,6 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
     }
 
     "have references section" in {
-
       val view = createView()
       view.getElementById("declaration-references-summary").text() mustNot be(empty)
 
@@ -75,12 +72,10 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
     }
 
     "not have parties section" in {
-
       Option(createView().getElementById("declaration-parties-summary")) mustBe None
     }
 
     "have parties section" in {
-
       val view = createView(declaration = aDeclaration(withExporterDetails()))
       view.getElementById("declaration-parties-summary").text() mustNot be(empty)
       links(view) mustBe empty
@@ -91,19 +86,16 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
     }
 
     "have countries section" in {
-
       val view = createView(declaration = aDeclaration(withDestinationCountry()))
       view.getElementById("declaration-countries-summary").text() mustNot be(empty)
       links(view) mustBe empty
     }
 
     "not have locations section" in {
-
       Option(createView().getElementById("declaration-locations-summary")) mustBe None
     }
 
     "have locations section with UK office of exit" in {
-
       val view = createView(declaration = aDeclaration(withOfficeOfExit(officeId = "office-Id")))
       view.getElementById("declaration-locations-summary").text() must include("office-Id")
       links(view) mustBe empty
@@ -117,19 +109,16 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
         }
 
     "have transaction section" in {
-
       val view = createView(declaration = aDeclaration(withNatureOfTransaction("1")))
       view.getElementById("declaration-transaction-summary").text() mustNot be(empty)
       links(view) mustBe empty
     }
 
     "not have items section" in {
-
       Option(createView().getElementById("declaration-items-summary")) mustBe None
     }
 
     "have items section" in {
-
       val details = CommodityDetails(Some("1234567890"), Some("Description"))
       val view = createView(declaration = aDeclaration(withItem(anItem(withCommodityDetails(details)))))
       view.getElementById("declaration-items-summary-0").text() mustNot be(empty)
@@ -137,12 +126,10 @@ class SubmittedDeclarationPageViewSpec extends UnitViewSpec with Stubs with Expo
     }
 
     "not have transport section" in {
-
       Option(createView().getElementById("declaration-transport-summary")) mustBe None
     }
 
     "have transport section" in {
-
       val view = createView(declaration = aDeclaration(withBorderTransport()))
       view.getElementById("declaration-transport-summary").text() mustNot be(empty)
       links(view) mustBe empty

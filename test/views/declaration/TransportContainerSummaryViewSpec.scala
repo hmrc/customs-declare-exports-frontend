@@ -20,7 +20,8 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
-import models.Mode
+import models.DeclarationType.SUPPLEMENTARY
+import models.Mode.Normal
 import models.declaration.Container
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -36,12 +37,12 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
 
   val containerId = "212374"
   val sealId = "76434574"
-  val container = Container(containerId, Seq(Seal(sealId)))
+  val container = Container(containerId, List(Seal(sealId)))
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = instanceOf[transport_container_summary]
 
-  private def createView(form: Form[YesNoAnswer] = form, containers: Seq[Container] = Seq(container)): Document =
-    page(Mode.Normal, form, containers)(journeyRequest(), messages)
+  private def createView(form: Form[YesNoAnswer] = form, containers: Seq[Container] = List(container)): Document =
+    page(Normal, form, containers)(journeyRequest(), messages)
 
   "Transport Containers Summary View" should {
     val view = createView()
@@ -52,7 +53,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
     }
 
     "display page title for multiple containers" in {
-      val multiContainerView = createView(containers = Seq(container, container))
+      val multiContainerView = createView(containers = List(container, container))
       multiContainerView.getElementsByTag("h1") must containMessageForElements("declaration.transportInformation.containers.multiple.title", 2)
       multiContainerView.title() must include(messages("declaration.transportInformation.containers.multiple.title", 2))
     }
@@ -81,17 +82,27 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
     }
 
     "display summary of container with no seals" in {
-      val view = createView(containers = Seq(Container(containerId, Seq.empty)))
+      val view = createView(containers = List(Container(containerId, Seq.empty)))
 
       view.getElementById("containers-row0-container").text() must be(containerId)
       view.getElementById("containers-row0-seals") must containMessage("declaration.seal.summary.noSeals")
     }
 
-    "display 'Back' button that links to 'Express Consignment' page" in {
-      val backLinkContainer = view.getElementById("back-link")
+    "display 'Back' button that links to the 'Express Consignment' page" when {
+      "declaration's type is STANDARD" in {
+        val backLinkContainer = view.getElementById("back-link")
+        backLinkContainer must containMessage(backCaption)
+        backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage(Normal))
+      }
+    }
 
-      backLinkContainer must containMessage(backCaption)
-      backLinkContainer.getElementById("back-link") must haveHref(routes.ExpressConsignmentController.displayPage(Mode.Normal))
+    "display 'Back' button that links to the 'Transport Country' page" when {
+      "declaration's type is SUPPLEMENTARY" in {
+        val view = page(Normal, form, List(container))(journeyRequest(SUPPLEMENTARY), messages)
+        val backLinkContainer = view.getElementById("back-link")
+        backLinkContainer must containMessage(backCaption)
+        backLinkContainer must haveHref(routes.TransportCountryController.displayPage(Normal))
+      }
     }
 
     "display 'Save and continue' button on page" in {

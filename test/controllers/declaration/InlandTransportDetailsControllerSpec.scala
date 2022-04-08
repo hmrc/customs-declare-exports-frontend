@@ -29,7 +29,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -106,7 +106,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
     }
   }
 
-  private val body = Json.obj("inlandModeOfTransportCode" -> JsString(exampleTransportMode.value))
+  private val body = Json.obj("inlandModeOfTransportCode" -> exampleTransportMode.value)
 
   onJourney(STANDARD, SUPPLEMENTARY) { request =>
     "Inland Transport Details Controller on POST" should {
@@ -135,7 +135,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
           s"transportMode '$transportMode' is selected" in {
             withNewCaching(request.cacheModel)
 
-            val body = Json.obj("inlandModeOfTransportCode" -> JsString(transportMode.value))
+            val body = Json.obj("inlandModeOfTransportCode" -> transportMode.value)
             val result = await(controller.submit(Normal)(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
@@ -153,11 +153,22 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
           s"transportMode '$transportMode' is selected" in {
             withNewCaching(request.cacheModel)
 
-            val body = Json.obj("inlandModeOfTransportCode" -> JsString(transportMode.value.value))
+            val body = Json.obj("inlandModeOfTransportCode" -> transportMode.value.value)
             val result = await(controller.submit(Normal)(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe expectedRedirect
+          }
+        }
+
+        s"modeOfTransportCode is $transportMode" should {
+          "reset the cache for transport.transportCrossingTheBorderNationality" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some("South Africa"))))
+
+            val body = Json.obj("inlandModeOfTransportCode" -> transportMode.value.value)
+            await(controller.submit(Normal)(postRequest(body)))
+
+            theCacheModelUpdated.transport.transportCrossingTheBorderNationality mustBe None
           }
         }
       }

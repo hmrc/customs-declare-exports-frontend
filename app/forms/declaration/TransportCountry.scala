@@ -48,7 +48,9 @@ object TransportCountry extends DeclarationPage {
   private def mapping(transportMode: String)(implicit messages: Messages, connector: CodeListConnector): Mapping[TransportCountry] =
     Forms.mapping(
       hasTransportCountry -> requiredRadioWithArgs(s"$prefix.error.empty", List(transportMode)),
-      transportCountry -> mandatoryIfEqual(hasTransportCountry, yes,
+      transportCountry -> mandatoryIfEqual(
+        hasTransportCountry,
+        yes,
         text
           .verifying(nonEmptyConstraint(transportMode))
           .verifying(s"$prefix.country.error.invalid", input => input.isEmpty or isValidCountryName(input))

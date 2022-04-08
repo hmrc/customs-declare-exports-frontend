@@ -76,10 +76,8 @@ class TransportLeavingTheBorderController @Inject()(
         if (isPostalOrFTIModeOfTransport(code.code)) None else declaration.transport.transportCrossingTheBorderNationality
 
       declaration.copy(
-        transport = declaration.transport.copy(
-          borderModeOfTransportCode = Some(code),
-          transportCrossingTheBorderNationality = transportCrossingTheBorderNationality
-        ),
+        transport = declaration.transport
+          .copy(borderModeOfTransportCode = Some(code), transportCrossingTheBorderNationality = transportCrossingTheBorderNationality),
         locations = declaration.locations.copy(
           inlandOrBorder = if (code.code == Some(RoRo)) None else inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration)
         )

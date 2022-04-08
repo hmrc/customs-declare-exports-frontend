@@ -59,7 +59,9 @@ class TransportCountryController @Inject()(
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
-    TransportCountry.form(transportMode).bindFromRequest
+    TransportCountry
+      .form(transportMode)
+      .bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(transportCountry(mode, transportMode, formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(mode, nextPage))
