@@ -40,8 +40,8 @@ class BorderTransportHelper @Inject()(exportsInputText: exportsInputText) {
   def titleInHeadTag(hasErrors: Boolean)(implicit messages: Messages, request: JourneyRequest[_]): Title =
     if (isBorderOnInlandOrBorder) Title(s"$prefix.crossingTheBorder.title.v1", "declaration.section.6", hasErrors = hasErrors)
     else {
-      val transportCode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
-      Title(s"$prefix.crossingTheBorder.title.v2", "declaration.section.6", transportCode, hasErrors = hasErrors)
+      val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
+      Title(s"$prefix.crossingTheBorder.title.v2", "declaration.section.6", transportMode, hasErrors = hasErrors)
     }
 
   private def inputField(transportCode: TransportCode, form: Form[_])(implicit messages: Messages): Option[Html] =

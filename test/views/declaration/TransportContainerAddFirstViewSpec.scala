@@ -20,7 +20,8 @@ import base.Injector
 import controllers.declaration.routes
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ContainerFirst
-import models.Mode
+import models.DeclarationType.SUPPLEMENTARY
+import models.Mode.Normal
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -37,7 +38,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
   private val page = instanceOf[transport_container_add_first]
 
   private def createView(form: Form[ContainerFirst] = form): Document =
-    page(Mode.Normal, form)(journeyRequest(), messages)
+    page(Normal, form)(journeyRequest(), messages)
 
   "Transport Containers Add First View" should {
     val view = createView()
@@ -76,10 +77,21 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
       bullets.get(0) must containText(expected)
     }
 
-    "display 'Back' button that links to 'transport payment' page" in {
-      val backLinkContainer = view.getElementById("back-link")
+    "display 'Back' button that links to the 'Express Consignment' page" when {
+      "declaration's type is STANDARD" in {
+        val backLinkContainer = view.getElementById("back-link")
+        backLinkContainer must containMessage(backCaption)
+        backLinkContainer must haveHref(routes.ExpressConsignmentController.displayPage(Normal))
+      }
+    }
 
-      backLinkContainer.getElementById("back-link") must haveHref(routes.ExpressConsignmentController.displayPage(Mode.Normal))
+    "display 'Back' button that links to the 'Transport Country' page" when {
+      "declaration's type is SUPPLEMENTARY" in {
+        val view = page(Normal, form)(journeyRequest(SUPPLEMENTARY), messages)
+        val backLinkContainer = view.getElementById("back-link")
+        backLinkContainer must containMessage(backCaption)
+        backLinkContainer must haveHref(routes.TransportCountryController.displayPage(Normal))
+      }
     }
 
     "display 'Save and continue' button on page" in {

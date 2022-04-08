@@ -25,7 +25,7 @@ import controllers.declaration.routes.{
   WarehouseIdentificationController
 }
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
-import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
+import controllers.helpers.TransportSectionHelper._
 import controllers.routes.RootController
 import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, Maritime, RoRo}
@@ -158,6 +158,19 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
               val result = controller.submitForm(Normal)(postRequest(body))
               status(result) must be(BAD_REQUEST)
             }
+          }
+        }
+      }
+
+      postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
+        s"modeOfTransportCode is $modeOfTransportCode" should {
+          "reset the cache for transport.transportCrossingTheBorderNationality" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some("South Africa"))))
+
+            val body = Json.obj("transportLeavingTheBorder" -> modeOfTransportCode.value.value)
+            await(controller.submitForm(Normal)(postRequest(body)))
+
+            theCacheModelUpdated.transport.transportCrossingTheBorderNationality mustBe None
           }
         }
       }

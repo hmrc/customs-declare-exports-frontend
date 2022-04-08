@@ -113,17 +113,18 @@ object PointerHelper extends Logging {
     "declaration.parties.representativeDetails.statusCode" -> routes.RepresentativeStatusController.displayPage,
     "declaration.parties.declarationHolders.$.eori" -> routes.DeclarationHolderSummaryController.displayPage, //?? DeclarationHolderChangeController with seq No
     "declaration.parties.declarationHolders.$.authorisationTypeCode" -> routes.DeclarationHolderSummaryController.displayPage, //?? DeclarationHolderChangeController with seq No
-    "declaration.borderTransport.meansOfTransportCrossingTheBorderIDNumber" -> routes.BorderTransportController.displayPage,
-    "declaration.borderTransport.meansOfTransportCrossingTheBorderType" -> routes.BorderTransportController.displayPage,
-    "declaration.borderTransport.meansOfTransportCrossingTheBorderNationality" -> routes.BorderTransportController.displayPage,
-    "declaration.borderTransport.modeCode" -> routes.TransportLeavingTheBorderController.displayPage,
+    "declaration.transport.meansOfTransportCrossingTheBorderIDNumber" -> routes.BorderTransportController.displayPage,
+    "declaration.transport.meansOfTransportCrossingTheBorderType" -> routes.BorderTransportController.displayPage,
+    "declaration.transport.meansOfTransportCrossingTheBorderNationality" -> routes.BorderTransportController.displayPage,
+    "declaration.transport.transportCrossingTheBorderNationality.countryName" -> routes.TransportCountryController.displayPage,
+    "declaration.transport.borderModeOfTransportCode.code.value" -> routes.TransportLeavingTheBorderController.displayPage,
     "declaration.parties.carrierDetails.details.eori" -> routes.CarrierEoriNumberController.displayPage,
     "declaration.parties.carrierDetails.details.address.fullName" -> routes.CarrierDetailsController.displayPage,
     "declaration.parties.carrierDetails.details.address.townOrCity" -> routes.CarrierDetailsController.displayPage,
     "declaration.parties.carrierDetails.details.address.country" -> routes.CarrierDetailsController.displayPage,
     "declaration.parties.carrierDetails.details.address.addressLine" -> routes.CarrierDetailsController.displayPage,
     "declaration.parties.carrierDetails.details.address.postCode" -> routes.CarrierDetailsController.displayPage,
-    "declaration.borderTransport.paymentMethod" -> routes.TransportPaymentController.displayPage,
+    "ddeclaration.transport.transportPayment.paymentMethod" -> routes.TransportPaymentController.displayPage,
     "declaration.locations.destinationCountries.countriesOfRouting.$" -> routes.RoutingCountriesSummaryController.displayPage, //?? RoutingCountriesSummaryController.displayChangeCountryPage
     "declaration.totalNumberOfItems.exchangeRate" -> routes.InvoiceAndExchangeRateController.displayPage,
     "declaration.declarantDetails.details.eori" -> routes.DeclarantDetailsController.displayPage, //Alters if dec is CLEARANCE and isEXS and personPresentingGoodsDetails is nonEmpty

@@ -77,7 +77,13 @@ class InlandTransportDetailsController @Inject()(
 
   private def updateCacheAndGoNextPage(mode: Mode, code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { declaration =>
-      declaration.copy(locations = declaration.locations.copy(inlandModeOfTransportCode = Some(code)))
+      val transportCrossingTheBorderNationality =
+        if (isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode)) None else declaration.transport.transportCrossingTheBorderNationality
+
+      declaration.copy(
+        transport = declaration.transport.copy(transportCrossingTheBorderNationality = transportCrossingTheBorderNationality),
+        locations = declaration.locations.copy(inlandModeOfTransportCode = Some(code))
+      )
     } map { _ =>
       navigator.continueTo(mode, nextPage(request.declarationType, code))
     }

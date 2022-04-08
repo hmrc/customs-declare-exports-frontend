@@ -107,15 +107,22 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryActionsHref(routes.BorderTransportController.displayPage())
     }
 
-    "display active transport nationality with change button" in {
-      val row = view.getElementsByClass("active-transport-nationality-row")
+    "display active transport country with change button" when {
+      List(Some("South Africa"), None).foreach { transportCountry =>
+        s"transport.transportCrossingTheBorderNationality is $transportCountry" in {
+          val view = section(mode, aDeclarationAfter(data, withTransportCountry(transportCountry)))(messages)
+          val row = view.getElementsByClass("active-transport-country-row")
 
-      row must haveSummaryKey(messages("declaration.summary.transport.activeTransportNationality"))
-      row must haveSummaryValue("United Kingdom")
+          row must haveSummaryKey(messages("declaration.summary.transport.registrationCountry"))
 
-      row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.activeTransportNationality.change")
+          val expectedValue = transportCountry.fold(messages("declaration.summary.unknown"))(identity)
+          row must haveSummaryValue(expectedValue)
 
-      row must haveSummaryActionsHref(routes.BorderTransportController.displayPage())
+          row must haveSummaryActionsTexts("site.change", "declaration.summary.transport.registrationCountry.change")
+
+          row must haveSummaryActionsHref(routes.TransportCountryController.displayPage())
+        }
+      }
     }
 
     "display express consignment with change button" in {
@@ -151,27 +158,26 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     }
 
     "not display border transport if question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutBorderModeOfTransportCode()))(messages)
+      val view = section(mode, aDeclarationAfter(data, withoutBorderModeOfTransportCode))(messages)
       view.getElementsByClass("border-transport-row") mustBe empty
     }
 
     "not display transport reference if question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType()))(messages)
+      val view = section(mode, aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType))(messages)
       view.getElementsByClass("transport-reference-row") mustBe empty
     }
 
     "not display active transport type if question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutBorderTransport()))(messages)
+      val view = section(mode, aDeclarationAfter(data, withoutBorderTransport))(messages)
       view.getElementsByClass("active-transport-type-row") mustBe empty
     }
 
-    "not display active transport nationality if question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutBorderTransport()))(messages)
-      view.getElementsByClass("active-transport-nationality-row") mustBe empty
+    "not display active transport country if question not answered" in {
+      view.getElementsByClass("active-transport-country-row") mustBe empty
     }
 
     "not display transport payment if question not answered" in {
-      val view = section(mode, aDeclarationAfter(data, withoutTransportPayment()))(messages)
+      val view = section(mode, aDeclarationAfter(data, withoutTransportPayment))(messages)
       view.getElementsByClass("transport-payment-row") mustBe empty
     }
 

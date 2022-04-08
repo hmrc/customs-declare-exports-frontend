@@ -17,7 +17,7 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
-import forms.declaration.{TransportLeavingTheBorder, TransportPayment}
+import forms.declaration.{TransportCountry, TransportLeavingTheBorder, TransportPayment}
 import play.api.libs.json.{Format, Json}
 
 case class Transport(
@@ -28,6 +28,7 @@ case class Transport(
   meansOfTransportOnDepartureType: Option[String] = None,
   meansOfTransportOnDepartureIDNumber: Option[String] = None,
   meansOfTransportCrossingTheBorderNationality: Option[String] = None,
+  transportCrossingTheBorderNationality: Option[TransportCountry] = None,
   meansOfTransportCrossingTheBorderType: Option[String] = None,
   meansOfTransportCrossingTheBorderIDNumber: Option[String] = None
 ) {

@@ -1147,6 +1147,14 @@ function borderTransport(){
     }
 }
 
+function transportCountry(){
+    if (currentPageIs('/customs-declare-exports/declaration/transport-country')) {
+        document.getElementById('code_yes').checked = 'checked';
+        selectFromAutoPredict(document.getElementById('transportCountry-container'), 'South Africa');
+        document.getElementById('submit').click()
+    }
+}
+
 function expressConsignment() {
     if (currentPageIs('/customs-declare-exports/declaration/express-consignment')) {
         document.getElementById('code_yes').checked = 'checked';
@@ -1286,6 +1294,7 @@ function completeJourney() {
     inlandTransportDetails();
     departureTransport();
     borderTransport();
+    transportCountry();
     expressConsignment();
     transportPayment();
 

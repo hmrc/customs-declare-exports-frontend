@@ -113,7 +113,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
     }
 
     "not display nature of transaction when question not asked" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withoutNatureOfTransaction()))(messages)
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutNatureOfTransaction))(messages)
 
       view.getElementsByClass("nature-of-transaction-row") mustBe empty
     }
