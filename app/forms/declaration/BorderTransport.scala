@@ -16,42 +16,28 @@
 
 package forms.declaration
 
-import connectors.CodeListConnector
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
-import forms.declaration.InlandOrBorder.Border
 import forms.declaration.TransportCodes._
 import models.DeclarationType.DeclarationType
-import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
-import play.api.data.Forms.{mapping, optional, text}
-import play.api.data.{Form, Mapping}
-import play.api.i18n.Messages
+import play.api.data.Forms.text
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import services.Countries._
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class BorderTransport(
-  meansOfTransportCrossingTheBorderNationality: Option[String],
-  meansOfTransportCrossingTheBorderType: String,
-  meansOfTransportCrossingTheBorderIDNumber: String
-)
+case class BorderTransport(meansOfTransportCrossingTheBorderType: String, meansOfTransportCrossingTheBorderIDNumber: String)
 
 object BorderTransport extends DeclarationPage {
 
   implicit val formats: OFormat[BorderTransport] = Json.format[BorderTransport]
 
-  val nationalityId = "borderTransportNationality"
   val radioButtonGroupId = "borderTransportType"
 
   val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
 
-  def form(implicit messages: Messages, request: JourneyRequest[_], codeListConnector: CodeListConnector): Form[BorderTransport] =
-    Form(if (isBorderOnInlandOrBorder) nationalityOnlyMapping else formMapping)
-
-  def isBorderOnInlandOrBorder(implicit request: JourneyRequest[_]): Boolean =
-    request.cacheModel.isInlandOrBorder(Border)
+  def form: Form[BorderTransport] = Form(mapping)
 
   def transportReferenceMapping(transportCode: TransportCode): (String, Mapping[Option[String]]) =
     transportCode.id -> mandatoryIfEqual(
@@ -63,9 +49,8 @@ object BorderTransport extends DeclarationPage {
         .verifying(s"$prefix.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
     )
 
-  private def formMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[BorderTransport] =
-    mapping(
-      nationalityId -> optional(text.verifying(s"$prefix.nationality.error.incorrect", isValidCountryName(_))),
+  private def mapping: Mapping[BorderTransport] =
+    Forms.mapping(
       radioButtonGroupId -> requiredRadio(s"$prefix.error.empty")
         .verifying(s"$prefix.error.incorrect", isContainedIn(transportCodesOnBorderTransport.map(_.value))),
       transportReferenceMapping(ShipOrRoroImoNumber),
@@ -78,13 +63,7 @@ object BorderTransport extends DeclarationPage {
       transportReferenceMapping(NameOfInlandWaterwayVessel)
     )(form2Model)(model2Form)
 
-  private def nationalityOnlyMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[BorderTransport] =
-    mapping(nationalityId -> optional(text.verifying(s"$prefix.nationality.error.incorrect", isValidCountryName(_))))(nationalityOnlyForm2Model)(
-      model2NationalityOnlyForm
-    )
-
   private def form2Model: (
-    Option[String],
     String,
     Option[String],
     Option[String],
@@ -96,7 +75,6 @@ object BorderTransport extends DeclarationPage {
     Option[String]
   ) => BorderTransport = {
     case (
-        nationality,
         transportType,
         shipIdNumber,
         nameOfVessel,
@@ -108,7 +86,6 @@ object BorderTransport extends DeclarationPage {
         nameOfInlandWaterwayVessel
         ) =>
       BorderTransport(
-        nationality,
         transportType,
         form2Ref(
           shipIdNumber,
@@ -123,26 +100,12 @@ object BorderTransport extends DeclarationPage {
       )
   }
 
-  private def nationalityOnlyForm2Model: Option[String] => BorderTransport = BorderTransport(_, "", "")
-
   private def model2Form: BorderTransport => Option[
-    (
-      Option[String],
-      String,
-      Option[String],
-      Option[String],
-      Option[String],
-      Option[String],
-      Option[String],
-      Option[String],
-      Option[String],
-      Option[String]
-    )
+    (String, Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])
   ] =
     implicit borderTransport =>
       Some(
         (
-          borderTransport.meansOfTransportCrossingTheBorderNationality,
           borderTransport.meansOfTransportCrossingTheBorderType,
           model2Ref(ShipOrRoroImoNumber),
           model2Ref(NameOfVessel),
@@ -155,9 +118,6 @@ object BorderTransport extends DeclarationPage {
         )
     )
 
-  private def model2NationalityOnlyForm: BorderTransport => Option[Option[String]] =
-    implicit borderTransport => Option(borderTransport.meansOfTransportCrossingTheBorderNationality)
-
   private def form2Ref(refs: Option[String]*): String = refs.map(_.getOrElse("")).mkString
 
   private def model2Ref(transportCode: TransportCode)(implicit model: BorderTransport): Option[String] =
@@ -165,5 +125,5 @@ object BorderTransport extends DeclarationPage {
     else Some(model.meansOfTransportCrossingTheBorderIDNumber)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.borderTransport.1.common"), TariffContentKey("tariff.declaration.borderTransport.2.common"))
+    Seq(TariffContentKey("tariff.declaration.borderTransport.common"))
 }

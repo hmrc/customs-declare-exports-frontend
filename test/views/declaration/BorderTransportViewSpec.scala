@@ -17,19 +17,13 @@
 package views.declaration
 
 import base.Injector
-import connectors.CodeListConnector
 import controllers.declaration.routes.DepartureTransportController
 import forms.declaration.BorderTransport
-import forms.declaration.InlandOrBorder.Border
 import forms.declaration.TransportCodes.transportCodesOnBorderTransport
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.Mode.Normal
-import models.codes.Country
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 import services.cache.ExportsTestData
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -37,22 +31,8 @@ import views.helpers.CommonMessages
 import views.html.declaration.border_transport
 import views.tags.ViewTest
 
-import scala.collection.immutable.ListMap
-
 @ViewTest
-class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with CommonMessages with BeforeAndAfterEach {
-
-  implicit val mockCodeListConnector = mock[CodeListConnector]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
-  }
-
-  override protected def afterEach(): Unit = {
-    reset(mockCodeListConnector)
-    super.afterEach()
-  }
+class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with CommonMessages {
 
   private val page = instanceOf[border_transport]
 
@@ -65,114 +45,71 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
     List(STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED, SUPPLEMENTARY_EIDR).foreach { additionalType =>
       s"AdditionalDeclarationType is $additionalType and" when {
 
-        // V1 Content
-        "'Border' has been selected on /inland-or-border" should {
-          implicit val request = withRequest(additionalType, withInlandOrBorder(Some(Border)))
-          val view = createView
+        val view = createView(withRequest(additionalType))
 
-          verifyCommonContent(view)
-
-          "display same page title as header" in {
-            view.title must include(view.getElementsByTag("h1").text)
-          }
-
-          "display the expected page title" in {
-            view.getElementsByTag("h1").text mustBe messages(s"$prefix.title.v1")
-          }
+        "display a 'Back' button that links to the /departure-transport page" in {
+          val backButton = view.getElementById("back-link")
+          backButton must containMessage(backCaption)
+          backButton must haveHref(DepartureTransportController.displayPage())
         }
 
-        // V2 Content (default)
-        "'Border' has NOT been selected on /inland-or-border" should {
-          implicit val request = withRequest(additionalType)
-          val view = createView
+        "display the expected section header" in {
+          view.getElementById("section-header") must containMessage("declaration.section.6")
+        }
 
-          verifyCommonContent(view)
+        "display same page title as header" in {
+          view.title must include(view.getElementsByTag("h1").text)
+        }
 
-          "display same page title as header" in {
-            view.title must include(view.getElementsByTag("h1").text)
-          }
+        "display the expected page title" in {
+          val unknownTransportMode = messages("declaration.transport.leavingTheBorder.transportMode.unknown").toLowerCase
+          view.getElementsByTag("h1").text mustBe messages(s"$prefix.title", unknownTransportMode)
+        }
 
-          "display the expected page title" in {
-            val unknownTransportMode = messages("declaration.transport.leavingTheBorder.transportMode.unknown").toLowerCase
-            view.getElementsByTag("h1").text mustBe messages(s"$prefix.title.v2", unknownTransportMode)
-          }
+        "display the expected body" in {
+          view.getElementsByClass("govuk-body").first.text mustBe messages(s"$prefix.body")
+        }
 
-          "display the expected body" in {
-            view.getElementsByClass("govuk-body").first.text mustBe messages(s"$prefix.body.v2")
-          }
+        "display 'Means of Transport' section" which {
+          transportCodesOnBorderTransport.foreach { transportCode =>
+            s"has a '${transportCode.id}' section" in {
+              Option(view.getElementById(s"radio_${transportCode.id}")) must not be None
 
-          "display 'Means of Transport' section" which {
-            transportCodesOnBorderTransport.foreach { transportCode =>
-              s"has a '${transportCode.id}' section" in {
-                Option(view.getElementById(s"radio_${transportCode.id}")) must not be None
+              val suffix = if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""
+              val radioLabel = view.getElementsByAttributeValue("for", s"radio_${transportCode.id}").text
+              radioLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}$suffix")
 
-                val suffix = if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""
-                val radioLabel = view.getElementsByAttributeValue("for", s"radio_${transportCode.id}").text
-                radioLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}$suffix")
+              Option(view.getElementById(s"${transportCode.id}")) must not be None
 
-                Option(view.getElementById(s"${transportCode.id}")) must not be None
+              val inputLabel = view.getElementsByAttributeValue("for", transportCode.id).text
+              inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
 
-                val inputLabel = view.getElementsByAttributeValue("for", transportCode.id).text
-                inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
-
-                val inputHint = view.getElementById(s"${transportCode.id}-hint").text
-                inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
-              }
+              val inputHint = view.getElementById(s"${transportCode.id}-hint").text
+              inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
             }
           }
+        }
 
-          "display the nationality picker's heading" in {
-            val heading = view.getElementsByClass("govuk-heading-s").first
-            heading.tagName mustBe "h2"
-            heading.text mustBe messages(s"$prefix.nationality.header")
-          }
+        "display the expected tariff details" in {
+          val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
+          tariffTitle.text mustBe messages(s"tariff.expander.title.common")
+
+          val tariffDetails = view.getElementsByClass("govuk-details__text").first
+
+          val prefix = "tariff.declaration.borderTransport"
+          val expectedText = messages(s"$prefix.common.text", messages(s"$prefix.common.linkText.0"))
+          val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
+          actualText mustBe removeLineBreakIfAny(expectedText)
+        }
+
+        "display the 'Save and continue' button" in {
+          view.getElementById("submit") must containMessage(saveAndContinueCaption)
+        }
+
+        "display the 'Save and return' button" in {
+          view.getElementById("submit_and_return") must containMessage(saveAndReturnCaption)
         }
       }
-    }
-  }
-
-  def verifyCommonContent(view: Document): Unit = {
-
-    "display a 'Back' button that links to the /departure-transport page" in {
-      val backButton = view.getElementById("back-link")
-      backButton must containMessage(backCaption)
-      backButton must haveHref(DepartureTransportController.displayPage())
-    }
-
-    "display the expected section header" in {
-      view.getElementById("section-header") must containMessage("declaration.section.6")
-    }
-
-    "display the nationality picker's hint" in {
-      view.getElementById("borderTransportNationality-hint").text mustBe messages("declaration.country.dropdown.hint")
-    }
-
-    "display the nationality picker" in {
-      val nationalityPicker = view.getElementById("borderTransportNationality")
-      nationalityPicker.tagName mustBe "select"
-    }
-
-    "display the expected tariff details" in {
-      val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-      tariffTitle.text mustBe messages(s"tariff.expander.title.common")
-
-      val tariffDetails = view.getElementsByClass("govuk-details__text").first
-
-      val prefix = "tariff.declaration.borderTransport"
-      val expectedText1 = messages(s"$prefix.1.common.text", messages(s"$prefix.1.common.linkText.0"))
-      val expectedText2 = messages(s"$prefix.2.common.text", messages(s"$prefix.2.common.linkText.0"))
-      val expectedText = removeLineBreakIfAny(s"$expectedText1$expectedText2").filter((_: Char) != ' ')
-
-      val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text).filter((_: Char) != ' ')
-      actualText mustBe expectedText
-    }
-
-    "display the 'Save and continue' button" in {
-      view.getElementById("submit") must containMessage(saveAndContinueCaption)
-    }
-
-    "display the 'Save and return' button" in {
-      view.getElementById("submit_and_return") must containMessage(saveAndReturnCaption)
     }
   }
 }
