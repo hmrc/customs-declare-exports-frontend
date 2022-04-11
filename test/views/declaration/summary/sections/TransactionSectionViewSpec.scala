@@ -131,13 +131,13 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with 
     }
 
     "display 'Less than £100,000' when Yes answered on exchange rate choice page" in {
-      val view = section(Mode.Normal, aDeclaration())(messages)
+      val view = section(Mode.Normal, aDeclaration(withTotalNumberOfItems()))(messages)
 
       view.getElementsByClass("item-amount-row") must haveSummaryValue(messages("declaration.totalAmountInvoiced.value.lessThan100000"))
     }
 
     "have link to exchange rate choice page when Yes answered on exchange rate choice page" in {
-      val view = section(Mode.Normal, aDeclaration())(messages)
+      val view = section(Mode.Normal, aDeclaration(withTotalNumberOfItems()))(messages)
 
       view.getElementsByClass("item-amount-row") must haveSummaryActionsHref(InvoiceAndExchangeRateChoiceController.displayPage())
     }
