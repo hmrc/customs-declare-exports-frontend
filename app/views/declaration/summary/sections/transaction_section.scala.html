@@ -30,8 +30,7 @@
 @(mode: Mode, declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages)
 
 @hasTransactionData = @{
-   declaration.totalNumberOfItems.isDefined || declaration.natureOfTransaction.isDefined || declaration.previousDocuments.isDefined ||
-    ((declaration.isType(STANDARD) || declaration.isType(SUPPLEMENTARY)) && declaration.isInvoiceAmountLessThan100000)
+   declaration.totalNumberOfItems.isDefined || declaration.natureOfTransaction.isDefined || declaration.previousDocuments.isDefined
 }
 
 @totalAmountInvoicedRowContent = @{
