@@ -79,7 +79,7 @@ class IsLicenceRequiredController @Inject()(
                 val docsRequired = request.cacheModel.hasAuthCodeRequiringAdditionalDocs
 
                 mode match {
-                  case Change if (docsEmpty && docsRequired) || isLicenceRequired =>
+                  case Change if (docsEmpty && docsRequired) || (docsEmpty && isLicenceRequired) =>
                     navigator.continueTo(mode, routes.AdditionalDocumentAddController.displayPage(_, itemId))(request, hc)
                   case Change =>
                     navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
