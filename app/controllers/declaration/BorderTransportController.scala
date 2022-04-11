@@ -16,12 +16,10 @@
 
 package controllers.declaration
 
-import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.TransportCountryController
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
-import forms.declaration.BorderTransport._
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -41,32 +39,28 @@ class BorderTransportController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   borderTransport: border_transport
-)(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val transport = request.cacheModel.transport
-    val frm = (
-      transport.meansOfTransportCrossingTheBorderType,
-      transport.meansOfTransportCrossingTheBorderIDNumber,
-      transport.meansOfTransportCrossingTheBorderNationality
-    ) match {
-      case (Some(meansType), Some(meansId), meansNationality) =>
-        form.withSubmissionErrors.fill(BorderTransport(meansNationality, meansType, meansId))
+    val form = (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
+      case (Some(meansType), Some(meansId)) =>
+        BorderTransport.form.withSubmissionErrors.fill(BorderTransport(meansType, meansId))
 
-      case (None, None, meansNationality) =>
-        form.withSubmissionErrors.fill(BorderTransport(meansNationality, "", ""))
+      case (None, None) =>
+        BorderTransport.form.withSubmissionErrors.fill(BorderTransport("", ""))
 
-      case _ => form.withSubmissionErrors
+      case _ => BorderTransport.form.withSubmissionErrors
     }
 
-    Ok(borderTransport(mode, frm))
+    Ok(borderTransport(mode, form))
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    form.bindFromRequest
+    BorderTransport.form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(mode, TransportCountryController.displayPage))
