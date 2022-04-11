@@ -20,12 +20,12 @@
 @import models.declaration.ExportItem
 @import models.declaration.AdditionalDocuments
 @import models.Mode
-@import models.DeclarationType.DeclarationType
+@import models.DeclarationType._
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.ActionItemBuilder._
 @import views.declaration.summary.TableCell
-@import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list}
+@import views.html.components.gds.{link, linkContent, spanVisuallyHidden, summary_list, heading}
 
 @this(
     govukTable: GovukTable,
@@ -34,6 +34,7 @@
     spanVisuallyHidden: spanVisuallyHidden,
     summaryList: summary_list,
     waiver999LConfig: Waiver999LConfig,
+    heading: heading
 )
 
 @(
@@ -66,134 +67,98 @@
     item.isLicenceRequired.contains(true)
 }
 
-@showWaiverInfo = @{
-    declarationType != DeclarationType.CLEARANCE && waiver999LConfig.is999LEnabled
+@additionalDocumentsHeading = @{
+    heading(messages("declaration.summary.items.item.additionalDocuments"), "govuk-heading-s govuk-!-margin-bottom-0", "h3")
 }
 
-@tableCaption = @{
-    if(licenceRequired && showWaiverInfo) messages("declaration.summary.items.item.licences")
-    else if(declarationType == models.DeclarationType.CLEARANCE || !waiver999LConfig.is999LEnabled) messages("declaration.summary.items.item.clearance.additionalDocuments")
-    else messages("declaration.summary.items.item.additionalDocuments")
+@licenceRowValue = @{
+    if (!licenceRequired) Text(messages("site.no"))
+    else Text(messages("site.yes"))
+}
+
+@summaryListBottomMargin = @{
+    if (additionalDocuments.documents.nonEmpty) "0"
+    else "6"
+}
+
+@licenceRow = @{
+    if(item.isLicenceRequired.isDefined)
+        Some(SummaryListRow(
+            classes = s"licences-${item.sequenceId}-row",
+            key = Key(content = Text(messages("declaration.summary.items.item.licences"))),
+            value = Value(content = licenceRowValue),
+            actions = actions(Actions(
+                items = Seq(
+                    actionItem(
+                        href = routes.IsLicenceRequiredController.displayPage(mode, item.id).url,
+                        content = HtmlContent(linkContent(messages("site.change"))),
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+                    )
+                )
+            ))
+        ))
+    else None
+}
+
+@noDocumentsRow = @{
+    if(additionalDocuments.documents.isEmpty)
+        Some(SummaryListRow(
+            classes = s"additional-documents-${item.sequenceId}-row",
+            key = Key(content = Text(messages("declaration.summary.items.item.additionalDocuments"))),
+            value = Value(content = Text(messages("site.no"))),
+            actions = actions(Actions(
+                items = Seq(
+                    actionItem(
+                        href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
+                        content = HtmlContent(linkContent(messages("site.change"))),
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
+                    )
+                )
+            ))
+        ))
+    else None
+}
+
+@documentRows = @{
+    additionalDocuments.documents.map(document =>
+        Seq(
+            TableRow(content = Text(document.documentTypeCode.getOrElse(""))),
+            TableRow(content = Text(document.documentIdentifier.getOrElse(""))),
+            TableCell.changeLink(change(document))
+        )
+    )
+}
+
+@documentHead = @{
+    Some(List(
+        HeadCell(content = Text(messages("declaration.summary.items.item.additionalDocuments.code"))),
+        HeadCell(content = Text(messages("declaration.summary.items.item.additionalDocuments.identifier"))),
+        HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.change.header"))))
+    ))
 }
 
 @actions(action: Actions) = @{
     if (actionsEnabled) Some(action) else None
 }
 
-@if(additionalDocuments.documents.nonEmpty){
+<div id="additional-docs-section-item-@item.sequenceId">
+    @additionalDocumentsHeading
 
-    @if(!licenceRequired && showWaiverInfo){
-        @summaryList(s"licences-${item.sequenceId}", None, Seq(
-            Some(SummaryListRow(
-                classes = s"licences-${item.sequenceId}-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.items.item.licences"))
-            ),
-            value = Value(
-            content = Text(messages("site.no"))
+    @summaryList(
+        s"additional-docs-summary-list-${item.sequenceId}",
+        None,
+        Seq(
+            licenceRow,
+            noDocumentsRow,
         ),
-        actions = actions(Actions(
-            items = Seq(
-                actionItem(
-                    href = routes.IsLicenceRequiredController.displayPage(mode, item.id).url,
-                    content = HtmlContent(linkContent(messages("site.change"))),
-                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
-                )
-            )
-        ))))))
-    }
+        classes = s"govuk-!-margin-bottom-${summaryListBottomMargin}"
+    )
 
-    @if(licenceRequired && showWaiverInfo){
-        <h3 class="govuk-heading-s">@messages("declaration.summary.items.item.additionalDocuments")</h3>
-    }
-
-    @govukTable(Table(
-        rows = additionalDocuments.documents.map(document =>
-            Seq(
-                TableRow(
-                    content = Text(document.documentTypeCode.getOrElse(""))
-                ),
-                TableRow(
-                    content = Text(document.documentIdentifier.getOrElse(""))
-                ),
-                TableCell.changeLink(change(document))
-            )
-        ),
-        head = Some(List(
-            HeadCell(
-                content = Text(messages("declaration.summary.items.item.additionalDocuments.code"))
-            ),
-            HeadCell(
-                content = Text(messages("declaration.summary.items.item.additionalDocuments.identifier"))
-            ),
-            HeadCell(
-                content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
-            )
-        )),
-        caption = Some(tableCaption),
-        attributes = Map("id" -> s"additional-documents-${item.sequenceId}-table")
-    ))
-
-} else if (showWaiverInfo) {
-
-    @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
-        Some(SummaryListRow(
-            classes = s"licences-${item.sequenceId}-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.licences"))
-            ),
-            value = Value(
-                content = Text(messages("site.no"))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionItem(
-                    href = routes.IsLicenceRequiredController.displayPage(mode, item.id).url,
-                    content = HtmlContent(linkContent(messages("site.change"))),
-                    visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
-                )
-            )
-        )))),
-        Some(SummaryListRow(
-            classes = s"additional-documents-${item.sequenceId}-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.additionalDocuments"))
-            ),
-            value = Value(
-                content = Text(messages("site.no"))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionItem(
-                        href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
-                    )
-                )
-            ))
+    @if(additionalDocuments.documents.nonEmpty) {
+        @govukTable(Table(
+            rows = documentRows,
+            head = documentHead,
+            attributes = Map("id" -> s"additional-documents-${item.sequenceId}-table")
         ))
-    ))
-} else {
-
-    @summaryList(s"additional-documents-${item.sequenceId}", None, Seq(
-        Some(SummaryListRow(
-            classes = s"additional-documents-${item.sequenceId}-row",
-            key = Key(
-                content = Text(messages("declaration.summary.items.item.additionalDocuments"))
-            ),
-            value = Value(
-                content =   Text(messages("site.no"))
-            ),
-            actions = actions(Actions(
-                items = Seq(
-                    actionItem(
-                        href = routes.AdditionalDocumentsController.displayPage(mode, item.id).url,
-                        content = HtmlContent(linkContent(messages("site.change"))),
-                        visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalDocuments.changeAll", item.sequenceId))
-                    )
-                )
-            ))
-        ))
-    ))
-
-}
+    }
+</div>
