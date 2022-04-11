@@ -25,6 +25,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 import forms.declaration.IsLicenceRequired
 import models.DeclarationType._
+import models.Mode.Change
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -68,28 +69,44 @@ class IsLicenceRequiredController @Inject()(
       form.bindFromRequest
         .fold(
           formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors))),
-          yesNo =>
-            updateCache(yesNo, itemId) map { _ =>
-              navigator.continueTo(mode, nextPage(yesNo, itemId))
+          yesNo => {
+
+            val isLicenceRequired = yesNo.answer == YesNoAnswers.yes
+
+            updateCache(isLicenceRequired, itemId) map {
+              _ =>
+                val docsEmpty = request.cacheModel.additionalDocumentsIfAny(itemId).isEmpty
+                val docsRequired = request.cacheModel.hasAuthCodeRequiringAdditionalDocs
+
+                mode match {
+                  case Change if (docsEmpty && docsRequired) || isLicenceRequired =>
+                    println(">>>>")
+                    navigator.continueTo(mode, routes.AdditionalDocumentAddController.displayPage(_, itemId))(request, hc)
+                  case Change =>
+                    navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
+                  case _ =>
+                    nextPage(mode, yesNo, itemId)
+                }
+            }
           }
         )
+
     }
 
-  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+  private def nextPage(mode: Mode, yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
     yesNoAnswer.answer match {
-      case YesNoAnswers.yes => AdditionalDocumentAddController.displayPage(_, itemId)
+      case YesNoAnswers.yes =>
+        navigator.continueTo(mode, AdditionalDocumentAddController.displayPage(_, itemId))
 
       case YesNoAnswers.no if request.cacheModel.hasAuthCodeRequiringAdditionalDocs =>
-        AdditionalDocumentAddController.displayPage(_, itemId)
+        navigator.continueTo(mode, AdditionalDocumentAddController.displayPage(_, itemId))
 
       case YesNoAnswers.no =>
-        AdditionalDocumentsRequiredController.displayPage(_, itemId)
+        navigator.continueTo(mode, AdditionalDocumentsRequiredController.displayPage(_, itemId))
     }
 
-  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] = {
-    val isLicenceRequired = yesNoAnswer.answer == YesNoAnswers.yes
+  private def updateCache(isLicenceRequired: Boolean, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(isLicenceRequired = Some(isLicenceRequired))))
-  }
 
   private def form: Form[YesNoAnswer] = IsLicenceRequired.form
 }
