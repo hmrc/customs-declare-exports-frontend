@@ -67,41 +67,29 @@ class IsLicenceRequiredController @Inject()(
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] =
     (authenticate andThen journeyType andThen featureFlagAction(Feature.waiver999L)).async { implicit request =>
       form.bindFromRequest
-        .fold(
-          formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors))),
-          yesNo => {
+        .fold(formWithErrors => Future.successful(BadRequest(is_licence_required(mode, itemId, formWithErrors))), yesNo => {
 
-            val isLicenceRequired = yesNo.answer == YesNoAnswers.yes
+          val isLicenceRequired = yesNo.answer == YesNoAnswers.yes
 
-            updateCache(isLicenceRequired, itemId) map {
-              _ =>
-                val docsEmpty = request.cacheModel.additionalDocumentsIfAny(itemId).isEmpty
-                val docsRequired = request.cacheModel.hasAuthCodeRequiringAdditionalDocs
-
-                mode match {
-                  case Change if (docsEmpty && docsRequired) || (docsEmpty && isLicenceRequired) =>
-                    navigator.continueTo(mode, routes.AdditionalDocumentAddController.displayPage(_, itemId))(request, hc)
-                  case Change =>
-                    navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
-                  case _ =>
-                    nextPage(mode, yesNo, itemId)
-                }
-            }
+          updateCache(isLicenceRequired, itemId) map { _ =>
+            navigator.continueTo(mode, nextPage(yesNo, itemId))
           }
-        )
-
+        })
     }
 
-  private def nextPage(mode: Mode, yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     yesNoAnswer.answer match {
+      case _ if request.cacheModel.additionalDocumentsIfAny(itemId).nonEmpty =>
+        AdditionalDocumentsController.displayPage(_, itemId)
+
       case YesNoAnswers.yes =>
-        navigator.continueTo(mode, AdditionalDocumentAddController.displayPage(_, itemId))
+        AdditionalDocumentAddController.displayPage(_, itemId)
 
       case YesNoAnswers.no if request.cacheModel.hasAuthCodeRequiringAdditionalDocs =>
-        navigator.continueTo(mode, AdditionalDocumentAddController.displayPage(_, itemId))
+        AdditionalDocumentAddController.displayPage(_, itemId)
 
       case YesNoAnswers.no =>
-        navigator.continueTo(mode, AdditionalDocumentsRequiredController.displayPage(_, itemId))
+        AdditionalDocumentsRequiredController.displayPage(_, itemId)
     }
 
   private def updateCache(isLicenceRequired: Boolean, itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
