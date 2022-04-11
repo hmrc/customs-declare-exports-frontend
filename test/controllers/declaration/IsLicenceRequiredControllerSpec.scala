@@ -111,41 +111,73 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with OptionValues {
 
       "return 303 (SEE_OTHER)" when {
 
-        "user submits valid Yes answer" in {
-          withNewCaching(declaration)
+        "user submits valid Yes answer" when {
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+          "Normal Mode" in {
+            withNewCaching(declaration)
+
+            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+          }
+          "Change mode" in {
+            withNewCaching(declaration)
+
+            val result = controller.submitForm(Mode.Change, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+          }
         }
 
         "user submits valid No answer" when {
-          "NO authorisation from List" in {
-            withNewCaching(declaration)
 
-            val requestBody = Seq("yesNo" -> "No")
-            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val requestBody = Seq("yesNo" -> "No")
 
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(Mode.Normal, itemId)
+          "NO authorisation from List" when {
+
+            "Normal Mode" in {
+              withNewCaching(declaration)
+
+              val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe routes.AdditionalDocumentsRequiredController.displayPage(Mode.Normal, itemId)
+            }
+
+            "Change mode" in {
+              withNewCaching(declaration)
+
+              val result = controller.submitForm(Mode.Change, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(Mode.Normal, itemId)
+            }
           }
 
-          "authorisation from List" in {
+          "authorisation from List" when {
 
             val declaration = aDeclaration(
               withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails))),
               withDeclarationHolders(authorisationTypeCode = Some(AuthorizationTypeCodes.codesRequiringDocumentation.head))
             )
 
-            withNewCaching(declaration)
+            "Normal mode" in {
 
-            val requestBody = Seq("yesNo" -> "No")
-            val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+              withNewCaching(declaration)
 
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+              val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+            }
+            "Change mode" when {
+
+              "no existing documents" in {
+                val result = controller.submitForm(Mode.Change, itemId)(postRequestAsFormUrlEncoded(requestBody: _*))
+                await(result) mustBe aRedirectToTheNextPage
+                thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(Mode.Normal, itemId)
+              }
+            }
           }
         }
       }
