@@ -17,7 +17,6 @@
 package views.declaration
 
 import base.Injector
-import config.AppConfig
 import controllers.declaration.routes
 import forms.common.YesNoAnswer
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
@@ -33,7 +32,6 @@ import views.tags.ViewTest
 @ViewTest
 class InvoiceAndExchangeRateChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
   private val page = instanceOf[invoice_and_exchange_rate_choice]
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
 

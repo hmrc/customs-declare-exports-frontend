@@ -1136,14 +1136,20 @@ function departureTransport(){
 
 function borderTransport(){
     if (currentPageIs('/customs-declare-exports/declaration/border-transport')) {
-        selectFromAutoPredict(document.getElementById('borderTransportNationality-container'), "United Kingdom, Great Britain, Northern Ireland");
-
         if (document.getElementById('nameOfVessel') !== null) {
             selectRadioOptionFromInputs(document.getElementsByName('borderTransportType'), 1)
             document.getElementById('nameOfVessel').value = 'Superfast Hawk Millenium';
         }
 
         document.getElementById('submit').click();
+    }
+}
+
+function transportCountry(){
+    if (currentPageIs('/customs-declare-exports/declaration/transport-country')) {
+        document.getElementById('code_yes').checked = 'checked';
+        selectFromAutoPredict(document.getElementById('transportCountry-container'), 'South Africa');
+        document.getElementById('submit').click()
     }
 }
 
@@ -1286,6 +1292,7 @@ function completeJourney() {
     inlandTransportDetails();
     departureTransport();
     borderTransport();
+    transportCountry();
     expressConsignment();
     transportPayment();
 

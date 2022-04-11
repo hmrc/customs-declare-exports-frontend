@@ -28,7 +28,7 @@ import controllers.helpers.SaveAndReturn
 import controllers.helpers.TransportSectionHelper._
 import forms.declaration.DepartureTransport.form
 import forms.declaration.InlandOrBorder.Border
-import forms.declaration.ModeOfTransportCode.RoRo
+import forms.declaration.ModeOfTransportCode.{RoRo, Road}
 import forms.declaration.TransportCodes._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{ModeOfTransportCode, TransportCodes}
@@ -122,9 +122,14 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       dataForVersion2.foreach { dataOnTest =>
         val view = createView(dataOnTest.transportCodes)(dataOnTest.request)
         val elements = view.getElementsByClass("govuk-body")
-        elements.size mustBe 3
-        elements.get(0).text mustBe messages(s"$prefix.departure.body.v2")
-        elements.get(1).text mustBe messages(s"$prefix.departure.body")
+        if (dataOnTest.transportCode == Road) {
+          elements.size mustBe 3
+          elements.get(0).text mustBe messages(s"$prefix.departure.body.v2")
+          elements.get(1).text mustBe messages(s"$prefix.departure.body")
+        } else {
+          elements.size mustBe 2
+          elements.get(0).text mustBe messages(s"$prefix.departure.body")
+        }
       }
     }
 

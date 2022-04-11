@@ -89,7 +89,7 @@
             errorMessage = form("hasEori").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffExpander(CarrierEoriNumber, request.declarationType)(messages, appConfig),
+        @tariffExpander(CarrierEoriNumber, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

@@ -450,6 +450,10 @@ GET         /border-transport                   controllers.declaration.BorderTr
 
 POST        /border-transport                   controllers.declaration.BorderTransportController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
+GET         /transport-country                  controllers.declaration.TransportCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /transport-country                  controllers.declaration.TransportCountryController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
 # Transport Payment
 
 GET         /express-consignment                 controllers.declaration.ExpressConsignmentController.displayPage(mode: models.Mode ?= models.Mode.Normal)

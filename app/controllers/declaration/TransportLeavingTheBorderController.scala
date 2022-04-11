@@ -18,6 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.WarehouseIdentificationController
+import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import controllers.navigation.Navigator
 import forms.declaration.ModeOfTransportCode.RoRo
@@ -71,8 +72,12 @@ class TransportLeavingTheBorderController @Inject()(
 
   private def updateCache(code: TransportLeavingTheBorder)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
+      val transportCrossingTheBorderNationality =
+        if (isPostalOrFTIModeOfTransport(code.code)) None else declaration.transport.transportCrossingTheBorderNationality
+
       declaration.copy(
-        transport = declaration.transport.copy(borderModeOfTransportCode = Some(code)),
+        transport = declaration.transport
+          .copy(borderModeOfTransportCode = Some(code), transportCrossingTheBorderNationality = transportCrossingTheBorderNationality),
         locations = declaration.locations.copy(
           inlandOrBorder = if (code.code == Some(RoRo)) None else inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration)
         )

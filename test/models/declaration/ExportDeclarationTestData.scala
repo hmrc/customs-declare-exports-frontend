@@ -71,9 +71,9 @@ object ExportDeclarationTestData {
       borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(ModeOfTransportCode.Road))),
       meansOfTransportOnDepartureType = Some("10"),
       meansOfTransportOnDepartureIDNumber = Some("123112yu78"),
-      meansOfTransportCrossingTheBorderNationality = Some("Portugal"),
       meansOfTransportCrossingTheBorderType = Some("40"),
-      meansOfTransportCrossingTheBorderIDNumber = Some("1234567878ui")
+      meansOfTransportCrossingTheBorderIDNumber = Some("1234567878ui"),
+      transportCrossingTheBorderNationality = Some(TransportCountry(Some("Portugal")))
     ),
     parties = Parties(
       exporterDetails = Some(correctExporterDetails),

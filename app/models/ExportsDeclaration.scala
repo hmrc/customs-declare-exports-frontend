@@ -136,6 +136,9 @@ case class ExportsDeclaration(
 
   def isInlandOrBorder(inlandOrBorder: InlandOrBorder): Boolean = locations.inlandOrBorder.exists(_ == inlandOrBorder)
 
+  def hasInlandModeOfTransportCode(code: ModeOfTransportCode): Boolean =
+    locations.inlandModeOfTransportCode.fold(false)(_.inlandModeOfTransportCode.contains(code))
+
   def isLicenseRequired(itemId: String): Boolean = itemBy(itemId).exists(_.isLicenceRequired.contains(true))
 
   def isType(declarationType: DeclarationType): Boolean = `type` == declarationType
@@ -159,7 +162,7 @@ case class ExportsDeclaration(
         meansOfTransportOnDepartureIDNumber = departure.meansOfTransportOnDepartureIDNumber,
         meansOfTransportCrossingTheBorderType = None,
         meansOfTransportCrossingTheBorderIDNumber = None,
-        meansOfTransportCrossingTheBorderNationality = None
+        transportCrossingTheBorderNationality = None
       )
     )
 
@@ -169,8 +172,7 @@ case class ExportsDeclaration(
     copy(
       transport = transport.copy(
         meansOfTransportCrossingTheBorderType = if (transportType.isEmpty) None else Some(transportType),
-        meansOfTransportCrossingTheBorderIDNumber = if (transportRef.isEmpty) None else Some(transportRef),
-        meansOfTransportCrossingTheBorderNationality = borderTransport.meansOfTransportCrossingTheBorderNationality
+        meansOfTransportCrossingTheBorderIDNumber = if (transportRef.isEmpty) None else Some(transportRef)
       )
     )
   }
