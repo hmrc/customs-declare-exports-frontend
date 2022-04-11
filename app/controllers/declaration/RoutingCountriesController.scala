@@ -94,7 +94,7 @@ class RoutingCountriesController @Inject()(
       .bindFromRequest()
       .apply("countryCode")
       .value
-      .isEmpty
+      .forall(_.isEmpty)
 
     FormAction.bindFromRequest() match {
       case Add =>

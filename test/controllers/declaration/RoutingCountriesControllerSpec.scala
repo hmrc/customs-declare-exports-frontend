@@ -333,11 +333,13 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
           }
         }
 
-        "there are countries in list" in {
+        "no country in input field" in {
+
+          val correctForm = Seq("countryCode" -> "", saveAndContinueActionUrlEncoded)
 
           withNewCaching(aDeclaration(withRoutingQuestion(), withRoutingCountries()))
 
-          val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(Seq(saveAndContinueActionUrlEncoded): _*))
+          val result = controller.submitRoutingCountry(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
           verifyTheCacheIsUnchanged()
 
