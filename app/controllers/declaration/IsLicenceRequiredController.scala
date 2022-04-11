@@ -80,7 +80,6 @@ class IsLicenceRequiredController @Inject()(
 
                 mode match {
                   case Change if (docsEmpty && docsRequired) || isLicenceRequired =>
-                    println(">>>>")
                     navigator.continueTo(mode, routes.AdditionalDocumentAddController.displayPage(_, itemId))(request, hc)
                   case Change =>
                     navigator.continueTo(mode, routes.AdditionalDocumentsController.displayPage(_, itemId))(request, hc)
