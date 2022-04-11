@@ -125,6 +125,7 @@ class Navigator @Inject()(
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
+    case TransportCountry            => routes.BorderTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
@@ -220,6 +221,7 @@ class Navigator @Inject()(
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
+    case TransportCountry            => routes.BorderTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case LocationOfGoods             => routes.DestinationCountryController.displayPage
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
@@ -596,7 +598,7 @@ class Navigator @Inject()(
     else {
       val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
       if (postalOrFTI && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage(mode)
-      else routes.BorderTransportController.displayPage(mode)
+      else routes.TransportCountryController.displayPage(mode)
     }
 
   private def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration, mode: Mode): Call = {

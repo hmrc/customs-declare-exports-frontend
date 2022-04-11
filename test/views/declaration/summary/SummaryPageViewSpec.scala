@@ -21,6 +21,7 @@ import forms.declaration.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
 import org.jsoup.nodes.Document
+import org.junit.Assert.assertNull
 import play.api.data.FormError
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -50,7 +51,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
   // scalastyle:off
   def sectionsVisiblity(view: ExportsDeclaration => Document): Unit = {
     "not have parties section" in {
-      view(aDeclaration()).getElementById("declaration-parties-summary") mustBe null
+      assertNull(view(aDeclaration()).getElementById("declaration-parties-summary"))
     }
 
     "have parties section" in {
@@ -58,7 +59,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "not have countries section" in {
-      view(aDeclaration()).getElementById("declaration-countries-summary") mustBe null
+      assertNull(view(aDeclaration()).getElementById("declaration-countries-summary"))
     }
 
     "have countries section" in {
@@ -66,7 +67,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "not have locations section" in {
-      view(aDeclaration()).getElementById("declaration-locations-summary") mustBe null
+      assertNull(view(aDeclaration()).getElementById("declaration-locations-summary"))
     }
 
     "have locations section with UK office of exit" in {
@@ -78,7 +79,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     for (decType <- List(CLEARANCE, SIMPLIFIED, OCCASIONAL))
       yield
         s"not have transaction section in $decType declaration" in {
-          view(aDeclaration(withType(decType))).getElementById("declaration-transaction-summary") mustBe null
+          assertNull(view(aDeclaration(withType(decType))).getElementById("declaration-transaction-summary"))
         }
 
     "have transaction section" in {
@@ -86,7 +87,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "not have items section" in {
-      view(aDeclaration()).getElementById("declaration-items-summary") mustBe null
+      assertNull(view(aDeclaration()).getElementById("declaration-items-summary"))
     }
 
     "have items section" in {
@@ -97,7 +98,7 @@ trait SummaryPageViewSpec extends UnitViewSpec with Injector with Stubs {
     }
 
     "not have transport section" in {
-      view(aDeclaration()).getElementById("declaration-transport-summary") mustBe null
+      assertNull(view(aDeclaration()).getElementById("declaration-transport-summary"))
     }
 
     "have transport section" in {

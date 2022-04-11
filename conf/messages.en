@@ -360,10 +360,10 @@ tariff.declaration.departureTransport.common.text = This entry will complete<br>
 tariff.declaration.departureTransport.common.linkText.0 = data element 7/7 - Identity of the Means of Transport at Departure in the UK Trade Tariff (opens in new tab)
 tariff.declaration.departureTransport.clearance.text = Go to data element 7/7 Identity of the Means of Transport at Departure in the<br>{0}.
 tariff.declaration.departureTransport.clearance.linkText.0 = C21 Customs Clearance Request Completion Guide - Inventory Exports (opens in new tab)
-tariff.declaration.borderTransport.1.common.text = These entries will complete:<br>{0}
-tariff.declaration.borderTransport.1.common.linkText.0 = data element 7/14 - Identity of Active Means of Transport Crossing the Border
-tariff.declaration.borderTransport.2.common.text = {0}.<br><br> Links open in new tab.
-tariff.declaration.borderTransport.2.common.linkText.0 = data element 7/15 - Nationality of active means of transport crossing the border
+tariff.declaration.borderTransport.common.text = These entries will complete:<br>{0}
+tariff.declaration.borderTransport.common.linkText.0 = data element 7/14 - Identity of Active Means of Transport Crossing the Border
+tariff.declaration.transportCountry.common.text = {0}.<br><br> Links open in new tab.
+tariff.declaration.transportCountry.common.linkText.0 = data element 7/15 - Nationality of active means of transport crossing the border
 tariff.declaration.expressConsignment.common.text = This entry will complete<br>{0}.
 tariff.declaration.expressConsignment.common.linkText.0 = data element 1/7 - Specific Circumstance Indicator (opens in new tab)
 tariff.declaration.expressConsignment.clearance.text = This entry will complete<br>{0}.
@@ -1309,14 +1309,11 @@ declaration.transportInformation.meansOfTransport.departure.error.incorrect = En
 declaration.transportInformation.meansOfTransport.departure.error.invalid = Reference must contain only letters and numbers
 declaration.transportInformation.meansOfTransport.departure.error.length = Reference must contain 35 characters or fewer
 
-declaration.transportInformation.meansOfTransport.crossingTheBorder.title.v1 = What country is the transport registered in?
-declaration.transportInformation.meansOfTransport.crossingTheBorder.title.v2 = What are the details for the {0}?
-declaration.transportInformation.meansOfTransport.crossingTheBorder.body.v2 = Select the details you will give for the transport taking the goods out of the UK. You can then enter the required details in the box or enter ‘Unknown’ if you want to give the details later.
+declaration.transportInformation.meansOfTransport.crossingTheBorder.title = What are the details for the {0}?
+declaration.transportInformation.meansOfTransport.crossingTheBorder.body = Select the details you will give for the transport taking the goods out of the UK. You can then enter the required details in the box or enter ‘Unknown’ if you want to give the details later.
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.empty = Enter a transport reference
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.length = Reference must contain 35 characters or fewer
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.invalid = Reference must contain only letters and numbers
-declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header = Which country is this transport registered in?
-declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty = Select a means of transport
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect = Select a means of transport
 
@@ -1355,6 +1352,13 @@ declaration.transportInformation.meansOfTransport.wagonNumber.v2 = Rail details
 declaration.transportInformation.meansOfTransport.wagonNumber.vBT = Eurotunnel or other rail details
 declaration.transportInformation.meansOfTransport.wagonNumber.label = Wagon number
 declaration.transportInformation.meansOfTransport.wagonNumber.hint = For example, 6767.
+
+declaration.transportInformation.transportCountry.title = Do you know the country where the {0} is registered?
+declaration.transportInformation.transportCountry.roro.body = For Eurotunnel, select France as the country of registration.
+declaration.transportInformation.transportCountry.country.label = Select the country where the {0} is registered
+declaration.transportInformation.transportCountry.country.error.empty = Select the country where the {0} is registered
+declaration.transportInformation.transportCountry.country.error.invalid = Please, choose a valid country
+declaration.transportInformation.transportCountry.error.empty = Select yes if you know the country where the {0} is registered
 
 declaration.transportInformation.containers.title = You have added 1 container
 declaration.transportInformation.containers.multiple.title = You have added {0} containers
@@ -1710,6 +1714,7 @@ declaration.supplementaryUnits.quantity.label = Supplementary units
 declaration.supplementaryUnits.quantity.empty = Enter a quantity of supplementary units
 declaration.supplementaryUnits.quantity.error = Supplementary units must be entered as numbers only
 declaration.supplementaryUnits.quantity.length = Number of characters must be 16 or fewer
+
 declaration.summary.normal-header = Check your answers
 declaration.summary.amend-header = Check your answers before resubmitting
 declaration.summary.saved-header = Continue saved declaration
@@ -1724,6 +1729,8 @@ declaration.summary.draft.ducr = DUCR
 declaration.summary.draft.createdDate = Date created
 declaration.summary.draft.expireDate = Expiry date
 declaration.summary.draft = Review the information you entered so far.
+declaration.summary.unknown = Unknown
+
 declaration.summary.references = This declaration
 declaration.summary.references.type = Declaration type
 declaration.summary.references.type.change = Change declaration type
@@ -1951,8 +1958,8 @@ declaration.summary.transport.border.meansOfTransport.40 = Flight number
 declaration.summary.transport.border.meansOfTransport.41 = Aircraft number
 declaration.summary.transport.border.meansOfTransport.80 = European vessel number (ENI)
 declaration.summary.transport.border.meansOfTransport.81 = Inland vessel’s name
-declaration.summary.transport.activeTransportNationality = Nationality of transport leaving the border
-declaration.summary.transport.activeTransportNationality.change = Change nationality of transport leaving the border
+declaration.summary.transport.registrationCountry = Country of registration for the transport leaving the UK border
+declaration.summary.transport.registrationCountry.change = Change country of registration for the transport leaving the UK border
 
 declaration.summary.transport.expressConsignment = Express consignment
 declaration.summary.transport.expressConsignment.change = Change if an express consignment
@@ -1979,10 +1986,8 @@ declaration.summary.continue.link = Check through from start of declaration
 declaration.summary.warning = If you change the arrived or pre-lodged declaration type, authorisations, commodity codes, procedure codes, mode of transport or location codes, go through the questions from the beginning to ensure you do not try to submit an incomplete or invalid declaration.
 declaration.summary.saved.label = To continue with your declaration
 declaration.summary.saved.body = To continue where you left off, click the most recent ‘Change’ link. When you have completed all the questions you will be able to submit your declaration.
-declaration.summary.ammend.label = To amend your declaration
-declaration.summary.ammend.body = Use the ‘Change’ links to make further amendments if you need to.
+declaration.summary.amend.body = Use the ‘Change’ links to make further amendments if you need to.
 declaration.summary.draft.body = When you have completed all the questions you will be able to submit your declaration.
-
 
 supplementary.limit = You cannot add more items
 supplementary.continue.error = Use the Add button to add an item
@@ -2127,7 +2132,6 @@ field.declaration.parties.declarationHolders.$.eori = Authorised party’s EORI 
 field.declaration.parties.declarationHolders.$.authorisationTypeCode = Authorised party’s type of Declaration holder {0}
 field.declaration.borderTransport.meansOfTransportCrossingTheBorderIDNumber = Active means of transport reference
 field.declaration.borderTransport.meansOfTransportCrossingTheBorderType = Active means of transport type
-field.declaration.borderTransport.meansOfTransportCrossingTheBorderNationality = Active means of transport nationality
 field.declaration.borderTransport.modeCode = Mode of transport leaving the border
 field.declaration.parties.carrierDetails.details.eori = Carrier’s EORI
 field.declaration.parties.carrierDetails.details.address.fullName = Carrier’s name

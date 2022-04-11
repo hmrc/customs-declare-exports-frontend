@@ -37,8 +37,8 @@
     transport.borderModeOfTransportCode.isDefined ||
     transport.meansOfTransportOnDepartureType.isDefined ||
     transport.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
-    transport.meansOfTransportCrossingTheBorderNationality.isDefined ||
     transport.meansOfTransportCrossingTheBorderType.isDefined ||
+    transport.transportCrossingTheBorderNationality.isDefined ||
     locations.warehouseIdentification.isDefined ||
     locations.supervisingCustomsOffice.isDefined ||
     locations.inlandModeOfTransportCode
@@ -209,22 +209,24 @@
                     ))
             )
         else None,
-        if (declaration.transport.meansOfTransportCrossingTheBorderNationality.isDefined)
+        if (declaration.transport.transportCrossingTheBorderNationality.isDefined)
             Some(
                 SummaryListRow(
-                    classes = "active-transport-nationality-row",
+                    classes = "active-transport-country-row",
                     key = Key(
-                        content = Text(messages("declaration.summary.transport.activeTransportNationality"))
+                        content = Text(messages("declaration.summary.transport.registrationCountry"))
                     ),
                     value = Value(
-                        content = Text(declaration.transport.meansOfTransportCrossingTheBorderNationality.getOrElse(""))
+                        content = Text(declaration.transport.transportCrossingTheBorderNationality.fold("") {
+                            _.countryName.getOrElse(messages("declaration.summary.unknown"))
+                        })
                     ),
                     actions = actions(Actions(
                         items = Seq(
                             actionItem(
-                                href = routes.BorderTransportController.displayPage(mode).url,
+                                href = routes.TransportCountryController.displayPage(mode).url,
                                 content = HtmlContent(linkContent(messages("site.change"))),
-                                visuallyHiddenText = Some(messages("declaration.summary.transport.activeTransportNationality.change"))
+                                visuallyHiddenText = Some(messages("declaration.summary.transport.registrationCountry.change"))
                             )
                         ))
                     ))

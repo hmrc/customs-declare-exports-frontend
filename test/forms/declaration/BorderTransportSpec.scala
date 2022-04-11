@@ -16,115 +16,64 @@
 
 package forms.declaration
 
-import play.api.test.Helpers._
-import base.{FormSpec, JourneyTypeTestRunner}
-import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
-import forms.declaration.BorderTransport.{form, nationalityId, radioButtonGroupId}
-import forms.declaration.InlandOrBorder.Border
+import forms.declaration.BorderTransport.{form, radioButtonGroupId}
 import forms.declaration.TransportCodes._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import models.codes.Country
 import models.viewmodels.TariffContentKey
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Lang
+import play.api.test.Helpers._
 
 import java.util.Locale
-import scala.collection.immutable.ListMap
 
-class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with MockitoSugar with BeforeAndAfterEach with JourneyTypeTestRunner {
-
-  val nationality = "United Kingdom, Great Britain, Northern Ireland"
+class BorderTransportSpec extends DeclarationPageBaseSpec {
 
   val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
 
-  implicit val mockCodeListConnector = mock[CodeListConnector]
   implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country(nationality, "GB")))
-  }
-
-  override protected def afterEach(): Unit = {
-    reset(mockCodeListConnector)
-    super.afterEach()
-  }
 
   "Transport Details form" when {
 
-    List(STANDARD_FRONTIER, STANDARD_PRE_LODGED, SUPPLEMENTARY_SIMPLIFIED, SUPPLEMENTARY_EIDR).foreach { additionalType =>
-      s"AdditionalDeclarationType is $additionalType and" when {
+    transportCodesOnBorderTransport.foreach { transportCode =>
+      s"the transportCode is ${transportCode.id}" should {
 
-        "/inland-or-border is NOT 'Border'" should {
-          implicit val request = withRequest(additionalType)
+        "have no errors" when {
+          "all BorderTransport's fields contain the expected data" in {
+            val correctForm = BorderTransport(transportCode.value, "Id.Number")
 
-          "have no errors" when {
-
-            "only mandatory fields of BorderTransport are provided" in {
-              val correctForm = BorderTransport(None, FlightNumber.value, "reference")
-
-              val result = form.fillAndValidate(correctForm)
-              result.hasErrors must be(false)
-            }
-
-            "all BorderTransport's fields contain the expected data" in {
-              val correctForm = BorderTransport(Some(nationality), FlightNumber.value, "Id.Number")
-
-              val result = form.fillAndValidate(correctForm)
-              result.hasErrors must be(false)
-            }
-          }
-
-          "have errors" when {
-            "sending incorrect nationality" in {
-              form.bind(Map(nationalityId -> "fizz")).errors must contain(s"$prefix.nationality.error.incorrect")
-            }
-
-            "sending no information about transport type" in {
-              form.bind(Map.empty[String, String]).errors must contain(s"$prefix.error.empty")
-            }
-
-            "sending non existing transport type" in {
-              form.bind(Map(radioButtonGroupId -> "donkey")).errors must contain(s"$prefix.error.incorrect")
-            }
-
-            "sending empty transport type reference" in {
-              val map = Map(radioButtonGroupId -> ShipOrRoroImoNumber.value, ShipOrRoroImoNumber.id -> "")
-              form.bind(map).errors must contain(s"$prefix.IDNumber.error.empty")
-            }
-
-            "sending very long transport type reference" in {
-              val map = Map(radioButtonGroupId -> AircraftRegistrationNumber.value, AircraftRegistrationNumber.id -> "a" * 128)
-              form.bind(map).errors must contain(s"$prefix.IDNumber.error.length")
-            }
-
-            "sending reference with special characters" in {
-              val map = Map(radioButtonGroupId -> VehicleRegistrationNumber.value, VehicleRegistrationNumber.id -> "$#@!")
-              form.bind(map).errors must contain(s"$prefix.IDNumber.error.invalid")
-            }
+            val result = form.fillAndValidate(correctForm)
+            result.hasErrors must be(false)
           }
         }
 
-        "/inland-or-border is 'Border'" should {
-          implicit val request = withRequest(additionalType, withInlandOrBorder(Some(Border)))
-
-          "have no errors" when {
-            "all BorderTransport's fields contain the expected data" in {
-              val correctForm = BorderTransport(Some(nationality), "", "")
-
-              val result = form.fillAndValidate(correctForm)
-              result.hasErrors must be(false)
-            }
+        "have errors" when {
+          "sending no information about transport type" in {
+            val errors = form.bind(Map(radioButtonGroupId -> "")).errors
+            errors.map(_.key) must be(List(radioButtonGroupId))
+            errors.map(_.message) must be(List(s"$prefix.error.empty"))
           }
 
-          "have errors" when {
-            "sending incorrect nationality" in {
-              form.bind(Map(nationalityId -> "fizz")).errors must contain(s"$prefix.nationality.error.incorrect")
-            }
+          "sending non existing transport type" in {
+            val errors = form.bind(Map(radioButtonGroupId -> "abcd123")).errors
+            errors.map(_.key) must be(List(radioButtonGroupId))
+            errors.map(_.message) must be(List(s"$prefix.error.incorrect"))
+          }
+
+          "sending empty transport type reference" in {
+            val errors = form.bind(Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "")).errors
+            errors.map(_.key) must be(List(transportCode.id))
+            errors.map(_.message) must be(List(s"$prefix.IDNumber.error.empty"))
+          }
+
+          "sending very long transport type reference" in {
+            val errors = form.bind(Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "a" * 128)).errors
+            errors.map(_.key) must be(List(transportCode.id))
+            errors.map(_.message) must be(List(s"$prefix.IDNumber.error.length"))
+          }
+
+          "sending reference with special characters" in {
+            val errors = form.bind(Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "$#@!")).errors
+            errors.map(_.key) must be(List(transportCode.id))
+            errors.map(_.message) must be(List(s"$prefix.IDNumber.error.invalid"))
           }
         }
       }
@@ -132,7 +81,7 @@ class BorderTransportSpec extends FormSpec with DeclarationPageBaseSpec with Moc
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+    Seq(TariffContentKey(s"${messageKey}.common"))
 
   "BorderTransport" when {
     testTariffContentKeysNoSpecialisation(BorderTransport, "tariff.declaration.borderTransport")

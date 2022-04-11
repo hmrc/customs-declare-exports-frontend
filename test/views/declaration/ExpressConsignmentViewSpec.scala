@@ -94,7 +94,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       val view: Document = createView()
 
       "display 'Back' button to the 'Border Transport' page" in {
-        verifyBackButton(view, routes.BorderTransportController.displayPage(Mode.Normal))
+        verifyBackButton(view, routes.TransportCountryController.displayPage(Mode.Normal))
       }
 
       "display the expected tariff details" in {

@@ -320,37 +320,34 @@ trait ExportsDeclarationBuilder {
   def withNatureOfTransaction(natureType: String): ExportsDeclarationModifier =
     _.copy(natureOfTransaction = Some(NatureOfTransaction(natureType)))
 
-  def withoutNatureOfTransaction(): ExportsDeclarationModifier =
-    _.copy(natureOfTransaction = None)
+  val withoutNatureOfTransaction: ExportsDeclarationModifier = _.copy(natureOfTransaction = None)
 
-  def withoutBorderTransport(): ExportsDeclarationModifier = declaration => {
-    declaration.copy(
-      transport = declaration.transport.copy(
-        meansOfTransportCrossingTheBorderNationality = None,
-        meansOfTransportCrossingTheBorderType = None,
-        meansOfTransportCrossingTheBorderIDNumber = None
-      )
+  val withoutBorderTransport: ExportsDeclarationModifier =
+    declaration =>
+      declaration.copy(
+        transport = declaration.transport.copy(meansOfTransportCrossingTheBorderType = None, meansOfTransportCrossingTheBorderIDNumber = None)
     )
-  }
+
+  val withoutTransportCountry: ExportsDeclarationModifier =
+    declaration => declaration.copy(transport = declaration.transport.copy(transportCrossingTheBorderNationality = None))
 
   def withBorderModeOfTransportCode(maybeModeOfTransportCode: Option[ModeOfTransportCode]): ExportsDeclarationModifier =
     declaration =>
       declaration.copy(transport = declaration.transport.copy(borderModeOfTransportCode = Some(TransportLeavingTheBorder(maybeModeOfTransportCode))))
 
-  def withoutBorderModeOfTransportCode(): ExportsDeclarationModifier =
+  val withoutBorderModeOfTransportCode: ExportsDeclarationModifier =
     declaration => declaration.copy(transport = declaration.transport.copy(borderModeOfTransportCode = None))
 
-  def withoutMeansOfTransportOnDepartureType(): ExportsDeclarationModifier =
+  val withoutMeansOfTransportOnDepartureType: ExportsDeclarationModifier =
     declaration =>
       declaration.copy(transport = declaration.transport.copy(meansOfTransportOnDepartureType = None, meansOfTransportOnDepartureIDNumber = None))
 
-  def withoutTransportPayment(): ExportsDeclarationModifier =
+  val withoutTransportPayment: ExportsDeclarationModifier =
     declaration => declaration.copy(transport = declaration.transport.copy(expressConsignment = No, transportPayment = None))
 
   def withBorderTransport(details: BorderTransport): ExportsDeclarationModifier = declaration => {
     declaration.copy(
       transport = declaration.transport.copy(
-        meansOfTransportCrossingTheBorderNationality = details.meansOfTransportCrossingTheBorderNationality,
         meansOfTransportCrossingTheBorderType = Some(details.meansOfTransportCrossingTheBorderType),
         meansOfTransportCrossingTheBorderIDNumber = Some(details.meansOfTransportCrossingTheBorderIDNumber)
       )
@@ -358,13 +355,14 @@ trait ExportsDeclarationBuilder {
   }
 
   def withBorderTransport(
-    meansOfTransportCrossingTheBorderNationality: Option[String] = None,
     meansOfTransportCrossingTheBorderType: String = "20",
     meansOfTransportCrossingTheBorderIDNumber: String = "123"
   ): ExportsDeclarationModifier =
-    withBorderTransport(
-      BorderTransport(meansOfTransportCrossingTheBorderNationality, meansOfTransportCrossingTheBorderType, meansOfTransportCrossingTheBorderIDNumber)
-    )
+    withBorderTransport(BorderTransport(meansOfTransportCrossingTheBorderType, meansOfTransportCrossingTheBorderIDNumber))
+
+  def withTransportCountry(countryName: Option[String]): ExportsDeclarationModifier =
+    declaration =>
+      declaration.copy(transport = declaration.transport.copy(transportCrossingTheBorderNationality = Some(TransportCountry(countryName))))
 
   def withDestinationCountries(
     countriesOfRouting: Seq[Country] = Seq.empty,
