@@ -161,8 +161,7 @@ case class ExportsDeclaration(
         meansOfTransportOnDepartureType = departure.meansOfTransportOnDepartureType,
         meansOfTransportOnDepartureIDNumber = departure.meansOfTransportOnDepartureIDNumber,
         meansOfTransportCrossingTheBorderType = None,
-        meansOfTransportCrossingTheBorderIDNumber = None,
-        transportCrossingTheBorderNationality = None
+        meansOfTransportCrossingTheBorderIDNumber = None
       )
     )
 

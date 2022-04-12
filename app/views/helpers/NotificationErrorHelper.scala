@@ -78,7 +78,7 @@ class NotificationErrorHelper @Inject()(codeListConnector: CodeListConnector, pa
       .map(call => constructChangeLinkAction(call))
   }
 
-  def createSummaryListRow(declaration: ExportsDeclaration, errorRow: ErrorRow, index: Int)(implicit messages: Messages): SummaryListRow =
+  def createSummaryListRow(errorRow: ErrorRow, index: Int)(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       key = Key(content = HtmlContent(errorRow.fieldName.getOrElse("")), classes = s"rejected-field-name rejected_notifications-row-$index-name"),
       value = Value(
@@ -100,7 +100,7 @@ class NotificationErrorHelper @Inject()(codeListConnector: CodeListConnector, pa
     val redactedErrorRows = removeRepeatFieldNameAndDescriptions(groupedErrorRows).flatten
 
     SummaryList(redactedErrorRows.zipWithIndex.map {
-      case (errorRow, index) => createSummaryListRow(declaration, errorRow, index)
+      case (errorRow, index) => createSummaryListRow(errorRow, index)
     })
   }
 
