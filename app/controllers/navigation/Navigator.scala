@@ -125,7 +125,6 @@ class Navigator @Inject()(
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
-    case TransportCountry            => routes.BorderTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
@@ -157,6 +156,7 @@ class Navigator @Inject()(
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
     case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
+    case TransportCountry          => transportCountryPreviousPage
     case ExpressConsignment        => expressConsignmentPreviousPageOnStandard
     case RepresentativeAgent       => representativeAgentPreviousPage
   }
@@ -221,7 +221,6 @@ class Navigator @Inject()(
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
-    case TransportCountry            => routes.BorderTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case LocationOfGoods             => routes.DestinationCountryController.displayPage
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
@@ -250,6 +249,7 @@ class Navigator @Inject()(
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
     case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
+    case TransportCountry          => transportCountryPreviousPage
     case ContainerFirst            => containerFirstPreviousPageOnSupplementary
     case RepresentativeAgent       => representativeAgentPreviousPage
   }
@@ -592,6 +592,10 @@ class Navigator @Inject()(
     if (inAllowedFlow && cacheModel.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage(mode)
     else routes.InlandTransportDetailsController.displayPage(mode)
   }
+
+  private def transportCountryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isInlandOrBorder(Border)) routes.DepartureTransportController.displayPage(mode)
+    else routes.BorderTransportController.displayPage(mode)
 
   private def expressConsignmentPreviousPageOnStandard(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode)) routes.InlandTransportDetailsController.displayPage(mode)

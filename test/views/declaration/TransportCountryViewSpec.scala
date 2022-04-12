@@ -18,9 +18,10 @@ package views.declaration
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.declaration.routes.BorderTransportController
+import controllers.declaration.routes.{BorderTransportController, DepartureTransportController}
 import controllers.helpers.TransportSectionHelper.nonPostalOrFTIModeOfTransportCodes
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.TransportCountry
 import forms.declaration.TransportCountry._
@@ -77,6 +78,22 @@ class TransportCountryViewSpec extends UnitViewSpec with ExportsTestData with St
             "contain the expected content" which {
               val view = createView(form(transportMode), transportMode)(journeyRequest(declarationType))
 
+              "display 'Back' button that links to the 'Border Transport' page" in {
+                val backButton = view.getElementById("back-link")
+                backButton must containMessage("site.back")
+                backButton.getElementById("back-link") must haveHref(BorderTransportController.displayPage(Normal))
+              }
+
+              "display 'Back' button that links to the 'Departure Transport' page" when {
+                "the user selects 'Border' on the /inland-or-border page" in {
+                  implicit val request = withRequestOfType(declarationType, withInlandOrBorder(Some(Border)))
+                  val view = createView(form(transportMode), transportMode)
+                  val backButton = view.getElementById("back-link")
+                  backButton must containMessage("site.back")
+                  backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage(Normal))
+                }
+              }
+
               "display section header" in {
                 view.getElementById("section-header") must containMessage("declaration.section.6")
               }
@@ -111,12 +128,6 @@ class TransportCountryViewSpec extends UnitViewSpec with ExportsTestData with St
                 label.text mustBe messages(s"$prefix.country.label", transportMode)
                 label.tag.getName mustBe "label"
                 label.id mustBe s"${transportCountry}-label"
-              }
-
-              "display 'Back' button that links to the 'Border Transport' page" in {
-                val backButton = view.getElementById("back-link")
-                backButton must containMessage("site.back")
-                backButton.getElementById("back-link") must haveHref(BorderTransportController.displayPage(Normal))
               }
 
               "display 'Save and continue' button on page" in {
