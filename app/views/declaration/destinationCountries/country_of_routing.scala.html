@@ -16,6 +16,7 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes
+@import controllers.navigation.Navigator
 @import views.helpers.CountryHelper
 @import forms.declaration.countries.Countries._
 @import forms.declaration.countries.Country
@@ -41,6 +42,7 @@
     saveButtons: saveButtons,
     addButton: addButton,
     tariffExpander: tariffExpander,
+    navigator: Navigator,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
 )(implicit countryHelper: CountryHelper)
@@ -56,7 +58,7 @@
         headingArg = destinationCountryName,
         hasErrors = hasErrors
     ),
-    backButton = Some(BackButton(messages("site.back"), routes.RoutingCountriesController.displayRoutingQuestion()))){
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(RoutingCountryPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

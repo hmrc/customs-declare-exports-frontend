@@ -46,7 +46,16 @@
                     content = Text(messages("declaration.summary.countries.routingCountries"))
                 ),
                 value = Value(
-                    content = Text(Countries.findByCodes(declarationData.locations.routingCountries.flatMap(_.code)).map(countryHelper.getShortNameForCountry(_)).mkString(", "))
+                    content = Text(
+                        if(declarationData.locations.routingCountries.isEmpty){
+                            messages("declaration.summary.countries.routingCountries.none")
+                        } else {
+                            Countries
+                                .findByCodes(declarationData.locations.routingCountries.flatMap(_.code))
+                                .map(countryHelper.getShortNameForCountry(_))
+                                .mkString(", ")
+                        }
+                    )
                 ),
                 actions = actions(Actions(
                     items = Seq(

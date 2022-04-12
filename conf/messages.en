@@ -1805,6 +1805,7 @@ declaration.summary.parties.holders.eori = Authorised party’s EORI number
 declaration.summary.parties.holders.empty.change = Change authorisation holders
 declaration.summary.parties.holders.change = Change authorisation {0}-{1}
 declaration.summary.countries = Route of goods
+declaration.summary.countries.routingCountries.none = None
 declaration.summary.countries.routingCountries = Routing countries
 declaration.summary.countries.routingCountries.change = Change routing countries
 declaration.summary.countries.countryOfDestination = Destination country
