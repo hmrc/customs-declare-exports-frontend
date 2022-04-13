@@ -707,7 +707,7 @@ class Navigator @Inject()(
       case Mode.ErrorFix if request.sourceDecId.isDefined => RejectedNotificationsController.displayPage(request.sourceDecId.get)
       case Mode.ErrorFix                                  => SubmissionsController.displayListOfSubmissions()
       case Mode.Change                                    => routes.SummaryController.displayPage(Mode.Normal)
-      case Mode.ChangeAmend                               => routes.SummaryController.displayPage(Mode.Amend)
+      case Mode.ChangeAmend                               => routes.SummaryController.displayPageOnAmend
       case Mode.Draft                                     => routes.SummaryController.displayPage(Mode.Draft)
       case _                                              => throw new IllegalArgumentException(s"Illegal mode [${mode.name}] for Navigator back-link")
     }

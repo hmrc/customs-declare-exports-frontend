@@ -19,6 +19,7 @@ package controllers
 import akka.util.Timeout
 import base.ControllerWithoutFormSpec
 import config.PaginationConfig
+import controllers.declaration.routes._
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
@@ -179,7 +180,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
         val result = controller.amend("id")(getRequest(None))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url)
+        redirectLocation(result) mustBe Some(SummaryController.displayPageOnAmend.url)
         session(result).get(ExportsSessionKeys.declarationId) mustBe Some("new-id")
 
         val created = theDeclarationCreated
@@ -200,7 +201,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with BeforeAnd
         val result = controller.amend(decId)(getRequest(Some(decId)))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url
+        redirectLocation(result).get mustBe SummaryController.displayPageOnAmend.url
       }
 
       "declaration not found" in {

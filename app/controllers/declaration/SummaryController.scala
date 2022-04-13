@@ -24,6 +24,7 @@ import controllers.routes.SavedDeclarationsController
 import forms.declaration.LegalDeclaration
 import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
+import models.Mode.Amend
 import models.declaration.submissions.Submission
 import models.requests.ExportsSessionKeys._
 import models.requests.JourneyRequest
@@ -62,8 +63,11 @@ class SummaryController @Inject()(
   val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
-    if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage(mode)
-    else Future.successful(Ok(summaryPageNoData()))
+    displayPageOnMandatoryData(mode)
+  }
+
+  val displayPageOnAmend: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+    displayPageOnMandatoryData(Amend)
   }
 
   def displayDeclarationPage(mode: Mode): Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
@@ -84,6 +88,10 @@ class SummaryController @Inject()(
       }
     )
   }
+
+  def displayPageOnMandatoryData(mode: Mode)(implicit request: JourneyRequest[_]): Future[Result] =
+    if (containsMandatoryData(request.cacheModel, mode)) displaySummaryPage(mode)
+    else Future.successful(Ok(summaryPageNoData()))
 
   private def displaySummaryPage(mode: Mode)(implicit request: JourneyRequest[_]): Future[Result] = {
 
