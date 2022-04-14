@@ -19,6 +19,7 @@ package controllers
 import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
+import controllers.declaration.routes._
 import controllers.helpers.SubmissionDisplayHelper
 import models.Mode.ErrorFix
 import models._
@@ -56,14 +57,14 @@ class SubmissionsController @Inject()(
     }
 
   def amend(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    val redirect = Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
+    val redirect = Redirect(SummaryController.displayPageOnAmend)
 
     val actualDeclaration: Future[Option[ExportsDeclaration]] = request.declarationId.map { decId =>
       customsDeclareExportsConnector.findDeclaration(decId)
     }.getOrElse(Future.successful(None))
 
     actualDeclaration.flatMap {
-      case Some(_) => Future.successful(Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)))
+      case Some(_) => Future.successful(Redirect(SummaryController.displayPageOnAmend))
       case _       => createDraftDeclaration(id, redirect)
     }
   }
