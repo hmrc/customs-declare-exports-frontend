@@ -2041,7 +2041,7 @@ declaration.confirmation.other.body.1 = Your declaration{0}{1} will be given a m
 declaration.confirmation.other.body.1.link = Your declarations
 declaration.confirmation.other.body.2 = The result should be available immediately or within a few minutes.
 
-declaration.confirmation.received.title = Declaration is prelodged with HMRC
+declaration.confirmation.received.title = Declaration is pre-lodged with HMRC
 declaration.confirmation.received.next.1 = Further customs checks will be carried out when the goods are arrived. You will be notified about any action required on {0}, which is your registered CDS email address, and on {1}.
 declaration.confirmation.received.next.2 = If the status of your declaration has not changed within 2 hours from when the goods are arrived, you should {0}.
 
@@ -2053,6 +2053,10 @@ declaration.confirmation.body.2 = You can check the status of your declaration a
 declaration.confirmation.declaration.details.link = Declaration details
 declaration.confirmation.next.2.link = contact the National Clearance Hub
 declaration.confirmation.what.happens.next = What happens next
+
+declaration.confirmation.whatYouCanDoNow.heading = What you can do now
+declaration.confirmation.whatYouCanDoNow.paragraph.2 = If you wish, you can {0}, but you do not have to do this unless you get the notification of ‘Documents required’ when your goods are arrived.
+declaration.confirmation.whatYouCanDoNow.paragraph.2.link = upload the documents you named on your declaration (opens in new tab)
 
 declaration.exitSurvey.header = Tell us what you think
 declaration.exitSurvey.line.1 = This is a new service and we want to know what you think of it.
