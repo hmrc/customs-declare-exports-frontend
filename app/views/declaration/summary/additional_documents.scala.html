@@ -100,11 +100,16 @@
     else None
 }
 
+@noDocumentsKey = @{
+    if(waiver999LConfig.is999LEnabled) "declaration.summary.items.item.additionalDocuments"
+    else "declaration.summary.items.item.additionalDocuments.otherDocuments"
+}
+
 @noDocumentsRow = @{
     if(additionalDocuments.documents.isEmpty)
         Some(SummaryListRow(
             classes = s"additional-documents-${item.sequenceId}-row",
-            key = Key(content = Text(messages("declaration.summary.items.item.additionalDocuments"))),
+            key = Key(content = Text(messages(noDocumentsKey))),
             value = Value(content = Text(messages("site.no"))),
             actions = actions(Actions(
                 items = Seq(
