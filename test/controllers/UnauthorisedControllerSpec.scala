@@ -25,24 +25,27 @@ import views.html.unauthorised
 
 class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
 
-  trait SetUp {
-    val unauthorisedPage = mock[unauthorised]
+  val unauthorisedPage = mock[unauthorised]
 
-    val controller =
-      new UnauthorisedController(stubMessagesControllerComponents(), unauthorisedPage)
-
-    when(unauthorisedPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
-  }
+  val controller = new UnauthorisedController(stubMessagesControllerComponents(), unauthorisedPage)
 
   "Unauthorised controller" should {
 
     "return 200 (OK)" when {
 
-      "display page method is invoked" in new SetUp {
+      "display page method is invoked and" when {
 
-        val result = controller.onPageLoad()(getRequest())
+        "user has insufficient enrollments" in {
+          when(unauthorisedPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+          val result = controller.onPageLoad(false)(getRequest())
+          status(result) must be(OK)
+        }
 
-        status(result) must be(OK)
+        "user has sufficient enrollments but the EORI is not in the allow list" in {
+          when(unauthorisedPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+          val result = controller.onPageLoad(true)(getRequest())
+          status(result) must be(OK)
+        }
       }
     }
   }

@@ -65,6 +65,7 @@ unauthorised.paragraph.1.bullet.2.link = get access to the Customs Declaration S
 unauthorised.paragraph.2 = If you’ve already applied for an EORI number, you can {0}.
 unauthorised.paragraph.2.link = check the status of your application
 
+unauthorised.heading.eori.not.allowed = Your EORI number is not valid on this service
 unauthorised.tdr.heading = The EORI you entered is not yet valid on the CDS test service
 unauthorised.tdr.body = Please contact {0} to ensure access has been set up for your EORI number.
 unauthorised.tdr.body.link = cdsexportsuiteam@hmrc.gov.uk
@@ -484,7 +485,7 @@ notEligible.titleLineTwo = service
 notEligible.description = You don’t need to make customs declarations to move goods within the EU. Read more about {0}
 notEligible.descriptionLink = dispatching your goods within the EU.
 notEligible.referenceTitle = Help and support
-notEligible.reference.support = If you are having problems making a declaration, phone: {0} 
+notEligible.reference.support = If you are having problems making a declaration, phone: {0}
 notEligible.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
 notDeclarent.title = Use a different EORI number

@@ -25,7 +25,7 @@ import views.html.unauthorised
 class UnauthorisedController @Inject()(mcc: MessagesControllerComponents, unauthorisedPage: unauthorised)
     extends FrontendController(mcc) with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(unauthorisedPage())
+  def onPageLoad(unauthorizedDueToEoriNotAllowed: Boolean): Action[AnyContent] = Action { implicit request =>
+    Ok(unauthorisedPage(unauthorizedDueToEoriNotAllowed))
   }
 }
