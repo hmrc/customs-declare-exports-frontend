@@ -116,18 +116,19 @@ object PointerHelper extends Logging {
     "declaration.transport.meansOfTransportCrossingTheBorderIDNumber" -> routes.BorderTransportController.displayPage,
     "declaration.transport.meansOfTransportCrossingTheBorderType" -> routes.BorderTransportController.displayPage,
     "declaration.transport.transportCrossingTheBorderNationality.countryName" -> routes.TransportCountryController.displayPage,
-    "declaration.transport.borderModeOfTransportCode.code.value" -> routes.TransportLeavingTheBorderController.displayPage,
+    "declaration.borderTransport.modeCode" -> routes.TransportLeavingTheBorderController.displayPage,
     "declaration.parties.carrierDetails.details.eori" -> routes.CarrierEoriNumberController.displayPage,
     "declaration.parties.carrierDetails.details.address.fullName" -> routes.CarrierDetailsController.displayPage,
     "declaration.parties.carrierDetails.details.address.townOrCity" -> routes.CarrierDetailsController.displayPage,
     "declaration.parties.carrierDetails.details.address.country" -> routes.CarrierDetailsController.displayPage,
     "declaration.parties.carrierDetails.details.address.addressLine" -> routes.CarrierDetailsController.displayPage,
     "declaration.parties.carrierDetails.details.address.postCode" -> routes.CarrierDetailsController.displayPage,
-    "ddeclaration.transport.transportPayment.paymentMethod" -> routes.TransportPaymentController.displayPage,
+    "declaration.transport.transportPayment.paymentMethod" -> routes.TransportPaymentController.displayPage,
     "declaration.locations.destinationCountries.countriesOfRouting.$" -> routes.RoutingCountriesController.displayRoutingCountry, //?? RoutingCountriesSummaryController.displayChangeCountryPage
-    "declaration.borderTransport.paymentMethod" -> routes.TransportPaymentController.displayPage,
+    "declaration.locations.destinationCountries.countryOfDestination" -> routes.DestinationCountryController.displayPage,
     "declaration.totalNumberOfItems.exchangeRate" -> routes.InvoiceAndExchangeRateController.displayPage,
     "declaration.declarantDetails.details.eori" -> routes.DeclarantDetailsController.displayPage, //Alters if dec is CLEARANCE and isEXS and personPresentingGoodsDetails is nonEmpty
+    "declaration.locations.officeOfExit.circumstancesCode" -> routes.OfficeOfExitController.displayPage,
     "declaration.locations.officeOfExit.officeId" -> routes.OfficeOfExitController.displayPage,
     "declaration.parties.exporterDetails.details.eori" -> routes.ExporterEoriNumberController.displayPage,
     "declaration.parties.exporterDetails.details.address.fullName" -> routes.ExporterDetailsController.displayPage,
@@ -146,13 +147,16 @@ object PointerHelper extends Logging {
     "declaration.departureTransport.meansOfTransportOnDepartureIDNumber" -> routes.DepartureTransportController.displayPage,
     "declaration.departureTransport.borderModeOfTransportCode" -> routes.DepartureTransportController.displayPage,
     "declaration.departureTransport.meansOfTransportOnDepartureType" -> routes.InlandTransportDetailsController.displayPage,
-    "declaration.locations.goodsLocation.nameOfLocation" -> routes.LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.addressLine" -> routes.LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.city" -> routes.LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.country" -> routes.LocationOfGoodsController.displayPage,
     "declaration.locations.goodsLocation.identificationOfLocation" -> routes.LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.nameOfLocation" -> routes.LocationOfGoodsController.displayPage,
+    "declaration.locations.goodsLocation.postCode" -> routes.LocationOfGoodsController.displayPage,
     "declaration.locations.goodsLocation.qualifierOfIdentification" -> routes.LocationOfGoodsController.displayPage,
     "declaration.locations.goodsLocation.typeOfLocation" -> routes.LocationOfGoodsController.displayPage,
     "declaration.containers.container.$.id" -> routes.TransportContainerController.displayContainerSummary, //?? SealController.displaySealSummary
     "declaration.containers.container.$.seals.seal.$.id" -> routes.TransportContainerController.displayContainerSummary, //?? SealController.displaySealRemove
-    "declaration.locations.destinationCountries.countryOfDestination" -> routes.DestinationCountryController.displayPage,
     "declaration.previousDocuments.$.documentCategory" -> routes.PreviousDocumentsSummaryController.displayPage, //?? PreviousDocumentsChangeController.displayPage
     "declaration.previousDocuments.$.documentReference" -> routes.PreviousDocumentsSummaryController.displayPage, //?? PreviousDocumentsChangeController.displayPage
     "declaration.previousDocuments.$.documentType" -> routes.PreviousDocumentsSummaryController.displayPage, //?? PreviousDocumentsChangeController.displayPage

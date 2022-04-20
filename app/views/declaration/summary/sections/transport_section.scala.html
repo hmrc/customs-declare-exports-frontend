@@ -15,6 +15,7 @@
  *@
 
 @import controllers.declaration.routes
+@import forms.declaration.ModeOfTransportCode.Empty
 @import models.Mode
 @import models.declaration.{Transport,Locations}
 @import views.html.components.gds.linkContent
@@ -147,7 +148,8 @@
                 ))
             )
         ),
-        declaration.locations.inlandModeOfTransportCode.map(inlandModeOfTransportCode =>
+        declaration.locations.inlandModeOfTransportCode
+            .filterNot(_.inlandModeOfTransportCode == Some(Empty)).map(inlandModeOfTransportCode =>
             SummaryListRow(
                 classes = "mode-of-transport-row",
                 key = Key(

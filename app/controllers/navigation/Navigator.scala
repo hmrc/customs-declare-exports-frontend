@@ -128,7 +128,6 @@ class Navigator @Inject()(
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
-    case TransportCountry            => routes.BorderTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
@@ -160,6 +159,7 @@ class Navigator @Inject()(
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
     case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
+    case TransportCountry          => transportCountryPreviousPage
     case ExpressConsignment        => expressConsignmentPreviousPageOnStandard
     case RepresentativeAgent       => representativeAgentPreviousPage
   }
@@ -224,7 +224,6 @@ class Navigator @Inject()(
     case ExporterEoriNumber          => routes.DeclarantExporterController.displayPage
     case ExporterDetails             => routes.ExporterEoriNumberController.displayPage
     case BorderTransport             => routes.DepartureTransportController.displayPage
-    case TransportCountry            => routes.BorderTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case LocationOfGoods             => routes.DestinationCountryController.displayPage
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
@@ -253,6 +252,7 @@ class Navigator @Inject()(
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
     case DepartureTransport        => departureTransportPreviousPageOnStandardOrSuppl
+    case TransportCountry          => transportCountryPreviousPage
     case ContainerFirst            => containerFirstPreviousPageOnSupplementary
     case RepresentativeAgent       => representativeAgentPreviousPage
   }
@@ -596,6 +596,10 @@ class Navigator @Inject()(
     else routes.InlandTransportDetailsController.displayPage(mode)
   }
 
+  private def transportCountryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isInlandOrBorder(Border)) routes.DepartureTransportController.displayPage(mode)
+    else routes.BorderTransportController.displayPage(mode)
+
   private def expressConsignmentPreviousPageOnStandard(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode)) routes.InlandTransportDetailsController.displayPage(mode)
     else {
@@ -706,7 +710,7 @@ class Navigator @Inject()(
       case Mode.ErrorFix if request.sourceDecId.isDefined => RejectedNotificationsController.displayPage(request.sourceDecId.get)
       case Mode.ErrorFix                                  => SubmissionsController.displayListOfSubmissions()
       case Mode.Change                                    => routes.SummaryController.displayPage(Mode.Normal)
-      case Mode.ChangeAmend                               => routes.SummaryController.displayPage(Mode.Amend)
+      case Mode.ChangeAmend                               => routes.SummaryController.displayPageOnAmend
       case Mode.Draft                                     => routes.SummaryController.displayPage(Mode.Draft)
       case _                                              => throw new IllegalArgumentException(s"Illegal mode [${mode.name}] for Navigator back-link")
     }

@@ -44,7 +44,7 @@
 
 @continueLink = @{
   if (errors.isEmpty) linkButton("site.confirm_and_continue", SummaryController.displayDeclarationPage(models.Mode.Amend))
-  else linkButton("site.confirm_and_continue", SummaryController.displayPage(models.Mode.Amend))
+  else linkButton("site.confirm_and_continue", SummaryController.displayPageOnAmend)
 }
 
 @govukLayout(

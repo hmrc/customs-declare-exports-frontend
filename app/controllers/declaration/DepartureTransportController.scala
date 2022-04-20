@@ -17,11 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController}
+import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
 import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
 import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.DepartureTransport
+import forms.declaration.InlandOrBorder.Border
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -77,8 +78,10 @@ class DepartureTransportController @Inject()(
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
-      case STANDARD | SUPPLEMENTARY => BorderTransportController.displayPage
-      case CLEARANCE                => ExpressConsignmentController.displayPage
+      case CLEARANCE => ExpressConsignmentController.displayPage
+      case STANDARD | SUPPLEMENTARY =>
+        if (request.cacheModel.isInlandOrBorder(Border)) TransportCountryController.displayPage
+        else BorderTransportController.displayPage
     }
 
   private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =

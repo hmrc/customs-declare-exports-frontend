@@ -233,9 +233,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
         }
 
         "have additional documents section" in {
-          view.getElementById("additional-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
-            "declaration.summary.items.item.additionalDocuments"
-          )
+          view.getElementById("additional-docs-section-item-1").child(0).text() mustBe messages("declaration.summary.items.item.additionalDocuments")
         }
       }
 
@@ -386,9 +384,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
         }
 
         "have additional documents section" in {
-          view.getElementById("additional-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
-            "declaration.summary.items.item.additionalDocuments"
-          )
+          view.getElementById("additional-docs-section-item-1").child(0).text() mustBe messages("declaration.summary.items.item.additionalDocuments")
         }
       }
 
@@ -539,9 +535,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
         }
 
         "have additional documents section" in {
-          view.getElementById("additional-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
-            "declaration.summary.items.item.additionalDocuments"
-          )
+          view.getElementById("additional-docs-section-item-1").child(0).text() mustBe messages("declaration.summary.items.item.additionalDocuments")
         }
       }
     }
@@ -626,7 +620,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
         val view = itemSection(Mode.Normal, itemWithAnswers, DeclarationType.STANDARD)(messages)
 
         "have additional documents section" in {
-          view.getElementById("additional-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
+          view.getElementById("additional-docs-section-item-1").child(0).text() mustBe messages(
             "declaration.summary.items.item.clearance.additionalDocuments"
           )
         }
@@ -637,7 +631,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
         val view = itemSection(Mode.Normal, itemWithAnswers, DeclarationType.STANDARD, actionsEnabled = false)(messages)
 
         "have additional documents section" in {
-          view.getElementById("additional-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
+          view.getElementById("additional-docs-section-item-1").child(0).text() mustBe messages(
             "declaration.summary.items.item.clearance.additionalDocuments"
           )
         }
@@ -648,7 +642,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
         val view = itemSection(Mode.Normal, itemWithAnswers, DeclarationType.STANDARD, actionsEnabled = false)(messages)
 
         "have additional documents section" in {
-          view.getElementById("additional-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
+          view.getElementById("additional-docs-section-item-1").child(0).text() mustBe messages(
             "declaration.summary.items.item.clearance.additionalDocuments"
           )
         }
