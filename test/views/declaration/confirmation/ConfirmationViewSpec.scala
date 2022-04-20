@@ -18,7 +18,7 @@ package views.declaration.confirmation
 
 import java.time.ZonedDateTime
 import base.{Injector, MockAuthAction}
-import controllers.routes.{DeclarationDetailsController, SubmissionsController}
+import controllers.routes.{DeclarationDetailsController, FileUploadController, SubmissionsController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.SubmissionStatus._
@@ -39,6 +39,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
   private val submissionId = "submissionId"
 
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
+  private def filedUploadRoute(mrn: String) = FileUploadController.startFileUpload(mrn).url
 
   private def createView(
     notification: Option[Notification] = None,
@@ -88,27 +89,36 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
         text mustBe messages("declaration.confirmation.body.1", "", "", notification.mrn)
       }
 
-      "display the expected second body paragraph" in {
-        val paragraph = view.getElementsByClass("govuk-body").get(1)
-        paragraph.text mustBe messages("declaration.confirmation.body.2", messages("declaration.confirmation.declaration.details.link"))
-        paragraph.child(0) must haveHref(declarationDetailsRoute)
-      }
-
       "display the expected 'What happens next' section" in {
         view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.what.happens.next")
 
-        val paragraph1 = view.getElementsByClass("govuk-body").get(2)
+        val paragraph1 = view.getElementsByClass("govuk-body").get(1)
         paragraph1.text must include("example@example.com")
         paragraph1.text must include(messages("declaration.confirmation.declaration.details.link"))
         paragraph1.child(1) must haveHref(declarationDetailsRoute)
 
-        val paragraph2 = view.getElementsByClass("govuk-body").get(3)
+        val paragraph2 = view.getElementsByClass("govuk-body").get(2)
         paragraph2.text mustBe messages("declaration.confirmation.received.next.2", messages("declaration.confirmation.next.2.link"))
         paragraph2.child(0) must haveHref(appConfig.nationalClearanceHub)
       }
 
+      "display the expected 'What can you do now' section" in {
+        view.getElementsByTag("h2").get(1).text mustBe messages("declaration.confirmation.whatYouCanDoNow.heading")
+
+        val paragraph1 = view.getElementsByClass("govuk-body").get(3)
+        paragraph1.text mustBe messages("declaration.confirmation.body.2", messages("declaration.confirmation.declaration.details.link"))
+        paragraph1.child(0) must haveHref(declarationDetailsRoute)
+
+        val paragraph2 = view.getElementsByClass("govuk-body").get(4)
+        paragraph2.text mustBe messages(
+          "declaration.confirmation.whatYouCanDoNow.paragraph.2",
+          messages("declaration.confirmation.whatYouCanDoNow.paragraph.2.link")
+        )
+        paragraph2.child(0) must haveHref(filedUploadRoute(notification.mrn))
+      }
+
       "display the expected 'Tell us what you think' section" in {
-        view.getElementsByTag("h2").get(1).text mustBe messages("declaration.exitSurvey.header")
+        view.getElementsByTag("h2").get(2).text mustBe messages("declaration.exitSurvey.header")
       }
     }
 

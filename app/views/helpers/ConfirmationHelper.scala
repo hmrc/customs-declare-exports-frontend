@@ -17,7 +17,7 @@
 package views.helpers
 
 import config.AppConfig
-import controllers.routes.{DeclarationDetailsController, SubmissionsController}
+import controllers.routes.{DeclarationDetailsController, FileUploadController, SubmissionsController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.from
 
@@ -114,7 +114,7 @@ class ConfirmationHelper @Inject()(
   }
 
   private def received(implicit confirmation: Confirmation, notification: Notification, messages: Messages): Html =
-    new Html(List(panel, body, whatHappensNext, List(exitSurvey())).flatten)
+    new Html(List(panel, List(body1), whatHappensNext, whatYouCanDoNow, List(exitSurvey())).flatten)
 
   private def body(implicit confirmation: Confirmation, notification: Notification, messages: Messages): List[Html] =
     List(body1, body2)
@@ -185,6 +185,19 @@ class ConfirmationHelper @Inject()(
     val next2 = paragraph(messages(s"declaration.confirmation.$accOrRcv.next.2", next2Args: _*))
 
     List(heading(messages("declaration.confirmation.what.happens.next"), "govuk-heading-m", "h2"), next1, next2)
+  }
+
+  private def whatYouCanDoNow(implicit confirmation: Confirmation, notification: Notification, messages: Messages): List[Html] = {
+    val title = heading(messages("declaration.confirmation.whatYouCanDoNow.heading"), "govuk-heading-m", "h2")
+    val paragraph1 = body2
+    val paragraph2 = paragraph(
+      messages(
+        "declaration.confirmation.whatYouCanDoNow.paragraph.2",
+        link(messages("declaration.confirmation.whatYouCanDoNow.paragraph.2.link"), FileUploadController.startFileUpload(notification.mrn), "_blank")
+      )
+    )
+
+    List(title, paragraph1, paragraph2)
   }
 
   private def accOrRcv(implicit notification: Notification): String =
