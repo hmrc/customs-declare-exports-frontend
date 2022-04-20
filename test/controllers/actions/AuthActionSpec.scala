@@ -17,12 +17,12 @@
 package controllers.actions
 
 import base.{ControllerWithoutFormSpec, Injector}
+import config.AppConfig
 import controllers.{routes, ChoiceController}
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{BearerTokenExpired, FailedRelationship}
 import views.html.choice_page
-import config.AppConfig
 
 import java.net.URLEncoder
 
@@ -42,17 +42,17 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
     when(appConfig.loginContinueUrl).thenReturn("/loginContinueUrl")
   }
 
-  val controller =
-    new ChoiceController(
-      mockAuthAction,
-      mockVerifiedEmailAction,
-      stubMessagesControllerComponents(),
-      mockSecureMessagingInboxConfig,
-      choicePage,
-      appConfig
-    )
+  val controller = new ChoiceController(
+    mockAuthAction,
+    mockVerifiedEmailAction,
+    stubMessagesControllerComponents(),
+    mockSecureMessagingInboxConfig,
+    choicePage,
+    appConfig
+  )
 
   "Auth Action" should {
+
     "redirect to login page when a NoActiveSession type exception is thrown" in {
       val loginPageUrl = Some(s"${appConfig.loginUrl}?continue=${URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")}")
       unauthorizedUser(new BearerTokenExpired())
@@ -69,7 +69,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
       val result = controller.displayPage(None)(getRequest())
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
+      redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
     }
 
     "redirect to login page for environment when External Id is missing" in {
@@ -83,7 +83,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec with Injector {
     }
 
     "propagate the error if exception thrown is not InsufficientEnrolments or NoActiveSession type exception" in {
-      unauthorizedUser(new FailedRelationship())
+      unauthorizedUser(FailedRelationship())
 
       val result = controller.displayPage(None)(getRequest())
 

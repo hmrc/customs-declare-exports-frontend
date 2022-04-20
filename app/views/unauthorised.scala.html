@@ -29,11 +29,15 @@
     tdrUnauthorisedMsgConfig: TdrUnauthorisedMsgConfig
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(unauthorizedDueToEoriNotAllowed: Boolean)(implicit request: Request[_], messages: Messages)
 
-@if(tdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled) {
-    @govukLayout(title = Title("unauthorised.tdr.heading")) {
-        @pageTitle(messages("unauthorised.tdr.heading"))
+@tdrFlagEnabled = @{ tdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled }
+
+@headingKey = @{ if (tdrFlagEnabled) "unauthorised.tdr.heading" else "unauthorised.heading.eori.not.allowed" }
+
+@if(tdrFlagEnabled || unauthorizedDueToEoriNotAllowed) {
+    @govukLayout(title = Title(headingKey)) {
+        @pageTitle(messages(headingKey))
 
         @paragraphBody(messages("unauthorised.tdr.body",
             link(
