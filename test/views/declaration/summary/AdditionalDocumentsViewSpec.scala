@@ -21,8 +21,8 @@ import com.typesafe.config.ConfigFactory
 import controllers.declaration.routes
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
-import models.{DeclarationType, Mode}
 import models.declaration.AdditionalDocuments
+import models.{DeclarationType, Mode}
 import play.api.Configuration
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -32,6 +32,7 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
   private val item = anItem(withItemId("itemId"), withSequenceId(1))
   private val itemWithLicenceReq = anItem(withItemId("itemId"), withSequenceId(1)).copy(isLicenceRequired = Some(true))
+  private val itemWithNoLicenceReq = anItem(withItemId("itemId"), withSequenceId(1)).copy(isLicenceRequired = Some(false))
 
   private val documents = Seq(
     AdditionalDocument(Some("typ1"), Some("identifier1"), None, None, None, None, None),
@@ -45,35 +46,38 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
     }
     val additionalDocumentsSection = injector.instanceOf[additional_documents]
 
-    "without documents" should {
+    "without documents or defined licence answer" should {
 
-      "display title only and change link" in {
+      "display title and additional docs row only" in {
 
         val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(None, Seq.empty), DeclarationType.STANDARD)(messages)
-        val row = view.getElementsByClass("additional-documents-1-row")
+        val section = view.getElementById("additional-docs-section-item-1")
+        val docsRow = view.getElementsByClass("additional-documents-1-row")
 
-        row must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
-        row must haveSummaryValue("No")
+        section.child(0) must containMessage("declaration.summary.items.item.additionalDocuments")
 
-        row must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
+        Option(view.getElementsByClass("licences-1-row").first()) must be(None)
 
-        row must haveSummaryActionsHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, "itemId"))
+        docsRow must haveSummaryKey(messages("declaration.summary.items.item.additionalDocuments"))
+        docsRow must haveSummaryValue("No")
+        docsRow must haveSummaryActionsTexts("site.change", "declaration.summary.items.item.additionalDocuments.changeAll", "1")
+        docsRow must haveSummaryActionsHref(routes.AdditionalDocumentsController.displayPage(Mode.Normal, "itemId"))
       }
 
     }
 
-    "with documents" should {
+    "with documents and licence answer" should {
 
       onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)(
         aDeclaration(withItem(itemWithLicenceReq))
       ) { implicit request =>
         "licence required" should {
-          "display table caption" in {
+          "display licences row" in {
             val view =
               additionalDocumentsSection(Mode.Normal, itemWithLicenceReq, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
-            val table = view.getElementById("additional-documents-1-table")
+            val licencesRow = view.getElementsByClass("licences-1-row")
 
-            table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.licences")
+            licencesRow must haveSummaryKey(messages("declaration.summary.items.item.licences"))
 
           }
 
@@ -92,17 +96,19 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
         aDeclaration(withItem(item))
       ) { implicit request =>
         "no licence required" should {
-          "display table caption" in {
-            val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
-            val table = view.getElementById("additional-documents-1-table")
+          "display section heading" in {
+            val view =
+              additionalDocumentsSection(Mode.Normal, itemWithNoLicenceReq, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
+            val section = view.getElementById("additional-docs-section-item-1")
 
-            table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalDocuments")
+            section.child(0).text() mustBe messages("declaration.summary.items.item.additionalDocuments")
 
           }
 
           "show row with link to `IsLicenceRequiredController`" in {
 
-            val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
+            val view =
+              additionalDocumentsSection(Mode.Normal, itemWithNoLicenceReq, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
             val row = view.getElementsByClass("licences-1-row")
 
             row must haveSummaryKey(messages("declaration.summary.items.item.licences"))
@@ -117,11 +123,11 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
       }
 
       onJourney(DeclarationType.CLEARANCE) { implicit request =>
-        "display table caption" in {
+        "display section heading" in {
           val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), request.declarationType)(messages)
-          val table = view.getElementById("additional-documents-1-table")
+          val section = view.getElementById("additional-docs-section-item-1")
 
-          table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.clearance.additionalDocuments")
+          section.child(0).text() mustBe messages("declaration.summary.items.item.clearance.additionalDocuments")
 
         }
       }
@@ -196,12 +202,12 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
     "with documents" should {
 
-      "display table caption" in {
+      "display section heading" in {
 
         val view = additionalDocumentsSection(Mode.Normal, item, AdditionalDocuments(Yes, documents), DeclarationType.STANDARD)(messages)
-        val table = view.getElementById("additional-documents-1-table")
+        val section = view.getElementById("additional-docs-section-item-1")
 
-        table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.clearance.additionalDocuments")
+        section.child(0).firstElementSibling().text() mustBe messages("declaration.summary.items.item.clearance.additionalDocuments")
       }
     }
 
