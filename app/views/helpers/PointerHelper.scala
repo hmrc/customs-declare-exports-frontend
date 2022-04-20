@@ -124,7 +124,7 @@ object PointerHelper extends Logging {
     "declaration.parties.carrierDetails.details.address.addressLine" -> routes.CarrierDetailsController.displayPage,
     "declaration.parties.carrierDetails.details.address.postCode" -> routes.CarrierDetailsController.displayPage,
     "declaration.transport.transportPayment.paymentMethod" -> routes.TransportPaymentController.displayPage,
-    "declaration.locations.destinationCountries.countriesOfRouting.$" -> routes.RoutingCountriesSummaryController.displayPage, //?? RoutingCountriesSummaryController.displayChangeCountryPage
+    "declaration.locations.destinationCountries.countriesOfRouting.$" -> routes.RoutingCountriesController.displayRoutingCountry, //?? RoutingCountriesSummaryController.displayChangeCountryPage
     "declaration.locations.destinationCountries.countryOfDestination" -> routes.DestinationCountryController.displayPage,
     "declaration.totalNumberOfItems.exchangeRate" -> routes.InvoiceAndExchangeRateController.displayPage,
     "declaration.declarantDetails.details.eori" -> routes.DeclarantDetailsController.displayPage, //Alters if dec is CLEARANCE and isEXS and personPresentingGoodsDetails is nonEmpty

@@ -884,24 +884,11 @@ declaration.routingCountryQuestion.empty = Select yes if the goods will pass thr
 declaration.routingCountryQuestion.add.empty = Select yes if you need to add another country
 declaration.routingCountryQuestion.remove.empty = Select yes if you want to remove this routing country
 
-declaration.routingCountry.title = Routing country
-declaration.routingCountry.question = Where will the goods be sent through next?
 declaration.routingCountry.empty = Select the next country the goods will pass through
-declaration.firstRoutingCountry.question = Where will the goods be sent through first?
-declaration.firstRoutingCountry.empty = Select the first country the goods will pass through
-
-declaration.routingCountries.summary.title = Countries of routing
-declaration.routingCountries.summary.header = You have added 1 country of routing
-declaration.routingCountries.summary.header.plural = You have added {0} countries of routing
-declaration.routingCountries.summary.table.caption = Countries added
-declaration.routingCountries.summary.question = Do you need to add any more countries?
-declaration.routingCountries.summary.table.code = Country code
-declaration.routingCountries.summary.change.hint = Change country {0}.
-declaration.routingCountries.summary.remove.hint = Remove country {0}.
-
-declaration.routingCountries.remove.title = Remove routing country
-declaration.routingCountries.remove.question = Are you sure you want to remove this routing country?
-declaration.routingCountries.remove.countryHeader = Country
+declaration.routingCountries.title = Add the countries of routing between Great Britain and {0}
+declaration.routingCountries.body.p1 = If goods are going by road or rail, add the countries on the land route in order. For deep sea or air movements, add the countries where the goods will be moved to a different vessel or plane.
+declaration.routingCountries.body.p2 = It is enough to provide the countries that you currently understand to be in the intended route.
+declaration.routingCountries.table.header = Countries of routing
 
 declaration.routingCountries.duplication = Routing country already added
 declaration.routingCountries.limit = Maximum number of routing countries added
@@ -1820,6 +1807,7 @@ declaration.summary.parties.holders.eori = Authorised party’s EORI number
 declaration.summary.parties.holders.empty.change = Change authorisation holders
 declaration.summary.parties.holders.change = Change authorisation {0}-{1}
 declaration.summary.countries = Route of goods
+declaration.summary.countries.routingCountries.none = None
 declaration.summary.countries.routingCountries = Routing countries
 declaration.summary.countries.routingCountries.change = Change routing countries
 declaration.summary.countries.countryOfDestination = Destination country

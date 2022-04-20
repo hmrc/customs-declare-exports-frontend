@@ -34,7 +34,7 @@ import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocu
 import forms.declaration.carrier.{CarrierDetails, CarrierEoriNumber}
 import forms.declaration.commodityMeasure.{CommodityMeasure, SupplementaryUnits}
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
-import forms.declaration.countries.Countries.DestinationCountryPage
+import forms.declaration.countries.Countries.{DestinationCountryPage, RoutingCountryPage}
 import forms.declaration.declarationHolder.{DeclarationHolder, DeclarationHolderRequired, DeclarationHolderSummary}
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.declaration.officeOfExit.OfficeOfExit
@@ -110,6 +110,9 @@ class Navigator @Inject()(
     case WarehouseIdentification          => warehouseIdentificationPreviousPage
     case AuthorisationProcedureCodeChoice => authorisationProcedureCodeChoicePreviousPage
     case OfficeOfExit                     => officeOfExitPreviousPage
+    case RoutingCountryPage =>
+      (_, mode) =>
+        routes.RoutingCountriesController.displayRoutingQuestion(mode)
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
@@ -127,10 +130,10 @@ class Navigator @Inject()(
     case BorderTransport             => routes.DepartureTransportController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
-    case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
-    case ChangeCountryPage           => routes.RoutingCountriesSummaryController.displayPage
+    case RemoveCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
+    case ChangeCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
     case DocumentSummary             => routes.NatureOfTransactionController.displayPage
-    case LocationOfGoods             => routes.RoutingCountriesSummaryController.displayPage
+    case LocationOfGoods             => routes.RoutingCountriesController.displayRoutingCountry
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
@@ -178,8 +181,8 @@ class Navigator @Inject()(
     case DeclarantIsExporter          => routes.DeclarantDetailsController.displayPage
     case ContainerAdd                 => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage   => routes.DestinationCountryController.displayPage
-    case RemoveCountryPage            => routes.RoutingCountriesSummaryController.displayPage
-    case ChangeCountryPage            => routes.RoutingCountriesSummaryController.displayPage
+    case RemoveCountryPage            => routes.RoutingCountriesController.displayRoutingCountry
+    case ChangeCountryPage            => routes.RoutingCountriesController.displayRoutingCountry
     case LocationOfGoods              => routes.DestinationCountryController.displayPage
     case ConsignorEoriNumber          => routes.IsExsController.displayPage
     case ConsignorDetails             => routes.ConsignorEoriNumberController.displayPage
@@ -271,9 +274,9 @@ class Navigator @Inject()(
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
-    case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
-    case ChangeCountryPage           => routes.RoutingCountriesSummaryController.displayPage
-    case LocationOfGoods             => routes.RoutingCountriesSummaryController.displayPage
+    case RemoveCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
+    case ChangeCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
+    case LocationOfGoods             => routes.RoutingCountriesController.displayRoutingCountry
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
     case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
     case DocumentSummary             => routes.OfficeOfExitController.displayPage
@@ -320,10 +323,10 @@ class Navigator @Inject()(
     case DeclarationAdditionalActors => routes.ConsigneeDetailsController.displayPage
     case ContainerAdd                => routes.TransportContainerController.displayContainerSummary
     case RoutingCountryQuestionPage  => routes.DestinationCountryController.displayPage
-    case RemoveCountryPage           => routes.RoutingCountriesSummaryController.displayPage
-    case LocationOfGoods             => routes.RoutingCountriesSummaryController.displayPage
+    case RemoveCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
+    case LocationOfGoods             => routes.RoutingCountriesController.displayRoutingCountry
     case AdditionalActorsSummary     => routes.ConsigneeDetailsController.displayPage
-    case ChangeCountryPage           => routes.RoutingCountriesSummaryController.displayPage
+    case ChangeCountryPage           => routes.RoutingCountriesController.displayRoutingCountry
     case DepartureTransport          => routes.InlandTransportDetailsController.displayPage
     case DocumentSummary             => routes.OfficeOfExitController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
