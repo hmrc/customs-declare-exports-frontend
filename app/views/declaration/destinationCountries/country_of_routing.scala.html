@@ -16,15 +16,18 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes
+@import controllers.navigation.Navigator
 @import views.helpers.CountryHelper
 @import forms.declaration.countries.Countries._
 @import forms.declaration.countries.Country
+@import views.html.components.addToTable
 @import models.codes.{Country => CountryModel}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.{BackButton, Title}
+@import views.helpers.{BackButton, Title, CountryHelper}
 @import views.html.components.gds._
+@import models.viewmodels.ListRows
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -32,21 +35,30 @@
     govukRadios: GovukRadios,
     govukDetails : GovukDetails,
     govukFieldset: GovukFieldset,
+    addToTable: addToTable,
+    body: paragraphBody,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
+    addButton: addButton,
     tariffExpander: tariffExpander,
+    navigator: Navigator,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
-)(implicit countryAutoCompleteHelper: CountryHelper)
+)(implicit countryHelper: CountryHelper)
 
-@(mode: Mode, form: Form[Country], page: CountryPage)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[Country], destinationCountryName: String, routingCounties: Seq[CountryModel])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
-    title = Title(s"declaration.${page.id}.question", "declaration.section.3", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), routes.RoutingCountriesController.displayRoutingQuestion()))){
+    title = Title(
+        headingKey = "declaration.routingCountries.title",
+        sectionKey = "declaration.section.3",
+        headingArg = destinationCountryName,
+        hasErrors = hasErrors
+    ),
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(RoutingCountryPage, mode)))){
 
     @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
@@ -55,14 +67,24 @@
 
         @components.fields.field_accessible_location_autocomplete_with_header(
             field = form("countryCode"),
-            label = Some(messages(s"declaration.${page.id}.question")),
+            label = Some(messages("declaration.routingCountries.title", destinationCountryName)),
             labelClass = Some(gdsPageLabel),
             hintParagraphs = List(messages("declaration.country.dropdown.hint")),
+            bodyHtml = Some(
+                Html(Seq("declaration.routingCountries.body.p1", "declaration.routingCountries.body.p2").map(msg => body(messages(msg))).mkString)
+            ),
             countryKey = (c: CountryModel) => c.countryCode,
-            isPageHeading = true
+            isPageHeading = true,
+            rightElement = Some(addButton())
         )
 
-        @tariffExpander(page, request.declarationType)(messages, appConfig)
+        @addToTable(ListRows(
+            rowLabels = routingCounties.map(countryHelper.getShortNameForCountry),
+            msgKey = "routingCountries",
+            removeKeys = Some(routingCounties.map(_.countryCode))
+        ))
+
+        @tariffExpander(RoutingCountryPage, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

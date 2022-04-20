@@ -31,17 +31,17 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
   "Countries section" should {
 
-    "not display empty routing countries" in {
+    "display 'None' when empty routing countries" in {
 
       val data = aDeclaration(withRoutingQuestion(false), withoutRoutingCountries())
 
       val row = view(data).getElementsByClass("countriesOfRouting-row")
       row must haveSummaryKey(messages("declaration.summary.countries.routingCountries"))
-      row must haveSummaryValue("")
+      row must haveSummaryValue(messages("declaration.summary.countries.routingCountries.none"))
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.routingCountries.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.Change))
     }
 
     "display single routing country" in {
@@ -76,7 +76,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       row must haveSummaryActionsTexts("site.change", "declaration.summary.countries.routingCountries.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.Change))
     }
 
     "not have routing country section when question not answered" in {

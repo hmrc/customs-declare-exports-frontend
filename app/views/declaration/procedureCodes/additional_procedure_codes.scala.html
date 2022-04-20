@@ -21,9 +21,11 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title, AdditionalProcedureCodesHelper}
 @import views.html.components.gds._
+@import views.html.components.addToTable
 @import views.components.gds.Styles._
-@import config.AppConfig
+@import models.viewmodels.ListRows
 @import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
+@import config.AppConfig
 @import forms.declaration.procedurecodes.AdditionalProcedureCode
 @import forms.declaration.procedurecodes.AdditionalProcedureCode.additionalProcedureCodeKey
 @import services.view.AutoCompleteItem
@@ -36,6 +38,7 @@
   link: link,
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
+  addToTable: addToTable,
   exportsInputText: exportsInputText,
   heading: heading,
   paragraphBody: paragraphBody,
@@ -51,34 +54,6 @@
 @(mode: Mode, itemId: String, form: Form[AdditionalProcedureCode], procedureCode: ProcedureCode, validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
-
-
-@additionalCodesTable = {
-  @if(codes.nonEmpty) {
-    @govukTable(Table(
-      rows = codes.zipWithIndex.reverse.map{ case(code, index) =>
-        Seq(
-          TableRow(
-            content = Text(code),
-            attributes = Map("id" -> s"additionalProcedureCode-table-row$index-label")
-          ),
-          TableRow(
-            content = HtmlContent(removeButton(value = Some(code), hiddenLabel = Some(messages("declaration.additionalProcedureCodes.remove.hint", code)))),
-            attributes = Map("id" -> s"additionalProcedureCode-table-row$index-remove_button")
-          )
-        )
-      },
-      head = Some(List(
-        HeadCell(
-          content = Text(messages("declaration.additionalProcedureCodes.table.header"))
-        ),
-        HeadCell(
-          content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
-        )
-      ))
-    ))
-  }
-}
 
 @hint = @{if(addProcCodesHelper.hintText.isEmpty) List.empty else List(messages(addProcCodesHelper.hintText.get))}
 
@@ -106,7 +81,7 @@
       rightElement = Some(addButton(hiddenLabel = Some(messages("declaration.additionalProcedureCodes.add.hint"))))
     )
 
-    @additionalCodesTable
+    @addToTable(ListRows(codes, "additionalProcedureCodes"))
 
     @tariffExpander(AdditionalProcedureCode, request.declarationType)(messages, appConfig)
     @saveButtons()

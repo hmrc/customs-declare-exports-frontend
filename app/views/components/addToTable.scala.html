@@ -1,0 +1,41 @@
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import models.viewmodels.ListRows
+
+@this(
+  govukLayout: gdsMainTemplate,
+  govukTable : GovukTable,
+  spanVisuallyHidden: spanVisuallyHidden,
+  removeButton: removeButton
+)
+
+@(listRows: ListRows)(implicit messages: Messages)
+
+  @if(listRows.rowLabels.nonEmpty) {
+    @govukTable(Table(
+      rows = listRows.rowLabels.zipWithIndex.reverse.map{ case(code, index) =>
+        Seq(
+          TableRow(
+            content = Text(code),
+            attributes = Map("id" -> s"${listRows.msgKey}-table-row$index-label")
+          ),
+          TableRow(
+            content = HtmlContent(removeButton(
+              value = Some(listRows.removeKeys.map(_(index)).getOrElse(code)),
+              hiddenLabel = Some(messages(s"declaration.${listRows.msgKey}.remove.hint", code))
+            )),
+            attributes = Map("id" -> s"${listRows.msgKey}-table-row$index-remove_button")
+          )
+        )
+      },
+      head = Some(List(
+        HeadCell(
+          content = Text(messages(s"declaration.${listRows.msgKey}.table.header"))
+        ),
+        HeadCell(
+          content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+        )
+      ))
+    ))
+  }
