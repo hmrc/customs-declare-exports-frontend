@@ -31,6 +31,7 @@
     govukDetails: GovukDetails,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
+    yesNoRadios: yesNoRadios,
     sectionHeader: sectionHeader,
     heading: heading,
     saveAndContinue: saveAndContinue,
@@ -46,14 +47,13 @@
 @(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
 
 @expanderContent = {
-    @paragraphBody(
-        message = messages("declaration.declarationType.expander.paragraph.1", link(
-            text = messages("declaration.declarationType.expander.paragraph.1.link"),
-            call = Call("GET", appConfig.guidance.moveGoodsThroughPortsUsingGVMS),
-            target = "_blank"
-        ))
-    )
+    @paragraphBody(messages("declaration.declarationType.expander.paragraph.1"))
     @paragraphBody(messages("declaration.declarationType.expander.paragraph.2"))
+    @paragraphBody(messages("declaration.declarationType.expander.paragraph.3"))
+}
+
+@classes = @{
+    if(!request.isType(SUPPLEMENTARY)) "govuk-radios--inline" else ""
 }
 
 @govukLayout(
@@ -79,6 +79,7 @@
 
         @govukRadios(Radios(
             name = "additionalDeclarationType",
+            classes = classes,
             items = declarationTypeHelper.radioItems(form),
             errorMessage = form("additionalDeclarationType").error.map {
                 err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))
