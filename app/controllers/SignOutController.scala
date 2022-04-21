@@ -16,22 +16,18 @@
 
 package controllers
 
-import controllers.actions.AuthAction
-import javax.inject.Inject
 import models.SignOutReason
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{session_timed_out, user_signed_out}
 
-class SignOutController @Inject()(
-  authenticate: AuthAction,
-  mcc: MessagesControllerComponents,
-  sessionTimedOut: session_timed_out,
-  userSignedOutPage: user_signed_out
-) extends FrontendController(mcc) with I18nSupport {
+import javax.inject.Inject
 
-  def signOut(signOutReason: SignOutReason): Action[AnyContent] = authenticate { _ =>
+class SignOutController @Inject()(mcc: MessagesControllerComponents, sessionTimedOut: session_timed_out, userSignedOutPage: user_signed_out)
+    extends FrontendController(mcc) with I18nSupport {
+
+  def signOut(signOutReason: SignOutReason): Action[AnyContent] = Action { _ =>
     val redirectionTarget: Call = signOutReason match {
       case SignOutReason.SessionTimeout => routes.SignOutController.sessionTimeoutSignedOut()
       case SignOutReason.UserAction     => routes.SignOutController.userSignedOut()
