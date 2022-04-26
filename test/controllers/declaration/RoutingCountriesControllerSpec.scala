@@ -19,8 +19,10 @@ package controllers.declaration
 import base.ControllerSpec
 import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
-import controllers.helpers.{Remove, SaveAndContinue}
+import controllers.helpers.Remove
+import forms.declaration.countries.{Country => FormCountry}
 import models.Mode
+import models.codes.Country
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -29,8 +31,6 @@ import play.api.libs.json.{JsObject, JsString}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import forms.declaration.countries.{Country => FormCountry}
-import models.codes.Country
 import views.helpers.CountryHelper
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
 
