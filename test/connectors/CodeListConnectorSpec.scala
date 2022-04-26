@@ -16,13 +16,14 @@
 
 package connectors
 
-import java.util.Locale.{ENGLISH, JAPANESE}
-import scala.collection.immutable.ListMap
 import base.UnitWithMocksSpec
 import config.AppConfig
-import models.codes.{AdditionalProcedureCode, Country, DmsErrorCode, GoodsLocationCode, HolderOfAuthorisationCode, ProcedureCode}
+import models.codes._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
+
+import java.util.Locale.{ENGLISH, JAPANESE}
+import scala.collection.immutable.ListMap
 
 class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
@@ -144,16 +145,19 @@ class CodeListConnectorSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
         val codeListConnector = new FileBasedCodeListConnector(appConfig)
         (codeListConnector.supportedLanguages :+ JAPANESE).foreach { locale =>
           val codes = codeListConnector.getHolderOfAuthorisationCodes(locale).keys.toList
-          codes.size mustBe 46
+          codes.size mustBe 53
 
-          codes(0) mustBe "ACP"
-          codes(25) mustBe "UKCS"
+          codes(0) mustBe "EXRR"
+          codes(25) mustBe "TST"
 
-          codes(26) mustBe "CGU"
-          codes(40) mustBe "TST"
+          codes(26) mustBe "ACE"
+          codes(40) mustBe "ETD"
 
-          codes(41) mustBe "ACE"
-          codes(45) mustBe "FP"
+          codes(41) mustBe "FAS"
+          codes(45) mustBe "REP"
+
+          codes(51) mustBe "UKCS"
+          codes(52) mustBe "MIB"
         }
       }
     }
