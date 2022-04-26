@@ -49,7 +49,6 @@ class AdditionalDeclarationTypeHelper {
       id = Some(adtType),
       value = Some(adt.toString),
       content = Text(messages(s"declaration.declarationType.radio.$adtType", adt.toString)),
-      hint = Some(Hint(content = Text(messages(s"declaration.declarationType.radio.$adtType.hint")))),
       checked = form("additionalDeclarationType").value.contains(adt.toString)
     )
   }

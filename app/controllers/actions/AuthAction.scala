@@ -94,7 +94,8 @@ class AuthActionImpl @Inject()(
           block(new AuthenticatedRequest(request, cdsLoggedInUser))
         } else {
           logger.warn("User is not in allow list")
-          Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad))
+          val unauthorizedDueToEoriNotAllowed = true
+          Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(unauthorizedDueToEoriNotAllowed)))
         }
     }
 
@@ -104,7 +105,7 @@ class AuthActionImpl @Inject()(
         Future.successful(Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl))))
       case _: InsufficientEnrolments =>
         logger.warn("User does not have sufficient enrolments.")
-        Future.successful(Results.SeeOther(routes.UnauthorisedController.onPageLoad.url))
+        Future.successful(Results.SeeOther(routes.UnauthorisedController.onPageLoad().url))
       case e: Throwable =>
         logger.warn("User failed auth-check.")
         Future.failed(e)

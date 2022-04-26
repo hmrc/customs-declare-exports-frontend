@@ -15,6 +15,7 @@
  *@
 
 @import config.featureFlags.{SecureMessagingInboxConfig, SfusConfig}
+@import config.AppConfig
 @import forms.Choice.AllowedChoiceValues._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.Title
@@ -28,10 +29,12 @@
     errorSummary: errorSummary,
     heading: heading,
     paragraph: paragraph,
+    paragraphBody: paragraphBody,
     saveAndContinue: saveAndContinue,
     link: link,
     sfusConfig: SfusConfig,
     secureMessagingInboxConfig: SecureMessagingInboxConfig,
+    appConfig: AppConfig,
     formHelper: FormWithCSRF
 )
 
@@ -106,7 +109,15 @@
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
 
             @heading(messages("declaration.choice.link.exports.description"), "govuk-heading-s", "h2")
-            @paragraph(link(id = Some("sfusUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = routes.FileUploadController.startFileUpload(""), target = "_blank"))
+
+            @paragraphBody(
+                messages(
+                    "declaration.choice.link.exports.description.p",
+                    link(id = None, text = messages("declaration.choice.link.exports.description.p.linkText"), call = controllers.routes.SubmissionsController.displayListOfSubmissions())
+                )
+            )
+
+            @paragraph(link(id = Some("cdsUploadLink"), text = messages("declaration.choice.link.sfusUpload.txt"), call = Call("GET", appConfig.cdsUploadDocs), target = "_blank"))
 
             <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-6 govuk-!-margin-top-2" />
         }

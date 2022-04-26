@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.PreviousDocumentsSummaryController
 import controllers.navigation.Navigator
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
@@ -43,7 +44,7 @@ class NatureOfTransactionController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form().withSubmissionErrors()
+    val frm = form.withSubmissionErrors
     request.cacheModel.natureOfTransaction match {
       case Some(data) => Ok(natureOfTransactionPage(mode, frm.fill(data)))
       case _          => Ok(natureOfTransactionPage(mode, frm))
@@ -51,13 +52,13 @@ class NatureOfTransactionController @Inject()(
   }
 
   def saveTransactionType(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form().bindFromRequest
+    form.bindFromRequest
       .fold(
-        (formWithErrors: Form[NatureOfTransaction]) => Future.successful(BadRequest(natureOfTransactionPage(mode, formWithErrors))),
-        form => updateCache(form).map(_ => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsSummaryController.displayPage))
+        formWithErrors => Future.successful(BadRequest(natureOfTransactionPage(mode, formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(mode, PreviousDocumentsSummaryController.displayPage))
       )
   }
 
   private def updateCache(formData: NatureOfTransaction)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => model.copy(natureOfTransaction = Some(formData)))
+    updateDeclarationFromRequest(_.copy(natureOfTransaction = Some(formData)))
 }

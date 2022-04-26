@@ -19,9 +19,9 @@ package views
 import base.{Injector, OverridableInjector}
 import config.featureFlags.TdrUnauthorisedMsgConfig
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.inject.bind
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.unauthorised
@@ -31,7 +31,7 @@ import views.tags.ViewTest
 class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
-    super.beforeEach()
+    super.beforeEach
     reset(mockTdrUnauthorisedMsgConfig)
   }
 
@@ -39,14 +39,15 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
   val unauthorisedPage = injector.instanceOf[unauthorised]
 
   "Unauthorised Page view" when {
-    val view: Html = getUnauthorisedPageView(false)
 
-    "TdrUnauthorisedMessage is Disabled" should {
-      "display page header" in {
-        view.getElementsByTag("h1").first() must containMessage("unauthorised.heading")
+    "TdrUnauthorisedMessage is Disabled and the user has insufficient enrollments" should {
+      val view: Html = getUnauthorisedPageView(false)
+
+      "display the expected page header" in {
+        view.getElementsByTag("h1").first must containMessage("unauthorised.heading")
       }
 
-      "display get EORI link" in {
+      "display the expected get EORI link" in {
         val link = view.getElementById("get_eori_link")
 
         link must containMessage("unauthorised.paragraph.1.bullet.1.link")
@@ -54,7 +55,7 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
         link.attr("target") mustBe "_self"
       }
 
-      "display access CDS link" in {
+      "display the expected access CDS link" in {
         val link = view.getElementById("access_cds_link")
 
         link must containMessage("unauthorised.paragraph.1.bullet.2.link")
@@ -62,7 +63,7 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
         link.attr("target") mustBe "_self"
       }
 
-      "display check CDS application status link" in {
+      "display the expected check CDS application status link" in {
         val link = view.getElementById("check_cds_application_status_link")
 
         link must containMessage("unauthorised.paragraph.2.link")
@@ -71,26 +72,41 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with Be
       }
     }
 
-    "TdrUnauthorisedMessage is Enabled" should {
-      "display page header" in {
-        val view: Html = getUnauthorisedPageView(true)
+    "TdrUnauthorisedMessage is Disabled and the user's EORI in not in the allow list" should {
+      val view: Html = getUnauthorisedPageView(false, true)
 
-        view.getElementsByTag("h1").first() must containMessage("unauthorised.tdr.heading")
+      "display the expected page header" in {
+        view.getElementsByTag("h1").first must containMessage("unauthorised.heading.eori.not.allowed")
       }
 
-      "display contact email address link" in {
-        val view: Html = getUnauthorisedPageView(true)
-        val link = view.getElementById("contact_support_link")
+      "display the expected contact email address link" in {
+        checkContactEmailAddress(view)
+      }
+    }
 
-        link must containMessage("unauthorised.tdr.body.link")
-        link must haveHref(s"mailto:${messages("unauthorised.tdr.body.link")}")
-        link.attr("target") mustBe "_blank"
+    "TdrUnauthorisedMessage is Enabled" should {
+      val view: Html = getUnauthorisedPageView(true)
+
+      "display the expected page header" in {
+        view.getElementsByTag("h1").first must containMessage("unauthorised.tdr.heading")
+      }
+
+      "display the expected contact email address link" in {
+        checkContactEmailAddress(view)
       }
     }
   }
 
-  private def getUnauthorisedPageView(tdrEnabled: Boolean) = {
+  def checkContactEmailAddress(view: Html): Assertion = {
+    val link = view.getElementById("contact_support_link")
+
+    link must containMessage("unauthorised.tdr.body.link")
+    link must haveHref(s"mailto:${messages("unauthorised.tdr.body.link")}")
+    link.attr("target") mustBe "_blank"
+  }
+
+  private def getUnauthorisedPageView(tdrEnabled: Boolean, unauthorizedDueToEoriNotAllowed: Boolean = false): HtmlFormat.Appendable = {
     when(mockTdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled).thenReturn(tdrEnabled)
-    unauthorisedPage()(request, messages)
+    unauthorisedPage(unauthorizedDueToEoriNotAllowed)(request, messages)
   }
 }
