@@ -111,7 +111,9 @@ cancellation.reason.noLongerRequired = No longer required
 
 declaration.choice.description = What do you want to do?
 declaration.choice.link.sfus.description = If you receive a notification to upload documents or respond to a query, you can use the CDS document uploads and secure messages service.
-declaration.choice.link.exports.description = If you receive a notification to upload documents you can use the CDS uploads service.
+declaration.choice.link.exports.description = If you need to upload documents
+declaration.choice.link.exports.description.p = You do not have to upload documents unless you receive a ‘Documents required’ notification on the {0}. If you would still like to upload documents you can do so.
+declaration.choice.link.exports.description.p.linkText = declarations page
 declaration.choice.link.sfusInbox.txt = View messages (opens in new tab)
 declaration.choice.link.sfusUpload.txt = Upload documents (opens in new tab)
 declaration.choice.CRT = Create a declaration

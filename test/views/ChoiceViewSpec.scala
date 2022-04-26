@@ -54,6 +54,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
     super.afterEach()
   }
 
+  private val dummyCdsUploadLink = "https://www.gov.uk/guidance/send-documents-to-support-declarations-for-the-customs-declaration-service"
   private val dummyUploadLink = controllers.routes.FileUploadController.startFileUpload("").url
   private val dummyInboxLink = "dummyInboxLink"
 
@@ -168,10 +169,10 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Be
 
       "display SFUS upload documents link" in {
         withSecureMessagingFeatureStatus(EXPORTS)
-        val link = createView().getElementById("sfusUploadLink")
+        val link = createView().getElementById("cdsUploadLink")
 
         link.text() mustBe messages("declaration.choice.link.sfusUpload.txt")
-        link.attr("href") mustBe dummyUploadLink
+        link.attr("href") mustBe dummyCdsUploadLink
       }
     }
 
