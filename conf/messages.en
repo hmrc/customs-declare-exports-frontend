@@ -2167,6 +2167,7 @@ field.declaration.containers.container.$.id = ID of Container {0}
 field.declaration.containers.container.$.seals.seal.$.id = ID of Security Seal {1} in Container {0}
 field.declaration.locations.destinationCountries.countryOfDestination = Destination country
 field.declaration.locations.destinationCountries.countryOfDispatch = Country of dispatch
+field.declaration.locations.destinationCountries.countryOfRouting = Routing Country
 field.declaration.items.$.statisticalValue.statisticalValue = Statistical item value
 field.declaration.items.$.additionalDocument = Additional document in Item {0}
 field.declaration.items.$.additionalDocument.$.documentIdentifier = Identifier of Additional document {1} in Item {0}
