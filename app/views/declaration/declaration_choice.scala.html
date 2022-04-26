@@ -115,6 +115,13 @@
                     divider = Some(messages("site.radio.divider"))
                 ),
                 RadioItem(
+                    id = Some(DeclarationType.OCCASIONAL.toString),
+                    value = Some(DeclarationType.OCCASIONAL.toString),
+                    content = Text(messages("declaration.type.occasional")),
+                    hint = Some(Hint(content = Text(messages("declaration.type.occasional.hint")))),
+                    checked = form("type").value.contains(DeclarationType.OCCASIONAL.toString)
+                ),
+                RadioItem(
                     id = Some(DeclarationType.SIMPLIFIED.toString),
                     value = Some(DeclarationType.SIMPLIFIED.toString),
                     content = Text(messages("declaration.type.simplified")),
@@ -134,13 +141,6 @@
                     content = Text(messages("declaration.type.supplementary")),
                     hint = Some(Hint(content = Text(messages("declaration.type.supplementary.hint")))),
                     checked = form("type").value.contains(DeclarationType.SUPPLEMENTARY.toString)
-                ),
-                RadioItem(
-                    id = Some(DeclarationType.OCCASIONAL.toString),
-                    value = Some(DeclarationType.OCCASIONAL.toString),
-                    content = Text(messages("declaration.type.occasional")),
-                    hint = Some(Hint(content = Text(messages("declaration.type.occasional.hint")))),
-                    checked = form("type").value.contains(DeclarationType.OCCASIONAL.toString)
                 )
             ).filter(radioOption => radioOption.value.exists(appConfig.availableDeclarations().contains(_)) || radioOption.divider),
             errorMessage = form("type").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))

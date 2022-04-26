@@ -399,6 +399,7 @@ object AppConfigSpec {
       |google-analytics.host=localhostGoogle
       |
       |urls.govUk = "https://www.gov.uk"
+      |urls.cdsUploadDocs = "https://www.gov.uk/guidance/send-documents-to-support-declarations-for-the-customs-declaration-service"
       |urls.commodityCodeTariffPage = "https://www.trade-tariff.service.gov.uk/commodities/NNNNNNNNNN#export"
       |urls.suppUnitsCommodityCodeTariffPage = "https://www.trade-tariff.service.gov.uk/commodities/NNNNNNNNNN"
       |urls.previousProcedureCodes = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes"
