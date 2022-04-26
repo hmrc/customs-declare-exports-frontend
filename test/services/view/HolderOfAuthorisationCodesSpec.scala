@@ -16,13 +16,14 @@
 
 package services.view
 
-import java.util.Locale.ENGLISH
 import base.UnitWithMocksSpec
 import config.AppConfig
 import connectors.FileBasedCodeListConnector
 import forms.declaration.declarationHolder.DeclarationHolder
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
+
+import java.util.Locale.ENGLISH
 
 class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
@@ -49,16 +50,25 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
   "HolderOfAuthorisationCodes.asListOfAutoCompleteItems" should {
     "return 'Holder of Authorisation' codes as AutoCompleteItems" in {
       val autoCompleteItems = holderOfAuthorisationCodes.asListOfAutoCompleteItems(ENGLISH)
-      autoCompleteItems.size mustBe 45
+      autoCompleteItems.size mustBe 53
 
-      autoCompleteItems(0) mustBe AutoCompleteItem("ACP - Authorised issuer to establish the proof of the customs status of Union goods", "ACP")
-      autoCompleteItems(24) mustBe AutoCompleteItem("UKCS - UK Continental Shelf", "UKCS")
+      val item0 = "EXRR - Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not used)"
+      autoCompleteItems(0) mustBe AutoCompleteItem(item0, "EXRR")
 
-      autoCompleteItems(25) mustBe AutoCompleteItem("CGU - Customs comprehensive guarantee", "CGU")
-      autoCompleteItems(39) mustBe AutoCompleteItem("TST - Authorisation to operate storage facilities for the temporary storage of goods", "TST")
+      val item24 = "TEAH - Temporary Admission authorisation – Auction Houses (no guarantee for VAT required)"
+      autoCompleteItems(24) mustBe AutoCompleteItem(item24, "TEAH")
 
-      autoCompleteItems(40) mustBe AutoCompleteItem("ACE - Authorised consignee for Union transit", "ACE")
-      autoCompleteItems(44) mustBe AutoCompleteItem("FP - Freeports Special Procedure", "FP")
+      val item25 = "TST - Authorisation to operate storage facilities for the temporary storage of goods"
+      autoCompleteItems(25) mustBe AutoCompleteItem(item25, "TST")
+
+      autoCompleteItems(39) mustBe AutoCompleteItem("EPSS - Excise Payment Security System", "EPSS")
+
+      val item40 = "ETD - Electronic Transport Document (authorised for use as a customs declaration)"
+      autoCompleteItems(40) mustBe AutoCompleteItem(item40, "ETD")
+
+      autoCompleteItems(44) mustBe AutoCompleteItem("REM - Remission of the amounts of import or export duty", "REM")
+
+      autoCompleteItems(52) mustBe AutoCompleteItem("MIB - Merchandise in Baggage", "MIB")
     }
   }
 
