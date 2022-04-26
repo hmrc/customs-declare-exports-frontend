@@ -1179,14 +1179,13 @@ declaration.additionalDocument.remove.documentQuantity = Quantity of the measure
 declaration.item.isLicenceRequired.title = Do these goods require a licence?
 declaration.item.isLicenceRequired.body = It is your responsibility to check if your goods require a licence.
 declaration.item.isLicenceRequired.error = Select yes if the goods require a licence
-declaration.item.isLicenceRequired.no.hint = The answer 'No' will apply CDS waiver 999L and export licence waiver code Y999 against any licensing measure on your goods.
+declaration.item.isLicenceRequired.no.hint = The answer ‘No’ will apply CDS waiver 999L and export licence waiver code Y999 against any licensing measure on your goods.
 declaration.item.isLicenceRequired.inset.title = How do I know if the goods require a licence?
 declaration.item.isLicenceRequired.inset.1.text = The {0} will list any requirements under the ‘Exports’ tab if you see a link that says ‘Conditions’.
 declaration.item.isLicenceRequired.inset.1.linkText = Tariff entry for the code you entered (opens in new tab)
 declaration.item.isLicenceRequired.inset.1.linkText.0 = Tariff entry for {0}, the code you entered (opens in new tab)
 declaration.item.isLicenceRequired.inset.2.text = If there are no requirements, it will say ‘There are no export measures for this commodity on this date.‘ You should then select ‘No‘.
-declaration.item.isLicenceRequired.inset.3.text = If you are allowed to declare 999L or Y999 this will be listed in the 'Conditions' box. Use of either code constitutes a legal declaration that the goods do not require the certificate or licence shown. See more information about {0}.
-declaration.item.isLicenceRequired.inset.3.linkText = prohibitions and restrictions on exports (opens in new tab).
+declaration.item.isLicenceRequired.inset.3.text = If you are allowed to declare 999L or Y999 this will be listed in the ‘Conditions’ box. Use of either code constitutes a legal declaration that the goods do not require the certificate or licence shown.
 declaration.item.isLicenceRequired.inset.4.text = Waiver code 999L or Y999 are permitted to be used in a similar way to LIC99 on the CHIEF system, when a waiver may be applied.
 declaration.item.isLicenceRequired.inset.5.text = Sufficient evidence must be held in records to demonstrate eligibility for this waiver which must be produced on demand.
 
