@@ -23,7 +23,6 @@ import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
