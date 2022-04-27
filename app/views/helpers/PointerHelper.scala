@@ -124,6 +124,7 @@ object PointerHelper extends Logging {
     "declaration.parties.carrierDetails.details.address.addressLine" -> routes.CarrierDetailsController.displayPage,
     "declaration.parties.carrierDetails.details.address.postCode" -> routes.CarrierDetailsController.displayPage,
     "declaration.transport.transportPayment.paymentMethod" -> routes.TransportPaymentController.displayPage,
+    "declaration.locations.destinationCountries.countryOfRouting" -> routes.RoutingCountriesController.displayRoutingQuestion,
     "declaration.locations.destinationCountries.countriesOfRouting.$" -> routes.RoutingCountriesController.displayRoutingCountry, //?? RoutingCountriesSummaryController.displayChangeCountryPage
     "declaration.locations.destinationCountries.countryOfDestination" -> routes.DestinationCountryController.displayPage,
     "declaration.totalNumberOfItems.exchangeRate" -> routes.InvoiceAndExchangeRateController.displayPage,
