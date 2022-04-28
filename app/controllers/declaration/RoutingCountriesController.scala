@@ -82,7 +82,14 @@ class RoutingCountriesController @Inject()(
 
     routingAnswer match {
       case Some(answer) if answer =>
-        Ok(countryOfRoutingPage(mode, Countries.form(RoutingCountryPage), destinationCountryNameFromConsigneeDetails, routingCountriesList))
+        Ok(
+          countryOfRoutingPage(
+            mode,
+            Countries.form(RoutingCountryPage).withSubmissionErrors(),
+            destinationCountryNameFromConsigneeDetails,
+            routingCountriesList
+          )
+        )
       case _ =>
         navigator.continueTo(mode, RoutingCountriesController.displayRoutingQuestion)
     }
