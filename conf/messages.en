@@ -596,10 +596,13 @@ declaration.carrierEori.eori.hint = For example, GB121212121212.
 declaration.carrierEori.eori.empty = Enter the carrier or haulier’s EORI number
 declaration.carrierEori.hasEori.empty = Select yes if you know the EORI number of your carrier or haulier
 
-declaration.carrierAddress.title = What is the registered name and business address of the carrier or haulier?
+declaration.carrierAddress.title = Carrier or haulier details
+declaration.carrierAddress.notification.title = Important: carrier or haulier details
+declaration.carrierAddress.notification.body = This is a new requirement for Customs Declaration Service (CDS) export declarations.
 declaration.carrierAddress.body.1 = Enter the details for the airline or maritime shipping company carrying your goods. For road vehicles going by roll on roll off (RoRo) to the Continent, enter the details of the haulier firm you are using.
-declaration.carrierAddress.body.2 = You can {0} for UK-registered companies, or look on the company website.
+declaration.carrierAddress.body.2 = You can {0} for UK-registered companies. Otherwise look on the company website.
 declaration.carrierAddress.body.2.link = look up the registered business address (opens in new tab)
+declaration.carrierAddress.hint = Registered business name and address of the airline, shipping company or haulier firm
 
 declaration.representative.agent.title = Do you hold the contract to complete the customs formalities?
 declaration.representative.agent.error = Select yes if you hold the contract to complete the customs formalities
