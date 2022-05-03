@@ -589,8 +589,12 @@ declaration.consignorEori.hasEori.empty = Select yes if the exporter has an EORI
 declaration.consignorAddress.title = What is the consignor’s name and address?
 
 declaration.carrierEori.title = Do you know the EORI number of your carrier or haulier?
-declaration.carrierEori.body.1 = Enter the EORI number of the airline or maritime shipping company carrying your goods, if you know it. For road vehicles going by roll on roll off (RoRo) to the Continent, enter the EORI of the haulier firm you are using, or your own EORI if your business owns the transporting vehicle.
-declaration.carrierEori.body.2 = If you do not know it, you can enter their registered business address on the next page instead.
+declaration.carrierEori.notification.title = Important: carrier or haulier details
+declaration.carrierEori.notification.body = This is a new requirement for Customs Declaration Service (CDS) export declarations.
+declaration.carrierEori.body.1 = Enter the EORI number of the airline or maritime shipping company carrying your goods, if you know it.
+declaration.carrierEori.body.2 = For road vehicles going by roll on roll off (RoRo) to the Continent, enter the EORI number of the haulier firm you are using.
+declaration.carrierEori.body.3 = If you do not know it, you can enter their registered business address on the next page instead.
+declaration.carrierEori.inset.1 = Enter your own EORI number if your business owns the transporting vehicle.
 declaration.carrierEori.eori.label = Carrier or haulier’s EORI number
 declaration.carrierEori.eori.hint = For example, GB121212121212.
 declaration.carrierEori.eori.empty = Enter the carrier or haulier’s EORI number
