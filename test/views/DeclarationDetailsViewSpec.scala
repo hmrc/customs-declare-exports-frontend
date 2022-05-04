@@ -157,47 +157,47 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     "have correct message keys" in {
       messages must haveTranslationFor("site.backToDeclarations")
-      messages must haveTranslationFor(s"${msgKey}.title")
-      messages must haveTranslationFor(s"${msgKey}.mrn")
-      messages must haveTranslationFor(s"${msgKey}.references")
-      messages must haveTranslationFor(s"${msgKey}.ducr")
-      messages must haveTranslationFor(s"${msgKey}.lrn")
-      messages must haveTranslationFor(s"${msgKey}.fix.resubmit.button")
-      messages must haveTranslationFor(s"${msgKey}.upload.files.button")
-      messages must haveTranslationFor(s"${msgKey}.upload.files.title")
-      messages must haveTranslationFor(s"${msgKey}.upload.files.hint")
-      messages must haveTranslationFor(s"${msgKey}.view.queries.button")
+      messages must haveTranslationFor(s"$msgKey.title")
+      messages must haveTranslationFor(s"$msgKey.mrn")
+      messages must haveTranslationFor(s"$msgKey.references")
+      messages must haveTranslationFor(s"$msgKey.ducr")
+      messages must haveTranslationFor(s"$msgKey.lrn")
+      messages must haveTranslationFor(s"$msgKey.fix.resubmit.button")
+      messages must haveTranslationFor(s"$msgKey.upload.files.button")
+      messages must haveTranslationFor(s"$msgKey.upload.files.title")
+      messages must haveTranslationFor(s"$msgKey.upload.files.hint")
+      messages must haveTranslationFor(s"$msgKey.view.queries.button")
     }
 
     "have correct message keys for 'read more' section" in {
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.header")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.paragraph")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.submitted.header")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.submitted.paragraph")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.decHasError.header")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.decHasError.paragraph")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.accepted.header")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.accepted.paragraph")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.header")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.paragraph")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.submitted.header")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.submitted.paragraph")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.decHasError.header")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.decHasError.paragraph")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.accepted.header")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.accepted.paragraph")
 
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.header")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.1")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.2")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.1")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.2")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.3")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.3")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.documentsRequired.header")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.documentsRequired.paragraph.1")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.documentsRequired.paragraph.2")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.documentsRequired.bullet.1")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.documentsRequired.bullet.2")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.documentsRequired.bullet.3")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.documentsRequired.paragraph.3")
 
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.queryRaised.header")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.queryRaised.paragraph.1")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.queryRaised.paragraph.2")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.queryRaised.header")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.queryRaised.paragraph.1")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.queryRaised.paragraph.2")
 
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.header")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.1")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.2")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.1")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.2")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.3")
-      messages must haveTranslationFor(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.3")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.goodsExamined.header")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.goodsExamined.paragraph.1")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.goodsExamined.paragraph.2")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.goodsExamined.bullet.1")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.goodsExamined.bullet.2")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.goodsExamined.bullet.3")
+      messages must haveTranslationFor(s"$msgKey.readMoreAboutDecStatus.goodsExamined.paragraph.3")
     }
 
     val dummyInboxLink = "dummyInboxLink"
@@ -225,25 +225,46 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "display page title" in {
-      view.getElementsByTag("h1").first must containMessage(s"${msgKey}.title")
+      view.getElementsByTag("h1").first must containMessage(s"$msgKey.title")
     }
 
     "display the 'MRN' hint" in {
-      val message = messages(s"${msgKey}.mrn")
+      val message = messages(s"$msgKey.mrn")
       val expectedMrnHint = s"$message ${submission.mrn.get}"
       view.getElementsByClass("submission-mrn").first.text mustBe expectedMrnHint
     }
 
     "display the 'Declaration references' table" in {
-      view.getElementsByClass("declaration-details-refs").get(0).text mustBe messages(s"${msgKey}.references")
+      view.getElementsByClass("declaration-details-refs").get(0).text mustBe messages(s"$msgKey.references")
 
       val ducr = view.getElementsByClass("submission-ducr").get(0)
-      ducr.getElementsByClass("govuk-summary-list__key").text mustBe messages(s"${msgKey}.ducr")
+      ducr.getElementsByClass("govuk-summary-list__key").text mustBe messages(s"$msgKey.ducr")
       ducr.getElementsByClass("govuk-summary-list__value").text mustBe submission.ducr.get
 
       val lrn = view.getElementsByClass("submission-lrn").get(0)
-      lrn.getElementsByClass("govuk-summary-list__key").text mustBe messages(s"${msgKey}.lrn")
+      lrn.getElementsByClass("govuk-summary-list__key").text mustBe messages(s"$msgKey.lrn")
       lrn.getElementsByClass("govuk-summary-list__value").text mustBe submission.lrn
+    }
+
+    s"contain the uploading-documents link" when {
+      List(ACCEPTED, RECEIVED).foreach { status =>
+        s"notification's status is $status" in {
+          val view = page(submission, List(acceptedNotification.copy(status = status)))(verifiedEmailRequest(), messages)
+
+          val uploadingDocumentsLink = view.getElementById("uploading-documents-link")
+          uploadingDocumentsLink must containMessage("submissions.uploading.documents")
+          uploadingDocumentsLink must haveHref(routes.FileUploadController.startFileUpload(mrn))
+        }
+      }
+    }
+
+    s"not contain the uploading-documents link" when {
+      (SubmissionStatus.values &~ Set(ACCEPTED, RECEIVED)).foreach { status =>
+        s"notification's status is $status" in {
+          val view = page(submission, List(acceptedNotification.copy(status = status)))(verifiedEmailRequest(), messages)
+          Option(view.getElementById("uploading-documents-link")) mustBe None
+        }
+      }
     }
 
     SubmissionStatus.values.filter(_ != REJECTED) foreach { status =>
@@ -258,7 +279,6 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     s"not contain the view-declaration link when notification's status is REJECTED" in {
       val view = page(submission, List(dmsdocNotification.copy(status = REJECTED)))(verifiedEmailRequest(), messages)
-
       Option(view.getElementById("view-declaration")) mustBe None
     }
 
@@ -385,8 +405,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
         And("and an expander")
         val details = uploadFilesElements.get(1)
-        details.getElementsByTag("summary").text mustBe messages(s"${msgKey}.upload.files.title")
-        details.getElementsByClass("govuk-details__text").text mustBe messages(s"${msgKey}.upload.files.hint")
+        details.getElementsByTag("summary").text mustBe messages(s"$msgKey.upload.files.title")
+        details.getElementsByClass("govuk-details__text").text mustBe messages(s"$msgKey.upload.files.hint")
       }
 
       def verifyViewQueriesContent(content: Elements, buttonIsSecondary: Boolean): Assertion = {
@@ -406,59 +426,76 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
     }
 
-    "display 'read more' section header" in {
-      view.getElementsByClass("declaration-details-refs").get(1).text mustBe messages(s"${msgKey}.readMoreAboutDecStatus.header")
+    "display the expected section headers" in {
+      val headers = view.getElementsByClass("declaration-details-refs")
+      headers.get(1).text mustBe messages(s"$msgKey.uploadDocuments.header")
+      headers.get(2).text mustBe messages(s"$msgKey.readMoreAboutDecStatus.header")
+    }
+
+    "display 'Uploading documents' expander" in {
+      val element = view.getElementById("uploading-documents-details")
+      element must containMessage(s"$msgKey.uploadDocuments.details")
+      element must containMessage(s"$msgKey.uploadDocuments.details.paragraph.1")
+      element must containMessage(s"$msgKey.uploadDocuments.details.paragraph.2")
+      element must containMessage(s"$msgKey.uploadDocuments.details.paragraph.3")
+
+      val bulletPoints = view.getElementsByClass("govuk-list--bullet").text
+      bulletPoints must include(messages(s"$msgKey.uploadDocuments.details.paragraph.1.bullet.1"))
+      bulletPoints must include(messages(s"$msgKey.uploadDocuments.details.paragraph.1.bullet.2"))
+      bulletPoints must include(messages(s"$msgKey.uploadDocuments.details.paragraph.1.bullet.3"))
     }
 
     "display 'read more' section with submitted declaration status expander" in {
       val element = view.getElementById("read-more-about-declaration-status-submitted")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.submitted.header")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.submitted.paragraph")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.submitted.header")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.submitted.paragraph")
     }
 
     "display 'read more' section with declaration has error declaration status expander" in {
       val element = view.getElementById("read-more-about-declaration-status-declaration-has-error")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.decHasError.header")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.decHasError.paragraph")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.decHasError.header")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.decHasError.paragraph")
     }
 
     "display 'read more' section with accepted declaration status expander" in {
       val element = view.getElementById("read-more-about-declaration-status-accepted")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.accepted.header")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.accepted.paragraph")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.accepted.header")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.accepted.paragraph")
     }
 
     "display 'read more' section with documents required declaration status expander" in {
       val element = view.getElementById("read-more-about-declaration-status-documents-required")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.header")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.1")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.2")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.paragraph.3", testEmail)
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.documentsRequired.header")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.documentsRequired.paragraph.1")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.documentsRequired.paragraph.2")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.documentsRequired.paragraph.3")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.documentsRequired.paragraph.4")
 
       val bulletPoints = view.getElementsByClass("govuk-list--bullet").text
-      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.1"))
-      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.2"))
-      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.documentsRequired.bulletPoint.3"))
+      bulletPoints must include(messages(s"$msgKey.readMoreAboutDecStatus.documentsRequired.bullet.1"))
+      bulletPoints must include(messages(s"$msgKey.readMoreAboutDecStatus.documentsRequired.bullet.2"))
+      bulletPoints must include(messages(s"$msgKey.readMoreAboutDecStatus.documentsRequired.bullet.3"))
     }
 
     "display 'read more' section with query raised declaration status expander" in {
       val element = view.getElementById("read-more-about-declaration-status-query-raised")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.queryRaised.header")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.queryRaised.paragraph.1")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.queryRaised.paragraph.2", testEmail)
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.queryRaised.header")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.queryRaised.paragraph.1")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.queryRaised.paragraph.2", testEmail)
     }
 
     "display 'read more' section with 'Goods being examined' declaration status expander" in {
       val element = view.getElementById("read-more-about-declaration-status-goods-being-examined")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.header")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.1")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.2")
-      element must containMessage(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.paragraph.3", testEmail)
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.goodsExamined.header")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.goodsExamined.paragraph.1")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.goodsExamined.paragraph.2")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.goodsExamined.paragraph.3")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.goodsExamined.paragraph.4")
 
       val bulletPoints = view.getElementsByClass("govuk-list--bullet").text
-      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.1"))
-      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.2"))
-      bulletPoints must include(messages(s"${msgKey}.readMoreAboutDecStatus.goodsExamined.bulletPoint.3"))
+      bulletPoints must include(messages(s"$msgKey.readMoreAboutDecStatus.goodsExamined.bullet.1"))
+      bulletPoints must include(messages(s"$msgKey.readMoreAboutDecStatus.goodsExamined.bullet.2"))
+      bulletPoints must include(messages(s"$msgKey.readMoreAboutDecStatus.goodsExamined.bullet.3"))
     }
 
     "omit the Declaration Timeline from the page when there are no notifications for the declaration" in {
