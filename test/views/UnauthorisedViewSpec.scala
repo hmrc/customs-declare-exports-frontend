@@ -16,11 +16,8 @@
 
 package views
 
-import base.{Injector, OverridableInjector}
-import config.featureFlags.TdrUnauthorisedMsgConfig
-import org.mockito.Mockito.{reset, when}
+import base.Injector
 import org.scalatest.{Assertion, BeforeAndAfterEach}
-import play.api.inject.bind
 import play.twirl.api.{Html, HtmlFormat}
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -30,83 +27,46 @@ import views.tags.ViewTest
 @ViewTest
 class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector with BeforeAndAfterEach {
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     super.beforeEach
-    reset(mockTdrUnauthorisedMsgConfig)
-  }
 
-  val injector = new OverridableInjector(bind[TdrUnauthorisedMsgConfig].toInstance(mockTdrUnauthorisedMsgConfig))
-  val unauthorisedPage = injector.instanceOf[unauthorised]
+  val unauthorisedPage = instanceOf[unauthorised]
 
   "Unauthorised Page view" when {
 
-    "TdrUnauthorisedMessage is Disabled and the user has insufficient enrollments" should {
-      val view: Html = getUnauthorisedPageView(false)
+    "the user has insufficient enrollments" should {
+      val view: Html = unauthorisedPage()(request, messages)
 
       "display the expected page header" in {
         view.getElementsByTag("h1").first must containMessage("unauthorised.heading")
       }
 
-      "display the expected get EORI link" in {
-        val link = view.getElementById("get_eori_link")
-
-        link must containMessage("unauthorised.paragraph.1.bullet.1.link")
-        link must haveHref("https://www.gov.uk/eori")
-        link.attr("target") mustBe "_self"
+      "display the inset text" in {
+        val insets = view.getElementsByClass("govuk-inset-text").get(0)
+        insets.children.first.text mustBe messages("unauthorised.insetText")
       }
 
-      "display the expected access CDS link" in {
-        val link = view.getElementById("access_cds_link")
+      "display the expected links" in {
+        val link = view.getElementById("main-content").getElementsByClass("govuk-link")
 
-        link must containMessage("unauthorised.paragraph.1.bullet.2.link")
-        link must haveHref("https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service")
-        link.attr("target") mustBe "_self"
+        link.get(0) must containMessage("unauthorised.paragraph.1.linkText")
+        link.get(0) must haveHref("https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service")
+        link.get(0).attr("target") mustBe "_self"
+
+        link.get(1) must containMessage("unauthorised.paragraph.2.linkText")
+        link.get(1) must haveHref("https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service")
+        link.get(1).attr("target") mustBe "_self"
+
+        link.get(2) must containMessage("unauthorised.paragraph.3.linkText")
+        link.get(2) must haveHref(
+          "https://www.gov.uk/government/publications/use-hmrcs-business-tax-account/use-hmrcs-business-tax-account#add_cancel_tax"
+        )
+        link.get(2).attr("target") mustBe "_self"
+
       }
 
-      "display the expected check CDS application status link" in {
-        val link = view.getElementById("check_cds_application_status_link")
-
-        link must containMessage("unauthorised.paragraph.2.link")
-        link must haveHref("https://www.tax.service.gov.uk/customs/register-for-cds/are-you-based-in-uk")
-        link.attr("target") mustBe "_self"
-      }
     }
 
-    "TdrUnauthorisedMessage is Disabled and the user's EORI in not in the allow list" should {
-      val view: Html = getUnauthorisedPageView(false, true)
-
-      "display the expected page header" in {
-        view.getElementsByTag("h1").first must containMessage("unauthorised.heading.eori.not.allowed")
-      }
-
-      "display the expected contact email address link" in {
-        checkContactEmailAddress(view)
-      }
-    }
-
-    "TdrUnauthorisedMessage is Enabled" should {
-      val view: Html = getUnauthorisedPageView(true)
-
-      "display the expected page header" in {
-        view.getElementsByTag("h1").first must containMessage("unauthorised.tdr.heading")
-      }
-
-      "display the expected contact email address link" in {
-        checkContactEmailAddress(view)
-      }
-    }
   }
 
-  def checkContactEmailAddress(view: Html): Assertion = {
-    val link = view.getElementById("contact_support_link")
-
-    link must containMessage("unauthorised.tdr.body.link")
-    link must haveHref(s"mailto:${messages("unauthorised.tdr.body.link")}")
-    link.attr("target") mustBe "_blank"
-  }
-
-  private def getUnauthorisedPageView(tdrEnabled: Boolean, unauthorizedDueToEoriNotAllowed: Boolean = false): HtmlFormat.Appendable = {
-    when(mockTdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled).thenReturn(tdrEnabled)
-    unauthorisedPage(unauthorizedDueToEoriNotAllowed)(request, messages)
-  }
 }

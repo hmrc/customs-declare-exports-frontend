@@ -40,4 +40,6 @@ class ExternalServicesConfig @Inject()(val configuration: Configuration) {
   val cdsCheckStatus: String = loadUrl("cdsCheckStatus")
   val organisationsUrl: String = loadUrl("organisationsLink")
   val importExports: String = loadUrl("importExports")
+
+  val useYourBusinessAccount: String = loadUrl("useYourBusinessAccount")
 }
