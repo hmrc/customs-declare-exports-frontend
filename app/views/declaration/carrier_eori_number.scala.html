@@ -34,6 +34,8 @@
     sectionHeader: sectionHeader,
     heading: heading,
     body: paragraphBody,
+    notificationBanner: notificationBanner,
+    insetText: exportsInsetText,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
@@ -62,11 +64,18 @@
 
         @sectionHeader(messages("declaration.section.2"))
 
+        @notificationBanner(
+            title = messages("declaration.carrierEori.notification.title"),
+            content = body(messages("declaration.carrierEori.notification.body"))
+        )
+
         @heading(messages("declaration.carrierEori.title"))
 
         @body(messages("declaration.carrierEori.body.1"))
-
         @body(messages("declaration.carrierEori.body.2"))
+        @body(messages("declaration.carrierEori.body.3"))
+
+        @insetText(HtmlContent(body(messages("declaration.carrierEori.inset.1"))))
 
         @govukRadios(Radios(
             name = "hasEori",

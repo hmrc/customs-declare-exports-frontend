@@ -66,10 +66,27 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
         view.getElementsByTag("h1") must containMessageForElements("declaration.carrierEori.title")
       }
 
+      "display the expected notification banner" in {
+        val banner = view.getElementsByClass("govuk-notification-banner").get(0)
+
+        val title = banner.getElementsByClass("govuk-notification-banner__title").text
+        title mustBe messages("declaration.carrierEori.notification.title")
+
+        val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
+        content.text mustBe messages("declaration.carrierEori.notification.body")
+      }
+
+      "display inset text" in {
+        val expectedInsetText = messages("declaration.carrierEori.inset.1")
+
+        view.getElementsByClass("govuk-inset-text").get(0).text mustBe expectedInsetText
+      }
+
       "display the expected body" in {
         val paragraphs = view.getElementsByClass("govuk-body")
-        paragraphs.get(0).text mustBe messages(s"declaration.carrierEori.body.1")
-        paragraphs.get(1).text mustBe messages(s"declaration.carrierEori.body.2")
+        paragraphs.get(1).text mustBe messages(s"declaration.carrierEori.body.1")
+        paragraphs.get(2).text mustBe messages(s"declaration.carrierEori.body.2")
+        paragraphs.get(3).text mustBe messages(s"declaration.carrierEori.body.3")
       }
 
       "display answer input" in {
