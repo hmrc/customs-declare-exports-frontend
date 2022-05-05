@@ -57,13 +57,17 @@ site.pagination.of = of
 
 general.inquiries.help.link = General enquires help
 
-unauthorised.heading = To continue, you need to get access to the Customs Declaration Service (CDS)
-unauthorised.paragraph.1 = To use this service, you’ll need to:
-unauthorised.paragraph.1.bullet.1 = {0} if you do not have one
-unauthorised.paragraph.1.bullet.1.link = get an Economic Operator Registration and Identification (EORI) number
-unauthorised.paragraph.1.bullet.2.link = get access to the Customs Declaration Service
-unauthorised.paragraph.2 = If you’ve already applied for an EORI number, you can {0}.
-unauthorised.paragraph.2.link = check the status of your application
+unauthorised.heading = You do not have access to the Customs Declaration Service using these sign-in details
+unauthorised.heading.1 = First attempt to access CDS
+unauthorised.paragraph.1 = If you think you need to set up access to CDS, you can do that right away, from the {0}. You can also use this service to check and see if access has been set up already.
+unauthorised.paragraph.1.linkText = Get access to CDS start page on GOV.UK (opens in new tab)
+unauthorised.heading.2 = If you set up access before
+unauthorised.paragraph.2 = If you have used any other Government Gateway user ID and password, try again with those details. {0}.
+unauthorised.paragraph.2.linkText = Get help if you have problems signing in (opens in new tab)
+unauthorised.heading.3 = If you already have access set up
+unauthorised.paragraph.3 = You need to ask the person who set up the access to sign in and then follow the ‘Adding a team member’ instructions to {0}. When you are an administrator for CDS, you can add other team members.
+unauthorised.paragraph.3.linkText = add you as an administrator level team member (opens in a new tab)
+unauthorised.insetText = Check with the person who deals with VAT, for example, as they may have registered for CDS in order to claim back VAT.
 
 unauthorised.heading.eori.not.allowed = Your EORI number is not valid on this service
 unauthorised.tdr.heading = The EORI you entered is not yet valid on the CDS test service
