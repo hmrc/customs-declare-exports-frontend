@@ -21,13 +21,15 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.unauthorised
+import views.html.{unauthorised, unauthorisedEori}
 
 class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
 
   val unauthorisedPage = mock[unauthorised]
+  val unauthorisedEoriPage = mock[unauthorisedEori]
 
-  val controller = new UnauthorisedController(mockTdrUnauthorisedMsgConfig, stubMessagesControllerComponents(), unauthorisedPage)
+  val controller =
+    new UnauthorisedController(mockTdrUnauthorisedMsgConfig, stubMessagesControllerComponents(), unauthorisedPage, unauthorisedEoriPage)
 
   "Unauthorised controller" should {
 
@@ -35,15 +37,22 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
 
       "display page method is invoked and" when {
 
-        "user has insufficient enrollments" in {
+        "user has insufficient enrolments" in {
           when(unauthorisedPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
           val result = controller.onPageLoad(false)(getRequest())
           status(result) must be(OK)
         }
 
         "user has sufficient enrollments but the EORI is not in the allow list" in {
-          when(unauthorisedPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+          when(unauthorisedEoriPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
           val result = controller.onPageLoad(true)(getRequest())
+          status(result) must be(OK)
+        }
+
+        "tdr is enabled" in {
+          when(mockTdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled).thenReturn(true)
+          when(unauthorisedEoriPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+          val result = controller.onPageLoad(false)(getRequest())
           status(result) must be(OK)
         }
       }
