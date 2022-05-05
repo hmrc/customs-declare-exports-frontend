@@ -34,6 +34,7 @@
     heading: heading,
     body: paragraphBody,
     group_address: group_address,
+    notificationBanner: notificationBanner,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
@@ -62,11 +63,21 @@
 
         @sectionHeader(messages("declaration.section.2"))
 
+        @notificationBanner(
+            title = messages("declaration.carrierAddress.notification.title"),
+            content = body(messages("declaration.carrierAddress.notification.body"))
+        )
+
         @heading(messages("declaration.carrierAddress.title"))
 
         @body(messages("declaration.carrierAddress.body.1"))
 
         @body(messages("declaration.carrierAddress.body.2", hintLink))
+
+        @body(
+            message = messages("declaration.carrierAddress.hint"),
+            classes = "govuk-label govuk-label--m"
+        )
 
         @group_address(form, "declaration.address", "details.address")
 
