@@ -23,11 +23,14 @@ import models.declaration.submissions.SubmissionStatus.eadAcceptableStatuses
 
 object DeclarationDetailsLinks {
 
+  def displayViewDeclarationLink(notifications: Seq[Notification]): Boolean = !notifications.exists(_.isStatusDMSRej)
+
+  def mrnIfDMSRcvOrDMSAcc(submission: Submission, notifications: Seq[Notification]): Option[String] =
+    notifications.headOption.flatMap(notification => if (notification.isStatusDMSAccOrDMSRcv) submission.mrn else None)
+
   def mrnIfEadStatus(submission: Submission, notifications: Seq[Notification], eadConfig: EadConfig): Option[String] =
     if (eadConfig.isEadEnabled) {
       val hasEadAcceptableStatus = notifications.headOption.map(_.status).exists(eadAcceptableStatuses.contains)
       if (hasEadAcceptableStatus) submission.mrn else None
     } else None
-
-  def displayViewDeclarationLink(notifications: Seq[Notification]): Boolean = !notifications.exists(_.isStatusDMSRej)
 }

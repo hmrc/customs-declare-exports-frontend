@@ -16,10 +16,10 @@
 
 package models.declaration.notifications
 
-import java.time.{ZoneId, ZonedDateTime}
-
 import models.declaration.submissions.SubmissionStatus._
 import play.api.libs.json.Json
+
+import java.time.{ZoneId, ZonedDateTime}
 
 case class Notification(actionId: String, mrn: String, dateTimeIssued: ZonedDateTime, status: SubmissionStatus, errors: Seq[NotificationError])
     extends Ordered[Notification] {
@@ -30,6 +30,8 @@ case class Notification(actionId: String, mrn: String, dateTimeIssued: ZonedDate
     else -1
 
   lazy val isStatusDMSAcc: Boolean = status == ACCEPTED
+
+  lazy val isStatusDMSAccOrDMSRcv: Boolean = status == ACCEPTED || status == RECEIVED
 
   lazy val isStatusDMSCle: Boolean = status == CLEARED
 

@@ -31,7 +31,7 @@
   timeline: timeline,
   timelineEvents: TimelineEvents,
   link: link,
-  paragraphBody: paragraphBody,
+  paragraph: paragraphBody,
   bulletList: bulletList,
   govukDetails : GovukDetails,
   eadConfig: EadConfig,
@@ -48,6 +48,19 @@
 
 @sectionHeading(text: String) = {
   <h2 class="declaration-details-refs govuk-heading-s">@text</h2>
+}
+
+@uploadingDocumentsLink = {
+    @mrnIfDMSRcvOrDMSAcc(submission, notifications).map { mrn =>
+        <p>
+            @link(
+                id = Some("uploading-documents-link"),
+                text = messages("submissions.uploading.documents"),
+                call = controllers.routes.FileUploadController.startFileUpload(mrn),
+                target = "_blank"
+            )
+        </p>
+    }
 }
 
 @pdfForEadLink = {
@@ -75,34 +88,49 @@
 }
 
 @documentsRequiredDetailsContent = {
-  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.1"))
-  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.2"))
+  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.1"))
+  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.2"))
 
   @bulletList(Seq(
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.1")),
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.2")),
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bulletPoint.3"))
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bullet.1")),
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bullet.2")),
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.bullet.3"))
   ))
 
-  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.3", request.email))
+  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.3"))
+  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.documentsRequired.paragraph.4"))
 }
 
 @queryRaisedDetailsContent = {
-  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.1"))
-  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.2", request.email))
+  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.1"))
+  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.queryRaised.paragraph.2", request.email))
 }
 
 @goodsExaminedDetailsContent = {
-  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.1"))
-  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.2"))
+  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.1"))
+  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.2"))
 
   @bulletList(Seq(
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bulletPoint.1")),
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bulletPoint.2")),
-    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bulletPoint.3"))
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bullet.1")),
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bullet.2")),
+    Html(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.bullet.3"))
   ))
 
-  @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.3", request.email))
+  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.3"))
+  @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.goodsExamined.paragraph.4"))
+}
+
+@uploadingDocumentsDetails = {
+  @paragraph(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.1"))
+
+  @bulletList(Seq(
+    Html(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.1.bullet.1")),
+    Html(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.1.bullet.2")),
+    Html(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.1.bullet.3"))
+  ))
+
+  @paragraph(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.2"))
+  @paragraph(messages("submissions.declarationDetails.uploadDocuments.details.paragraph.3"))
 }
 
 @declarationStatusReadMore = {
@@ -184,13 +212,23 @@
         ))
 
         <div class="govuk-list">
+            @uploadingDocumentsLink
             @pdfForEadLink
             @viewDeclarationLink
         </div>
 
         <div>
+            @sectionHeading(messages("submissions.declarationDetails.uploadDocuments.header"))
+            @govukDetails(Details(
+                id = Some("uploading-documents-details"),
+                summary = Text(messages("submissions.declarationDetails.uploadDocuments.details")),
+                content = HtmlContent(uploadingDocumentsDetails)
+            ))
+        </div>
+
+        <div>
             @sectionHeading(messages("submissions.declarationDetails.readMoreAboutDecStatus.header"))
-            @paragraphBody(messages("submissions.declarationDetails.readMoreAboutDecStatus.paragraph"))
+            @paragraph(messages("submissions.declarationDetails.readMoreAboutDecStatus.paragraph"))
             @declarationStatusReadMore
         </div>
 
